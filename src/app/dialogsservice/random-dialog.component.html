@@ -1,0 +1,144 @@
+<mat-card>
+    <mat-card-header>
+        <mat-card-title>
+            <h1 mat-dialog-title>Add Mail: {{data.templatemailing.title}}</h1>
+        </mat-card-title>
+    </mat-card-header>
+
+    <mat-button-toggle-group style="width: 100%" fxFlexAlign="start" #group="matButtonToggleGroup"
+        [vertical]="false">
+
+        <mat-button-toggle style="width: 50%" matTooltip="Add to Campaigns" value="randomcampaign" (click)="toggleaddtomailing">
+            <mat-icon>today</mat-icon>
+        </mat-button-toggle>
+        <mat-button-toggle style="width: 50%" matTooltip="Create Campaign based on list" value="randommaillist" (click)="toggleaddtomailing">
+            <mat-icon>list</mat-icon>
+        </mat-button-toggle>
+    </mat-button-toggle-group>
+
+    <div fxLayout="row">
+
+        <div *ngIf="group.value == 'randommaillist'" mat-dialog-content class="boxdialog1" fxFlex="50%">
+            <table>
+                <tr>
+                    <td>
+                        <button mat-button (click)="selectAllMail()">Select All</button>
+                    </td>
+                    <td>
+                        <button mat-button (click)="deselectAllMail()">Deselect All</button>
+                    </td>
+                </tr>
+            </table>
+
+            <div *ngFor="let mailingList of data.mailingLists; let i1 = index ">
+                <table>
+                    <tr>
+                        <td>
+                            <mat-checkbox [(ngModel)]="checkboxlistmail[i1]" (click)="onAddMailinglist(i1)"></mat-checkbox>
+                        </td>
+                        <td><span class="box">{{mailingList.listname}}</span></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <div *ngIf="group.value == 'randomcampaign'" mat-dialog-content class="boxdialog1" fxFlex="50%">
+            <table>
+                <tr>
+                    <td>
+                        <button mat-button (click)="selectAllCamp()">Select All</button>
+                    </td>
+                    <td>
+                        <button mat-button (click)="deselectAllCamp()">Deselect All</button>
+                    </td>
+                </tr>
+            </table>
+
+            <div *ngFor="let campaignList of data.campaignLists; let i2 = index ">
+                <table>
+                    <tr>
+                        <td>
+                            <mat-checkbox [(ngModel)]="checkboxlistcamp[i2]" (click)="onAddCampaignlist(i2)"></mat-checkbox>
+                        </td>
+                        <td><span class="box">{{campaignList.name}}</span></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <div class="boxdialog2" fxFlex="50%">
+            <table>
+                <tr>
+                    <td>
+                        <mat-checkbox [(ngModel)]="randomize">Create Random dates and Times</mat-checkbox>
+                    </td>
+                </tr>
+            </table>
+            <table *ngIf="randomize">
+                <tr>
+                    <td>
+                        <label>Start date</label>
+                    </td>
+                    <td>
+                        <mat-datepicker #picker2 class="form-half-width"></mat-datepicker>
+                        <input [min]="minDate" [max]="maxDate" [matDatepicker]="randomstartdate" [(ngModel)]=data.startdate
+                            placeholder="Send Date">
+                        <mat-datepicker-toggle matSuffix [for]="randomstartdate"></mat-datepicker-toggle>
+                        <mat-datepicker #randomstartdate></mat-datepicker>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label>End date</label>
+                    </td>
+                    <td>
+                        <mat-datepicker #picker2 class="form-half-width"></mat-datepicker>
+                        <input [min]="minDate" [max]="maxDate" [matDatepicker]="randomenddate" [(ngModel)]=data.enddate
+                            placeholder="Send Date">
+                        <mat-datepicker-toggle matSuffix [for]="randomenddate"></mat-datepicker-toggle>
+                        <mat-datepicker #randomenddate></mat-datepicker>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label>Day of the Week</label>
+                    </td>
+                    <td>
+                        <mat-form-field>
+                            <mat-select placeholder="Days for sending" [formControl]="daysform" multiple [(ngModel)]=data.dayoftheweek>
+                                <mat-option *ngFor="let day of days" [value]="day.value">{{day.viewValue}}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </td>
+                </tr>
+                <tr>
+                    <td><label>starthour</label>
+                    </td>
+                    <td>
+                        <mat-form-field>
+                            <mat-select placeholder="Start Time" [(ngModel)]=data.starthour>
+                                <mat-option *ngFor="let hour of hours" [value]="hour.value">{{hour.viewValue}}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </td>
+                </tr>
+                <tr>
+                    <td><label>endhour</label>
+                    </td>
+                    <td>
+                        <mat-form-field>
+                            <mat-select placeholder="End Time" [(ngModel)]=data.endhour>
+                                <mat-option *ngFor="let hour of hours" [value]="hour.value">{{hour.viewValue}}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div mat-dialog-actions>
+        <button mat-button (click)="onNoClick()">Cancel</button>
+        <button mat-button [mat-dialog-close]="data" cdkFocusInitial>Add Mailing</button>
+    </div>
+
+</mat-card>

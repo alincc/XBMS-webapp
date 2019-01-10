@@ -1,0 +1,157 @@
+.setupmanual {
+    margin-top: 2em;
+}
+
+.form-login {
+    margin-top: 0em;
+}
+
+h2 {
+    margin: 2em;
+}
+
+.button {
+    margin: 2em;
+}
+
+.account-container {
+    margin-top: 4%;
+    width: 70%;
+}
+
+.listcontainer{
+    width: 30%;
+    height: 100%;
+    float: right;
+    margin-top: 1%;
+    padding: 5px;
+    margin: 5px;
+}
+
+.relationcontainer{
+    width: 69%;
+    height: 100%;
+    float: left;
+    margin-top: 1%;
+}
+
+.Relations{
+    margin-left: 3px;
+    padding-left: 3px;
+  }
+
+  .titlebox{
+    width: 100%;
+    margin-bottom: 20px;
+  }
+  
+  
+  .box {
+    position: relative;
+    display: inline-block;
+    width: 300px;
+    height: 25px;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    -webkit-transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+    transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+    margin: 5px;
+    padding: 5px;
+  }
+   
+  .box::after {
+    content: "";
+    border-radius: 5px;
+    position: absolute;
+    z-index: -1;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    opacity: 0;
+    -webkit-transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+    transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+  }
+   
+  .box:hover {
+    -webkit-transform: scale(1.10, 1.10);
+    transform: scale(1.10, 1.10);
+  }
+   
+  .box:hover::after {
+      opacity: 1;
+  }
+  
+  .selected {
+    border-radius: 5px;
+    color: blue;
+    -webkit-transform: scale(1.05, 1.05);
+    transform: scale(1.05, 1.05);
+  }
+
+  .searchbutton{
+    width: 7%;
+  }
+
+
+  table {
+    width: 100%;
+ }
+
+ .team {
+    width: 100%;
+ }
+
+ .createteam{
+    margin: 30px;
+    padding: 30px;
+    width: 42%;
+    display: inline-block;
+    border-radius: 5px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);  
+ }
+
+ .teammembers{
+    width: 42%;
+    display: inline-block;
+    margin: 30px;
+    padding: 30px;
+    border-radius: 5px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+ }
+
+ .account{
+     width: 100%
+ }
+
+ .accountinfo{
+    width: 42%;
+    margin: 30px;
+    padding: 30px;
+    border-radius: 5px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    display: inline-block;
+ }
+
+
+ .accountaction{
+    width: 42%;
+    margin: 30px;
+    padding: 30px;
+    border-radius: 5px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1); 
+    display: inline-block;
+ }
+
+ .content-form {
+    min-height: 300px;
+    min-width: 150px;
+    width: 98%;
+    height: 98%;
+  }
+
+
+  

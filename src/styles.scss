@@ -1,0 +1,162 @@
+/* You can add global styles to this file, and also import other style files */
+
+@import './theme.scss';
+
+/* CSS reset */
+body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,textarea,p,blockquote,th,td { 
+  margin:0;
+  padding:0;
+}
+html,body {
+  margin:0;
+  padding:0;
+}
+
+.relations {
+    height: 100vh;
+    width: 100%;
+  }
+
+.tabcontainer {
+  margin-top: 20px;
+    height: 100%;
+    min-height: 500px;
+    width: 100%;
+    box-sizing: border-box;
+   }
+
+.listcontainer{
+    width: 30%;
+    float: right;
+    margin: 1px 1px 1px 1px;
+    padding: 1px 1px 1px 1px;
+    box-sizing: border-box;
+  
+  }
+
+  .search-component{
+
+  }
+
+  .mat-form-field{
+    margin: 10px;
+    min-width: 150px;
+    max-width: 500px;
+    width: 70%;
+  }
+
+  .form-full-width{
+    width: 100%;
+  }
+
+
+
+  .relationcontainer{
+    width: 65%;
+    height: 100%;
+    float: left;
+    margin: 1px 1px 1px 1px;
+    padding: 1px 1px 1px 1px;
+    box-sizing: border-box;
+  }
+
+.selection-form {
+     margin-left: 6em;
+   }
+
+
+
+.drop-zone{
+  min-width: 200px;
+  min-height: 150px;
+  height: auto;
+  max-width: 600px;
+  margin: 20px;
+  padding: 20px;
+  border-style: dashed;
+  border-width:5px;  
+  margin: 10px;
+  word-wrap: break-word;
+}
+
+.drop-zone-over {
+  min-width: 200px;
+  min-height: 150px;
+  max-width: 600px;
+  margin: 20px;
+  padding: 20px;
+  border-style: dashed;
+  border-width:5px;  
+  border-color: red;
+  margin: 10px;
+}
+
+.righ-upload-block{
+  width: 48%;
+  display: inline-block;
+}
+
+.left-upload-block{
+  width: 48%;
+  display: inline-block;
+}
+
+
+.mat-snack-bar-container.snackbar-class { 
+  background: #23549D; 
+  color: white;
+}
+
+.selectrelation {
+  padding-left: 100px;
+  margin-left: 100px;
+  height: 30px;
+}
+
+.topbanner {
+  overflow: hidden;
+  position: fixed;
+  top: 0;
+  left: 0;
+  position:relative;  
+}
+
+.mat-tab-list {
+  .mat-tab-label[_ngcontent-c3] {
+    min-width: 72px;
+  }
+}
+
+
+.mat-card-xbms {
+  padding: 2;
+}
+
+.max-expansion-panel{
+  width: 100%;
+  margin: 10px;
+  flex-basis: auto;
+}
+
+.max-table-content{
+  width: 100%;
+}
+
+.mat-expansion-panel-header-title {
+  width: 100%;
+  flex-basis: auto;
+  justify-content: space-between;
+  align-items: center;
+}
+
+
+.buttons-container{
+  padding-right: 150px;
+}
+
+.listview{
+  min-height: 300px;
+  max-height : 100%;
+  overflow-y: scroll;
+  overflow-x: visible;
+}

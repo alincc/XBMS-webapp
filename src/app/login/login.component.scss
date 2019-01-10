@@ -1,0 +1,44 @@
+.form-login{
+    border: 2px;
+    border-style: blue;
+
+}
+
+
+.logincontainer{
+    vertical-align: center;
+    z-index: 15;
+    background-color: whitesmoke;
+    border-color: black;
+    margin: 100px auto auto auto;
+    width: 30%;
+    height: auto;
+    border-radius: 5px;
+    border-radius: 5px;
+    padding: 20px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.logintitle{
+    font: 500 20px/32px Roboto, "Helvetica Neue", sans-serif;
+}
+
+.registercontainer{
+    position: absolute;
+    width: 400px;
+    height: auto;
+    z-index: 15;
+    top: 20%;
+    left: 35%;
+    margin: -100px 0 0 -150px;
+    background-color: whitesmoke;
+    border-color: black;
+    -moz-box-align: center;
+    display: inline-block;
+    border-radius: 5px;
+    border-radius: 5px;
+    margin: 5px;
+    padding: 5px;
+    margin-bottom: 20px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}

@@ -1,0 +1,577 @@
+<mat-tab-group class="relations">
+  <mat-tab label="Relations Account">
+    <ng-template mat-tab-label>
+      <mat-icon>settings</mat-icon>Account
+    </ng-template>
+
+    <div class="account">
+      <div *ngIf="toggleedituser === false" class="accountinfo">
+        <table>
+          <tr>
+            <td>
+              <h2>Account info</h2>
+            </td>
+          </tr>
+          <tr>
+            <mat-form-field class="form-full-width">
+              <input matInput [(ngModel)]=Account.email placeholder="Email" class="InputField">
+            </mat-form-field>
+          </tr>
+          <tr>
+            <td>
+              <mat-form-field class="form-full-width">
+                <input matInput [(ngModel)]=Account.username placeholder="Username" class="InputField">
+              </mat-form-field>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <mat-form-field class="form-full-width">
+                <input matInput placeholder="Enter your password"  name="password" [(ngModel)]="Account.password" [type]="!hide ? 'password' : 'text'">
+                <mat-icon matSuffix (click)="!hide = hide">{{hide ? 'visibility' : 'visibility_off'}}</mat-icon>
+              </mat-form-field>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <mat-form-field class="form-full-width">
+                <input matInput [(ngModel)]=Account.companyname placeholder="Company Name" class="InputField">
+              </mat-form-field>
+            </td>
+            <td>
+              <button (click)="saveAccount()" a mat-raised-button class="button">Save Changes</button>
+            </td>
+          </tr>
+        </table>
+        <button mat-mini-fab color="primary" (click)="toggleEditUser()">
+          <mat-icon>edit</mat-icon>
+        </button>
+      </div>
+
+      <div *ngIf="toggleedituser" class="accountinfo">
+        <table>
+          <tr>
+            <td>
+              <h2>Account info</h2>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <h4>{{Account.email}}</h4>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <h4>{{Account.username}}</h4>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <h4>{{Company.companyname}}</h4>
+            </td>
+          </tr>
+        </table>
+        <button mat-mini-fab color="primary" (click)="toggleEditUser()">
+          <mat-icon>edit</mat-icon>
+        </button>
+      </div>
+
+      <div class="accountaction">
+        <form>
+          <table>
+            <tr>
+              <td>
+                Change Password
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <mat-form-field class="example-full-width">
+                  <input matInput name="password" type="password" [(ngModel)]="oldpassword" placeholder="Old Password" [formControl]="passwordFormControl"
+                    [errorStateMatcher]="matcher">
+                </mat-form-field>
+              </td>
+              <td>
+                <button (click)="openDialogDeleteAccount()" a mat-raised-button class="button">Delete My Account</button>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <mat-form-field class="example-full-width">
+                  <input matInput name="password" placeholder="New Password" type="password" [formControl]="passwordFormControl" [(ngModel)]="newpassword"
+                    [errorStateMatcher]="matcher">
+                  <!-- <mat-hint>Errors appear instantly!</mat-hint> -->
+                  <mat-error *ngIf="passwordFormControl.hasError('email') && !passwordFormControl.hasError('required')">
+                    Please enter a Password
+                  </mat-error>
+                  <mat-error *ngIf="passwordFormControl.hasError('required')">
+                    Password is
+                    <strong>required</strong>
+                  </mat-error>
+                </mat-form-field>
+              </td>
+              <td>
+                <button (click)="logout()" a mat-raised-button class="button">Logout</button>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <button (click)="changePassword()" a mat-raised-button class="button">Change Password</button>
+              </td>
+              <td>
+                <div *ngIf="passwordsuccess">
+                  <i class="material-icons">check_circle</i>
+                </div>
+              </td>
+            </tr>
+          </table>
+        </form>
+      </div>
+    </div>
+
+
+    <div *ngIf="Account.companyadmin" class="team">
+      <div class="teammembers">
+        Teammembers {{Account.companyname}}
+        <div *ngFor="let Team of Team; let i = index">
+          <table class="team" cellspacing="0">
+            <tr style="width: 100%;">
+              <td>
+                <label>{{ Team.username }}</label>
+              </td>
+              <td>
+                <label>{{ Team.teamName }}</label>
+              </td>
+              <td>
+                <a mat-mini-fab color="primary" (click)="deleteTeamMember(Team, i)">
+                  <mat-icon>delete</mat-icon>
+                </a>
+              </td>
+            </tr>
+          </table>
+        </div>
+      </div>
+
+      <div *ngIf="Account.companyadmin" class="createteam">
+        Create Teammember (send invite) {{Account.companyname}}
+        <form>
+          <table class="form-login" cellspacing="0">
+            <tr>
+              <td>
+                <mat-form-field class="form-full-width">
+                  <input matInput name="email" type="email" [(ngModel)]="newAccount.email" placeholder="email" />
+                </mat-form-field>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <mat-form-field class="form-full-width">
+                  <input matInput name="password" type="password" [(ngModel)]="newAccount.password" placeholder="password" />
+                </mat-form-field>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <mat-form-field class="form-full-width">
+                  <input matInput name="username" type="username" [(ngModel)]="newAccount.username" placeholder="username" />
+                </mat-form-field>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <mat-form-field class="form-full-width">
+                  <input matInput name="Team name" type="Team name" [(ngModel)]="newAccount.teamname" placeholder="Team name" />
+                </mat-form-field>
+              </td>
+            </tr>
+            <tr>
+              <button (click)="createTeamMember()" a mat-raised-button class="button">Create Member</button>
+            </tr>
+          </table>
+        </form>
+      </div>
+
+
+    </div>
+
+    <div class="emailhandler">
+      <div class="accountinfo">
+        <table class="form-login" cellspacing="0">
+          <tr>
+            <td>
+              <h2>Email Info</h2>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <mat-form-field class="form-full-width">
+                <input matInput name="emailusername" type="email" [(ngModel)]="Emailhandler.username" placeholder="username" />
+              </mat-form-field>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <mat-form-field class="form-full-width">
+                <input matInput name="emailpassword" type="password" [(ngModel)]="Emailhandler.password" placeholder="password" />
+              </mat-form-field>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <mat-form-field class="form-full-width">
+                <input matInput name="Team name" type="Team name" [(ngModel)]="Emailhandler.host" placeholder="Mail Server" />
+              </mat-form-field>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <mat-form-field class="form-full-width">
+                <input matInput name="Team name" type="value" [(ngModel)]="Emailhandler.port" placeholder="port" />
+              </mat-form-field>
+            </td>
+            <td>
+              <mat-checkbox [(ngModel)]="Emailhandler.tls">TLS</mat-checkbox>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <mat-form-field class="form-full-width">
+                <input matInput name="Team name" type="value" [(ngModel)]="Emailhandler.mailbox" placeholder="mailbox" />
+              </mat-form-field>
+            </td>
+            <td>
+              <mat-form-field>
+                <mat-select [(ngModel)]="Emailhandler.searchfilter">
+                  <mat-option value="FLAGGED">FLAGGED</mat-option>
+                  <mat-option value="UNSEEN">UNSEEN</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <mat-checkbox [(ngModel)]="Emailhandler.markseen">Mark Seen</mat-checkbox>
+            </td>
+            <td>
+              <mat-checkbox [(ngModel)]="Emailhandler.attachments">Save Attachments</mat-checkbox>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <button (click)="createEmailHandler()" a mat-raised-button class="button">Save</button>
+            </td>
+            <td>
+
+            </td>
+          </tr>
+        </table>
+      </div>
+    </div>
+
+
+  </mat-tab>
+
+  <mat-tab label="Wordpress Websites">
+    <ng-template mat-tab-label>
+      <mat-icon>web</mat-icon>Wordpress
+    </ng-template>
+    <div class="account-container">
+      <table>
+        <tr>
+          <button (click)="wpauth()" a mat-raised-button class="button">Add Wordpress Website</button>
+          <!-- use for open new window: assignActity()  -->
+        </tr>
+      </table>
+
+      <b>To setup Wordpress:</b>
+
+      <li>1. Got to your wordpress admin panel and Install the "WP REST API - OAuth 1.0a Server" plugin. </li>
+      <li>2. Activate the plugin</li>
+      <li>3. Go to User/Applications</li>
+      <li>4. Add the system callback URL: http://localhost:4200/settings</li>
+      <li>5. Create new User </li>
+      <li>5. Get the Client Key and Client Secret and save in the above</li>
+      <li>7. Press Add Wordpress Website above</li>
+    </div>
+  </mat-tab>
+
+  <mat-tab label="Unsortedcalls">
+    <ng-template mat-tab-label>
+      <mat-icon>mail</mat-icon>Unsorted Emails
+    </ng-template>
+    <div class="tabcontainer">
+      <div class="listcontainer">
+        <div class="searchbutton">
+          <h4>Search</h4>
+          <p>
+            <mat-form-field>
+              <input matInput #searchTerm id="seach-box" (keyup.enter)="searchCallGo(searchTerm.value)" placeholder="Call title/content"
+              />
+            </mat-form-field>
+          </p>
+          <tr>
+            <td>
+              <button a mat-raised-button (click)="searchCallGo(searchTerm.value)">Search</button>
+            </td>
+            <td>
+              <button a mat-raised-button (click)="getUnCalls()">Show All</button>
+            </td>
+          </tr>
+        </div>
+
+        <ul class="Relations">
+          <div *ngFor="let Unsortedcalls of Unsortedcalls; let i = index" (click)="onSelectCall(Unsortedcalls, i)" [class.selected]="Unsortedcalls === selectedCall">
+            <span class="box">{{Unsortedcalls.title | slice:0:20 }} | {{Unsortedcalls.date | date}}</span>
+          </div>
+        </ul>
+
+      </div>
+
+      <button a mat-raised-button (click)="openDialogDeleteAllCall()">Delete All</button>
+
+
+
+
+      <div class="relationcontainer" *ngIf="selectedCall">
+        <mat-card>
+          <mat-card-content style="padding: 30px;">
+            <div>
+              <table>
+                <tr>
+                  <td>
+                    <mat-form-field class="example-full-width">
+                      <input type="text" placeholder="Select Relation" aria-label="relation" [(ngModel)]=option matInput [formControl]="myControl"
+                        [matAutocomplete]="auto">
+                      <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+                        <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
+                          {{ option.relationname }}
+                        </mat-option>
+                      </mat-autocomplete>
+                    </mat-form-field>
+                  </td>
+                  <td>
+                    <button a mat-raised-button (click)="assignCall()">Assign To</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <mat-form-field>
+                      <input matInput google-place (onSelect)="setAddress($event)" [(ngModel)]=newRelation.relationname placeholder="New Relation Name" class="InputField" [ngModelOptions]="{standalone: true}">
+                    </mat-form-field>
+
+                    <mat-select [(ngModel)]=newRelation.status placeholder="Status" class="InputField">
+                      <mat-option *ngFor="let statustype of statustype" [value]="statustype.value">
+                        {{ statustype.viewValue }}
+                      </mat-option>
+                    </mat-select>
+
+                  </td>
+                  <td>
+                    <button a mat-raised-button (click)="createNewAssign()">Assign and Create New</button>
+                  </td>
+                </tr>
+
+                <br>
+
+                <tr>
+                  <th colspan="2">
+                    <mat-toolbar color="primary" class="titlebox">
+                      <h2>{{selectedCall.title | uppercase | slice:0:30 }}</h2>
+                      <button mat-icon-button [matMenuTriggerFor]="menucall" class="menu">
+                        <mat-icon>more_vert</mat-icon>
+                      </button>
+                      <mat-menu #menucall="matMenu">
+                        <button mat-menu-item (click)="openDialogDeleteCall()">
+                          <mat-icon>delete</mat-icon>
+                          <span>Delete</span>
+                        </button>
+                      </mat-menu>
+                    </mat-toolbar>
+                  </th>
+                </tr>
+
+
+                <tr>
+                  <td>
+                    <mat-form-field>
+                      <input matInput [(ngModel)]=selectedCall.title placeholder="Title" class="InputField">
+                    </mat-form-field>
+                  </td>
+                  <td>
+                    <mat-select [(ngModel)]=selectedCall.calltype placeholder="calltype" class="InputField">
+                      <mat-option *ngFor="let calltype of calltype" [value]="calltype.value">
+                        {{ calltype.viewValue }}
+                      </mat-option>
+                    </mat-select>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <mat-datepicker #picker1></mat-datepicker>
+                    <input [matDatepicker]="myDatepicker1" [(ngModel)]=selectedCall.date placeholder="Call Date">
+                    <mat-datepicker-toggle matSuffix [for]="myDatepicker1"></mat-datepicker-toggle>
+                    <mat-datepicker #myDatepicker1></mat-datepicker>
+                  </td>
+                </tr>
+                <br>
+                <tr rowspan="10">
+                  <td colspan="2">
+                    <mat-form-field class="content-form">
+                      <textarea matInput class="content-form" #content [(ngModel)]=selectedCall.content placeholder="content">Call Report</textarea>
+                      <mat-hint align="end">{{content.value.length}}</mat-hint>
+                    </mat-form-field>
+                  </td>
+                </tr>
+                <br>
+                <tr>
+                  <td colspan="2">
+                    <mat-accordion>
+                      <mat-expansion-panel>
+                        <mat-expansion-panel-header>
+                          <mat-panel-title>
+                            Follow Up
+                          </mat-panel-title>
+                        </mat-expansion-panel-header>
+
+                        <table>
+                          <tr>
+                            <td class="tg-yw4l">
+                              <mat-checkbox [(ngModel)]=selectedCall.followup [(indeterminate)]="indeterminate" [disabled]="disabled">
+                                Follow Up
+                              </mat-checkbox>
+                            </td>
+                            <td class="tg-yw4l">
+                              <mat-datepicker #picker></mat-datepicker>
+                              <input [matDatepicker]="myDatepicker" [(ngModel)]=selectedCall.callbackdate placeholder="Callback Date">
+                              <mat-datepicker-toggle matSuffix [for]="myDatepicker"></mat-datepicker-toggle>
+                              <mat-datepicker #myDatepicker></mat-datepicker>
+                            </td>
+                          </tr>
+                        </table>
+                      </mat-expansion-panel>
+                    </mat-accordion>
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </div>
+  </mat-tab>
+
+  <mat-tab label="Linkedin Account">
+    <ng-template mat-tab-label>
+      <mat-icon>add_shopping_cart</mat-icon>Linkedin
+    </ng-template>
+    <div class="account-container">
+      <ul>
+        <div *ngFor="let Linkedin of Linkedin" (click)="onSelectLinkedin(Linkedin)" [class.selected]="Linkedin === selectedLinkedin">
+          <span class="box">{{Linkedin.name}}, {{Linkedin.id}}</span>
+        </div>
+      </ul>
+
+      <div class="linkedincontainer" *ngIf="selectedLinkedin" on-focusout="saveLinkedin()">
+        <mat-card>
+          <mat-card-content>
+            <div>
+              <table>
+                <mat-toolbar color="primary" class="titlebox">
+                  <div>
+                    <h2>{{selectedLinkedin.name | uppercase}}</h2>
+                  </div>
+                </mat-toolbar>
+
+                <tr>
+                  <mat-form-field>
+                    <input matInput [(ngModel)]=selectedLinkedin.name placeholder="Name" class="InputField">
+                  </mat-form-field>
+                </tr>
+                <tr>
+                  <mat-form-field>
+                    <input matInput [(ngModel)]=selectedLinkedin.profileorcompany placeholder="Linkdin Profile or Company Page" class="InputField">
+                  </mat-form-field>
+                </tr>
+                <tr>
+                  <mat-form-field>
+                    <input matInput [(ngModel)]=selectedLinkedin.linkedincompanyid placeholder="Company ID" class="InputField">
+                  </mat-form-field>
+                </tr>
+                <tr>
+                  <mat-form-field>
+                    <input matInput [(ngModel)]=selectedLinkedin.linkedinprofileid placeholder="Profile ID" class="InputField">
+                  </mat-form-field>
+                </tr>
+              </table>
+            </div>
+
+          </mat-card-content>
+        </mat-card>
+      </div>
+
+      <div class="setupmanual">
+        <table class="form-login" cellspacing="0">
+          <tr>
+            <button (click)="linkauth()" a mat-raised-button class="button">Authenticate Linkedin</button>
+          </tr>
+          <tr>
+            <button (click)="linkme()" a mat-raised-button class="button">Linkedin get Accountinfo</button>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </mat-tab>
+
+  <mat-tab label="Facebook Account">
+    <div class="account-container"></div>
+  </mat-tab>
+
+  <mat-tab label="Analytics Account">
+    <div class="account-container"></div>
+  </mat-tab>
+
+  <mat-tab label="Adwords Account">
+    <div class="account-container"></div>
+  </mat-tab>
+
+  <mat-tab label="Twitter Account">
+    <ng-template mat-tab-label>
+      <mat-icon>add_shopping_cart</mat-icon>
+    </ng-template>
+
+    <div class="account-container">
+      <mat-horizontal-stepper [linear]="isLinear">
+        <mat-step [stepControl]="firstFormGroup">
+          <form [formGroup]="firstFormGroup">
+            <ng-template matStepLabel>Fill out your name</ng-template>
+            <mat-form-field>
+              <input matInput placeholder="Last name, First name" formControlName="firstCtrl" required>
+            </mat-form-field>
+            <div>
+              <button mat-button matStepperNext>Next</button>
+            </div>
+          </form>
+        </mat-step>
+        <mat-step [stepControl]="secondFormGroup">
+          <form [formGroup]="secondFormGroup">
+            <ng-template matStepLabel>Fill out your address</ng-template>
+            <mat-form-field>
+              <input matInput placeholder="Address" formControlName="secondCtrl" required>
+            </mat-form-field>
+            <div>
+              <button mat-button matStepperPrevious>Back</button>
+              <button mat-button matStepperNext>Next</button>
+            </div>
+          </form>
+        </mat-step>
+        <mat-step>
+          <ng-template matStepLabel>Done</ng-template>
+          You are now done.
+          <div>
+            <button mat-button matStepperPrevious>Back</button>
+          </div>
+        </mat-step>
+      </mat-horizontal-stepper>
+    </div>
+  </mat-tab>
+</mat-tab-group>

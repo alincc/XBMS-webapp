@@ -1,0 +1,1206 @@
+<div fxLayout="column" fxLayoutWrap="wrap" fxLayoutAlign="space-around">
+  <mat-card class="topbanner">
+    <mat-card-content>
+      <div class="selectrelation">
+        <mat-form-field class="example-full-width">
+          <input type="text" placeholder="Select Relation" aria-label="relation" matInput [formControl]="myControlRelations"
+            [matAutocomplete]="relations">
+          <mat-autocomplete #relations="matAutocomplete" [displayWith]="displayFnRelation">
+            <mat-option *ngFor="let option of filteredOptionsRelations| async; let i = index" [value]="option" (blur)="onSelect(option, i)">
+              {{ option.relationname }}
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Relations -->
+
+  <mat-tab-group class="relations">
+    <mat-tab label="Relations">
+      <ng-template mat-tab-label>
+        <mat-icon>contacts</mat-icon>
+        <div fxShow.xs="false">Relations</div>
+      </ng-template>
+      <div class="tabcontainer" fxLayout="row">
+        <div fxFlex="20%">
+          <div>
+            <h4>Search</h4>
+            <mat-form-field>
+              <input matInput [(ngModel)]=searchterm (keyup.enter)="searchGo()" placeholder="Name/Address" />
+            </mat-form-field>
+            <br>
+            <tr>
+              <td>
+                <mat-select class="selectionbox" [(ngModel)]=selectstatus placeholder="Status">
+                  <mat-option *ngFor="let statustype of statustype" [value]="statustype.value">
+                    {{ statustype.viewValue }}
+                  </mat-option>
+                </mat-select>
+              </td>
+              <td>
+                <button mat-mini-fab color="primary" (click)="searchGo()">
+                  <mat-icon>search</mat-icon>
+                </button>
+              </td>
+              <td>
+                <label>{{totalrelationcount}}</label>
+              </td>
+            </tr>
+          </div>
+
+          <div class="searchbutton">
+            <table>
+              <tr>
+                <td>
+                  <button a mat-raised-button (click)="getRelations()">Show All</button>
+                </td>
+                <td>
+                  <button mat-mini-fab color="primary" (click)="openDialogNewRelation()">
+                    <mat-icon>add</mat-icon>
+                  </button>
+                </td>
+              </tr>
+            </table>
+
+            <div class="listview">
+              <div *ngFor="let Relations of Relations; let i = index" (click)="onSelect(Relations, i)">
+                <span [class.selected]="Relations === selectedRelation" class="box">{{Relations.relationname |
+                  slice:0:25}}</span>
+              </div>
+            </div>
+            <table style="width: 100%">
+              <tr style="width: 100%">
+                <td style="width: 50%">
+                  <label (click)="getRelationsbackpage()">back </label>
+                </td>
+                <td style="width: 50%">
+                  <label (click)="getRelationsnextpage()"> next</label>
+                </td>
+              </tr>
+              <tr>
+                <td style="width: 50%">
+                  <label>{{skip}}</label>
+                </td>
+                <td style="width: 50%">
+                  <label>{{limit}}</label>
+                </td>
+              </tr>
+            </table>
+          </div>
+        </div>
+
+        <div fxFlex="79%" *ngIf="selectedRelation" on-focusout="saveRelation()">
+          <mat-card class="standarddivclass">
+            <mat-card-content>
+              <table>
+                <tr>
+                  <th colspan="2">
+                    <mat-toolbar color="primary" class="titlebox">
+                      <h2>{{selectedRelation.relationname | uppercase}}</h2>
+                      <button mat-icon-button [matMenuTriggerFor]="menurelation" class="menu">
+                        <mat-icon>more_vert</mat-icon>
+                      </button>
+                      <mat-menu #menurelation="matMenu">
+                        <button mat-menu-item (click)="openDialogDelete()">
+                          <mat-icon>delete</mat-icon>
+                          <span>Delete</span>
+                        </button>
+                        <button mat-menu-item (click)="openDialogNewRelation()">
+                          <mat-icon>note_add</mat-icon>
+                          <span>New</span>
+                        </button>
+                      </mat-menu>
+                    </mat-toolbar>
+                  </th>
+                </tr>
+                <tr>
+                  <td>
+                    <mat-form-field>
+                      <input matInput google-place (onSelect)="setAddress($event)" [(ngModel)]=selectedRelation.relationname placeholder="Name" class="InputField">
+                    </mat-form-field>
+                  </td>
+                  <td>
+                    <mat-select [(ngModel)]=selectedRelation.status placeholder="Status" class="InputField">
+                      <mat-option *ngFor="let statustype of statustype" [value]="statustype.value">
+                        {{ statustype.viewValue }}
+                      </mat-option>
+                    </mat-select>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <mat-form-field>
+                      <input matInput [(ngModel)]=selectedRelation.address2 placeholder="Address" class="InputField">
+                    </mat-form-field>
+                  </td>
+                  <td>
+                    <mat-form-field>
+                      <input matInput [(ngModel)]=selectedRelation.address1 placeholder="Address" class="InputField">
+                    </mat-form-field>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <mat-form-field>
+                      <input matInput [(ngModel)]=selectedRelation.zipcode placeholder="Zipcode" class="InputField">
+                    </mat-form-field>
+                  </td>
+                  <td>
+                    <mat-form-field>
+                      <input matInput [(ngModel)]=selectedRelation.city placeholder="City" class="InputField">
+                    </mat-form-field>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <mat-form-field>
+                      <input matInput [(ngModel)]=selectedRelation.stateprovince placeholder="State/Province" class="InputField">
+                    </mat-form-field>
+                  </td>
+                  <td>
+                    <mat-form-field>
+                      <input matInput [(ngModel)]=selectedRelation.country placeholder="Country" class="InputField">
+                    </mat-form-field>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <mat-form-field>
+                      <input matInput [(ngModel)]=selectedRelation.industry placeholder="Industries" class="InputField">
+                    </mat-form-field>
+                  </td>
+                  <td>
+                    <mat-form-field>
+                      <input matInput [(ngModel)]=selectedRelation.website placeholder="www.mywebsite.com" class="InputField">
+                    </mat-form-field>
+                    <button mat-mini-fab color="primary" (click)="openUrl()">
+                      <mat-icon>public</mat-icon>
+                    </button>
+                    <button mat-mini-fab color="primary" (click)="crawlUrl()">
+                      <mat-icon>find_replace</mat-icon>
+                    </button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <mat-form-field>
+                      <input matInput [(ngModel)]=selectedRelation.generalphone placeholder="+1 1000 10000" class="InputField">
+                    </mat-form-field>
+                  </td>
+                </tr>
+                <tr>
+                  <h1>{{ title }}</h1>
+                </tr>
+                <tr>
+                  <td colspan="2">
+                    <!-- this creates a google map on the page with the given lat/lng from -->
+                    <!-- the component as the initial center of the map: -->
+                    <agm-map [latitude]="lat" [longitude]="lng">
+                      <agm-marker [latitude]="lat" [longitude]="lng"></agm-marker>
+                    </agm-map>
+                  </td>
+                </tr>
+
+              </table>
+
+            </mat-card-content>
+          </mat-card>
+        </div>
+      </div>
+    </mat-tab>
+
+    <!-- Calls Tab_______________________________________________________ -->
+
+    <mat-tab label="Calls">
+      <ng-template mat-tab-label>
+        <mat-icon>perm_phone_msg</mat-icon>
+        <div fxShow.xs="false">Calls</div>
+      </ng-template>
+      <div class="tabcontainer">
+        <div class="listcontainer">
+          <div class="search-component">
+            <h4>Search</h4>
+            <p>
+              <mat-form-field>
+                <input matInput #searchTerm id="seach-box" (keyup.enter)="searchGo()" placeholder="Call title/content" />
+              </mat-form-field>
+            </p>
+            <p>{{this.errorMessage}}</p>
+
+            <div class="searchbutton">
+              <table>
+                <tr>
+                  <td>
+                    <button a mat-raised-button (click)="searchCallGo(searchTerm.value)">Search</button>
+                  </td>
+                  <td>
+                    <button a mat-raised-button (click)="getCalls()">Show All Calls</button>
+                  </td>
+                  <td>
+                    <button mat-mini-fab color="primary" (click)="openDialogNewCall()">
+                      <mat-icon>add</mat-icon>
+                    </button>
+                  </td>
+                </tr>
+              </table>
+              <ul class="Relations">
+                <div *ngFor="let Calls of Calls; let i = index" (click)="onSelectCall(Calls, i)" [class.selected]="Calls === selectedCall">
+                  <span class="box">{{Calls.title | slice:0:20}} | {{Calls.date | date}}</span>
+                </div>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="relationcontainer" *ngIf="selectedCall">
+          <mat-card class="standarddivclass">
+            <mat-card-content>
+
+              <table>
+                <tr>
+                  <th colspan="2">
+                    <mat-toolbar color="primary" class="titlebox">
+                      <h2>{{selectedCall.title | uppercase | slice:0:30 }}</h2>
+
+                      <button mat-icon-button [matMenuTriggerFor]="menucall" class="menu">
+                        <mat-icon>more_vert</mat-icon>
+                      </button>
+                      <mat-menu #menucall="matMenu">
+                        <button mat-menu-item (click)="openDialogDeleteCall()">
+                          <mat-icon>delete</mat-icon>
+                          <span>Delete</span>
+                        </button>
+                        <button mat-menu-item (click)="openDialogNewCall()">
+                          <mat-icon>note_add</mat-icon>
+                          <span>New</span>
+                        </button>
+                        <button mat-menu-item (click)="sendMailTo()">
+                          <mat-icon>send</mat-icon>
+                          <span>Reply</span>
+                        </button>
+                      </mat-menu>
+                    </mat-toolbar>
+                  </th>
+                </tr>
+                <tr>
+                  <td colspan="2">
+                    <mat-form-field>
+                      <input matInput [(ngModel)]=selectedCall.title placeholder="Title" class="InputField">
+                    </mat-form-field>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <mat-form-field>
+                      <input type="text" #attendeeInput (keyup.enter)="addAttendent(attendeeInput.value)" placeholder="Select Attendee"
+                        [(ngModel)]=option matInput [formControl]="myControl" [matAutocomplete]="auto">
+                      <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+                        <!-- error changing view from one call to another -->
+                        <div *ngIf="filteredOptions">
+                          <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
+                            {{ option.firstname }} {{ option.lastname }}
+                          </mat-option>
+                        </div>
+                      </mat-autocomplete>
+                    </mat-form-field>
+                  </td>
+                  <td>
+                    <ul *ngFor="let attendeelist of attendeelist">
+                  <td>{{attendeelist.attendent}}</td>
+                  <td>
+                    <a mat-mini-fab color="primary">
+                      <mat-icon>delete</mat-icon>
+                    </a>
+                  </td>
+                  </ul>
+                  </td>
+                </tr>
+                <br>
+                <tr>
+                  <td>
+                    <mat-select [(ngModel)]=selectedCall.calltype placeholder="calltype" class="InputField">
+                      <mat-option *ngFor="let calltype of calltype" [value]="calltype.value">
+                        {{ calltype.viewValue }}
+                      </mat-option>
+                    </mat-select>
+                  </td>
+                  <td>
+                    <mat-datepicker #picker1 class="InputField"></mat-datepicker>
+                    <input [matDatepicker]="myDatepicker1" [(ngModel)]=selectedCall.date placeholder="Call Date">
+                    <mat-datepicker-toggle matSuffix [for]="myDatepicker1"></mat-datepicker-toggle>
+                    <mat-datepicker #myDatepicker1></mat-datepicker>
+                  </td>
+                </tr>
+                <br>
+                <tr>
+                  <td>
+                      <a mat-mini-fab color="primary" (click)="activateSpeech()" [class.speechbutton]="recordactive">
+                          <mat-icon>record_voice_over</mat-icon>
+                        </a>
+                  </td>
+                </tr>
+                <tr rowspan="10">
+                  <td colspan="2">
+                    <mat-form-field class="content-form">
+                      <textarea matInput class="content-form" #content [(ngModel)]=selectedCall.content placeholder="content">Call Report</textarea>
+                      <mat-hint align="end">{{content.value.length}}</mat-hint>
+                    </mat-form-field>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td>
+                    <mat-form-field>
+                      <input matInput [(ngModel)]=task placeholder="task" class="InputField" (keyup.enter)="addTask()">
+                    </mat-form-field>
+                    <ul *ngFor="let tasklist of tasklist; let i = index">
+                  <td>{{tasklist.task}}</td>
+                  <td>
+                    <a mat-mini-fab color="primary" (click)="deleteTask(i)">
+                      <mat-icon>delete</mat-icon>
+                    </a>
+                  </td>
+                  </ul>
+                  </td>
+                  <td>
+                    <mat-form-field>
+                      <input matInput [(ngModel)]=note placeholder="note" class="InputField" (keyup.enter)="addNote()">
+                    </mat-form-field>
+                    <ul *ngFor="let notes of notes; let i = index">
+                  <td>{{notes.note}}</td>
+                  <td>
+                    <a mat-mini-fab color="primary" (click)="deleteNote(i)">
+                      <mat-icon>delete</mat-icon>
+                    </a>
+                  </td>
+                  </ul>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <mat-checkbox [(ngModel)]=selectedCall.followup>
+                      Follow Up
+                    </mat-checkbox>
+                  </td>
+                  <td>
+                    <mat-datepicker #picker></mat-datepicker>
+                    <input [matDatepicker]="myDatepicker" [(ngModel)]=selectedCall.callbackdate placeholder="Callback Date">
+                    <mat-datepicker-toggle matSuffix [for]="myDatepicker"></mat-datepicker-toggle>
+                    <mat-datepicker #myDatepicker></mat-datepicker>
+                  </td>
+                </tr>
+                <tr>
+                  <mat-checkbox [(ngModel)]=selectedCall.followupdone>
+                    Done
+                  </mat-checkbox>
+                </tr>
+
+              </table>
+
+              <button a mat-raised-button (click)="saveCall()">Save</button>
+
+            </mat-card-content>
+          </mat-card>
+        </div>
+      </div>
+    </mat-tab>
+
+    <!-- Contactperson ___________________________________ -->
+
+    <mat-tab label="Contact Person">
+      <ng-template mat-tab-label>
+        <mat-icon>contacts</mat-icon>
+        <div fxShow.xs="false">Contact Person</div>
+      </ng-template>
+      <div class="tabcontainer">
+        <div class="listcontainer">
+          <div class="search-component">
+          </div>
+
+          <button a mat-raised-button (click)="getAllContactpersons()">All Contactpersons</button>
+          <button mat-mini-fab color="primary" (click)="openDialogNewContactperson()">
+            <mat-icon>add</mat-icon>
+          </button>
+          <ul class="Relations">
+            <div *ngFor="let Contactpersons of Contactpersons; let i = index" (click)="onSelectContactperson(Contactpersons, i)"
+              [class.selected]="Contactpersons === selectedContactperson">
+              <span class="box">{{Contactpersons.firstname}} {{Contactpersons.lastname}}</span>
+            </div>
+          </ul>
+        </div>
+        <div class="relationcontainer" *ngIf="selectedContactperson" on-focusout="saveContactperson()">
+          <mat-card class="standarddivclass">
+            <mat-card-content>
+              <div>
+                <table class="form-full-width" cellspacing="0">
+                  <tr>
+                    <td colspan="2">
+                      <mat-toolbar color="primary" class="titlebox">
+                        <div>
+                          <h2>{{selectedContactperson.firstname | uppercase}} {{selectedContactperson.lastname |
+                            uppercase}}</h2>
+                        </div>
+
+                        <button mat-icon-button [matMenuTriggerFor]=menucontactperson class="menu">
+                          <mat-icon>more_vert</mat-icon>
+                        </button>
+                        <mat-menu #menucontactperson="matMenu">
+                          <button mat-menu-item (click)="openDialogDeleteContactperson()">
+                            <mat-icon>delete</mat-icon>
+                            <span>Delete</span>
+                          </button>
+                          <button mat-menu-item (click)="openDialogNewContactperson()">
+                            <mat-icon>note_add</mat-icon>
+                            <span>New</span>
+                          </button>
+                        </mat-menu>
+
+                      </mat-toolbar>
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td>
+                      <mat-form-field>
+                        <input matInput [(ngModel)]=selectedContactperson.firstname placeholder="Firstname" class="InputField">
+                      </mat-form-field>
+                    </td>
+                    <td>
+                      <mat-form-field>
+                        <input matInput [(ngModel)]=selectedContactperson.lastname placeholder="Lastname" class="InputField">
+                      </mat-form-field>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <mat-form-field>
+                        <input matInput [(ngModel)]=selectedContactperson.email placeholder="E-mail" class="InputField">
+                      </mat-form-field>
+                    </td>
+                    <td>
+                      <a (click)="sendMailToContact()">
+                        <mat-icon>send</mat-icon>
+                      </a>
+                    </td>
+                  </tr>
+                  <tr>
+                    <mat-form-field>
+                      <input matInput [(ngModel)]=selectedContactperson.officephone placeholder="Office Phone" class="InputField">
+                    </mat-form-field>
+                  </tr>
+                  <tr>
+                    <mat-form-field>
+                      <input matInput [(ngModel)]=selectedContactperson.cellphone placeholder="Cell phone" class="InputField">
+                    </mat-form-field>
+                  </tr>
+                  <tr>
+                    <mat-form-field>
+                      <input matInput [(ngModel)]=selectedContactperson.socialmediaaccount placeholder="Social Media"
+                        class="InputField">
+                    </mat-form-field>
+                  </tr>
+                  <tr>
+                    <mat-form-field>
+                      <input matInput [(ngModel)]=selectedContactperson.im placeholder="IM" class="InputField">
+                    </mat-form-field>
+                  </tr>
+                  <tr>
+                    <mat-form-field>
+                      <input matInput [(ngModel)]=selectedContactperson.imtype placeholder="Im Type" class="InputField">
+                    </mat-form-field>
+                  </tr>
+                  <tr>
+                    <button a mat-raised-button (click)="saveContactperson()">Save</button>
+                  </tr>
+                </table>
+              </div>
+
+            </mat-card-content>
+          </mat-card>
+        </div>
+
+
+      </div>
+    </mat-tab>
+
+    <mat-tab label="Files">
+      <ng-template mat-tab-label>
+        <mat-icon>insert_drive_file</mat-icon>
+        <div fxShow.xs="false">Files</div>
+      </ng-template>
+      <div class="tabcontainer">
+
+
+        <style>
+          .my-drop-zone {
+          border: dotted 3px lightgray;
+        }
+
+        .nv-file-over {
+          border: dotted 3px red;
+        }
+
+        /* Default class applied to drop zones on over */
+
+        .another-file-over-class {
+          border: dotted 3px green;
+        }
+
+        html,
+        body {
+          height: 100%;
+        }
+      </style>
+
+        <div class="container">
+
+          <div *ngFor="let Files of Files; let i = index" (click)="onDownload(Files)" class="files">
+            <a href="{{ urldownload }}">
+              {{ Files.name }} {{ Files.date | date }}
+            </a>
+            <a mat-mini-fab color="primary" (click)="dialogDeleteFile(Files)">
+              <mat-icon>delete</mat-icon>
+            </a>
+          </div>
+
+          <div>
+
+            <div class="left-upload-block">
+
+              <h3>Select files</h3>
+
+              <!-- <div ng2FileDrop (fileOver)="fileOverBase($event)" [uploader]="uploader"
+              class="drop-zone">
+              Base drop zone
+            </div> -->
+
+              <div ng2FileDrop [ngClass]="{'drop-zone-over': hasBaseDropZoneOver}" (fileOver)="fileOverAnother($event)"
+                [uploader]="uploader" class="drop-zone">
+                Drop Zone
+              </div>
+
+              <input type="file" ng2FileSelect [uploader]="uploader" />
+            </div>
+
+            <div class="righ-upload-block">
+
+              <h3>Upload queue</h3>
+              <p>Queue length: {{ uploader?.queue?.length }}</p>
+
+              <table>
+                <thead>
+                  <tr>
+                    <th width="50%">Name</th>
+                    <th>Size</th>
+                    <th>Progress</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let item of uploader.queue">
+                    <td>
+                      <strong>{{ item?.file?.name }}</strong>
+                    </td>
+                    <td *ngIf="uploader.isHTML5" nowrap>{{ item?.file?.size/1024/1024 | number:'.2' }} MB</td>
+                    <td *ngIf="uploader.isHTML5">
+                      <div style="margin-bottom: 0;">
+                        <mat-progress-bar [color]="primary" [mode]="determinate" [value]="item.progress">
+                        </mat-progress-bar>
+                      </div>
+                    </td>
+
+                    <td>
+                      <span *ngIf="item.isSuccess">
+                        <mat-icon>done</mat-icon>
+                      </span>
+                      <span *ngIf="item.isCancel">
+                        <mat-icon>cancel</mat-icon>
+                      </span>
+                      <span *ngIf="item.isError">
+                        <mat-icon>remove_circle</mat-icon>
+                      </span>
+                    </td>
+                    <td nowrap>
+                      <button mat-button (click)="setupload(item?.file?.name)" [disabled]="item.isReady || item.isUploading || item.isSuccess">
+                        <mat-icon>file_upload</mat-icon>Upload
+                      </button>
+                      <button mat-button (click)="item.cancel()" [disabled]="!item.isUploading">
+                        <mat-icon>cancel</mat-icon> Cancel
+                      </button>
+                      <button mat-button (click)="item.remove()">
+                        <mat-icon>remove_circle</mat-icon> Remove
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <div>
+                <div>
+                  Queue progress:
+                  <div class="progress">
+                    <div>
+                      <mat-progress-bar color="primary" mode="determinate" [value]="uploader.progress">
+                      </mat-progress-bar>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+    </mat-tab>
+
+    <mat-tab label="Follow ups/Automation">
+      <ng-template mat-tab-label>
+        <mat-icon>settings_applicationss</mat-icon>
+        <div fxShow.xs="false">Automations</div>
+      </ng-template>
+      <div fxFlex fxFlexAlign="start" fxLayout="column">
+        <div fxFlex *ngIf="editCrawler">
+          <mat-card class="standarddivclass">
+            <mat-card-content>
+              <table>
+                <tr>
+                  <mat-form-field>
+                    <input matInput [(ngModel)]=selectedCrawler.name placeholder="Crawler Name" class="InputField">
+                  </mat-form-field>
+                </tr>
+              </table>
+              <mat-horizontal-stepper #stepper>
+                <!-- step 1 -->
+                <mat-step [stepControl]="crawl1FormGroup">
+
+                  <ng-template matStepLabel>Fill in Website</ng-template>
+                  <mat-form-field appearance="outline">
+                    <mat-label>Website/URL</mat-label>
+                    <input matInput [(ngModel)]=selectedCrawler.url required>
+                  </mat-form-field>
+                  <div>
+                    <button mat-button matStepperNext>Next</button>
+                  </div>
+
+                </mat-step>
+                <!-- step 2 -->
+                <mat-step [stepControl]="crawl1FormGroup">
+
+                  <ng-template matStepLabel>Fill in Search Term</ng-template>
+                  <mat-form-field appearance="outline">
+                    <mat-label>For Example, Industry, Names or Location</mat-label>
+                    <input matInput [(ngModel)]=selectedCrawler.term required>
+                  </mat-form-field>
+                  <div>
+                    <button mat-button matStepperPrevious>Back</button>
+                    <button mat-button matStepperNext>Next</button>
+                  </div>
+
+                </mat-step>
+                <!-- step 3 -->
+                <mat-step [stepControl]="crawl1FormGroup">
+
+                  <ng-template matStepLabel>Type of info to Crawl for</ng-template>
+
+                  <mat-checkbox [(ngModel)]=selectedCrawler.people>
+                    Search Persons
+                  </mat-checkbox>
+                  <mat-checkbox [(ngModel)]=selectedCrawler.companies>
+                    Search Companies
+                  </mat-checkbox>
+                  <mat-checkbox [(ngModel)]=selectedCrawler.locations>
+                    Search Locations
+                  </mat-checkbox>
+
+                  <div>
+                    <button mat-button matStepperPrevious>Back</button>
+                    <button mat-button matStepperNext>Next</button>
+                  </div>
+
+                </mat-step>
+                <!-- step 4 -->
+                <mat-step [stepControl]="crawl2FormGroup">
+                  <ng-template matStepLabel>About the Data</ng-template>
+                  <mat-checkbox [(ngModel)]=selectedCrawler.findlist>Do you need a list</mat-checkbox>
+                  <div>
+                    <button mat-button matStepperPrevious>Back</button>
+                    <button mat-button matStepperNext>Next</button>
+                  </div>
+                </mat-step>
+                <!-- step 5 -->
+                <mat-step *ngIf="selectedCrawler.output" [stepControl]="crawl2FormGroup">
+                  <ng-template matStepLabel>Output Type</ng-template>
+                  <mat-select class="selectionbox" [(ngModel)]=selectedCrawler.depth placeholder="Depth">
+                    <mat-option *ngFor="let number of numbers" [value]="number">
+                      {{ number }}
+                    </mat-option>
+                  </mat-select>
+                  <div>
+                    <button mat-button matStepperPrevious>Back</button>
+                    <button mat-button matStepperNext>Next</button>
+                  </div>
+                </mat-step>
+                <!-- step 6 -->
+                <mat-step [stepControl]="crawl2FormGroup">
+                  <ng-template matStepLabel>Depth</ng-template>
+                  <mat-select class="selectionbox" [(ngModel)]=selectedCrawler.output placeholder="Depth">
+                    <mat-option *ngFor="let number of numbers" [value]="number">
+                      {{ number }}
+                    </mat-option>
+                  </mat-select>
+                  <div>
+                    <button mat-button matStepperPrevious>Back</button>
+                    <button mat-button matStepperNext>Next</button>
+                  </div>
+                </mat-step>
+                <!-- step 7 -->
+                <mat-step>
+                  <ng-template matStepLabel>Done</ng-template>
+                  You are now done.
+                  <div>
+                    <button mat-button matStepperPrevious>Back</button>
+
+                    <button a mat-raised-button (click)="updateCrawler()">Save</button>
+                    <button a mat-raised-button (click)="scheduleCrawler()">Schedule</button>
+                    <button a mat-raised-button (click)="deleteCrawler()">Delete</button>
+                  </div>
+                </mat-step>
+              </mat-horizontal-stepper>
+            </mat-card-content>
+          </mat-card>
+        </div>
+        <div fxFlex fxLayout="row">
+          <div fxFlex="20%" class="standarddivclass">
+
+            <div *ngFor="let Crawler of Crawler; let i = index" (click)="onSelectCrawler(Crawler, i)" [class.selected]="Crawler === selectedCall">
+              <span class="box">{{Crawler.name| slice:0:20}} | {{Crawler.date | date}}</span>
+            </div>
+
+            <button a mat-raised-button (click)="getCrawlers()">Show All</button>
+
+            <a mat-mini-fab color="primary" (click)="newCrawler()">
+              <mat-icon>add</mat-icon>
+            </a>
+          </div>
+
+          <div fxFlex="78%" fxLayout="column" *ngIf="selectedCrawler" class="standarddivclass">
+            <mat-card class="standarddivclass">
+              <mat-card-content>
+                <mat-toolbar color="primary" class="titlebox">
+                  <tr>
+                    <td>
+                      <h2>{{selectedCrawler.name | uppercase | slice:0:30 }}</h2>
+                    </td>
+                    <td>
+
+                      <button mat-icon-button [matMenuTriggerFor]="menumarketing" class="menu">
+                        <mat-icon>more_vert</mat-icon>
+                      </button>
+                      <mat-menu #menumarketing="matMenu">
+                        <button mat-menu-item (click)="deleteCrawler()">
+                          <mat-icon>delete</mat-icon>
+                          <span>Delete</span>
+                        </button>
+                        <button mat-menu-item (click)="newCrawler()">
+                          <mat-icon>note_add</mat-icon>
+                          <span>New</span>
+                        </button>
+                        <button mat-menu-item (click)="editCrawlerToggle()">
+                          <mat-icon>edit</mat-icon>
+                          <span>Edit</span>
+                        </button>
+                        <button mat-menu-item (click)="scheduleCrawler()">
+                          <mat-icon>refresh</mat-icon>
+                          <span>Run Again</span>
+                        </button>
+                      </mat-menu>
+                    </td>
+                  </tr>
+                </mat-toolbar>
+                <table class="table">
+                  <tr fxLayout="row" class="crawlerlistdetails">
+                    <td fxFlex="40%">Name: </td>
+                    <td fxFlex="60%">{{selectedCrawler.name}}</td>
+                  </tr>
+                  <tr fxLayout="row" class="crawlerlistdetails">
+                    <td fxFlex="40%">Date: </td>
+                    <td fxFlex="60%">{{selectedCrawler.date | date}}</td>
+                  </tr>
+                  <tr fxLayout="row" class="crawlerlistdetails">
+                    <td fxFlex="40%">Url: </td>
+                    <td fxFlex="60%">{{selectedCrawler.url}}</td>
+                  </tr>
+                  <tr fxLayout="row" class="crawlerlistdetails">
+                    <td fxFlex="40%">Search Terms: </td>
+                    <td fxFlex="60%">{{selectedCrawler.term}}</td>
+                  </tr>
+                  <tr fxLayout="row" class="crawlerlistdetails">
+                    <td fxFlex="40%">Find People</td>
+                    <td fxFlex="60%">
+                      <mat-checkbox color="primary" [(ngModel)]=selectedCrawler.people></mat-checkbox>
+                    </td>
+                  </tr>
+                  <tr fxLayout="row" class="crawlerlistdetails">
+                    <td fxFlex="40%">Companies</td>
+                    <td fxFlex="60%">
+                      <mat-checkbox color="primary" [(ngModel)]=selectedCrawler.companies></mat-checkbox>
+                    </td>
+                  </tr>
+                  <tr fxLayout="row" class="crawlerlistdetails">
+                    <td fxFlex="40%">Locations</td>
+                    <td fxFlex="60%">
+                      <mat-checkbox color="primary" [(ngModel)]=selectedCrawler.locations></mat-checkbox>
+                    </td>
+                  </tr>
+                  <tr fxLayout="row" class="crawlerlistdetails">
+                    <td fxFlex="40%">List</td>
+                    <td fxFlex="60%">
+                      <mat-checkbox color="primary" [(ngModel)]=selectedCrawler.findlist></mat-checkbox>
+                    </td>
+                  </tr>
+                  <tr fxLayout="row" class="crawlerlistdetails">
+                    <td fxFlex="40%">Crawler Page Depth</td>
+                    <td fxFlex="60%">{{selectedCrawler.depth}}</td>
+                  </tr>
+                </table>
+              </mat-card-content>
+            </mat-card>
+
+            <mat-card *ngFor="let response of selectedCrawler.response; let i = index" class="standarddivclass">
+              <mat-card-content>
+                <mat-toolbar color="primary" class="titlebox">
+                  <tr>
+                    <td>
+                      <h2>{{response.term | uppercase | slice:0:30 }} - {{ response.date | date }}</h2>
+                    </td>
+                    <td>
+
+                      <button mat-icon-button [matMenuTriggerFor]="menumarketing" class="menu">
+                        <mat-icon>more_vert</mat-icon>
+                      </button>
+                      <mat-menu #menumarketing="matMenu">
+                        <button mat-menu-item (click)="deleteCrawler()">
+                          <mat-icon>delete</mat-icon>
+                          <span>Delete</span>
+                        </button>
+
+
+                      </mat-menu>
+                    </td>
+                  </tr>
+                </mat-toolbar>
+
+                <table class="table">
+                  <tr>
+                    <td>
+                      <span>{{response.term}}</span>
+                    </td>
+                    <td>
+                      <span>{{response.website}}</span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <span>Persons</span>
+                      <ul *ngFor="let persons of response.persons;">
+                        <span class="box-response">{{persons.normal}}</span>
+                      </ul>
+                    </td>
+                    <td>
+                      <span>Companies</span>
+                      <ul *ngFor="let companies of response.companies;">
+                        <span class="box-response">{{companies.normal}}</span>
+                      </ul>
+                    </td>
+                    <td>
+                      <span>Locations</span>
+                      <ul *ngFor="let locations of response.locations;">
+                        <span class="box-response">{{locations.normal}}</span>
+                      </ul>
+                    </td>
+                  </tr>
+                  <tr>
+
+                    <button a mat-raised-button (click)="togglerawsearch()">Show Raw Data</button>
+                  </tr>
+                  <tr>
+
+                    <td *ngIf="togglesearch" colSpan="3">
+                      <div>{{response.search}}</div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <a mat-mini-fab color="primary" (click)="deleteCrawl(i)">
+                      <mat-icon>delete</mat-icon>
+                    </a>
+                  </tr>
+                </table>
+              </mat-card-content>
+            </mat-card>
+          </div>
+        </div>
+
+
+      </div>
+    </mat-tab>
+
+
+    <mat-tab label="Connected Accounts">
+      <ng-template mat-tab-label>
+        <mat-icon>portrait</mat-icon> 
+        <div fxShow.xs="false">Connected Accounts</div>
+      </ng-template>
+      <div class="tabcontainer">
+
+        <mat-card class="selectbox">
+          <mat-card-header>
+            <mat-card-title>Account Type</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <mat-list role="list">
+
+              <mat-button-toggle-group #group="matButtonToggleGroup" [vertical]="true">
+                <mat-button-toggle value="Analytics">
+                  <mat-icon>details</mat-icon> Analytics
+                </mat-button-toggle>
+                <mat-button-toggle value="Twitter" (click)="getTwitter()">
+                  <mat-icon>details</mat-icon> Twitter
+                </mat-button-toggle>
+                <mat-button-toggle value="Linkedin" (click)="getLinkedin()">
+                  <mat-icon>details</mat-icon> Linkedin
+                </mat-button-toggle>
+                <mat-button-toggle value="Facebook" (click)="getFacebook()">
+                  <mat-icon>details</mat-icon> Facebook
+                </mat-button-toggle>
+                <mat-button-toggle value="Adwords" (click)="getAdwords()">
+                  <mat-icon>details</mat-icon> Adwords
+                </mat-button-toggle>
+              </mat-button-toggle-group>
+
+            </mat-list>
+          </mat-card-content>
+        </mat-card>
+
+        <mat-card *ngIf="group.value == 'Analytics'" class="account-card">
+          <mat-card-header>
+            <mat-card-title>Google Analytics</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <tr>
+              <td>
+                <div *ngFor="let Googleanalytics of Googleanalytics">
+                  <span>{{ Googleanalytics.gaclientid }} {{ Googleanalytics.name }}</span>
+                  <a mat-mini-fab color="primary">
+                    <mat-icon>delete</mat-icon>
+                  </a>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <p>Please add xbmarketingservices@gmail.com to </p>
+                <p> management accounts and fill in your ID</p>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <mat-form-field>
+                  <input matInput [(ngModel)]=newGoogleAnalytics.gaclientid placeholder="ID" class="InputField">
+                </mat-form-field>
+              </td>
+              <td>
+                <mat-form-field>
+                  <input matInput [(ngModel)]=newGoogleAnalytics.name placeholder="Name" class="InputField">
+                </mat-form-field>
+              </td>
+            </tr>
+          </mat-card-content>
+          <mat-card-actions>
+            <a mat-mini-fab color="primary" (click)="createGoogleAnalytics()">
+              <mat-icon>add</mat-icon>
+            </a>
+            <button mat-button>Save</button>
+          </mat-card-actions>
+        </mat-card>
+
+        <mat-card *ngIf="group.value == 'Twitter'" class="account-card">
+          <mat-card-header>
+            <mat-card-title>Twitter</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <tr>
+              <td>
+                <div *ngFor="let Twitter of Twitter; let i = index">
+                  <span> {{ Twitter.name }}</span>
+                  <a mat-mini-fab color="primary" (click)="deleteTwitter(i)">
+                    <mat-icon>delete</mat-icon>
+                  </a>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <mat-form-field>
+                  <input matInput [(ngModel)]=newTwitter.name placeholder="ID" class="InputField">
+                </mat-form-field>
+              </td>
+              <td>
+                <button mat-button (click)="linkTwitterAccount()">link Account</button>
+              </td>
+            </tr>
+          </mat-card-content>
+          <mat-card-actions>
+            <a mat-mini-fab color="primary" (click)="createTwitter()">
+              <mat-icon>add</mat-icon>
+            </a>
+            <button mat-button>Save</button>
+          </mat-card-actions>
+        </mat-card>
+
+
+        <!-- linkLinkedinAccount() -->
+        <mat-card *ngIf="group.value == 'Linkedin'" class="account-card">
+          <mat-card-header>
+            <mat-card-title>Linkedin</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <tr>
+              <td>
+                <div *ngFor="let Linkedin of Linkedin; let i = index">
+                  <span>{{ Linkedin.name }}</span>
+                  <a mat-mini-fab color="primary" (click)="deleteLinkedin(i)">
+                    <mat-icon>delete</mat-icon>
+                  </a>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <mat-form-field>
+                  <input matInput [(ngModel)]=newLinkedin.name placeholder="Name" class="InputField">
+                </mat-form-field>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <button mat-button (click)="linkLinkedinAccount()">link Account</button>
+              </td>
+            </tr>
+          </mat-card-content>
+          <mat-card-actions>
+            <a mat-mini-fab color="primary" (click)="createLinkedin()">
+              <mat-icon>add</mat-icon>
+            </a>
+            <button mat-button>Save</button>
+          </mat-card-actions>
+        </mat-card>
+
+        <mat-card *ngIf="group.value == 'Facebook'" class="account-card">
+          <mat-card-header>
+            <mat-card-title>Facebook</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <tr>
+              <td>
+                <div *ngFor="let Facebook of Facebook; let i = index">
+                  <span>{{ Facebook.name }}</span>
+                  <a mat-mini-fab color="primary" (click)="deleteFacebook(i)">
+                    <mat-icon>delete</mat-icon>
+                  </a>
+                  <a mat-mini-fab color="primary" (click)="showFacebook(i)">
+                    <mat-icon>info</mat-icon>
+                  </a>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+              </td>
+            </tr>
+            <tr>
+              <!-- <td>
+              <mat-form-field>
+                <input matInput [(ngModel)]=newFacebook.id placeholder="ID" class="InputField">
+              </mat-form-field>
+            </td> -->
+              <td>
+                <mat-form-field>
+                  <input matInput [(ngModel)]=newFacebook.name placeholder="Name" class="InputField">
+                </mat-form-field>
+              </td>
+            </tr>
+          </mat-card-content>
+          <mat-card-actions>
+            <a mat-mini-fab color="primary" (click)="linkFacebookAccount()">
+              <mat-icon>add</mat-icon>
+            </a>
+            <button mat-button>Save</button>
+          </mat-card-actions>
+        </mat-card>
+
+        <mat-card *ngIf="group.value == 'Adwords'" class="account-card">
+          <mat-card-header>
+            <mat-card-title>Adwords</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <tr>
+              <td>
+                <div *ngFor="let Adwords of Adwords; let i = index">
+                  <span>{{ Adwords.id }} {{ Adwords.name }}</span>
+                  <a mat-mini-fab color="primary" (click)="deleteAdwords(i)">
+                    <mat-icon>delete</mat-icon>
+                  </a>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <mat-form-field>
+                  <input matInput [(ngModel)]=newAdwords.id placeholder="ID" class="InputField">
+                </mat-form-field>
+              </td>
+              <td>
+                <mat-form-field>
+                  <input matInput [(ngModel)]=newAdwords.name placeholder="Name" class="InputField">
+                </mat-form-field>
+              </td>
+            </tr>
+          </mat-card-content>
+          <label>Please login to verify</label>
+          <mat-card-actions>
+            <a mat-mini-fab color="primary" (click)="createAdwords()">
+              <mat-icon>add</mat-icon>
+            </a>
+            <button mat-button>Save</button>
+          </mat-card-actions>
+        </mat-card>
+      </div>
+
+    </mat-tab>
+
+    <mat-tab label="Proposals">
+      <ng-template mat-tab-label>
+        <mat-icon>attach_money</mat-icon>
+        <div fxShow.xs="false">Proposals</div>
+      </ng-template>
+
+    </mat-tab>
+  </mat-tab-group>
+</div>

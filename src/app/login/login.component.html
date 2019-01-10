@@ -1,0 +1,122 @@
+<div>
+<div class="logincontainer" *ngIf="logintoggle">
+
+  <section class="mat-typography">
+    <h1>Login</h1>
+  </section>
+
+
+ 
+    <table class="form-login" cellspacing="0">
+      <tr>
+        <td>
+          <mat-form-field class="form-full-width">
+            <input matInput name="email" type="email" [(ngModel)]="Account.email" placeholder="email" />
+          </mat-form-field>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <mat-form-field class="form-full-width">
+            <input matInput placeholder="Enter your password"  name="password" [(ngModel)]="Account.password" [type]="!hide ? 'password' : 'text'">
+            <mat-icon matSuffix (click)="!hide = hide">{{hide ? 'visibility' : 'visibility_off'}}</mat-icon>
+          </mat-form-field>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <mat-checkbox [(ngModel)]="rememberMe">Remember Me</mat-checkbox>
+        </td>
+      </tr>
+      <tr>
+        <div *ngIf="error">
+          {{this.errorMessage.message}}
+        </div>
+      </tr>
+      <tr>
+        <div *ngIf="response">
+          {{this.responsemessage}}
+        </div>
+      </tr>
+      <tr>
+        <button (click)="login()" a mat-raised-button>Login</button>
+        <button (click)="registertoggleform()" a mat-raised-button>Register</button>
+      </tr>
+      <tr>
+    </table>
+  
+</div>
+
+<div *ngIf="registertoggle" class="registercontainer">
+
+  <section class="mat-typography">
+    <h1>Register</h1>
+  </section>
+
+
+  <form>
+    <table class="form-login" cellspacing="0">
+      <tr>
+        <td>
+          <mat-form-field class="form-full-width">
+            <input matInput name="username" type="name" [(ngModel)]="Account.username" placeholder="Username" />
+          </mat-form-field>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <mat-form-field class="form-full-width">
+            <input matInput name="companyname" type="name" [(ngModel)]="Account.companyname" placeholder="CompanyName" />
+          </mat-form-field>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <mat-form-field class="form-full-width">
+            <input matInput name="email" type="email" [(ngModel)]="Account.email" placeholder="email" />
+          </mat-form-field>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <mat-form-field class="form-full-width">
+            <input matInput name="password" type="password" [(ngModel)]="Account.password" placeholder="password" />
+          </mat-form-field>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <mat-form-field class="form-full-width">
+            <input matInput name="password" type="password" [(ngModel)]="checkpassword" placeholder="password repeat" />
+          </mat-form-field>
+        </td>
+      </tr>
+      <tr>
+        <div *ngIf="error">
+          {{this.errorMessage.message}}
+        </div>
+      </tr>
+      <tr>
+        <div *ngIf="response">
+          {{this.responsemessage}}
+        </div>
+      </tr>
+      <tr>
+        <button (click)="register()" a mat-raised-button>Register</button>
+        <button (click)="backtoggle()" a mat-raised-button>Back</button>
+      </tr>
+
+    </table>
+  </form>
+
+
+
+
+
+</div>
+
+
+</div>
+
+
+<router-outlet></router-outlet>

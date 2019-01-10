@@ -1,0 +1,143 @@
+.home-wrapper{
+    position: relative;
+}
+
+.selectrelation {
+    position: absolute;
+    right: 150px;
+    top: 10px;
+    height: 130px;
+  }
+
+
+  .selectboxheader{
+      height: 30px;
+      width: 200px;
+  }
+
+
+.followuptableinner{
+    width: 100%;
+    vertical-align: top;
+    margin-right: 2px;
+    max-height: 20px;
+}
+
+.followuplist {
+    align-items: none !important;
+    font-size: 10px;
+    width: 25%;
+    max-width: 12em;
+
+}
+
+.followuptable {
+    width: 100%;
+    min-height: 200px;
+}
+
+.td1 {
+    width: 35%;
+}
+
+.td2 {
+    width: 40%;
+}
+
+.td3 {
+    width: 15%;
+}
+
+.td4 {
+    width: 10%;
+}
+
+.tdwebsitetr{
+    margin: 2px;
+
+}
+
+.thwebsitetr{
+    margin: 2px;
+
+}
+
+.websitedata{
+    margin-top: 1px;
+    vertical-align: top;
+    table-layout: fixed;
+    width: 100%;
+}
+
+.websitedatadiv{
+    margin-top: 1px;
+    vertical-align: top;
+    width: 100%;
+    height: 500px;
+}
+
+
+.barchartcontainer1 {
+    width: 100%;
+
+}
+
+.linechartcontainer {
+    margin-left: 8em;
+    width: 100%;
+
+}
+
+.chart {
+    width: 100%;
+}
+
+.barchartcontainer2 {
+    margin-left: 8em;
+    width: 100%;
+  
+}
+
+.barchartcontainer4 {
+    margin-left: 8em;
+    width: 100%;
+
+}
+
+
+.tile-full-width {
+    align-items: none !important;
+    width: 100%;
+}
+
+.tree-map-label {
+    font-family: Arial, Helvetica, sans-serif
+  }
+
+  .doubleflex {
+    width: 100%; 
+    margin: 25px auto 25px;
+    border-style: solid;
+    border-width: 1px;
+    border-color: lightgrey;
+    padding: 10px;
+}
+
+.innerfollowup {
+    width: 100%; 
+    overflow: scroll;
+    border-style: solid;
+    border-width: 1px;
+    border-color: lightgrey;
+    margin: 25px auto 25px;
+    max-height: 300px;
+}
+
+.singleflex {
+    width: 90%; 
+    margin: 25px auto 25px;
+    border-style: solid;
+    border-width: 1px;
+    border-color: lightgrey;
+    padding: 10px;
+}
