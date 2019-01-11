@@ -3909,6 +3909,8 @@ export class RelationsApi extends BaseLoopBackApi {
    *
    * @param {string} id 
    *
+   * @param {string} companyid 
+   *
    * @param {string} templatemailingid 
    *
    * @param {string} startdate 
@@ -3942,7 +3944,7 @@ export class RelationsApi extends BaseLoopBackApi {
    * This usually means the response is a `Relations` object.)
    * </em>
    */
-  public randomizemailing(id: any = {}, templatemailingid: any = {}, startdate: any = {}, enddate: any = {}, dayoftheweek: any = {}, starthour: any = {}, endhour: any = {}, mailingLists: any = {}, campaignLists: any = {}, timezone: any = {}, addtomailing: any = {}, customHeaders?: Function): Observable<any> {
+  public randomizemailing(id: any = {}, companyid: any = {}, templatemailingid: any = {}, startdate: any = {}, enddate: any = {}, dayoftheweek: any = {}, starthour: any = {}, endhour: any = {}, mailingLists: any = {}, campaignLists: any = {}, timezone: any = {}, addtomailing: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "POST";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
     "/relations/randomizemailing/:id";
@@ -3951,6 +3953,7 @@ export class RelationsApi extends BaseLoopBackApi {
     };
     let _postBody: any = {};
     let _urlParams: any = {};
+    if (typeof companyid !== 'undefined' && companyid !== null) _urlParams.companyid = companyid;
     if (typeof templatemailingid !== 'undefined' && templatemailingid !== null) _urlParams.templatemailingid = templatemailingid;
     if (typeof startdate !== 'undefined' && startdate !== null) _urlParams.startdate = startdate;
     if (typeof enddate !== 'undefined' && enddate !== null) _urlParams.enddate = enddate;

@@ -22,7 +22,7 @@ export class RandomService {
     public RelationsApi: RelationsApi,
     public dialog: MatDialog) { }
 
-  openDialog(accountid, template, mailinglist, campaignlist) {
+  openDialog(accountid, companyid, template, mailinglist, campaignlist) {
     console.log(mailinglist)
     const dialogRef = this.dialog.open(RandomDialog, {
       width: '1000px',
@@ -47,6 +47,7 @@ export class RandomService {
  
       this.RelationsApi.randomizemailing(
         accountid,
+        companyid,
         this.randomizer.templatemailing.id,  
         this.randomizer.startdate,
         this.randomizer.enddate,

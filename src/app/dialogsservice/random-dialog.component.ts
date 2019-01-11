@@ -84,11 +84,8 @@ export class RandomDialog {
     daysform = new FormControl();
     //this.data.dayoftheweek = this.daysform.value;
 
-    toggleaddtomailing(): void {
-        if (this.data.addtomailing = false){
-            this.data.addtomailing = true;
-        }
-        else this.data.addtomailing = false;
+    toggleaddtomailing(booleanval): void {
+       this.data.addtomailing = booleanval
     }
 
     createCheckboxMail(valueboolean): void {

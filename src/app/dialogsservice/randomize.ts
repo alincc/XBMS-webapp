@@ -11,6 +11,6 @@ export interface Randomizer {
     Selcampaignlists;
     Seltemplatemailing;
     Selmailinglists;
-    addtomailing: boolean;
+    addtomailing: false;
     timezone: string;
 } 

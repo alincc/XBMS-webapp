@@ -656,7 +656,7 @@ export class MarketingComponent implements OnInit {
   }
 
   randomizeMailing(): void {
-    this.randomService.openDialog(this.option.id, this.selectedMailing, this.Mailinglist, this.Marketingplannerevents)
+    this.randomService.openDialog(this.option.id, this.Account.companyId, this.selectedMailing, this.Mailinglist, this.Marketingplannerevents)
     //console.log(this.selectedMailing)
     if (this.randomService.ready == true){
     this.confirmRandomMailing(this.randomService.randomizer);
