@@ -57,7 +57,7 @@ import { Router, ActivatedRoute, Params } from '@angular/router';
 import { Location, NgClass, NgStyle } from '@angular/common';
 import { DialogsService } from './../dialogsservice/dialogs.service';
 import { RandomService } from '../dialogsservice/random.service';
-//import { Randomizer} from '../dialogsservice/randomize';
+// import { Randomizer} from '../dialogsservice/randomize';
 import { WordpressService } from '../shared/websiteservice';
 import { LinkedinService } from '../shared/socialservice';
 import { timeconv } from '../shared/timeconv';
@@ -67,7 +67,7 @@ import { UploadResult } from './xlsx-file-upload/xlsx-file-upload.component';
 import { MatSnackBar, MatSnackBarConfig, MatInput, MatAutocompleteSelectedEvent } from '@angular/material';
 
 import { ENTER, COMMA } from '@angular/cdk/keycodes';
-import { map, startWith } from "rxjs/operators";
+import { map, startWith } from 'rxjs/operators';
 import { Observable, BehaviorSubject } from 'rxjs';
 import {
   trigger,
@@ -78,16 +78,16 @@ import {
 } from '@angular/animations';
 import * as moment from 'moment-timezone';
 import { reject } from '../../../node_modules/@types/q';
-//import { Message } from '@angular/compiler/src/i18n/i18n_ast';
-//import { EventEmitter } from 'protractor';
-declare var CKEDITOR: any;
-const URL = "http://localhost:3000/api/containers/tmp/upload";
+// import { Message } from '@angular/compiler/src/i18n/i18n_ast';
+// import { EventEmitter } from 'protractor';
+declare const CKEDITOR: any;
+const URL = 'http://localhost:3000/api/containers/tmp/upload';
 
 import { MarketingchannelsComponent } from './marketingchannels/marketingchannels.component';
 
 
 export interface UploadResult {
-  result: "failure" | "success";
+  result: 'failure' | 'success';
   payload: any;
 }
 
@@ -112,14 +112,14 @@ export interface UploadResult {
 export class MarketingComponent implements OnInit {
 
   public showgallery = false;
-  public uploaderContent: BehaviorSubject<string> = new BehaviorSubject("Drop File Here");
+  public uploaderContent: BehaviorSubject<string> = new BehaviorSubject('Drop File Here');
   public linkedinPostId;
   public newURL: string;
   public urlckeditorupload: string;
   public ID: string;
   public uploader: FileUploader = new FileUploader({ url: URL });
-  public hasBaseDropZoneOver: boolean = false;
-  public hasAnotherDropZoneOver: boolean = false;
+  public hasBaseDropZoneOver = false;
+  public hasAnotherDropZoneOver = false;
   public sub: any;
   public relationName: string;
 
@@ -183,16 +183,16 @@ export class MarketingComponent implements OnInit {
 
   public headers = [];
   public emailheader;
-  public firstnameheader = "";
-  public lastnameheader = "";
-  public companyheader = "";
-  public titleheader = "";
+  public firstnameheader = '';
+  public lastnameheader = '';
+  public companyheader = '';
+  public titleheader = '';
   public mailinglistheader;
-  public websiteheader = "";
-  public var1header = "";
-  public var2header = "";
-  public var3header = "";
-  public var4header = "";
+  public websiteheader = '';
+  public const1header = '';
+  public const2header = '';
+  public const3header = '';
+  public const4header = '';
   public createnewmailinglistonfield = false;
   public uploadlistId = [];
 
@@ -207,22 +207,22 @@ export class MarketingComponent implements OnInit {
   ];
   public selectedtimezone;
   public timezones = [
-    { value: "America/Los_Angeles" },
-    { value: "America/Chicago" },
-    { value: "America/Phoenix" },
-    { value: "America/Dallas" },
+    { value: 'America/Los_Angeles' },
+    { value: 'America/Chicago' },
+    { value: 'America/Phoenix' },
+    { value: 'America/Dallas' },
     { value: 'America/New_York' },
-    { value: "Europe/London" },
-    { value: "Europe/Amsterdam" },
-    { value: "Europe/Moscow" },
-    { value: "Asia/Hong_Kong" }
+    { value: 'Europe/London' },
+    { value: 'Europe/Amsterdam' },
+    { value: 'Europe/Moscow' },
+    { value: 'Asia/Hong_Kong' }
   ];
 
   public filtermailing = [
-    "send",
-    "done",
-    "all",
-    "not send"
+    'send',
+    'done',
+    'all',
+    'not send'
   ]
   public filtermailingselect;
 
@@ -268,11 +268,11 @@ export class MarketingComponent implements OnInit {
   public maxDate = new Date(2030, 0, 1);
 
   public copyfrommailing;
-  public analytics_ids = "ga:154403562";
-  public analytics_startdate = "30daysAgo";
-  public analytics_enddate = "today";
-  public analytics_metrics = "ga:bounceRate,ga:pageviewsPerSession,ga:goalStartsAll,ga:avgTimeOnPage";
-  public analytics_dimensions = "ga:adContent";
+  public analytics_ids = 'ga:154403562';
+  public analytics_startdate = '30daysAgo';
+  public analytics_enddate = 'today';
+  public analytics_metrics = 'ga:bounceRate,ga:pageviewsPerSession,ga:goalStartsAll,ga:avgTimeOnPage';
+  public analytics_dimensions = 'ga:adContent';
   public analytics_filters;
   public Googleanalyticsreturn;
   public GoogleanalyticsSet;
@@ -280,10 +280,10 @@ export class MarketingComponent implements OnInit {
   public Googleanalyticsnames;
   public selectedanalytics: Googleanalytics = new Googleanalytics();
   public GoogleanalyticsModel: Googleanalytics[];
-  public avgTimeOnPage = "-";
-  public bounceRate = "-";
-  public goalStartsAll = "-";
-  public pageview = "-";
+  public avgTimeOnPage = '-';
+  public bounceRate = '-';
+  public goalStartsAll = '-';
+  public pageview = '-';
 
   constructor(
     private MarketingChannel: MarketingchannelsComponent,
@@ -305,54 +305,54 @@ export class MarketingComponent implements OnInit {
     public LinkedinService: LinkedinService,
     public WordpressService: WordpressService,
     public dialogsService: DialogsService,
-    //public Randomizer: Randomizer,
+    // public Randomizer: Randomizer,
     public randomService: RandomService,
     public PublicationsApi: PublicationsApi,
     public location: Location,
     public router: Router,
     public route: ActivatedRoute,
     public containerApi: ContainerApi) {
-    interface admincompanypage {
-      (id: string, name: string): void;
-    }
+    // interface admincompanypage {
+    //   (id: string, name: string)=> void;
+    // }
     LoopBackConfig.setBaseURL(BASE_URL);
     LoopBackConfig.setApiVersion(API_VERSION);
   }
 
   ngOnInit() {
-    if (this.AccountApi.isAuthenticated() == false) { this.router.navigate(['login']) }
+    if (this.AccountApi.isAuthenticated() === false) { this.router.navigate(['login']) }
     this.setFilter();
     this.getCurrentUserInfo();
     // Clear the item queue (somehow they will upload to the old URL)
     this.uploader.clearQueue();
 
-    //set limits on calender
-    let day = moment().date()
-    let month = moment().month()
-    let year = moment().year()
+    // set limits on calender
+    const day = moment().date()
+    const month = moment().month()
+    const year = moment().year()
     this.minDate = new Date(year, month, day);
     this.maxDate = new Date(2030, 0, 1);
-    //console.log(this.minDate);
+    // console.log(this.minDate);
   }
 
 
   public openSnackBar(message: string) {
     this.snackBar.open(message, undefined, {
       duration: 2000,
-      panelClass: "snackbar-class"
+      panelClass: 'snackbar-class'
     });
   }
 
   getCurrentUserInfo(): void {
-    this.AccountApi.getCurrent().subscribe((Account: Account) => {
-      this.Account = Account,
+    this.AccountApi.getCurrent().subscribe((account: Account) => {
+      this.Account = account,
         this.CompanyApi.getRelations(this.Account.companyId,
           { fields: { id: true, relationname: true } }
         )
-          .subscribe((Relations: Relations[]) => {
-            this.Relations = Relations
+          .subscribe((relations: Relations[]) => {
+            this.Relations = relations
             if (this.Account.standardrelation !== undefined) {
-              //console.log(this.Account.standardrelation);
+              // console.log(this.Account.standardrelation);
               this.RelationsApi.findById(this.Account.standardrelation)
                 .subscribe(rel =>
                   this.onSelectRelation(rel, null))
@@ -365,7 +365,7 @@ export class MarketingComponent implements OnInit {
   myControl: FormControl = new FormControl();
   filteredOptions: Observable<string[]>;
 
-  //compare filter search Relations
+  // compare filter search Relations
   setFilter(): void {
     this.filteredOptions = this.myControl.valueChanges
       .pipe(
@@ -375,22 +375,22 @@ export class MarketingComponent implements OnInit {
       );
   }
 
-  //filter and to lower case for search
+  // filter and to lower case for search
   private filter(relationname: string): Relations[] {
     const filterValue = relationname.toLowerCase();
     return this.options.filter(option => option.relationname.toLowerCase().indexOf(filterValue) === 0);
   }
 
-  //set Relations and quick selections
+  // set Relations and quick selections
   getrelationsEntry(): void {
     this.options = []
-    for (let relation of this.Relations) {
+    for (const relation of this.Relations) {
       this.options.push(relation);
     }
   }
 
 
-  //select relation --> get info for all tabs
+  // select relation --> get info for all tabs
   onSelectRelation(option, i): void {
     this.option = option;
     this.getPublications();
@@ -398,63 +398,63 @@ export class MarketingComponent implements OnInit {
     this.getMailinglist();
     this.getMailingCampaign();
     this.RelationsApi.getGoogleanalytics(this.option.id)
-      .subscribe((Googleanalytics: Googleanalytics[]) => {
-        this.Googleanalytics = Googleanalytics,
+      .subscribe((googleanalytics: Googleanalytics[]) => {
+        this.Googleanalytics = googleanalytics,
           this.AccountApi.addStdRelation(this.Account.id, option.id)
             .subscribe()
       })
   }
 
-  //display name in searchbox
+  // display name in searchbox
   displayFn(relation?: Relations): string | undefined {
     return relation ? relation.relationname : undefined;
   }
 
 
-  //file upload 1
+  // file upload 1
   public fileOverBase(e: any): void {
     this.hasBaseDropZoneOver = e;
   }
 
-  //file upload 2
+  // file upload 2
   public fileOverAnother(e: any): void {
     this.hasAnotherDropZoneOver = e;
   }
 
-  //set upload url
+  // set upload url
   setUrl(): void {
     this.urlpicture = null,
       this.urlpicture = this.selectedPublications.pictureurl
   }
 
-  //delete all or destroy??
+  // delete all or destroy??
   deletePicture(): void {
     this.containerApi.removeFile(this.selectedPublications.id, this.selectedPublications.picturename)
       .subscribe(res => {
-        this.selectedPublications.picturename = "", this.selectedPublications.pictureurl = "",
+        this.selectedPublications.picturename = '', this.selectedPublications.pictureurl = '',
           this.RelationsApi.updateByIdPublications(this.option.id, this.selectedPublications.id).subscribe()
       }
       )
-    //delete picturename
-    //delete pictureurl;
-    //delete container
+    // delete picturename
+    // delete pictureurl;
+    // delete container
   }
 
 
 
-  //set variable and upload + save reference in Publications
+  // set constiable and upload + save reference in Publications
   setupload(name): void {
     this.selectedPublications.picturename = name,
-      this.urluse = BASE_URL + "/api/Containers/" + this.selectedPublications.id + "/download/" + this.selectedPublications.picturename
-    this.urluse.replace(/ /g, "%20"),
+      this.urluse = BASE_URL + '/api/Containers/' + this.selectedPublications.id + '/download/' + this.selectedPublications.picturename
+    this.urluse.replace(/ /g, '%20'),
       this.selectedPublications.pictureurl = this.urluse
-    //define the file settings
+    // define the file settings
     this.newFiles.name = name,
       this.newFiles.url = this.urluse,
       this.newFiles.createdate = new Date(),
-      this.newFiles.type = "marketing",
+      this.newFiles.type = 'marketing',
       this.newFiles.companyId = this.Account.companyId,
-      //check if container exists and create
+      // check if container exists and create
       this.ContainerApi.findById(this.selectedPublications.id)
         .subscribe(res => this.uploadFile(),
           error =>
@@ -465,8 +465,8 @@ export class MarketingComponent implements OnInit {
 
   onOpenGallery() {
     if (this.showgallery === false) { this.showgallery = true; }
-    else this.showgallery = false;
-    //this.buttonsConfig =  {visible: true, strategy: ButtonsStrategy.DEFAULT};
+    else { this.showgallery = false; }
+    // this.buttonsConfig =  {visible: true, strategy: ButtonsStrategy.DEFAULT};
     this.PlainGalleryConfig = {
       strategy: PlainGalleryStrategy.GRID,
       layout: new GridLayout({ width: '80px', height: '80px' }, { length: 3, wrap: true })
@@ -477,13 +477,13 @@ export class MarketingComponent implements OnInit {
     };
 
 
-    //set images array
-    this.ContainerApi.getFiles(this.option.id).subscribe((Files: Files[]) => {
-      this.Files = Files,
+    // set images array
+    this.ContainerApi.getFiles(this.option.id).subscribe((files: Files[]) => {
+      this.Files = files,
         this.Files.forEach((file, index) => {
-          //console.log(file, index);
-          let modalImage = { img: BASE_URL + "/api/Containers/" + this.option.id + "/download/" + file.name };
-          let modal = new Image(index, modalImage, null)
+          // console.log(file, index);
+          const modalImage = { img: BASE_URL + '/api/Containers/' + this.option.id + '/download/' + file.name };
+          const modal = new Image(index, modalImage, null)
           this.imagesNew.push(modal)
         }),
         this.images = this.imagesNew;
@@ -502,7 +502,7 @@ export class MarketingComponent implements OnInit {
     if (event.button.type === ButtonType.DOWNLOAD) {
       // remove the current image and reassign all other to the array of images
       // You must think in a functional way! So, re-assign the array instead of modifying it.
-      //this.images = this.images.filter((val: Image) => event.image && val.id !== event.image.id);
+      // this.images = this.images.filter((val: Image) => event.image && val.id !== event.image.id);
       console.log(event.image);
       this.onSelectImage(event.image);
     }
@@ -527,11 +527,11 @@ export class MarketingComponent implements OnInit {
 
   getFiles(): void {
     this.ContainerApi.getFiles(this.selectedPublications.id)
-      .subscribe((Files: Files[]) => this.Files = Files)
+      .subscribe((files: Files[]) => this.Files = files)
   }
 
   newItem(): void {
-    this.RelationsApi.createPublications(this.option.id, { "companyId": this.Account.companyId, "title": "New Item" })
+    this.RelationsApi.createPublications(this.option.id, { 'companyId': this.Account.companyId, 'title': 'New Item' })
       .subscribe(result => {
         this.createItem = result,
           this.selectedPublications = this.createItem
@@ -540,8 +540,8 @@ export class MarketingComponent implements OnInit {
 
   newTranslationItem(): void {
     this.newTranslation.companyId = this.Account.companyId,
-      this.newTranslation.title = "New",
-      this.newTranslation.status = "Draft",
+      this.newTranslation.title = 'New',
+      this.newTranslation.status = 'Draft',
       this.RelationsApi.createTranslation(this.option.id, this.newTranslation)
         .subscribe(result => {
           this.selectedTranslation = result,
@@ -553,25 +553,25 @@ export class MarketingComponent implements OnInit {
     this.RelationsApi.getPublications(this.option.id, {
       limit: this.limitresult,
       order: 'title DESC'
-    }).subscribe((Publications: Publications[]) => this.Publications = Publications);
+    }).subscribe((publications: Publications[]) => this.Publications = publications);
   }
 
   getTranslations(): void {
-    var languages = []
+    const languages = []
     this.RelationsApi.getTranslation(this.option.id)
       .subscribe((result) => { this.Translation = result });
   };
 
   getTransationsjobs(): void {
-    //need project nr. to fetch languages
+    // need project nr. to fetch languages
     this.TranslationApi.getlanguages(this.selectedTranslation.id).subscribe(res => {
       this.languages = res,
         console.log(this.languages.language)
     });
     this.TranslationApi.getTranslationjob(this.selectedTranslation.id)
-      .subscribe((Translationjob: Translationjob[]) => {
-        this.Translationjob = Translationjob
-        //, this.Translationjob.forEach(element => {
+      .subscribe((translationjob: Translationjob[]) => {
+        this.Translationjob = translationjob
+        // , this.Translationjob.forEach(element => {
         //      this.updateTranslation(element.job_id);
         //    })
       });
@@ -582,7 +582,7 @@ export class MarketingComponent implements OnInit {
       .subscribe(res => this.getTransationsjobs());
   }
 
-  //test selection criteria
+  // test selection criteria
   getPublicationsList(): void {
     this.RelationsApi.findById(this.option.id, {
       where: {
@@ -593,49 +593,49 @@ export class MarketingComponent implements OnInit {
         }
       }
     })
-      .subscribe((Publications: Publications[]) => this.Publications = Publications);
+      .subscribe((publications: Publications[]) => this.Publications = publications);
   }
 
-  //search
+  // search
   searchGo(name: string): void {
     name = name.charAt(0).toUpperCase() + name.slice(1);
     name = name.trim();
     this.PublicationsApi.find({ where: { or: [{ newstitle: name }, { newstext: name }] } })
-      .subscribe((Publications: Publications[]) => this.Publications = Publications,
+      .subscribe((publications: Publications[]) => this.Publications = publications,
         error => this.errorMessage = <any>error);
   }
 
-  //select and set parameters Publications
-  onSelect(Publications: Publications): void {
+  // select and set parameters Publications
+  onSelect(publications: Publications): void {
     this.uploader.clearQueue();
-    this.selectedPublications = Publications;
+    this.selectedPublications = publications;
     this.newURL = undefined;
-    this.newURL = BASE_URL + "/api/Containers/" + this.selectedPublications.id + "/upload"
+    this.newURL = BASE_URL + '/api/Containers/' + this.selectedPublications.id + '/upload'
     this.uploader.setOptions({ url: this.newURL });
     this.setUrl();
   }
 
-  onSelectMailingList(Mailinglist: Mailinglist): void {
-    //this.uploaderContent.subscription.unsubscribe();
+  onSelectMailingList(mailinglist: Mailinglist): void {
+    // this.uploaderContent.subscription.unsubscribe();
     this.maillist1 = [];
     this.maillist = [];
     this.mailinglistdetails = [];
     this.toggleuploadlist = true;
 
-    this.selectedMailingList = Mailinglist;
+    this.selectedMailingList = mailinglist;
     this.MailinglistApi.mailinglistinfo(this.selectedMailingList.mailgunid)
       .subscribe(res => {
         this.selectedMailingList.total = res.list.members_count,
           this.RelationsApi.updateByIdMailinglist(this.option.id, this.selectedMailingList.id, this.selectedMailingList)
             .subscribe()
       });
-    this.MailinglistApi.mailinglistinfo("open" + this.selectedMailingList.mailgunid)
+    this.MailinglistApi.mailinglistinfo('open' + this.selectedMailingList.mailgunid)
       .subscribe(res => {
         this.selectedMailingList.totalopened = res.list.members_count,
           this.RelationsApi.updateByIdMailinglist(this.option.id, this.selectedMailingList.id, this.selectedMailingList)
             .subscribe()
       });
-    this.MailinglistApi.mailinglistinfo("clicked" + this.selectedMailingList.mailgunid)
+    this.MailinglistApi.mailinglistinfo('clicked' + this.selectedMailingList.mailgunid)
       .subscribe(res => {
         this.selectedMailingList.totalclicked = res.list.members_count,
           this.RelationsApi.updateByIdMailinglist(this.option.id, this.selectedMailingList.id, this.selectedMailingList)
@@ -644,44 +644,45 @@ export class MarketingComponent implements OnInit {
   }
 
   showMailingList(): void {
-    var mailinglistitems = [];
+    let mailinglistitems = [];
     this.MailinglistApi.showaddresses(this.selectedMailingList.mailgunid)
       .subscribe(res => {
         mailinglistitems = res.items,
-          //console.log(mailinglistitems);
+          // console.log(mailinglistitems);
           mailinglistitems.forEach((item, index) => {
             this.mailinglistdetails.push(item)
-          }) //console.log(this.mailinglistdetails
+          }) // console.log(this.mailinglistdetails
       })
   }
 
   randomizeMailing(): void {
-    this.randomService.openDialog(this.option.id, this.Account.companyId, this.selectedMailing, this.Mailinglist, this.Marketingplannerevents)
-    //console.log(this.selectedMailing)
-    if (this.randomService.ready == true){
-    this.confirmRandomMailing(this.randomService.randomizer);
-  }
+    this.randomService.openDialog(
+      this.option.id, this.Account.companyId, this.selectedMailing, this.Mailinglist, this.Marketingplannerevents)
+    // console.log(this.selectedMailing)
+    if (this.randomService.ready == true) {
+      this.confirmRandomMailing(this.randomService.randomizer);
+    }
   }
 
   confirmRandomMailing(randomizer): void {
     console.log(randomizer)
-    //this.MarketingplannereventsApi.randomizemailing(this.option.id. )
+    // this.MarketingplannereventsApi.randomizemailing(this.option.id. )
   }
 
-  //select and set parameters PublicationsTranslation
-  onSelectTranslation(Translation: Translation): void {
+  // select and set parameters PublicationsTranslation
+  onSelectTranslation(translation: Translation): void {
     this.translationJob = [];
-    this.selectedTranslation = Translation;
+    this.selectedTranslation = translation;
     this.getTransationsjobs();
     console.log(this.selectedTranslation.order_id)
     this.updateTranslation();
   }
 
-  onSelectTranslationJob(Translationjob: Translationjob): void {
-    this.selectedTranslationjob = Translationjob;
+  onSelectTranslationJob(translationjob: Translationjob): void {
+    this.selectedTranslationjob = translationjob;
   }
 
-  //save entry
+  // save entry
   savePublication(): void {
     this.RelationsApi.updateByIdPublications(this.option.id, this.selectedPublications.id, this.selectedPublications)
       .subscribe();
@@ -721,7 +722,7 @@ export class MarketingComponent implements OnInit {
       });
   }
 
-  //delete Publications -> check container?
+  // delete Publications -> check container?
   deletePublications(selectedOption): void {
     if (selectedOption == true) {
       this.containerApi.destroyContainer(this.selectedPublications.id).subscribe(),
@@ -734,7 +735,7 @@ export class MarketingComponent implements OnInit {
   }
 
   deleteTranslation(selectedOption): void {
-    if (selectedOption == true) {
+    if (selectedOption === true) {
       this.RelationsApi.destroyByIdTranslation(this.option.id, this.selectedTranslation.id)
         .subscribe(res => { this.getTranslations(), this.selectedTranslation = null });
     }
@@ -749,7 +750,7 @@ export class MarketingComponent implements OnInit {
   }
 
   deleteTranslationJob(selectedOption): void {
-    if (selectedOption == true) {
+    if (selectedOption === true) {
       this.TranslationApi.destroyByIdTranslationjob(this.selectedTranslation.id, this.selectedTranslationjob.id)
         .subscribe(res => this.getTransationsjobs());
     }
@@ -757,20 +758,20 @@ export class MarketingComponent implements OnInit {
 
   public postToWordPress(): void {
     this.WordpressService.publishWP(this.selectedPublications.title, this.selectedPublications.text);
-    //this.POSTwordpressApi.create(this.selectedPublications).subscribe(res => {
+    // this.POSTwordpressApi.create(this.selectedPublications).subscribe(res => {
     //  this.error = res});
   }
 
 
-  //Translation job and update job_id
+  // Translation job and update job_id
   publishTranslationJob(selectedOption): void {
-    //set custom data to get ids
+    // set custom data to get ids
     this.Translationjob.forEach((item, index) => {
       item.custom_data = item.id
     });
-    //reduce for api
+    // reduce for api
     if (selectedOption == true) {
-      var jobs = this.Translationjob.reduce(function (acc, cur, i) {
+      const jobs = this.Translationjob.reduce(function (acc, cur, i) {
         acc[i] = cur;
         return acc;
       }, {});
@@ -780,19 +781,19 @@ export class MarketingComponent implements OnInit {
           this.selectedTranslation.order_id = res.order_id,
           this.RelationsApi.updateByIdTranslation(this.option.id, this.selectedTranslation.id, this.selectedTranslation)
             .subscribe(res => {
-              this.openSnackBar("Translation Requested")
+              this.openSnackBar('Translation Requested')
             })
       });
     }
   }
 
-  //get order info
+  // get order info
   getOrderTranslation(order_id): void {
-    //custom_data
+    // custom_data
   }
 
 
-  //get update on jobS ! move to API as hook or automation
+  // get update on jobS ! move to API as hook or automation
   updateTranslation(): void {
     console.log(this.selectedTranslation.order_id);
     this.TranslationApi.getorder(this.selectedTranslation.order_id).subscribe(res => {
@@ -800,7 +801,7 @@ export class MarketingComponent implements OnInit {
       Object.keys(res.order).forEach(key => {
         if (Array.isArray(res.order[key])) {
           console.log(key.length);          // the name of the current key.
-          if (typeof key == 'string') { jobsoverview.push(res.order[key]) }
+          if (typeof key === 'string') { jobsoverview.push(res.order[key]) }
           else { res.order[key].foreEach((item) => { jobsoverview.map(item) }) }
         }
       }),
@@ -814,9 +815,9 @@ export class MarketingComponent implements OnInit {
               this.TranslationApi.updateByIdTranslationjob(
                 this.selectedTranslation.id, this.MarkTranJobs.custom_data,
                 {
-                  "status": this.MarkTranJobs.status,
-                  "body_tgt": this.MarkTranJobs.body_tgt,
-                  "job_id": this.MarkTranJobs.job_id
+                  'status': this.MarkTranJobs.status,
+                  'body_tgt': this.MarkTranJobs.body_tgt,
+                  'job_id': this.MarkTranJobs.job_id
                 }).subscribe();
 
             });
@@ -824,7 +825,7 @@ export class MarketingComponent implements OnInit {
     });
   };
 
-  //Mailing ______________________________________
+  // Mailing ______________________________________
 
   getMailing(): void {
     this.RelationsApi.getMailing(this.option.id,
@@ -833,11 +834,11 @@ export class MarketingComponent implements OnInit {
           relation: 'mailinglist'
         }
       })
-      .subscribe((Mailing: Mailing[]) => this.Mailing = Mailing);
+      .subscribe((mailing: Mailing[]) => this.Mailing = mailing);
   }
 
   createMailing(): void {
-    this.RelationsApi.createMailing(this.option.id, { subject: "new", relationname: this.option.relationname })
+    this.RelationsApi.createMailing(this.option.id, { subject: 'new', relationname: this.option.relationname })
       .subscribe(res => { res = res, this.onSelectMailing(res), this.getMailing() });
   }
 
@@ -859,13 +860,13 @@ export class MarketingComponent implements OnInit {
 
   }
 
-  onSelectMailing(Mailing: Mailing): void {
+  onSelectMailing(mailing: Mailing): void {
     this.selectedMailing = null;
-    this.selectedMailing = Mailing;
-    this.mailingaddress = "";
+    this.selectedMailing = mailing;
+    this.mailingaddress = '';
     this.setFilterMailing();
     this.mailingaddress = this.selectedMailing.selectedlists[0];
-    //this.getAnalytics();
+    // this.getAnalytics();
 
     this.Googleanalyticsreturn = '';
     this.avgTimeOnPage = '';
@@ -874,27 +875,27 @@ export class MarketingComponent implements OnInit {
     this.pageview = '';
 
 
-    // //set upload url for pictures and dialog
+    // set upload url for pictures and dialog
 
-    this.urlckeditorupload = BASE_URL + "/api/Containers/" + this.option.id + "/upload/";
+    this.urlckeditorupload = BASE_URL + '/api/Containers/' + this.option.id + '/upload/';
 
-    //set upload url for pictures
-    CKEDITOR.config.filebrowserBrowseUrl = BASE_URL + "/filemanager/" + this.option.id;
+    // set upload url for pictures
+    CKEDITOR.config.filebrowserBrowseUrl = BASE_URL + '/filemanager/' + this.option.id;
     CKEDITOR.config.filebrowserUploadUrl = this.urlckeditorupload;
-    CKEDITOR.config.filebrowserImageBrowseUrl = BASE_URL + "/filemanager/" + this.option.id;
+    CKEDITOR.config.filebrowserImageBrowseUrl = BASE_URL + '/filemanager/' + this.option.id;
     CKEDITOR.config.filebrowserImageUploadUrl = this.urlckeditorupload;
   }
 
   onRequestCkEvent(evt): void {
-    evt.stop(); //stop event and set data manual see above
-    console.log("fileuploadresponse", evt)
-    let url = BASE_URL + "/api/Containers/" + this.option.id + "/download/"
-    let data = evt.data;
+    evt.stop(); // stop event and set data manual see above
+    console.log('fileuploadresponse', evt)
+    const url = BASE_URL + '/api/Containers/' + this.option.id + '/download/'
+    const data = evt.data;
     data.url = url + data.fileLoader.fileName;
-    //let finalurl = encodeURI(data.url)
-    //data.fileName = data.fileLoader.fileName,
-    //data.uploaded = 1;
-    //var funcNum = 1;
+    // let finalurl = encodeURI(data.url)
+    // data.fileName = data.fileLoader.fileName,
+    // data.uploaded = 1;
+    // const funcNum = 1;
     CKEDITOR.tools.callFunction(1, data.url);
 
   };
@@ -902,19 +903,19 @@ export class MarketingComponent implements OnInit {
 
   saveMailing(message?): void {
     this.selectedMailing.text = this.onChangeHtml(this.selectedMailing.html); //convert to text
-    //dats is set on select
+    // dats is set on select
     if (this.selectedMailing.date == null) {
       this.date = moment().format();
       this.selectedMailing.date = this.date
     }
-    //timezone
+    // timezone
     if (this.selectedMailing.timezone == null) {
       this.selectedMailing.timezone = moment.tz.guess();
     }
 
-    //time
+    // time
     if (this.selectedMailing.time == null) {
-      this.time = moment().format("hh:mm")
+      this.time = moment().format('hh:mm')
       this.selectedMailing.time = this.time;
     }
 
@@ -922,47 +923,47 @@ export class MarketingComponent implements OnInit {
 
     this.selectedMailing.selectedlists = [];
 
-    //set mailinglists from dropdown
+    // set mailinglists from dropdown
     if (this.mailingaddress.id) {
       this.selectedMailing.mailinglistId = [];
-      //this.MailingApi.linkMailinglist(this.selectedMailing.id, this.mailingaddress.id).subscribe()
-      this.selectedMailing.mailinglistId.push(this.mailingaddress.id), //set mailinlist id for relation.
+      // this.MailingApi.linkMailinglist(this.selectedMailing.id, this.mailingaddress.id).subscribe()
+      this.selectedMailing.mailinglistId.push(this.mailingaddress.id), // set mailinlist id for relation.
         this.selectedMailing.to = this.mailingaddress.mailgunid,
         this.selectedMailing.selectedlists.push(this.mailingaddress);
 
       this.RelationsApi.updateByIdMailing(this.option.id, this.selectedMailing.id, this.selectedMailing)
         .subscribe(res => {
           this.getMailing()
-          if (message !== undefined) { this.openSnackBar("message saved") }
+          if (message !== undefined) { this.openSnackBar('message saved') }
         });
     }
 
     //no mailinglist but seperate email
-    else if (this.mailingaddress !== undefined) { //email address not list
-      this.selectedMailing.mailinglistId = []; //reset if still existing
+    else if (this.mailingaddress !== undefined) { // email address not list
+      this.selectedMailing.mailinglistId = []; // reset if still existing
 
-      if (this.mailingaddress.listname == undefined) {
+      if (this.mailingaddress.listname === undefined) {
         this.selectedMailing.selectedlists = [{ listname: this.mailingaddress }]
       }
 
-      else this.selectedMailing.selectedlists = [this.mailingaddress]//same here
+      else { this.selectedMailing.selectedlists = [this.mailingaddress] } // same here
 
       this.selectedMailing.to = this.selectedMailing.selectedlists[0].listname;
       this.RelationsApi.updateByIdMailing(this.option.id, this.selectedMailing.id, this.selectedMailing)
         .subscribe(res => {
           this.getMailing()
-          if (message !== undefined) { this.openSnackBar("message saved") }
+          if (message !== undefined) { this.openSnackBar('message saved') }
         });
     }
-    //nothing filled in
-    else this.openSnackBar("Please input Email or Mailinglist")
+    // nothing filled in
+    else { this.openSnackBar('Please input Email or Mailinglist') }
   }
 
   setFilterMailing(): void {
     this.filteredmailinglist = this.myAddressListControl.valueChanges
       .pipe(
         startWith(''),
-        //map(options => options && typeof options === 'object' ? options.relationname : options),
+        // map(options => options && typeof options === 'object' ? options.relationname : options),
         map(relationname => relationname ? this.filter(relationname) : this.options.slice())
       );
   }
@@ -975,7 +976,7 @@ export class MarketingComponent implements OnInit {
 
   getMailinglistEntry(): void {
     this.mailinglist = [];
-    for (let mailinglist of this.Mailinglist) {
+    for (const mailinglist of this.Mailinglist) {
       this.mailinglist.push(mailinglist);
     }
   }
@@ -1007,8 +1008,8 @@ export class MarketingComponent implements OnInit {
           this.error = res,
             this.selectedMailing = undefined,
             this.getMailing();
-          this.openSnackBar("Mailing Deleted")
-          //this.Mailing.splice(this.index, 1)
+          this.openSnackBar('Mailing Deleted')
+          // this.Mailing.splice(this.index, 1)
         })
     }
   }
@@ -1023,32 +1024,32 @@ export class MarketingComponent implements OnInit {
 
   public ScheduleMailing(selectedOption): void {
 
-    if (selectedOption == true) {
+    if (selectedOption === true) {
       this.selectedMailing.scheduled = true,
-        this.saveMailing(), this.openSnackBar("message Scheduled"), this.getMailingCampaignMailings();
+        this.saveMailing(), this.openSnackBar('message Scheduled'), this.getMailingCampaignMailings();
     }
   }
 
   public toggleTextView(): void {
-    if (this.toggletextview == true) {
+    if (this.toggletextview === true) {
       this.toggletextview = false
     }
-    else this.toggletextview = true
+    else { this.toggletextview = true }
   }
 
-  //search mailing subject only
+  // search mailing subject only
   public searchGoMailing(searchentry): void {
     this.RelationsApi.getMailing(this.option.id, { where: { subject: searchentry } })
-      .subscribe((Mailing: Mailing[]) => this.Mailing = Mailing);
+      .subscribe((mailing: Mailing[]) => this.Mailing = mailing);
   }
 
-  //get all the all the lists and get total count and total number of leads in it.
+  // get all the all the lists and get total count and total number of leads in it.
   getMailinglist(): void {
     this.mailinglistcount = 0;
     this.mailinglisttotal = 0;
     this.RelationsApi.getMailinglist(this.option.id, { order: 'listname ASC' })
-      .subscribe((Mailinglist: Mailinglist[]) => {
-        this.Mailinglist = Mailinglist,
+      .subscribe((mailinglist: Mailinglist[]) => {
+        this.Mailinglist = mailinglist,
           this.getMailinglistEntry(),
 
           this.RelationsApi.countMailinglist(this.option.id).subscribe(res => this.mailinglistcount);
@@ -1061,13 +1062,15 @@ export class MarketingComponent implements OnInit {
 
   public createMailingList(): void {
     this.RelationsApi.createMailinglist(this.option.id, this.newMailinglist)
-      .subscribe(res => { this.createItem = res, this.selectedMailingList = this.createItem, this.createMailingListMG(), this.newmailinglisttoggle = false });
+      .subscribe(res => {
+        this.createItem = res, this.selectedMailingList = this.createItem, this.createMailingListMG(), this.newmailinglisttoggle = false
+      });
   }
 
-  //create mailgun open/clicked/main lists
+  // create mailgun open/clicked/main lists
   public createMailingListMG(): void {
     this.MailinglistApi.createmailinglist(this.selectedMailingList)
-      .subscribe(res => { this.mailingresponse = res, this.updateMailingList() }), error => this.error;
+      .subscribe(res => { this.mailingresponse = res, this.updateMailingList() });
   }
 
   public saveMailingList(): void {
@@ -1077,7 +1080,7 @@ export class MarketingComponent implements OnInit {
 
 
   public toggleNewMailinglist(): void {
-    //this.mailinglistForm.resetForm();
+    // this.mailinglistForm.resetForm();
     this.newmailinglisttoggle = true;
   }
 
@@ -1094,27 +1097,27 @@ export class MarketingComponent implements OnInit {
       .subscribe(res => this.getMailinglist(), this.selectedMailingList = undefined)
   }
 
-  //search mailing subject only
+  // search mailing subject only
   public searchGoMailingList(searchentry): void {
     this.RelationsApi.getMailing(this.option.id, { where: { subject: searchentry } })
       .subscribe((Mailing: Mailing[]) => this.Mailing = Mailing);
   }
 
-  //convert files
+  // convert files
   public xlsxUploaded(result: UploadResult) {
     this.maillist = [];
     this.headers = [];
-    this.emailheader = "";
-    this.firstnameheader = "";
-    this.lastnameheader = "";
-    this.companyheader = "";
-    this.titleheader = "";
-    this.mailinglistheader = "";
-    this.websiteheader = "";
-    this.var1header = "";
-    this.var2header = "";
-    this.var3header = "";
-    this.var4header = "";
+    this.emailheader = '';
+    this.firstnameheader = '';
+    this.lastnameheader = '';
+    this.companyheader = '';
+    this.titleheader = '';
+    this.mailinglistheader = '';
+    this.websiteheader = '';
+    this.const1header = '';
+    this.const2header = '';
+    this.const3header = '';
+    this.const4header = '';
     this.createnewmailinglistonfield = false;
     this.uploadlistId = [];
     this.uploaderContent.next(JSON.stringify(result.payload));
@@ -1131,63 +1134,64 @@ export class MarketingComponent implements OnInit {
   }
 
   public openmailinglistwebsite(i): void {
-    var res = this.mailinglistdetails[i].vars.website.substring(0, 3);
+    let res = this.mailinglistdetails[i].consts.website.substring(0, 3);
     res = res.toLowerCase();
-    if (res === "www") { window.open("http://" + this.mailinglistdetails[i].vars.website, "_blank"); }
-    else if (res === "htt") { window.open(this.mailinglistdetails[i].vars.website, "_blank"); }
+    if (res === 'www') { window.open('http://' + this.mailinglistdetails[i].consts.website, '_blank'); }
+    else if (res === 'htt') { window.open(this.mailinglistdetails[i].consts.website, '_blank'); }
     else { this.dialogsService.confirm('Not a valid URL', 'Please edit'); };
   }
 
   public async setHeaderPrepImport(): Promise<void> {
-    let importlist = this.maillist;
+    const importlist = this.maillist;
     let size = importlist.length;
     this.maillist1.forEach((value) => {
-      //fixed format name, firstname, lastname, address, company
-      if (this.companyheader === undefined) { this.openSnackBar("Info missing or wrong format"); }
-      else
-        //create import value
-        var importvalue = {
-          name: value[this.firstnameheader] + " " + value[this.lastnameheader],
-          address: value[this.emailheader], //change to value[valueselected]
-          vars: {
+      // fixed format name, firstname, lastname, address, company
+      if (this.companyheader === undefined) { this.openSnackBar('Info missing or wrong format'); }
+      else {
+        // create import value
+        const importvalue = {
+          name: value[this.firstnameheader] + ' ' + value[this.lastnameheader],
+          address: value[this.emailheader], // change to value[valueselected]
+          consts: {
             company: value[this.companyheader],
             firstname: value[this.firstnameheader],
             lastname: value[this.lastnameheader],
             title: value[this.titleheader],
             website: value[this.websiteheader],
             mailing: value[this.mailinglistheader],
-            var1: value[this.var1header],
-            var2: value[this.var2header],
-            var3: value[this.var3header],
-            var4: value[this.var4header]
+            const1: value[this.const1header],
+            const2: value[this.const2header],
+            const3: value[this.const3header],
+            const4: value[this.const4header]
           }
         }
 
-      this.maillist.push(importvalue);
+        this.maillist.push(importvalue);
+      }
     })
 
 
   }
 
-  //convert html to text
+  // convert html to text
   onChangeHtml(message) {
     if (message) {
-      var text = message.replace(/<(?:.|\n)*?>/gm, '');
+      let text = message.replace(/<(?:.|\n)*?>/gm, '');
       text = text.replace(/&nbsp;/g, '');
       return text;
     }
   }
 
-  //import and and update totals
+  // import and and update totals
   public runImportMailingList(): void {
     this.setHeaderPrepImport().then(() => {
 
       if (this.createnewmailinglistonfield === true) {
-        //get all unique mailinglist names and trim
-        let uniquelistname = Array.from(new Set(this.maillist.map((item: any) => item.vars.mailing.trim())));
-        //check if it exists in current mailinglist !error prone as it is text only..
+        // get all unique mailinglist names and trim
+        let uniquelistname = Array.from(new Set(this.maillist.map((item: any) => item.consts.mailing.trim())));
+        // check if it exists in current mailinglist !error prone as it is text only..
         this.Mailinglist.forEach((value) => {
-          var checkpos = uniquelistname.indexOf(value.listname)
+          const checkpos = uniquelistname.indexOf(value.listname)
           if (checkpos !== -1) {
             this.uploadlistId.push({ listname: value.listname, mailid: value.id }),
               uniquelistname.splice(checkpos, 1)
@@ -1201,7 +1205,7 @@ export class MarketingComponent implements OnInit {
   }
 
   public createNewListUpload(uniquelistname) {
-    let Uniquelistname = uniquelistname;
+    const Uniquelistname = uniquelistname;
     this.dialogsService
       .confirm('This will create: ' + Uniquelistname.length + ' new Mailing Lists', 'Are you sure you want to do this?')
       .subscribe(res => {
@@ -1210,16 +1214,16 @@ export class MarketingComponent implements OnInit {
   }
 
   public async createNewUpListMultiple(Uniquelistname, selectedOption): Promise<void> {
-    let uniquelistname = Uniquelistname;
+    const uniquelistname = Uniquelistname;
     console.log(uniquelistname.length);
 
-    if (selectedOption == true) {
+    if (selectedOption === true) {
       if (uniquelistname.length > 1) {
-        var value = await this.createSeperateMailinglists(uniquelistname);
+        const value = await this.createSeperateMailinglists(uniquelistname);
         this.uploadMultipleList(value);
 
-      } else this.uploadMultipleList(this.uploadlistId);
-    } else { this.listname = this.selectedMailingList.id, this.importlist() }; //watch otherwise full list will upload to selection
+      } else { this.uploadMultipleList(this.uploadlistId); }
+    } else { this.listname = this.selectedMailingList.id, this.importlist() }; // watch otherwise full list will upload to selection
   }
 
   public async createSeperateMailinglists(uniquelistname) {
@@ -1227,14 +1231,14 @@ export class MarketingComponent implements OnInit {
       let count = 0;
       uniquelistname.forEach((value) => {
         this.RelationsApi.createMailinglist(this.option.id, { listname: value })
-          .subscribe(res1 => { //update mailgun id in loopback & set uploadid
+          .subscribe(res1 => { // update mailgun id in loopback & set uploadid
             this.MailinglistApi.createmailinglist(res1).subscribe(res2 => {
               res1.mailgunid = res2.list.address;
               this.RelationsApi.updateByIdMailinglist(this.option.id, res1.id, res1)
                 .subscribe(res => {
                   this.uploadlistId.push({ listname: res.listname, mailid: res.id }),
                     ++count;
-                  if (count == uniquelistname.length) { resolve(this.uploadlistId) }
+                  if (count === uniquelistname.length) { resolve(this.uploadlistId) }
                 });
             })
           })
@@ -1248,17 +1252,17 @@ export class MarketingComponent implements OnInit {
 
   public uploadMultipleList(uploadlistId): void {
 
-    var importlist = this.maillist;
-    var size = importlist.length;
-    var x = size / 999; // check if larger then 999 split as api limit is <1000
+    const importlist = this.maillist;
+    let size = importlist.length;
+    const x = size / 999; // check if larger then 999 split as api limit is <1000
     if (x > 1) {
-      for (var i = 1; i < x; i++) {
-        var result = importlist.slice(0, 999);
+      for (let i = 1; i < x; i++) {
+        const result = importlist.slice(0, 999);
         importlist.splice(0, 999)
         size = importlist.length;
-        var uploadlistfinal = result;
-        let id = "alnfaisufhu76!@";
-        var req = {
+        const uploadlistfinal = result;
+        const id = 'alnfaisufhu76!@';
+        const req = {
           maillist: uploadlistfinal,
           listname: uploadlistId
         }
@@ -1266,26 +1270,26 @@ export class MarketingComponent implements OnInit {
         this.MailinglistApi.uploadMultipleList(req).subscribe();
       }
     }
-    this.openSnackBar("Running Multi-List upload in background")
+    this.openSnackBar('Running Multi-List upload in background')
   }
 
   public importlist(): void {
     this.listname = this.selectedMailingList.id;
     // move up --> this.listname = this.selectedMailingList.id;
-    var importlist = this.maillist;
-    var size = importlist.length;
-    var x = size / 500; // check if larger then 500 split as api limit is <1000
+    const importlist = this.maillist;
+    let size = importlist.length;
+    const x = size / 500; // check if larger then 500 split as api limit is <1000
     if (x > 1) {
-      for (var i = 1; i < x; i++) {
-        var result = importlist.slice(0, 500);
+      for (let i = 1; i < x; i++) {
+        const result = importlist.slice(0, 500);
         importlist.splice(0, 500)
         size = importlist.length;
-        var uploadlistfinal = result.reduce(function (acc, cur, i) {
+        const uploadlistfinal = result.reduce(function (acc, cur, i) {
           acc[i] = cur;
           return acc;
         }, {});;
-        if (uploadlistfinal[0].address == undefined) this.openSnackBar("Email missing or wrong format");
-        else
+        if (uploadlistfinal[0].address === undefined) { this.openSnackBar('Email missing or wrong format'); }
+        else {
           this.MailinglistApi.uploadmailinglist(uploadlistfinal, this.listname)
             .subscribe(res => {
               this.callback = res,
@@ -1293,53 +1297,58 @@ export class MarketingComponent implements OnInit {
                 this.RelationsApi.updateByIdMailinglist(this.option.id, this.selectedMailingList.id, this.selectedMailingList)
                   .subscribe();
             });
+        }
       }
     }
-    else
-      var uploadlistfinal = this.maillist.reduce(function (acc, cur, i) {
+    else {
+      const uploadlistfinal = this.maillist.reduce(function (acc, cur, i) {
         acc[i] = cur;
         return acc;
       }, {});;
-    if (uploadlistfinal[0].address == undefined) this.openSnackBar("Email missing or wrong format");
-    else
-      this.MailinglistApi.uploadmailinglist(uploadlistfinal, this.listname)
+      if (uploadlistfinal[0].address === undefined) { this.openSnackBar('Email missing or wrong format'); }
+      else {
+        this.MailinglistApi.uploadmailinglist(uploadlistfinal, this.listname)
         .subscribe(res => {
           this.callback = res,
             this.selectedMailingList.total = this.callback.list.members_count,
             this.RelationsApi.updateByIdMailinglist(this.option.id, this.selectedMailingList.id, this.selectedMailingList)
-              .subscribe(res => this.openSnackBar("Upload Started"));
+              .subscribe(res => { console.log(res), this.openSnackBar('Upload Started') });
         });
+      }
+    }
+
   };
 
   public runImportDeleteListMember(): void {
     this.listname = this.selectedMailingList.id,
       this.setHeaderPrepImport(),
       this.listname = this.selectedMailingList.id;
-    var importlist = this.maillist;
-    var size = importlist.length;
-    var x = size / 500; // check if larger then 500 split as api limit is <1000
-    var uploadlistfinal = this.maillist.reduce(function (acc, cur, i) {
+    const importlist = this.maillist;
+    const size = importlist.length;
+    const x = size / 500; // check if larger then 500 split as api limit is <1000
+    const uploadlistfinal = this.maillist.reduce(function (acc, cur, i) {
       acc[i] = cur;
       return acc;
-    }, {});;
+    }, {});
     this.MailinglistApi.deleteaddresses(this.selectedMailingList.mailgunid, uploadlistfinal)
-      .subscribe(res => { this.openSnackBar("Running in background") });
+      .subscribe(res => { this.openSnackBar('Running in background') });
   };
 
   public runImportVerifyList(): void {
-    //let importlist = this.maillist;
+    // let importlist = this.maillist;
     this.listname = this.selectedMailingList.id;
-    //let size = importlist.length;
-    //let x = size / 500; // check if larger then 500 split as api limit is <1000
-    let uploadlistfinal = this.maillist.reduce(function (acc, cur, i) {
+    // let size = importlist.length;
+    // let x = size / 500; // check if larger then 500 split as api limit is <1000
+    const uploadlistfinal = this.maillist.reduce(function (acc, cur, i) {
       acc[i] = cur;
       return acc;
     }, {});;
-    if (uploadlistfinal[0].address == undefined) this.openSnackBar("Email missing or wrong format");
-    else
+    if (uploadlistfinal[0].address === undefined) { this.openSnackBar('Email missing or wrong format'); }
+    else {
       this.MailinglistApi.verifylist(uploadlistfinal, this.listname)
         .subscribe();
-    this.openSnackBar("Verify running in background");
+      this.openSnackBar('Verify running in background');
+    }
   };
 
 
@@ -1347,11 +1356,11 @@ export class MarketingComponent implements OnInit {
     this.uploadlistId = [];
     this.setHeaderPrepImport()
     if (this.createnewmailinglistonfield === true) {
-      //get all unique mailinglist names and trim
-      let uniquelistname = Array.from(new Set(this.maillist.map((item: any) => item.vars.mailing.trim())));
-      //check if it exists in current mailinglist !error prone as it is text only..
+      // get all unique mailinglist names and trim
+      const uniquelistname = Array.from(new Set(this.maillist.map((item: any) => item.consts.mailing.trim())));
+      // check if it exists in current mailinglist !error prone as it is text only..
       this.Mailinglist.forEach((value) => {
-        var checkpos = uniquelistname.indexOf(value.listname)
+        const checkpos = uniquelistname.indexOf(value.listname)
         if (checkpos !== -1) {
           this.uploadlistId.push({ listname: value.listname, mailid: value.id }),
             uniquelistname.splice(checkpos, 1)
@@ -1364,7 +1373,7 @@ export class MarketingComponent implements OnInit {
   }
 
   public createNewListMultipleDialog(uniquelistname): void {
-    let Uniquelistname = uniquelistname;
+    const Uniquelistname = uniquelistname;
     this.dialogsService
       .confirm('This will create: ' + Uniquelistname.length + ' new Mailing Lists', 'Are you sure you want to do this?')
       .subscribe(res => {
@@ -1373,14 +1382,14 @@ export class MarketingComponent implements OnInit {
   }
 
   public createNewListMultiple(Uniquelistname, selectedOption): void {
-    let uniquelistname = Uniquelistname;
+    const uniquelistname = Uniquelistname;
     console.log(uniquelistname);
 
-    if (selectedOption == true) {
+    if (selectedOption === true) {
       if (uniquelistname.length > 1) {
         uniquelistname.forEach((value) => {
           this.RelationsApi.createMailinglist(this.option.id, { listname: value })
-            .subscribe(res1 => { //update mailgun id in loopback & set uploadid
+            .subscribe(res1 => { // update mailgun id in loopback & set uploadid
               this.MailinglistApi.createmailinglist(res1).subscribe(res2 => {
                 res1.mailgunid = res2.list.address;
                 this.RelationsApi.updateByIdMailinglist(this.option.id, res1.id, res1)
@@ -1389,19 +1398,23 @@ export class MarketingComponent implements OnInit {
               })
             })
         })
-      } else this.uploadVerifyList();
-    } else this.runImportVerifyList();
+      } else { this.uploadVerifyList(); }
+    } else { this.runImportVerifyList(); }
   }
 
   public uploadVerifyList(): void {
-    let id = "alnfaisufhu76!@";
-    var req = {
+    const id = 'alnfaisufhu76!@';
+    const req = {
       maillist: this.maillist,
       listname: this.uploadlistId
     }
     console.log(req);
     this.MailinglistApi.uploadMultipleList(req).subscribe();
   }
+
+
+  /* Leave in for future purpose when exceeding API max size split in to sections
+    Propably better option to move other list changes and iteration server side*/
 
   // public getEmailAddresses(): void {
   //   this.setHeaderPrepImport(),
@@ -1415,11 +1428,11 @@ export class MarketingComponent implements OnInit {
   //   }, {});;
   //   this.MailinglistApi.findmailaddresses(uploadlistfinal, this.listname)
   //     .subscribe();
-  //   this.openSnackBar("Find Email running in background");
+  //   this.openSnackBar('Find Email running in background');
   // }
 
   deleteOneMailingList(address?): void {
-    //if (address !== null) { this.oneaddress = address } creates error address is not used so not use for fixing
+    // if (address !== null) { this.oneaddress = address } creates error address is not used so not use for fixing
     this.oneaddress = this.oneaddress.replace(/ /g, '');
     this.MailinglistApi.deleteoneaddress(this.selectedMailingList.mailgunid, this.oneaddress)
       .subscribe(res => this.openSnackBar(res.message));
@@ -1436,40 +1449,40 @@ export class MarketingComponent implements OnInit {
   }
 
 
-  //error! returns full filter not working.
+  // error! returns full filter not working.
   public getAnalyticsCampaign(i) {
-    //for each mailing get stats
+    // for each mailing get stats
     console.log(this.CampaignMailing[i].id)
-    this.analytics_filters = "ga:adContent==" + this.CampaignMailing[i].id;
+    this.analytics_filters = 'ga:adContent==' + this.CampaignMailing[i].id;
     this.GoogleanalyticsApi.getanalyticsreport(this.selectedanalytics.id, this.analytics_ids, this.analytics_startdate,
       this.analytics_enddate, this.analytics_dimensions, this.analytics_metrics, this.analytics_filters)
       .subscribe((data) => {
         let obj = data.rows.find(o => o[0] === this.CampaignMailing[i].id);
         if (obj !== undefined) {
-          this.Googleanalyticsreturn = obj; //data.rows[0],
+          this.Googleanalyticsreturn = obj; // data.rows[0],
           this.avgTimeOnPage = this.Googleanalyticsreturn[4];
           this.bounceRate = this.Googleanalyticsreturn[1];
           this.goalStartsAll = this.Googleanalyticsreturn[3];
           this.pageview = this.Googleanalyticsreturn[2];
-        } else { this.avgTimeOnPage = "No Data to show" }
-      }), error => this.openSnackBar("No website statistics found, try back later");
+        } else { this.avgTimeOnPage = 'No Data to show' }
+      }), this.openSnackBar('No website statistics found, try back later'); // error =>
   }
 
   public getAnalytics() {
-    this.analytics_filters = "ga:adContent==" + this.selectedMailing.id;
+    this.analytics_filters = 'ga:adContent==' + this.selectedMailing.id;
     this.GoogleanalyticsApi.getanalyticsreport(this.selectedanalytics.id, this.analytics_ids, this.analytics_startdate,
       this.analytics_enddate, this.analytics_dimensions, this.analytics_metrics, this.analytics_filters)
       .subscribe((data) => {
 
-        let obj = data.rows.find(o => o[0] === this.selectedMailing.id);
+        const obj = data.rows.find(o => o[0] === this.selectedMailing.id);
         if (obj !== undefined) {
-          this.Googleanalyticsreturn = obj; //data.rows[0],
+          this.Googleanalyticsreturn = obj; // data.rows[0],
           this.avgTimeOnPage = this.Googleanalyticsreturn[4];
           this.bounceRate = this.Googleanalyticsreturn[1];
           this.goalStartsAll = this.Googleanalyticsreturn[3];
           this.pageview = this.Googleanalyticsreturn[2];
-        } else { this.avgTimeOnPage = "No Data to show" }
-      }), error => this.openSnackBar("No website statistics found, try back later");
+        } else { this.avgTimeOnPage = 'No Data to show' }
+      }), this.openSnackBar('No website statistics found, try back later'); // error => { console.log(error),
 
   }
 
@@ -1481,41 +1494,41 @@ export class MarketingComponent implements OnInit {
           relation: 'mailinglist', // include the owner object
         }
       })
-      .subscribe((Marketingplannerevents: Marketingplannerevents[]) => { this.Marketingplannerevents = Marketingplannerevents }
+      .subscribe((marketingplannerevents: Marketingplannerevents[]) => { this.Marketingplannerevents = marketingplannerevents }
       )
   }
 
   public getMailingCampaignMailings(): void {
     // select send/done/all/not send
-    //setTimeout(() => {
+    // setTimeout(() => {
     this.toggleCampaignMailing = [];
     this.togglecampaignclasstrans = [];
     this.toggleshorttext = [];
     this.htmlpreview = [];
 
     let filter;
-    if (this.filtermailingselect === "send") { filter = { where: { send: true } } }
-    if (this.filtermailingselect === "done") { filter = { where: { done: true } } }
-    if (this.filtermailingselect === "not send") { filter = { where: { send: false } } }
-    if (this.filtermailingselect === "all") { filter = "" }
+    if (this.filtermailingselect === 'send') { filter = { where: { send: true } } }
+    if (this.filtermailingselect === 'done') { filter = { where: { done: true } } }
+    if (this.filtermailingselect === 'not send') { filter = { where: { send: false } } }
+    if (this.filtermailingselect === 'all') { filter = '' }
     this.CampaignMailing = [];
     this.MarketingplannereventsApi.getMailing(this.selectedMarketingplannerevents.id, filter)
       .subscribe((CampaignMailing: Mailing[]) => {
         this.CampaignMailing = CampaignMailing,
-          //toggle for css class activation
+          // toggle for css class activation
           this.CampaignMailing.forEach((mailing, index) => {
             this.toggleCampaignMailing.push(false);
-            this.togglecampaignclasstrans.push(false); //transfer css
-            this.toggleshorttext.push(true); //show short text
-            this.htmlpreview.push(this.sanitizer.bypassSecurityTrustHtml(mailing.html)); //accept css innerhtml ng2
-            //this.getAnalyticsCampaign(index);
+            this.togglecampaignclasstrans.push(false); // transfer css
+            this.toggleshorttext.push(true); // show short text
+            this.htmlpreview.push(this.sanitizer.bypassSecurityTrustHtml(mailing.html)); // accept css innerhtml ng2
+            // this.getAnalyticsCampaign(index);
           }
           )
       });
-    //}, 500);
+    // }, 500);
   }
 
-  //copy from existing mails
+  // copy from existing mails
   copyFromMailingCampaign(i): void {
     this.CampaignMailing[i].html = this.copyfrommailing.html;
     this.CampaignMailing[i].subject = this.copyfrommailing.subject;
@@ -1524,12 +1537,12 @@ export class MarketingComponent implements OnInit {
   public showMailPreview(i): void {
     this.htmlpreview[i] = this.sanitizer.bypassSecurityTrustHtml(this.CampaignMailing[i].html);
     this.dialogsService
-      .confirm("", "", this.htmlpreview[i])
+      .confirm('', '', this.htmlpreview[i])
       .subscribe();
   }
 
   public createMarketingPlannerevents(): void {
-    this.RelationsApi.createMarketingplannerevents(this.option.id, { companyId: this.Account.companyId, name: "New" })
+    this.RelationsApi.createMarketingplannerevents(this.option.id, { companyId: this.Account.companyId, name: 'New' })
       .subscribe(res => {
         this.Marketingplannerevents.push(res),
           this.onSelectMarketingplannerevents(res),
@@ -1538,14 +1551,14 @@ export class MarketingComponent implements OnInit {
   }
 
   public createCampaignMailing(): void {
-    this.MarketingplannereventsApi.createMailing(this.selectedMarketingplannerevents.id, { title: "new" })
+    this.MarketingplannereventsApi.createMailing(this.selectedMarketingplannerevents.id, { title: 'new' })
       .subscribe(res => {
         this.CampaignMailing.push(res), this.toggleCampaignMailing.push(true),
-          this.togglecampaignclasstrans.push(false) //css fix
+          this.togglecampaignclasstrans.push(false) // css fix
       });
   }
 
-  public onSelectMarketingplannerevents(Marketingplannerevents: Marketingplannerevents): void {
+  public onSelectMarketingplannerevents(marketingplannerevents: Marketingplannerevents): void {
 
     this.Googleanalyticsreturn = '';
     this.avgTimeOnPage = '';
@@ -1553,32 +1566,32 @@ export class MarketingComponent implements OnInit {
     this.goalStartsAll = '';
     this.pageview = '';
 
-    //this.selectedMarketingplannerevents = undefined;
-    this.mailingaddresscampaign = []; //first clean up a few things
+    // this.selectedMarketingplannerevents = undefined;
+    this.mailingaddresscampaign = []; // first clean up a few things
     this.selectedItems = [];
-    this.selectedMarketingplannerevents = Marketingplannerevents; //select current
-    this.filtermailingselect = "all"; //standaard filter mailings
-    this.getMailingCampaignMailings(); //get mailings for specific campaign
-    //check for mailinglist and add to if not existing
-    if (this.selectedMarketingplannerevents.mailinglist == undefined) { this.selectedMarketingplannerevents.mailinglist = []; }
+    this.selectedMarketingplannerevents = marketingplannerevents; // select current
+    this.filtermailingselect = 'all'; // standaard filter mailings
+    this.getMailingCampaignMailings(); // get mailings for specific campaign
+    // check for mailinglist and add to if not existing
+    if (this.selectedMarketingplannerevents.mailinglist === undefined) { this.selectedMarketingplannerevents.mailinglist = []; }
     if (this.selectedMarketingplannerevents.mailinglist[0] !== undefined) {
       Object.keys(this.selectedMarketingplannerevents.mailinglist).forEach(key => {
-        let value = this.selectedMarketingplannerevents.mailinglist[key];
+        const value = this.selectedMarketingplannerevents.mailinglist[key];
         this.selectedItems.push(value.listname);
       })
     }
-    this.prepareFilterMaillist(); //quick selection list
-    this.urlckeditorupload = BASE_URL + "/api/Containers/" + this.option.id + "/upload/";
+    this.prepareFilterMaillist(); // quick selection list
+    this.urlckeditorupload = BASE_URL + '/api/Containers/' + this.option.id + '/upload/';
 
-    //set upload url for pictures
-    CKEDITOR.config.filebrowserBrowseUrl = BASE_URL + "/filemanager/" + this.option.id;
+    // set upload url for pictures
+    CKEDITOR.config.filebrowserBrowseUrl = BASE_URL + '/filemanager/' + this.option.id;
     CKEDITOR.config.filebrowserUploadUrl = this.urlckeditorupload;
-    CKEDITOR.config.filebrowserImageBrowseUrl = BASE_URL + "/filemanager/" + this.option.id;
+    CKEDITOR.config.filebrowserImageBrowseUrl = BASE_URL + '/filemanager/' + this.option.id;
     CKEDITOR.config.filebrowserImageUploadUrl = this.urlckeditorupload;
   }
 
 
-  //chipinput for mailings
+  // chipinput for mailings
   @ViewChild('chipInput') chipInput: MatInput;
   selectedItems: string[] = [];
   filteredItems: Observable<any[]>;
@@ -1624,7 +1637,7 @@ export class MarketingComponent implements OnInit {
     this.chipInput['nativeElement'].blur();
     this.selectedMarketingplannerevents.mailinglistId.splice(i);
     this.selectedMarketingplannerevents.mailinglist.splice(i);
-    this.saveMailingCampaign("saved");
+    this.saveMailingCampaign('saved');
   }
 
   // adding items
@@ -1653,30 +1666,32 @@ export class MarketingComponent implements OnInit {
   }
 
   toggleCampaignMailingNow(i): void {
-    //delay to anticipate css style change per mailing i = array mailing list
-    if (this.togglecampaignclasstrans[i] == true) { this.togglecampaignclasstrans[i] = false }
-    else this.togglecampaignclasstrans[i] = true;
-    setTimeout(() => {
-      if (this.toggleCampaignMailing[i] == true) { this.toggleCampaignMailing[i] = false }
-      else this.toggleCampaignMailing[i] = true;
-    }, 500);
+    // delay to anticipate css style change per mailing i = array mailing list
+    if (this.togglecampaignclasstrans[i] === true) { this.togglecampaignclasstrans[i] = false }
+    else {
+    this.togglecampaignclasstrans[i] = true;
+      setTimeout(() => {
+        if (this.toggleCampaignMailing[i] === true) { this.toggleCampaignMailing[i] = false }
+        else { this.toggleCampaignMailing[i] = true; }
+      }, 500);
+    }
   }
 
   toggleToFullText(i): void {
-    if (this.toggleshorttext[i] == false) { this.toggleshorttext[i] = true }
+    if (this.toggleshorttext[i] === false) { this.toggleshorttext[i] = true }
     else { this.toggleshorttext[i] = false }
   }
 
   saveMailingCampaign(message?): void {
-    //count for listview numbers
+    // count for listview numbers
 
 
 
     this.CampaignMailing.forEach(mailElement => {
-      mailElement.text = this.onChangeHtml(mailElement.html); //convert to text
+      mailElement.text = this.onChangeHtml(mailElement.html); // convert to text
 
 
-      //dats is set on select
+      // dats is set on select
       if (mailElement.date == null) {
         this.date = moment().format();
         mailElement.date = this.date
@@ -1684,31 +1699,33 @@ export class MarketingComponent implements OnInit {
       if (mailElement.timezone == null) {
         mailElement.timezone = moment.tz.guess();
       }
-      //time
+      // time
       if (mailElement.time == null) {
-        this.time = moment().format("hh:mm")
+        this.time = moment().format('hh:mm')
         mailElement.time = this.time;
       }
 
       mailElement.date = this.timeconv.convertTime(mailElement.date, mailElement.time, mailElement.timezone);
-      //console.log(mailElement.date);
+      // console.log(mailElement.date);
 
       this.MarketingplannereventsApi.updateByIdMailing(this.selectedMarketingplannerevents.id, mailElement.id, mailElement)
         .subscribe(res => res,
-          error => this.openSnackBar("Mailing could not be saved"));
+          error => this.openSnackBar('Mailing could not be saved'));
     }),
 
-      this.MarketingplannereventsApi.countMailing(this.selectedMarketingplannerevents.id, { "send": true })
+      this.MarketingplannereventsApi.countMailing(this.selectedMarketingplannerevents.id, { 'send': true })
         .subscribe(sendcount => {
           this.selectedMarketingplannerevents.countsend = sendcount.count,
-            this.MarketingplannereventsApi.countMailing(this.selectedMarketingplannerevents.id, { "send": false })
+            this.MarketingplannereventsApi.countMailing(this.selectedMarketingplannerevents.id, { 'send': false })
               .subscribe(notsendcount => {
                 this.selectedMarketingplannerevents.countnotsend = notsendcount.count,
-                  this.RelationsApi.updateByIdMarketingplannerevents(this.option.id, this.selectedMarketingplannerevents.id, this.selectedMarketingplannerevents)
+                  this.RelationsApi.updateByIdMarketingplannerevents(
+                    this.option.id, this.selectedMarketingplannerevents.id,
+                    this.selectedMarketingplannerevents)
                     .subscribe(res => {
-                      if (message) { this.openSnackBar("Saved") }
+                      if (message) { this.openSnackBar('Saved') }
                     },
-                      error => this.openSnackBar("Campaign could not be saved"))
+                      error => this.openSnackBar('Campaign could not be saved'))
               })
         })
   }
@@ -1722,7 +1739,7 @@ export class MarketingComponent implements OnInit {
   }
 
   deleteMailingCampaign(selectedOption): void {
-    if (selectedOption == true) {
+    if (selectedOption === true) {
       this.RelationsApi.destroyByIdMarketingplannerevents(this.option.id, this.selectedMarketingplannerevents.id)
         .subscribe(res => { this.getMailingCampaign(), this.selectedMarketingplannerevents = undefined });
     }
@@ -1737,15 +1754,15 @@ export class MarketingComponent implements OnInit {
   }
 
   deleteMailingCampaignof(selectedOption, i): void {
-    if (selectedOption == true) {
+    if (selectedOption === true) {
       this.MarketingplannereventsApi.destroyByIdMailing(this.selectedMarketingplannerevents.id, this.CampaignMailing[i].id)
-        .subscribe(res => { this.getMailingCampaignMailings, this.CampaignMailing.splice(i) });
+        .subscribe(res => { this.getMailingCampaignMailings(), this.CampaignMailing.splice(i) });
     }
   }
 
   openDialogScheduleMailingCampaign(): void {
-    let newtoggleCampaignMailing = [];
-    let newtogglecampaignclasstrans = [];
+    const newtoggleCampaignMailing = [];
+    const newtogglecampaignclasstrans = [];
     this.toggleCampaignMailing.forEach((item) => {
       newtoggleCampaignMailing.push(false)
       newtogglecampaignclasstrans.push(false)
@@ -1764,7 +1781,7 @@ export class MarketingComponent implements OnInit {
     this.saveMailingCampaign();
     if (selectedOption == true) {
 
-      let message = this.updatecampaigns();
+      const message = this.updatecampaigns();
       console.log(message),
         this.openSnackBar(message);
       this.saveMailingCampaign();
@@ -1775,72 +1792,73 @@ export class MarketingComponent implements OnInit {
   public updatecampaigns(): string {
     let message
     this.selectedMarketingplannerevents.scheduled = true;
-    if (this.selectedMarketingplannerevents.mailinglist.length < 1) { message = "Mailinglist missing" }
+    if (this.selectedMarketingplannerevents.mailinglist.length < 1) { message = 'Mailinglist missing' }
 
     if (message !== undefined) { return message }
 
-    let mailtolist = [];
-    let tolist = "";
+    const mailtolist = [];
+    let tolist = '';
 
-    //join multiple lists
+    // join multiple lists
     this.selectedMarketingplannerevents.mailinglist.forEach(list => {
       mailtolist.push(list.mailgunid)
     })
     if (this.selectedMarketingplannerevents.mailinglist.length > 1) {
-      //create comma seperate for mailgun processing
+      // create comma seperate for mailgun processing
       tolist = mailtolist.join(', ')
     }
 
-    else tolist = mailtolist.join();
+    else { tolist = mailtolist.join() };
 
     this.CampaignMailing.forEach(mailingElement => {
-      if (mailingElement.from == undefined) { message = "From field missing"; }
-      if (mailingElement.subject == undefined) { message = "Subject field empty"; }
+      if (mailingElement.from == undefined) { message = 'From field missing'; }
+      if (mailingElement.subject == undefined) { message = 'Subject field empty'; }
     })
 
     if (message !== undefined) { return message }
-    else
-
+    else {
       this.CampaignMailing.forEach(mailingElement => {
         if (mailingElement.selectedlists == undefined) { mailingElement.selectedlists = [] }
 
-        //check opened or clicked list only (listname = open/clicked + id)
+        // check opened or clicked list only (listname = open/clicked + id)
         if (mailingElement.toopened === true) {
           if (this.selectedMarketingplannerevents.mailinglist.length > 1) {
             this.selectedMarketingplannerevents.mailinglist.forEach(list => {
-              mailtolist.push("open" + list.mailgunid)
+              mailtolist.push('open' + list.mailgunid)
             })
-            //create comma seperate for mailgun processing
+            // create comma seperate for mailgun processing
             tolist = mailtolist.join(', ')
-          } else { console.log(tolist), tolist = "open" + tolist }
+          } else { console.log(tolist), tolist = 'open' + tolist }
         }
 
         if (mailingElement.toclicked === true) {
           if (this.selectedMarketingplannerevents.mailinglist.length > 1) {
             this.selectedMarketingplannerevents.mailinglist.forEach(list => {
-              mailtolist.push("clicked" + list.mailgunid)
+              mailtolist.push('clicked' + list.mailgunid)
             })
-            //create comma seperate for mailgun processing
+            // create comma seperate for mailgun processing
             tolist = mailtolist.join(', ')
-          } else { tolist = "clicked" + tolist }
+          } else { tolist = 'clicked' + tolist }
         }
+
 
         mailingElement.to = tolist;
         mailingElement.scheduled = true;
         mailingElement.selectedlists = this.selectedMarketingplannerevents.mailinglist;
       })
+    }
 
-    message = "Campaign Scheduled";
+    message = 'Campaign Scheduled';
     console.log(message);
     return message;
   }
 
   getAdwords(): void {
-    this.RelationsApi.getAdwords(this.option.id).subscribe((Adwords: Adwords[]) => this.Adwords = Adwords);
+    this.RelationsApi.getAdwords(this.option.id).subscribe((adwords: Adwords[]) => this.Adwords = adwords);
   }
 
-  onSelectAdwords(Adwords: Adwords): void {
-    this.selectedAdwords = Adwords;
+  onSelectAdwords(adwords: Adwords): void {
+    this.selectedAdwords = adwords;
   }
 
   getAdwordsCampaign(): void {
