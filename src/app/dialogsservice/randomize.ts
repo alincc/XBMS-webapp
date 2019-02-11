@@ -13,6 +13,7 @@ export interface Randomizer {
     Selmailinglists;
     addtomailing: false;
     timezone: string;
-    followupMailing: string;
+    followupmailing: string;
     followupdays: number;
-} 
+    openclickedorall: string;
+}

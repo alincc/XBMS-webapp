@@ -3935,6 +3935,8 @@ export class RelationsApi extends BaseLoopBackApi {
    *
    * @param {number} folluwupdays 
    *
+   * @param {string} openclickedorall 
+   *
    * @param {object} data Request data.
    *
    * This method does not accept any data. Supply an empty object.
@@ -3948,7 +3950,7 @@ export class RelationsApi extends BaseLoopBackApi {
    * This usually means the response is a `Relations` object.)
    * </em>
    */
-  public randomizemailing(id: any = {}, companyid: any = {}, templatemailingid: any = {}, startdate: any = {}, enddate: any = {}, dayoftheweek: any = {}, starthour: any = {}, endhour: any = {}, mailingLists: any = {}, campaignLists: any = {}, timezone: any = {}, addtomailing: any = {}, followupmailing: any = {}, folluwupdays: any = {}, customHeaders?: Function): Observable<any> {
+  public randomizemailing(id: any = {}, companyid: any = {}, templatemailingid: any = {}, startdate: any = {}, enddate: any = {}, dayoftheweek: any = {}, starthour: any = {}, endhour: any = {}, mailingLists: any = {}, campaignLists: any = {}, timezone: any = {}, addtomailing: any = {}, followupmailing: any = {}, folluwupdays: any = {}, openclickedorall: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "POST";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
     "/relations/randomizemailing/:id";
@@ -3970,6 +3972,7 @@ export class RelationsApi extends BaseLoopBackApi {
     if (typeof addtomailing !== 'undefined' && addtomailing !== null) _urlParams.addtomailing = addtomailing;
     if (typeof followupmailing !== 'undefined' && followupmailing !== null) _urlParams.followupmailing = followupmailing;
     if (typeof folluwupdays !== 'undefined' && folluwupdays !== null) _urlParams.folluwupdays = folluwupdays;
+    if (typeof openclickedorall !== 'undefined' && openclickedorall !== null) _urlParams.openclickedorall = openclickedorall;
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
     return result;
   }

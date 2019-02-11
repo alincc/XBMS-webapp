@@ -5,13 +5,14 @@
         </mat-card-title>
     </mat-card-header>
 
-    <mat-button-toggle-group style="width: 100%" fxFlexAlign="start" #group="matButtonToggleGroup"
-        [vertical]="false">
+    <mat-button-toggle-group style="width: 100%" fxFlexAlign="start" #group="matButtonToggleGroup" [vertical]="false">
 
-        <mat-button-toggle style="width: 50%" matTooltip="Add to Campaigns" value="randomcampaign" (click)="toggleaddtomailing(false)">
+        <mat-button-toggle style="width: 50%" matTooltip="Add to Campaigns" value="randomcampaign"
+            (click)="toggleaddtomailing(false)">
             <mat-icon>today</mat-icon>
         </mat-button-toggle>
-        <mat-button-toggle style="width: 50%" matTooltip="Create Campaign based on list" value="randommaillist" (click)="toggleaddtomailing(true)">
+        <mat-button-toggle style="width: 50%" matTooltip="Create Campaign based on list" value="randommaillist"
+            (click)="toggleaddtomailing(true)">
             <mat-icon>list</mat-icon>
         </mat-button-toggle>
     </mat-button-toggle-group>
@@ -34,7 +35,8 @@
                 <table>
                     <tr>
                         <td>
-                            <mat-checkbox [(ngModel)]="checkboxlistmail[i1]" (click)="onAddMailinglist(i1)"></mat-checkbox>
+                            <mat-checkbox [(ngModel)]="checkboxlistmail[i1]" (click)="onAddMailinglist(i1)">
+                            </mat-checkbox>
                         </td>
                         <td><span class="box">{{mailingList.listname}}</span></td>
                     </tr>
@@ -58,7 +60,8 @@
                 <table>
                     <tr>
                         <td>
-                            <mat-checkbox [(ngModel)]="checkboxlistcamp[i2]" (click)="onAddCampaignlist(i2)"></mat-checkbox>
+                            <mat-checkbox [(ngModel)]="checkboxlistcamp[i2]" (click)="onAddCampaignlist(i2)">
+                            </mat-checkbox>
                         </td>
                         <td><span class="box">{{campaignList.name}}</span></td>
                     </tr>
@@ -81,8 +84,8 @@
                     </td>
                     <td>
                         <mat-datepicker #picker2 class="form-half-width"></mat-datepicker>
-                        <input [min]="minDate" [max]="maxDate" [matDatepicker]="randomstartdate" [(ngModel)]=data.startdate
-                            placeholder="Send Date">
+                        <input [min]="minDate" [max]="maxDate" [matDatepicker]="randomstartdate"
+                            [(ngModel)]=data.startdate placeholder="Send Date">
                         <mat-datepicker-toggle matSuffix [for]="randomstartdate"></mat-datepicker-toggle>
                         <mat-datepicker #randomstartdate></mat-datepicker>
                     </td>
@@ -105,7 +108,8 @@
                     </td>
                     <td>
                         <mat-form-field>
-                            <mat-select placeholder="Days for sending" [formControl]="daysform" multiple [(ngModel)]=data.dayoftheweek>
+                            <mat-select placeholder="Days for sending" [formControl]="daysform" multiple
+                                [(ngModel)]=data.dayoftheweek>
                                 <mat-option *ngFor="let day of days" [value]="day.value">{{day.viewValue}}</mat-option>
                             </mat-select>
                         </mat-form-field>
@@ -117,7 +121,19 @@
                     <td>
                         <mat-form-field>
                             <mat-select placeholder="Start Time" [(ngModel)]=data.starthour>
-                                <mat-option *ngFor="let hour of hours" [value]="hour.value">{{hour.viewValue}}</mat-option>
+                                <mat-option *ngFor="let hour of hours" [value]="hour.value">{{hour.viewValue}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <mat-form-field>
+                            <mat-select placeholder="Timezone" [(ngModel)]="data.timezone">
+                                <mat-option *ngFor="let timezone of timezones" [value]="timezone.value">
+                                    {{ timezone.value }}
+                                </mat-option>
                             </mat-select>
                         </mat-form-field>
                     </td>
@@ -128,7 +144,8 @@
                     <td>
                         <mat-form-field>
                             <mat-select placeholder="End Time" [(ngModel)]=data.endhour>
-                                <mat-option *ngFor="let hour of hours" [value]="hour.value">{{hour.viewValue}}</mat-option>
+                                <mat-option *ngFor="let hour of hours" [value]="hour.value">{{hour.viewValue}}
+                                </mat-option>
                             </mat-select>
                         </mat-form-field>
                     </td>
@@ -140,20 +157,35 @@
                         <label>Add Follow up Mail</label>
                     </td>
                     <td>
-                        <mat-select placeholder="Copy from:" [(value)]="copyfrommailing">
-                            <mat-option *ngFor="let Mailing of data.Mailing" [value]="data.Mailing">
-                              {{ Mailing.subject }} {{ Mailing.date }}
+                        <mat-select placeholder="Add Follow up Mail" [(ngModel)]=data.followupmailing>
+                            <mat-option *ngFor="let Mailing of data.Mailing" [value]='Mailing.id'>
+                                {{ Mailing.subject }} {{ Mailing.date }}
                             </mat-option>
-                          </mat-select>
+                        </mat-select>
                     </td>
                 </tr>
                 <tr>
-                    <tr>How many days after first email (the first consequent day avaialble)</tr>
-                    <tr><mat-form-field>
+                    <td>How many days after first email (the first consequent day avaialble)</td>
+                    <td>
+                        <mat-form-field>
                             <mat-select placeholder="Send follow up days after" [(ngModel)]=data.followupdays>
-                                <mat-option *ngFor="let FollowupDay of FollowupDays">{{FollowupDay}}</mat-option>
+                                <mat-option *ngFor="let followupDay of followupdays" [value]="followupDay.value">
+                                    {{followupDay.value}}</mat-option>
                             </mat-select>
-                        </mat-form-field></tr>
+                        </mat-form-field>
+                    </td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>
+                        <mat-form-field>
+                            <mat-select [(ngModel)]="data.openclickedorall">
+                                <mat-option value="all">All</mat-option>
+                                <mat-option value="clicked">Clicked</mat-option>
+                                <mat-option value="opened">Opened</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </td>
                 </tr>
             </table>
         </div>

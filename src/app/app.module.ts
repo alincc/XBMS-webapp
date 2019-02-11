@@ -29,9 +29,9 @@ import { SpeechRecognitionService } from './shared/speechservice/speechservice';
 import { AuthGuard } from './shared/auth.guard';
 import 'hammerjs';
 import { LoginComponent } from './login/login.component';
-import { ConfirmDialog }   from './dialogsservice/confirm-dialog.component';
-import { RandomService }   from './dialogsservice/random.service';
-import { DialogsService }   from './dialogsservice/dialogs.service';
+import { ConfirmDialog } from './dialogsservice/confirm-dialog.component';
+import { RandomService } from './dialogsservice/random.service';
+import { DialogsService } from './dialogsservice/dialogs.service';
 import { RandomDialog } from './dialogsservice/random-dialog.component';
 import { FileUploadModule } from 'ng2-file-upload';
 
@@ -53,7 +53,7 @@ import { ModalGalleryModule } from '@ks89/angular-modal-gallery';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
 
-import {FlexLayoutModule} from "@angular/flex-layout";
+import {FlexLayoutModule} from '@angular/flex-layout';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { GooglePlacesDirective } from './google-places.directive';
 import { ReturnpageComponent } from './returnpage/returnpage.component';
@@ -105,7 +105,6 @@ import { PwaService } from './pwa.service';
     FormsModule, ReactiveFormsModule, HttpClientModule, MatGridListModule, MatSlideToggleModule,
     MatDatepickerModule, MatExpansionModule, MatButtonToggleModule, MatChipsModule, MatBadgeModule,
     ModalGalleryModule.forRoot(),
-    
     AgmCoreModule.forRoot({
       apiKey: 'AIzaSyA0RsiG74QFKTDJZQ1Cl6kso_iOqnAYjV8',
       libraries: ["places"]
@@ -117,7 +116,7 @@ import { PwaService } from './pwa.service';
     PwaService ,
     SpeechRecognitionService,
     LinkedinService,
-    AuthGuard,  
+    AuthGuard,
     RandomService,
     DialogsService,
     WordpressService,

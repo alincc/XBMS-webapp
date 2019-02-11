@@ -36,7 +36,8 @@ import {
   MarketingplannereventsApi,
   Marketingplannerevents,
   Adwords,
-  AdwordsApi
+  AdwordsApi,
+  timezones
 } from '../shared/';
 import { FileUploader } from 'ng2-file-upload';
 import {
@@ -110,7 +111,7 @@ export interface UploadResult {
 })
 
 export class MarketingComponent implements OnInit {
-
+  public timezones = timezones;
   public showgallery = false;
   public uploaderContent: BehaviorSubject<string> = new BehaviorSubject('Drop File Here');
   public linkedinPostId;
@@ -131,7 +132,6 @@ export class MarketingComponent implements OnInit {
   public Translation: Translation[];
   public Translationjob: Translationjob[];
   public Relations: Relations[];
-
   public Googleanalytics: Googleanalytics[];
   public Marketingplannerevents: Marketingplannerevents[];
   public selectedMarketingplannerevents: Marketingplannerevents;
@@ -162,7 +162,7 @@ export class MarketingComponent implements OnInit {
   public ButtonEvent: ButtonEvent;
   public PreviewConfig: PreviewConfig;
   public ImageModalEvent: ImageModalEvent
-  //public buttonsConfigFull: ButtonsConfig;
+  // public buttonsConfigFull: ButtonsConfig;
   public images: Image[] = [];
   public imagesNew: Image[] = [];
 
@@ -172,11 +172,11 @@ export class MarketingComponent implements OnInit {
   public jobs = [];
 
   public selectedAdwords: Adwords;
-  //delete?? calls only
+  // delete?? calls only
   public limitresult: 10;
   public urlpicture: string;
   public urluse: string;
-  //show results max amount, to do: create page??
+  // show results max amount, to do: create page??
   public oneaddress;
   public onemonth = 2592000000;
 
@@ -195,10 +195,8 @@ export class MarketingComponent implements OnInit {
   public const4header = '';
   public createnewmailinglistonfield = false;
   public uploadlistId = [];
-
   public mailinglisttotal = 0;
   public mailinglistcount = 0;
-
 
   public numbers = [
     { value: '1', viewValue: '1' },
@@ -206,18 +204,6 @@ export class MarketingComponent implements OnInit {
     { value: '30', viewValue: '30' }
   ];
   public selectedtimezone;
-  public timezones = [
-    { value: 'America/Los_Angeles' },
-    { value: 'America/Chicago' },
-    { value: 'America/Phoenix' },
-    { value: 'America/Dallas' },
-    { value: 'America/New_York' },
-    { value: 'Europe/London' },
-    { value: 'Europe/Amsterdam' },
-    { value: 'Europe/Moscow' },
-    { value: 'Asia/Hong_Kong' }
-  ];
-
   public filtermailing = [
     'send',
     'done',
@@ -305,16 +291,12 @@ export class MarketingComponent implements OnInit {
     public LinkedinService: LinkedinService,
     public WordpressService: WordpressService,
     public dialogsService: DialogsService,
-    // public Randomizer: Randomizer,
     public randomService: RandomService,
     public PublicationsApi: PublicationsApi,
     public location: Location,
     public router: Router,
     public route: ActivatedRoute,
     public containerApi: ContainerApi) {
-    // interface admincompanypage {
-    //   (id: string, name: string)=> void;
-    // }
     LoopBackConfig.setBaseURL(BASE_URL);
     LoopBackConfig.setApiVersion(API_VERSION);
   }
@@ -659,7 +641,7 @@ export class MarketingComponent implements OnInit {
     this.randomService.openDialog(
       this.option.id, this.Account.companyId, this.selectedMailing, this.Mailinglist, this.Marketingplannerevents, this.Mailing)
     // console.log(this.selectedMailing)
-    if (this.randomService.ready == true) {
+    if (this.randomService.ready === true) {
       this.confirmRandomMailing(this.randomService.randomizer);
     }
   }
@@ -1169,8 +1151,6 @@ export class MarketingComponent implements OnInit {
         this.maillist.push(importvalue);
       }
     })
-
-
   }
 
   // convert html to text
@@ -1188,7 +1168,7 @@ export class MarketingComponent implements OnInit {
 
       if (this.createnewmailinglistonfield === true) {
         // get all unique mailinglist names and trim
-        let uniquelistname = Array.from(new Set(this.maillist.map((item: any) => item.consts.mailing.trim())));
+        const uniquelistname = Array.from(new Set(this.maillist.map((item: any) => item.consts.mailing.trim())));
         // check if it exists in current mailinglist !error prone as it is text only..
         this.Mailinglist.forEach((value) => {
           const checkpos = uniquelistname.indexOf(value.listname)
@@ -1414,7 +1394,7 @@ export class MarketingComponent implements OnInit {
 
 
   /* Leave in for future purpose when exceeding API max size split in to sections
-    Propably better option to move other list changes and iteration server side*/
+    Propably better option to move other list changes and iteration to server side*/
 
   // public getEmailAddresses(): void {
   //   this.setHeaderPrepImport(),
@@ -1500,7 +1480,6 @@ export class MarketingComponent implements OnInit {
 
   public getMailingCampaignMailings(): void {
     // select send/done/all/not send
-    // setTimeout(() => {
     this.toggleCampaignMailing = [];
     this.togglecampaignclasstrans = [];
     this.toggleshorttext = [];
@@ -1525,7 +1504,6 @@ export class MarketingComponent implements OnInit {
           }
           )
       });
-    // }, 500);
   }
 
   // copy from existing mails
@@ -1678,8 +1656,8 @@ export class MarketingComponent implements OnInit {
   }
 
   toggleToFullText(i): void {
-    if (this.toggleshorttext[i] === false) { this.toggleshorttext[i] = true }
-    else { this.toggleshorttext[i] = false }
+    if (this.toggleshorttext[i] === false) { this.toggleshorttext[i] = true;
+    } else { this.toggleshorttext[i] = false }
   }
 
   saveMailingCampaign(message?): void {
@@ -1689,7 +1667,6 @@ export class MarketingComponent implements OnInit {
 
     this.CampaignMailing.forEach(mailElement => {
       mailElement.text = this.onChangeHtml(mailElement.html); // convert to text
-
 
       // dats is set on select
       if (mailElement.date == null) {

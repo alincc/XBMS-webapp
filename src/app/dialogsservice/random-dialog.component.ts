@@ -3,6 +3,7 @@ import { Component, Inject } from '@angular/core';
 import { Randomizer } from './randomize';
 import { MatDialog, MAT_DIALOG_DATA } from '@angular/material';
 import { FormControl } from '@angular/forms';
+import { timezones } from '../shared/';
 
 export interface Day {
     value: string;
@@ -27,11 +28,13 @@ export interface Hour {
 
 
 export class RandomDialog {
-
     public checkboxlistmail = [];
     public checkboxlistcamp = [];
     public randomize = false;
     public daysform = new FormControl();
+    public openclickedorall: string;
+    public nrofdays: number;
+    public selectedfollowupmail;
 
     public days: Day[] = [
         { value: '1', viewValue: 'Monday' },
@@ -79,6 +82,8 @@ export class RandomDialog {
         { value: '23', viewValue: '11PM' },
         { value: '24', viewValue: '12PM' }
     ];
+
+    public timezones = timezones;
 
     constructor(
         public dialogRef: MatDialogRef<Randomizer>,

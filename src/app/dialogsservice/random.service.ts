@@ -12,8 +12,6 @@ import { timeconv } from '../shared/timeconv';
 @Injectable()
 
 export class RandomService {
-  //animal: string;
-  //name: string;
   public randomizer: Randomizer;
   public ready = false;
 
@@ -26,12 +24,11 @@ export class RandomService {
     console.log(mailinglist)
     const dialogRef = this.dialog.open(RandomDialog, {
       width: '1000px',
-      height: '600px',
-      data: { mailingLists: mailinglist, templatemailing: template, campaignLists: campaignlist }
+      height: '800px',
+      data: { mailingLists: mailinglist, templatemailing: template, campaignLists: campaignlist, Mailing: Mailing }
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      
       this.randomizer = result;
 
       this.randomizer.mailingLists = [];
@@ -39,18 +36,15 @@ export class RandomService {
         this.randomizer.mailingLists.push(mailinglist[indx].id)
       });
 
-      this.randomizer.campaignLists =[];
+      this.randomizer.campaignLists = [];
       this.randomizer.Selcampaignlists.forEach(indx => {
         this.randomizer.campaignLists.push(campaignlist[indx].id)
       });
-
-      
       console.log('The dialog was closed', this.randomizer);
- 
       this.RelationsApi.randomizemailing(
         accountid,
         companyid,
-        this.randomizer.templatemailing.id,  
+        this.randomizer.templatemailing.id,
         this.randomizer.startdate,
         this.randomizer.enddate,
         this.randomizer.dayoftheweek,
@@ -60,19 +54,13 @@ export class RandomService {
         this.randomizer.campaignLists,
         this.randomizer.timezone,
         this.randomizer.addtomailing,
-        this.randomizer.followupMailing,
-        this.randomizer.followupdays
+        this.randomizer.followupmailing,
+        this.randomizer.followupdays,
+        this.randomizer.openclickedorall
         ).subscribe(res => console.log(res))
 
       this.ready = true;
     });
   }
-  // public startdate: Date;
-  // public enddate: Date;
-  // public dayoftheweek: string;
-  // public starthour: string;
-  // public endhour: string;
-  // public campaignlists = [];
-  // public templatemailingid: string; 
 
 }
