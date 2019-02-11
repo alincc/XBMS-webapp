@@ -134,6 +134,28 @@
                     </td>
                 </tr>
             </table>
+            <table>
+                <tr>
+                    <td>
+                        <label>Add Follow up Mail</label>
+                    </td>
+                    <td>
+                        <mat-select placeholder="Copy from:" [(value)]="copyfrommailing">
+                            <mat-option *ngFor="let Mailing of data.Mailing" [value]="data.Mailing">
+                              {{ Mailing.subject }} {{ Mailing.date }}
+                            </mat-option>
+                          </mat-select>
+                    </td>
+                </tr>
+                <tr>
+                    <tr>How many days after first email (the first consequent day avaialble)</tr>
+                    <tr><mat-form-field>
+                            <mat-select placeholder="Send follow up days after" [(ngModel)]=data.followupdays>
+                                <mat-option *ngFor="let FollowupDay of FollowupDays">{{FollowupDay}}</mat-option>
+                            </mat-select>
+                        </mat-form-field></tr>
+                </tr>
+            </table>
         </div>
     </div>
     <div mat-dialog-actions>

@@ -9,10 +9,15 @@ export interface Day {
     viewValue: string;
 }
 
+export interface FollowupDay {
+    value: string;
+}
+
 export interface Hour {
     value: string;
     viewValue: string;
 }
+
 
 @Component({
     templateUrl: './random-dialog.component.html',
@@ -36,6 +41,16 @@ export class RandomDialog {
         { value: '5', viewValue: 'Friday' },
         { value: '6', viewValue: 'Saturday' },
         { value: '7', viewValue: 'Sunday' }
+    ];
+
+    public followupdays: FollowupDay[] = [
+        { value: '1'},
+        { value: '2'},
+        { value: '3'},
+        { value: '4'},
+        { value: '5'},
+        { value: '6'},
+        { value: '7'}
     ];
 
     public hours: Hour[] = [

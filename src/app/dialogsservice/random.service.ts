@@ -22,7 +22,7 @@ export class RandomService {
     public RelationsApi: RelationsApi,
     public dialog: MatDialog) { }
 
-  openDialog(accountid, companyid, template, mailinglist, campaignlist) {
+  openDialog(accountid, companyid, template, mailinglist, campaignlist, Mailing) {
     console.log(mailinglist)
     const dialogRef = this.dialog.open(RandomDialog, {
       width: '1000px',
@@ -43,6 +43,8 @@ export class RandomService {
       this.randomizer.Selcampaignlists.forEach(indx => {
         this.randomizer.campaignLists.push(campaignlist[indx].id)
       });
+
+      
       console.log('The dialog was closed', this.randomizer);
  
       this.RelationsApi.randomizemailing(
@@ -57,7 +59,9 @@ export class RandomService {
         this.randomizer.mailingLists,
         this.randomizer.campaignLists,
         this.randomizer.timezone,
-        this.randomizer.addtomailing
+        this.randomizer.addtomailing,
+        this.randomizer.followupMailing,
+        this.randomizer.followupdays
         ).subscribe(res => console.log(res))
 
       this.ready = true;

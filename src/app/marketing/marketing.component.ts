@@ -657,7 +657,7 @@ export class MarketingComponent implements OnInit {
 
   randomizeMailing(): void {
     this.randomService.openDialog(
-      this.option.id, this.Account.companyId, this.selectedMailing, this.Mailinglist, this.Marketingplannerevents)
+      this.option.id, this.Account.companyId, this.selectedMailing, this.Mailinglist, this.Marketingplannerevents, this.Mailing)
     // console.log(this.selectedMailing)
     if (this.randomService.ready == true) {
       this.confirmRandomMailing(this.randomService.randomizer);
@@ -1738,6 +1738,7 @@ export class MarketingComponent implements OnInit {
       });
   }
 
+  //check destroy is sufficient?
   deleteMailingCampaign(selectedOption): void {
     if (selectedOption === true) {
       this.RelationsApi.destroyByIdMarketingplannerevents(this.option.id, this.selectedMarketingplannerevents.id)

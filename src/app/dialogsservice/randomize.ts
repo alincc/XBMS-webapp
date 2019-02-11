@@ -13,4 +13,6 @@ export interface Randomizer {
     Selmailinglists;
     addtomailing: false;
     timezone: string;
+    followupMailing: string;
+    followupdays: number;
 } 
