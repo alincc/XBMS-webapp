@@ -1,3 +1,4 @@
+import { Marketingplannerevents } from '../shared/';
 
 export interface Randomizer {
     startdate: Date;

@@ -128,17 +128,6 @@
                     </td>
                 </tr>
                 <tr>
-                    <td>
-                        <mat-form-field>
-                            <mat-select placeholder="Timezone" [(ngModel)]="data.timezone">
-                                <mat-option *ngFor="let timezone of timezones" [value]="timezone.value">
-                                    {{ timezone.value }}
-                                </mat-option>
-                            </mat-select>
-                        </mat-form-field>
-                    </td>
-                </tr>
-                <tr>
                     <td><label>endhour</label>
                     </td>
                     <td>
@@ -150,8 +139,20 @@
                         </mat-form-field>
                     </td>
                 </tr>
+                <tr>
+                    <td><label>Timezone</label></td>
+                    <td>
+                        <mat-form-field>
+                            <mat-select placeholder="Timezone" [(ngModel)]="data.timezone">
+                                <mat-option *ngFor="let timezone of timezones" [value]="timezone.value">
+                                    {{ timezone.value }}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </td>
+                </tr>
             </table>
-            <table>
+            <table class="followupmail">
                 <tr>
                     <td>
                         <label>Add Follow up Mail</label>

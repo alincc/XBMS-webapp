@@ -381,9 +381,6 @@
                   </button>
                 </td>
               </tr>
-              <tr>
-                <button a mat-raised-button (click)="randomizeMailing()">Randomize Mailing</button>
-              </tr>
             </div>
 
             <div fxFlex="90%" class="listview">
@@ -544,6 +541,12 @@
                             <mat-icon>note_add</mat-icon>
                             <span>New</span>
                           </button>
+                          <button mat-menu-item (click)="randomizeMailing()">
+                              <mat-icon>merge_type</mat-icon>
+                              <span>Schedule</span>
+                            </button>
+
+                
                         </mat-menu>
                       </mat-toolbar>
                     </th>
@@ -560,6 +563,9 @@
                       <button a mat-raised-button (click)="copyFromMailing()">Copy
                         <mat-icon>copy</mat-icon>
                       </button>
+                      <button a mat-raised-button (click)="randomizeMailing()">Randomize Mailing
+                          <mat-icon>merge_type</mat-icon>
+                      </button>
                     </td>
                   </tr>
                   <tr>
@@ -569,7 +575,6 @@
                       </mat-form-field>
                     </td>
                     <td>
-
                       <mat-form-field class="form-full-width">
                         <input matInput [(ngModel)]=selectedMailing.title placeholder="Custom Titel/ID" class="InputField">
                       </mat-form-field>
