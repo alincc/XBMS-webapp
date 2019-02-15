@@ -17,4 +17,5 @@ export interface Randomizer {
     followupmailing: string;
     followupdays: number;
     openclickedorall: string;
+    Mailing;
 }
