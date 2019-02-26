@@ -37,7 +37,7 @@ import {
   Marketingplannerevents,
   Adwords,
   AdwordsApi,
-  timezones
+  timezones,
 } from '../shared/';
 import { FileUploader } from 'ng2-file-upload';
 import {
@@ -85,7 +85,7 @@ declare const CKEDITOR: any;
 const URL = 'http://localhost:3000/api/containers/tmp/upload';
 
 import { MarketingchannelsComponent } from './marketingchannels/marketingchannels.component';
-
+import { MaileditorComponent } from './maileditor/maileditor.component';
 
 export interface UploadResult {
   result: 'failure' | 'success';
@@ -273,6 +273,7 @@ export class MarketingComponent implements OnInit {
 
   constructor(
     private MarketingChannel: MarketingchannelsComponent,
+    //private Maileditor: MaileditorComponent,
     private sanitizer: DomSanitizer,
     public AdwordsApi: AdwordsApi,
     public timeconv: timeconv,

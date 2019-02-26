@@ -355,14 +355,17 @@
           <mat-button-toggle-group style="width: 100%" fxFlex="3 3 40px" fxFlexAlign="start" #group="matButtonToggleGroup"
             [vertical]="false">
 
-            <mat-button-toggle style="width: 33%" matTooltip="Campaigns" value="campaign" (click)="getMailingCampaign()">
+            <mat-button-toggle style="width: 25%" matTooltip="Campaigns" value="campaign" (click)="getMailingCampaign()">
               <mat-icon>today</mat-icon>
             </mat-button-toggle>
-            <mat-button-toggle style="width: 33%" matTooltip="Mailing List" value="maillist">
+            <mat-button-toggle style="width: 25%" matTooltip="Mailing List" value="maillist">
               <mat-icon>list</mat-icon>
             </mat-button-toggle>
-            <mat-button-toggle style="width: 33%" matTooltip="Templates" value="mailing">
+            <mat-button-toggle style="width: 25%" matTooltip="Templates" value="mailing">
               <mat-icon>rate_review</mat-icon>
+            </mat-button-toggle>
+            <mat-button-toggle style="width: 25%" matTooltip="Templates Editor" value="maileditor">
+              <mat-icon>edit</mat-icon>
             </mat-button-toggle>
           </mat-button-toggle-group>
 
@@ -513,6 +516,14 @@
               </table>
             </div>
 
+          </div>
+
+          <div fxFlex="80%" fxLayout="column" fxFlexOffset="10px" class="bottomlist" *ngIf="group.value == 'maileditor'">
+
+            <app-maileditor>
+              
+            </app-maileditor>
+            
           </div>
         </div>
 

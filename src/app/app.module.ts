@@ -59,6 +59,8 @@ import { GooglePlacesDirective } from './google-places.directive';
 import { ReturnpageComponent } from './returnpage/returnpage.component';
 import { MarketingchannelsComponent } from './marketing/marketingchannels/marketingchannels.component';
 import { PwaService } from './pwa.service';
+import { MaileditorComponent } from './marketing/maileditor/maileditor.component';
+import {DragDropModule} from '@angular/cdk/drag-drop';
 
 @NgModule({
   declarations: [
@@ -76,7 +78,8 @@ import { PwaService } from './pwa.service';
     LinkedinComponent,
     GooglePlacesDirective,
     ReturnpageComponent,
-    MarketingchannelsComponent
+    MarketingchannelsComponent,
+    MaileditorComponent
   ],
 
    entryComponents: [
@@ -96,6 +99,7 @@ import { PwaService } from './pwa.service';
     RouterModule,
     AppRoutingModule,
     MatCheckboxModule,
+    DragDropModule,
     MatIconModule, MatSnackBarModule,
     MatSidenavModule, MatTooltipModule,
     MatMenuModule, MatSelectModule, MatTabsModule, MatInputModule, MatCardModule, MatToolbarModule,

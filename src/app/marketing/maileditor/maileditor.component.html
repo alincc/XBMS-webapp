@@ -1,0 +1,27 @@
+<div fxFlex="100%" fxLayout="row">
+  <div fxFlex>
+
+    <div class="example-container">
+      <h2>Tools</h2>
+
+      <div cdkDropList #toolsetList="cdkDropList" [cdkDropListData]="toolset" [cdkDropListConnectedTo]="[mailtemplateList]"
+        class="example-list" (cdkDropListDropped)="drop($event)">
+        <div class="example-box" *ngFor="let item of toolset" cdkDrag>{{item}}</div>
+      </div>
+    </div>
+  </div>
+  <div fxFlex>
+
+    <div class="example-container">
+      <h2>Template</h2>
+
+      <div cdkDropList #mailtemplateList="cdkDropList" [cdkDropListData]="mailtemplate" [cdkDropListConnectedTo]="[toolsetList]"
+        class="example-list" (cdkDropListDropped)="drop($event)">
+        <div class="example-box" *ngFor="let item of mailtemplate" cdkDrag>{{item}}</div>
+      </div>
+    </div>
+  </div>
+  <div fxFlex="10%">
+
+  </div>
+</div>
