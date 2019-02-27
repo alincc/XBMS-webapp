@@ -61,6 +61,7 @@ import { MarketingchannelsComponent } from './marketing/marketingchannels/market
 import { PwaService } from './pwa.service';
 import { MaileditorComponent } from './marketing/maileditor/maileditor.component';
 import {DragDropModule} from '@angular/cdk/drag-drop';
+import { MaileditorModel} from './marketing/maileditor/maileditormodel/maileditormodels';
 
 @NgModule({
   declarations: [
@@ -127,7 +128,8 @@ import {DragDropModule} from '@angular/cdk/drag-drop';
     GoogleMapService,
     IconService,
     timeconv,
-    MarketingchannelsComponent
+    MarketingchannelsComponent,
+    MaileditorModel
   ],
   bootstrap: [AppComponent],
   exports: [

@@ -6,7 +6,7 @@
 
       <div cdkDropList #toolsetList="cdkDropList" [cdkDropListData]="toolset" [cdkDropListConnectedTo]="[mailtemplateList]"
         class="example-list" (cdkDropListDropped)="drop($event)">
-        <div class="example-box" *ngFor="let item of toolset" cdkDrag>{{item}}</div>
+        <div class="example-box" *ngFor="let item of toolset" cdkDrag>{{item.type}}</div>
       </div>
     </div>
   </div>
@@ -17,11 +17,16 @@
 
       <div cdkDropList #mailtemplateList="cdkDropList" [cdkDropListData]="mailtemplate" [cdkDropListConnectedTo]="[toolsetList]"
         class="example-list" (cdkDropListDropped)="drop($event)">
-        <div class="example-box" *ngFor="let item of mailtemplate" cdkDrag>{{item}}</div>
+        <div class="example-box" *ngFor="let item of mailtemplate" cdkDrag
+        (click)="onSelectTemplatePart(item, i)">{{item.type}}</div>
       </div>
     </div>
   </div>
   <div fxFlex="10%">
-
+    <div *ngIf="Column">Edit Column</div>
+    <div *ngIf="Section">Edit Section</div>
+    <div *ngIf="Text">Edit Text</div>
+    <div *ngIf="Image">Edit Image</div>
+    <div *ngIf="Button">Edit Button</div>
   </div>
 </div>

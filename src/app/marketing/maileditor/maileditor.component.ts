@@ -1,6 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import {CdkDragDrop, moveItemInArray, transferArrayItem, copyArrayItem} from '@angular/cdk/drag-drop';
-import { Maileditormodels, MaileditorImage } from './maileditormodel/maileditormodels';
+import { CdkDragDrop, moveItemInArray, transferArrayItem, copyArrayItem } from '@angular/cdk/drag-drop';
+import {
+  Maileditormodels, MaileditorSection, MaileditorColumn,
+  MaileditorImage, MaileditorText, MaileditorButton, MaileditorModel
+} from './maileditormodel/maileditormodels';
+
 
 @Component({
   selector: 'app-maileditor',
@@ -9,10 +13,15 @@ import { Maileditormodels, MaileditorImage } from './maileditormodel/maileditorm
 })
 export class MaileditorComponent implements OnInit {
 
-  public maileditorModel : Maileditormodels;
-  public maileditorImage: MaileditorImage;
+  // public maileditorModel:Maileditormodels;
+  // public maileditorSection:MaileditorSection;
+  public Section = false;
+  public Column = false;
+  public Image = false;
+  public Text = false;
+  public Button = false;
 
-  constructor() { }
+  constructor(public maileditorModel: MaileditorModel) { }
 
   ngOnInit() {
   }
@@ -20,27 +29,27 @@ export class MaileditorComponent implements OnInit {
   // creat array per 
 
   toolset = [
-    this.maileditorImage,
-    'section',
-    'column',
-    'text',
-    'image',
-    'button'
+    this.maileditorModel.maileditorSection,
+    this.maileditorModel.maileditorColumn,
+    this.maileditorModel.maileditorImage,
+    this.maileditorModel.maileditorText,
+    this.maileditorModel.maileditorButton
   ];
 
   // needs at least item at init
   mailtemplate = [
-    'column'
+    this.maileditorModel.maileditorColumn
   ];
 
   drop(event: CdkDragDrop<string[]>) {
+    // console.log(this.maileditorModel.maileditorSection)
     if (event.previousContainer === event.container) {
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
     } else {
       copyArrayItem(event.previousContainer.data,
-                        event.container.data,
-                        event.previousIndex,
-                        event.currentIndex);
+        event.container.data,
+        event.previousIndex,
+        event.currentIndex);
     }
   }
 
@@ -50,6 +59,47 @@ export class MaileditorComponent implements OnInit {
   */
   private ConvertToMail(): void {
 
+  }
+
+  // Section
+  // Column
+  // Image
+  // Text
+  // Button
+
+  private onSelectTemplatePart(item, i): void {
+    this.Section = false;
+    this.Column = false;
+    this.Image = false;
+    this.Text = false;
+    this.Button = false;
+
+    switch (item.type) {
+      case "Section": {
+        this.Section = true;
+        break;
+      }
+      case "Column": {
+        this.Column = true;
+        break;
+      }
+      case "Image": {
+        this.Image = true;
+        break;
+      }
+      case "Text": {
+        this.Text = true;
+        break;
+      }
+      case "Button": {
+        this.Button = true;
+        break;
+      }
+      default: {
+        //statements; 
+        break;
+      }
+    }
   }
 
 }
