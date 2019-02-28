@@ -20,6 +20,8 @@ export class MaileditorComponent implements OnInit {
   public Image = false;
   public Text = false;
   public Button = false;
+  public ColumnArray = [];
+  public 
 
   constructor(public maileditorModel: MaileditorModel) { }
 
@@ -45,11 +47,16 @@ export class MaileditorComponent implements OnInit {
     // console.log(this.maileditorModel.maileditorSection)
     if (event.previousContainer === event.container) {
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+      // if eventcontainer is new column create new eventcontainer 
     } else {
+      let columnarray = []
+      columnarray.push
+      console.log(event.container)
       copyArrayItem(event.previousContainer.data,
         event.container.data,
         event.previousIndex,
         event.currentIndex);
+
     }
   }
 
