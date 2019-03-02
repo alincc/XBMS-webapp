@@ -1,56 +1,73 @@
 <div fxFlex="100%" fxLayout="row">
-  <div fxFlex>
 
-    <div class="example-container">
-      <h2>Tools</h2>
+  <div fxFlex fxLayout="row">
+    <div fxFlex cdkDropListGroup>
+      <div fxFlex class="example-container">
+        <h2>Tools</h2>
 
-      <div cdkDropList #toolsetList="cdkDropList" [cdkDropListData]="toolset"
-        [cdkDropListConnectedTo]="[mailtemplateList]" class="example-list" (cdkDropListDropped)="drop($event)">
-        <div class="example-box" *ngFor="let item of toolset" cdkDrag
-        >{{item.type}}</div>
-      </div>
-    </div>
-  </div>
-
-  <div fxFlex>
-
-    <div class="example-container">
-      <h2>Template</h2>
-
-      <div cdkDropList #mailtemplateList="cdkDropList" [cdkDropListData]="mailtemplate"
-        [cdkDropListConnectedTo]="[toolsetList]" class="example-list" (cdkDropListDropped)="drop($event)">
-        <div class="example-box" *ngFor="let item of mailtemplate" cdkDrag (click)="onSelectTemplatePart(item, i)">
-          {{item.type}}
-
-          <div *ngIf="item.type === Column">
-            <!-- create ckDropList #Column and bind to other columns/section through 
-          ondrop event -->
-            <div cdkDropList #mailColumnList="cdkDropList" [cdkDropListData]="mailColumn[i]"
-              [cdkDropListConnectedTo]="[toolsetList]" class="example-list" (cdkDropListDropped)="drop($event)">
-              <div class="example-box" *ngFor="let item of mailColumn[i]" cdkDrag
-                (click)="onSelectTemplatePart(item, i)">{{item.type}}
-              </div>
-
-              <div *ngIf="item.type === Section"></div>
-              <div *ngIf="item.type === Text"></div>
-              <div *ngIf="item.type === Image"></div>
-              <div *ngIf="item.type === Button"></div>
-            </div>
-          </div>
-
+        <div cdkDropList #toolsetList="cdkDropList" [cdkDropListData]="toolset"
+          [cdkDropListConnectedTo]="[mailtemplateList]" class="example-list" (cdkDropListDropped)="drop($event)">
+          <div class="example-box" *ngFor="let item of toolset" cdkDrag>{{item.type}}</div>
         </div>
       </div>
+
+        <div fxFlex fxLayout="column">
+          <h2>Template</h2>
+
+       
+        <div class="example-container" *ngFor="let section of mailtemplateArray; let i1 = index" fxFlex fxLayout="row">
+          section
+          <div class="example-list" *ngFor="let column of mailtemplateArray[i1]; let i2 = index" fxFlex fxLayout="column">
+            column  
+            <div class="example-box" cdkDropList #mailtemplateList="cdkDropList" [cdkDropListData]="columnArray[i2]" fxFlex fxLayout="row"
+               (cdkDropListDropped)="drop($event)">
+              <div class="example-box" *ngFor="let column of mailtemplateArray[i1][i2]; let i = index;" cdkDrag (click)="onSelectTemplatePart(item, i)">
+                  {{item.type}}
+              </div>
+
+              </div>
+              <mat-icon (click)=" addToSectionArray(i2)">add</mat-icon>
+          </div>
+          <mat-icon (click)="addToMailTemplateArray(i1)">add</mat-icon>
+        </div>
+      </div>
+
+
     </div>
   </div>
 
-    <div fxFlex="10%">
-      <div *ngIf="Column">Edit Column</div>
-      <div *ngIf="Section">Edit Section</div>
-      <div *ngIf="Text">Edit Text</div>
-      <div *ngIf="Image">Edit Image</div>
-      <div *ngIf="Button">Edit Button</div>
-    </div>
 
+            <!-- <div cdkDropList #mailtemplateList="cdkDropList" [cdkDropListData]="mailtemplate"
+             class="example-list" (cdkDropListDropped)="drop($event)">
+            <div class="example-box" *ngFor="let item of mailtemplate; let i = index;" cdkDrag (click)="onSelectTemplatePart(item, i)">
+              {{item.type}}
 
+              <div *ngIf="item.type === Column">
 
+                <div cdkDropList #mailColumnList="cdkDropList" [cdkDropListData]="mailColumn[i]"
+                   class="example-list" (cdkDropListDropped)="drop($event)">
+                  <div class="example-box" *ngFor="let item of ColumnArray[i]" cdkDrag
+                    (click)="onSelectTemplatePart(item, i)">{{item.type}}
+                  </div>
+
+                  <div *ngIf="item.type === Section"></div>
+                  <div *ngIf="item.type === Text"></div>
+                  <div *ngIf="item.type === Image"></div>
+                  <div *ngIf="item.type === Button"></div>
+                </div>
+              </div>
+
+            </div>
+          </div> -->
+
+  <div fxFlex="10%">
+    <div *ngIf="Column">Edit Column</div>
+    <div *ngIf="Section">Edit Section</div>
+    <div *ngIf="Text">Edit Text</div>
+    <div *ngIf="Image">Edit Image</div>
+    <div *ngIf="Button">Edit Button</div>
   </div>
+
+
+
+</div>
