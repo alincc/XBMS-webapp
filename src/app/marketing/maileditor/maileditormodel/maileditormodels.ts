@@ -11,9 +11,10 @@ export interface MaileditorColumn{
     type: string;
 }
 
-export interface MaileditorText {
+export interface MaileditorTextInterface {
     type: string;
     content: string;
+    style: string;
 }
 
 export interface MaileditorImage {
@@ -54,8 +55,8 @@ export class MaileditorModel {
       public maileditorText: MaileditorText =  
         {
           type: "Text",
-          content: "Write your Content here"
-          
+          content: "Text",
+          style: "" 
         }
       
     
@@ -65,6 +66,18 @@ export class MaileditorModel {
           buttonurl: "www.xbms.io"
         }
 
+}
 
 
+export class MaileditorText implements MaileditorTextInterface {
+  type: string;
+  content: string;
+  style: string;
+  constructor(data?:  MaileditorTextInterface ) {
+  Object.assign(this, data);
+}
+
+public static factory(data: MaileditorTextInterface ): MaileditorText{
+  return new MaileditorText(data);
+}
 }

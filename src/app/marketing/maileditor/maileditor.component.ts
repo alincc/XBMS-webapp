@@ -21,6 +21,8 @@ export class MaileditorComponent implements OnInit {
   public Text = false;
   public Button = false;
 
+  public maileditorText: MaileditorText;
+
   // template --> Section --> Column
   // section can contain only column
   // template can contain only sections
@@ -42,16 +44,17 @@ export class MaileditorComponent implements OnInit {
     // this.addToMailTemplateArray()
     // this.addToSectionArray(0)
     // console.log(this.mailtemplateArray)
+    this.mailtemplateArray[0][0].push(this.maileditorModel.maileditorText);
   }
 
   addToMailTemplateArray(): void {
-    const section = [];
+    const section = [[]];
     this.mailtemplateArray.push(section);
-  }
+  }r
 
-  addToSectionArray(i): void {
+  addToSectionArray(i1): void {
     const column = [];
-    this.mailtemplateArray[i].push(column);
+    this.mailtemplateArray[i1].push(column);
   }
 
 
@@ -81,13 +84,13 @@ export class MaileditorComponent implements OnInit {
 
   }
 
-  // Section
-  // Column
-  // Image
-  // Text
-  // Button
+  private onChangeColor(color: string): void {
+    console.log(color, this.maileditorText);
+    this.maileditorText.style = color;//'color: '+color;
 
-  private onSelectTemplatePart(item, i): void {
+  }
+
+  private onSelectTemplatePart(item: MaileditorText, i): void {
     this.Section = false;
     this.Column = false;
     this.Image = false;
@@ -108,7 +111,9 @@ export class MaileditorComponent implements OnInit {
         break;
       }
       case 'Text': {
+        //let itemtext: MaileditorText;
         this.Text = true;
+        this.maileditorText = item;
         break;
       }
       case 'Button': {

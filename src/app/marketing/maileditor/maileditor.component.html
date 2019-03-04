@@ -1,43 +1,42 @@
-<div fxFlex="100%" fxLayout="row">
-
-  <div fxFlex fxLayout="row">
-    <div fxFlex cdkDropListGroup>
-      <div fxFlex class="example-container">
-        <h2>Tools</h2>
-
-        <div cdkDropList #toolsetList="cdkDropList" [cdkDropListData]="toolset"
-          [cdkDropListConnectedTo]="[mailtemplateList]" class="example-list" (cdkDropListDropped)="drop($event)">
-          <div class="example-box" *ngFor="let item of toolset" cdkDrag>{{item.type}}</div>
-        </div>
-      </div>
-
-        <div fxFlex fxLayout="column">
-          <h2>Template</h2>
-
-       
-        <div class="example-container" *ngFor="let section of mailtemplateArray; let i1 = index" fxFlex fxLayout="row">
-          section
-          <div class="example-list" *ngFor="let column of mailtemplateArray[i1]; let i2 = index" fxFlex fxLayout="column">
-            column  
-            <div class="example-box" cdkDropList #mailtemplateList="cdkDropList" [cdkDropListData]="columnArray[i2]" fxFlex fxLayout="row"
-               (cdkDropListDropped)="drop($event)">
-              <div class="example-box" *ngFor="let column of mailtemplateArray[i1][i2]; let i = index;" cdkDrag (click)="onSelectTemplatePart(item, i)">
-                  {{item.type}}
-              </div>
-
-              </div>
-              <mat-icon (click)=" addToSectionArray(i2)">add</mat-icon>
-          </div>
-          <mat-icon (click)="addToMailTemplateArray(i1)">add</mat-icon>
-        </div>
-      </div>
+<div fxFlex fxLayout="row" fxLayoutAlign="start stretch" cdkDropListGroup>
 
 
+  <div fxFlex="20%" class="tools">
+    <h2>Tools</h2>
+
+    <div cdkDropList #toolsetList="cdkDropList" [cdkDropListData]="toolset"
+       class="example-list" (cdkDropListDropped)="drop($event)">
+      <div class="example-box" *ngFor="let item of toolset" cdkDrag>{{item.type}}</div>
     </div>
   </div>
 
+  <div fxFlex="60%" fxLayout="column" class="template" gdAlignRows="start stretch">
+    <h2>Template</h2>
+    <div class="example-container" *ngFor="let section of mailtemplateArray; let i1 = index" fxFlex fxLayout="row">
+      <div class="example-list" *ngFor="let column of section; let i2 = index" fxFlex fxLayout="column">
+        <div class="example-box" fxFlex fxLayout="row" 
+        cdkDropList 
+        #mailtemplateList="cdkDropList" 
+        [cdkDropListData]="mailtemplateArray[i1][i2]" 
+        (cdkDropListDropped)="drop($event)">
+          <div class="example-box" 
+          *ngFor="let item of column; let i3 = index;" 
+          (click)="onSelectTemplatePart(item, i3)" 
+          cdkDrag
+          [style.color]="item.style">
+            {{item.type}}
+            <div *ngIf="item.type === Text">{{item.content}}</div>
+          </div>
+        </div>     
+      </div>
+      <mat-icon (click)="addToSectionArray(i1)">add</mat-icon>
+    </div>
+    <mat-icon (click)="addToMailTemplateArray()">add</mat-icon>
+  </div>
 
-            <!-- <div cdkDropList #mailtemplateList="cdkDropList" [cdkDropListData]="mailtemplate"
+
+
+  <!-- <div cdkDropList #mailtemplateList="cdkDropList" [cdkDropListData]="mailtemplate"
              class="example-list" (cdkDropListDropped)="drop($event)">
             <div class="example-box" *ngFor="let item of mailtemplate; let i = index;" cdkDrag (click)="onSelectTemplatePart(item, i)">
               {{item.type}}
@@ -60,10 +59,22 @@
             </div>
           </div> -->
 
-  <div fxFlex="10%">
+  <div fxFlex="20%">
     <div *ngIf="Column">Edit Column</div>
     <div *ngIf="Section">Edit Section</div>
-    <div *ngIf="Text">Edit Text</div>
+    <div *ngIf="Text">
+      <h1>Edit Text</h1>
+      <input matInput 
+      [(ngModel)]= maileditorText.content 
+      placeholder="text" 
+      [style.color]="color"
+      [cpPosition]="'bottom'"
+      [cpPositionOffset]="'50%'"
+      [cpPositionRelativeToArrow]="true"
+      [colorPicker]="color"
+      (colorPickerChange)="cmykColor=onChangeColor($event);color=$event;">
+    </div>
+
     <div *ngIf="Image">Edit Image</div>
     <div *ngIf="Button">Edit Button</div>
   </div>

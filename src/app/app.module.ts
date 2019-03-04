@@ -62,7 +62,7 @@ import { PwaService } from './pwa.service';
 import { MaileditorComponent } from './marketing/maileditor/maileditor.component';
 import {DragDropModule} from '@angular/cdk/drag-drop';
 import { MaileditorModel} from './marketing/maileditor/maileditormodel/maileditormodels';
-
+import { ColorPickerModule } from 'ngx-color-picker';
 @NgModule({
   declarations: [
     XlsxFileUploadComponent,
@@ -89,6 +89,7 @@ import { MaileditorModel} from './marketing/maileditor/maileditormodel/mailedito
   ],
 
   imports: [
+    ColorPickerModule,
     NgxChartsModule,
     FlexLayoutModule,
     CKEditorModule,
