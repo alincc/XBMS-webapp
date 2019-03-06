@@ -11,10 +11,16 @@ export interface MaileditorColumn{
     type: string;
 }
 
+//edit out interface name
 export interface MaileditorTextInterface {
     type: string;
     content: string;
-    style: string;
+    style: {
+      "color": string;
+      "background-color": string;
+      "font-family": string;
+      "fontsize": string;
+    };
 }
 
 export interface MaileditorImage {
@@ -56,7 +62,12 @@ export class MaileditorModel {
         {
           type: "Text",
           content: "Text",
-          style: "" 
+          style: {
+            "color": "black",
+            "background-color": "white",
+            "font-family": "Verdana",
+            "fontsize": "12pt",
+          }
         }
       
     
@@ -69,15 +80,20 @@ export class MaileditorModel {
 }
 
 
-export class MaileditorText implements MaileditorTextInterface {
-  type: string;
-  content: string;
-  style: string;
-  constructor(data?:  MaileditorTextInterface ) {
-  Object.assign(this, data);
-}
+ export class MaileditorText implements MaileditorTextInterface {
+   type: string;
+   content: string;
+   style: {
+    "color": "black",
+    "background-color": "white",
+    "font-family": "Verdana",
+    "fontsize": "12pt",
+  };
+   constructor(data?:  MaileditorTextInterface ) {
+   Object.assign(this, data);
+ }
 
-public static factory(data: MaileditorTextInterface ): MaileditorText{
-  return new MaileditorText(data);
-}
+ public static factory(data: MaileditorTextInterface ): MaileditorText{
+   return new MaileditorText(data);
+ }
 }

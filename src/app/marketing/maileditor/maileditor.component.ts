@@ -21,15 +21,19 @@ export class MaileditorComponent implements OnInit {
   public Text = false;
   public Button = false;
 
-  public maileditorText: MaileditorText;
+  public maileditorText: MaileditorText = new MaileditorText();
 
   // template --> Section --> Column
   // section can contain only column
   // template can contain only sections
 
-  // public columnArray = [];
-  // public sectionArray = []; // this.ColumnArray
-  public mailtemplateArray = [[[]]]; // needs at least one item at init
+  public columnArray = [];
+  public sectionArray = []; // this.ColumnArray
+   public mailtemplateArray = [[[]]]; 
+  
+
+  //create version 0n drop event
+// needs at least one item at init
 
   // Connect Toolsect to SectionArray
   toolset = [
@@ -41,9 +45,7 @@ export class MaileditorComponent implements OnInit {
   constructor(public maileditorModel: MaileditorModel) { }
 
   ngOnInit() {
-    // this.addToMailTemplateArray()
-    // this.addToSectionArray(0)
-    // console.log(this.mailtemplateArray)
+    //init first component
     this.mailtemplateArray[0][0].push(this.maileditorModel.maileditorText);
   }
 
@@ -59,21 +61,27 @@ export class MaileditorComponent implements OnInit {
 
 
   // creat array per
-  drop(event: CdkDragDrop<string[]>) {
-    // console.log(this.maileditorModel.maileditorSection)
-    if (event.previousContainer === event.container) {
+  drop(event: CdkDragDrop<string[]>, i1, i2 ) {
+    console.log(i1, i2, this.mailtemplateArray)
+    if (event.previousContainer === event.container ) {
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
       // if eventcontainer is new column create new eventcontainer
+    } else if (event.previousContainer.id === "cdk-drop-list-0") {
+      let newdata: MaileditorText = new MaileditorText();
+      newdata = event.previousContainer.data[event.previousIndex];
+      this.mailtemplateArray[i1][i2].push(newdata);
+      //  copyArrayItem(event.previousContainer.data,
+      //    event.container.data,
+      //    event.previousIndex,
+      //    event.currentIndex);
     } else {
-      // let columnarray = []
-      // columnarray.push
-      console.log(event.container)
-      copyArrayItem(event.previousContainer.data,
+      transferArrayItem(event.previousContainer.data,
         event.container.data,
         event.previousIndex,
         event.currentIndex);
+      }
+
     }
-  }
 
 
   /**  Convert to html template
@@ -84,13 +92,8 @@ export class MaileditorComponent implements OnInit {
 
   }
 
-  private onChangeColor(color: string): void {
-    console.log(color, this.maileditorText);
-    this.maileditorText.style = color;//'color: '+color;
-
-  }
-
-  private onSelectTemplatePart(item: MaileditorText, i): void {
+  private onSelectTemplatePart(item, i3): void {
+    //let item = this.mailtemplateArray[i1][i2][i3]
     this.Section = false;
     this.Column = false;
     this.Image = false;
