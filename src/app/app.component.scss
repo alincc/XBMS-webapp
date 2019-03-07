@@ -4,6 +4,13 @@ body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,textarea,p,
   padding:0;
 }
 
+.topview{
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+
 .menulogo{
   margin-top: 50px;
   height: 100px;
@@ -107,7 +114,7 @@ html,body {
 .topview{
   margin: 0;
   padding: 0;
-  position: relative;
+  height: 100%;
 }
 
 .maintoolbar1{
@@ -208,14 +215,13 @@ mat-list-item {
 
 
 .sidenav-container {
-  width: 100%;
-  
-  
+  width: 100%
+
 }
 
 .sidenav-content {
   width: 100%;
- 
+  height: 100%;
 }
 
 

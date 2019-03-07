@@ -33,7 +33,7 @@ export class MaileditorComponent implements OnInit {
   
 
   //create version 0n drop event
-// needs at least one item at init
+  // needs at least one item at init
 
   // Connect Toolsect to SectionArray
   toolset = [
@@ -62,18 +62,18 @@ export class MaileditorComponent implements OnInit {
 
   // creat array per
   drop(event: CdkDragDrop<string[]>, i1, i2 ) {
-    console.log(i1, i2, this.mailtemplateArray)
+    console.log(i1, i2, event)
     if (event.previousContainer === event.container ) {
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
       // if eventcontainer is new column create new eventcontainer
     } else if (event.previousContainer.id === "cdk-drop-list-0") {
-      let newdata: MaileditorText = new MaileditorText();
-      newdata = event.previousContainer.data[event.previousIndex];
+      let type = event.previousContainer.data
+      [event.previousIndex]
+  
+      let newdata = this.createNewItem(type)
+  
+      
       this.mailtemplateArray[i1][i2].push(newdata);
-      //  copyArrayItem(event.previousContainer.data,
-      //    event.container.data,
-      //    event.previousIndex,
-      //    event.currentIndex);
     } else {
       transferArrayItem(event.previousContainer.data,
         event.container.data,
@@ -82,6 +82,21 @@ export class MaileditorComponent implements OnInit {
       }
 
     }
+
+  private createNewItem(type){
+    if (type = "Text"){
+      let newdata: MaileditorText = new MaileditorText();
+      newdata.type = "Text";
+      newdata.content= "Text";
+      newdata.style = {
+        "color": "black",
+        "background-color": "white",
+        "font-family": "Verdana",
+        "fontsize": "12pt",
+      }
+      return newdata
+    }
+  }
 
 
   /**  Convert to html template
