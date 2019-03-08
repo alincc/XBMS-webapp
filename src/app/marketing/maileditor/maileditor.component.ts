@@ -67,10 +67,15 @@ export class MaileditorComponent implements OnInit {
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
       // if eventcontainer is new column create new eventcontainer
     } else if (event.previousContainer.id === "cdk-drop-list-0") {
-      let type = event.previousContainer.data
-      [event.previousIndex]
+      let arrayItem = [];
+      event.previousContainer.data.forEach((element) =>
+      {arrayItem.push(element)})
+      let type = arrayItem[event.previousIndex].type;
+      console.log(type, arrayItem)
   
-      let newdata = this.createNewItem(type)
+      let newdata = this.createNewItem(type);
+
+
   
       
       this.mailtemplateArray[i1][i2].push(newdata);
@@ -83,8 +88,8 @@ export class MaileditorComponent implements OnInit {
 
     }
 
-  private createNewItem(type){
-    if (type = "Text"){
+  private createNewItem(type: string){
+    if (type === "Text"){
       let newdata: MaileditorText = new MaileditorText();
       newdata.type = "Text";
       newdata.content= "Text";
