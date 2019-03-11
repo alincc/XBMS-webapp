@@ -3,7 +3,6 @@
 
   <div fxFlex="20%" class="tools">
     <h2>Tools</h2>
-
     <div cdkDropList #toolsetList="cdkDropList" [cdkDropListData]="toolset" class="example-list"
       (cdkDropListDropped)="drop($event)">
       <div class="item-box" *ngFor="let item of toolset" cdkDrag>{{item.type}}</div>
@@ -13,19 +12,22 @@
   <div fxFlex="60%" fxLayout="column" class="template">
     <h2>Template</h2>
     <div class="example-container" *ngFor="let section of mailtemplateArray; let i1 = index" fxFlex fxLayout="row">
-      <div class="sectionlabel">Section</div>
-      <div class="example-list" *ngFor="let column of section; let i2 = index" fxFlex fxLayout="column">
-        <div class="columnlabel">Column</div>
-        <div class="column-box" fxFlex fxLayout="row" cdkDropList #mailtemplateList="cdkDropList"
+      <label class="sectionlabel">Section <mat-icon class="iconsize-10" matSuffix>mode_edit</mat-icon></label>
+      <div class="example-list section.style" *ngFor="let column of section; let i2 = index" fxFlex fxLayout="column">
+        <label class="columnlabel">Column <mat-icon class="iconsize-10" matSuffix>mode_edit</mat-icon></label>
+        <div class="column-box column.style" fxFlex fxLayout="row" cdkDropList #mailtemplateList="cdkDropList"
           [cdkDropListData]="mailtemplateArray[i1][i2]" (cdkDropListDropped)="drop($event, i1, i2)">
           <div class="item-box" *ngFor="let item of column; let i3 = index;" 
           (click)="onSelectTemplatePart(item, i3)" cdkDrag>
             <div class="itemlabel">{{item.type}}</div>
             <div *ngIf="item.type ==='Text'" 
             [ngStyle]="item.style">{{item.content}}</div>
+            <div *ngIf="item.type === 'Image'"
+            [ngStyle]="item.style"><app-fileupload></app-fileupload></div>
           </div>
         </div>
       </div>
+    
       <mat-icon (click)="addToSectionArray(i1)">add</mat-icon>
     </div>
     <mat-icon (click)="addToMailTemplateArray()">add</mat-icon>
@@ -87,7 +89,20 @@
       </table>
     </div>
 
-    <div *ngIf="Image">Edit Image</div>
+    <div *ngIf="Image">Edit Image
+      <table>
+        <tr><td><mat-form-field>
+          <input [(ngModel)]=maileditorImage.style.width type="text" matInput placeholder="width">
+          <mat-icon matSuffix>mode_edit</mat-icon>
+        </mat-form-field></td>
+      <td>px/%</td></tr>
+      <tr><td><mat-form-field>
+        <input [(ngModel)]=maileditorImage.style.height type="text" matInput placeholder="height">
+        <mat-icon matSuffix>mode_edit</mat-icon>
+      </mat-form-field></td>
+    <td>px/%</td></tr>
+      </table>
+    </div>
     <div *ngIf="Button">Edit Button</div>
   </div>
 

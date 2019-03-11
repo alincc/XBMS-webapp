@@ -63,6 +63,7 @@ import { MaileditorComponent } from './marketing/maileditor/maileditor.component
 import {DragDropModule} from '@angular/cdk/drag-drop';
 import { MaileditorModel} from './marketing/maileditor/maileditormodel/maileditormodels';
 import { ColorPickerModule } from 'ngx-color-picker';
+import { FileuploadComponent } from './shared/fileupload/fileupload.component';
 @NgModule({
   declarations: [
     XlsxFileUploadComponent,
@@ -80,7 +81,8 @@ import { ColorPickerModule } from 'ngx-color-picker';
     GooglePlacesDirective,
     ReturnpageComponent,
     MarketingchannelsComponent,
-    MaileditorComponent
+    MaileditorComponent,
+    FileuploadComponent
   ],
 
    entryComponents: [

@@ -23,9 +23,15 @@ export interface MaileditorTextInterface {
   };
 }
 
-export interface MaileditorImage {
+export interface MaileditorImageInterface {
   type: string;
   url: string;
+  style: {
+    "color": string;
+    "background-color": string;
+    "width": string;
+    "height": string;
+  };
 }
 
 export interface MaileditorButton {
@@ -51,10 +57,16 @@ export class MaileditorModel {
       type: "Column"
     }
 
-  public maileditorImage: MaileditorImage =
+  public maileditorImage: MaileditorImageInterface =
     {
       type: "Image",
-      url: ""
+      url: "",
+      style: {
+        "color": "",
+        "background-color": "",
+        "width":"",
+        "height": "",
+      }
     }
 
 
@@ -88,6 +100,26 @@ export class MaileditorText implements MaileditorTextInterface {
     "background-color": "white",
     "font-family": "Verdana",
     "fontsize": "12pt",
+  }
+  constructor(data?: MaileditorTextInterface) {
+    Object.assign(this, data);
+  }
+
+  public static factory(data: MaileditorTextInterface): MaileditorText {
+    return new MaileditorText(data);
+  }
+
+}
+
+export class MaileditorImage implements MaileditorImageInterface {
+  type: string;
+  content: string;
+  url: string;
+  style: {
+    "color": string,
+    "background-color": string,
+    "width":string,
+    "height": string,
   }
   constructor(data?: MaileditorTextInterface) {
     Object.assign(this, data);

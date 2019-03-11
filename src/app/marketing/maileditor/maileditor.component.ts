@@ -4,6 +4,7 @@ import {
   Maileditormodels, MaileditorSection, MaileditorColumn,
   MaileditorImage, MaileditorText, MaileditorButton, MaileditorModel
 } from './maileditormodel/maileditormodels';
+import { FileuploadComponent } from '../../shared/fileupload/fileupload.component'
 
 
 @Component({
@@ -22,6 +23,7 @@ export class MaileditorComponent implements OnInit {
   public Button = false;
 
   public maileditorText: MaileditorText = new MaileditorText();
+  public maileditorImage: MaileditorImage = new MaileditorImage();
 
   // template --> Section --> Column
   // section can contain only column
@@ -72,12 +74,7 @@ export class MaileditorComponent implements OnInit {
       {arrayItem.push(element)})
       let type = arrayItem[event.previousIndex].type;
       console.log(type, arrayItem)
-  
       let newdata = this.createNewItem(type);
-
-
-  
-      
       this.mailtemplateArray[i1][i2].push(newdata);
     } else {
       transferArrayItem(event.previousContainer.data,
@@ -90,17 +87,30 @@ export class MaileditorComponent implements OnInit {
 
   private createNewItem(type: string){
     if (type === "Text"){
-      let newdata: MaileditorText = new MaileditorText();
-      newdata.type = "Text";
-      newdata.content= "Text";
-      newdata.style = {
+      let newtext: MaileditorText = new MaileditorText();
+      newtext.type = "Text";
+      newtext.content= "Text";
+      newtext.style = {
         "color": "black",
         "background-color": "white",
         "font-family": "Verdana",
         "fontsize": "12pt",
       }
-      return newdata
+      return newtext
     }
+    if (type === "Image"){
+      let newImage: MaileditorImage = new MaileditorImage();
+      newImage.type = "Image";
+      newImage.url= "www.xbms.io";
+      newImage.style = {
+        "color": "black",
+        "background-color": "white",
+        "width": "100px",
+        "height": "100px",
+      }
+      return newImage
+    }
+    
   }
 
 
@@ -131,6 +141,7 @@ export class MaileditorComponent implements OnInit {
       }
       case 'Image': {
         this.Image = true;
+        this.maileditorImage = item;
         break;
       }
       case 'Text': {
