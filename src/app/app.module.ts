@@ -61,7 +61,6 @@ import { MarketingchannelsComponent } from './marketing/marketingchannels/market
 import { PwaService } from './pwa.service';
 import { MaileditorComponent } from './marketing/maileditor/maileditor.component';
 import {DragDropModule} from '@angular/cdk/drag-drop';
-import { MaileditorModel} from './marketing/maileditor/maileditormodel/maileditormodels';
 import { ColorPickerModule } from 'ngx-color-picker';
 import { FileuploadComponent } from './shared/fileupload/fileupload.component';
 @NgModule({
@@ -131,8 +130,7 @@ import { FileuploadComponent } from './shared/fileupload/fileupload.component';
     GoogleMapService,
     IconService,
     timeconv,
-    MarketingchannelsComponent,
-    MaileditorModel
+    MarketingchannelsComponent
   ],
   bootstrap: [AppComponent],
   exports: [

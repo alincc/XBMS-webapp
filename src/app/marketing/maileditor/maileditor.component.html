@@ -12,14 +12,15 @@
   <div fxFlex="60%" fxLayout="column" class="template">
     <h2>Template</h2>
     <div class="example-container" *ngFor="let section of mailtemplateArray; let i1 = index" fxFlex fxLayout="row">
-      <label class="sectionlabel">Section <mat-icon class="iconsize-10" matSuffix>mode_edit</mat-icon></label>
-      <div class="example-list section.style" *ngFor="let column of section; let i2 = index" fxFlex fxLayout="column">
-        <label class="columnlabel">Column <mat-icon class="iconsize-10" matSuffix>mode_edit</mat-icon></label>
-        <div class="column-box column.style" fxFlex fxLayout="row" cdkDropList #mailtemplateList="cdkDropList"
+      <label class="sectionlabel">Section <mat-icon (click)="onSelectSectionPart(i1)" class="iconsize-10" matSuffix>mode_edit</mat-icon></label>
+      <div [ngStyle]="sectionStyleArray[i1].style" *ngFor="let column of section; let i2 = index" fxFlex fxLayout="column">
+        <label class="columnlabel">Column <mat-icon (click)="onSelectColumnPart(i1, i2)" class="iconsize-10" matSuffix>mode_edit</mat-icon></label>
+        <div  [ngStyle]= "columnStyleArray[i1][i2].style" fxFlex fxLayout="row" cdkDropList #mailtemplateList="cdkDropList"
           [cdkDropListData]="mailtemplateArray[i1][i2]" (cdkDropListDropped)="drop($event, i1, i2)">
           <div class="item-box" *ngFor="let item of column; let i3 = index;" 
           (click)="onSelectTemplatePart(item, i3)" cdkDrag>
-            <div class="itemlabel">{{item.type}}</div>
+            <!-- <div class="itemlabel">{{item.type}}</div> -->
+            <!-- class="column-box" Delete or integrate in ngstyle?-->
             <div *ngIf="item.type ==='Text'" 
             [ngStyle]="item.style">{{item.content}}</div>
             <div *ngIf="item.type === 'Image'"
@@ -34,8 +35,61 @@
   </div>
 
   <div fxFlex="20%">
-    <div *ngIf="Column">Edit Column</div>
-    <div *ngIf="Section">Edit Section</div>
+
+    <div *ngIf="Column">Edit Column
+      <table>
+        <tr><td><mat-form-field>
+          <input [(ngModel)]=maileditorColumn.style.width type="text" matInput placeholder="width">
+          <mat-icon matSuffix>mode_edit</mat-icon>
+        </mat-form-field></td>
+      <td>px/%</td></tr>
+      <tr><td><mat-form-field>
+        <input [(ngModel)]=maileditorColumn.style.height type="text" matInput placeholder="height">
+        <mat-icon matSuffix>mode_edit</mat-icon>
+      </mat-form-field></td>
+    <td>px/%</td></tr>
+    <tr>
+      <td>Color</td>
+      <td>
+          <input [style.background]="rgbaText"
+         [value]="maileditorColumn.style['background-color']"
+         [style.background]="maileditorColumn.style['background-color']"
+         [cpAlphaChannel]="'always'"
+         [cpOutputFormat]="'hex'"
+         [cpPosition]="'left'"
+        [(colorPicker)]="maileditorColumn.style['background-color']"/>
+      </td>
+    </tr>
+      </table>
+    </div>
+
+    <div *ngIf="Section">Edit Section
+    <table>
+      <tr><td><mat-form-field>
+        <input [(ngModel)]=maileditorSection.style.width type="text" matInput placeholder="width">
+        <mat-icon matSuffix>mode_edit</mat-icon>
+      </mat-form-field></td>
+    <td>px/%</td></tr>
+    <tr><td><mat-form-field>
+      <input [(ngModel)]=maileditorSection.style.height type="text" matInput placeholder="height">
+      <mat-icon matSuffix>mode_edit</mat-icon>
+    </mat-form-field></td>
+  <td>px/%</td></tr>
+  <tr>
+      <td>Color</td>
+      <td>
+          <input [style.background]="rgbaText"
+          [value]="maileditorSection.style['background-color']"
+         [style.background]="maileditorSection.style['background-color']"
+         [cpAlphaChannel]="'always'"
+         [cpOutputFormat]="'hex'"
+         [cpPosition]="'left'"
+        [(colorPicker)]="maileditorSection.style['background-color']"/>
+      </td>
+    </tr>
+    </table>
+  </div>
+    
     <div *ngIf="Text">
       <table>
         <tr>
@@ -55,6 +109,7 @@
              [style.background]="maileditorText.style.color"
              [cpAlphaChannel]="'always'"
              [cpOutputFormat]="'hex'"
+             [cpPosition]="'left'"
             [(colorPicker)]="maileditorText.style.color"/>
           </td>
         </tr>
@@ -65,6 +120,7 @@
              [style.background]="maileditorText.style['background-color']"
              [cpAlphaChannel]="'always'"
              [cpOutputFormat]="'hex'"
+             [cpPosition]="'left'"
             [(colorPicker)]="maileditorText.style['background-color']"/>
           </td>
         </tr>

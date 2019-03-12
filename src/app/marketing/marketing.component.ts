@@ -1646,12 +1646,10 @@ export class MarketingComponent implements OnInit {
 
   toggleCampaignMailingNow(i): void {
     // delay to anticipate css style change per mailing i = array mailing list
-    if (this.togglecampaignclasstrans[i] === true) { this.togglecampaignclasstrans[i] = false }
-    else {
+    if (this.togglecampaignclasstrans[i] === true) { this.togglecampaignclasstrans[i] = false } else {
     this.togglecampaignclasstrans[i] = true;
       setTimeout(() => {
-        if (this.toggleCampaignMailing[i] === true) { this.toggleCampaignMailing[i] = false }
-        else { this.toggleCampaignMailing[i] = true; }
+        if (this.toggleCampaignMailing[i] === true) { this.toggleCampaignMailing[i] = false } else { this.toggleCampaignMailing[i] = true; }
       }, 500);
     }
   }
@@ -1663,8 +1661,6 @@ export class MarketingComponent implements OnInit {
 
   saveMailingCampaign(message?): void {
     // count for listview numbers
-
-
 
     this.CampaignMailing.forEach(mailElement => {
       mailElement.text = this.onChangeHtml(mailElement.html); // convert to text
@@ -1716,7 +1712,7 @@ export class MarketingComponent implements OnInit {
       });
   }
 
-  //check destroy is sufficient?
+  // check destroy is sufficient?
   deleteMailingCampaign(selectedOption): void {
     if (selectedOption === true) {
       this.RelationsApi.destroyByIdMarketingplannerevents(this.option.id, this.selectedMarketingplannerevents.id)
