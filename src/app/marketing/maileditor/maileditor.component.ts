@@ -67,8 +67,8 @@ export class MaileditorComponent implements OnInit {
     sectionstyleIns.style = {
       'color': 'black',
       'background-color': 'white',
-      'width': '200px',
-      'height': '200px'
+      'width': '100%',
+      'height': '100%'
     }
     this.sectionStyleArray.push(sectionstyleIns);
 
@@ -85,8 +85,8 @@ export class MaileditorComponent implements OnInit {
     columnstyleIns.style = {
       'color': 'black',
       'background-color': 'white',
-      'width': '200px',
-      'height': '200px'
+      'width': '100%',
+      'height': '100%'
     }
     // if (this.columnStyleArray[i1] === undefined){
        this.columnStyleArray.push([]);
@@ -98,7 +98,10 @@ export class MaileditorComponent implements OnInit {
   // creat array per
   drop(event: CdkDragDrop<string[]>, i1, i2 ) {
     console.log(i1, i2, event)
-    if (event.previousContainer === event.container ) {
+    if (event.container.id === 'listSection' && i1 === undefined) {
+      moveItemInArray(this.mailtemplateArray, event.previousIndex, event.currentIndex);
+      console.log(this.mailtemplateArray, event)
+    } else if (event.previousContainer === event.container ) {
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
       // if eventcontainer is new column create new eventcontainer
     } else if (event.previousContainer.id === 'cdk-drop-list-0') {
@@ -138,8 +141,8 @@ export class MaileditorComponent implements OnInit {
       newImage.style = {
         'color': 'black',
         'background-color': 'white',
-        'width': '100px',
-        'height': '100px'
+        'width': '100%',
+        'height': '100%'
       }
       return newImage
     }
@@ -222,5 +225,14 @@ export class MaileditorComponent implements OnInit {
       }
     }
   }
+
+  private onDeleteSectionPart(i1): void {
+    this.mailtemplateArray.splice(i1, 1);
+  }
+
+  private onDeleteColumnPart(i1, i2): void {
+    this.mailtemplateArray[i1].splice(i2, 1);
+  }
+
 
 }

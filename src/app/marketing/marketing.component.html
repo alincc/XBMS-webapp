@@ -1,9 +1,9 @@
 
-<div fxLayout="column" fxLayoutWrap="wrap" fxFlexAlign="start">
-  <div fxFlex="100%">
-    <mat-card>
+<div fxLayout="column" fxLayoutWrap="wrap" fxLayoutAlign="space-around">
+  <div fxFlex="100%" fxLayout="column">
+    <mat-card class="topbanner">
       <mat-card-content>
-        <div class="selectrelation">
+        <div class="selectrelation" fxFlex fxShow.xs="false">
           <mat-form-field class="example-full-width">
             <input type="text" placeholder="Select Relation" aria-label="relation" matInput [formControl]="myControl"
               [matAutocomplete]="auto">
@@ -24,7 +24,7 @@
 
 
   <mat-tab-group fxLayout="column" fxLayoutWrap="wrap" fxFlexAlign="start" class="relations">
-    <mat-tab fxFlex="100%" label="New Publications" on-focusout="savePublication()">
+    <mat-tab fxFlex="100%" label="New Publications" on-focusout="savePublication()" class="relations">
       <ng-template  mat-tab-label class="mat-tab-labels">
         <mat-icon>text_format</mat-icon>
         <div fxShow.xs="false">Publications</div>

@@ -26,7 +26,7 @@ body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,textarea,p,
   left: 0;
   position: fixed;
   background-color: #23549d41;
-  margin-left: -30px;
+  //margin-left: -30px;
   margin-top: 30px;
   transition: 0.70s;
   -webkit-transition: 0.70s;
@@ -80,7 +80,7 @@ body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,textarea,p,
     -ms-transition: 0.70s;
     -o-transition: 0.70s;
     display: block;
-    margin: 20px;
+    margin: 2;
   }
   
 .menubutton:hover {
@@ -215,8 +215,7 @@ mat-list-item {
 
 
 .sidenav-container {
-  width: 100%
-
+  width: 100%;
 }
 
 .sidenav-content {

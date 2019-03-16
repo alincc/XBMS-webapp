@@ -1,26 +1,27 @@
 <div fxFlex fxLayout="row" cdkDropListGroup>
 
-
   <div fxFlex="20%" class="tools">
     <h2>Tools</h2>
-    <div cdkDropList #toolsetList="cdkDropList" [cdkDropListData]="toolset" class="example-list"
+    <div cdkDropList #toolsetList="cdkDropList" [cdkDropListData]="toolset" class="tools-list"
       (cdkDropListDropped)="drop($event)">
       <div class="item-box" *ngFor="let item of toolset" cdkDrag>{{item.type}}</div>
     </div>
   </div>
 
-  <div fxFlex="60%" fxLayout="column" class="template">
+  <div fxFlex="60%" class="template" fxLayout="column">
     <h2>Template</h2>
-    <div class="example-container" *ngFor="let section of mailtemplateArray; let i1 = index" fxFlex fxLayout="row">
-      <label class="sectionlabel">Section <mat-icon (click)="onSelectSectionPart(i1)" class="iconsize-10" matSuffix>mode_edit</mat-icon></label>
-      <div [ngStyle]="sectionStyleArray[i1].style" *ngFor="let column of section; let i2 = index" fxFlex fxLayout="column">
-        <label class="columnlabel">Column <mat-icon (click)="onSelectColumnPart(i1, i2)" class="iconsize-10" matSuffix>mode_edit</mat-icon></label>
-        <div  [ngStyle]= "columnStyleArray[i1][i2].style" fxFlex fxLayout="row" cdkDropList #mailtemplateList="cdkDropList"
+    <div class="template-container" *ngFor="let section of mailtemplateArray; let i1 = index" fxLayout="row" 
+      cdkDropList #listSection="cdkDropList" (cdkDropListDropped)="drop($event, i1, i2)" [cdkDropListData]="mailtemplateArray">
+      <label class="sectionlabel">Section <mat-icon (click)="onSelectSectionPart(i1)" class="iconsize-10" matSuffix>mode_edit</mat-icon>
+        <mat-icon (click)="onDeleteSectionPart(i1)" class="iconsize-10" matSuffix>delete</mat-icon></label>
+      <div [ngStyle]="sectionStyleArray[i1].style" class="section-box" *ngFor="let column of section; let i2 = index" fxFlex fxFlexFill fxLayout="column" cdkDrag>
+        <label class="columnlabel">Column <mat-icon (click)="onSelectColumnPart(i1, i2)" class="iconsize-10" matSuffix>mode_edit</mat-icon>
+          <mat-icon (click)="onDeleteColumnPart(i1, i2)" class="iconsize-10" matSuffix>delete</mat-icon>
+        </label>
+        <div  [ngStyle]= "columnStyleArray[i1][i2].style" class="column-box" fxFlex fxLayout="row" cdkDropList #mailtemplateList="cdkDropList"
           [cdkDropListData]="mailtemplateArray[i1][i2]" (cdkDropListDropped)="drop($event, i1, i2)">
           <div class="item-box" *ngFor="let item of column; let i3 = index;" 
           (click)="onSelectTemplatePart(item, i3)" cdkDrag>
-            <!-- <div class="itemlabel">{{item.type}}</div> -->
-            <!-- class="column-box" Delete or integrate in ngstyle?-->
             <div *ngIf="item.type ==='Text'" 
             [ngStyle]="item.style">{{item.content}}</div>
             <div *ngIf="item.type === 'Image'"
@@ -34,30 +35,32 @@
     <mat-icon (click)="addToMailTemplateArray()">add</mat-icon>
   </div>
 
-  <div fxFlex="20%">
-
+  <mat-card fxFlex="20%" class="edit">
     <div *ngIf="Column">Edit Column
       <table>
         <tr><td><mat-form-field>
           <input [(ngModel)]=maileditorColumn.style.width type="text" matInput placeholder="width">
           <mat-icon matSuffix>mode_edit</mat-icon>
+          <mat-hint>%/px</mat-hint>
         </mat-form-field></td>
-      <td>px/%</td></tr>
+     
       <tr><td><mat-form-field>
         <input [(ngModel)]=maileditorColumn.style.height type="text" matInput placeholder="height">
         <mat-icon matSuffix>mode_edit</mat-icon>
+        <mat-hint>%/px</mat-hint>
       </mat-form-field></td>
-    <td>px/%</td></tr>
+    
     <tr>
-      <td>Color</td>
       <td>
           <input [style.background]="rgbaText"
+          matInput Placeholder="background color"
          [value]="maileditorColumn.style['background-color']"
          [style.background]="maileditorColumn.style['background-color']"
          [cpAlphaChannel]="'always'"
          [cpOutputFormat]="'hex'"
          [cpPosition]="'left'"
         [(colorPicker)]="maileditorColumn.style['background-color']"/>
+        <mat-hint>Background Color</mat-hint>
       </td>
     </tr>
       </table>
@@ -68,15 +71,16 @@
       <tr><td><mat-form-field>
         <input [(ngModel)]=maileditorSection.style.width type="text" matInput placeholder="width">
         <mat-icon matSuffix>mode_edit</mat-icon>
+        <mat-hint>%/px</mat-hint>
       </mat-form-field></td>
-    <td>px/%</td></tr>
+</tr>
     <tr><td><mat-form-field>
       <input [(ngModel)]=maileditorSection.style.height type="text" matInput placeholder="height">
       <mat-icon matSuffix>mode_edit</mat-icon>
+      <mat-hint>%/px</mat-hint>
     </mat-form-field></td>
-  <td>px/%</td></tr>
+</tr>
   <tr>
-      <td>Color</td>
       <td>
           <input [style.background]="rgbaText"
           [value]="maileditorSection.style['background-color']"
@@ -85,6 +89,7 @@
          [cpOutputFormat]="'hex'"
          [cpPosition]="'left'"
         [(colorPicker)]="maileditorSection.style['background-color']"/>
+        <mat-hint>Background Color</mat-hint>
       </td>
     </tr>
     </table>
@@ -160,7 +165,7 @@
       </table>
     </div>
     <div *ngIf="Button">Edit Button</div>
-  </div>
+  </mat-card>
 
 
 
