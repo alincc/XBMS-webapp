@@ -1,0 +1,44 @@
+.gallery{
+    width: 600px;
+    height: 600px;
+    z-index: 20;
+    overflow: visible;
+    min-height: 0;
+    position: relative;
+    top: -100px;
+}
+
+.image{
+    // width: 100px;
+    height: 100px;
+    overflow: visible;
+    min-height: 0;
+}
+
+// original stilll in styles.scss
+
+.drop-zone{
+    min-width: 100px;
+    min-height: 100px;
+    height: auto;
+    max-width: 600px;
+    margin: 20px;
+    padding: 20px;
+    border-style: dashed;
+    border-width:5px;  
+    margin: 10px;
+    word-wrap: break-word;
+  }
+  
+  .drop-zone-over {
+    min-width: 100px;
+    min-height: 100px;
+    max-width: 600px;
+    margin: 20px;
+    padding: 20px;
+    border-style: dashed;
+    border-width:5px;  
+    border-color: red;
+    margin: 10px;
+  }
+

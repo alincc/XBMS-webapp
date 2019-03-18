@@ -2,15 +2,15 @@
 
 @import './theme.scss';
 
-/* CSS reset */
-body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,textarea,p,blockquote,th,td { 
-  margin:0;
-  padding:0;
-}
-html,body {
-  margin:0;
-  padding:0;
-}
+// /* CSS reset */
+// body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,textarea,p,blockquote,th,td { 
+//   margin:0;
+//   padding:0;
+// }
+// html,body {
+//   margin:0;
+//   padding:0;
+// }
 
 .home-wrapper{
   position: relative;
@@ -161,7 +161,7 @@ html,body {
   overflow-x: visible;
 }
 
-@for $i from 1 through 300{
+@for $i from 1 through 100{
   .iconsize-#{$i}{
     font-size: $i+unquote('px') !important;
     height: $i+unquote('px') !important;

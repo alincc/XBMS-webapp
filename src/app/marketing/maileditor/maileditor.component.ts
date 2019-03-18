@@ -1,11 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { CdkDragDrop, moveItemInArray, transferArrayItem, copyArrayItem } from '@angular/cdk/drag-drop';
 import {
   Maileditormodels, MaileditorSection, MaileditorColumn,
   MaileditorImage, MaileditorText, MaileditorButton
 } from './maileditormodel/maileditormodels';
-import { FileuploadComponent } from '../../shared/fileupload/fileupload.component'
-
+import { FileuploadComponent } from '../../shared/fileupload/fileupload.component';
+import { Relations } from '../../shared';
+import { MaileditorService } from './maileditor.service'
 
 @Component({
   selector: 'app-maileditor',
@@ -49,7 +50,11 @@ export class MaileditorComponent implements OnInit {
     this.toolboxbutton
   ];
 
-  constructor() { }
+  @Input('option') option: Relations;
+
+  constructor(
+    public maileditorservice: MaileditorService
+  ) { }
 
   ngOnInit() {
     // init first component
@@ -68,7 +73,12 @@ export class MaileditorComponent implements OnInit {
       'color': 'black',
       'background-color': 'white',
       'width': '100%',
-      'height': '100%'
+      'height': '500px',
+      'margin': '1px',
+      'padding': '1px',
+      'border-style': 'none',
+      'border-width': '1px',
+      'background-image': ""
     }
     this.sectionStyleArray.push(sectionstyleIns);
 
@@ -86,11 +96,14 @@ export class MaileditorComponent implements OnInit {
       'color': 'black',
       'background-color': 'white',
       'width': '100%',
-      'height': '100%'
+      'height': '100%',
+      'margin': '1px',
+      'padding': '1px',
+      'border-style': 'none',
+      'border-width': '1px',
+      'background-image': ""
     }
-    // if (this.columnStyleArray[i1] === undefined){
        this.columnStyleArray.push([]);
-    // }
     console.log(i1, this.columnStyleArray)
     this.columnStyleArray[i1].push(columnstyleIns);
   }
@@ -98,13 +111,10 @@ export class MaileditorComponent implements OnInit {
   // creat array per
   drop(event: CdkDragDrop<string[]>, i1, i2 ) {
     console.log(i1, i2, event)
-    if (event.container.id === 'listSection' && i1 === undefined) {
-      moveItemInArray(this.mailtemplateArray, event.previousIndex, event.currentIndex);
-      console.log(this.mailtemplateArray, event)
-    } else if (event.previousContainer === event.container ) {
+if (event.previousContainer === event.container ) {
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
       // if eventcontainer is new column create new eventcontainer
-    } else if (event.previousContainer.id === 'cdk-drop-list-0') {
+    } else if (event.previousContainer.id === 'toolsetList') {
       const arrayItem = [];
       event.previousContainer.data.forEach((element) => {
         arrayItem.push(element)})
@@ -125,19 +135,21 @@ export class MaileditorComponent implements OnInit {
     if (type === 'Text') {
       const newtext: MaileditorText = new MaileditorText();
       newtext.type = 'Text';
-      newtext.content = 'Text';
+      newtext.content = 'Start Writing';
+      newtext.typeformat = 'p';
       newtext.style = {
         'color': 'black',
-        'background-color': 'white',
+        'background-color': '',
         'font-family': 'Verdana',
-        'fontsize': '12pt'
+        'fontsize': '12pt',
+        'text-align': 'center'
       }
       return newtext
     }
     if (type === 'Image') {
       const newImage: MaileditorImage = new MaileditorImage();
       newImage.type = 'Image';
-      newImage.url = 'www.xbms.io';
+      newImage.url = '';
       newImage.style = {
         'color': 'black',
         'background-color': 'white',
@@ -161,6 +173,10 @@ export class MaileditorComponent implements OnInit {
   */
   private ConvertToMail(): void {
     // section
+
+    this.maileditorservice.getConfig().subscribe((data) => 
+    console.log(data));
+
     this.mailtemplateArray.forEach((section, index1) => {
        // create section mjml
       const sectionStyle = this.sectionStyleArray[index1];
@@ -188,7 +204,7 @@ export class MaileditorComponent implements OnInit {
     this.resetEdit()
     this.Column = true;
     this.maileditorColumn = this.columnStyleArray[i1][i2]
-    console.log(this.maileditorColumn);
+    //console.log(this.maileditorColumn);
   }
 
   private resetEdit(): void {
@@ -228,10 +244,28 @@ export class MaileditorComponent implements OnInit {
 
   private onDeleteSectionPart(i1): void {
     this.mailtemplateArray.splice(i1, 1);
+    this.sectionStyleArray.splice(i1, 1);
   }
 
   private onDeleteColumnPart(i1, i2): void {
     this.mailtemplateArray[i1].splice(i2, 1);
+    this.columnStyleArray[i1].splice(i2, 1);
+  }
+
+  private setimgurl(url: string, i1, i2, i3) {
+    //url direct
+    this.mailtemplateArray[i1][i2][i3].url = url;
+  }
+
+  setbackgroundImageColumn(url: string){
+    //this.columnStyleArray[i1][i2].style = url
+    this.maileditorColumn.style['background-image'] = 'url('+url+')';
+    console.log(this.maileditorColumn);
+  }
+
+  setbackgroundImageSection(url: string){
+    this.maileditorSection.style['background-image'] = 'url('+url+')';
+    console.log(this.maileditorSection);
   }
 
 

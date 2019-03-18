@@ -4,28 +4,42 @@
     <h2>Tools</h2>
     <div cdkDropList #toolsetList="cdkDropList" [cdkDropListData]="toolset" class="tools-list"
       (cdkDropListDropped)="drop($event)">
-      <div class="item-box" *ngFor="let item of toolset" cdkDrag>{{item.type}}</div>
+      <div class="tool-box" *ngFor="let item of toolset" cdkDrag>{{item.type}}</div>
     </div>
+    <div>Subject</div>
+    
+    <div>Preview</div>
+
+    <div><button a mat-raised-button (click)="ConvertToMail()">Convert</button></div>
   </div>
 
   <div fxFlex="60%" class="template" fxLayout="column">
     <h2>Template</h2>
-    <div class="template-container" *ngFor="let section of mailtemplateArray; let i1 = index" fxLayout="row" 
-      cdkDropList #listSection="cdkDropList" (cdkDropListDropped)="drop($event, i1, i2)" [cdkDropListData]="mailtemplateArray">
+    <div class="template-container" *ngFor="let section of mailtemplateArray; let i1 = index" fxLayout="row" > 
+      <!-- cdkDropList #listSection="cdkDropList" (cdkDropListDropped)="drop($event, i1, i2)" [cdkDropListData]="mailtemplateArray" -->
       <label class="sectionlabel">Section <mat-icon (click)="onSelectSectionPart(i1)" class="iconsize-10" matSuffix>mode_edit</mat-icon>
         <mat-icon (click)="onDeleteSectionPart(i1)" class="iconsize-10" matSuffix>delete</mat-icon></label>
-      <div [ngStyle]="sectionStyleArray[i1].style" class="section-box" *ngFor="let column of section; let i2 = index" fxFlex fxFlexFill fxLayout="column" cdkDrag>
-        <label class="columnlabel">Column <mat-icon (click)="onSelectColumnPart(i1, i2)" class="iconsize-10" matSuffix>mode_edit</mat-icon>
-          <mat-icon (click)="onDeleteColumnPart(i1, i2)" class="iconsize-10" matSuffix>delete</mat-icon>
-        </label>
+      <div [ngStyle]="sectionStyleArray[i1].style" class="section-box" *ngFor="let column of section; let i2 = index" fxFlex fxFlexFill fxLayout="column">
+
         <div  [ngStyle]= "columnStyleArray[i1][i2].style" class="column-box" fxFlex fxLayout="row" cdkDropList #mailtemplateList="cdkDropList"
           [cdkDropListData]="mailtemplateArray[i1][i2]" (cdkDropListDropped)="drop($event, i1, i2)">
+          <label class="columnlabel">Column <mat-icon (click)="onSelectColumnPart(i1, i2)" class="iconsize-10" matSuffix>mode_edit</mat-icon>
+            <mat-icon (click)="onDeleteColumnPart(i1, i2)" class="iconsize-10" matSuffix>delete</mat-icon>
+          </label>
           <div class="item-box" *ngFor="let item of column; let i3 = index;" 
           (click)="onSelectTemplatePart(item, i3)" cdkDrag>
-            <div *ngIf="item.type ==='Text'" 
-            [ngStyle]="item.style">{{item.content}}</div>
+            <!-- <div *ngIf="item.type ==='Text'" > -->
+            <p [ngStyle]="item.style" *ngIf="item.typeformat === 'p'">{{item.content}}</p>
+            <h1 [ngStyle]="item.style" *ngIf="item.typeformat === 'h1'">{{item.content}}</h1>
+            <h2 [ngStyle]="item.style" *ngIf="item.typeformat === 'h2'">{{item.content}}</h2>
+            <h3 [ngStyle]="item.style" *ngIf="item.typeformat === 'h3'">{{item.content}}</h3>
+          <!-- </div> -->
             <div *ngIf="item.type === 'Image'"
-            [ngStyle]="item.style"><app-fileupload></app-fileupload></div>
+            [ngStyle]="item.style">
+
+            <app-fileupload [option]="option" (imgurl)="setimgurl($event, i1, i2, i3)"></app-fileupload>
+
+            <img *ngIf="item.url.length > 0" src={{item.url}}></div>
           </div>
         </div>
       </div>
@@ -63,6 +77,64 @@
         <mat-hint>Background Color</mat-hint>
       </td>
     </tr>
+    <tr>
+      <td>
+          <app-fileupload [option]="option" (imgurl)="setbackgroundImageColumn($event)"></app-fileupload>
+      </td>
+    </tr>
+    <tr>
+      <td>
+          <mat-form-field>
+              <input [(ngModel)]="maileditorColumn.style['background-image']" type="text" matInput placeholder="Image url">
+              <mat-icon matSuffix>mode_edit</mat-icon>
+              <mat-hint>url</mat-hint>
+            </mat-form-field>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <mat-form-field>
+          <input [(ngModel)]=maileditorColumn.style.margin type="text" matInput placeholder="margin">
+          <mat-icon matSuffix>mode_edit</mat-icon>
+          <mat-hint>%/px</mat-hint>
+        </mat-form-field>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <mat-form-field>
+          <input [(ngModel)]=maileditorColumn.style.padding type="text" matInput placeholder="padding">
+          <mat-icon matSuffix>mode_edit</mat-icon>
+          <mat-hint>%/px</mat-hint>
+        </mat-form-field>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <mat-form-field>
+          <input [(ngModel)]="maileditorColumn.style['border-width']" type="text" matInput placeholder="border width">
+          <mat-icon matSuffix>mode_edit</mat-icon>
+          <mat-hint>%/px</mat-hint>
+        </mat-form-field>
+      </td>
+    </tr>
+    <tr>
+      <td>
+          <mat-form-field>
+            <mat-select [(value)]="maileditorColumn.style['border-style']" placeholder="style">
+              <mat-option value="none">None</mat-option>
+              <mat-option value="solid">Solid</mat-option>
+              <mat-option value="dotted">Dotted</mat-option>
+              <mat-option value="dashed">Dashed</mat-option>
+              <mat-option value="double">Double</mat-option>
+              <mat-option value="groove">Groove</mat-option>
+              <mat-option value="ridge">Ridge</mat-option>
+              <mat-option value="inset">Inset</mat-option>
+              <mat-option value="outset">Outset</mat-option>
+            </mat-select>
+          </mat-form-field>
+      </td>
+    </tr>
       </table>
     </div>
 
@@ -90,6 +162,64 @@
          [cpPosition]="'left'"
         [(colorPicker)]="maileditorSection.style['background-color']"/>
         <mat-hint>Background Color</mat-hint>
+      </td>
+    </tr>
+    <tr>
+      <td>
+          <app-fileupload [option]="option" (imgurl)="setbackgroundImageSection($event)"></app-fileupload>
+      </td>
+    </tr>
+    <tr>
+        <td>
+            <mat-form-field>
+                <input [(ngModel)]="maileditorSection.style['background-image']" type="text" matInput placeholder="Image url">
+                <mat-icon matSuffix>mode_edit</mat-icon>
+                <mat-hint>%/px</mat-hint>
+              </mat-form-field>
+        </td>
+      </tr>
+    <tr>
+      <td>
+        <mat-form-field>
+          <input [(ngModel)]=maileditorSection.style.margin type="text" matInput placeholder="margin">
+          <mat-icon matSuffix>mode_edit</mat-icon>
+          <mat-hint>%/px</mat-hint>
+        </mat-form-field>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <mat-form-field>
+          <input [(ngModel)]=maileditorSection.style.padding type="text" matInput placeholder="padding">
+          <mat-icon matSuffix>mode_edit</mat-icon>
+          <mat-hint>%/px</mat-hint>
+        </mat-form-field>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <mat-form-field>
+          <input [(ngModel)]="maileditorSection.style['border-width']" type="text" matInput placeholder="border width">
+          <mat-icon matSuffix>mode_edit</mat-icon>
+          <mat-hint>%/px</mat-hint>
+        </mat-form-field>
+      </td>
+    </tr>
+    <tr>
+      <td>
+          <mat-form-field>
+            <mat-select [(value)]="maileditorSection.style['border-style']" placeholder="style">
+              <mat-option value="none">None</mat-option>
+              <mat-option value="solid">Solid</mat-option>
+              <mat-option value="dotted">Dotted</mat-option>
+              <mat-option value="dashed">Dashed</mat-option>
+              <mat-option value="double">Double</mat-option>
+              <mat-option value="groove">Groove</mat-option>
+              <mat-option value="ridge">Ridge</mat-option>
+              <mat-option value="inset">Inset</mat-option>
+              <mat-option value="outset">Outset</mat-option>
+            </mat-select>
+          </mat-form-field>
       </td>
     </tr>
     </table>
@@ -147,6 +277,30 @@
                 </mat-form-field>
           </td>
         </tr>
+        <tr>
+          <td>
+            <mat-form-field>
+              <mat-select [(value)]="maileditorText.style['text-align']">
+                <mat-option>None</mat-option>
+                <mat-option value="center">Center</mat-option>
+                <mat-option value="left">Left</mat-option>
+                <mat-option value="right">Right</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </td>
+        </tr>
+        <tr>
+            <td>
+              <mat-form-field>
+                <mat-select [(value)]="maileditorText.typeformat">
+                  <mat-option value="p">Paragraph</mat-option>
+                  <mat-option value="h1">H1</mat-option>
+                  <mat-option value="h2">H2</mat-option>
+                  <mat-option value="h3">H3</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </td>
+          </tr>
       </table>
     </div>
 

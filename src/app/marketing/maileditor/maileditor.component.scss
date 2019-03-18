@@ -1,15 +1,32 @@
 
 .tools {
   min-width: 200px;
+  margin: 2px;
+  padding: 2px;
+}
+
+.tool-box {
+    margin: 2px;
+    border: solid 1px #ccc;
+    padding: 2px;
+    color: rgba(0, 0, 0, 0.87);
+    max-height: 100%;
+    cursor: move;
+    background: whitesmoke;
 }
 
 .template {
   min-width: 600px;
   max-width: 95%;
+  margin: 2px;
+  padding: 2px;
 }
 
 .edit {
-  min-width: 200px;
+  min-width: 250px;
+  margin: auto;
+  padding: 2px;
+  height: 600px;
 }
 
 .template-container {
@@ -34,6 +51,8 @@
   }
 
   .section-box {
+    margin: 2px;
+    padding: 2px;
     min-height: 60px;
     max-height: 100%;
     //min-width: 20%; accept flex
@@ -42,13 +61,15 @@
     //border: solid 1px #ccc;
     //border-radius: 4px;
     position: relative; //show label on top
+    top: 0;
+    left: 0;
   }
   
   .column-box {
     margin: 2px;
     border: solid 1px #ccc;
     border-radius: 2px;
-    padding: 1px;
+    padding: 2px;
     color: rgba(0, 0, 0, 0.87);
     cursor: move;
     background: white;
@@ -56,41 +77,49 @@
     max-width: 100%;
     position: absolute;
     top: 0;
-    right: 0;
+    left: 0;
   }
 
   .item-box {
-    margin: 2px;
-    border: solid 1px #ccc;
-    padding: 2px;
-    color: rgba(0, 0, 0, 0.87);
-    max-height: 100%;
-    cursor: move;
-    background: whitesmoke;
+    // margin: 2px;
+    // border: solid 1px #ccc;
+    // padding: 2px;
+    // color: rgba(0, 0, 0, 0.87);
+    // max-height: 100%;
+    // cursor: move;
+    // background: whitesmoke;
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
   }
 
   .itemlabel {
+    height: 10px;
     font-size: 6pt;
     position: relative;
     top: -20px;
     overflow: visible;
-    z-index: 10;
+    z-index: 9;
     opacity: 0.8;
   }
 
   .sectionlabel {
+    height: 10px;
     font-size: 6pt;
     position: relative;
     overflow: visible;
-    z-index: 10;
+    z-index: 7;
     opacity: 0.8;
   }
 
   .columnlabel {
+    height: 10px;
     font-size: 6pt;
     position: relative;
     overflow: visible;
-    z-index: 10;
+    z-index: 8;
     opacity: 0.4;
     background-color: white;
   }

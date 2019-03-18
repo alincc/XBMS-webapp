@@ -8,6 +8,11 @@ export interface MaileditorSectionInterface {
     'width': string,
     'height': string;
     'background-color': string;
+    'margin': string;
+    'padding': string;
+    'border-style': string;
+    'border-width': string;
+    'background-image': string;
   }
 }
 
@@ -16,6 +21,11 @@ export interface MaileditorColumnInterface {
     'width': string,
     'height': string;
     'background-color': string;
+    'margin': string;
+    'padding': string;
+    'border-style': string;
+    'border-width': string;
+    'background-image': string;
   }
 }
 
@@ -23,11 +33,13 @@ export interface MaileditorColumnInterface {
 export interface MaileditorTextInterface {
   type: string;
   content: string;
+  typeformat: string;
   style: {
     'color': string;
     'background-color': string;
     'font-family': string;
     'fontsize': string;
+    'text-align': string;
   };
 }
 
@@ -56,12 +68,14 @@ export interface MaileditorButtonInterface {
 
 export class MaileditorText implements MaileditorTextInterface {
   type: 'Text';
-  content: 'Text';
+  content:  string;
+  typeformat: string;
   style: {
-    'color': 'black',
-    'background-color': 'white',
-    'font-family': 'Verdana',
-    'fontsize': '12pt',
+    'color': string,
+    'background-color': string,
+    'font-family': string,
+    'fontsize': string,
+    'text-align': string
   }
   constructor(data?: MaileditorTextInterface) {
     Object.assign(this, data);
@@ -99,6 +113,11 @@ export class MaileditorColumn implements MaileditorColumnInterface {
     'background-color': string;
     'width': string;
     'height': string;
+    'margin': string;
+    'padding': string;
+    'border-style': string;
+    'border-width': string;
+    'background-image': string;
   }
 
   constructor(data?: MaileditorColumnInterface) {
@@ -118,6 +137,11 @@ export class MaileditorSection implements MaileditorSectionInterface {
     'background-color': string;
     'width': string;
     'height': string;
+    'margin': string;
+    'padding': string;
+    'border-style': string;
+    'border-width': string;
+    'background-image': string;
   }
 
   constructor(data?: MaileditorColumnInterface) {
