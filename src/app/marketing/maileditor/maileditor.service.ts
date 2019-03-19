@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
+import { catchError, retry, map} from 'rxjs/operators';
+import { Observable, Subject } from 'rxjs';
 
-const key = 'xsQLEtA2Sb62NxSPG8mxftbr3crGhfI5vVptIrWb';
+const key = 'APPLICATION-ID:xsQLEtA2Sb62NxSPG8mxftbr3crGhfI5vVptIrWb';
 const httpOptions = {
   headers: new HttpHeaders({
     'Content-Type':  'application/json',
@@ -9,9 +11,16 @@ const httpOptions = {
   })
 }
 
+
+export interface MJML {
+    html: string;
+}
+
+
 @Injectable({
   providedIn: 'root'
 })
+
 
 export class MaileditorService {
 
@@ -21,6 +30,17 @@ export class MaileditorService {
 
   getConfig() {
     return this.http.get(this.configUrl);
+  }
+
+  postMJML(mjmlbody: Object): Observable<string> {
+
+    httpOptions.headers =
+    httpOptions.headers.set('Authorization', key);
+
+    //let mjmlbody = JSON.parse(mjml);
+    return this.http.post<string>(this.configUrl, mjmlbody, httpOptions)
+      .pipe(
+        map((mjml) => {return(mjml)}));
   }
 
 }

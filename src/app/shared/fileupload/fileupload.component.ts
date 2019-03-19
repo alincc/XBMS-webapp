@@ -13,8 +13,8 @@ import {
   PlainGalleryStrategy,
   PreviewConfig
 } from '@ks89/angular-modal-gallery';
-import { ContainerApi, Files,   BASE_URL,
-  API_VERSION, Relations } from '../index';
+import { ContainerApi, Files, Relations } from '../sdk';
+import { BASE_URL, API_VERSION } from '../base.api'
 
 @Component({
   selector: 'app-fileupload',

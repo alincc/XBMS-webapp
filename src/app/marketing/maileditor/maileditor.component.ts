@@ -6,7 +6,8 @@ import {
 } from './maileditormodel/maileditormodels';
 import { FileuploadComponent } from '../../shared/fileupload/fileupload.component';
 import { Relations } from '../../shared';
-import { MaileditorService } from './maileditor.service'
+//import { MaileditorService, MJML } from './maileditor.service' use local install
+import { Mailing, MailingApi } from '../../shared/sdk'
 
 @Component({
   selector: 'app-maileditor',
@@ -53,7 +54,7 @@ export class MaileditorComponent implements OnInit {
   @Input('option') option: Relations;
 
   constructor(
-    public maileditorservice: MaileditorService
+    public mailingApi: MailingApi
   ) { }
 
   ngOnInit() {
@@ -173,25 +174,49 @@ if (event.previousContainer === event.container ) {
   */
   private ConvertToMail(): void {
     // section
-
-    this.maileditorservice.getConfig().subscribe((data) => 
-    console.log(data));
+    let mjml = ['<mjml>', '<mj-body>', '</mj-body>','</mjml>']
 
     this.mailtemplateArray.forEach((section, index1) => {
+     
        // create section mjml
       const sectionStyle = this.sectionStyleArray[index1];
+      //console.log(sectionStyle);
 
       section.forEach((column, index2) => {
+        
+        mjml.splice(2, 0, '<mj-section>');
         // create column mjml
-        const columnsection = this.columnStyleArray[index2];
-        column.array.forEach((item, index3) => {
-          if (item.type === 'Text') {console.log('text', item)}
+         const columnsection = this.columnStyleArray[index2];
+         //console.log(columnsection);
+
+        column.forEach((item, index3) => {
+          if (item.type === 'Text') {
+            this.createText(item)}
           if (item.type === 'Image') {console.log('Image', item)}
           if (item.type === 'Linebreak') {console.log('Linebreak', item)}
           if (item.type === '') {console.log('text', item)}
         });
+        let lastindex = mjml.length -2;
+        mjml.splice(lastindex, 0, '</mj-section>');
       });
     })
+
+    console.log(mjml);
+    this.mailingApi.mjml(mjml).subscribe((data) => 
+    console.log(data.html));
+
+  }
+
+  private createText(item){
+    let textarray = []
+    textarray.push('<mj-text>')
+    textarray.push('<'+ item.typeformat + ' style=' + item.style + '>')
+    textarray.push(item.content)
+    textarray.push('</'+ item.typeformat + '>')
+    textarray.push('</mj-text>')
+    textarray.join("")
+
+    console.log(textarray);
   }
 
   private onSelectSectionPart(i1): void {
