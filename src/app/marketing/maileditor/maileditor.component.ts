@@ -208,9 +208,11 @@ if (event.previousContainer === event.container ) {
   }
 
   private createText(item){
-    let textarray = []
+    let textarray = [];
+    let itemstyle = item.style;
+    itemstyle.join("")
     textarray.push('<mj-text>')
-    textarray.push('<'+ item.typeformat + ' style=' + item.style + '>')
+    textarray.push('<'+ item.typeformat + ' style=' + itemstyle + '>')
     textarray.push(item.content)
     textarray.push('</'+ item.typeformat + '>')
     textarray.push('</mj-text>')
