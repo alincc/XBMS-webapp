@@ -52,6 +52,7 @@ export class MaileditorComponent implements OnInit {
   ];
 
   @Input('option') option: Relations;
+  @Input('account') account: Account;
 
   constructor(
     public mailingApi: MailingApi
@@ -181,44 +182,42 @@ if (event.previousContainer === event.container ) {
        // create section mjml
       const sectionStyle = this.sectionStyleArray[index1];
       //console.log(sectionStyle);
-
       section.forEach((column, index2) => {
-        
         mjml.splice(2, 0, '<mj-section>');
         // create column mjml
          const columnsection = this.columnStyleArray[index2];
          //console.log(columnsection);
-
         column.forEach((item, index3) => {
           if (item.type === 'Text') {
             this.createText(item)}
-          if (item.type === 'Image') {console.log('Image', item)}
-          if (item.type === 'Linebreak') {console.log('Linebreak', item)}
-          if (item.type === '') {console.log('text', item)}
+          if (item.type === 'Image') {
+            console.log('Image', item)}
+          if (item.type === 'Linebreak') {
+            console.log('Linebreak', item)}
+          if (item.type === '') {
+            console.log('text', item)}
         });
         let lastindex = mjml.length -2;
         mjml.splice(lastindex, 0, '</mj-section>');
       });
     })
 
-    console.log(mjml);
+    mjml = Object.assign({}, mjml); 
     this.mailingApi.mjml(mjml).subscribe((data) => 
     console.log(data.html));
-
   }
 
   private createText(item){
     let textarray = [];
-    let itemstyle = item.style;
-    itemstyle.join("")
+    let textstring: string;
+    let itemstyle = JSON.stringify(item.style);
     textarray.push('<mj-text>')
     textarray.push('<'+ item.typeformat + ' style=' + itemstyle + '>')
     textarray.push(item.content)
     textarray.push('</'+ item.typeformat + '>')
-    textarray.push('</mj-text>')
-    textarray.join("")
-
-    console.log(textarray);
+    textarray.push('</mj-text>');
+    textstring = textarray.join('')
+    return(textstring);
   }
 
   private onSelectSectionPart(i1): void {

@@ -37,7 +37,7 @@
             <div *ngIf="item.type === 'Image'"
             [ngStyle]="item.style">
 
-            <app-fileupload [option]="option" (imgurl)="setimgurl($event, i1, i2, i3)"></app-fileupload>
+            <app-fileupload [account]="account" [option]="option" (imgurl)="setimgurl($event, i1, i2, i3)"></app-fileupload>
 
             <img *ngIf="item.url.length > 0" src={{item.url}}></div>
           </div>
@@ -79,7 +79,7 @@
     </tr>
     <tr>
       <td>
-          <app-fileupload [option]="option" (imgurl)="setbackgroundImageColumn($event)"></app-fileupload>
+          <app-fileupload [account]="account"  [option]="option" (imgurl)="setbackgroundImageColumn($event)"></app-fileupload>
       </td>
     </tr>
     <tr>
@@ -166,7 +166,7 @@
     </tr>
     <tr>
       <td>
-          <app-fileupload [option]="option" (imgurl)="setbackgroundImageSection($event)"></app-fileupload>
+          <app-fileupload [account]="account" [option]="option" (imgurl)="setbackgroundImageSection($event)"></app-fileupload>
       </td>
     </tr>
     <tr>

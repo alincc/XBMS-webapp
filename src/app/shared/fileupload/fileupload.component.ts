@@ -13,7 +13,7 @@ import {
   PlainGalleryStrategy,
   PreviewConfig
 } from '@ks89/angular-modal-gallery';
-import { ContainerApi, Files, Relations } from '../sdk';
+import { ContainerApi, Files, Relations, RelationsApi, Company, Account } from '../sdk';
 import { BASE_URL, API_VERSION } from '../base.api'
 
 @Component({
@@ -41,9 +41,13 @@ export class FileuploadComponent implements OnInit {
 
 
   @Input('option') option: Relations; //get id for image gallery
+  @Input('account') account: Account;
   @Output() imgurl = new EventEmitter<String>(); //send url img back
 
-  constructor(public ContainerApi: ContainerApi) { }
+  constructor(
+    public ContainerApi: ContainerApi,
+    public relationsApi: RelationsApi
+    ) { }
 
   ngOnInit() {}
 
@@ -77,6 +81,33 @@ export class FileuploadComponent implements OnInit {
     this.showdropbox = false;
     this.showgallery = false;
     this.imgurl.emit(url);
+  }
+
+
+  // set constiable and upload + save reference in Publications
+  setupload(name): void {
+    //this.selectedPublications.picturename = name
+      let urluse = BASE_URL + '/api/Containers/' + this.option.id + '/download/' + name
+      urluse.replace(/ /g, '%20'),
+      // define the file settings
+    this.newFiles.name = name,
+      this.newFiles.url = urluse,
+      this.newFiles.createdate = new Date(),
+      this.newFiles.type = 'marketing',
+      this.newFiles.companyId = this.account.companyId,
+      // check if container exists and create
+      this.ContainerApi.findById(this.option.id)
+        .subscribe(res => this.uploadFile(urluse),
+          error =>
+            this.ContainerApi.createContainer({ name: this.option.id })
+              .subscribe(res => this.uploadFile(urluse)));
+  }
+
+
+  uploadFile(url): void {
+      this.uploader.uploadAll(),
+      this.relationsApi.createFiles(this.option.id, this.newFiles)
+        .subscribe(res => this.imgurl.emit(url));
   }
 
 
