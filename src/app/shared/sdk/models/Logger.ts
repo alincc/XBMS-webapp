@@ -12,7 +12,6 @@ export interface LoggerInterface {
   "code"?: string;
   "id"?: any;
   "companyId"?: any;
-  company?: Company;
 }
 
 export class Logger implements LoggerInterface {
@@ -23,7 +22,6 @@ export class Logger implements LoggerInterface {
   "code": string;
   "id": any;
   "companyId": any;
-  company: Company;
   constructor(data?: LoggerInterface) {
     Object.assign(this, data);
   }
