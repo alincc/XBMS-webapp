@@ -1,11 +1,18 @@
 .gallery{
-    width: 600px;
-    height: 600px;
-    z-index: 20;
     overflow: visible;
     min-height: 0;
-    position: relative;
-    top: -100px;
+    margin: 10px;
+    background-color: whitesmoke;
+    overflow: auto;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.gallerywrapper {
+  position: relative;
+  width: 600px;
+  height: 600px;
 }
 
 .image{
@@ -13,6 +20,7 @@
     height: 100px;
     overflow: visible;
     min-height: 0;
+    z-index: 20;
 }
 
 // original stilll in styles.scss
@@ -28,6 +36,7 @@
     border-width:5px;  
     margin: 10px;
     word-wrap: break-word;
+    z-index: 20;
   }
   
   .drop-zone-over {
@@ -40,5 +49,6 @@
     border-width:5px;  
     border-color: red;
     margin: 10px;
+    z-index: 20;
   }
 
