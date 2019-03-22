@@ -1,4 +1,6 @@
 .gallery{
+    width: 600px;
+    height: 600px;
     overflow: visible;
     min-height: 0;
     margin: 10px;
@@ -7,12 +9,11 @@
     position: absolute;
     top: 0;
     left: 0;
+
 }
 
 .gallerywrapper {
   position: relative;
-  width: 600px;
-  height: 600px;
 }
 
 .image{
