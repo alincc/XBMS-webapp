@@ -107,7 +107,8 @@ export class FileuploadComponent implements OnInit {
   uploadFile(url): void {
       this.uploader.uploadAll(),
       this.relationsApi.createFiles(this.option.id, this.newFiles)
-        .subscribe(res => this.imgurl.emit(url));
+        .subscribe(res => 
+          {console.log(res), this.imgurl.emit(res.url)});
   }
 
 

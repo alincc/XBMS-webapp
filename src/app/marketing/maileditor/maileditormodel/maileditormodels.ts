@@ -79,7 +79,7 @@ export class MaileditorText implements MaileditorTextInterface {
   }
   constructor(data?: MaileditorTextInterface) {
     Object.assign(this, data);
-  }
+  } 
 
   public static factory(data: MaileditorTextInterface): MaileditorText {
     return new MaileditorText(data);

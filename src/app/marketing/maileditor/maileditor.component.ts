@@ -116,7 +116,9 @@ export class MaileditorComponent implements OnInit {
 if (event.previousContainer === event.container ) {
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
       // if eventcontainer is new column create new eventcontainer
-    } else if (event.previousContainer.id === 'toolsetList') {
+    } 
+    //else if (event.previousContainer.id === 'toolsetList') 
+    else {
       const arrayItem = [];
       event.previousContainer.data.forEach((element) => {
         arrayItem.push(element)})
@@ -124,12 +126,13 @@ if (event.previousContainer === event.container ) {
       console.log(type, arrayItem)
       const newdata = this.createNewItem(type);
       this.mailtemplateArray[i1][i2].push(newdata);
-    } else {
-      transferArrayItem(event.previousContainer.data,
-        event.container.data,
-        event.previousIndex,
-        event.currentIndex);
-      }
+    } 
+    // else {
+    //   transferArrayItem(event.previousContainer.data,
+    //     event.container.data,
+    //     event.previousIndex,
+    //     event.currentIndex);
+    //   }
 
     }
 
