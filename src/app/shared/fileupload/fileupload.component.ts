@@ -42,7 +42,7 @@ export class FileuploadComponent implements OnInit {
 
   @Input('option') option: Relations; //get id for image gallery
   @Input('account') account: Account;
-  @Output() imgurl = new EventEmitter<String>(); //send url img back
+  @Output() imgurl = new EventEmitter(); //send url img back
 
   constructor(
     public ContainerApi: ContainerApi,
@@ -108,7 +108,9 @@ export class FileuploadComponent implements OnInit {
       this.uploader.uploadAll(),
       this.relationsApi.createFiles(this.option.id, this.newFiles)
         .subscribe(res => 
-          {console.log(res), this.imgurl.emit(res.url)});
+          {console.log(res), this.setimage(res.url)
+            // this.imgurl.emit(res.url)
+          });
   }
 
 
