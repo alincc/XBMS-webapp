@@ -4,8 +4,10 @@ import { AppRoutingModule } from './app-routing.module';
 import { Routes, RouterModule } from '@angular/router';
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MatMenuModule, MatButtonModule, MatCheckboxModule, MatSidenavModule, MatDialogModule, MatDatepickerModule } from '@angular/material';
-import { MatSelectModule, MatNativeDateModule, MatTableModule, MatProgressSpinnerModule, MatTabsModule, MatTooltipModule } from '@angular/material';
+import { MatMenuModule, MatButtonModule, MatCheckboxModule,
+  MatSidenavModule, MatDialogModule, MatDatepickerModule } from '@angular/material';
+import { MatSelectModule, MatNativeDateModule, MatTableModule,
+  MatProgressSpinnerModule, MatTabsModule, MatTooltipModule } from '@angular/material';
 import { MatInputModule, MatCardModule, MatToolbarModule, MatAutocompleteModule } from '@angular/material';
 import { MatIconModule, MatExpansionModule, MatListModule, MatSlideToggleModule } from '@angular/material';
 import {MatBadgeModule} from '@angular/material/badge';
@@ -52,7 +54,7 @@ import 'mousetrap';
 import { ModalGalleryModule } from '@ks89/angular-modal-gallery';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
-
+import { MaileditorText } from './marketing/maileditor/maileditormodel/maileditormodels'
 import {FlexLayoutModule} from '@angular/flex-layout';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { GooglePlacesDirective } from './google-places.directive';
@@ -86,7 +88,7 @@ import { FileuploadComponent } from './shared/fileupload/fileupload.component';
 
    entryComponents: [
     ConfirmDialog,
-    RandomDialog,
+    RandomDialog
   ],
 
   imports: [
