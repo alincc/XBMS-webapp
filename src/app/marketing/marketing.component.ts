@@ -79,8 +79,6 @@ import {
 } from '@angular/animations';
 import * as moment from 'moment-timezone';
 import { reject } from '../../../node_modules/@types/q';
-// import { Message } from '@angular/compiler/src/i18n/i18n_ast';
-// import { EventEmitter } from 'protractor';
 declare const CKEDITOR: any;
 const URL = 'http://localhost:3000/api/containers/tmp/upload';
 

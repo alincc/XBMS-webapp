@@ -86,26 +86,31 @@ export class FileuploadComponent implements OnInit {
 
   // set constiable and upload + save reference in Publications
   setupload(name): void {
-    //this.selectedPublications.picturename = name
-      let urluse = BASE_URL + '/api/Containers/' + this.option.id + '/download/' + name
-      urluse.replace(/ /g, '%20'),
+    //set upload url
+      let urluse = BASE_URL + '/api/Containers/' + this.option.id + '/upload';
+      this.uploader.setOptions({ url: urluse });
+    //set download url or actual url for publishing
+      let imgurl = BASE_URL + '/api/Containers/' + this.option.id + '/download/' + name
+      imgurl = imgurl.replace(/ /g, '%20'),
       // define the file settings
     this.newFiles.name = name,
-      this.newFiles.url = urluse,
+      this.newFiles.url = imgurl,
       this.newFiles.createdate = new Date(),
       this.newFiles.type = 'marketing',
       this.newFiles.companyId = this.account.companyId,
       // check if container exists and create
+      
       this.ContainerApi.findById(this.option.id)
-        .subscribe(res => this.uploadFile(urluse),
+        .subscribe(res => this.uploadFile(),
           error =>
             this.ContainerApi.createContainer({ name: this.option.id })
-              .subscribe(res => this.uploadFile(urluse)));
+              .subscribe(res => this.uploadFile()));
   }
 
 
-  uploadFile(url): void {
-      this.uploader.uploadAll(),
+  uploadFile(): void {
+    
+      this.uploader.uploadAll();
       this.relationsApi.createFiles(this.option.id, this.newFiles)
         .subscribe(res => 
           {console.log(res), this.setimage(res.url)
