@@ -1,4 +1,4 @@
-<div class="picture">
+<div class="picture-container">
   <div *ngIf="showdropbox">
     <div ng2FileDrop [ngClass]="{'drop-zone-over': hasBaseDropZoneOver}" (fileOver)="fileOverBase($event)"
       [uploader]="uploader" class="drop-zone">
@@ -56,14 +56,13 @@
     </button>
   </div>
 
-    <div *ngIf="showgallery" fxLayout="row wrap" class=gallerywrapper>
-      <div class="gallery">
+    <div *ngIf="showgallery" fxLayout="row wrap" class="gallery">
+      
       <div *ngFor="let image of images; let i = index" fxFlex="20%">
         <div>
           <img src={{image.modal.img}} class="image" (click)="setimage(image.modal.img)">
         </div>
       </div>
-    </div>
     </div>
 </div>
 

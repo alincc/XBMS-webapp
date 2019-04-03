@@ -138,7 +138,7 @@
       </table>
     </div>
 
-    <div *ngIf="Section">Edit Section
+    <div *ngIf="Section" class="edit_table">Edit Section
     <table>
       <tr><td><mat-form-field>
         <input [(ngModel)]=maileditorSection.style.width type="text" matInput placeholder="width">
@@ -225,7 +225,7 @@
     </table>
   </div>
     
-    <div *ngIf="Text">
+    <div *ngIf="Text" class="edit_table">
       <table>
         <tr>
           <td>
@@ -304,18 +304,18 @@
       </table>
     </div>
 
-    <div *ngIf="Image">Edit Image
+    <div *ngIf="Image" class="edit_table" fxLayout="row wrap">Edit Image
       <table>
         <tr><td><mat-form-field>
           <input [(ngModel)]=maileditorImage.style.width type="text" matInput placeholder="width">
-          <mat-icon matSuffix>mode_edit</mat-icon>
+          <label matSuffix>px/%</label>
         </mat-form-field></td>
-      <td>px/%</td></tr>
+     </tr>
       <tr><td><mat-form-field>
         <input [(ngModel)]=maileditorImage.style.height type="text" matInput placeholder="height">
-        <mat-icon matSuffix>mode_edit</mat-icon>
+        <label matSuffix>px/%</label>
       </mat-form-field></td>
-    <td>px/%</td></tr>
+  </tr>
       </table>
     </div>
     <div *ngIf="Button">Edit Button</div>

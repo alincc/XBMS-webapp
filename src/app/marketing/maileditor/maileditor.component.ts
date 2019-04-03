@@ -223,6 +223,31 @@ if (event.previousContainer === event.container ) {
     return(textstring);
   }
 
+  private createImage(item){
+    let imagearray = [];
+    let imagestring: string;
+    let itemstyle = JSON.stringify(item.style);
+    imagearray.push('<mj-image>')
+    imagearray.push('<'+ item.url + ' style=' + itemstyle + '>')
+    imagearray.push('<mj-image>')
+    imagestring = imagearray.join('')
+    return(imagestring)
+  }
+
+  private createButon(item){
+    let buttonarrray = [];
+    let buttonstring: string;
+    let itemstyle = JSON.stringify(item.style);
+
+    return(buttonstring)
+  }
+
+  private createDivider(item){
+    let dividerstring: string;
+
+    return(dividerstring)
+  }
+
   private onSelectSectionPart(i1): void {
     this.resetEdit()
     this.Section = true;

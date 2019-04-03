@@ -15,12 +15,20 @@
     background: whitesmoke;
 }
 
+.edit_table{
+  min-width: 200px;
+  position: relative;
+}
+
+
+
 .template {
   min-width: 600px;
   max-width: 95%;
   margin: 2px;
   padding: 2px;
 }
+
 
 .edit {
   min-width: 250px;
@@ -150,6 +158,8 @@
   .example-list.cdk-drop-list-dragging .example-box:not(.cdk-drag-placeholder) {
     transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
   }
+
+
 
 
   
