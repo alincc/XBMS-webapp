@@ -57,6 +57,28 @@ export interface MaileditorImageInterface {
 export interface MaileditorButtonInterface {
   type: string;
   buttonurl: string;
+  buttontext: string;
+  style: {
+    'color': string;
+    'background-color': string;
+    'width': string;
+    'height': string;
+    'align': string;
+    'border': string;
+    'border-bottom': string;
+    'border-left': string;
+    'border-radius': string;
+    'border-right': string;
+    'border-top': string;
+    'font-family': string;
+    'font-size': string;
+    'font-style': string;
+    'font-weight': string;
+    'padding': string;
+    'text-decoration': string;
+    'text-transform': string;
+    'vertical-align': string;
+  }
 }
 
 export interface MaileditorDividerInterface {
@@ -73,18 +95,11 @@ export interface MaileditorDividerInterface {
     'padding-top': string;
     'width': string;
   }
-
 }
-
-@Component({
-  selector: 'app-maileditor-component',
-  template: ``
-})
-
 
 
 export class MaileditorText implements MaileditorTextInterface {
-  type: 'Text';
+  type: string;
   content:  string;
   typeformat: string;
   style: {
@@ -94,12 +109,13 @@ export class MaileditorText implements MaileditorTextInterface {
     'fontsize': string,
     'text-align': string
   }
-  constructor(data?: MaileditorTextInterface) {
-    Object.assign(this, data);
-  } 
 
   public static factory(data: MaileditorTextInterface): MaileditorText {
     return new MaileditorText(data);
+  }
+
+  constructor(data?: MaileditorTextInterface) {
+    Object.assign(this, data);
   }
 
 }
@@ -114,12 +130,12 @@ export class MaileditorImage implements MaileditorImageInterface {
     'width': string,
     'height': string,
   }
-  constructor(data?: MaileditorImageInterface) {
-    Object.assign(this, data);
-  }
-
   public static factory(data: MaileditorImageInterface): MaileditorImage {
     return new MaileditorImage(data);
+  }
+
+  constructor(data?: MaileditorImageInterface) {
+    Object.assign(this, data);
   }
 
 }
@@ -137,12 +153,12 @@ export class MaileditorColumn implements MaileditorColumnInterface {
     'background-image': string;
   }
 
-  constructor(data?: MaileditorColumnInterface) {
-    Object.assign(this, data);
-  }
-
   public static factory(data: MaileditorColumnInterface): MaileditorColumn {
     return new MaileditorColumn(data);
+  }
+
+  constructor(data?: MaileditorColumnInterface) {
+    Object.assign(this, data);
   }
 
 }
@@ -161,12 +177,12 @@ export class MaileditorSection implements MaileditorSectionInterface {
     'background-image': string;
   }
 
-  constructor(data?: MaileditorColumnInterface) {
-    Object.assign(this, data);
-  }
-
   public static factory(data: MaileditorSectionInterface): MaileditorSection {
     return new MaileditorSection(data);
+  }
+
+  constructor(data?: MaileditorColumnInterface) {
+    Object.assign(this, data);
   }
 
 }
@@ -174,19 +190,59 @@ export class MaileditorSection implements MaileditorSectionInterface {
 export class MaileditorButton implements MaileditorButtonInterface {
   type: string;
   buttonurl: string;
+  buttontext: string;
   style: {
     'color': string;
     'background-color': string;
     'width': string;
     'height': string;
-  }
-
-  constructor(data?: MaileditorButtonInterface) {
-    Object.assign(this, data);
+    'align': string;
+    'border': string;
+    'border-bottom': string;
+    'border-left': string;
+    'border-radius': string;
+    'border-right': string;
+    'border-top': string;
+    'font-family': string;
+    'font-size': string;
+    'font-style': string;
+    'font-weight': string;
+    'padding': string;
+    'text-decoration': string;
+    'text-transform': string;
+    'vertical-align': string;
   }
 
   public static factory(data: MaileditorButtonInterface): MaileditorButton {
     return new MaileditorButton(data);
   }
 
+  constructor(data?: MaileditorButtonInterface) {
+    Object.assign(this, data);
+  }
+
+}
+
+export class MaileditorDivider implements MaileditorDividerInterface {
+  type: string;
+  style: {
+    'border-color': string;
+    'border-style': string;
+    'border-width': string;
+    'container-background-color': string;
+    'padding': string;
+    'padding-bottom': string;
+    'padding-left': string;
+    'padding-right': string;
+    'padding-top': string;
+    'width': string;
+  }
+
+  public static factory(data: MaileditorDividerInterface): MaileditorDivider {
+    return new MaileditorDivider(data);
+  }
+
+  constructor(data?: MaileditorDividerInterface) {
+    Object.assign(this, data);
+  }
 }

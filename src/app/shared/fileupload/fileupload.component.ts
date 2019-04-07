@@ -49,7 +49,10 @@ export class FileuploadComponent implements OnInit {
     public relationsApi: RelationsApi
     ) { }
 
-  ngOnInit() {}
+  ngOnInit() {
+        // Clear the item queue (somehow they will upload to the old URL)
+        this.uploader.clearQueue();
+  }
 
       // file upload 1
   public fileOverBase(e: any): void {

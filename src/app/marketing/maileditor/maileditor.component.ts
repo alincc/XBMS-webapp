@@ -2,11 +2,10 @@ import { Component, OnInit, Input } from '@angular/core';
 import { CdkDragDrop, moveItemInArray, transferArrayItem, copyArrayItem } from '@angular/cdk/drag-drop';
 import {
   Maileditormodels, MaileditorSection, MaileditorColumn,
-  MaileditorImage, MaileditorText, MaileditorButton
+  MaileditorImage, MaileditorText, MaileditorButton, MaileditorDivider
 } from './maileditormodel/maileditormodels';
 import { FileuploadComponent } from '../../shared/fileupload/fileupload.component';
 import { Relations } from '../../shared';
-//import { MaileditorService, MJML } from './maileditor.service' use local install
 import { Mailing, MailingApi } from '../../shared/sdk'
 
 @Component({
@@ -21,12 +20,14 @@ export class MaileditorComponent implements OnInit {
   public Image = false;
   public Text = false;
   public Button = false;
+  public Divider = false;
 
   public maileditorText: MaileditorText = new MaileditorText();
   public maileditorImage: MaileditorImage = new MaileditorImage();
   public maileditorColumn: MaileditorColumn = new MaileditorColumn();
   public maileditorSection: MaileditorSection = new MaileditorSection();
   public maileditorButton: MaileditorButton = new MaileditorButton();
+  public maileditorDivider: MaileditorDivider = new MaileditorDivider();
   // template --> Section --> Column
   // section can contain only column
   // template can contain only sections
@@ -44,11 +45,13 @@ export class MaileditorComponent implements OnInit {
   private toolboximage = this.createNewItem('Image');
   private toolboxtext = this.createNewItem('Text');
   private toolboxbutton = this.createNewItem('Button');
+  private toolboxdivider = this.createNewItem('Divider');
 
   toolset = [
     this.toolboximage,
     this.toolboxtext,
-    this.toolboxbutton
+    this.toolboxbutton,
+    this.toolboxdivider
   ];
 
   @Input('option') option: Relations;
@@ -75,12 +78,12 @@ export class MaileditorComponent implements OnInit {
       'color': 'black',
       'background-color': 'white',
       'width': '100%',
-      'height': '500px',
+      'height': '300px',
       'margin': '1px',
       'padding': '1px',
       'border-style': 'none',
       'border-width': '1px',
-      'background-image': ""
+      'background-image': ''
     }
     this.sectionStyleArray.push(sectionstyleIns);
 
@@ -103,7 +106,7 @@ export class MaileditorComponent implements OnInit {
       'padding': '1px',
       'border-style': 'none',
       'border-width': '1px',
-      'background-image': ""
+      'background-image': ''
     }
        this.columnStyleArray.push([]);
     console.log(i1, this.columnStyleArray)
@@ -116,25 +119,18 @@ export class MaileditorComponent implements OnInit {
 if (event.previousContainer === event.container ) {
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
       // if eventcontainer is new column create new eventcontainer
-    } 
-    //else if (event.previousContainer.id === 'toolsetList') 
-    else {
+} else if (event.previousContainer.id === 'cdk-drop-list-0') {
       const arrayItem = [];
       event.previousContainer.data.forEach((element) => {
-        arrayItem.push(element)})
+      arrayItem.push(element)})
       const type = arrayItem[event.previousIndex].type;
       console.log(type, arrayItem)
       const newdata = this.createNewItem(type);
       this.mailtemplateArray[i1][i2].push(newdata);
-    } 
-    // else {
-    //   transferArrayItem(event.previousContainer.data,
-    //     event.container.data,
-    //     event.previousIndex,
-    //     event.currentIndex);
-    //   }
-
+} else {
+      transferArrayItem(event.previousContainer.data, event.container.data, event.previousIndex, event.currentIndex);
     }
+}
 
   private createNewItem(type: string) {
     if (type === 'Text') {
@@ -166,8 +162,47 @@ if (event.previousContainer === event.container ) {
     if (type === 'Button') {
       const newButton: MaileditorButton = new MaileditorButton();
       newButton.type = 'Button';
+      newButton.buttontext = 'Button Text'
       newButton.buttonurl = 'www.xbms.io';
+      newButton.style = {
+        'color': 'black',
+        'background-color': 'white',
+        'width': '200px',
+        'height': '40px',
+        'align': 'center',
+        'border': 'solid',
+        'border-bottom': '',
+        'border-left': '',
+        'border-radius': '10px',
+        'border-right': '',
+        'border-top': '',
+        'font-family': '',
+        'font-size': '',
+        'font-style': '',
+        'font-weight': '',
+        'padding': '2px',
+        'text-decoration': '',
+        'text-transform': '',
+        'vertical-align': '',
+      }
       return newButton
+    }
+    if (type === 'Divider') {
+      const newDivider: MaileditorDivider = new MaileditorDivider();
+      newDivider.type = 'Divider';
+      newDivider.style = {
+        'border-color': 'black',
+        'border-style': 'solid',
+        'border-width': '2px',
+        'container-background-color': '',
+        'padding': '1px',
+        'padding-bottom': '',
+        'padding-left': '',
+        'padding-right': '',
+        'padding-top': '',
+        'width': '100%'
+      }
+      return newDivider
     }
   }
 
@@ -178,73 +213,100 @@ if (event.previousContainer === event.container ) {
   */
   private ConvertToMail(): void {
     // section
-    let mjml = ['<mjml>', '<mj-body>', '</mj-body>','</mjml>']
+    let mjml = ['<mjml>', '<mj-body>'],
+    i = 0;
+    const body = [];
 
+    const sectionlenght = this.mailtemplateArray.length;
     this.mailtemplateArray.forEach((section, index1) => {
-     
        // create section mjml
-      const sectionStyle = this.sectionStyleArray[index1];
-      //console.log(sectionStyle);
+      let sectionStyle = this.sectionStyleArray[index1].style;
+      sectionStyle = JSON.stringify(sectionStyle);
+      const sectionArray = [];
+      const sectionopenstring = '<mj-section ' + sectionStyle + '>';
+      sectionArray.push(sectionopenstring);
       section.forEach((column, index2) => {
-        mjml.splice(2, 0, '<mj-section>');
         // create column mjml
-         const columnsection = this.columnStyleArray[index2];
-         //console.log(columnsection);
+         let columnstyle = this.columnStyleArray[index2].style;
+         columnstyle = JSON.stringify(columnstyle);
+         const columnopenstring = '<mj-column ' + columnstyle + '>'
+         const columnArray = [];
+         columnArray.push(columnopenstring);
         column.forEach((item, index3) => {
+          let mjmlitem: string;
           if (item.type === 'Text') {
-            this.createText(item)}
+           mjmlitem =  this.createText(item)}
           if (item.type === 'Image') {
-            console.log('Image', item)}
-          if (item.type === 'Linebreak') {
-            console.log('Linebreak', item)}
+            mjmlitem = this.createImage(item)}
+          if (item.type === 'Divider') {
+            mjmlitem =  this.createDivider(item)}
           if (item.type === '') {
-            console.log('text', item)}
+            console.log('', item)}
+          if (mjmlitem) {
+            columnArray.push(mjmlitem);
+          }
         });
-        let lastindex = mjml.length -2;
-        mjml.splice(lastindex, 0, '</mj-section>');
+        columnArray.push('</mj-column>');
+        sectionArray.push(columnArray.join(''));
       });
+      sectionArray.push('</mj-section>');
+      body.push(sectionArray);
+      i++
     })
-
-    mjml = Object.assign({}, mjml); 
-    this.mailingApi.mjml(mjml).subscribe((data) => 
-    console.log(data.html));
+    if (i === sectionlenght) {
+      const bodystring = body.join('');
+      mjml.push(bodystring);
+      mjml.push( '</mj-body>', '</mjml>');
+      let mjmlfinal = mjml.join('');
+      mjmlfinal = mjmlfinal.replace(/[\}\{]+/g, '');
+      mjmlfinal = mjmlfinal.replace(/[\,]+/g, ' ');
+      console.log(mjmlfinal);
+    // mjmlfinal = Object.assign({}, mjmlfinal);
+    this.mailingApi.mjml(mjmlfinal).subscribe((data) =>
+    console.log(data.html)) }
   }
 
   private createText(item){
-    let textarray = [];
+    const textarray = [];
     let textstring: string;
-    let itemstyle = JSON.stringify(item.style);
+    const itemstyle = JSON.stringify(item.style);
     textarray.push('<mj-text>')
-    textarray.push('<'+ item.typeformat + ' style=' + itemstyle + '>')
+    textarray.push('<' + item.typeformat + 'style= ' + itemstyle + '>')
     textarray.push(item.content)
-    textarray.push('</'+ item.typeformat + '>')
+    textarray.push('</' + item.typeformat + '>')
     textarray.push('</mj-text>');
     textstring = textarray.join('')
     return(textstring);
   }
 
   private createImage(item){
-    let imagearray = [];
+    const imagearray = [];
     let imagestring: string;
-    let itemstyle = JSON.stringify(item.style);
-    imagearray.push('<mj-image>')
-    imagearray.push('<'+ item.url + ' style=' + itemstyle + '>')
-    imagearray.push('<mj-image>')
+    const itemstyle = JSON.stringify(item.style);
+    imagearray.push('<mj-image src= ' + item.url + 'style= ' +  itemstyle + '>')
+    imagearray.push('</mj-image>')
     imagestring = imagearray.join('')
     return(imagestring)
   }
 
-  private createButon(item){
-    let buttonarrray = [];
+  private createButton(item){
+    const buttonarray = [];
     let buttonstring: string;
-    let itemstyle = JSON.stringify(item.style);
-
+    const itemstyle = JSON.stringify(item.style);
+    buttonarray.push('<mj-button ' + itemstyle + ' href=' + item.url + '>');
+    buttonarray.push(item.buttontext);
+    buttonarray.push('</mj-button>');
+    buttonstring = buttonarray.join('');
     return(buttonstring)
   }
 
-  private createDivider(item){
+  private createDivider(item) {
+    const dividerarray = [];
     let dividerstring: string;
-
+    const itemstyle = JSON.stringify(item.style);
+    dividerarray.push('<mj-divider ' + itemstyle + '>');
+    dividerarray.push('</mj-divider>')
+    dividerstring = dividerarray.join('')
     return(dividerstring)
   }
 
@@ -258,7 +320,7 @@ if (event.previousContainer === event.container ) {
     this.resetEdit()
     this.Column = true;
     this.maileditorColumn = this.columnStyleArray[i1][i2]
-    //console.log(this.maileditorColumn);
+    // console.log(this.maileditorColumn);
   }
 
   private resetEdit(): void {
@@ -267,6 +329,7 @@ if (event.previousContainer === event.container ) {
     this.Image = false;
     this.Text = false;
     this.Button = false;
+    this.Divider = false;
   }
 
   private onSelectTemplatePart(item, i3): void {
@@ -287,6 +350,13 @@ if (event.previousContainer === event.container ) {
       }
       case 'Button': {
         this.Button = true;
+        this.maileditorButton = item;
+        break;
+      }
+      case 'Divider': {
+        console.log(item);
+        this.Divider = true;
+        this.maileditorDivider = item;
         break;
       }
       default: {
@@ -307,19 +377,23 @@ if (event.previousContainer === event.container ) {
   }
 
   private setimgurl(url: string, i1, i2, i3) {
-    //url direct
+    // url direct
     this.mailtemplateArray[i1][i2][i3].url = url;
   }
 
   setbackgroundImageColumn(url: string){
-    //this.columnStyleArray[i1][i2].style = url
-    this.maileditorColumn.style['background-image'] = 'url('+url+')';
+    this.maileditorColumn.style['background-image'] = 'url(' + url + ')';
     console.log(this.maileditorColumn);
   }
 
   setbackgroundImageSection(url: string){
-    this.maileditorSection.style['background-image'] = 'url('+url+')';
+    this.maileditorSection.style['background-image'] = 'url(' + url + ')';
     console.log(this.maileditorSection);
+  }
+
+  setbackgroundImageDivider(url: string){
+    this.maileditorDivider.style['background-image'] = 'url(' + url + ')';
+    console.log(this.maileditorDivider);
   }
 
 

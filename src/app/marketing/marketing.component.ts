@@ -335,8 +335,8 @@ export class MarketingComponent implements OnInit {
             if (this.Account.standardrelation !== undefined) {
               // console.log(this.Account.standardrelation);
               this.RelationsApi.findById(this.Account.standardrelation)
-                .subscribe(rel =>
-                  this.onSelectRelation(rel, null))
+                .subscribe(rel => {
+                  this.onSelectRelation(rel, null)})
             }
             this.getrelationsEntry()
           });

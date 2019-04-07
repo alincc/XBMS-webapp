@@ -21,7 +21,7 @@ import {
   TwitterApi
 } from '../shared/';
 import { Observable } from 'rxjs';
-import { map, startWith } from "rxjs/operators";
+import { map, startWith } from 'rxjs/operators';
 import { FormControl } from '@angular/forms';
 import { BaseChartDirective } from 'ng2-charts';
 import { Router, ActivatedRoute, Params } from '@angular/router';
@@ -75,8 +75,8 @@ export class DashboardComponent implements OnInit {
   public mailstatsspinner = false;
 
 
-  //public GoogleanalyticsSet: any;
-  //public Googleanalyticsreturn: any;
+  // public GoogleanalyticsSet: any;
+  // public Googleanalyticsreturn: any[];
   public Googleanalyticsnumbers = [];
   public Googleanalyticsnames = [];
   public GoogleanalyticsModel: Googleanalytics[];
@@ -92,7 +92,7 @@ export class DashboardComponent implements OnInit {
   public Googleanalyticsreturn2: any;
   public Googleanalyticsnumbers2 = [];
   public Googleanalyticsnames2 = [];
-  //Googleanalytics[];
+  // Googleanalytics[];
 
   public Googleanalyticsnumbers3;
   public Googleanalyticsnames3;
@@ -114,7 +114,7 @@ export class DashboardComponent implements OnInit {
   public selectedanalytics: Googleanalytics = new Googleanalytics();
   public options = [];
   public option: Relations = new Relations();
-  //public relations: Relations = new Relations();
+  // public relations: Relations = new Relations();
   public mailingstats = [];
 
   public acceptedNumbers = [];
@@ -128,6 +128,14 @@ export class DashboardComponent implements OnInit {
   public mailStatsTimeSelected;
   public storedNumbers = [];
   public failedNumbers = [];
+
+  mailStatsTime = [
+    { value: '12m', viewValue: 'Year/months' },
+    { value: '365d', viewValue: 'Year/days' },
+    { value: '30d', viewValue: 'Month' },
+    { value: '7d', viewValue: 'Week' },
+    { value: '1d', viewValue: 'Day' }
+  ];
 
   public Marketingplannerevents: Marketingplannerevents[];
 
@@ -146,57 +154,56 @@ export class DashboardComponent implements OnInit {
   ) {
     LoopBackConfig.setBaseURL(BASE_URL);
     LoopBackConfig.setApiVersion(API_VERSION);
-    this.analytics_ids = "ga:154403562"; //add user to analytics account 
-    this.analytics_startdate = "30daysAgo";
-    this.analytics_enddate = "today";
-    this.analytics_dimensions = "ga:medium";
-    this.analytics_metrics = "ga:users";
+    this.analytics_ids = 'ga:154403562'; // add user to analytics account 
+    this.analytics_startdate = '30daysAgo';
+    this.analytics_enddate = 'today';
+    this.analytics_dimensions = 'ga:medium';
+    this.analytics_metrics = 'ga:users';
 
-    this.analytics_ids2 = "ga:154403562";
-    this.analytics_startdate2 = "30daysAgo";
-    this.analytics_enddate2 = "today";
-    this.analytics_dimensions2 = "ga:date";
-    this.analytics_metrics2 = "ga:users";
+    this.analytics_ids2 = 'ga:154403562';
+    this.analytics_startdate2 = '30daysAgo';
+    this.analytics_enddate2 = 'today';
+    this.analytics_dimensions2 = 'ga:date';
+    this.analytics_metrics2 = 'ga:users';
 
-    this.analytics_ids3 = "ga:154403562"; //add user to analytics account 
-    this.analytics_startdate3 = "30daysAgo";
-    this.analytics_enddate3 = "today";
-    this.analytics_dimensions3 = "ga:region";
-    this.analytics_metrics3 = "ga:users";
-    this.getCurrentUserInfo();
+    this.analytics_ids3 = 'ga:154403562'; // add user to analytics account 
+    this.analytics_startdate3 = '30daysAgo';
+    this.analytics_enddate3 = 'today';
+    this.analytics_dimensions3 = 'ga:region';
+    this.analytics_metrics3 = 'ga:users';
   }
 
 
 
   ngOnInit(): void {
-    if (this.AccountApi.isAuthenticated() == false) { this.router.navigate(['login']) }
-    if (this.AccountApi.getCurrentToken() == undefined) { this.router.navigate(['login']) }
-    this.setFilter(); 
+    if (this.AccountApi.isAuthenticated() === false) { this.router.navigate(['login']) }
+    if (this.AccountApi.getCurrentToken() === undefined) { this.router.navigate(['login']) }
+    this.setFilter();
+    this.getCurrentUserInfo();
   }
 
 
-  //get currentuserinfo for api
+  //  get currentuserinfo for api
   getCurrentUserInfo(): void {
-    this.AccountApi.getCurrent().subscribe((Account: Account) => {
-      this.Account = Account,
+    this.AccountApi.getCurrent().subscribe((account: Account) => {
+      this.Account = account,
         this.CompanyApi.getRelations(this.Account.companyId,
           { fields: { id: true, relationname: true } }
         )
-          .subscribe((Relations: Relations[]) => {
-            this.Relations = Relations,
+          .subscribe((relations: Relations[]) => {
+            this.Relations = relations,
               this.getrelationsEntry()
             if (this.Account.standardrelation !== undefined) {
-
               this.RelationsApi.findById(this.Account.standardrelation)
-                .subscribe((relations: Relations) => {
-                  this.option = relations,
-                    this.getWesiteTracker()
+              .subscribe(rel => {
+                this.onSelectRelation(rel, null)
+                     this.getWebsiteTracker()
                 })
             }
             if (this.Account.standardGa) {
               this.GoogleanalyticsApi.findById(this.Account.standardGa)
-                .subscribe((Googleanalytics: Googleanalytics) => {
-                  this.selectedanalytics = Googleanalytics,
+                .subscribe((googleanalytics: Googleanalytics) => {
+                  this.selectedanalytics = googleanalytics,
                     this.buildDashboard()
                 })
             }
@@ -204,17 +211,23 @@ export class DashboardComponent implements OnInit {
     })
   }
 
+    //  select relation --> get info for all tabs
+    onSelectRelation(option, i): void {
+      this.option = option;
+      this.AccountApi.addStdRelation(this.Account.id, option.id).subscribe()
+    }
+
   getAdsMailing(): void{
-    //get the planned mailings looks shitty because the mailings of are 
-    //part of the marketingplannerevents 
-    //and are not directly related to the Relation.id itself 
-    //used include to get the related mailings and then run foreach on the events and a foreach for all the mailings
+    //  get the planned mailings looks shitty because the mailings of are 
+    //  part of the marketingplannerevents 
+    //  and are not directly related to the Relation.id itself 
+    //  used include to get the related mailings and then run foreach on the events and a foreach for all the mailings
     this.RelationsApi.getMarketingplannerevents(this.option.id, 
       {
       where: { scheduled: true },
       include: {
         relation: 'mailing',
-        scope: 
+        scope:
           {where: { and: [{ send: false}, { scheduled: true }] }}
       },
       order: 'date ASC'
@@ -222,48 +235,48 @@ export class DashboardComponent implements OnInit {
     .subscribe((Marketingplannerevents: Marketingplannerevents[]) => {
       this.Marketingplannerevents = Marketingplannerevents,
       this.Marketingplannerevents.forEach((item) => {
-      let mailingsub = item.mailing;
+      const mailingsub = item.mailing;
       mailingsub.forEach((itemMailing) => {
         itemMailing.marketingplannereventsIds = item.name;
         this.Mailing.push(itemMailing)
       })
       })
-      //console.log(this.Mailing)
-      // objects are being sorted
+      //  console.log(this.Mailing)
+      //  objects are being sorted
       this.Mailing = this.Mailing.sort((n1, n2) => {
   return this.naturalCompare(n1.date, n2.date)
 })
     })
   }
 
-  // don't try to understand this method, just use it as it is and you'll get the result
+  //  don't try to understand this method, just use it as it is and you'll get the result
 naturalCompare(a, b) {
-  var ax = [], bx = [];
+  const ax = [], bx = [];
 
-  a.replace(/(\d+)|(\D+)/g, function (_, $1, $2) { ax.push([$1 || Infinity, $2 || ""]) });
-  b.replace(/(\d+)|(\D+)/g, function (_, $1, $2) { bx.push([$1 || Infinity, $2 || ""]) });
+  a.replace(/(\d+)|(\D+)/g, function (_, $1, $2) { ax.push([$1 || Infinity, $2 || '']) });
+  b.replace(/(\d+)|(\D+)/g, function (_, $1, $2) { bx.push([$1 || Infinity, $2 || '']) });
 
   while (ax.length && bx.length) {
-    var an = ax.shift();
-    var bn = bx.shift();
-    var nn = (an[0] - bn[0]) || an[1].localeCompare(bn[1]);
-    if (nn) return nn;
+    const an = ax.shift();
+    const bn = bx.shift();
+    const nn = (an[0] - bn[0]) || an[1].localeCompare(bn[1]);
+    if (nn) {return nn};
   }
 
   return ax.length - bx.length;
 }
 
-  getWesiteTracker(): void {
+  getWebsiteTracker(): void {
     this.Websitetracker = [];
-    //limit is total entries, order is is important as first entry is in array ES6 move to server. 
+    //  limit is total entries, order is is important as first entry is in array ES6 move to server. 
     this.RelationsApi.getWebsitetracker(this.option.id, {
       where: { isp: false },
       order: 'date DESC', limit: 100
     })
-      .subscribe((Websitetracker: Websitetracker[]) => {
-        this.Websitetracker = Websitetracker.filter((Websitetracker, index, self) =>
+      .subscribe((websitetracker: Websitetracker[]) => {
+        this.Websitetracker = websitetracker.filter((WebsitetrackerFil, index, self) =>
           index === self.findIndex((t) => (
-            t.IP === Websitetracker.IP
+            t.IP === WebsitetrackerFil.IP
           )))
       })
   }
@@ -271,21 +284,21 @@ naturalCompare(a, b) {
   markisp(i): void {
     this.Websitetracker[i].isp = true
     this.RelationsApi.updateByIdWebsitetracker(this.option.id, this.Websitetracker[i].id, this.Websitetracker[i])
-      .subscribe(res => this.getWesiteTracker());
+      .subscribe(res => this.getWebsiteTracker());
   }
 
   buildDashboard(): void {
-    //delay for user input
+    //  delay for user input
     setTimeout(() => {
       this.countRelations(),
         this.getTask(),
         this.getFollowups(),
         this.getMailStats()
       if (this.selectedanalytics !== null) {
-        this.getAnalyticsLine(), //
+        this.getAnalyticsLine(), // 
           this.getAnalytics();
         this.getAnalytics3();
-      }//
+      }
     }, 500);
   }
 
@@ -317,8 +330,8 @@ naturalCompare(a, b) {
 
   public getAnalyticsAccounts(option, i): void {
     this.option = option;
-    //this.Account.standardrelation = option.id;
-    //let id = this.Account.id
+    //  this.Account.standardrelation = option.id;
+    //  const id = this.Account.id
     this.AccountApi.addStdRelation(this.Account.id, option.id)
       .subscribe(res => {
         this.buildDashboard(),
@@ -332,7 +345,7 @@ naturalCompare(a, b) {
   myControl: FormControl = new FormControl();
   filteredOptions: Observable<string[]>;
 
-  //compare filter search Relations
+  //  compare filter search Relations
   setFilter(): void {
     this.filteredOptions = this.myControl.valueChanges
       .pipe(
@@ -342,21 +355,21 @@ naturalCompare(a, b) {
       );
   }
 
-  //filter and to lower case for search
+  //  filter and to lower case for search
   private filter(relationname: string): Relations[] {
     const filterValue = relationname.toLowerCase();
     return this.options.filter(option => option.relationname.toLowerCase().indexOf(filterValue) === 0);
   }
 
-  //set Relations and quick selections
+  //  set Relations and quick selections
   getrelationsEntry(): void {
     this.options = []
-    for (let relation of this.Relations) {
+    for (const relation of this.Relations) {
       this.options.push(relation);
     }
   }
 
-  //display name in searchbox
+  // display name in searchbox
   displayFn(relation?: Relations): string | undefined {
     return relation ? relation.relationname : undefined;
   }
@@ -364,7 +377,7 @@ naturalCompare(a, b) {
 
 
 
-  //chart 1 Activities
+  // chart 1 Activities
   public barChartOptions: any = {
     scaleShowVerticalLines: false,
     responsive: true,
@@ -387,7 +400,7 @@ naturalCompare(a, b) {
   ];
 
   public barChartColors: Array<any> = [
-    { // grey --> deleted using standard settings make option for user select
+    { //  grey --> deconsted using standard settings make option for user select
       backgroundColor: 'rgba(148,159,177,0.2)',
       borderColor: 'rgba(148,159,177,1)',
       pointBackgroundColor: 'rgba(148,159,177,1)',
@@ -396,7 +409,7 @@ naturalCompare(a, b) {
       pointHoverBorderColor: 'blue'
     }]
 
-  // events
+  //  events
   public chartClicked(e: any): void {
     console.log(e);
   }
@@ -406,23 +419,23 @@ naturalCompare(a, b) {
   }
 
 
-  @ViewChild("baseChartBar") chartBar: BaseChartDirective;
+  @ViewChild('baseChartBar') chartBar: BaseChartDirective;
 
   public getNumbers(): void {
-    let data1 = this.TotalNumber.slice(0);
-    let data2 = this.TotalNumber.slice(1);
-    let data3 = this.TotalNumber.slice(2);
-    let data4 = this.TotalNumber.slice(3);
-    let clone = JSON.parse(JSON.stringify(this.barChartData));
+    const data1 = this.TotalNumber.slice(0);
+    const data2 = this.TotalNumber.slice(1);
+    const data3 = this.TotalNumber.slice(2);
+    const data4 = this.TotalNumber.slice(3);
+    const clone = JSON.parse(JSON.stringify(this.barChartData));
     clone[0].data = data1;
     clone[1].data = data2;
     clone[2].data = data3;
     clone[3].data = data4;
     this.barChartData = clone;
-    //console.log(this.RelationsNum.count);
+    // console.log(this.RelationsNum.count);
     /**
      * (My guess), for Angular to recognize the change in the dataset
-     * it has to change the dataset variable directly,
+     * it has to change the dataset constiable directly,
      * so one way around it, is to clone the data, change it and then
      * assign it;
      */
@@ -430,7 +443,7 @@ naturalCompare(a, b) {
 
   public countRelations() {
     this.TotalNumber = [];
-    //use count include?? open issue for loopback --> create hook instead to package as one call or move to automation
+    // use count include?? open issue for loopback --> create hook instead to package as one call or move to automation
     this.CompanyApi.countRelations(this.Account.companyId).subscribe(count => {
       this.returnnumber = count
       this.TotalNumber.push(this.returnnumber.count),
@@ -454,7 +467,7 @@ naturalCompare(a, b) {
     });
   }
 
-  //chart2 website analytics bar chart
+  // chart2 website analytics bar chart
   public barChart2Options: any = {
     scaleShowVerticalLines: false,
     responsive: true,
@@ -473,7 +486,7 @@ naturalCompare(a, b) {
   public barChart2Data: any[] = [this.Googleanalyticsnames];
 
   public barChart2Colors: Array<any> = [
-    { // grey
+    { //  grey
       backgroundColor: 'rgba(148,159,177,0.2)',
       borderColor: 'rgba(148,159,177,1)',
       pointBackgroundColor: 'rgba(148,159,177,1)',
@@ -482,7 +495,7 @@ naturalCompare(a, b) {
       pointHoverBorderColor: 'blue'
     }]
 
-  // events
+  //  events
   public chart2Clicked(e: any): void {
     console.log(e);
   }
@@ -492,7 +505,7 @@ naturalCompare(a, b) {
   }
 
 
-  @ViewChild("baseChartBar2") baseChartBar2: BaseChartDirective;
+  @ViewChild('baseChartBar2') baseChartBar2: BaseChartDirective;
 
   public get1Numbers(): void {
     this.barChart2Labels = [];
@@ -505,8 +518,8 @@ naturalCompare(a, b) {
       this.baseChartBar2.chart = this.baseChartBar2.getChartBuilder(this.baseChartBar2.ctx);
     }
 
-    let data = this.Googleanalyticsnumbers3;// update to new
-    let clone = JSON.parse(JSON.stringify(this.barChart2Data));
+    const data = this.Googleanalyticsnumbers3;//  update to new
+    const clone = JSON.parse(JSON.stringify(this.barChart2Data));
     clone[0].data = data;
     this.barChart2Data = clone;
   }
@@ -519,25 +532,25 @@ naturalCompare(a, b) {
     this.GoogleanalyticsApi.getanalyticsreport(this.selectedanalytics.id, this.analytics_ids, this.analytics_startdate,
       this.analytics_enddate, this.analytics_dimensions, this.analytics_metrics)
       .subscribe((data) => {
-        let googleanalyticsreturn1 = data.rows
+        const googleanalyticsreturn1 = data.rows
         googleanalyticsreturn1.forEach((item, index) => {
           this.Googleanalyticsnumbers.push(item[1]);
-          let analyticsobject = {"name":item[0],"value":item[1]}
+          const analyticsobject = {'name':item[0],'value':item[1]}
           this.googleanalyticsreturn.push(analyticsobject);
           this.Googleanalyticsnames.push(item[0]);
         }),
         console.log(this.googleanalyticsreturn);
-          //get array even and uneven split
-          //this.get1Numbers();
-          this.getDoughnutNumbers(); //Doughnut
-          //import to update for ngx charts
+          // get array even and uneven split
+          // this.get1Numbers();
+          this.getDoughnutNumbers(); // Doughnut
+          // import to update for ngx charts
           this.googleanalyticsreturn = [...this.googleanalyticsreturn]
       }, error => console.log('Could not load Analytics'));
   }
 
 
 
-  // lineChart
+  //  lineChart
   public lineChartData: Array<any> = [
     { data: [], label: 'Website Visitors' }];
   public lineChartLabels: Array<any> = this.Googleanalyticsnames2;
@@ -545,7 +558,7 @@ naturalCompare(a, b) {
     responsive: true
   };
   public lineChartColors: Array<any> = [
-    { // grey
+    { //  grey
       backgroundColor: 'rgba(148,159,177,0.2)',
       borderColor: 'rgba(148,159,177,1)',
       pointBackgroundColor: 'rgba(148,159,177,1)',
@@ -558,7 +571,7 @@ naturalCompare(a, b) {
   public lineChartType: string = 'line';
 
 
-  // events
+  //  events
   public chart3Clicked(e: any): void {
     console.log(e);
   }
@@ -574,26 +587,26 @@ naturalCompare(a, b) {
     this.GoogleanalyticsApi.getanalyticsreport(this.selectedanalytics.id, this.analytics_ids3, this.analytics_startdate3,
       this.analytics_enddate3, this.analytics_dimensions3, this.analytics_metrics3)
       .subscribe((data) => {
-        let googleanalyticsreturn = data
+        const googleanalyticsreturn = data
         googleanalyticsreturn.rows.forEach((item, index) => {
           this.Googleanalyticsnumbers3.push(item[1]);
           this.Googleanalyticsnames3.push(item[0]);
         }),
-          //get array even and uneven split
+          // get array even and uneven split
           this.get1Numbers();
-        //this.getDoughnutNumbers(); //Doughnut
+        // this.getDoughnutNumbers(); // Doughnut
       }, error => console.log('Could not load Analytics'));
   }
 
 
-  @ViewChild("baseChartLine") chartLine: BaseChartDirective;
+  @ViewChild('baseChartLine') chartLine: BaseChartDirective;
 
   public get2Numbers(): void {
 
     this.lineChartLabels = [];
     this.lineChartLabels = this.Googleanalyticsnames2;
 
-    //use to update label, yes this is the only way that works
+    // use to update label, yes this is the only way that works
 
     if (this.chartLine !== undefined) {
       this.chartLine.ngOnDestroy();
@@ -601,9 +614,9 @@ naturalCompare(a, b) {
       this.chartLine.chart = this.chartLine.getChartBuilder(this.chartLine.ctx);
     }
 
-    //same here
-    let data = this.Googleanalyticsnumbers2;// update to new
-    let clone = JSON.parse(JSON.stringify(this.barChart2Data));
+    // same here
+    const data = this.Googleanalyticsnumbers2;//  update to new
+    const clone = JSON.parse(JSON.stringify(this.barChart2Data));
     clone[0].data = data;
     this.lineChartData = clone;
   }
@@ -618,24 +631,24 @@ naturalCompare(a, b) {
         this.Googleanalyticsreturn2 = data,
           this.Googleanalytics2 = this.Googleanalyticsreturn2.rows,
           this.Googleanalytics2.forEach((item, index) => {
-            var txt2 = item[0].slice(0, 4) + "-" + item[0].slice(4, 12);
-            var txt3 = txt2.slice(0, 7) + "-" + txt2.slice(7, 13);
+            const txt2 = item[0].slice(0, 4) + '-' + item[0].slice(4, 12);
+            const txt3 = txt2.slice(0, 7) + '-' + txt2.slice(7, 13);
 
             this.Googleanalyticsnumbers2.push(item[1]);
             this.Googleanalyticsnames2.push(txt3);
           });
-        //(this.Googleanalyticsnumbers2);
-        //console.log(this.Googleanalyticsnames2);
+        // (this.Googleanalyticsnumbers2);
+        // console.log(this.Googleanalyticsnames2);
         this.get2Numbers();
       }, error => console.log('Could not load Analytics'));
   }
 
 
-  // Doughnut
+  //  Doughnut
   public doughnutChartLabels: string[] = this.Googleanalyticsnames;
   public doughnutChartType: string = 'doughnut';
   public doughnutChartData: any[] = [
-    { data: [], label: 'Website visitors by Source' }, //for flex colors you need predetermine the arrays
+    { data: [], label: 'Website visitors by Source' }, // for flex colors you need predetermine the arrays
     { data: [], label: 'Website visitors by Source' },
     { data: [], label: 'Website visitors by Source' },
     { data: [], label: 'Website visitors by Source' },
@@ -648,7 +661,7 @@ naturalCompare(a, b) {
     { data: [], label: 'Website visitors by Source' },
     { data: [], label: 'Website visitors by Source' }];
 
-  // events
+  //  events
   public chartClicked2(e: any): void {
     console.log(e);
   }
@@ -657,29 +670,29 @@ naturalCompare(a, b) {
     console.log(e);
   }
 
-  @ViewChild("baseChartDoughnut") chartDoughnut: BaseChartDirective;
+  @ViewChild('baseChartDoughnut') chartDoughnut: BaseChartDirective;
 
   public getDoughnutNumbers() {
     this.doughnutChartLabels = [];
     this.doughnutChartLabels = this.Googleanalyticsnames;
-    //console.log("names", this.Googleanalyticsnames);
+    // console.log('names', this.Googleanalyticsnames);
 
     if (this.chartDoughnut !== undefined) {
       this.chartDoughnut.ngOnDestroy();
       this.chartDoughnut.labels = this.doughnutChartLabels;
-      //this.chartDoughnut.labels = this.doughnutChartLabels;
+      // this.chartDoughnut.labels = this.doughnutChartLabels;
       this.chartDoughnut.chart = this.chartDoughnut.getChartBuilder(this.chartDoughnut.ctx);
     }
 
-    let data = this.Googleanalyticsnumbers;// update to new
-    let clone = JSON.parse(JSON.stringify(this.doughnutChartData));
+    const data = this.Googleanalyticsnumbers;//  update to new
+    const clone = JSON.parse(JSON.stringify(this.doughnutChartData));
     clone[0].data = data;
     this.doughnutChartData = clone;
   }
 
 
   public doughnutChartColors: Array<any> = [
-    { // grey
+    { //  grey
       backgroundColor: 'rgba(148,159,177,0.2)',
       borderColor: 'rgba(148,159,177,1)',
       pointBackgroundColor: 'rgba(148,159,177,1)',
@@ -688,37 +701,36 @@ naturalCompare(a, b) {
       pointHoverBorderColor: 'rgba(148,159,177,0.8)'
     }]
 
-  // __________ Mailing Charts
+  //  __________ Mailing Charts
 
   getMailStats(): void {
     this.mailstatsspinner = true;
-    //set d/m/h 
+    //  set d/m/h 
     let data;
     if (this.mailStatsTimeSelected == undefined) {
-      data = "7d";
-    }
-    else data = this.mailStatsTimeSelected.value;
+      data = '7d';
+    } else { data = this.mailStatsTimeSelected.value }
     this.MailingApi.getstats(data).subscribe(res => {
       this.mailingstats = res.res,
-        //console.log("mailingstats:", this.mailingstats)
+        // console.log('mailingstats:', this.mailingstats)
 
         this.acceptedNumbers = [],
-        //set accepted mails
+        // set accepted mails
         this.mailingstats[0].stats.forEach(element => {
           this.acceptedNumbers.push(element.accepted.outgoing)
         });
 
       this.acceptedLabel = [],
-        //set accepted labels/Dates
+        // set accepted labels/Dates
         this.mailingstats[0].stats.forEach(element => {
-          let time = element.time.slice(0, 16)
+          const time = element.time.slice(0, 16)
           this.acceptedLabel.push(time)
         });
 
       this.deliveredNumbers = [],
-        //set accepted mails
+        // set accepted mails
         this.mailingstats[1].stats.forEach(element => {
-          this.deliveredNumbers.push(element.delivered.total) //smtp/html
+          this.deliveredNumbers.push(element.delivered.total) // smtp/html
         });
 
       this.openedNumbers = [],
@@ -766,13 +778,13 @@ naturalCompare(a, b) {
     { data: this.storedNumbers, label: 'Stored' },
     { data: this.failedNumbers, label: 'Failed' },
   ];
-  public MailChartLabels: Array<any> = this.acceptedLabel; //dates only 
+  public MailChartLabels: Array<any> = this.acceptedLabel; // dates only 
   public MailChartOptions: any = {
     responsive: true
   };
 
   public MailChartColors: Array<any> = [
-    { // grey
+    { //  grey
       backgroundColor: 'rgba(148,159,177,0.2)',
       borderColor: 'rgba(148,159,177,1)',
       pointBackgroundColor: 'rgba(148,159,177,1)',
@@ -785,7 +797,7 @@ naturalCompare(a, b) {
   public MailChartType: string = 'line';
 
 
-  // events
+  //  events
   public MailChartClicked(e: any): void {
     console.log(e);
   }
@@ -794,14 +806,14 @@ naturalCompare(a, b) {
     console.log(e);
   }
 
-  @ViewChild("baseMailChart") MailchartLine: BaseChartDirective;
+  @ViewChild('baseMailChart') MailchartLine: BaseChartDirective;
 
   public getMailChart(): void {
 
     this.MailChartLabels = [];
     this.MailChartLabels = this.acceptedLabel;
 
-    //use to update label, yes this is the only way that works
+    // use to update label, yes this is the only way that works
 
     if (this.MailchartLine !== undefined) {
       this.MailchartLine.ngOnDestroy();
@@ -809,16 +821,16 @@ naturalCompare(a, b) {
       this.MailchartLine.chart = this.MailchartLine.getChartBuilder(this.MailchartLine.ctx);
     }
 
-    //same here
-    let data1 = this.acceptedNumbers;// update to new
-    let data2 = this.deliveredNumbers; //for each dataset
-    let data3 = this.openedNumbers;
-    let data4 = this.clickedNumbers;
-    let data5 = this.unsubscribedNumbers;
-    let data6 = this.complainedNumbers;
-    let data7 = this.storedNumbers;
-    let data8 = this.failedNumbers;
-    let clone = JSON.parse(JSON.stringify(this.MailChartData));
+    // same here
+    const data1 = this.acceptedNumbers;//  update to new
+    const data2 = this.deliveredNumbers; // for each dataset
+    const data3 = this.openedNumbers;
+    const data4 = this.clickedNumbers;
+    const data5 = this.unsubscribedNumbers;
+    const data6 = this.complainedNumbers;
+    const data7 = this.storedNumbers;
+    const data8 = this.failedNumbers;
+    const clone = JSON.parse(JSON.stringify(this.MailChartData));
     clone[0].data = data1;
     clone[1].data = data2;
     clone[2].data = data3;
@@ -831,13 +843,7 @@ naturalCompare(a, b) {
     this.mailstatsspinner = false;
   }
 
-  mailStatsTime = [
-    { value: '12m', viewValue: 'Year/months' },
-    { value: '365d', viewValue: 'Year/days' },
-    { value: '30d', viewValue: 'Month' },
-    { value: '7d', viewValue: 'Week' },
-    { value: '1d', viewValue: 'Day' }
-  ];
+
 
 
 }

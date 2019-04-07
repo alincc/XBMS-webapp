@@ -52,8 +52,6 @@ export class MarketingchannelsComponent implements OnInit {
   public Linkedin: Linkedin[];
   public Facebook: Facebook[];
 
-
-
   public convertdate;
   public date;
   public time;
