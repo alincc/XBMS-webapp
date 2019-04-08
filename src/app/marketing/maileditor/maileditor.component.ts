@@ -1,3 +1,13 @@
+/** Todo list:
+ * Add support for gif generator: https://www.npmjs.com/package/gifencoder  
+ * Add subject name + emoticon support
+ * Add text editor CKE5 Editor support
+ * Add preview
+ * Add body style
+ * Add save as template
+ * */
+
+
 import { Component, OnInit, Input } from '@angular/core';
 import { CdkDragDrop, moveItemInArray, transferArrayItem, copyArrayItem } from '@angular/cdk/drag-drop';
 import {
@@ -223,13 +233,19 @@ if (event.previousContainer === event.container ) {
       let sectionStyle = this.sectionStyleArray[index1].style;
       sectionStyle = JSON.stringify(sectionStyle);
       const sectionArray = [];
-      const sectionopenstring = '<mj-section ' + sectionStyle + '>';
+      let sectionopenstring: string;
+      if (sectionStyle) {sectionopenstring = '<mj-section ' + sectionStyle + '>';} else {
+        sectionopenstring = '<mj-section>';
+      }
       sectionArray.push(sectionopenstring);
       section.forEach((column, index2) => {
         // create column mjml
          let columnstyle = this.columnStyleArray[index2].style;
          columnstyle = JSON.stringify(columnstyle);
-         const columnopenstring = '<mj-column ' + columnstyle + '>'
+         let columnopenstring: string;
+         if (columnstyle) {
+          columnopenstring = '<mj-column ' + columnstyle + '>'} else {
+            columnopenstring = '<mj-column>'}
          const columnArray = [];
          columnArray.push(columnopenstring);
         column.forEach((item, index3) => {
@@ -240,8 +256,8 @@ if (event.previousContainer === event.container ) {
             mjmlitem = this.createImage(item)}
           if (item.type === 'Divider') {
             mjmlitem =  this.createDivider(item)}
-          if (item.type === '') {
-            console.log('', item)}
+          if (item.type === 'Button') {
+            mjmlitem = this.createButton(item)}
           if (mjmlitem) {
             columnArray.push(mjmlitem);
           }
@@ -261,7 +277,6 @@ if (event.previousContainer === event.container ) {
       mjmlfinal = mjmlfinal.replace(/[\}\{]+/g, '');
       mjmlfinal = mjmlfinal.replace(/[\,]+/g, ' ');
       console.log(mjmlfinal);
-    // mjmlfinal = Object.assign({}, mjmlfinal);
     this.mailingApi.mjml(mjmlfinal).subscribe((data) =>
     console.log(data.html)) }
   }
@@ -271,7 +286,9 @@ if (event.previousContainer === event.container ) {
     let textstring: string;
     const itemstyle = JSON.stringify(item.style);
     textarray.push('<mj-text>')
-    textarray.push('<' + item.typeformat + 'style= ' + itemstyle + '>')
+    if (itemstyle) {
+    textarray.push('<' + item.typeformat + ' style= ' + itemstyle + '>')} else {
+      textarray.push('<' + item.typeformat + '>')}
     textarray.push(item.content)
     textarray.push('</' + item.typeformat + '>')
     textarray.push('</mj-text>');
@@ -283,7 +300,9 @@ if (event.previousContainer === event.container ) {
     const imagearray = [];
     let imagestring: string;
     const itemstyle = JSON.stringify(item.style);
-    imagearray.push('<mj-image src= ' + item.url + 'style= ' +  itemstyle + '>')
+    if (itemstyle) {
+      imagearray.push('<mj-image src= ' + item.url + ' style= ' +  itemstyle + '>')} else {
+        imagearray.push('<mj-image src= ' + item.url + '>')}
     imagearray.push('</mj-image>')
     imagestring = imagearray.join('')
     return(imagestring)
@@ -293,7 +312,9 @@ if (event.previousContainer === event.container ) {
     const buttonarray = [];
     let buttonstring: string;
     const itemstyle = JSON.stringify(item.style);
-    buttonarray.push('<mj-button ' + itemstyle + ' href=' + item.url + '>');
+    if (itemstyle) {
+      buttonarray.push('<mj-button ' + itemstyle + ' href=' + item.url + '>')} else {
+        buttonarray.push('<mj-button href=' + item.url + '>')}
     buttonarray.push(item.buttontext);
     buttonarray.push('</mj-button>');
     buttonstring = buttonarray.join('');
@@ -304,6 +325,9 @@ if (event.previousContainer === event.container ) {
     const dividerarray = [];
     let dividerstring: string;
     const itemstyle = JSON.stringify(item.style);
+    if (itemstyle) {
+      dividerarray.push('<mj-divider ' + itemstyle + '>')} else {
+        dividerarray.push('<mj-divider>')}
     dividerarray.push('<mj-divider ' + itemstyle + '>');
     dividerarray.push('</mj-divider>')
     dividerstring = dividerarray.join('')
