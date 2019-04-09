@@ -232,6 +232,7 @@ if (event.previousContainer === event.container ) {
        // create section mjml
       let sectionStyle = this.sectionStyleArray[index1].style;
       sectionStyle = JSON.stringify(sectionStyle);
+      if (sectionStyle){sectionStyle = sectionStyle.replace(/:/g, '=')}
       const sectionArray = [];
       let sectionopenstring: string;
       if (sectionStyle) {sectionopenstring = '<mj-section ' + sectionStyle + '>';} else {
@@ -242,6 +243,7 @@ if (event.previousContainer === event.container ) {
         // create column mjml
          let columnstyle = this.columnStyleArray[index2].style;
          columnstyle = JSON.stringify(columnstyle);
+         if (columnstyle){columnstyle = columnstyle.replace(/:/g, '=')}
          let columnopenstring: string;
          if (columnstyle) {
           columnopenstring = '<mj-column ' + columnstyle + '>'} else {
@@ -284,7 +286,8 @@ if (event.previousContainer === event.container ) {
   private createText(item){
     const textarray = [];
     let textstring: string;
-    const itemstyle = JSON.stringify(item.style);
+    let itemstyle = JSON.stringify(item.style);
+    if(itemstyle){itemstyle = itemstyle.replace(/:/g, '=')}
     textarray.push('<mj-text>')
     if (itemstyle) {
     textarray.push('<' + item.typeformat + ' style= ' + itemstyle + '>')} else {
@@ -299,7 +302,8 @@ if (event.previousContainer === event.container ) {
   private createImage(item){
     const imagearray = [];
     let imagestring: string;
-    const itemstyle = JSON.stringify(item.style);
+    let itemstyle = JSON.stringify(item.style);
+    if (itemstyle) {itemstyle = itemstyle.replace(/:/g,"=")}
     if (itemstyle) {
       imagearray.push('<mj-image src= ' + item.url + ' style= ' +  itemstyle + '>')} else {
         imagearray.push('<mj-image src= ' + item.url + '>')}
@@ -311,10 +315,11 @@ if (event.previousContainer === event.container ) {
   private createButton(item){
     const buttonarray = [];
     let buttonstring: string;
-    const itemstyle = JSON.stringify(item.style);
+    let itemstyle = JSON.stringify(item.style);
+    if (itemstyle) {itemstyle = itemstyle.replace(/:/g,"=")}
     if (itemstyle) {
-      buttonarray.push('<mj-button ' + itemstyle + ' href=' + item.url + '>')} else {
-        buttonarray.push('<mj-button href=' + item.url + '>')}
+      buttonarray.push('<mj-button ' + itemstyle + ' href= ' + item.url + '>')} else {
+        buttonarray.push('<mj-button href= ' + item.url + '>')}
     buttonarray.push(item.buttontext);
     buttonarray.push('</mj-button>');
     buttonstring = buttonarray.join('');
@@ -324,7 +329,8 @@ if (event.previousContainer === event.container ) {
   private createDivider(item) {
     const dividerarray = [];
     let dividerstring: string;
-    const itemstyle = JSON.stringify(item.style);
+    let itemstyle = JSON.stringify(item.style);
+    if (itemstyle) {itemstyle = itemstyle.replace(/:/g,"=")}
     if (itemstyle) {
       dividerarray.push('<mj-divider ' + itemstyle + '>')} else {
         dividerarray.push('<mj-divider>')}
