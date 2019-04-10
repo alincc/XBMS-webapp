@@ -5,27 +5,44 @@ export interface Maileditormodels {
 
 export interface MaileditorSectionInterface {
   style: {
-    'width': string,
-    'height': string;
-    'background-color': string;
-    'margin': string;
-    'padding': string;
-    'border-style': string;
-    'border-width': string;
-    'background-image': string;
+    'background-color': string,
+    'background-repeat': string,
+    'background-size': string,
+    'background-url': string,
+    'border': string,
+    'border-bottom': string,
+    'border-left': string,
+    'border-radius': string,
+    'border-right': string,
+    'border-top': string,
+    'direction': string,
+    'full-width': string,
+    'padding': string,
+    'padding-bottom': string,
+    'padding-left': string,
+    'padding-right': string,
+    'padding-top': string,
+    'text-align': string,
+    'vertical-align': string
   }
 }
 
 export interface MaileditorColumnInterface {
   style: {
+    'background-color': string,
+    'border': string,
+    'border-bottom': string,
+    'border-left': string,
+    'border-right': string,
+    'border-top': string,
+    'border-radius': string,
     'width': string,
-    'height': string;
-    'background-color': string;
-    'margin': string;
-    'padding': string;
-    'border-style': string;
-    'border-width': string;
-    'background-image': string;
+    'vertical-align': string,
+    'padding': string,
+    'padding-top': string,
+    'padding-bottom': string,
+    'padding-left': string,
+    'padding-right': string
   }
 }
 
@@ -35,11 +52,23 @@ export interface MaileditorTextInterface {
   content: string;
   typeformat: string;
   style: {
-    'color': string;
-    'background-color': string;
-    'font-family': string;
-    'fontsize': string;
-    'text-align': string;
+    'color': string,
+    'font-family': string,
+    'font-size': string,
+    'font-style': string,
+    'font-weight': string,
+    'line-height': string,
+    'letter-spacing': string,
+    'height': string,
+    'text-decoration': string,
+    'text-transform': string,
+    'align': string,
+    'container-background-color': string,
+    'padding': string,
+    'padding-top': string,
+    'padding-bottom': string,
+    'padding-left': string,
+    'padding-right': string
   };
 }
 
@@ -47,10 +76,25 @@ export interface MaileditorImageInterface {
   type: string;
   url: string;
   style: {
-    'color': string;
-    'background-color': string;
-    'width': string;
-    'height': string;
+    'align': string,
+    'alt': string,
+    'border': string,
+    'border-radius': string,
+    'container-background-color': string,
+    'fluid-on-mobile': string,
+    'height': string,
+    'href': string,
+    'padding': string,
+    'padding-bottom': string,
+    'padding-left': string,
+    'padding-right': string,
+    'padding-top': string,
+    'rel': string,
+    'src': string,
+    'srcset': string,
+    'target': string,
+    'title': string,
+    'width': string
   };
 }
 
@@ -104,10 +148,22 @@ export class MaileditorText implements MaileditorTextInterface {
   typeformat: string;
   style: {
     'color': string,
-    'background-color': string,
     'font-family': string,
-    'fontsize': string,
-    'text-align': string
+    'font-size': string,
+    'font-style': string,
+    'font-weight': string,
+    'line-height': string,
+    'letter-spacing': string,
+    'height': string,
+    'text-decoration': string,
+    'text-transform': string,
+    'align': string,
+    'container-background-color': string,
+    'padding': string,
+    'padding-top': string,
+    'padding-bottom': string,
+    'padding-left': string,
+    'padding-right': string
   }
 
   public static factory(data: MaileditorTextInterface): MaileditorText {
@@ -125,10 +181,25 @@ export class MaileditorImage implements MaileditorImageInterface {
   content: string;
   url: string;
   style: {
-    'color': string,
-    'background-color': string,
-    'width': string,
+    'align': string,
+    'alt': string,
+    'border': string,
+    'border-radius': string,
+    'container-background-color': string,
+    'fluid-on-mobile': string,
     'height': string,
+    'href': string,
+    'padding': string,
+    'padding-bottom': string,
+    'padding-left': string,
+    'padding-right': string,
+    'padding-top': string,
+    'rel': string,
+    'src': string,
+    'srcset': string,
+    'target': string,
+    'title': string,
+    'width': string
   }
   public static factory(data: MaileditorImageInterface): MaileditorImage {
     return new MaileditorImage(data);
@@ -142,15 +213,20 @@ export class MaileditorImage implements MaileditorImageInterface {
 
 export class MaileditorColumn implements MaileditorColumnInterface {
   style: {
-    'color': string;
-    'background-color': string;
-    'width': string;
-    'height': string;
-    'margin': string;
+    'background-color': string,
+    'border': string,
+    'border-bottom': string,
+    'border-left': string,
+    'border-right': string,
+    'border-top': string,
+    'border-radius': string,
+    'width': string,
+    'vertical-align': string,
     'padding': string;
-    'border-style': string;
-    'border-width': string;
-    'background-image': string;
+    'padding-top': string;
+    'padding-bottom': string;
+    'padding-left': string;
+    'padding-right': string;
   }
 
   public static factory(data: MaileditorColumnInterface): MaileditorColumn {
@@ -166,22 +242,32 @@ export class MaileditorColumn implements MaileditorColumnInterface {
 
 export class MaileditorSection implements MaileditorSectionInterface {
   style: {
-    'color': string;
-    'background-color': string;
-    'width': string;
-    'height': string;
-    'margin': string;
-    'padding': string;
-    'border-style': string;
-    'border-width': string;
-    'background-image': string;
+    'background-color': string,
+    'background-repeat': string,
+    'background-size': string,
+    'background-url': string,
+    'border': string,
+    'border-bottom': string,
+    'border-left': string,
+    'border-radius': string,
+    'border-right': string,
+    'border-top': string,
+    'direction': string,
+    'full-width': string,
+    'padding': string,
+    'padding-bottom': string,
+    'padding-left': string,
+    'padding-right': string,
+    'padding-top': string,
+    'text-align': string,
+    'vertical-align': string
   }
 
   public static factory(data: MaileditorSectionInterface): MaileditorSection {
     return new MaileditorSection(data);
   }
 
-  constructor(data?: MaileditorColumnInterface) {
+  constructor(data?: MaileditorSectionInterface) {
     Object.assign(this, data);
   }
 

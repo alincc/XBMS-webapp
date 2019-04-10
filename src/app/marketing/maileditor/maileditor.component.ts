@@ -85,15 +85,25 @@ export class MaileditorComponent implements OnInit {
 
     const sectionstyleIns: MaileditorSection = new MaileditorSection();
     sectionstyleIns.style = {
-      'color': 'black',
       'background-color': 'white',
-      'width': '100%',
-      'height': '300px',
-      'margin': '1px',
-      'padding': '1px',
-      'border-style': 'none',
-      'border-width': '1px',
-      'background-image': ''
+      'background-repeat': 'no-repeat',
+      'background-size': '',
+      'background-url': '',
+      'border': '0px',
+      'border-bottom': '0px',
+      'border-left': '0px',
+      'border-radius': '0px',
+      'border-right': '0px',
+      'border-top': '0px',
+      'direction': 'ltr',
+      'full-width': 'full-width',
+      'padding': '0px',
+      'padding-bottom': '0px',
+      'padding-left': '0px',
+      'padding-right': '0px',
+      'padding-top': '0px',
+      'text-align': 'left',
+      'vertical-align': 'top'
     }
     this.sectionStyleArray.push(sectionstyleIns);
 
@@ -108,15 +118,20 @@ export class MaileditorComponent implements OnInit {
     this.mailtemplateArray[i1].push([]);
     const columnstyleIns: MaileditorColumn = new MaileditorColumn();
     columnstyleIns.style = {
-      'color': 'black',
-      'background-color': 'white',
-      'width': '100%',
-      'height': '100%',
-      'margin': '1px',
-      'padding': '1px',
-      'border-style': 'none',
-      'border-width': '1px',
-      'background-image': ''
+    'background-color': 'white',
+    'border': '',
+    'border-bottom': '',
+    'border-left': '',
+    'border-right': '',
+    'border-top': '',
+    'border-radius': '',
+    'width': '100%',
+    'vertical-align': '',
+    'padding': '',
+    'padding-top': '',
+    'padding-bottom': '',
+    'padding-left': '',
+    'padding-right': '',
     }
        this.columnStyleArray.push([]);
     console.log(i1, this.columnStyleArray)
@@ -150,10 +165,22 @@ if (event.previousContainer === event.container ) {
       newtext.typeformat = 'p';
       newtext.style = {
         'color': 'black',
-        'background-color': '',
         'font-family': 'Verdana',
-        'fontsize': '12pt',
-        'text-align': 'center'
+        'font-size': '12pt',
+        'font-style': 'normal',
+        'font-weight': '',
+        'line-height': '',
+        'letter-spacing': '2px', 
+        'height': '100%',
+        'text-decoration': '',
+        'text-transform': '',
+        'align': 'center',    
+        'container-background-color': 'none',
+        'padding': '',
+        'padding-top': '',
+        'padding-bottom': '',
+        'padding-left': '',
+        'padding-right': ''
       }
       return newtext
     }
@@ -162,10 +189,25 @@ if (event.previousContainer === event.container ) {
       newImage.type = 'Image';
       newImage.url = '';
       newImage.style = {
-        'color': 'black',
-        'background-color': 'white',
-        'width': '100%',
-        'height': '100%'
+        'align': "center",
+        'alt': '',
+        'border': "none",
+        'border-radius': '',
+        'container-background-color': '',
+        'fluid-on-mobile': '',
+        'height': "auto",
+        'href': '',
+        'padding': "10px",
+        'padding-bottom': '',
+        'padding-left': '',
+        'padding-right': '',
+        'padding-top': '',
+        'rel': '',
+        'src': '',
+        'srcset': '',
+        'target': "_blank",
+        'title': '',
+        'width': "100%"
       }
       return newImage
     }
@@ -181,19 +223,19 @@ if (event.previousContainer === event.container ) {
         'height': '40px',
         'align': 'center',
         'border': 'solid',
-        'border-bottom': '',
-        'border-left': '',
+        'border-bottom': '0px',
+        'border-left': '0px',
         'border-radius': '10px',
-        'border-right': '',
-        'border-top': '',
-        'font-family': '',
-        'font-size': '',
-        'font-style': '',
-        'font-weight': '',
+        'border-right': '0px',
+        'border-top': '0px',
+        'font-family': 'none',
+        'font-size': '12pt',
+        'font-style': 'none',
+        'font-weight': 'none',
         'padding': '2px',
-        'text-decoration': '',
-        'text-transform': '',
-        'vertical-align': '',
+        'text-decoration': 'none',
+        'text-transform': 'none',
+        'vertical-align': 'none',
       }
       return newButton
     }
@@ -204,12 +246,12 @@ if (event.previousContainer === event.container ) {
         'border-color': 'black',
         'border-style': 'solid',
         'border-width': '2px',
-        'container-background-color': '',
+        'container-background-color': 'none',
         'padding': '1px',
-        'padding-bottom': '',
-        'padding-left': '',
-        'padding-right': '',
-        'padding-top': '',
+        'padding-bottom': '0px',
+        'padding-left': '0px',
+        'padding-right': '0px',
+        'padding-top': '0px',
         'width': '100%'
       }
       return newDivider
@@ -237,7 +279,7 @@ if (event.previousContainer === event.container ) {
       let sectionopenstring: string;
       if (sectionStyle) {sectionopenstring = '<mj-section ' + sectionStyle + '>';} else {
         sectionopenstring = '<mj-section>';
-      }
+      } 
       sectionArray.push(sectionopenstring);
       section.forEach((column, index2) => {
         // create column mjml
@@ -286,11 +328,17 @@ if (event.previousContainer === event.container ) {
   private createText(item){
     const textarray = [];
     let textstring: string;
-    let itemstyle = JSON.stringify(item.style);
-    if(itemstyle){itemstyle = itemstyle.replace(/:/g, '=')}
+    let newstyle = [];
+    Object.keys(item.style).forEach(function(key) {
+      if (item.style[key]){newstyle.push(key +": " + item.style[key])}
+    });
+    // let itemstyle = JSON.stringify(newstyle);
+    let itemstyle = newstyle.join('; ')
+    console.log(itemstyle);
+    // if(itemstyle){itemstyle = itemstyle.replace(/:/g, '=')}
     textarray.push('<mj-text>')
     if (itemstyle) {
-    textarray.push('<' + item.typeformat + ' style= ' + itemstyle + '>')} else {
+    textarray.push('<' + item.typeformat + ' style= ' + '"' + itemstyle + '"' + '>')} else {
       textarray.push('<' + item.typeformat + '>')}
     textarray.push(item.content)
     textarray.push('</' + item.typeformat + '>')
@@ -305,7 +353,7 @@ if (event.previousContainer === event.container ) {
     let itemstyle = JSON.stringify(item.style);
     if (itemstyle) {itemstyle = itemstyle.replace(/:/g,"=")}
     if (itemstyle) {
-      imagearray.push('<mj-image src= ' + item.url + ' style= ' +  itemstyle + '>')} else {
+      imagearray.push('<mj-image src= ' + item.url +  itemstyle + '>')} else {
         imagearray.push('<mj-image src= ' + item.url + '>')}
     imagearray.push('</mj-image>')
     imagestring = imagearray.join('')
