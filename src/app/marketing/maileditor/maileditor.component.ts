@@ -174,7 +174,7 @@ if (event.previousContainer === event.container ) {
         'height': '100%',
         'text-decoration': '',
         'text-transform': '',
-        'align': 'center',    
+        'align': 'center',
         'container-background-color': 'none',
         'padding': '',
         'padding-top': '',
