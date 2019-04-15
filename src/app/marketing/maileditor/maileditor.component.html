@@ -390,24 +390,8 @@
           <td>
             <input [style.background]="rgbaText" matInput Placeholder="background color"
               [value]="maileditorDivider.style['background-color']" [cpAlphaChannel]="'always'" [cpOutputFormat]="'hex'"
-              [cpPosition]="'left'" [(colorPicker)]="maileditorDivider.style['background-color']" />
+              [cpPosition]="'left'" [(colorPicker)]="maileditorDivider.style['container-background-color']" />
             <mat-hint>Background Color</mat-hint>
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <app-fileupload [account]="account" [option]="option" (imgurl)="setbackgroundImageDivider($event)">
-            </app-fileupload>
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <mat-form-field>
-              <input [(ngModel)]="maileditorDivider.style['container-background-color']" type="text" matInput
-                placeholder="Image url">
-              <mat-icon matSuffix>mode_edit</mat-icon>
-              <mat-hint>url</mat-hint>
-            </mat-form-field>
           </td>
         </tr>
         <tr>
