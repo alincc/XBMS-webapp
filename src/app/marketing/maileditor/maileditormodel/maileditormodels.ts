@@ -144,7 +144,7 @@ export interface MaileditorDividerInterface {
 
 export class MaileditorText implements MaileditorTextInterface {
   type: string;
-  content:  string;
+  content:  any;
   typeformat: string;
   style: {
     'color': string,

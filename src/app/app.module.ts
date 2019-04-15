@@ -62,9 +62,13 @@ import { ReturnpageComponent } from './returnpage/returnpage.component';
 import { MarketingchannelsComponent } from './marketing/marketingchannels/marketingchannels.component';
 import { PwaService } from './pwa.service';
 import { MaileditorComponent } from './marketing/maileditor/maileditor.component';
+import { TextEditorDialog } from './marketing/maileditor/texteditordialog.component';
 import {DragDropModule} from '@angular/cdk/drag-drop';
 import { ColorPickerModule } from 'ngx-color-picker';
 import { FileuploadComponent } from './shared/fileupload/fileupload.component';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+
+
 @NgModule({
   declarations: [
     XlsxFileUploadComponent,
@@ -83,11 +87,13 @@ import { FileuploadComponent } from './shared/fileupload/fileupload.component';
     ReturnpageComponent,
     MarketingchannelsComponent,
     MaileditorComponent,
-    FileuploadComponent
+    FileuploadComponent,
+    TextEditorDialog
   ],
 
    entryComponents: [
     ConfirmDialog,
+    TextEditorDialog,
     RandomDialog
   ],
 
@@ -132,7 +138,10 @@ import { FileuploadComponent } from './shared/fileupload/fileupload.component';
     GoogleMapService,
     IconService,
     timeconv,
-    MarketingchannelsComponent
+    MarketingchannelsComponent,
+
+      { provide: MAT_DIALOG_DATA, useValue: {} },
+      { provide: MatDialogRef, useValue: {} }
   ],
   bootstrap: [AppComponent],
   exports: [

@@ -14,7 +14,37 @@
   </div>
 
   <div fxFlex="60%" class="template" fxLayout="column">
-    <h2>Template</h2>
+
+
+    <table>
+      <tr>
+        <td>
+          <h2>Template</h2>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <mat-form-field>
+            <input [(ngModel)]=subject type="text" matInput placeholder="Subject Line">
+            <mat-icon matSuffix>mode_edit</mat-icon>
+          </mat-form-field>
+
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <mat-form-field>
+            <input [(ngModel)]=preview type="text" matInput placeholder="preview">
+            <mat-icon matSuffix>mode_edit</mat-icon>
+          </mat-form-field>
+        </td>
+      </tr>
+    </table>
+
+
+
+
+
     <div class="template-container" *ngFor="let section of mailtemplateArray; let i1 = index" fxLayout="row">
       <!-- cdkDropList #listSection="cdkDropList" (cdkDropListDropped)="drop($event, i1, i2)" [cdkDropListData]="mailtemplateArray" -->
       <label class="sectionlabel">Section <mat-icon (click)="onSelectSectionPart(i1)" class="iconsize-10" matSuffix>
@@ -33,10 +63,15 @@
           </label>
           <div class="item-box" *ngFor="let item of column; let i3 = index;" (click)="onSelectTemplatePart(item, i3)"
             cdkDrag>
-            <p [ngStyle]="item.style" *ngIf="item.typeformat === 'p'">{{item.content}}</p>
+            <!-- <p [ngStyle]="item.style" *ngIf="item.typeformat === 'p'">{{item.content}}</p>
             <h1 [ngStyle]="item.style" *ngIf="item.typeformat === 'h1'">{{item.content}}</h1>
             <h2 [ngStyle]="item.style" *ngIf="item.typeformat === 'h2'">{{item.content}}</h2>
-            <h3 [ngStyle]="item.style" *ngIf="item.typeformat === 'h3'">{{item.content}}</h3>
+            <h3 [ngStyle]="item.style" *ngIf="item.typeformat === 'h3'">{{item.content}}</h3> -->
+            <div [innerHTML]="item.content" (click)="onSelectTemplatePart(item, i3)">
+                
+            </div>
+            <mat-icon *ngIf="item.type === 'Text'" (click)="onSelectTemplatePart(item, i3)" (click)="openDialog()">mode_edit</mat-icon>
+
             <!-- </div> -->
             <div *ngIf="item.type === 'Image'">
               <app-fileupload [account]="account" [option]="option" (imgurl)="setimgurl($event, i1, i2, i3)">
@@ -198,13 +233,13 @@
         </tr>
         <tr>
           <td>
-            
+
           </td>
         </tr>
       </table>
     </div>
 
-    <div *ngIf="Text" class="edit_table">
+    <!-- <div *ngIf="Text" class="edit_table">
       <table>
         <tr>
           <td>
@@ -251,10 +286,17 @@
         </tr>
         <tr>
           <td>
-            <mat-button-toggle-group [(value)]="maileditorText.style['font-style']" name="fontStyle" aria-label="Font Style">
-              <mat-button-toggle value="bold"><mat-icon>format_bold</mat-icon></mat-button-toggle>
-              <mat-button-toggle value="italic"><mat-icon>format_italic</mat-icon></mat-button-toggle>
-              <mat-button-toggle value="oblique"><mat-icon>format_underline</mat-icon></mat-button-toggle>
+            <mat-button-toggle-group [(value)]="maileditorText.style['font-style']" name="fontStyle"
+              aria-label="Font Style">
+              <mat-button-toggle value="bold">
+                <mat-icon>format_bold</mat-icon>
+              </mat-button-toggle>
+              <mat-button-toggle value="italic">
+                <mat-icon>format_italic</mat-icon>
+              </mat-button-toggle>
+              <mat-button-toggle value="oblique">
+                <mat-icon>format_underline</mat-icon>
+              </mat-button-toggle>
             </mat-button-toggle-group>
           </td>
         </tr>
@@ -268,7 +310,8 @@
         </tr>
         <tr>
           <td>
-            <mat-button-toggle-group [(value)]="maileditorText.style.align" [(value)]="maileditorText.style['text-align']" #group="matButtonToggleGroup">
+            <mat-button-toggle-group [(value)]="maileditorText.style.align"
+              [(value)]="maileditorText.style['text-align']" #group="matButtonToggleGroup">
               <mat-button-toggle value="left">
                 <mat-icon>format_align_left</mat-icon>
               </mat-button-toggle>
@@ -298,7 +341,7 @@
           </td>
         </tr>
       </table>
-    </div>
+    </div> -->
 
     <div *ngIf="Image" class="edit_table" fxLayout="row wrap">Edit Image
       <table>
@@ -421,7 +464,7 @@
           <td>
             <mat-form-field>
               <input [(ngModel)]="maileditorButton.url" type="text" matInput placeholder="Button URL">
-            <mat-icon matSuffix>mode_edit</mat-icon>
+              <mat-icon matSuffix>mode_edit</mat-icon>
             </mat-form-field>
           </td>
         </tr>
@@ -457,8 +500,9 @@
         <tr>
           <td>
             <mat-form-field>
-              <input [(ngModel)]="maileditorButton.style['border-radius']" type="text" matInput placeholder="Border Radius">
-            <mat-icon matSuffix>mode_edit</mat-icon>
+              <input [(ngModel)]="maileditorButton.style['border-radius']" type="text" matInput
+                placeholder="Border Radius">
+              <mat-icon matSuffix>mode_edit</mat-icon>
             </mat-form-field>
           </td>
         </tr>
@@ -466,7 +510,7 @@
           <td>
             <mat-form-field>
               <input [(ngModel)]="maileditorButton.style.height" type="text" matInput placeholder="Height">
-            <mat-icon matSuffix>mode_edit</mat-icon>
+              <mat-icon matSuffix>mode_edit</mat-icon>
             </mat-form-field>
           </td>
         </tr>
@@ -474,7 +518,7 @@
           <td>
             <mat-form-field>
               <input [(ngModel)]="maileditorButton.style.width" type="text" matInput placeholder="width">
-            <mat-icon matSuffix>mode_edit</mat-icon>
+              <mat-icon matSuffix>mode_edit</mat-icon>
             </mat-form-field>
           </td>
         </tr>

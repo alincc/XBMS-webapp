@@ -6,8 +6,7 @@
  * Add body style
  * Add save as template
  * */
-
-
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { Component, OnInit, Input } from '@angular/core';
 import { CdkDragDrop, moveItemInArray, transferArrayItem, copyArrayItem } from '@angular/cdk/drag-drop';
 import {
@@ -15,8 +14,10 @@ import {
   MaileditorImage, MaileditorText, MaileditorButton, MaileditorDivider
 } from './maileditormodel/maileditormodels';
 import { FileuploadComponent } from '../../shared/fileupload/fileupload.component';
-import { Relations } from '../../shared';
-import { Mailing, MailingApi } from '../../shared/sdk'
+import { Relations, BASE_URL } from '../../shared';
+import { Mailing, MailingApi } from '../../shared/sdk';
+import { TextEditorDialog } from './texteditordialog.component';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-maileditor',
@@ -47,7 +48,8 @@ export class MaileditorComponent implements OnInit {
   public mailtemplateArray = [];
   public sectionStyleArray = [];
   public columnStyleArray = [];
-
+  public subject: string;
+  public preview: string;
   // create version 0n drop event
   // needs at least one item at init
   // Connect Toolsect to SectionArray
@@ -56,6 +58,7 @@ export class MaileditorComponent implements OnInit {
   private toolboxtext = this.createNewItem('Text');
   private toolboxbutton = this.createNewItem('Button');
   private toolboxdivider = this.createNewItem('Divider');
+
 
   toolset = [
     this.toolboximage,
@@ -68,7 +71,9 @@ export class MaileditorComponent implements OnInit {
   @Input('account') account: Account;
 
   constructor(
-    public mailingApi: MailingApi
+    public mailingApi: MailingApi,
+    public dialog: MatDialog,
+    private sanitizer: DomSanitizer
   ) { }
 
   ngOnInit() {
@@ -77,6 +82,7 @@ export class MaileditorComponent implements OnInit {
     const texttool = this.createNewItem('Text')
     this.mailtemplateArray[0][0].push(texttool);
   }
+
 
   addToMailTemplateArray(): void {
     // add section to mailtemplate and to style array
@@ -161,7 +167,7 @@ if (event.previousContainer === event.container ) {
     if (type === 'Text') {
       const newtext: MaileditorText = new MaileditorText();
       newtext.type = 'Text';
-      newtext.content = 'Start Writing';
+      newtext.content = this.sanitizer.bypassSecurityTrustHtml('start writing') ;
       newtext.typeformat = 'p';
       newtext.style = {
         'color': 'black',
@@ -333,14 +339,16 @@ if (event.previousContainer === event.container ) {
       if (item.style[key]){newstyle.push(key +": " + item.style[key])}
     });
     // let itemstyle = JSON.stringify(newstyle);
-    let itemstyle = newstyle.join('; ')
+    //let itemstyle = newstyle.join('; ')
+    let itemstyle = item.content.changingThisBreaksApplicationSecurity;
     console.log(itemstyle);
+    itemstyle = itemstyle.replace(/"/g, '');
     // if(itemstyle){itemstyle = itemstyle.replace(/:/g, '=')}
     textarray.push('<mj-text>')
-    if (itemstyle) {
-    textarray.push('<' + item.typeformat + ' style= ' + '"' + itemstyle + '"' + '>')} else {
-      textarray.push('<' + item.typeformat + '>')}
-    textarray.push(item.content)
+    // if (itemstyle) {
+    // textarray.push('<' + item.typeformat + ' style= ' + '"' + itemstyle + '"' + '>')} else {
+    //   textarray.push('<' + item.typeformat + '>')}
+    textarray.push(item.content.changingThisBreaksApplicationSecurity)
     textarray.push('</' + item.typeformat + '>')
     textarray.push('</mj-text>');
     textstring = textarray.join('')
@@ -473,6 +481,21 @@ if (event.previousContainer === event.container ) {
     this.maileditorDivider.style['background-image'] = 'url(' + url + ')';
     console.log(this.maileditorDivider);
   }
+  
+  openDialog(): void {
+    console.log(this.maileditorText.content)
+    const dialogRef = this.dialog.open(TextEditorDialog, {
+      width: '800px',
+      data: this.maileditorText.content.changingThisBreaksApplicationSecurity,
+      id: this.option.id
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      this.maileditorText.content = this.sanitizer.bypassSecurityTrustHtml(result) ;
+    });
+  }
 
 
 }
+
+
