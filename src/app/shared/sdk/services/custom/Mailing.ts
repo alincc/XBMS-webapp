@@ -556,13 +556,11 @@ export class MailingApi extends BaseLoopBackApi {
          * (The remote method definition does not provide any description.)
          * </em>
    *
-   * @param {object} mjml 
-   *
    * @param {string} templatename 
    *
    * @param {object} data Request data.
    *
-   * This method does not accept any data. Supply an empty object.
+   * This method expects a subset of model properties as request parameters.
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -573,14 +571,15 @@ export class MailingApi extends BaseLoopBackApi {
    * This usually means the response is a `Mailing` object.)
    * </em>
    */
-  public mjml(mjml: any = {}, templatename: any = {}, customHeaders?: Function): Observable<any> {
+  public mjml(mailtemplateArray: any = {}, templatename: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "POST";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
     "/mailings/mjml";
     let _routeParams: any = {};
-    let _postBody: any = {};
+    let _postBody: any = {
+      mailtemplateArray: mailtemplateArray
+    };
     let _urlParams: any = {};
-    if (typeof mjml !== 'undefined' && mjml !== null) _urlParams.mjml = mjml;
     if (typeof templatename !== 'undefined' && templatename !== null) _urlParams.templatename = templatename;
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
     return result;

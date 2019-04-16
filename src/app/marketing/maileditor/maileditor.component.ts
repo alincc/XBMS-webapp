@@ -176,12 +176,12 @@ if (event.previousContainer === event.container ) {
         'font-style': 'normal',
         'font-weight': '',
         'line-height': '',
-        'letter-spacing': '2px', 
+        'letter-spacing': '2px',
         'height': '100%',
         'text-decoration': '',
         'text-transform': '',
         'align': 'center',
-        'container-background-color': 'none',
+        'container-background-color': '',
         'padding': '',
         'padding-top': '',
         'padding-bottom': '',
@@ -234,14 +234,14 @@ if (event.previousContainer === event.container ) {
         'border-radius': '10px',
         'border-right': '0px',
         'border-top': '0px',
-        'font-family': 'none',
+        'font-family': '',
         'font-size': '12pt',
-        'font-style': 'none',
-        'font-weight': 'none',
+        'font-style': '',
+        'font-weight': '',
         'padding': '2px',
-        'text-decoration': 'none',
-        'text-transform': 'none',
-        'vertical-align': 'none',
+        'text-decoration': '',
+        'text-transform': '',
+        'vertical-align': '',
       }
       return newButton
     }
@@ -252,7 +252,7 @@ if (event.previousContainer === event.container ) {
         'border-color': 'black',
         'border-style': 'solid',
         'border-width': '2px',
-        'container-background-color': 'none',
+        'container-background-color': '',
         'padding': '1px',
         'padding-bottom': '0px',
         'padding-left': '0px',
@@ -266,141 +266,18 @@ if (event.previousContainer === event.container ) {
 
 
   /**  Convert to html template
-   * @params takes the arrray the template and converts them to mplm
+   * @params takes the arrray the template/style and converts them to mjml
    * @returns confirmation of created template
   */
   private ConvertToMail(): void {
-    // section convert
-    let mjml = [];
-    mjml.push('<mjml>', '<mj-body>');
-    let i = 0;
-    const body = [];
-
-    const sectionlenght = this.mailtemplateArray.length;
-    this.mailtemplateArray.forEach((section, index1) => {
-       // create section mjml
-      let sectionStyle = this.sectionStyleArray[index1].style;
-      sectionStyle = JSON.stringify(sectionStyle);
-      if (sectionStyle){sectionStyle = sectionStyle.replace(/:/g, '=')}
-      const sectionArray = [];
-      let sectionopenstring: string;
-      if (sectionStyle) {sectionopenstring = '<mj-section ' + sectionStyle + '>';} else {
-        sectionopenstring = '<mj-section>';
-      } 
-      sectionArray.push(sectionopenstring);
-      section.forEach((column, index2) => {
-        // create column mjml
-         let columnstyle = this.columnStyleArray[index2].style;
-         columnstyle = JSON.stringify(columnstyle);
-         if (columnstyle){columnstyle = columnstyle.replace(/:/g, '=')}
-         let columnopenstring: string;
-         if (columnstyle) {
-          columnopenstring = '<mj-column ' + columnstyle + '>'} else {
-            columnopenstring = '<mj-column>'}
-         const columnArray = [];
-         columnArray.push(columnopenstring);
-        column.forEach((item, index3) => {
-          let mjmlitem: string;
-          if (item.type === 'Text') {
-           mjmlitem =  this.createText(item)}
-          if (item.type === 'Image') {
-            mjmlitem = this.createImage(item)}
-          if (item.type === 'Divider') {
-            mjmlitem =  this.createDivider(item)}
-          if (item.type === 'Button') {
-            mjmlitem = this.createButton(item)}
-          if (mjmlitem) {
-            columnArray.push(mjmlitem);
-          }
-        });
-        columnArray.push('</mj-column>');
-        // sectionArray.push(columnArray.join(''));
-        sectionArray.push(columnArray)
-      });
-      sectionArray.push('</mj-section>');
-      body.push(sectionArray);
-      i++
-    })
-    if (i === sectionlenght) {
-      // const bodystring = body.join('');
-      mjml.push(body);
-      mjml.push( '</mj-body>', '</mjml>');
-      // let mjmlfinal = mjml.join('');
-      // mjmlfinal = mjmlfinal.replace(/[\}\{]+/g, '');
-      // mjmlfinal = mjmlfinal.replace(/[\,]+/g, ' ');
-      let mjmlfinal = mjml.reduce(function(acc, cur, i) {
-        acc[i] = cur;
-        return acc;
-      }, {});
-      console.log(mjmlfinal);
-    this.mailingApi.mjml(mjmlfinal).subscribe((data) =>
-    console.log(data.html)) }
+    let templarray = this.mailtemplateArray;
+    let sectionstyle = this.sectionStyleArray;
+    let columnstyle = this.columnStyleArray;
+    let sendobject= {templarray, sectionstyle, columnstyle};
+    this.mailingApi.mjml(sendobject).subscribe((data) =>
+    console.log(data.html));
   }
 
-  private createText(item){
-    const textarray = [];
-    let textstring: string;
-    let newstyle = [];
-    Object.keys(item.style).forEach(function(key) {
-      if (item.style[key]){newstyle.push(key +": " + item.style[key])}
-    });
-    // let itemstyle = JSON.stringify(newstyle);
-    //let itemstyle = newstyle.join('; ')
-    let itemstyle = item.content.changingThisBreaksApplicationSecurity;
-    console.log(itemstyle);
-    itemstyle = itemstyle.replace(/"/g, '');
-    // if(itemstyle){itemstyle = itemstyle.replace(/:/g, '=')}
-    textarray.push('<mj-text>')
-    // if (itemstyle) {
-    // textarray.push('<' + item.typeformat + ' style= ' + '"' + itemstyle + '"' + '>')} else {
-    //   textarray.push('<' + item.typeformat + '>')}
-    textarray.push(item.content.changingThisBreaksApplicationSecurity)
-    textarray.push('</' + item.typeformat + '>')
-    textarray.push('</mj-text>');
-    textstring = textarray.join('')
-    return(textstring);
-  }
-
-  private createImage(item){
-    const imagearray = [];
-    let imagestring: string;
-    let itemstyle = JSON.stringify(item.style);
-    if (itemstyle) {itemstyle = itemstyle.replace(/:/g,"=")}
-    if (itemstyle) {
-      imagearray.push('<mj-image src= ' + item.url +  itemstyle + '>')} else {
-        imagearray.push('<mj-image src= ' + item.url + '>')}
-    imagearray.push('</mj-image>')
-    imagestring = imagearray.join('')
-    return(imagestring)
-  }
-
-  private createButton(item){
-    const buttonarray = [];
-    let buttonstring: string;
-    let itemstyle = JSON.stringify(item.style);
-    if (itemstyle) {itemstyle = itemstyle.replace(/:/g,"=")}
-    if (itemstyle) {
-      buttonarray.push('<mj-button ' + itemstyle + ' href= ' + item.url + '>')} else {
-        buttonarray.push('<mj-button href= ' + item.url + '>')}
-    buttonarray.push(item.buttontext);
-    buttonarray.push('</mj-button>');
-    buttonstring = buttonarray.join('');
-    return(buttonstring)
-  }
-
-  private createDivider(item) {
-    const dividerarray = [];
-    let dividerstring: string;
-    let itemstyle = JSON.stringify(item.style);
-    if (itemstyle) {itemstyle = itemstyle.replace(/:/g,"=")}
-    if (itemstyle) {
-      dividerarray.push('<mj-divider ' + itemstyle + '>')} else {
-        dividerarray.push('<mj-divider>')}
-    dividerarray.push('<mj-divider ' + itemstyle + '>');
-    dividerarray.push('</mj-divider>')
-    dividerstring = dividerarray.join('')
-    return(dividerstring)
-  }
 
   private onSelectSectionPart(i1): void {
     this.resetEdit()
