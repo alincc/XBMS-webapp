@@ -556,7 +556,7 @@ export class MailingApi extends BaseLoopBackApi {
          * (The remote method definition does not provide any description.)
          * </em>
    *
-   * @param {string} mjml 
+   * @param {object} mjml 
    *
    * @param {string} templatename 
    *

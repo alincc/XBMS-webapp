@@ -1,11 +1,11 @@
-<ckeditor  #content [name]="MailEditor" [(ngModel)]="data" [config]="{
+<ckeditor  #content [name]="editor1" [(ngModel)]="data" [config]="{
     extraPlugins: 'filebrowser,popup,filetools',
     toolbarCanCollapse: 'true',
     width: '100%',
     toolbarStartupExpanded: 'false'}"
      (fileUploadResponse)="onRequestCkEvent($event)">
   </ckeditor>
+  
   <div mat-dialog-actions>
-
         <button mat-button [mat-dialog-close]="data" cdkFocusInitial>Ok</button>
       </div>

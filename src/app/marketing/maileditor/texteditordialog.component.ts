@@ -8,8 +8,7 @@ import { Component, OnInit, Input, Inject } from '@angular/core';
   })
   
   export class TextEditorDialog {
-      
-    public CKEDITOR: any;
+     public CKEDITOR: any;
     constructor(
       public dialogRef: MatDialogRef<TextEditorDialog>,
       @Inject(MAT_DIALOG_DATA) public data: String,

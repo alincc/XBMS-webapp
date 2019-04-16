@@ -27,6 +27,7 @@
     "@angular/pwa": "^0.7.5",
     "@angular/router": "^7.1.2",
     "@angular/service-worker": "^7.1.2",
+    "@ckeditor/ckeditor5-build-classic": "^12.1.0",
     "@ks89/angular-modal-gallery": "^6.3.0",
     "@swimlane/ngx-charts": "^9.1.1",
     "@types/xlsx": "0.0.36",

@@ -673,7 +673,7 @@
                     width: '100%',
                     height: '600px',
                     toolbarStartupExpanded: 'false'}"
-                    [readonly]=this.selectedMailing.send (fileUploadResponse)="onRequestCkEvent($event)" debounce="500">
+                     (fileUploadResponse)="onRequestCkEvent($event)" debounce="500">
                   </ckeditor>
 
                 </div>
@@ -1053,7 +1053,7 @@
                             width: '100%',
                             height: '600px',
                             toolbarStartupExpanded: 'false'}"
-                              [readonly]=this.CampaignMailing.send (fileUploadResponse)="onRequestCkEvent($event)"
+                              (fileUploadResponse)="onRequestCkEvent($event)"
                               debounce="500">
                             </ckeditor>
                           </div>

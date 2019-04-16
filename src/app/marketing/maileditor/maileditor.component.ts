@@ -270,9 +270,10 @@ if (event.previousContainer === event.container ) {
    * @returns confirmation of created template
   */
   private ConvertToMail(): void {
-    // section
-    let mjml = ['<mjml>', '<mj-body>'],
-    i = 0;
+    // section convert
+    let mjml = [];
+    mjml.push('<mjml>', '<mj-body>');
+    let i = 0;
     const body = [];
 
     const sectionlenght = this.mailtemplateArray.length;
@@ -313,19 +314,24 @@ if (event.previousContainer === event.container ) {
           }
         });
         columnArray.push('</mj-column>');
-        sectionArray.push(columnArray.join(''));
+        // sectionArray.push(columnArray.join(''));
+        sectionArray.push(columnArray)
       });
       sectionArray.push('</mj-section>');
       body.push(sectionArray);
       i++
     })
     if (i === sectionlenght) {
-      const bodystring = body.join('');
-      mjml.push(bodystring);
+      // const bodystring = body.join('');
+      mjml.push(body);
       mjml.push( '</mj-body>', '</mjml>');
-      let mjmlfinal = mjml.join('');
-      mjmlfinal = mjmlfinal.replace(/[\}\{]+/g, '');
-      mjmlfinal = mjmlfinal.replace(/[\,]+/g, ' ');
+      // let mjmlfinal = mjml.join('');
+      // mjmlfinal = mjmlfinal.replace(/[\}\{]+/g, '');
+      // mjmlfinal = mjmlfinal.replace(/[\,]+/g, ' ');
+      let mjmlfinal = mjml.reduce(function(acc, cur, i) {
+        acc[i] = cur;
+        return acc;
+      }, {});
       console.log(mjmlfinal);
     this.mailingApi.mjml(mjmlfinal).subscribe((data) =>
     console.log(data.html)) }
