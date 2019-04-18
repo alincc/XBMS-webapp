@@ -25,7 +25,7 @@
 
 .template {
   min-width: 600px;
-  max-width: 95%;
+  //max-width: 95%;
   margin: 2px;
   padding: 2px;
 }
@@ -39,11 +39,8 @@
 }
 
 .template-container {
-    //width: 800px;
-    max-width: 100%;
     height: auto;
-    min-height: 100px;
-    //height: 100%;
+    padding-right: 30px;
 }
   
   .tools-list {
@@ -56,54 +53,49 @@
     max-width: 95%;
     background: white;
     border-radius: 4px;
-    //display: block;
+    position: fixed;
+    top: 200px;
+    left: 10px;
+    
   }
 
   .section-box {
     height: auto;
-    margin: 2px;
-    padding: 2px;
+    margin: 1px;
+    padding: 1px;
     min-height: 60px;
-    max-height: 100%;
-    //min-width: 20%; accept flex
-    max-width: 600px; //should be the same as the column max, template max
+    width: 100%;
     overflow:hidden;
-    //border: solid 1px #ccc;
-    //border-radius: 4px;
-    position: relative; //show label on top
-    top: 0;
-    left: 0;
+  }
+
+  .section-container{
+    //max-width: 95%;
+    
   }
   
   .column-box {
-    height: auto;
-    margin: 2px;
     border: solid 1px #ccc;
     border-radius: 2px;
-    padding: 2px;
     color: rgba(0, 0, 0, 0.87);
     cursor: move;
     background: white;
     max-height: 100%;
-    max-width: 100%;
-    position: absolute;
+    min-height: 50px;
+    width: 100%;
     top: 0;
     left: 0;
   }
 
+  .textbox-edit-button{
+    cursor:pointer;
+  }
+
   .item-box {
-    // margin: 2px;
-    // border: solid 1px #ccc;
-    // padding: 2px;
-    // color: rgba(0, 0, 0, 0.87);
-    // max-height: 100%;
-    // cursor: move;
-    // background: whitesmoke;
     height: auto;
     width: 100%;
-    //position: absolute;
     top: 0;
     left: 0;
+    margin: 5px;
   }
 
   .itemlabel {
@@ -117,12 +109,15 @@
   }
 
   .sectionlabel {
+    margin-right: 2px;
+    width: 25px;
     height: 10px;
     font-size: 6pt;
     position: relative;
     overflow: visible;
-    z-index: 7;
-    opacity: 0.8;
+    z-index: 8;
+    opacity: 0.4;
+    background-color: white;
   }
 
   .columnlabel {
@@ -138,6 +133,11 @@
   .columnlabel:hover{
     opacity: 1;
   }
+
+  .icon-label:hover{
+    color: red;
+  }
+
   .cdk-drag-preview {
     box-sizing: border-box;
     border-radius: 4px;

@@ -141,6 +141,38 @@ export interface MaileditorDividerInterface {
   }
 }
 
+export interface MaileditorCarouselInterface {
+  images: Array<MaileditorCarouselImageInterface>;
+  type: string;
+  style: {
+    'align': string;
+    'background-color': string;
+    'border-radius': string;
+    'icon-width': string;
+    'left-icon': string;
+    'right-icon': string;
+    'tb-border': string;
+    'tb-border-radius': string;
+    'tb-hover-border-color': string;
+    'tb-selected-border-color': string;
+    'tb-width': string;
+    'thumbnails': string;
+  }
+}
+
+export interface MaileditorCarouselImageInterface {
+  type: string;
+  style: {
+    'alt': string;
+    'href': string;
+    'rel': string;
+    'src': string;
+    'target': string;
+    'thumbnails-src': string;
+    'title': string;
+  }
+}
+
 
 export class MaileditorText implements MaileditorTextInterface {
   type: string;
@@ -329,6 +361,52 @@ export class MaileditorDivider implements MaileditorDividerInterface {
   }
 
   constructor(data?: MaileditorDividerInterface) {
+    Object.assign(this, data);
+  }
+}
+
+export class MaileditorCarousel implements MaileditorCarouselInterface {
+  images: Array<MaileditorCarouselImageInterface>;
+  type: string;
+  style: {
+    'align': string;
+    'background-color': string;
+    'border-radius': string;
+    'icon-width': string;
+    'left-icon': string;
+    'right-icon': string;
+    'tb-border': string;
+    'tb-border-radius': string;
+    'tb-hover-border-color': string;
+    'tb-selected-border-color': string;
+    'tb-width': string;
+    'thumbnails': string;
+  }
+  public static factory(data: MaileditorCarouselInterface): MaileditorCarousel {
+    return new MaileditorCarousel(data);
+  }
+
+  constructor(data?: MaileditorCarouselInterface) {
+    Object.assign(this, data);
+  }
+}
+
+export class MaileditorCarouselImage implements MaileditorCarouselImageInterface {
+  type: string;
+  style: {
+    'alt': string;
+    'href': string;
+    'rel': string;
+    'src': string;
+    'target': string;
+    'thumbnails-src': string;
+    'title': string;
+  }
+  public static factory(data: MaileditorCarouselImageInterface ): MaileditorCarouselImage {
+    return new MaileditorCarouselImage(data);
+  }
+
+  constructor(data?: MaileditorCarouselImageInterface ) {
     Object.assign(this, data);
   }
 }

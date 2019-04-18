@@ -11,7 +11,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { CdkDragDrop, moveItemInArray, transferArrayItem, copyArrayItem } from '@angular/cdk/drag-drop';
 import {
   Maileditormodels, MaileditorSection, MaileditorColumn,
-  MaileditorImage, MaileditorText, MaileditorButton, MaileditorDivider
+  MaileditorImage, MaileditorText, MaileditorButton, MaileditorDivider, MaileditorCarousel, MaileditorCarouselImage
 } from './maileditormodel/maileditormodels';
 import { FileuploadComponent } from '../../shared/fileupload/fileupload.component';
 import { Relations, BASE_URL } from '../../shared';
@@ -32,6 +32,7 @@ export class MaileditorComponent implements OnInit {
   public Text = false;
   public Button = false;
   public Divider = false;
+  public Carousel = false;
 
   public maileditorText: MaileditorText = new MaileditorText();
   public maileditorImage: MaileditorImage = new MaileditorImage();
@@ -39,6 +40,8 @@ export class MaileditorComponent implements OnInit {
   public maileditorSection: MaileditorSection = new MaileditorSection();
   public maileditorButton: MaileditorButton = new MaileditorButton();
   public maileditorDivider: MaileditorDivider = new MaileditorDivider();
+  public maileditorCarousel: MaileditorCarousel = new MaileditorCarousel();
+  public maileditorCarouselImage: MaileditorCarouselImage = new MaileditorCarouselImage();
   // template --> Section --> Column
   // section can contain only column
   // template can contain only sections
@@ -58,13 +61,15 @@ export class MaileditorComponent implements OnInit {
   private toolboxtext = this.createNewItem('Text');
   private toolboxbutton = this.createNewItem('Button');
   private toolboxdivider = this.createNewItem('Divider');
+  private toolboxcarousel = this.createNewItem('Carousel');
 
 
   toolset = [
     this.toolboximage,
     this.toolboxtext,
     this.toolboxbutton,
-    this.toolboxdivider
+    this.toolboxdivider,
+    this.toolboxcarousel
   ];
 
   @Input('option') option: Relations;
@@ -102,7 +107,7 @@ export class MaileditorComponent implements OnInit {
       'border-right': '0px',
       'border-top': '0px',
       'direction': 'ltr',
-      'full-width': 'full-width',
+      'full-width': 'full-width', //full-width
       'padding': '0px',
       'padding-bottom': '0px',
       'padding-left': '0px',
@@ -262,8 +267,44 @@ if (event.previousContainer === event.container ) {
       }
       return newDivider
     }
+    if (type === 'Carousel') {
+      const newImage = this.NewCarouselImage();
+      const newCarousel: MaileditorCarousel = new MaileditorCarousel();
+      newCarousel.type= 'Carousel';
+      newCarousel.images.push(newImage)
+      newCarousel.style = {
+        'align': '',
+        'background-color': '',
+        'border-radius': '',
+        'icon-width': '',
+        'left-icon': '',
+        'right-icon': '',
+        'tb-border': '',
+        'tb-border-radius': '',
+        'tb-hover-border-color': '',
+        'tb-selected-border-color': '',
+        'tb-width': '',
+        'thumbnails': '',
+      }
+      return newCarousel
+    }
   }
 
+
+  private NewCarouselImage () {
+    const newCarouselImage: MaileditorCarouselImage = new MaileditorCarouselImage();
+    newCarouselImage.type= 'CarouselImage';
+    newCarouselImage.style = {
+      'alt': '',
+      'href': '',
+      'rel': '',
+      'src': '',
+      'target': '',
+      'thumbnails-src': '',
+      'title': ''
+    }
+    return newCarouselImage
+  }
 
   /**  Convert to html template
    * @params takes the arrray the template/style and converts them to mjml
@@ -299,6 +340,7 @@ if (event.previousContainer === event.container ) {
     this.Text = false;
     this.Button = false;
     this.Divider = false;
+    this.Carousel = false;
   }
 
   private onSelectTemplatePart(item, i3): void {
@@ -328,6 +370,12 @@ if (event.previousContainer === event.container ) {
         this.maileditorDivider = item;
         break;
       }
+      case 'Carousel': {
+        console.log(item);
+        this.Carousel = true;
+        this.maileditorCarousel = item;
+        break;
+      }
       default: {
         // statements;
         break;
@@ -347,7 +395,7 @@ if (event.previousContainer === event.container ) {
 
   private setimgurl(url: string, i1, i2, i3) {
     // url direct
-    this.mailtemplateArray[i1][i2][i3].url = url;
+    this.mailtemplateArray[i1][i2][i3].url = url + ' ' ;
   }
 
   setbackgroundImageColumn(url: string){

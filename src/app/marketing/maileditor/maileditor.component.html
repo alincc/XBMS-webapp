@@ -1,21 +1,21 @@
 <div fxFlex fxLayout="row" cdkDropListGroup>
 
+  
   <div fxFlex="20%" class="tools">
-    <h2>Tools</h2>
     <div cdkDropList #toolsetList="cdkDropList" [cdkDropListData]="toolset" class="tools-list"
       (cdkDropListDropped)="drop($event)">
-      <div class="tool-box" *ngFor="let item of toolset" cdkDrag>{{item.type}}</div>
+      <h2>Tools</h2>
+      <div class="tool-box" *ngFor="let item of toolset" cdkDrag>
+        <div *ngIf="item.type === 'Image'"><mat-icon matSuffix>add_photo_alternate</mat-icon>  {{item.type}}</div>
+        <div *ngIf="item.type === 'Text'"><mat-icon matSuffix>text_fields</mat-icon>  {{item.type}}</div>
+        <div *ngIf="item.type === 'Button'"><mat-icon matSuffix>add_box</mat-icon>  {{item.type}}</div>
+        <div *ngIf="item.type === 'Divider'"><mat-icon matSuffix>line_style</mat-icon>  {{item.type}}</div>
+      </div>
+      <button a mat-raised-button (click)="ConvertToMail()">Convert</button>
     </div>
-    <div>Subject</div>
-
-    <div>Preview</div>
-
-    <div><button a mat-raised-button (click)="ConvertToMail()">Convert</button></div>
   </div>
 
-  <div fxFlex="60%" class="template" fxLayout="column">
-
-
+  <div fxFlex="70%" class="template" fxLayout="column">
     <table>
       <tr>
         <td>
@@ -24,18 +24,15 @@
       </tr>
       <tr>
         <td>
-          <mat-form-field>
+          <mat-form-field style=" margin-bottom: -1.25em; width: 50%;" appearance="outline">
             <input [(ngModel)]=subject type="text" matInput placeholder="Subject Line">
-            <mat-icon matSuffix>mode_edit</mat-icon>
           </mat-form-field>
-
         </td>
       </tr>
       <tr>
         <td>
-          <mat-form-field>
+          <mat-form-field style=" margin-bottom: -1em; width: 50%;" appearance="outline">
             <input [(ngModel)]=preview type="text" matInput placeholder="preview">
-            <mat-icon matSuffix>mode_edit</mat-icon>
           </mat-form-field>
         </td>
       </tr>
@@ -49,28 +46,25 @@
       <!-- cdkDropList #listSection="cdkDropList" (cdkDropListDropped)="drop($event, i1, i2)" [cdkDropListData]="mailtemplateArray" -->
       <label class="sectionlabel">Section <mat-icon (click)="onSelectSectionPart(i1)" class="iconsize-10" matSuffix>
           mode_edit</mat-icon>
-        <mat-icon (click)="onDeleteSectionPart(i1)" class="iconsize-10" matSuffix>delete</mat-icon>
+        <mat-icon (click)="onDeleteSectionPart(i1)" class="icon-label" class="iconsize-10" matSuffix>delete</mat-icon>
       </label>
+      
       <div [ngStyle]="sectionStyleArray[i1].style" class="section-box" *ngFor="let column of section; let i2 = index"
-        fxFlex fxFlexFill fxLayout="column">
-
-        <div [ngStyle]="columnStyleArray[i1][i2].style" class="column-box" fxFlex fxLayout="column" cdkDropList
+       fxLayout="column">
+        <div class="section-container">
+        <div [ngStyle]="columnStyleArray[i1][i2].style" class="column-box" fxLayout="row" cdkDropList
           #mailtemplateList="cdkDropList" [cdkDropListData]="mailtemplateArray[i1][i2]"
           (cdkDropListDropped)="drop($event, i1, i2)">
-          <label class="columnlabel">Column <mat-icon (click)="onSelectColumnPart(i1, i2)" class="iconsize-10"
+          <label class="columnlabel">Column <mat-icon class="icon-label" (click)="onSelectColumnPart(i1, i2)" class="iconsize-10"
               matSuffix>mode_edit</mat-icon>
             <mat-icon (click)="onDeleteColumnPart(i1, i2)" class="iconsize-10" matSuffix>delete</mat-icon>
           </label>
           <div class="item-box" *ngFor="let item of column; let i3 = index;" (click)="onSelectTemplatePart(item, i3)"
             cdkDrag>
-            <!-- <p [ngStyle]="item.style" *ngIf="item.typeformat === 'p'">{{item.content}}</p>
-            <h1 [ngStyle]="item.style" *ngIf="item.typeformat === 'h1'">{{item.content}}</h1>
-            <h2 [ngStyle]="item.style" *ngIf="item.typeformat === 'h2'">{{item.content}}</h2>
-            <h3 [ngStyle]="item.style" *ngIf="item.typeformat === 'h3'">{{item.content}}</h3> -->
             <div [innerHTML]="item.content" (click)="onSelectTemplatePart(item, i3)">
                 
             </div>
-            <mat-icon *ngIf="item.type === 'Text'" (click)="onSelectTemplatePart(item, i3)" (click)="openDialog()">mode_edit</mat-icon>
+            <mat-icon class="textbox-edit-button" class="iconsize-10" *ngIf="item.type === 'Text'" (click)="onSelectTemplatePart(item, i3)" (click)="openDialog()">mode_edit</mat-icon>
 
             <!-- </div> -->
             <div *ngIf="item.type === 'Image'">
@@ -86,13 +80,14 @@
           </div>
         </div>
       </div>
+      </div>
 
       <mat-icon (click)="addToSectionArray(i1)">add</mat-icon>
     </div>
     <mat-icon (click)="addToMailTemplateArray()">add</mat-icon>
   </div>
 
-  <mat-card fxFlex="20%" class="edit">
+  <mat-card fxFlex="10%" class="edit">
     <div *ngIf="Column">Edit Column
       <table>
         <tr>
@@ -239,109 +234,6 @@
       </table>
     </div>
 
-    <!-- <div *ngIf="Text" class="edit_table">
-      <table>
-        <tr>
-          <td>
-            <h1>Edit Text</h1>
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <input matInput [(ngModel)]=maileditorText.content placeholder="text">
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <input [style.background]="rgbaText" [value]="maileditorText.style.color"
-              [style.background]="maileditorText.style.color" [cpAlphaChannel]="'always'" [cpOutputFormat]="'hex'"
-              [cpPosition]="'left'" [(colorPicker)]="maileditorText.style.color" />
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <input [style.background]="rgbaText" [value]="maileditorText.style['background-color']"
-              [style.background]="maileditorText.style['background-color']" [cpAlphaChannel]="'always'"
-              [cpOutputFormat]="'hex'" [cpPosition]="'left'"
-              [(colorPicker)]="maileditorText.style['background-color']" />
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <h4>Select Format</h4>
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <mat-form-field>
-              <mat-select [(value)]="maileditorText.style['font-family']">
-                <mat-option>None</mat-option>
-                <mat-option value="Arial, Helvetica, sans-serif">Arial</mat-option>
-                <mat-option value="'Arial Black', Gadget, sans-serif">Arial Black</mat-option>
-                <mat-option value="Tahoma, Geneva, sans-serif">Tahoma</mat-option>
-                <mat-option value="'Times New Roman', Times, serif">Times New Roman</mat-option>
-              </mat-select>
-            </mat-form-field>
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <mat-button-toggle-group [(value)]="maileditorText.style['font-style']" name="fontStyle"
-              aria-label="Font Style">
-              <mat-button-toggle value="bold">
-                <mat-icon>format_bold</mat-icon>
-              </mat-button-toggle>
-              <mat-button-toggle value="italic">
-                <mat-icon>format_italic</mat-icon>
-              </mat-button-toggle>
-              <mat-button-toggle value="oblique">
-                <mat-icon>format_underline</mat-icon>
-              </mat-button-toggle>
-            </mat-button-toggle-group>
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <mat-form-field>
-              <input [(ngModel)]="maileditorText.style['letter-spacing']" type="text" matInput placeholder="spacing">
-              <label matSuffix>px</label>
-            </mat-form-field>
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <mat-button-toggle-group [(value)]="maileditorText.style.align"
-              [(value)]="maileditorText.style['text-align']" #group="matButtonToggleGroup">
-              <mat-button-toggle value="left">
-                <mat-icon>format_align_left</mat-icon>
-              </mat-button-toggle>
-              <mat-button-toggle value="center">
-                <mat-icon>format_align_center</mat-icon>
-              </mat-button-toggle>
-              <mat-button-toggle value="right">
-                <mat-icon>format_align_right</mat-icon>
-              </mat-button-toggle>
-              <mat-button-toggle value="justify">
-                <mat-icon>format_align_justify</mat-icon>
-              </mat-button-toggle>
-            </mat-button-toggle-group>
-            <div class="example-selected-value">Selected value: {{group.value}}</div>
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <mat-form-field>
-              <mat-select [(value)]="maileditorText.typeformat">
-                <mat-option value="p">Paragraph</mat-option>
-                <mat-option value="h1">H1</mat-option>
-                <mat-option value="h2">H2</mat-option>
-                <mat-option value="h3">H3</mat-option>
-              </mat-select>
-            </mat-form-field>
-          </td>
-        </tr>
-      </table>
-    </div> -->
 
     <div *ngIf="Image" class="edit_table" fxLayout="row wrap">Edit Image
       <table>
@@ -508,6 +400,30 @@
         </tr>
       </table>
     </div>
+
+    <div *ngIf="Carousel" class="edit_table" fxLayout="row wrap">Edit Image
+        <table>
+          <tr>
+            <td>
+              <mat-form-field>
+                <input [(ngModel)]="maileditorCarousel.style.width" type="text" matInput placeholder="width">
+                <label matSuffix>px/%</label>
+              </mat-form-field>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <mat-form-field>
+                <input [(ngModel)]="maileditorCarousel.style.height" type="text" matInput placeholder="height">
+                <label matSuffix>px/%</label>
+              </mat-form-field>
+            </td>
+          </tr>
+        </table>
+      </div>
+
+
+
   </mat-card>
 
 
