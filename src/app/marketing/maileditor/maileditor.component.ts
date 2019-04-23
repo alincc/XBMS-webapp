@@ -45,6 +45,8 @@ export class MaileditorComponent implements OnInit {
   public maileditorCarousel: MaileditorCarousel = new MaileditorCarousel();
   public maileditorCarouselImage: MaileditorCarouselImage = new MaileditorCarouselImage();
   public maileditorAccordion: MaileditorAccordion = new MaileditorAccordion();
+
+  // Delete seperate accordion parts?
   public maileditorAccordionElement: MaileditorAccordionElement = new MaileditorAccordionElement();
   public maileditorAccordionText: MaileditorAccordionText = new MaileditorAccordionText();
   public maileditorAcoordionTitle: MaileditorAccordionTitle = new MaileditorAccordionTitle();
@@ -116,7 +118,7 @@ export class MaileditorComponent implements OnInit {
       'border-right': '0px',
       'border-top': '0px',
       'direction': 'ltr',
-      'full-width': 'full-width', //full-width
+      'full-width': 'full-width', // full-width
       'padding': '0px',
       'padding-bottom': '0px',
       'padding-left': '0px',
@@ -279,7 +281,7 @@ if (event.previousContainer === event.container ) {
     if (type === 'Carousel') {
       const newImage = this.NewCarouselImage();
       const newCarousel: MaileditorCarousel = new MaileditorCarousel();
-      newCarousel.type= 'Carousel';
+      newCarousel.type = 'Carousel';
       newCarousel.images = [];
       newCarousel.images.push(newImage)
       newCarousel.style = {
@@ -300,7 +302,7 @@ if (event.previousContainer === event.container ) {
     }
     if (type === 'Accordion'){
       const newAccordion: MaileditorAccordion = new MaileditorAccordion();
-      newAccordion.type ='Accordion';
+      newAccordion.type = 'Accordion';
       const newElement = this.newAccordionElement();
       newAccordion.elements = [];
       newAccordion.elements.push(newElement);
@@ -440,6 +442,7 @@ if (event.previousContainer === event.container ) {
     this.Button = false;
     this.Divider = false;
     this.Carousel = false;
+    this.Accordion = false;
   }
 
   private onSelectTemplatePart(item, i3): void {
@@ -475,6 +478,12 @@ if (event.previousContainer === event.container ) {
         this.maileditorCarousel = item;
         break;
       }
+      case 'Accordion': {
+        console.log(item);
+        this.Accordion = true;
+        this.maileditorAccordion = item;
+        break;
+      }
       default: {
         // statements;
         break;
@@ -490,6 +499,10 @@ if (event.previousContainer === event.container ) {
   private onDeleteColumnPart(i1, i2): void {
     this.mailtemplateArray[i1].splice(i2, 1);
     this.columnStyleArray[i1].splice(i2, 1);
+  }
+
+  private onDeleteItemPart(i1, i2, i3): void {
+    this.columnStyleArray[i1][i2].splice(i3, 1);
   }
 
   private setimgurl(url: string, i1, i2, i3) {

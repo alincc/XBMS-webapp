@@ -88,6 +88,10 @@
 
   .textbox-edit-button{
     cursor:pointer;
+    position: absolute;
+    z-index: 1;
+    top: 0;
+    right: 0;
   }
 
   .item-box {
