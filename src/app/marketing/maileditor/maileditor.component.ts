@@ -11,7 +11,8 @@ import { Component, OnInit, Input } from '@angular/core';
 import { CdkDragDrop, moveItemInArray, transferArrayItem, copyArrayItem } from '@angular/cdk/drag-drop';
 import {
   Maileditormodels, MaileditorSection, MaileditorColumn,
-  MaileditorImage, MaileditorText, MaileditorButton, MaileditorDivider, MaileditorCarousel, MaileditorCarouselImage
+  MaileditorImage, MaileditorText, MaileditorButton, MaileditorDivider, MaileditorCarousel, MaileditorCarouselImage, MaileditorAccordion, 
+  MaileditorAccordionElement, MaileditorAccordionText, MaileditorAccordionTitle
 } from './maileditormodel/maileditormodels';
 import { FileuploadComponent } from '../../shared/fileupload/fileupload.component';
 import { Relations, BASE_URL } from '../../shared';
@@ -33,6 +34,7 @@ export class MaileditorComponent implements OnInit {
   public Button = false;
   public Divider = false;
   public Carousel = false;
+  public Accordion = false;
 
   public maileditorText: MaileditorText = new MaileditorText();
   public maileditorImage: MaileditorImage = new MaileditorImage();
@@ -42,6 +44,10 @@ export class MaileditorComponent implements OnInit {
   public maileditorDivider: MaileditorDivider = new MaileditorDivider();
   public maileditorCarousel: MaileditorCarousel = new MaileditorCarousel();
   public maileditorCarouselImage: MaileditorCarouselImage = new MaileditorCarouselImage();
+  public maileditorAccordion: MaileditorAccordion = new MaileditorAccordion();
+  public maileditorAccordionElement: MaileditorAccordionElement = new MaileditorAccordionElement();
+  public maileditorAccordionText: MaileditorAccordionText = new MaileditorAccordionText();
+  public maileditorAcoordionTitle: MaileditorAccordionTitle = new MaileditorAccordionTitle();
   // template --> Section --> Column
   // section can contain only column
   // template can contain only sections
@@ -62,6 +68,7 @@ export class MaileditorComponent implements OnInit {
   private toolboxbutton = this.createNewItem('Button');
   private toolboxdivider = this.createNewItem('Divider');
   private toolboxcarousel = this.createNewItem('Carousel');
+  private toolboxAccordion = this.createNewItem('Accordion');
 
 
   toolset = [
@@ -69,7 +76,8 @@ export class MaileditorComponent implements OnInit {
     this.toolboxtext,
     this.toolboxbutton,
     this.toolboxdivider,
-    this.toolboxcarousel
+    this.toolboxcarousel,
+    this.toolboxAccordion
   ];
 
   @Input('option') option: Relations;
@@ -86,6 +94,7 @@ export class MaileditorComponent implements OnInit {
     this.addToMailTemplateArray()
     const texttool = this.createNewItem('Text')
     this.mailtemplateArray[0][0].push(texttool);
+    console.log(this.toolset)
   }
 
 
@@ -271,6 +280,7 @@ if (event.previousContainer === event.container ) {
       const newImage = this.NewCarouselImage();
       const newCarousel: MaileditorCarousel = new MaileditorCarousel();
       newCarousel.type= 'Carousel';
+      newCarousel.images = [];
       newCarousel.images.push(newImage)
       newCarousel.style = {
         'align': '',
@@ -288,12 +298,38 @@ if (event.previousContainer === event.container ) {
       }
       return newCarousel
     }
+    if (type === 'Accordion'){
+      const newAccordion: MaileditorAccordion = new MaileditorAccordion();
+      newAccordion.type ='Accordion';
+      const newElement = this.newAccordionElement();
+      newAccordion.elements = [];
+      newAccordion.elements.push(newElement);
+      newAccordion.style = {
+        'border': '',
+        'container-background-color': '',
+        'font-family': '',
+        'icon-align': '',
+        'icon-height': '32px',
+        'icon-position': 'right',
+        'icon-unwrapped-alt': '',
+        'icon-unwrapped-url': 'http://i.imgur.com/w4uTygT.png',
+        'icon-width': '32px',
+        'icon-wrapped-alt': '+',
+        'icon-wrapped-url': 'http://i.imgur.com/bIXv1bk.png',
+        'padding': '10px 25px',
+        'padding-bottom': '',
+        'paddinng-left': '',
+        'padding-right': '',
+        'padding-top': ''
+      }
+      return newAccordion;
+    }
   }
 
 
   private NewCarouselImage () {
     const newCarouselImage: MaileditorCarouselImage = new MaileditorCarouselImage();
-    newCarouselImage.type= 'CarouselImage';
+    newCarouselImage.type= 'Carouselimage';
     newCarouselImage.style = {
       'alt': '',
       'href': '',
@@ -304,6 +340,69 @@ if (event.previousContainer === event.container ) {
       'title': ''
     }
     return newCarouselImage
+  }
+
+  private newAccordionElement () {
+    const newAccordionElement: MaileditorAccordionElement = new MaileditorAccordionElement();
+    newAccordionElement.type = 'Accordionelement';
+    newAccordionElement.title = this.newAccordionTitle();
+    newAccordionElement.text = this.newAccordionText();
+    newAccordionElement.style = {
+      'background-color': '',
+      'font-family': '',
+      'icon-align': 'middle',
+      'icon-height': '32px',
+      'icon-position': 'right',
+      'icon-unwrapped-alt': '-',
+      'icon-unwrapped-url': 'http://i.imgur.com/w4uTygT.png',
+      'icon-width': '32px',
+      'icon-wrapped-alt': '+',
+      'icon-wrapped-url': 'http://i.imgur.com/bIXv1bk.png',
+      'padding': '',
+      'padding-bottom': '',
+      'paddinng-left': '',
+      'padding-right': '',
+      'padding-top': ''
+    }
+    return newAccordionElement
+  }
+
+  private newAccordionTitle () {
+    const newAccordionTitle: MaileditorAccordionTitle = new MaileditorAccordionTitle();
+    newAccordionTitle.type = 'Accordiontitle';
+    newAccordionTitle.content = 'Title';
+    newAccordionTitle.style = {
+      'color': '',
+      'background-color': '',
+      'align': '',
+      'font-family': '',
+      'font-size': '',
+      'padding': '',
+      'padding-bottom': '',
+      'padding-left': '',
+      'padding-right': '',
+      'padding-top': '',
+    }
+    return newAccordionTitle
+  }
+
+  private newAccordionText () {
+    const newAccordionText: MaileditorAccordionText = new MaileditorAccordionText();
+    newAccordionText.type = 'Accordiontext';
+    newAccordionText.content = 'write here';
+    newAccordionText.style = {
+      'color': '',
+      'background-color': '',
+      'align': '',
+      'font-family': '',
+      'font-size': '',
+      'padding': '',
+      'padding-bottom': '',
+      'padding-left': '',
+      'padding-right': '',
+      'padding-top': '',
+    }
+    return newAccordionText
   }
 
   /**  Convert to html template

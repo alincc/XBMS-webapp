@@ -1,15 +1,29 @@
 <div fxFlex fxLayout="row" cdkDropListGroup>
 
-  
+
   <div fxFlex="20%" class="tools">
     <div cdkDropList #toolsetList="cdkDropList" [cdkDropListData]="toolset" class="tools-list"
       (cdkDropListDropped)="drop($event)">
       <h2>Tools</h2>
       <div class="tool-box" *ngFor="let item of toolset" cdkDrag>
-        <div *ngIf="item.type === 'Image'"><mat-icon matSuffix>add_photo_alternate</mat-icon>  {{item.type}}</div>
-        <div *ngIf="item.type === 'Text'"><mat-icon matSuffix>text_fields</mat-icon>  {{item.type}}</div>
-        <div *ngIf="item.type === 'Button'"><mat-icon matSuffix>add_box</mat-icon>  {{item.type}}</div>
-        <div *ngIf="item.type === 'Divider'"><mat-icon matSuffix>line_style</mat-icon>  {{item.type}}</div>
+        <div *ngIf="item.type === 'Image'">
+          <mat-icon matSuffix>add_photo_alternate</mat-icon> {{item.type}}
+        </div>
+        <div *ngIf="item.type === 'Text'">
+          <mat-icon matSuffix>text_fields</mat-icon> {{item.type}}
+        </div>
+        <div *ngIf="item.type === 'Button'">
+          <mat-icon matSuffix>add_box</mat-icon> {{item.type}}
+        </div>
+        <div *ngIf="item.type === 'Divider'">
+          <mat-icon matSuffix>line_style</mat-icon> {{item.type}}
+        </div>
+        <div *ngIf="item.type === 'Accordion'">
+          <mat-icon matSuffix>view_day</mat-icon> {{item.type}}
+        </div>
+        <div *ngIf="item.type === 'Carousel'">
+            <mat-icon matSuffix>view_carousel</mat-icon> {{item.type}}
+          </div>
       </div>
       <button a mat-raised-button (click)="ConvertToMail()">Convert</button>
     </div>
@@ -48,38 +62,55 @@
           mode_edit</mat-icon>
         <mat-icon (click)="onDeleteSectionPart(i1)" class="icon-label" class="iconsize-10" matSuffix>delete</mat-icon>
       </label>
-      
-      <div [ngStyle]="sectionStyleArray[i1].style" class="section-box" *ngFor="let column of section; let i2 = index"
-       fxLayout="column">
-        <div class="section-container">
-        <div [ngStyle]="columnStyleArray[i1][i2].style" class="column-box" fxLayout="row" cdkDropList
-          #mailtemplateList="cdkDropList" [cdkDropListData]="mailtemplateArray[i1][i2]"
-          (cdkDropListDropped)="drop($event, i1, i2)">
-          <label class="columnlabel">Column <mat-icon class="icon-label" (click)="onSelectColumnPart(i1, i2)" class="iconsize-10"
-              matSuffix>mode_edit</mat-icon>
-            <mat-icon (click)="onDeleteColumnPart(i1, i2)" class="iconsize-10" matSuffix>delete</mat-icon>
-          </label>
-          <div class="item-box" *ngFor="let item of column; let i3 = index;" (click)="onSelectTemplatePart(item, i3)"
-            cdkDrag>
-            <div [innerHTML]="item.content" (click)="onSelectTemplatePart(item, i3)">
-                
-            </div>
-            <mat-icon class="textbox-edit-button" class="iconsize-10" *ngIf="item.type === 'Text'" (click)="onSelectTemplatePart(item, i3)" (click)="openDialog()">mode_edit</mat-icon>
 
-            <!-- </div> -->
-            <div *ngIf="item.type === 'Image'">
-              <app-fileupload [account]="account" [option]="option" (imgurl)="setimgurl($event, i1, i2, i3)">
-              </app-fileupload>
-              <img *ngIf="item.url.length > 0" src={{item.url}} [ngStyle]="item.style">
-            </div>
-            <div *ngIf="item.type === 'Divider'" [ngStyle]="item.style">
-            </div>
-            <div *ngIf="item.type === 'Button'">
-              <button (click)="onSelectTemplatePart(item, i3)" [ngStyle]="item.style">{{item.buttontext}}</button>
+      <div [ngStyle]="sectionStyleArray[i1].style" class="section-box" *ngFor="let column of section; let i2 = index"
+        fxLayout="column">
+        <div class="section-container">
+          <div [ngStyle]="columnStyleArray[i1][i2].style" class="column-box" fxLayout="row" cdkDropList
+            #mailtemplateList="cdkDropList" [cdkDropListData]="mailtemplateArray[i1][i2]"
+            (cdkDropListDropped)="drop($event, i1, i2)">
+            <label class="columnlabel">Column <mat-icon class="icon-label" (click)="onSelectColumnPart(i1, i2)"
+                class="iconsize-10" matSuffix>mode_edit</mat-icon>
+              <mat-icon (click)="onDeleteColumnPart(i1, i2)" class="iconsize-10" matSuffix>delete</mat-icon>
+            </label>
+            <div class="item-box" *ngFor="let item of column; let i3 = index;" (click)="onSelectTemplatePart(item, i3)"
+              cdkDrag>
+              <div [innerHTML]="item.content" (click)="onSelectTemplatePart(item, i3)">
+
+              </div>
+              <mat-icon class="textbox-edit-button" class="iconsize-10" *ngIf="item.type === 'Text'"
+                (click)="onSelectTemplatePart(item, i3)" (click)="openDialog()">mode_edit</mat-icon>
+
+              <!-- </div> -->
+              <div *ngIf="item.type === 'Image'">
+                <app-fileupload [account]="account" [option]="option" (imgurl)="setimgurl($event, i1, i2, i3)">
+                </app-fileupload>
+                <img *ngIf="item.url.length > 0" src={{item.url}} [ngStyle]="item.style">
+              </div>
+              <div *ngIf="item.type === 'Divider'" [ngStyle]="item.style">
+              </div>
+              <div *ngIf="item.type === 'Accordion'" [ngStyle]="item.style">
+                  <mat-accordion>
+                        <div *ngFor="let element of item.elements">
+                            <mat-expansion-panel>
+                          <mat-expansion-panel-header>
+                            <mat-panel-title>
+                              {{element.title.content}}
+                            </mat-panel-title>
+                          </mat-expansion-panel-header>   
+                          {{element.text.content}}
+                        </mat-expansion-panel>
+                        </div>
+                  </mat-accordion>
+              </div>
+              <div *ngIf="item.type === 'Carousel'" [ngStyle]="item.style">
+              </div>
+              <div *ngIf="item.type === 'Button'">
+                <button (click)="onSelectTemplatePart(item, i3)" [ngStyle]="item.style">{{item.buttontext}}</button>
+              </div>
             </div>
           </div>
         </div>
-      </div>
       </div>
 
       <mat-icon (click)="addToSectionArray(i1)">add</mat-icon>
@@ -402,28 +433,25 @@
     </div>
 
     <div *ngIf="Carousel" class="edit_table" fxLayout="row wrap">Edit Image
-        <table>
-          <tr>
-            <td>
-              <mat-form-field>
-                <input [(ngModel)]="maileditorCarousel.style.width" type="text" matInput placeholder="width">
-                <label matSuffix>px/%</label>
-              </mat-form-field>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <mat-form-field>
-                <input [(ngModel)]="maileditorCarousel.style.height" type="text" matInput placeholder="height">
-                <label matSuffix>px/%</label>
-              </mat-form-field>
-            </td>
-          </tr>
-        </table>
-      </div>
-
-
-
+      <table>
+        <tr>
+          <td>
+            <mat-form-field>
+              <input [(ngModel)]="maileditorCarousel.style.width" type="text" matInput placeholder="width">
+              <label matSuffix>px/%</label>
+            </mat-form-field>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <mat-form-field>
+              <input [(ngModel)]="maileditorCarousel.style.height" type="text" matInput placeholder="height">
+              <label matSuffix>px/%</label>
+            </mat-form-field>
+          </td>
+        </tr>
+      </table>
+    </div>
   </mat-card>
 
 

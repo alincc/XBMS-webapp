@@ -173,6 +173,89 @@ export interface MaileditorCarouselImageInterface {
   }
 }
 
+export interface MaileditorAccordionInterface {
+  type: string;
+  elements: Array<MaileditorAccordionElementInterface>;
+  style: {
+    'border': string;
+    'container-background-color': string;
+    'font-family': string;
+    'icon-align': string;
+    'icon-height': string;
+    'icon-position': string;
+    'icon-unwrapped-alt': string;
+    'icon-unwrapped-url': string;
+    'icon-width': string;
+    'icon-wrapped-alt': string;
+    'icon-wrapped-url': string;
+    'padding': string;
+    'padding-bottom': string;
+    'paddinng-left': string;
+    'padding-right': string;
+    'padding-top': string;
+  }
+
+}
+
+export interface MaileditorAccordionElementInterface {
+  type: string;
+  title: MaileditorAccordionTitleInterface;
+  text: MaileditorAccordionTextInterface;
+  style: {
+    'background-color': string;
+    'font-family': string;
+    'icon-align': string;
+    'icon-height': string;
+    'icon-position': string;
+    'icon-unwrapped-alt': string;
+    'icon-unwrapped-url': string;
+    'icon-width': string;
+    'icon-wrapped-alt': string;
+    'icon-wrapped-url': string;
+    'padding': string;
+    'padding-bottom': string;
+    'paddinng-left': string;
+    'padding-right': string;
+    'padding-top': string;
+  }
+}
+
+export interface MaileditorAccordionTextInterface {
+  type: string;
+  content: string;
+  style: {
+    'color': string;
+    'background-color': string;
+    'align': string;
+    'font-family': string;
+    'font-size': string;
+    'padding': string;
+    'padding-bottom': string;
+    'padding-left': string;
+    'padding-right': string;
+    'padding-top': string;
+  }
+}
+
+export interface MaileditorAccordionTitleInterface {
+  type: string;
+  content: string;
+  style: {
+    'color': string;
+    'background-color': string;
+    'align': string;
+    'font-family': string;
+    'font-size': string;
+    'padding': string;
+    'padding-bottom': string;
+    'padding-left': string;
+    'padding-right': string;
+    'padding-top': string;
+  }
+}
+
+
+
 
 export class MaileditorText implements MaileditorTextInterface {
   type: string;
@@ -407,6 +490,115 @@ export class MaileditorCarouselImage implements MaileditorCarouselImageInterface
   }
 
   constructor(data?: MaileditorCarouselImageInterface ) {
+    Object.assign(this, data);
+  }
+}
+
+export class MaileditorAccordion implements MaileditorAccordionInterface {
+  type: string;
+  elements: Array<MaileditorAccordionElementInterface>;
+  style: {
+    'border': string;
+    'container-background-color': string;
+    'font-family': string;
+    'icon-align': string;
+    'icon-height': string;
+    'icon-position': string;
+    'icon-unwrapped-alt': string;
+    'icon-unwrapped-url': string;
+    'icon-width': string;
+    'icon-wrapped-alt': string;
+    'icon-wrapped-url': string;
+    'padding': string;
+    'padding-bottom': string;
+    'paddinng-left': string;
+    'padding-right': string;
+    'padding-top': string;
+  }
+  public static factory(data: MaileditorAccordionInterface ): MaileditorAccordion {
+    return new MaileditorAccordion(data);
+  }
+
+  constructor(data?: MaileditorAccordionInterface ) {
+    Object.assign(this, data);
+  }
+}
+
+
+export class MaileditorAccordionElement implements MaileditorAccordionElementInterface {
+  type: string;
+  title: MaileditorAccordionTitleInterface;
+  text: MaileditorAccordionTextInterface;
+  style: {
+    'background-color': string;
+    'font-family': string;
+    'icon-align': string;
+    'icon-height': string;
+    'icon-position': string;
+    'icon-unwrapped-alt': string;
+    'icon-unwrapped-url': string;
+    'icon-width': string;
+    'icon-wrapped-alt': string;
+    'icon-wrapped-url': string;
+    'padding': string;
+    'padding-bottom': string;
+    'paddinng-left': string;
+    'padding-right': string;
+    'padding-top': string;
+  }
+  public static factory(data: MaileditorAccordionElementInterface ): MaileditorAccordionElement {
+    return new MaileditorAccordionElement(data);
+  }
+
+  constructor(data?: MaileditorAccordionElementInterface ) {
+    Object.assign(this, data);
+  }
+}
+
+export class MaileditorAccordionTitle implements MaileditorAccordionTitleInterface {
+  type: string;
+  content: string;
+  style: {
+    'color': string;
+    'background-color': string;
+    'align': string;
+    'font-family': string;
+    'font-size': string;
+    'padding': string;
+    'padding-bottom': string;
+    'padding-left': string;
+    'padding-right': string;
+    'padding-top': string;
+  }
+  public static factory(data: MaileditorAccordionTitleInterface ): MaileditorAccordionTitle {
+    return new MaileditorAccordionTitle(data);
+  }
+
+  constructor(data?: MaileditorAccordionTitleInterface ) {
+    Object.assign(this, data);
+  }
+}
+
+export class MaileditorAccordionText implements MaileditorAccordionTextInterface {
+  type: string;
+  content: string;
+  style: {
+    'color': string;
+    'background-color': string;
+    'align': string;
+    'font-family': string;
+    'font-size': string;
+    'padding': string;
+    'padding-bottom': string;
+    'padding-left': string;
+    'padding-right': string;
+    'padding-top': string;
+  }
+  public static factory(data: MaileditorAccordionTextInterface ): MaileditorAccordionText {
+    return new MaileditorAccordionText(data);
+  }
+
+  constructor(data?: MaileditorAccordionTextInterface ) {
     Object.assign(this, data);
   }
 }
