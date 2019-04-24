@@ -99,14 +99,13 @@
               </div>
               <div *ngIf="item.type === 'Carousel'" [ngStyle]="item.style">
                 <div class="slideshow-container">
-                  <div class="mySlides fade" *ngFor="let image of item.images">
-                    {{image.type}}
-                    <img *ngIf="image.style.src" src={{image.style.src}} style="width:100%">
+                  <div *ngFor="let image of item.images">
+                    <img class="mySlides fade" *ngIf="image.style.src" src={{image.style.src}} style="width:100%">
                   </div>
-                  <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
-                  <a class="next" onclick="plusSlides(1)">&#10095;</a>
-                  <div style="text-align:center" *ngFor="let imagethumb of item.images; let i = index">
-                      <span class="dot" onclick="currentSlide(i)"></span> 
+                  <img  (click)="plusSlides(-1)" src={{item.style[right-icon]}}>
+                  <img  (click)="plusSlides(1)" src={{item.style[left-icon]}}>
+                  <div *ngFor="let imagethumb of item.images; let i = index" fxLayout="column">
+                      <div><img *ngIf="imagethumb.style.src" (click)="currentSlide(i)" src={{imagethumb.style.src}} class="thumbnails"></div>
                     </div>
                 </div>
               </div>

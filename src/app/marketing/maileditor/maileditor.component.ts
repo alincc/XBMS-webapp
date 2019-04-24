@@ -100,6 +100,7 @@ export class MaileditorComponent implements OnInit {
     const texttool = this.createNewItem('Text')
     this.mailtemplateArray[0][0].push(texttool);
     console.log(this.toolset)
+    if (this.maileditorCarouselImage.style.src) {this.showSlides(this.slideIndex);}
   }
 
 
@@ -289,12 +290,12 @@ export class MaileditorComponent implements OnInit {
       newCarousel.images = [];
       newCarousel.images.push(newImage)
       newCarousel.style = {
-        'align': '',
+        'align': 'center',
         'background-color': '',
         'border-radius': '',
-        'icon-width': '',
-        'left-icon': '',
-        'right-icon': '',
+        'icon-width': '44px',
+        'left-icon': 'http://i.imgur.com/xTh3hln.png',
+        'right-icon': 'http://i.imgur.com/os7o9kz.png',
         'tb-border': '',
         'tb-border-radius': '',
         'tb-hover-border-color': '',
@@ -551,6 +552,7 @@ export class MaileditorComponent implements OnInit {
   addImageToCarouselArray(){
     let newCarouselImage = this.NewCarouselImage();
     this.maileditorCarousel.images.push(newCarouselImage);
+    this.slideIndex = 1;
     this.showSlides(this.slideIndex);
   }
 
@@ -561,16 +563,13 @@ export class MaileditorComponent implements OnInit {
 
   // Thumbnail image controls
   currentSlide(n) {
-    this.showSlides(this.slideIndex = n);
+    this.showSlides(this.slideIndex = n +1);
   }
 
   showSlides(n) {
     let i;
     let slides = document.getElementsByClassName("mySlides") as HTMLCollectionOf<HTMLElement>;
-
-    Object.keys(slides).forEach(function(key) {
-      console.log(key, slides[key]);
-    });
+    console.log(slides);
 
     let dots = document.getElementsByClassName("dot");
     if (n > slides.length) { this.slideIndex = 1 }
@@ -579,10 +578,10 @@ export class MaileditorComponent implements OnInit {
       slides[i].style.display = "none";
     }
     for (i = 0; i < dots.length; i++) {
-      dots[i].className = dots[i].className.replace(" active", "");
+      dots[i].className = dots[i].className.replace("active", "");
     }
      slides[this.slideIndex - 1].style.display = "block";
-    dots[this.slideIndex - 1].className += " active";
+    dots[this.slideIndex - 1].className += "active";
   }
 
 
