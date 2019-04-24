@@ -11,7 +11,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { CdkDragDrop, moveItemInArray, transferArrayItem, copyArrayItem } from '@angular/cdk/drag-drop';
 import {
   Maileditormodels, MaileditorSection, MaileditorColumn,
-  MaileditorImage, MaileditorText, MaileditorButton, MaileditorDivider, MaileditorCarousel, MaileditorCarouselImage, MaileditorAccordion, 
+  MaileditorImage, MaileditorText, MaileditorButton, MaileditorDivider, MaileditorCarousel, MaileditorCarouselImage, MaileditorAccordion,
   MaileditorAccordionElement, MaileditorAccordionText, MaileditorAccordionTitle
 } from './maileditormodel/maileditormodels';
 import { FileuploadComponent } from '../../shared/fileupload/fileupload.component';
@@ -20,12 +20,15 @@ import { Mailing, MailingApi } from '../../shared/sdk';
 import { TextEditorDialog } from './texteditordialog.component';
 import { DomSanitizer } from '@angular/platform-browser';
 
+
 @Component({
   selector: 'app-maileditor',
   templateUrl: './maileditor.component.html',
   styleUrls: ['./maileditor.component.scss']
 })
 export class MaileditorComponent implements OnInit {
+
+  public slideIndex = 1;
 
   public Section = false;
   public Column = false;
@@ -140,50 +143,51 @@ export class MaileditorComponent implements OnInit {
     this.mailtemplateArray[i1].push([]);
     const columnstyleIns: MaileditorColumn = new MaileditorColumn();
     columnstyleIns.style = {
-    'background-color': 'white',
-    'border': '',
-    'border-bottom': '',
-    'border-left': '',
-    'border-right': '',
-    'border-top': '',
-    'border-radius': '',
-    'width': '100%',
-    'vertical-align': '',
-    'padding': '',
-    'padding-top': '',
-    'padding-bottom': '',
-    'padding-left': '',
-    'padding-right': '',
+      'background-color': 'white',
+      'border': '',
+      'border-bottom': '',
+      'border-left': '',
+      'border-right': '',
+      'border-top': '',
+      'border-radius': '',
+      'width': '100%',
+      'vertical-align': '',
+      'padding': '',
+      'padding-top': '',
+      'padding-bottom': '',
+      'padding-left': '',
+      'padding-right': '',
     }
-       this.columnStyleArray.push([]);
+    this.columnStyleArray.push([]);
     console.log(i1, this.columnStyleArray)
     this.columnStyleArray[i1].push(columnstyleIns);
   }
 
   // creat array per
-  drop(event: CdkDragDrop<string[]>, i1, i2 ) {
+  drop(event: CdkDragDrop<string[]>, i1, i2) {
     console.log(i1, i2, event)
-if (event.previousContainer === event.container ) {
+    if (event.previousContainer === event.container) {
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
       // if eventcontainer is new column create new eventcontainer
-} else if (event.previousContainer.id === 'cdk-drop-list-0') {
+    } else if (event.previousContainer.id === 'cdk-drop-list-0') {
       const arrayItem = [];
       event.previousContainer.data.forEach((element) => {
-      arrayItem.push(element)})
+        arrayItem.push(element)
+      })
       const type = arrayItem[event.previousIndex].type;
       console.log(type, arrayItem)
       const newdata = this.createNewItem(type);
       this.mailtemplateArray[i1][i2].push(newdata);
-} else {
+    } else {
       transferArrayItem(event.previousContainer.data, event.container.data, event.previousIndex, event.currentIndex);
     }
-}
+  }
 
   private createNewItem(type: string) {
     if (type === 'Text') {
       const newtext: MaileditorText = new MaileditorText();
       newtext.type = 'Text';
-      newtext.content = this.sanitizer.bypassSecurityTrustHtml('start writing') ;
+      newtext.content = this.sanitizer.bypassSecurityTrustHtml('start writing');
       newtext.typeformat = 'p';
       newtext.style = {
         'color': 'black',
@@ -300,7 +304,7 @@ if (event.previousContainer === event.container ) {
       }
       return newCarousel
     }
-    if (type === 'Accordion'){
+    if (type === 'Accordion') {
       const newAccordion: MaileditorAccordion = new MaileditorAccordion();
       newAccordion.type = 'Accordion';
       const newElement = this.newAccordionElement();
@@ -329,9 +333,9 @@ if (event.previousContainer === event.container ) {
   }
 
 
-  private NewCarouselImage () {
+  private NewCarouselImage() {
     const newCarouselImage: MaileditorCarouselImage = new MaileditorCarouselImage();
-    newCarouselImage.type= 'Carouselimage';
+    newCarouselImage.type = 'Carouselimage';
     newCarouselImage.style = {
       'alt': '',
       'href': '',
@@ -344,7 +348,7 @@ if (event.previousContainer === event.container ) {
     return newCarouselImage
   }
 
-  private newAccordionElement () {
+  private newAccordionElement() {
     const newAccordionElement: MaileditorAccordionElement = new MaileditorAccordionElement();
     newAccordionElement.type = 'Accordionelement';
     newAccordionElement.title = this.newAccordionTitle();
@@ -369,7 +373,7 @@ if (event.previousContainer === event.container ) {
     return newAccordionElement
   }
 
-  private newAccordionTitle () {
+  private newAccordionTitle() {
     const newAccordionTitle: MaileditorAccordionTitle = new MaileditorAccordionTitle();
     newAccordionTitle.type = 'Accordiontitle';
     newAccordionTitle.content = 'Title';
@@ -388,7 +392,7 @@ if (event.previousContainer === event.container ) {
     return newAccordionTitle
   }
 
-  private newAccordionText () {
+  private newAccordionText() {
     const newAccordionText: MaileditorAccordionText = new MaileditorAccordionText();
     newAccordionText.type = 'Accordiontext';
     newAccordionText.content = 'write here';
@@ -415,9 +419,9 @@ if (event.previousContainer === event.container ) {
     let templarray = this.mailtemplateArray;
     let sectionstyle = this.sectionStyleArray;
     let columnstyle = this.columnStyleArray;
-    let sendobject= {templarray, sectionstyle, columnstyle};
+    let sendobject = { templarray, sectionstyle, columnstyle };
     this.mailingApi.mjml(sendobject).subscribe((data) =>
-    console.log(data.html));
+      console.log(data.html));
   }
 
 
@@ -507,24 +511,29 @@ if (event.previousContainer === event.container ) {
 
   private setimgurl(url: string, i1, i2, i3) {
     // url direct
-    this.mailtemplateArray[i1][i2][i3].url = url + ' ' ;
+    this.mailtemplateArray[i1][i2][i3].url = url + ' ';
   }
 
-  setbackgroundImageColumn(url: string){
+  setbackgroundImageColumn(url: string) {
     this.maileditorColumn.style['background-image'] = 'url(' + url + ')';
     console.log(this.maileditorColumn);
   }
 
-  setbackgroundImageSection(url: string){
+  setbackgroundImageSection(url: string) {
     this.maileditorSection.style['background-image'] = 'url(' + url + ')';
     console.log(this.maileditorSection);
   }
 
-  setbackgroundImageDivider(url: string){
+  setbackgroundImageDivider(url: string) {
     this.maileditorDivider.style['background-image'] = 'url(' + url + ')';
     console.log(this.maileditorDivider);
   }
-  
+
+  setCarouselImage(url: string, i) {
+    this.maileditorCarousel.images[i].style.src =  url;
+    console.log(this.maileditorSection);
+  }
+
   openDialog(): void {
     console.log(this.maileditorText.content)
     const dialogRef = this.dialog.open(TextEditorDialog, {
@@ -534,8 +543,46 @@ if (event.previousContainer === event.container ) {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      this.maileditorText.content = this.sanitizer.bypassSecurityTrustHtml(result) ;
+      this.maileditorText.content = this.sanitizer.bypassSecurityTrustHtml(result);
     });
+  }
+
+
+  addImageToCarouselArray(){
+    let newCarouselImage = this.NewCarouselImage();
+    this.maileditorCarousel.images.push(newCarouselImage);
+    this.showSlides(this.slideIndex);
+  }
+
+  // Next/previous controls
+  plusSlides(n) {
+    this.showSlides(this.slideIndex += n);
+  }
+
+  // Thumbnail image controls
+  currentSlide(n) {
+    this.showSlides(this.slideIndex = n);
+  }
+
+  showSlides(n) {
+    let i;
+    let slides = document.getElementsByClassName("mySlides") as HTMLCollectionOf<HTMLElement>;
+
+    Object.keys(slides).forEach(function(key) {
+      console.log(key, slides[key]);
+    });
+
+    let dots = document.getElementsByClassName("dot");
+    if (n > slides.length) { this.slideIndex = 1 }
+    if (n < 1) { this.slideIndex = slides.length }
+    for (i = 0; i < slides.length; i++) {
+      slides[i].style.display = "none";
+    }
+    for (i = 0; i < dots.length; i++) {
+      dots[i].className = dots[i].className.replace(" active", "");
+    }
+     slides[this.slideIndex - 1].style.display = "block";
+    dots[this.slideIndex - 1].className += " active";
   }
 
 

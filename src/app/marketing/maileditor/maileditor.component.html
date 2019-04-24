@@ -22,8 +22,8 @@
           <mat-icon matSuffix>view_day</mat-icon> {{item.type}}
         </div>
         <div *ngIf="item.type === 'Carousel'">
-            <mat-icon matSuffix>view_carousel</mat-icon> {{item.type}}
-          </div>
+          <mat-icon matSuffix>view_carousel</mat-icon> {{item.type}}
+        </div>
       </div>
       <button a mat-raised-button (click)="ConvertToMail()">Convert</button>
     </div>
@@ -72,11 +72,11 @@
             <div class="item-box" *ngFor="let item of column; let i3 = index;" (click)="onSelectTemplatePart(item, i3)"
               cdkDrag>
               <div *ngIf="item.type === 'Text'">
-              <div [innerHTML]="item.content"></div>
-              <mat-icon class="textbox-edit-button" class="iconsize-10" 
-                (click)="onSelectTemplatePart(item, i3)" (click)="openDialog()">mode_edit</mat-icon>
+                <div [innerHTML]="item.content"></div>
+                <mat-icon class="textbox-edit-button" class="iconsize-10" (click)="onSelectTemplatePart(item, i3)"
+                  (click)="openDialog()">mode_edit</mat-icon>
               </div>
-                <div *ngIf="item.type === 'Image'">
+              <div *ngIf="item.type === 'Image'">
                 <app-fileupload [account]="account" [option]="option" (imgurl)="setimgurl($event, i1, i2, i3)">
                 </app-fileupload>
                 <img *ngIf="item.url.length > 0" src={{item.url}} [ngStyle]="item.style">
@@ -84,26 +84,37 @@
               <div *ngIf="item.type === 'Divider'" [ngStyle]="item.style">
               </div>
               <div *ngIf="item.type === 'Accordion'" [ngStyle]="item.style">
-                  <mat-accordion>
-                        <div *ngFor="let elementAccordion of item.elements">
-                            <mat-expansion-panel>
-                          <mat-expansion-panel-header>
-                            <mat-panel-title>
-                              {{elementAccordion.title.content}}
-                            </mat-panel-title>
-                          </mat-expansion-panel-header>   
-                          {{elementAccordion.text.content}}
-                        </mat-expansion-panel>
-                        </div>
-                  </mat-accordion>
+                <mat-accordion>
+                  <div *ngFor="let elementAccordion of item.elements">
+                    <mat-expansion-panel>
+                      <mat-expansion-panel-header>
+                        <mat-panel-title>
+                          {{elementAccordion.title.content}}
+                        </mat-panel-title>
+                      </mat-expansion-panel-header>
+                      {{elementAccordion.text.content}}
+                    </mat-expansion-panel>
+                  </div>
+                </mat-accordion>
               </div>
               <div *ngIf="item.type === 'Carousel'" [ngStyle]="item.style">
+                <div class="slideshow-container">
+                  <div class="mySlides fade" *ngFor="let image of item.images">
+                    {{image.type}}
+                    <img *ngIf="image.style.src" src={{image.style.src}} style="width:100%">
+                  </div>
+                  <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
+                  <a class="next" onclick="plusSlides(1)">&#10095;</a>
+                  <div style="text-align:center" *ngFor="let imagethumb of item.images; let i = index">
+                      <span class="dot" onclick="currentSlide(i)"></span> 
+                    </div>
+                </div>
               </div>
               <div *ngIf="item.type === 'Button'">
                 <button (click)="onSelectTemplatePart(item, i3)" [ngStyle]="item.style">{{item.buttontext}}</button>
               </div>
-              <mat-icon class="icon-label" (click)="onDeleteItemPart(i1, i2, i3)"
-                class="iconsize-10" matSuffix>delete</mat-icon>
+              <mat-icon class="icon-label" (click)="onDeleteItemPart(i1, i2, i3)" class="iconsize-10" matSuffix>delete
+              </mat-icon>
             </div>
           </div>
         </div>
@@ -444,6 +455,21 @@
               <input [(ngModel)]="maileditorCarousel.style.height" type="text" matInput placeholder="height">
               <label matSuffix>px/%</label>
             </mat-form-field>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <div *ngFor="let image of maileditorCarousel.images; let i = index">
+              <img *ngIf="image.style.src" src={{image.style.src}} class="carouselimages">
+              <app-fileupload *ngIf="!image.style.src" [account]="account" [option]="option"
+                (imgurl)="setCarouselImage($event, i)">
+              </app-fileupload>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+              <mat-icon (click)="addImageToCarouselArray()">add</mat-icon>
           </td>
         </tr>
       </table>
