@@ -100,7 +100,6 @@ export class MaileditorComponent implements OnInit {
     const texttool = this.createNewItem('Text')
     this.mailtemplateArray[0][0].push(texttool);
     console.log(this.toolset)
-    if (this.maileditorCarouselImage.style.src) {this.showSlides(this.slideIndex);}
   }
 
 
@@ -292,11 +291,11 @@ export class MaileditorComponent implements OnInit {
       newCarousel.style = {
         'align': 'center',
         'background-color': '',
-        'border-radius': '',
+        'border-radius': '5px',
         'icon-width': '44px',
-        'left-icon': 'http://i.imgur.com/xTh3hln.png',
-        'right-icon': 'http://i.imgur.com/os7o9kz.png',
-        'tb-border': '',
+        'left-icon': 'https://github.com/google/material-design-icons/blob/master/hardware/drawable-mdpi/ic_keyboard_arrow_left_black_36dp.png',
+        'right-icon': 'https://github.com/google/material-design-icons/blob/master/hardware/drawable-mdpi/ic_keyboard_arrow_right_black_36dp.png',
+        'tb-border': '1px',
         'tb-border-radius': '',
         'tb-hover-border-color': '',
         'tb-selected-border-color': '',
@@ -533,6 +532,7 @@ export class MaileditorComponent implements OnInit {
   setCarouselImage(url: string, i) {
     this.maileditorCarousel.images[i].style.src =  url;
     console.log(this.maileditorSection);
+    if (this.maileditorCarouselImage.style.src) {this.showSlides(this.slideIndex);}
   }
 
   openDialog(): void {

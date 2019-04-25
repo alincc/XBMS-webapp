@@ -104,8 +104,8 @@
                   </div>
                   <img  (click)="plusSlides(-1)" src={{item.style[right-icon]}}>
                   <img  (click)="plusSlides(1)" src={{item.style[left-icon]}}>
-                  <div *ngFor="let imagethumb of item.images; let i = index" fxLayout="column">
-                      <div><img *ngIf="imagethumb.style.src" (click)="currentSlide(i)" src={{imagethumb.style.src}} class="thumbnails"></div>
+                  <div  *ngFor="let imagethumb of item.images; let i = index" style="display: inline-block;">
+                      <img *ngIf="imagethumb.style.src" (click)="currentSlide(i)" src={{imagethumb.style.src}} class="thumbnails">
                     </div>
                 </div>
               </div>
