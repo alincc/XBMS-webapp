@@ -1,10 +1,7 @@
 /** Todo list:
  * Add support for gif generator: https://www.npmjs.com/package/gifencoder  
  * Add subject name + emoticon support
- * Add text editor CKE5 Editor support
- * Add preview
- * Add body style
- * Add save as template
+ * Add image resize support
  * */
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { Component, OnInit, Input } from '@angular/core';
@@ -15,10 +12,12 @@ import {
   MaileditorAccordionElement, MaileditorAccordionText, MaileditorAccordionTitle
 } from './maileditormodel/maileditormodels';
 import { FileuploadComponent } from '../../shared/fileupload/fileupload.component';
-import { Relations, BASE_URL } from '../../shared';
+import { Relations, RelationsApi, BASE_URL } from '../../shared';
 import { Mailing, MailingApi } from '../../shared/sdk';
 import { TextEditorDialog } from './texteditordialog.component';
 import { DomSanitizer } from '@angular/platform-browser';
+import { DialogsService } from './../../dialogsservice/dialogs.service';
+import { MatSnackBar, MatSnackBarConfig, MatInput, MatAutocompleteSelectedEvent } from '@angular/material';
 
 
 @Component({
@@ -89,6 +88,9 @@ export class MaileditorComponent implements OnInit {
   @Input('account') account: Account;
 
   constructor(
+    public snackBar: MatSnackBar,
+    public RelationsApi: RelationsApi,
+    public dialogsService: DialogsService,
     public mailingApi: MailingApi,
     public dialog: MatDialog,
     private sanitizer: DomSanitizer
@@ -127,7 +129,7 @@ export class MaileditorComponent implements OnInit {
       'padding-left': '0px',
       'padding-right': '0px',
       'padding-top': '0px',
-      'text-align': 'left',
+      'text-align': 'center',
       'vertical-align': 'top'
     }
     this.sectionStyleArray.push(sectionstyleIns);
@@ -254,7 +256,7 @@ export class MaileditorComponent implements OnInit {
         'border-radius': '10px',
         'border-right': '0px',
         'border-top': '0px',
-        'font-family': '',
+        'font-family': 'Verdana',
         'font-size': '12pt',
         'font-style': '',
         'font-weight': '',
@@ -292,11 +294,11 @@ export class MaileditorComponent implements OnInit {
         'align': 'center',
         'background-color': '',
         'border-radius': '5px',
-        'icon-width': '44px',
-        'left-icon': 'https://github.com/google/material-design-icons/blob/master/hardware/drawable-mdpi/ic_keyboard_arrow_left_black_36dp.png',
-        'right-icon': 'https://github.com/google/material-design-icons/blob/master/hardware/drawable-mdpi/ic_keyboard_arrow_right_black_36dp.png',
+        'icon-width': '20px',
+        'left-icon': BASE_URL + '/assets/baseline_keyboard_arrow_left_black_18dp.png',
+        'right-icon': BASE_URL + '/assets/baseline_keyboard_arrow_right_black_18dp.png',
         'tb-border': '1px',
-        'tb-border-radius': '',
+        'tb-border-radius': '4px',
         'tb-hover-border-color': '',
         'tb-selected-border-color': '',
         'tb-width': '',
@@ -313,16 +315,16 @@ export class MaileditorComponent implements OnInit {
       newAccordion.style = {
         'border': '',
         'container-background-color': '',
-        'font-family': '',
+        'font-family': 'Verdana',
         'icon-align': '',
-        'icon-height': '32px',
+        'icon-height': '20px',
         'icon-position': 'right',
-        'icon-unwrapped-alt': '',
-        'icon-unwrapped-url': 'http://i.imgur.com/w4uTygT.png',
-        'icon-width': '32px',
+        'icon-unwrapped-alt': '-',
+        'icon-unwrapped-url': BASE_URL + '/assets/baseline_keyboard_arrow_down_black_18dp.png',
+        'icon-width': '20px',
         'icon-wrapped-alt': '+',
-        'icon-wrapped-url': 'http://i.imgur.com/bIXv1bk.png',
-        'padding': '10px 25px',
+        'icon-wrapped-url': BASE_URL + '/assets/baseline_keyboard_arrow_up_black_18dp.png',
+        'padding': '2px 2px',
         'padding-bottom': '',
         'paddinng-left': '',
         'padding-right': '',
@@ -355,20 +357,20 @@ export class MaileditorComponent implements OnInit {
     newAccordionElement.text = this.newAccordionText();
     newAccordionElement.style = {
       'background-color': '',
-      'font-family': '',
+      'font-family': 'Verdana',
       'icon-align': 'middle',
-      'icon-height': '32px',
+      'icon-height': '20px',
       'icon-position': 'right',
       'icon-unwrapped-alt': '-',
-      'icon-unwrapped-url': 'http://i.imgur.com/w4uTygT.png',
-      'icon-width': '32px',
+      'icon-unwrapped-url': BASE_URL +'/assets/baseline_keyboard_arrow_down_black_18dp.png',
+      'icon-width': '20px',
       'icon-wrapped-alt': '+',
-      'icon-wrapped-url': 'http://i.imgur.com/bIXv1bk.png',
+      'icon-wrapped-url': BASE_URL + '/assets/baseline_keyboard_arrow_up_black_18dp.png',
       'padding': '',
-      'padding-bottom': '',
-      'paddinng-left': '',
-      'padding-right': '',
-      'padding-top': ''
+      'padding-bottom': '10px',
+      'paddinng-left': '10px',
+      'padding-right': '10px',
+      'padding-top': '10px'
     }
     return newAccordionElement
   }
@@ -381,7 +383,7 @@ export class MaileditorComponent implements OnInit {
       'color': '',
       'background-color': '',
       'align': '',
-      'font-family': '',
+      'font-family': 'Verdana',
       'font-size': '',
       'padding': '',
       'padding-bottom': '',
@@ -400,13 +402,13 @@ export class MaileditorComponent implements OnInit {
       'color': '',
       'background-color': '',
       'align': '',
-      'font-family': '',
+      'font-family': 'Verdana',
       'font-size': '',
       'padding': '',
-      'padding-bottom': '',
-      'padding-left': '',
-      'padding-right': '',
-      'padding-top': '',
+      'padding-bottom': '5px',
+      'padding-left': '5px',
+      'padding-right': '5px',
+      'padding-top': '5px',
     }
     return newAccordionText
   }
@@ -416,12 +418,37 @@ export class MaileditorComponent implements OnInit {
    * @returns confirmation of created template
   */
   private ConvertToMail(): void {
-    let templarray = this.mailtemplateArray;
-    let sectionstyle = this.sectionStyleArray;
-    let columnstyle = this.columnStyleArray;
-    let sendobject = { templarray, sectionstyle, columnstyle };
-    this.mailingApi.mjml(sendobject).subscribe((data) =>
-      console.log(data.html));
+    let templArray = this.mailtemplateArray;
+    let sectionStyle = this.sectionStyleArray;
+    let columnStyle = this.columnStyleArray;
+    let sendobject = { templArray, sectionStyle, columnStyle };
+    
+    this.mailingApi.mjml(sendobject).subscribe((data) => {
+      
+      console.log(data.html);
+      let previewhtml= [];
+      previewhtml.push(this.sanitizer.bypassSecurityTrustHtml(data.html))
+      this.dialogsService
+      .confirm('Preview', 'Add to Templates?', previewhtml[0])
+      .subscribe((res) => { 
+        if (res){
+            this.RelationsApi.createMailing(this.option.id, { 
+              subject: this.subject, 
+              relationname: this.option.relationname,
+              html: data.html,
+              templatearray: templArray,
+              sectionstyle: sectionStyle,
+              columnstyle: columnStyle
+            })
+              .subscribe(res => {    this.snackBar.open("Template Created", undefined, {
+                duration: 2000,
+                panelClass: 'snackbar-class'
+              });
+            });
+        }
+      });
+    })
+
   }
 
 
@@ -506,7 +533,7 @@ export class MaileditorComponent implements OnInit {
   }
 
   private onDeleteItemPart(i1, i2, i3): void {
-    this.columnStyleArray[i1][i2].splice(i3, 1);
+    this.mailtemplateArray[i1][i2].splice(i3, 1);
   }
 
   private setimgurl(url: string, i1, i2, i3) {
@@ -554,6 +581,11 @@ export class MaileditorComponent implements OnInit {
     this.maileditorCarousel.images.push(newCarouselImage);
     this.slideIndex = 1;
     this.showSlides(this.slideIndex);
+  }
+
+  addElementToAccordionArray(){
+    let newAccordionElement = this.newAccordionElement();
+    this.maileditorAccordion.elements.push(newAccordionElement);
   }
 
   // Next/previous controls

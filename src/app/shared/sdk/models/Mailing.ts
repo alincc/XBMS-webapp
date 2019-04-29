@@ -13,6 +13,9 @@ export interface MailingInterface {
   "subject"?: string;
   "text"?: string;
   "html"?: string;
+  "templatearray"?: string;
+  "sectionStyle"?: string;
+  "columnStyle"?: string;
   "send"?: boolean;
   "concept"?: boolean;
   "trackingid"?: string;
@@ -54,6 +57,9 @@ export class Mailing implements MailingInterface {
   "subject": string;
   "text": string;
   "html": string;
+  "templatearray": string;
+  "sectionStyle": string;
+  "columnStyle": string;
   "send": boolean;
   "concept": boolean;
   "trackingid": string;
@@ -141,6 +147,18 @@ export class Mailing implements MailingInterface {
         },
         "html": {
           name: 'html',
+          type: 'string'
+        },
+        "templatearray": {
+          name: 'templatearray',
+          type: 'string'
+        },
+        "sectionStyle": {
+          name: 'sectionStyle',
+          type: 'string'
+        },
+        "columnStyle": {
+          name: 'columnStyle',
           type: 'string'
         },
         "send": {

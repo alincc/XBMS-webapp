@@ -98,6 +98,8 @@
     top: 0;
     left: 0;
     margin: 5px;
+    border: dashed 3px #ccc;
+    border-radius: 4px;
   }
 
   .itemlabel {
@@ -130,10 +132,20 @@
     z-index: 8;
     opacity: 0.4;
     background-color: white;
+    margin-right: -60px;
+    width: 60px;
   }
   
   .columnlabel:hover{
     opacity: 1;
+  }
+
+  .text-edit-icon {
+    float: left;
+  }
+
+  .icon-label {
+    float: right;
   }
 
   .icon-label:hover{
