@@ -65,7 +65,7 @@ import { MaileditorComponent } from './marketing/maileditor/maileditor.component
 import { TextEditorDialog } from './marketing/maileditor/texteditordialog.component';
 import {DragDropModule} from '@angular/cdk/drag-drop';
 import { ColorPickerModule } from 'ngx-color-picker';
-import { FileuploadComponent } from './shared/fileupload/fileupload.component';
+import { FileuploadComponent, dialoggallerycomponent } from './shared/fileupload/fileupload.component';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
 
@@ -88,10 +88,12 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
     MarketingchannelsComponent,
     MaileditorComponent,
     FileuploadComponent,
+    dialoggallerycomponent,
     TextEditorDialog
   ],
 
    entryComponents: [
+    dialoggallerycomponent,
     ConfirmDialog,
     TextEditorDialog,
     RandomDialog

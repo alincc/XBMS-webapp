@@ -1,0 +1,18 @@
+<div style="height: 500px" fxLayout="column">
+  <div class="gallery" fxFlex="90%" fxLayout="row wrap">
+    <div *ngFor="let image of data.img; let i = index" fxFlex>
+      <img
+        src="{{ image.modal.img }}"
+        class="image"
+        (click)="selectedimage(image.modal.img)"
+        [class.selected]="image.modal.img === data.selected"
+      />
+    </div>
+  </div>
+  <div class="gallery-bottom" fxFlex="10%">
+    <button a mat-raised-button (click)="dialogRef.close()">Cancel</button>
+    <button a mat-raised-button [mat-dialog-close]="data.selected">
+      Import
+    </button>
+  </div>
+</div>
