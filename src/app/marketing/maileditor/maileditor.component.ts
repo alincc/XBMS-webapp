@@ -112,7 +112,7 @@ export class MaileditorComponent implements OnInit {
 
     const sectionstyleIns: MaileditorSection = new MaileditorSection();
     sectionstyleIns.style = {
-      'background-color': 'white',
+      'background-color': '',
       'background-repeat': 'no-repeat',
       'background-size': '',
       'background-url': '',
@@ -235,7 +235,7 @@ export class MaileditorComponent implements OnInit {
         'srcset': '',
         'target': "_blank",
         'title': '',
-        'width': "100%"
+        'width': "100px"
       }
       return newImage
     }

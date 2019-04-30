@@ -17,6 +17,7 @@ import { ContainerApi, Files, Relations, RelationsApi, Company, Account } from '
 import { BASE_URL, API_VERSION } from '../base.api'
 import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material';
 
+
 export interface DialogData {
   img;
   selected;
@@ -45,6 +46,7 @@ export class FileuploadComponent implements OnInit {
   public showdropbox = true;
   public showgallery = false;
   public selectedimage;
+ 
 
   @Input('option') option: Relations; //get id for image gallery
   @Input('account') account: Account;
@@ -127,7 +129,6 @@ export class FileuploadComponent implements OnInit {
 
 
   uploadFile(): void {
-    
       this.uploader.uploadAll();
       this.relationsApi.createFiles(this.option.id, this.newFiles)
         .subscribe(res => 
@@ -135,20 +136,31 @@ export class FileuploadComponent implements OnInit {
             // this.imgurl.emit(res.url)
           });
   }
-
-
 }
+
+import { Icons } from './filelist'
 
 @Component({
   selector: 'dialog-gallery',
   templateUrl: 'dialog-gallery.html',
   styleUrls: ['./fileupload.component.scss']
 })
-export class dialoggallerycomponent {
+
+export class dialoggallerycomponent implements OnInit {
+  public fileIcons = Icons;
+  public existingIcons = [];
+  public icons = Icons;
 
   constructor(
     public dialogRef: MatDialogRef<dialoggallerycomponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData) {}
+
+    ngOnInit(){
+      this.icons.forEach(element => {
+        let iconurl = BASE_URL + element;
+        this.existingIcons.push(iconurl);
+      });
+    }
 
   onNoClick(): void {
     this.dialogRef.close();

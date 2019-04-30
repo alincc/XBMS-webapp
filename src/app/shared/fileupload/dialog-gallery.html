@@ -1,18 +1,61 @@
 <div style="height: 500px" fxLayout="column">
-  <div class="gallery" fxFlex="90%" fxLayout="row wrap">
-    <div *ngFor="let image of data.img; let i = index" fxFlex>
-      <img
-        src="{{ image.modal.img }}"
-        class="image"
-        (click)="selectedimage(image.modal.img)"
-        [class.selected]="image.modal.img === data.selected"
-      />
+  <mat-button-toggle-group #group="matButtonToggleGroup" fxFlex="50px" style="width: 100%" fxFlexAlign="start" #group="matButtonToggleGroup" [vertical]="false">
+    <mat-button-toggle matTooltip="Local stored images" style="width: 50%" value="fromaccount">
+      <mat-icon>storage</mat-icon>
+    </mat-button-toggle>
+    <mat-button-toggle matTooltip="Standard icons" style="width: 50%"  value="includedimages">
+      <mat-icon>insert_emoticon</mat-icon>
+    </mat-button-toggle>
+  </mat-button-toggle-group>
+
+  <div *ngIf="group.value == 'includedimages'" class="gallery" fxFlex="80%" fxLayout="row wrap">
+    <div *ngFor="let icon of existingIcons; let i = index" fxFlex>
+      <div>
+        <img src={{icon}} class="icongallery" (click)="selectedimage(icon)"
+          [class.selected]="icon === data.selected">
+      </div>
     </div>
   </div>
+
+  <div *ngIf="group.value == 'fromaccount'" class="gallery" fxFlex="80%" fxLayout="row wrap">
+    <div *ngFor="let image of data.img; let i = index" fxFlex>
+      <img src="{{ image.modal.img }}" class="image" (click)="selectedimage(image.modal.img)"
+        [class.selected]="image.modal.img === data.selected" />
+    </div>
+  </div>
+
   <div class="gallery-bottom" fxFlex="10%">
     <button a mat-raised-button (click)="dialogRef.close()">Cancel</button>
     <button a mat-raised-button [mat-dialog-close]="data.selected">
       Import
     </button>
+  </div>
+</div>
+
+
+<div *ngIf="showgallery">
+  <mat-button-toggle-group #group="matButtonToggleGroup">
+    <mat-button-toggle value="fromaccount">
+      <mat-icon>drive</mat-icon>
+    </mat-button-toggle>
+    <mat-button-toggle value="includedimages" disabled>
+      <mat-icon>general</mat-icon>
+    </mat-button-toggle>
+  </mat-button-toggle-group>
+
+  <div *ngIf="group.value === includedimages" class="" fxFlex="20%">
+    <div *ngFor="let icon of existingIcons; let i = index">
+      <div>
+        <img src={{icon}} class="image" (click)="setimage(icon)">
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="group.value === fromaccount" fxLayout="row wrap" class="gallery">
+    <div *ngFor="let image of images; let i = index" fxFlex="20%">
+      <div>
+        <img src={{image.modal.img}} class="image" (click)="setimage(image.modal.img)">
+      </div>
+    </div>
   </div>
 </div>

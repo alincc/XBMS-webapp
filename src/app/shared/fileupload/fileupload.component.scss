@@ -3,11 +3,12 @@
 }
 
 .gallery {
-  width: 590px;
+  // width: 590px;
   // height: 80%;
   margin: 2px;
   padding: 2px;
   overflow: auto;
+  background-color: whitesmoke;
   // z-index: 15;
   // top: 1px;
   // left: 1px;
@@ -32,6 +33,22 @@
   // overflow: visible;
   border-width: 0px;
   margin: 5px;
+}
+
+.icongallery {
+  height: 50px;
+  z-index: 20;
+  // overflow: visible;
+  border-width: 0px;
+  margin: 5px;
+}
+
+.icongallery:hover {
+  color: #01579b;
+  border-style: solid;
+  border-color: #01579b;
+  border-width: 5px;
+  margin: 0px;
 }
 
 .image:hover {
