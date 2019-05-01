@@ -314,6 +314,9 @@ export class MarketingComponent implements OnInit {
     this.minDate = new Date(year, month, day);
     this.maxDate = new Date(2030, 0, 1);
     // console.log(this.minDate);
+
+    this. = this.route.snapshot.paramMap.get('id')
+
   }
 
 

@@ -41,6 +41,12 @@ const routes: Routes = [
   },
 
   {
+    path: 'marketing/:id',
+    component: MarketingComponent
+    , canActivate: [AuthGuard]
+  },
+
+  {
     path: 'settings', component: SettingsComponent
     , canActivate: [AuthGuard]
   },
