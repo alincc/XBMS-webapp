@@ -45,7 +45,7 @@ import {
   PlainGalleryStrategy,
   PreviewConfig
 } from '@ks89/angular-modal-gallery'
-
+import { FileuploadComponent } from '../shared/fileupload/fileupload.component';
 
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { Location, NgClass, NgStyle } from '@angular/common';
@@ -165,7 +165,6 @@ export class MarketingComponent implements OnInit {
   public selectedAdwords: Adwords;
   // delete?? calls only
   public limitresult: 10;
-  public urlpicture: string;
   public urluse: string;
   // show results max amount, to do: create page??
   public oneaddress;
@@ -317,6 +316,7 @@ export class MarketingComponent implements OnInit {
       this.TranslationApi.findById(this.urlparameter).subscribe((translation: Translation) => {
         this.selectedTranslation = translation,
           this.onSelectTranslation(this.selectedTranslation);
+          this.getTranslations();
         // this.TranslationApi.    // check payment hook
         // confirm translation assignment
         // send confirmation email with invoice to adminaddress (add admin address to account profile)
@@ -411,74 +411,61 @@ export class MarketingComponent implements OnInit {
     this.hasAnotherDropZoneOver = e;
   }
 
-  // set upload url
-  setUrl(): void {
-    this.urlpicture = null,
-      this.urlpicture = this.selectedPublications.pictureurl
-  }
-
   // delete all or destroy??
   deletePicture(): void {
-    this.containerApi.removeFile(this.selectedPublications.id, this.selectedPublications.picturename)
-      .subscribe(res => {
-        this.selectedPublications.picturename = '', this.selectedPublications.pictureurl = '',
-          this.RelationsApi.updateByIdPublications(this.option.id, this.selectedPublications.id).subscribe()
-      }
-      )
-    // delete picturename
-    // delete pictureurl;
-    // delete container
+    this.selectedPublications.picturename = '', this.selectedPublications.pictureurl = '';
+    this.RelationsApi.updateByIdPublications(this.option.id, this.selectedPublications.id).subscribe()
   }
 
 
 
   // set constiable and upload + save reference in Publications
-  setupload(name): void {
-    this.selectedPublications.picturename = name,
-      this.urluse = BASE_URL + '/api/Containers/' + this.selectedPublications.id + '/download/' + this.selectedPublications.picturename
-    this.urluse.replace(/ /g, '%20'),
-      this.selectedPublications.pictureurl = this.urluse
-    // define the file settings
-    this.newFiles.name = name,
-      this.newFiles.url = this.urluse,
-      this.newFiles.createdate = new Date(),
-      this.newFiles.type = 'marketing',
-      this.newFiles.companyId = this.Account.companyId,
-      // check if container exists and create
-      this.ContainerApi.findById(this.selectedPublications.id)
-        .subscribe(res => this.uploadFile(),
-          error =>
-            this.ContainerApi.createContainer({ name: this.selectedPublications.id })
-              .subscribe(res => this.uploadFile()));
-  }
+  // setupload(name): void {
+  //   this.selectedPublications.picturename = name,
+  //     this.urluse = BASE_URL + '/api/Containers/' + this.selectedPublications.id + '/download/' + this.selectedPublications.picturename
+  //   this.urluse.replace(/ /g, '%20'),
+  //     this.selectedPublications.pictureurl = this.urluse
+  //   // define the file settings
+  //   this.newFiles.name = name,
+  //     this.newFiles.url = this.urluse,
+  //     this.newFiles.createdate = new Date(),
+  //     this.newFiles.type = 'marketing',
+  //     this.newFiles.companyId = this.Account.companyId,
+  //     // check if container exists and create
+  //     this.ContainerApi.findById(this.selectedPublications.id)
+  //       .subscribe(res => this.uploadFile(),
+  //         error =>
+  //           this.ContainerApi.createContainer({ name: this.selectedPublications.id })
+  //             .subscribe(res => this.uploadFile()));
+  // }
 
 
-  onOpenGallery() {
-    if (this.showgallery === false) { this.showgallery = true; }
-    else { this.showgallery = false; }
-    // this.buttonsConfig =  {visible: true, strategy: ButtonsStrategy.DEFAULT};
-    this.PlainGalleryConfig = {
-      strategy: PlainGalleryStrategy.GRID,
-      layout: new GridLayout({ width: '80px', height: '80px' }, { length: 3, wrap: true })
-    };
-    this.customButtonsConfig = {
-      visible: true,
-      strategy: ButtonsStrategy.SIMPLE
-    };
+  // onOpenGallery() {
+  //   if (this.showgallery === false) { this.showgallery = true; }
+  //   else { this.showgallery = false; }
+  //   // this.buttonsConfig =  {visible: true, strategy: ButtonsStrategy.DEFAULT};
+  //   this.PlainGalleryConfig = {
+  //     strategy: PlainGalleryStrategy.GRID,
+  //     layout: new GridLayout({ width: '80px', height: '80px' }, { length: 3, wrap: true })
+  //   };
+  //   this.customButtonsConfig = {
+  //     visible: true,
+  //     strategy: ButtonsStrategy.SIMPLE
+  //   };
 
 
-    // set images array
-    this.ContainerApi.getFiles(this.option.id).subscribe((files: Files[]) => {
-      this.Files = files,
-        this.Files.forEach((file, index) => {
-          // console.log(file, index);
-          const modalImage = { img: BASE_URL + '/api/Containers/' + this.option.id + '/download/' + file.name };
-          const modal = new Image(index, modalImage, null)
-          this.imagesNew.push(modal)
-        }),
-        this.images = this.imagesNew;
-    });
-  }
+  //   // set images array
+  //   this.ContainerApi.getFiles(this.option.id).subscribe((files: Files[]) => {
+  //     this.Files = files,
+  //       this.Files.forEach((file, index) => {
+  //         // console.log(file, index);
+  //         const modalImage = { img: BASE_URL + '/api/Containers/' + this.option.id + '/download/' + file.name };
+  //         const modal = new Image(index, modalImage, null)
+  //         this.imagesNew.push(modal)
+  //       }),
+  //       this.images = this.imagesNew;
+  //   });
+  // }
 
   onButtonAfterHook(event: ButtonEvent) {
     if (!event || !event.button) {
@@ -499,9 +486,11 @@ export class MarketingComponent implements OnInit {
   }
 
   onSelectImage(SelectedImage): void {
-    this.selectedPublications.picturename = SelectedImage.name,
-      this.selectedPublications.pictureurl = encodeURI(SelectedImage.urluse),
-      this.savePublication()
+    console.log(this.selectedPublications, "onselect")
+    // this.selectedPublications.picturename = SelectedImage.name,
+      this.selectedPublications.pictureurl = encodeURI(SelectedImage);
+      this.savePublication();
+      console.log(this.selectedPublications, "onselect");
   }
 
   onClickImage(e): void {
@@ -624,7 +613,6 @@ export class MarketingComponent implements OnInit {
     this.newURL = undefined;
     this.newURL = BASE_URL + '/api/Containers/' + this.selectedPublications.id + '/upload'
     this.uploader.setOptions({ url: this.newURL });
-    this.setUrl();
   }
 
   onSelectMailingList(mailinglist: Mailinglist): void {

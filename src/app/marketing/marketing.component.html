@@ -131,80 +131,15 @@
                 </table>
               </div>
 
-              <div class="picturecontainer">
-                <div *ngIf="selectedPublications.picturename; then thenBlock; else elseBlock">
-                </div>
-                <ng-template #thenBlock>
-                  <div class="picture">
-                    <img mat-card-image img src="{{urlpicture}}" />
+                <div class="picturecontainer">
+                  <div *ngIf="selectedPublications.pictureurl">
+                    <img src={{selectedPublications.pictureurl}} class="picture"/>
                     <button class="deletepicture" mat-mini-fab color="primary" (click)="deletePicture()">
                       <mat-icon>delete</mat-icon>
                     </button>
                   </div>
-                </ng-template>
-                <ng-template #elseBlock>
-                  <div class="picture">
-                    <div matTooltip="Check Image Size Below">
-                      <div ng2FileDrop [ngClass]="{'drop-zone-over': hasBaseDropZoneOver}" (fileOver)="fileOverBase($event)"
-                        [uploader]="uploader" class="drop-zone">
-                        Drop Image Here
-                      </div>
-                      <table class="table">
-                        <thead>
-                          <tr>
-
-                            <th>Progress</th>
-                            <th>Status</th>
-                            <th>Actions</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr *ngFor="let item of uploader.queue">
-
-                            <td *ngIf="uploader.isHTML5" nowrap>{{ item?.file?.size/1024/1024 | number:'.2' }} MB</td>
-                            <td *ngIf="uploader.isHTML5">
-                              <div class="progress" style="margin-bottom: 0;">
-                                <!-- <div class="progress-bar" role="progressbar" [ngStyle]="{ 'width': item.progress + '%' }"></div> -->
-                                <mat-progress-bar mode="determinate" value="item.progress"></mat-progress-bar>
-                              </div>
-                            </td>
-                            <td class="text-center">
-                              <span *ngIf="item.isSuccess">
-                                <i class="glyphicon glyphicon-ok"></i>
-                              </span>
-                              <span *ngIf="item.isCancel">
-                                <i class="glyphicon glyphicon-ban-circle"></i>
-                              </span>
-                              <span *ngIf="item.isError">
-                                <i class="glyphicon glyphicon-remove"></i>
-                              </span>
-                            </td>
-                            <td nowrap>
-                              <button type="button" class="btn btn-success btn-xs" (click)="setupload(item?.file?.name)"
-                                [disabled]="item.isReady || item.isUploading || item.isSuccess">
-                                <span class="glyphicon glyphicon-upload"></span> Upload
-                              </button>
-                              <button type="button" class="btn btn-warning btn-xs" (click)="item.cancel()" [disabled]="!item.isUploading">
-                                <span class="glyphicon glyphicon-ban-circle"></span> Cancel
-                              </button>
-                            </td>
-                          </tr>
-                        </tbody>
-                      </table>
-                      <button matTooltip="Open gallery" class="deletepicture" mat-mini-fab color="primary" (click)="onOpenGallery()">
-                        <mat-icon> add_photo_alternate</mat-icon>
-                      </button>
-                    </div>
-                  </div>
-
-                  <mat-card-content *ngIf="showgallery" class="gallery">
-                    <mat-card>
-                      <ks-modal-gallery [id]="1" [modalImages]="images" [buttonsConfig]="customButtonsConfig"
-                        (buttonAfterHook)="onButtonAfterHook($event)" [plainGalleryConfig]="PlainGalleryConfig"></ks-modal-gallery>
-                      <!-- [showGallery]="showGallery" -->
-                    </mat-card>
-                  </mat-card-content>
-                </ng-template>
+                  <app-fileupload *ngIf="!selectedPublications.pictureurl" [account]="Account" [option]="option" (imgurl)="onSelectImage($event)"> 
+                  </app-fileupload>
               </div>
 
             </mat-card-content>
@@ -274,7 +209,7 @@
         <div class="relationcontainer">
 
            <div *ngIf="showconfirmation">
-             <label *ngIf="selectedTranslation.paymentreceived === paid" style="color:greenyellow">Payment Received, invoice send to your email or under your account under invoices </label>
+             <label *ngIf="selectedTranslation.paymentreceived === 'paid'" style="color:green">Payment Received, invoice send to your email or under your account under invoices </label>
              <label *ngIf="selectedTranslation.paymentreceived != paid" style="color:red">Payment Declined please try again or use other method of payment</label>
            </div>
 
