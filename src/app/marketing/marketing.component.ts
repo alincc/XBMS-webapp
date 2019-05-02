@@ -19,18 +19,11 @@ import {
   Company,
   CompanyApi,
   ChannelsApi,
-  Channels,
   Files,
   Mailing,
   MailingApi,
   MailinglistApi,
   Mailinglist,
-  Twitter,
-  TwitterApi,
-  Linkedin,
-  LinkedinApi,
-  Facebook,
-  FacebookApi,
   GoogleanalyticsApi,
   Googleanalytics,
   MarketingplannereventsApi,
@@ -318,20 +311,19 @@ export class MarketingComponent implements OnInit {
     this.maxDate = new Date(2030, 0, 1);
     // console.log(this.minDate);
 
-
-    this.urlparameter = this.route.snapshot.paramMap.get('id')
-    if (this.urlparameter){
+    this.urlparameter = this.route.snapshot.params['id'];
+    if (this.urlparameter) {
       this.selectedIndex = 1;
-      this.TranslationApi.findById(this.urlparameter).subscribe((translation: Translation )=> {
+      this.TranslationApi.findById(this.urlparameter).subscribe((translation: Translation) => {
         this.selectedTranslation = translation,
-        this.onSelectTranslation(this.selectedTranslation);
+          this.onSelectTranslation(this.selectedTranslation);
         // this.TranslationApi.    // check payment hook
+        // confirm translation assignment
         // send confirmation email with invoice to adminaddress (add admin address to account profile)
         this.showconfirmation = true;
       })
     }
   }
-
 
   public openSnackBar(message: string) {
     this.snackBar.open(message, undefined, {
@@ -352,7 +344,8 @@ export class MarketingComponent implements OnInit {
               // console.log(this.Account.standardrelation);
               this.RelationsApi.findById(this.Account.standardrelation)
                 .subscribe(rel => {
-                  this.onSelectRelation(rel, null)})
+                  this.onSelectRelation(rel, null)
+                })
             }
             this.getrelationsEntry()
           });
@@ -582,8 +575,8 @@ export class MarketingComponent implements OnInit {
   // count words in text 
   private wordCount(str) {
     return str.split(' ')
-           .filter(function(n) { return n != '' })
-           .length;
+      .filter(function (n) { return n != '' })
+      .length;
   }
 
   // calculate price 
@@ -591,11 +584,14 @@ export class MarketingComponent implements OnInit {
     // words, level, languagefrom, languageto 
     let totalamount = 0;
     this.Translationjob.forEach(job => {
-      let jobprice = this.wordCount(job.body_src);
-      jobprice = jobprice * 0.1;
-      totalamount + jobprice;
+      let jobwordcount = 0;
+      jobwordcount = this.wordCount(job.body_src);
+      let jobprice = 0;
+      jobprice = jobwordcount * 0.1;
+      totalamount = jobprice + totalamount;
     })
-    return totalamount;
+    const roundnumber = totalamount.toFixed(2);
+    return roundnumber;
   }
 
   // test selection criteria
@@ -731,27 +727,31 @@ export class MarketingComponent implements OnInit {
   }
 
   opendialogconfirmpayment() {
-    let amount = this.priceCalculator(),
-    id = this.selectedTranslation.id, 
-    paymentid, 
-    valuetra = amount, 
-    currencytra = 'euro', 
-    descriptiontra = 'online Translation request id, paymentid, valuetra, currencytra, descriptiontra';
+    const amount = this.priceCalculator(),
+      id = this.selectedTranslation.id,
+      paymentid = Math.floor(Math.random() * 100) + 1,
+      valuetra = amount,
+      currencytra = 'EUR', // ISO4217
+      descriptiontra = 'online Translation paymentid: ' + paymentid + ' value: ' + valuetra + ' currency: ' + currencytra
     this.dialogsService
-      .confirm('Request Translation', 'Total Amount: €' + amount +  'Are you sure you want to do this? You will be redirected to the payment page')
+      .confirm('Request Translation', 'Total Amount: €' + amount +
+      ' Are you sure you want to do this? You will be redirected to the payment page')
       .subscribe(res => {
-        this.selectedOption = res, this.TranslationApi.getpayment(id, paymentid, valuetra, currencytra, descriptiontra)
-        .subscribe((res )=> {
-          if (res === 'www') { window.open('http://' + res) }
-        });
-        });
-      // on confirm payment
-      this.publishTranslationJob(this.selectedOption)
+        // this.selectedOption = res,
+        if (res) {
+        this.TranslationApi.getpayment(id, paymentid, valuetra, currencytra, descriptiontra)
+          .subscribe((url: string) => {
+            if (url) { window.open(url, '_self') }
+          });
+        }
+      });
+    // on confirm payment
+    this.publishTranslationJob(this.selectedOption)
   }
 
   // delete Publications -> check container?
   deletePublications(selectedOption): void {
-    if (selectedOption == true) {
+    if (selectedOption === true) {
       this.containerApi.destroyContainer(this.selectedPublications.id).subscribe(),
         this.PublicationsApi.deleteById(this.selectedPublications.id).subscribe(res => {
           this.error = res,
@@ -1333,12 +1333,12 @@ export class MarketingComponent implements OnInit {
       if (uploadlistfinal[0].address === undefined) { this.openSnackBar('Email missing or wrong format'); }
       else {
         this.MailinglistApi.uploadmailinglist(uploadlistfinal, this.listname)
-        .subscribe(res => {
-          this.callback = res,
-            this.selectedMailingList.total = this.callback.list.members_count,
-            this.RelationsApi.updateByIdMailinglist(this.option.id, this.selectedMailingList.id, this.selectedMailingList)
-              .subscribe(res => { console.log(res), this.openSnackBar('Upload Started') });
-        });
+          .subscribe(res => {
+            this.callback = res,
+              this.selectedMailingList.total = this.callback.list.members_count,
+              this.RelationsApi.updateByIdMailinglist(this.option.id, this.selectedMailingList.id, this.selectedMailingList)
+                .subscribe(res => { console.log(res), this.openSnackBar('Upload Started') });
+          });
       }
     }
 
@@ -1691,7 +1691,7 @@ export class MarketingComponent implements OnInit {
   toggleCampaignMailingNow(i): void {
     // delay to anticipate css style change per mailing i = array mailing list
     if (this.togglecampaignclasstrans[i] === true) { this.togglecampaignclasstrans[i] = false } else {
-    this.togglecampaignclasstrans[i] = true;
+      this.togglecampaignclasstrans[i] = true;
       setTimeout(() => {
         if (this.toggleCampaignMailing[i] === true) { this.toggleCampaignMailing[i] = false } else { this.toggleCampaignMailing[i] = true; }
       }, 500);
@@ -1699,7 +1699,8 @@ export class MarketingComponent implements OnInit {
   }
 
   toggleToFullText(i): void {
-    if (this.toggleshorttext[i] === false) { this.toggleshorttext[i] = true;
+    if (this.toggleshorttext[i] === false) {
+    this.toggleshorttext[i] = true;
     } else { this.toggleshorttext[i] = false }
   }
 

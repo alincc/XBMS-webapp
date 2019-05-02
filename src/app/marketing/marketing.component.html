@@ -272,6 +272,12 @@
 
 
         <div class="relationcontainer">
+
+           <div *ngIf="showconfirmation">
+             <label *ngIf="selectedTranslation.paymentreceived === paid" style="color:greenyellow">Payment Received, invoice send to your email or under your account under invoices </label>
+             <label *ngIf="selectedTranslation.paymentreceived != paid" style="color:red">Payment Declined please try again or use other method of payment</label>
+           </div>
+
           <button mat-mini-fab color="primary" (click)="createTranslationJob()">
             <mat-icon>add</mat-icon>
           </button>
