@@ -11,7 +11,7 @@
     "target": "es5",
     "allowJs": true,
     "typeRoots": [
-      "node_modules/@types"
+      "node_modules"
     ],
     "lib": [
       "es2016",

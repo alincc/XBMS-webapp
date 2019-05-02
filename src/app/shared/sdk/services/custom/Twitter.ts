@@ -127,6 +127,73 @@ export class TwitterApi extends BaseLoopBackApi {
          * (The remote method definition does not provide any description.)
          * </em>
    *
+   * @param {string} id 
+   *
+   * @param {string} oauth_token 
+   *
+   * @param {string} oauth_verifier 
+   *
+   * @returns {object} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * <em>
+   * (The remote method definition does not provide any description.
+   * This usually means the response is a `Twitter` object.)
+   * </em>
+   */
+  public sessioncallback(id: any = {}, oauth_token: any = {}, oauth_verifier: any = {}, customHeaders?: Function): Observable<any> {
+    let _method: string = "GET";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/twitters/sessioncallback/:id";
+    let _routeParams: any = {
+      id: id
+    };
+    let _postBody: any = {};
+    let _urlParams: any = {};
+    if (typeof oauth_token !== 'undefined' && oauth_token !== null) _urlParams.oauth_token = oauth_token;
+    if (typeof oauth_verifier !== 'undefined' && oauth_verifier !== null) _urlParams.oauth_verifier = oauth_verifier;
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
+   * <em>
+         * (The remote method definition does not provide any description.)
+         * </em>
+   *
+   * @param {string} id 
+   *
+   * @param {string} domain 
+   *
+   * @returns {object} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * <em>
+   * (The remote method definition does not provide any description.
+   * This usually means the response is a `Twitter` object.)
+   * </em>
+   */
+  public sessionsconnect(id: any = {}, domain: any = {}, customHeaders?: Function): Observable<any> {
+    let _method: string = "GET";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/twitters/sessionsconnect/:id";
+    let _routeParams: any = {
+      id: id
+    };
+    let _postBody: any = {};
+    let _urlParams: any = {};
+    if (typeof domain !== 'undefined' && domain !== null) _urlParams.domain = domain;
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
+   * <em>
+         * (The remote method definition does not provide any description.)
+         * </em>
+   *
    * @param {string} oauthAccessToken 
    *
    * @param {string} oauthAccessTokenSecret 
@@ -196,73 +263,6 @@ export class TwitterApi extends BaseLoopBackApi {
     let _postBody: any = {};
     let _urlParams: any = {};
     if (typeof screenname !== 'undefined' && screenname !== null) _urlParams.screenname = screenname;
-    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-    return result;
-  }
-
-  /**
-   * <em>
-         * (The remote method definition does not provide any description.)
-         * </em>
-   *
-   * @param {string} id 
-   *
-   * @param {string} domain 
-   *
-   * @returns {object} An empty reference that will be
-   *   populated with the actual data once the response is returned
-   *   from the server.
-   *
-   * <em>
-   * (The remote method definition does not provide any description.
-   * This usually means the response is a `Twitter` object.)
-   * </em>
-   */
-  public sessionsconnect(id: any = {}, domain: any = {}, customHeaders?: Function): Observable<any> {
-    let _method: string = "GET";
-    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/twitters/sessionsconnect/:id";
-    let _routeParams: any = {
-      id: id
-    };
-    let _postBody: any = {};
-    let _urlParams: any = {};
-    if (typeof domain !== 'undefined' && domain !== null) _urlParams.domain = domain;
-    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-    return result;
-  }
-
-  /**
-   * <em>
-         * (The remote method definition does not provide any description.)
-         * </em>
-   *
-   * @param {string} id 
-   *
-   * @param {string} oauth_token 
-   *
-   * @param {string} oauth_verifier 
-   *
-   * @returns {object} An empty reference that will be
-   *   populated with the actual data once the response is returned
-   *   from the server.
-   *
-   * <em>
-   * (The remote method definition does not provide any description.
-   * This usually means the response is a `Twitter` object.)
-   * </em>
-   */
-  public sessioncallback(id: any = {}, oauth_token: any = {}, oauth_verifier: any = {}, customHeaders?: Function): Observable<any> {
-    let _method: string = "GET";
-    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/twitters/sessioncallback/:id";
-    let _routeParams: any = {
-      id: id
-    };
-    let _postBody: any = {};
-    let _urlParams: any = {};
-    if (typeof oauth_token !== 'undefined' && oauth_token !== null) _urlParams.oauth_token = oauth_token;
-    if (typeof oauth_verifier !== 'undefined' && oauth_verifier !== null) _urlParams.oauth_verifier = oauth_verifier;
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
     return result;
   }

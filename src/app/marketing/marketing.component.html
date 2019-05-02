@@ -23,7 +23,7 @@
   <!-- Publications_______________________________ -->
 
 
-  <mat-tab-group fxLayout="column" fxLayoutWrap="wrap" fxFlexAlign="start" class="relations">
+  <mat-tab-group fxLayout="column" fxLayoutWrap="wrap" fxFlexAlign="start" class="relations" [selectedIndex]="selectedIndex">
     <mat-tab fxFlex="100%" label="New Publications" on-focusout="savePublication()" class="relations">
       <ng-template  mat-tab-label class="mat-tab-labels">
         <mat-icon>text_format</mat-icon>
@@ -259,7 +259,7 @@
                     </td>
                   </tr>
                   <tr>
-                    <button a mat-raised-button (click)="opendialogpublish()">Request Translation</button>
+                    <button a mat-raised-button (click)="opendialogconfirmpayment()">Request Translation</button>
                   </tr>
                 </span>
               </div>
@@ -278,11 +278,11 @@
           <div *ngFor="let Translationjob of Translationjob" (click)="onSelectTranslationJob(Translationjob)">
             <mat-card>
               <table class="form-full-width" cellspacing="0">
-                <mat-toolbar color="primary" class="titlebox">
+                <!-- <mat-toolbar color="primary" class="titlebox">
                   <div>
                     <h2>{{ Translationjob.title }} {{Translationjob.language | uppercase}}</h2>
                   </div>
-                </mat-toolbar>
+                </mat-toolbar> -->
                 <tr>
                   <td>
                     <mat-form-field class="form-full-width">

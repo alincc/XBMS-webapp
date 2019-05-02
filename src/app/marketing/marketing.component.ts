@@ -268,6 +268,9 @@ export class MarketingComponent implements OnInit {
   public bounceRate = '-';
   public goalStartsAll = '-';
   public pageview = '-';
+  public urlparameter: string;
+  public selectedIndex = 0;
+  public showconfirmation = false;
 
   constructor(
     private MarketingChannel: MarketingchannelsComponent,
@@ -315,8 +318,18 @@ export class MarketingComponent implements OnInit {
     this.maxDate = new Date(2030, 0, 1);
     // console.log(this.minDate);
 
-    this. = this.route.snapshot.paramMap.get('id')
 
+    this.urlparameter = this.route.snapshot.paramMap.get('id')
+    if (this.urlparameter){
+      this.selectedIndex = 1;
+      this.TranslationApi.findById(this.urlparameter).subscribe((translation: Translation )=> {
+        this.selectedTranslation = translation,
+        this.onSelectTranslation(this.selectedTranslation);
+        // this.TranslationApi.    // check payment hook
+        // send confirmation email with invoice to adminaddress (add admin address to account profile)
+        this.showconfirmation = true;
+      })
+    }
   }
 
 
@@ -566,6 +579,25 @@ export class MarketingComponent implements OnInit {
       .subscribe(res => this.getTransationsjobs());
   }
 
+  // count words in text 
+  private wordCount(str) {
+    return str.split(' ')
+           .filter(function(n) { return n != '' })
+           .length;
+  }
+
+  // calculate price 
+  private priceCalculator() {
+    // words, level, languagefrom, languageto 
+    let totalamount = 0;
+    this.Translationjob.forEach(job => {
+      let jobprice = this.wordCount(job.body_src);
+      jobprice = jobprice * 0.1;
+      totalamount + jobprice;
+    })
+    return totalamount;
+  }
+
   // test selection criteria
   getPublicationsList(): void {
     this.RelationsApi.findById(this.option.id, {
@@ -698,12 +730,23 @@ export class MarketingComponent implements OnInit {
       });
   }
 
-  opendialogpublish() {
+  opendialogconfirmpayment() {
+    let amount = this.priceCalculator(),
+    id = this.selectedTranslation.id, 
+    paymentid, 
+    valuetra = amount, 
+    currencytra = 'euro', 
+    descriptiontra = 'online Translation request id, paymentid, valuetra, currencytra, descriptiontra';
     this.dialogsService
-      .confirm('Request Translation', 'Are you sure you want to do this?')
+      .confirm('Request Translation', 'Total Amount: €' + amount +  'Are you sure you want to do this? You will be redirected to the payment page')
       .subscribe(res => {
-        this.selectedOption = res, this.publishTranslationJob(this.selectedOption);
-      });
+        this.selectedOption = res, this.TranslationApi.getpayment(id, paymentid, valuetra, currencytra, descriptiontra)
+        .subscribe((res )=> {
+          if (res === 'www') { window.open('http://' + res) }
+        });
+        });
+      // on confirm payment
+      this.publishTranslationJob(this.selectedOption)
   }
 
   // delete Publications -> check container?
