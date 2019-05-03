@@ -5,7 +5,7 @@
     </ng-template>
 
     <div class="account">
-      <div *ngIf="toggleedituser === false" class="accountinfo">
+      <div *ngIf="toggleedituser" class="accountinfo">
         <table>
           <tr>
             <td>
@@ -27,7 +27,8 @@
           <tr>
             <td>
               <mat-form-field class="form-full-width">
-                <input matInput placeholder="Enter your password"  name="password" [(ngModel)]="Account.password" [type]="!hide ? 'password' : 'text'">
+                <input matInput placeholder="Enter your password" name="password" [(ngModel)]="Account.password"
+                  [type]="!hide ? 'password' : 'text'">
                 <mat-icon matSuffix (click)="!hide = hide">{{hide ? 'visibility' : 'visibility_off'}}</mat-icon>
               </mat-form-field>
             </td>
@@ -48,7 +49,7 @@
         </button>
       </div>
 
-      <div *ngIf="toggleedituser" class="accountinfo">
+      <div *ngIf="!toggleedituser" class="accountinfo">
         <table>
           <tr>
             <td>
@@ -67,13 +68,129 @@
           </tr>
           <tr>
             <td>
-              <h4>{{Company.companyname}}</h4>
+              <h4>{{Account.companyname}}</h4>
             </td>
           </tr>
         </table>
         <button mat-mini-fab color="primary" (click)="toggleEditUser()">
           <mat-icon>edit</mat-icon>
         </button>
+      </div>
+
+      <div class="companyinfo">
+        <table>
+          <tr>
+            <td>
+              <h2>Company information</h2>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <mat-form-field class="form-full-width">
+                <input matInput [(ngModel)]=Company.companyname placeholder="Company Name" class="InputField">
+              </mat-form-field>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <mat-form-field class="form-full-width">
+                <input matInput [(ngModel)]=Company.address placeholder="Address" class="InputField">
+              </mat-form-field>
+            </td>
+          </tr>
+        </table>
+        <table>
+          <td>
+            <mat-form-field class="form-full-width">
+              <input matInput [(ngModel)]=Company.city placeholder="City" class="InputField">
+            </mat-form-field>
+          </td>
+          <td>
+            <mat-form-field class="form-full-width">
+              <input matInput [(ngModel)]=Company.zipcode placeholder="Zipcode" class="InputField">
+            </mat-form-field>
+          </td>
+          <td>
+            <mat-form-field class="form-full-width">
+              <input matInput [(ngModel)]=Company.stateprov placeholder="State/Province" class="InputField">
+            </mat-form-field>
+          </td>
+        </table>
+        <table>
+          <tr>
+            <td>
+              <mat-form-field class="form-full-width">
+                <input matInput [(ngModel)]=Company.country placeholder="Country" class="InputField">
+              </mat-form-field>
+            </td>
+          </tr>
+          <tr>
+              <td>
+                <button (click)="billingCompanyCopy()" a mat-raised-button class="button">Billing address is the same</button>
+              </td>
+            </tr>
+          <tr>
+            <td>
+              <mat-form-field class="form-full-width">
+                <input matInput [(ngModel)]=Company.billingaddress placeholder="Billing Address" class="InputField">
+              </mat-form-field>
+            </td>
+          </tr>
+          <tr>
+        </table>
+        <table>
+          <td>
+            <mat-form-field class="form-full-width">
+              <input matInput [(ngModel)]=Company.billingcity placeholder="Billing City" class="InputField">
+            </mat-form-field>
+          </td>
+          <td>
+            <mat-form-field class="form-full-width">
+              <input matInput [(ngModel)]=Company.billingzipcode placeholder="Billing zipcode" class="InputField">
+            </mat-form-field>
+          </td>
+          <td>
+            <mat-form-field class="form-full-width">
+              <input matInput [(ngModel)]=Company.billingstateprov placeholder="Billing State/Province"
+                class="InputField">
+            </mat-form-field>
+          </td>
+        </table>
+        <table>
+          <tr>
+            <td>
+              <mat-form-field class="form-full-width">
+                <input matInput [(ngModel)]=Company.billingcountry placeholder="Billing Country" class="InputField">
+              </mat-form-field>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <mat-form-field class="form-full-width">
+                <input matInput [(ngModel)]=Company.billingcontact placeholder="Billing Contact" class="InputField">
+              </mat-form-field>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <mat-form-field class="form-full-width">
+                <input matInput [(ngModel)]=Company.billingemail placeholder="Billing Email" class="InputField">
+              </mat-form-field>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <mat-form-field class="form-full-width">
+                <input matInput [(ngModel)]=Company.phonenumber placeholder="Phonenumber" class="InputField">
+              </mat-form-field>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <button (click)="saveCompany()" a mat-raised-button class="button">Save Changes</button>
+            </td>
+          </tr>
+        </table>
       </div>
 
       <div class="accountaction">
@@ -87,19 +204,20 @@
             <tr>
               <td>
                 <mat-form-field class="example-full-width">
-                  <input matInput name="password" type="password" [(ngModel)]="oldpassword" placeholder="Old Password" [formControl]="passwordFormControl"
-                    [errorStateMatcher]="matcher">
+                  <input matInput name="password" type="password" [(ngModel)]="oldpassword" placeholder="Old Password"
+                    [formControl]="passwordFormControl" [errorStateMatcher]="matcher">
                 </mat-form-field>
               </td>
               <td>
-                <button (click)="openDialogDeleteAccount()" a mat-raised-button class="button">Delete My Account</button>
+                <button (click)="openDialogDeleteAccount()" a mat-raised-button class="button">Delete My
+                  Account</button>
               </td>
             </tr>
             <tr>
               <td>
                 <mat-form-field class="example-full-width">
-                  <input matInput name="password" placeholder="New Password" type="password" [formControl]="passwordFormControl" [(ngModel)]="newpassword"
-                    [errorStateMatcher]="matcher">
+                  <input matInput name="password" placeholder="New Password" type="password"
+                    [formControl]="passwordFormControl" [(ngModel)]="newpassword" [errorStateMatcher]="matcher">
                   <!-- <mat-hint>Errors appear instantly!</mat-hint> -->
                   <mat-error *ngIf="passwordFormControl.hasError('email') && !passwordFormControl.hasError('required')">
                     Please enter a Password
@@ -166,21 +284,24 @@
             <tr>
               <td>
                 <mat-form-field class="form-full-width">
-                  <input matInput name="password" type="password" [(ngModel)]="newAccount.password" placeholder="password" />
+                  <input matInput name="password" type="password" [(ngModel)]="newAccount.password"
+                    placeholder="password" />
                 </mat-form-field>
               </td>
             </tr>
             <tr>
               <td>
                 <mat-form-field class="form-full-width">
-                  <input matInput name="username" type="username" [(ngModel)]="newAccount.username" placeholder="username" />
+                  <input matInput name="username" type="username" [(ngModel)]="newAccount.username"
+                    placeholder="username" />
                 </mat-form-field>
               </td>
             </tr>
             <tr>
               <td>
                 <mat-form-field class="form-full-width">
-                  <input matInput name="Team name" type="Team name" [(ngModel)]="newAccount.teamname" placeholder="Team name" />
+                  <input matInput name="Team name" type="Team name" [(ngModel)]="newAccount.teamname"
+                    placeholder="Team name" />
                 </mat-form-field>
               </td>
             </tr>
@@ -205,21 +326,24 @@
           <tr>
             <td>
               <mat-form-field class="form-full-width">
-                <input matInput name="emailusername" type="email" [(ngModel)]="Emailhandler.username" placeholder="username" />
+                <input matInput name="emailusername" type="email" [(ngModel)]="Emailhandler.username"
+                  placeholder="username" />
               </mat-form-field>
             </td>
           </tr>
           <tr>
             <td>
               <mat-form-field class="form-full-width">
-                <input matInput name="emailpassword" type="password" [(ngModel)]="Emailhandler.password" placeholder="password" />
+                <input matInput name="emailpassword" type="password" [(ngModel)]="Emailhandler.password"
+                  placeholder="password" />
               </mat-form-field>
             </td>
           </tr>
           <tr>
             <td>
               <mat-form-field class="form-full-width">
-                <input matInput name="Team name" type="Team name" [(ngModel)]="Emailhandler.host" placeholder="Mail Server" />
+                <input matInput name="Team name" type="Team name" [(ngModel)]="Emailhandler.host"
+                  placeholder="Mail Server" />
               </mat-form-field>
             </td>
           </tr>
@@ -236,7 +360,8 @@
           <tr>
             <td>
               <mat-form-field class="form-full-width">
-                <input matInput name="Team name" type="value" [(ngModel)]="Emailhandler.mailbox" placeholder="mailbox" />
+                <input matInput name="Team name" type="value" [(ngModel)]="Emailhandler.mailbox"
+                  placeholder="mailbox" />
               </mat-form-field>
             </td>
             <td>
@@ -305,8 +430,8 @@
           <h4>Search</h4>
           <p>
             <mat-form-field>
-              <input matInput #searchTerm id="seach-box" (keyup.enter)="searchCallGo(searchTerm.value)" placeholder="Call title/content"
-              />
+              <input matInput #searchTerm id="seach-box" (keyup.enter)="searchCallGo(searchTerm.value)"
+                placeholder="Call title/content" />
             </mat-form-field>
           </p>
           <tr>
@@ -320,7 +445,8 @@
         </div>
 
         <ul class="Relations">
-          <div *ngFor="let Unsortedcalls of Unsortedcalls; let i = index" (click)="onSelectCall(Unsortedcalls, i)" [class.selected]="Unsortedcalls === selectedCall">
+          <div *ngFor="let Unsortedcalls of Unsortedcalls; let i = index" (click)="onSelectCall(Unsortedcalls, i)"
+            [class.selected]="Unsortedcalls === selectedCall">
             <span class="box">{{Unsortedcalls.title | slice:0:20 }} | {{Unsortedcalls.date | date}}</span>
           </div>
         </ul>
@@ -340,8 +466,8 @@
                 <tr>
                   <td>
                     <mat-form-field class="example-full-width">
-                      <input type="text" placeholder="Select Relation" aria-label="relation" [(ngModel)]=option matInput [formControl]="myControl"
-                        [matAutocomplete]="auto">
+                      <input type="text" placeholder="Select Relation" aria-label="relation" [(ngModel)]=option matInput
+                        [formControl]="myControl" [matAutocomplete]="auto">
                       <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
                         <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
                           {{ option.relationname }}
@@ -356,7 +482,8 @@
                 <tr>
                   <td>
                     <mat-form-field>
-                      <input matInput google-place (onSelect)="setAddress($event)" [(ngModel)]=newRelation.relationname placeholder="New Relation Name" class="InputField" [ngModelOptions]="{standalone: true}">
+                      <input matInput google-place (onSelect)="setAddress($event)" [(ngModel)]=newRelation.relationname
+                        placeholder="New Relation Name" class="InputField" [ngModelOptions]="{standalone: true}">
                     </mat-form-field>
 
                     <mat-select [(ngModel)]=newRelation.status placeholder="Status" class="InputField">
@@ -417,7 +544,8 @@
                 <tr rowspan="10">
                   <td colspan="2">
                     <mat-form-field class="content-form">
-                      <textarea matInput class="content-form" #content [(ngModel)]=selectedCall.content placeholder="content">Call Report</textarea>
+                      <textarea matInput class="content-form" #content [(ngModel)]=selectedCall.content
+                        placeholder="content">Call Report</textarea>
                       <mat-hint align="end">{{content.value.length}}</mat-hint>
                     </mat-form-field>
                   </td>
@@ -436,13 +564,15 @@
                         <table>
                           <tr>
                             <td class="tg-yw4l">
-                              <mat-checkbox [(ngModel)]=selectedCall.followup [(indeterminate)]="indeterminate" [disabled]="disabled">
+                              <mat-checkbox [(ngModel)]=selectedCall.followup [(indeterminate)]="indeterminate"
+                                [disabled]="disabled">
                                 Follow Up
                               </mat-checkbox>
                             </td>
                             <td class="tg-yw4l">
                               <mat-datepicker #picker></mat-datepicker>
-                              <input [matDatepicker]="myDatepicker" [(ngModel)]=selectedCall.callbackdate placeholder="Callback Date">
+                              <input [matDatepicker]="myDatepicker" [(ngModel)]=selectedCall.callbackdate
+                                placeholder="Callback Date">
                               <mat-datepicker-toggle matSuffix [for]="myDatepicker"></mat-datepicker-toggle>
                               <mat-datepicker #myDatepicker></mat-datepicker>
                             </td>
@@ -466,7 +596,8 @@
     </ng-template>
     <div class="account-container">
       <ul>
-        <div *ngFor="let Linkedin of Linkedin" (click)="onSelectLinkedin(Linkedin)" [class.selected]="Linkedin === selectedLinkedin">
+        <div *ngFor="let Linkedin of Linkedin" (click)="onSelectLinkedin(Linkedin)"
+          [class.selected]="Linkedin === selectedLinkedin">
           <span class="box">{{Linkedin.name}}, {{Linkedin.id}}</span>
         </div>
       </ul>
@@ -489,17 +620,20 @@
                 </tr>
                 <tr>
                   <mat-form-field>
-                    <input matInput [(ngModel)]=selectedLinkedin.profileorcompany placeholder="Linkdin Profile or Company Page" class="InputField">
+                    <input matInput [(ngModel)]=selectedLinkedin.profileorcompany
+                      placeholder="Linkdin Profile or Company Page" class="InputField">
                   </mat-form-field>
                 </tr>
                 <tr>
                   <mat-form-field>
-                    <input matInput [(ngModel)]=selectedLinkedin.linkedincompanyid placeholder="Company ID" class="InputField">
+                    <input matInput [(ngModel)]=selectedLinkedin.linkedincompanyid placeholder="Company ID"
+                      class="InputField">
                   </mat-form-field>
                 </tr>
                 <tr>
                   <mat-form-field>
-                    <input matInput [(ngModel)]=selectedLinkedin.linkedinprofileid placeholder="Profile ID" class="InputField">
+                    <input matInput [(ngModel)]=selectedLinkedin.linkedinprofileid placeholder="Profile ID"
+                      class="InputField">
                   </mat-form-field>
                 </tr>
               </table>

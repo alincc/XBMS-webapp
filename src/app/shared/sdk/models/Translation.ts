@@ -17,6 +17,8 @@ export interface TranslationInterface {
   "eta"?: number;
   "ctime"?: number;
   "companyId"?: any;
+  "paymentreceived"?: string;
+  "paymentid"?: string;
   "id"?: any;
   "marketingId"?: any;
   "relationsId"?: any;
@@ -36,6 +38,8 @@ export class Translation implements TranslationInterface {
   "eta": number;
   "ctime": number;
   "companyId": any;
+  "paymentreceived": string;
+  "paymentid": string;
   "id": any;
   "marketingId": any;
   "relationsId": any;
@@ -114,6 +118,14 @@ export class Translation implements TranslationInterface {
         "companyId": {
           name: 'companyId',
           type: 'any'
+        },
+        "paymentreceived": {
+          name: 'paymentreceived',
+          type: 'string'
+        },
+        "paymentid": {
+          name: 'paymentid',
+          type: 'string'
         },
         "id": {
           name: 'id',

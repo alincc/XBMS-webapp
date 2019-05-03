@@ -589,7 +589,7 @@ export class TranslationApi extends BaseLoopBackApi {
          * (The remote method definition does not provide any description.)
          * </em>
    *
-   * @param {string} paymentid 
+   * @param {string} id 
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -600,12 +600,12 @@ export class TranslationApi extends BaseLoopBackApi {
    * This usually means the response is a `Translation` object.)
    * </em>
    */
-  public hookpayment(paymentid: any = {}, customHeaders?: Function): Observable<any> {
+  public hookpayment(id: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/translations/hookpayment";
+    "/translations/hookpayment/:id";
     let _routeParams: any = {
-      paymentid: paymentid
+      id: id
     };
     let _postBody: any = {};
     let _urlParams: any = {};

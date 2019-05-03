@@ -17,6 +17,19 @@ export interface CompanyInterface {
   "accountId"?: any;
   "memberId"?: string;
   "companyname"?: string;
+  "country"?: string;
+  "address"?: string;
+  "city"?: string;
+  "zipcode"?: string;
+  "stateprov"?: string;
+  "billingcountry"?: string;
+  "billingaddress"?: string;
+  "billingcity"?: string;
+  "billingzipcode"?: string;
+  "billingstateprov"?: string;
+  "billingcontact"?: string;
+  "billingemail"?: string;
+  "phonenumber"?: string;
   "id"?: any;
   relations?: Relations[];
   googleanalytics?: Googleanalytics[];
@@ -34,6 +47,19 @@ export class Company implements CompanyInterface {
   "accountId": any;
   "memberId": string;
   "companyname": string;
+  "country": string;
+  "address": string;
+  "city": string;
+  "zipcode": string;
+  "stateprov": string;
+  "billingcountry": string;
+  "billingaddress": string;
+  "billingcity": string;
+  "billingzipcode": string;
+  "billingstateprov": string;
+  "billingcontact": string;
+  "billingemail": string;
+  "phonenumber": string;
   "id": any;
   relations: Relations[];
   googleanalytics: Googleanalytics[];
@@ -88,6 +114,58 @@ export class Company implements CompanyInterface {
         },
         "companyname": {
           name: 'companyname',
+          type: 'string'
+        },
+        "country": {
+          name: 'country',
+          type: 'string'
+        },
+        "address": {
+          name: 'address',
+          type: 'string'
+        },
+        "city": {
+          name: 'city',
+          type: 'string'
+        },
+        "zipcode": {
+          name: 'zipcode',
+          type: 'string'
+        },
+        "stateprov": {
+          name: 'stateprov',
+          type: 'string'
+        },
+        "billingcountry": {
+          name: 'billingcountry',
+          type: 'string'
+        },
+        "billingaddress": {
+          name: 'billingaddress',
+          type: 'string'
+        },
+        "billingcity": {
+          name: 'billingcity',
+          type: 'string'
+        },
+        "billingzipcode": {
+          name: 'billingzipcode',
+          type: 'string'
+        },
+        "billingstateprov": {
+          name: 'billingstateprov',
+          type: 'string'
+        },
+        "billingcontact": {
+          name: 'billingcontact',
+          type: 'string'
+        },
+        "billingemail": {
+          name: 'billingemail',
+          type: 'string'
+        },
+        "phonenumber": {
+          name: 'phonenumber',
           type: 'string'
         },
         "id": {

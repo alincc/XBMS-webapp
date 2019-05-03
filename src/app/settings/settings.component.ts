@@ -226,7 +226,9 @@ export class SettingsComponent implements OnInit {
   }
 
   getAdminAccountsoverview(): void {
-    if (this.Account.companyadmin == true) {
+    if (this.Account.companyadmin === true) {
+      this.CompanyApi.findById(this.Account.companyId).subscribe((company: Company) =>
+      {this.Company = company})
       this.CompanyApi.getTeam(this.Account.companyId, { where: { accountId: { nlike: this.Account.id } } })
         .subscribe((Team: Team[]) => {
           this.Team = Team
@@ -473,6 +475,19 @@ export class SettingsComponent implements OnInit {
   saveAccount(): void {
     this.AccountApi.patchAttributes(this.Account.id, this.Account)
     .subscribe(res => this.openSnackBar("Changes saved"));
+  }
+
+  saveCompany(): void {
+    this.CompanyApi.patchAttributes(this.Company.id, this.Company)
+    .subscribe(res => this.openSnackBar("Changes saved"));
+  }
+
+  billingCompanyCopy(): void {
+    this.Company.billingaddress = this.Company.address;
+    this.Company.billingcity = this.Company.city;
+    this.Company.billingcountry = this.Company.country;
+    this.Company.billingstateprov = this.Company.stateprov;
+    this.Company.billingzipcode = this.Company.zipcode;
   }
 
   setAddress(addrObj) {
