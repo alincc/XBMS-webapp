@@ -717,17 +717,22 @@ export class MarketingComponent implements OnInit {
   opendialogconfirmpayment() {
     const amount = this.priceCalculator(),
       id = this.selectedTranslation.id,
-      paymentid = Math.floor(Math.random() * 100) + 1,
-      valuetra = amount,
-      currencytra = 'EUR', // ISO4217
-      descriptiontra = 'online Translation paymentid: ' + paymentid + ' value: ' + valuetra + ' currency: ' + currencytra
+      paymentid = Math.floor(Math.random() * 100000) + 1,   
+      desctranjob = [],
+      currencytra = 'EUR'; // ISO4217
+      let descriptiontra,
+      langdescr;
+      this.Translationjob.forEach(job => { desctranjob.push(job.lc_tgt)})
+      langdescr = desctranjob.join(", ");
+      descriptiontra = 'online Translation paymentid: ' + paymentid + ' language: ' + descriptiontra
+    
     this.dialogsService
       .confirm('Request Translation', 'Total Amount: €' + amount +
       ' Are you sure you want to do this? You will be redirected to the payment page')
       .subscribe(res => {
         // this.selectedOption = res,
         if (res) {
-        this.TranslationApi.getpayment(id, paymentid, valuetra, currencytra, descriptiontra)
+        this.TranslationApi.getpayment(id, paymentid, langdescr , currencytra, descriptiontra)
           .subscribe((url: string) => {
             if (url) { window.open(url, '_self') }
           });

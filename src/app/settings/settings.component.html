@@ -77,7 +77,7 @@
         </button>
       </div>
 
-      <div class="companyinfo">
+      <div fxLayout='column' class="companyinfo">
         <table>
           <tr>
             <td>
@@ -86,52 +86,54 @@
           </tr>
           <tr>
             <td>
-              <mat-form-field class="form-full-width">
+              <mat-form-field  fxFlex="90" class="form-full-width">
                 <input matInput [(ngModel)]=Company.companyname placeholder="Company Name" class="InputField">
               </mat-form-field>
             </td>
           </tr>
           <tr>
             <td>
-              <mat-form-field class="form-full-width">
+              <mat-form-field fxFlex="90"  class="form-full-width">
                 <input matInput [(ngModel)]=Company.address placeholder="Address" class="InputField">
               </mat-form-field>
             </td>
           </tr>
         </table>
         <table>
+          <tr>
           <td>
-            <mat-form-field class="form-full-width">
+            <mat-form-field fxFlex="30" class="form-full-width">
               <input matInput [(ngModel)]=Company.city placeholder="City" class="InputField">
             </mat-form-field>
           </td>
           <td>
-            <mat-form-field class="form-full-width">
+            <mat-form-field fxFlex="30"  class="form-full-width">
               <input matInput [(ngModel)]=Company.zipcode placeholder="Zipcode" class="InputField">
             </mat-form-field>
           </td>
           <td>
-            <mat-form-field class="form-full-width">
+            <mat-form-field fxFlex="30" class="form-full-width">
               <input matInput [(ngModel)]=Company.stateprov placeholder="State/Province" class="InputField">
             </mat-form-field>
           </td>
+        </tr>
         </table>
         <table>
           <tr>
             <td>
-              <mat-form-field class="form-full-width">
+              <mat-form-field fxFlex="90" class="form-full-width">
                 <input matInput [(ngModel)]=Company.country placeholder="Country" class="InputField">
               </mat-form-field>
             </td>
           </tr>
           <tr>
               <td>
-                <button (click)="billingCompanyCopy()" a mat-raised-button class="button">Billing address is the same</button>
+                <button fxFlex="90"  (click)="billingCompanyCopy()" a mat-raised-button class="button">Billing address is the same</button>
               </td>
             </tr>
           <tr>
             <td>
-              <mat-form-field class="form-full-width">
+              <mat-form-field fxFlex="90" class="form-full-width">
                 <input matInput [(ngModel)]=Company.billingaddress placeholder="Billing Address" class="InputField">
               </mat-form-field>
             </td>
@@ -140,17 +142,17 @@
         </table>
         <table>
           <td>
-            <mat-form-field class="form-full-width">
+            <mat-form-field fxFlex="30" class="form-full-width">
               <input matInput [(ngModel)]=Company.billingcity placeholder="Billing City" class="InputField">
             </mat-form-field>
           </td>
           <td>
-            <mat-form-field class="form-full-width">
+            <mat-form-field fxFlex="30" class="form-full-width">
               <input matInput [(ngModel)]=Company.billingzipcode placeholder="Billing zipcode" class="InputField">
             </mat-form-field>
           </td>
           <td>
-            <mat-form-field class="form-full-width">
+            <mat-form-field fxFlex="30" class="form-full-width">
               <input matInput [(ngModel)]=Company.billingstateprov placeholder="Billing State/Province"
                 class="InputField">
             </mat-form-field>
@@ -159,28 +161,28 @@
         <table>
           <tr>
             <td>
-              <mat-form-field class="form-full-width">
+              <mat-form-field fxFlex="90" class="form-full-width">
                 <input matInput [(ngModel)]=Company.billingcountry placeholder="Billing Country" class="InputField">
               </mat-form-field>
             </td>
           </tr>
           <tr>
             <td>
-              <mat-form-field class="form-full-width">
+              <mat-form-field fxFlex="90" class="form-full-width">
                 <input matInput [(ngModel)]=Company.billingcontact placeholder="Billing Contact" class="InputField">
               </mat-form-field>
             </td>
           </tr>
           <tr>
             <td>
-              <mat-form-field class="form-full-width">
+              <mat-form-field fxFlex="90" class="form-full-width">
                 <input matInput [(ngModel)]=Company.billingemail placeholder="Billing Email" class="InputField">
               </mat-form-field>
             </td>
           </tr>
           <tr>
             <td>
-              <mat-form-field class="form-full-width">
+              <mat-form-field fxFlex="90" class="form-full-width">
                 <input matInput [(ngModel)]=Company.phonenumber placeholder="Phonenumber" class="InputField">
               </mat-form-field>
             </td>

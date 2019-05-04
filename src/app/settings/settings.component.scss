@@ -128,7 +128,7 @@ h2 {
  }
 
  .accountinfo{
-    width: 42%;
+    max-width: 600px;
     margin: 30px;
     padding: 30px;
     border-radius: 5px;
@@ -136,9 +136,8 @@ h2 {
     display: inline-block;
  }
 
-
  .accountaction{
-    width: 42%;
+    max-width: 600px;
     margin: 30px;
     padding: 30px;
     border-radius: 5px;
@@ -146,10 +145,8 @@ h2 {
     display: inline-block;
  }
 
-
  .companyinfo {
-  box-sizing: border-box;
-  width: 42%;
+  max-width: 600px;
   margin: 30px;
   padding: 30px;
   border-radius: 5px;
