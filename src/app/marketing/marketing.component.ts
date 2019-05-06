@@ -732,7 +732,7 @@ export class MarketingComponent implements OnInit {
       .subscribe(res => {
         // this.selectedOption = res,
         if (res) {
-        this.TranslationApi.getpayment(id, paymentid, langdescr , currencytra, descriptiontra)
+        this.TranslationApi.getpayment(id, paymentid,  amount, currencytra, descriptiontra, langdescr)
           .subscribe((url: string) => {
             if (url) { window.open(url, '_self') }
           });
@@ -820,18 +820,18 @@ export class MarketingComponent implements OnInit {
       let jobsoverview = [];
       Object.keys(res.order).forEach(key => {
         if (Array.isArray(res.order[key])) {
-          console.log(key.length);          // the name of the current key.
+          //console.log(key.length);          // the name of the current key.
           if (typeof key === 'string') { jobsoverview.push(res.order[key]) }
           else { res.order[key].foreEach((item) => { jobsoverview.map(item) }) }
         }
       }),
         jobsoverview = [].concat.apply([], jobsoverview),
-        console.log(jobsoverview),
+        //console.log(jobsoverview),
         jobsoverview.forEach((item) => {
-          console.log(item),
+          //console.log(item),
             this.TranslationApi.getgengojob(item).subscribe(res => {
               this.MarkTranJobs = res.job,
-                console.log(this.MarkTranJobs)
+                //console.log(this.MarkTranJobs)
               this.TranslationApi.updateByIdTranslationjob(
                 this.selectedTranslation.id, this.MarkTranJobs.custom_data,
                 {

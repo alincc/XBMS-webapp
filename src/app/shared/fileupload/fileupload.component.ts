@@ -127,7 +127,6 @@ export class FileuploadComponent implements OnInit {
               .subscribe(res => this.uploadFile()));
   }
 
-
   uploadFile(): void {
       this.uploader.uploadAll();
       this.relationsApi.createFiles(this.option.id, this.newFiles)
