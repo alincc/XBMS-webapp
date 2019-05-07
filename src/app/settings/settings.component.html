@@ -398,6 +398,18 @@
 
   </mat-tab>
 
+  <mat-tab label="Invoices" >
+    <ng-template mat-tab-label>
+      <mat-icon>money</mat-icon>Invoices
+    </ng-template>
+    <button (click)="getInvoices()"></button>
+
+    <div *ngFor="let file of files">
+    <mat-icon>money</mat-icon> {{file}}
+      </div>
+  </mat-tab>
+
+
   <mat-tab label="Wordpress Websites">
     <ng-template mat-tab-label>
       <mat-icon>web</mat-icon>Wordpress

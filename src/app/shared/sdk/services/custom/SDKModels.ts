@@ -7,6 +7,7 @@ import { Publications } from '../../models/Publications';
 import { Calls } from '../../models/Calls';
 import { Account } from '../../models/Account';
 import { Container } from '../../models/Container';
+import { Containersecure } from '../../models/Containersecure';
 import { Linkedin } from '../../models/Linkedin';
 import { Marketingplanner } from '../../models/Marketingplanner';
 import { Marketingplannerevents } from '../../models/Marketingplannerevents';
@@ -50,6 +51,7 @@ export class SDKModels {
     Calls: Calls,
     Account: Account,
     Container: Container,
+    Containersecure: Containersecure,
     Linkedin: Linkedin,
     Marketingplanner: Marketingplanner,
     Marketingplannerevents: Marketingplannerevents,

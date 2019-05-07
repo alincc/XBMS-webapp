@@ -55,6 +55,7 @@ import { PublicationsApi } from './services/custom/Publications';
 import { CallsApi } from './services/custom/Calls';
 import { AccountApi } from './services/custom/Account';
 import { ContainerApi } from './services/custom/Container';
+import { ContainersecureApi } from './services/custom/Containersecure';
 import { LinkedinApi } from './services/custom/Linkedin';
 import { MarketingplannerApi } from './services/custom/Marketingplanner';
 import { MarketingplannereventsApi } from './services/custom/Marketingplannerevents';
@@ -121,6 +122,7 @@ export class SDKBrowserModule {
         CallsApi,
         AccountApi,
         ContainerApi,
+        ContainersecureApi,
         LinkedinApi,
         MarketingplannerApi,
         MarketingplannereventsApi,

@@ -6,6 +6,7 @@ export * from './Publications';
 export * from './Calls';
 export * from './Account';
 export * from './Container';
+export * from './Containersecure';
 export * from './Linkedin';
 export * from './Marketingplanner';
 export * from './Marketingplannerevents';

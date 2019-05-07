@@ -5,7 +5,6 @@ import { Observable, BehaviorSubject } from 'rxjs';
 import { SDKBrowserModule } from '../shared/';
 import {
   LoopBackConfig,
-  //LoopBackAuth,
   CompanyApi,
   Company,
   AccountApi,
@@ -25,7 +24,8 @@ import {
   Emailhandler,
   EmailhandlerApi,
   Mailinglist,
-  MailinglistApi
+  MailinglistApi,
+  ContainersecureApi
 } from '../shared/';
 import { NgClass, NgStyle } from '@angular/common';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
@@ -92,6 +92,7 @@ export class SettingsComponent implements OnInit {
   public options = [];
   public option: Relations = new Relations();
   public newRelation: Relations = new Relations();
+  public files;
 
   calltype = [
     { value: 'PhoneCall', viewValue: 'Phone Call' },
@@ -132,6 +133,7 @@ export class SettingsComponent implements OnInit {
     public RelationsApi: RelationsApi,
     public UnsortedcallsApi: UnsortedcallsApi,
     public ContainerApi: ContainerApi,
+    public ContainersecureApi: ContainersecureApi,
     public RelationApi: RelationsApi,
     public CompanyApi: CompanyApi,
     public TeamApi: TeamApi,
@@ -204,6 +206,7 @@ export class SettingsComponent implements OnInit {
       else { this.LinkedinService.restoreCredentials() }
     });
     this.ContainerApi.create({ name: "tmp" }).subscribe(res => res = res);
+
   }
 
   logout(): void {
@@ -505,5 +508,10 @@ export class SettingsComponent implements OnInit {
     });
   }
 
-
+  getInvoices(): void {
+    this.ContainersecureApi.getFiles(this.Account.companyId).subscribe(res => {
+      this.files = res,
+      console.log(this.files)
+    });
+    }
 }

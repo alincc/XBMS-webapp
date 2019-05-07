@@ -738,7 +738,7 @@ export class RelationComponent implements OnInit {
   redirectFacebook(id): void {
     var redirect;
     var domain = window.location.protocol + '//' + window.location.hostname //+ ":3000"; //set domain + protocol + 3000 for test purpose only
-    this.FacebookApi.sessionsconnect(id, domain).subscribe(res => { redirect = res, window.location.href = redirect; });
+    //this.FacebookApi.sessionsconnect(id, domain).subscribe(res => { redirect = res, window.location.href = redirect; });
   };
 
   showFacebook(i): void {
