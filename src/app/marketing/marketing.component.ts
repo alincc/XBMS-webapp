@@ -318,7 +318,10 @@ export class MarketingComponent implements OnInit {
           this.onSelectTranslation(this.selectedTranslation);
           this.getTranslations();
         // this.TranslationApi.    // check payment hook
+        if (this.selectedTranslation.status === 'paid') {
         // confirm translation assignment
+        this.publishTranslationJob(this.selectedOption);
+        }
         // send confirmation email with invoice to adminaddress (add admin address to account profile)
         this.showconfirmation = true;
       })
@@ -717,14 +720,16 @@ export class MarketingComponent implements OnInit {
   opendialogconfirmpayment() {
     const amount = this.priceCalculator(),
       id = this.selectedTranslation.id,
-      paymentid = Math.floor(Math.random() * 100000) + 1,   
+      transsubid = Math.floor(Math.random() * 100) + 1,
+      date = Math.round(new Date().getTime() / 1000),
+      transid = 'IXT' + date + '-' + transsubid,
       desctranjob = [],
       currencytra = 'EUR'; // ISO4217
       let descriptiontra,
       langdescr;
       this.Translationjob.forEach(job => { desctranjob.push(job.lc_tgt)})
-      langdescr = desctranjob.join(", ");
-      descriptiontra = 'online Translation paymentid: ' + paymentid + ' language: ' + descriptiontra
+      langdescr = desctranjob.join(', ');
+      descriptiontra = 'online Translationid: ' + transid + ' language: ' + descriptiontra
     
     this.dialogsService
       .confirm('Request Translation', 'Total Amount: €' + amount +
@@ -732,14 +737,20 @@ export class MarketingComponent implements OnInit {
       .subscribe(res => {
         // this.selectedOption = res,
         if (res) {
-        this.TranslationApi.getpayment(id, paymentid,  amount, currencytra, descriptiontra, langdescr)
+        this.TranslationApi.getpayment(id, paymentid, amount, currencytra, descriptiontra, langdescr)
           .subscribe((url: string) => {
+            this.selectedTranslation.transid = transid;
+            this.updateTranslationHolder();
             if (url) { window.open(url, '_self') }
           });
         }
       });
-    // on confirm payment
-    this.publishTranslationJob(this.selectedOption)
+    // on confirm payment navigate to payment site
+  }
+
+  private updateTranslationHolder(): void {
+    this.RelationsApi.updateByIdTranslation(this.selectedTranslation.id, this.selectedTranslation)
+    .subscribe(res => {console.log(res)})
   }
 
   // delete Publications -> check container?

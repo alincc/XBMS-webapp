@@ -197,11 +197,11 @@
                       {{Translation.status}}
                     </td>
                     <td>
-                      $ {{Translation.credits}}
+                      {{Translation.amount}}
                     </td>
                   </tr>
                   <tr>
-                    <button a mat-raised-button (click)="opendialogconfirmpayment()">Request Translation</button>
+                    
                   </tr>
                 </span>
               </div>
@@ -213,7 +213,7 @@
         </div>
 
 
-        <div class="relationcontainer">
+        <div *ngIf="selectedTranslation" class="relationcontainer">
 
           <div *ngIf="showconfirmation">
             <mat-card>
@@ -222,15 +222,13 @@
               <label *ngIf="selectedTranslation.paymentreceived === 'expired'" style="color:red">Payment expired please
                 try again</label>
               <label *ngIf="selectedTranslation.paymentreceived === 'failed'" style="color:red">Payment failed please
-                try again or use other method of payment</label>
-              <label *ngIf="selectedTranslation.paymentreceived === 'canceled'" style="color:red">Payment
-                canceled</label>
+                try again or use other method of payment method</label>
+              <label *ngIf="selectedTranslation.paymentreceived === 'cancelled'" style="color:red">Payment
+                cancelled</label>
             </mat-card>
           </div>
 
-          <button mat-mini-fab color="primary" (click)="createTranslationJob()">
-            <mat-icon>add</mat-icon>
-          </button>
+          <div *ngIf="selectedTranslation.status !== 'paid'">
           <div *ngFor="let Translationjob of Translationjob" (click)="onSelectTranslationJob(Translationjob)">
             <mat-card>
               <table class="form-full-width" cellspacing="0">
@@ -292,6 +290,25 @@
               </button>
             </mat-card>
           </div>
+          </div>
+
+          <div *ngIf="selectedTranslation.status === 'paid'">
+
+
+          </div>
+          
+          <div>
+          <table>
+            <tr>
+                <button class="addtranslationbutton" mat-mini-fab color="primary" (click)="createTranslationJob()">
+                    <mat-icon>add</mat-icon>
+                  </button>
+            </tr>
+            <tr>
+                <button a mat-raised-button (click)="opendialogconfirmpayment()">Request Translation</button>
+            </tr>
+          </table>
+        </div>
         </div>
       </div>
     </mat-tab>

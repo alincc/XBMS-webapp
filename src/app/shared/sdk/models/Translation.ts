@@ -19,6 +19,8 @@ export interface TranslationInterface {
   "companyId"?: any;
   "paymentreceived"?: string;
   "paymentid"?: string;
+  "transid"?: string;
+  "amount"?: string;
   "id"?: any;
   "marketingId"?: any;
   "relationsId"?: any;
@@ -40,6 +42,8 @@ export class Translation implements TranslationInterface {
   "companyId": any;
   "paymentreceived": string;
   "paymentid": string;
+  "transid": string;
+  "amount": string;
   "id": any;
   "marketingId": any;
   "relationsId": any;
@@ -125,6 +129,14 @@ export class Translation implements TranslationInterface {
         },
         "paymentid": {
           name: 'paymentid',
+          type: 'string'
+        },
+        "transid": {
+          name: 'transid',
+          type: 'string'
+        },
+        "amount": {
+          name: 'amount',
           type: 'string'
         },
         "id": {
