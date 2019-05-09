@@ -94,9 +94,9 @@ export class ReturnpageComponent implements OnInit, OnDestroy {
     }
 
     else if (this.source === 'facebook') {
-      this.FacebookApi
-        .sessioncallback(this.id, this.code)
-        .subscribe(res => this.response = res);
+      //this.FacebookApi
+        //.sessioncallback(this.id, this.code)
+        //.subscribe(res => this.response = res);
     }
 
     else if (this.source === 'linkedin') {

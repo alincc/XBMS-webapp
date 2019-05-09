@@ -383,3 +383,73 @@ td {
   margin: 5px;
   font-size: 10px;
 }
+
+
+.add-button {
+  position: absolute;
+  right: 100px;
+  width: 56px;
+  height: 56px;
+  overflow: visible;
+  -webkit-transition: transform .4s cubic-bezier(.58,-0.37,.45,1.46),
+    color 0s ease .4s,font-size .2s;
+  -moz-transition: transform .4s cubic-bezier(.58,-0.37,.45,1.46),
+    color 0s ease .4s,font-size .2s;
+  transition: transform .4s cubic-bezier(.58,-0.37,.45,1.46),
+    color 0s ease .4s,font-size .2s;
+  text-align: center;
+  line-height: 56px;
+  font-size: 28px;
+  color: rgba(255,255,255,1);
+}
+
+.add-button:before {
+  position: relative;
+  z-index: 100;
+  content:"+";
+  
+}
+
+
+
+.add-button:hover {
+ 
+  color: rgba(255,255,255,0);
+  transform: rotate(45deg);
+}
+
+.sub-button {
+  position: absolute;
+  display: inline-block;
+  background-color:#23549d;
+  color: rgba(255,255,255,0);
+  width: 28px;
+  height: 28px;
+  line-height:48px;
+  font-family: "FontAwesome";
+  font-size: 12px;
+  -webkit-transition: top .2s cubic-bezier(.58,-0.37,.45,1.46) .2s,
+    left .2s cubic-bezier(.58,-0.37,.45,1.46) .2s,
+    bottom .2s cubic-bezier(.58,-0.37,.45,1.46) .2s,
+    right .2s cubic-bezier(.58,-0.37,.45,1.46) .2s,
+    width .2s cubic-bezier(.58,-0.37,.45,1.46) .2s,
+    height .2s cubic-bezier(.58,-0.37,.45,1.46) .2s,
+    transform .1s ease 0s,
+    border-radius .2s  ease .2s;
+   -moz-transition: top .2s cubic-bezier(.58,-0.37,.45,1.46) .2s,
+    left .2s cubic-bezier(.58,-0.37,.45,1.46) .2s,
+    bottom .2s cubic-bezier(.58,-0.37,.45,1.46) .2s,
+    right .2s cubic-bezier(.58,-0.37,.45,1.46) .2s,
+    width .2s cubic-bezier(.58,-0.37,.45,1.46) .2s,
+    height .2s cubic-bezier(.58,-0.37,.45,1.46) .2s,
+    transform .1s ease 0s,
+    border-radius .2s  ease .2s;
+   transition: top .2s cubic-bezier(.58,-0.37,.45,1.46) .2s,
+    left .2s cubic-bezier(.58,-0.37,.45,1.46) .2s,
+    bottom .2s cubic-bezier(.58,-0.37,.45,1.46) .2s,
+    right .2s cubic-bezier(.58,-0.37,.45,1.46) .2s,
+    width .2s cubic-bezier(.58,-0.37,.45,1.46) .2s,
+    height .2s cubic-bezier(.58,-0.37,.45,1.46) .2s,
+    transform .1s ease 0s,
+    border-radius .2s  ease .2s;
+}

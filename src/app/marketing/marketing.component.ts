@@ -729,7 +729,8 @@ export class MarketingComponent implements OnInit {
       langdescr;
       this.Translationjob.forEach(job => { desctranjob.push(job.lc_tgt)})
       langdescr = desctranjob.join(', ');
-      descriptiontra = 'online Translationid: ' + transid + ' language: ' + descriptiontra
+      descriptiontra = 'online Translationid: ' + transid + ' language: ' + descriptiontra;
+      this.selectedTranslation.transid = transid;
     
     this.dialogsService
       .confirm('Request Translation', 'Total Amount: €' + amount +
@@ -737,20 +738,51 @@ export class MarketingComponent implements OnInit {
       .subscribe(res => {
         // this.selectedOption = res,
         if (res) {
-        this.TranslationApi.getpayment(id, paymentid, amount, currencytra, descriptiontra, langdescr)
+          this.RelationsApi.updateByIdTranslation(this.option.id, this.selectedTranslation.id, this.selectedTranslation)
+          .subscribe(res => { 
+        this.TranslationApi.getpayment(id, transid, amount, currencytra, descriptiontra, langdescr)
           .subscribe((url: string) => {
-            this.selectedTranslation.transid = transid;
-            this.updateTranslationHolder();
+
             if (url) { window.open(url, '_self') }
           });
+        });
         }
       });
     // on confirm payment navigate to payment site
   }
 
   private updateTranslationHolder(): void {
-    this.RelationsApi.updateByIdTranslation(this.selectedTranslation.id, this.selectedTranslation)
+    this.RelationsApi.updateByIdTranslation(this.option.id, this.selectedTranslation.id, this.selectedTranslation)
     .subscribe(res => {console.log(res)})
+  }
+
+  // publish to apps part
+  public newpublication(i): void {
+    const publication = this.translationJob[i];
+    const publicationdata: Publications = new Publications();
+    publicationdata.text = publication.translation
+    this.RelationsApi.createPublications(this.option, publicationdata)
+    .subscribe(res => {console.log(res),
+    this.selectedPublications = res});
+    this.selectedIndex = 0;
+  }
+
+  public newwebsite(i): void {
+    const newwebsie = this.translationJob[i];
+
+    // open dialog select new page or translation total website
+    // new page upload new page check wp options
+    // translated website send to backend with correct credentials 
+    // in api design create upload function for websites
+
+  }
+  
+  public newmailcampaign(i): void {
+    const newmailcampaign = this.translationJob[i];
+  }
+
+  public newsocialmedia(i): void {
+    const newsocialmedia = this.translationJob[i];
   }
 
   // delete Publications -> check container?

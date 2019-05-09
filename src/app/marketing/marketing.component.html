@@ -214,7 +214,6 @@
 
 
         <div *ngIf="selectedTranslation" class="relationcontainer">
-
           <div *ngIf="showconfirmation">
             <mat-card>
               <label *ngIf="selectedTranslation.paymentreceived === 'paid'" style="color:green">Payment Received,
@@ -293,7 +292,19 @@
           </div>
 
           <div *ngIf="selectedTranslation.status === 'paid'">
+            <div *ngFor="let translationjob of Translationjob; let i = index"></div>
+            
+            <div>{{translationjob.lc_tgt</div>
+            <div>{{translationjob.translation}}</div>
 
+            <div class="add-button" >
+                <a class="sub-button tl" (click)="newpublication(i)" matTooltip="Copy to publication"></a>
+                <a class="sub-button tr" (click)="newwebsite(i)" matTooltip="Copy to Website"></a>
+                <a class="sub-button bl" (click)="newmailcampaign(i)" matTooltip="Copy to Email campaign"></a>
+                <a class="sub-button br" (click)="newsocialmedia(i)" matTooltip="Copy to Social Media "></a>
+              </div>
+
+           
 
           </div>
           
