@@ -742,7 +742,6 @@ export class MarketingComponent implements OnInit {
           .subscribe(res => { 
         this.TranslationApi.getpayment(id, transid, amount, currencytra, descriptiontra, langdescr)
           .subscribe((url: string) => {
-
             if (url) { window.open(url, '_self') }
           });
         });

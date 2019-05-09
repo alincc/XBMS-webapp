@@ -401,9 +401,8 @@
       <mat-icon>money</mat-icon>Invoices
     </ng-template>
     <button mat-button (click)="getInvoices()">Load Invoices</button>
-
     <div *ngFor="let file of files">
-    <mat-icon>money</mat-icon> {{file.url}}
+    <mat-icon>money</mat-icon> {{file.Key}}
       </div>
   </mat-tab>
 

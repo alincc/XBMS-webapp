@@ -19,6 +19,7 @@ export interface TranslationjobInterface {
   "custom_data"?: string;
   "default"?: string;
   "required"?: boolean;
+  "translation"?: string;
   "id"?: any;
   "translationId"?: any;
   marketing?: Translation;
@@ -39,6 +40,7 @@ export class Translationjob implements TranslationjobInterface {
   "custom_data": string;
   "default": string;
   "required": boolean;
+  "translation": string;
   "id": any;
   "translationId": any;
   marketing: Translation;
@@ -135,6 +137,10 @@ export class Translationjob implements TranslationjobInterface {
           name: 'required',
           type: 'boolean',
           default: true
+        },
+        "translation": {
+          name: 'translation',
+          type: 'string'
         },
         "id": {
           name: 'id',

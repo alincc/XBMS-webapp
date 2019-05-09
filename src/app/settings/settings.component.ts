@@ -495,7 +495,7 @@ export class SettingsComponent implements OnInit {
 
   setAddress(addrObj) {
     //We are wrapping this in a NgZone to reflect the changes
-    //to the object in the DOM.
+    //to the object in the DOM 
     this.zone.run(() => {
       this.newRelation.relationname = addrObj.name;
       this.newRelation.address1 = addrObj.route +" "+ addrObj.street_number;
@@ -509,9 +509,9 @@ export class SettingsComponent implements OnInit {
   }
 
   getInvoices(): void {
-    this.ContainersecureApi.getFiles(this.Account.companyId).subscribe(res => {
+    this.ContainersecureApi.getFilesByContainer(this.Account.id, this.Account.companyId).subscribe(res => {
       this.files = res,
-      console.log(this.files)
+      console.log(this.files);
     });
     }
 }
