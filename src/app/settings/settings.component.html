@@ -396,14 +396,18 @@
     </div>
   </mat-tab>
 
-  <mat-tab label="Invoices" >
+  <mat-tab label="Invoices">
     <ng-template mat-tab-label>
       <mat-icon>money</mat-icon>Invoices
     </ng-template>
+    <div class="tab">
     <button mat-button (click)="getInvoices()">Load Invoices</button>
-    <div *ngFor="let file of files">
-    <mat-icon>money</mat-icon> {{file.Key}}
+    <div *ngFor="let file of files; let i = index;" class="invoicelabel">
+    <mat-icon>money</mat-icon> 
+    <label class="invoicelabel">{{file.Key}}</label>
+    <mat-icon (click)="getFile(i)">cloud_download</mat-icon>
       </div>
+    </div>
   </mat-tab>
 
   <mat-tab label="Wordpress Websites">

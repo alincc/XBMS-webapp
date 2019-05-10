@@ -194,7 +194,7 @@
                 <span class="boxtranslation">
                   <tr>
                     <td>
-                      {{Translation.status}}
+                      {{Translation.paymentreceived}}
                     </td>
                     <td>
                       {{Translation.amount}}
@@ -227,7 +227,7 @@
             </mat-card>
           </div>
 
-          <div *ngIf="selectedTranslation.status !== 'paid'">
+          <div *ngIf="selectedTranslation.paymentreceived !== 'paid'">
           <div *ngFor="let Translationjob of Translationjob" (click)="onSelectTranslationJob(Translationjob)">
             <mat-card>
               <table class="form-full-width" cellspacing="0">
@@ -280,6 +280,11 @@
                   </td>
                 </tr>
                 <tr>
+                  <td>
+                    {{Translationjob.status}}
+                  </td>
+                </tr>
+                <tr>
                   <button a mat-raised-button (click)="saveTranslationJob(Translationjob)">Save</button>
                 </tr>
               </table>
@@ -291,19 +296,32 @@
           </div>
           </div>
 
-          <div *ngIf="selectedTranslation.status === 'paid'">
-            <div *ngFor="let translationjob of Translationjob; let i = index"></div>
-            
-            <div>{{translationjob.lc_tgt</div>
-            <div>{{translationjob.translation}}</div>
-
+          <div *ngIf="selectedTranslation.paymentreceived === 'paid'">
+            <div *ngFor="let Translationjob of Translationjob; let i = index">
+              <mat-card style="margin: 10px 10px 40px 10px;">
+              <table>
+                <tr>
+                  <td>
+                    <label>{{Translationjob.lc_tgt}}</label>
+                  </td>
+                  <td>
+                    <label>{{Translationjob.status}}</label>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <label>{{Translationjob.body_tgt | slice:0:200}}</label>
+                  </td>
+                </tr>
+              </table>
             <div class="add-button" >
-                <a class="sub-button tl" (click)="newpublication(i)" matTooltip="Copy to publication"></a>
-                <a class="sub-button tr" (click)="newwebsite(i)" matTooltip="Copy to Website"></a>
-                <a class="sub-button bl" (click)="newmailcampaign(i)" matTooltip="Copy to Email campaign"></a>
-                <a class="sub-button br" (click)="newsocialmedia(i)" matTooltip="Copy to Social Media "></a>
+                <a class="sub-button tl" (click)="newpublication(i)" matTooltip="Copy to publication"><mat-icon>publish</mat-icon></a>
+                <a class="sub-button tr" (click)="newwebsite(i)" matTooltip="Copy to Website"><mat-icon>web</mat-icon></a>
+                <a class="sub-button bl" (click)="newmailcampaign(i)" matTooltip="Copy to Email campaign"><mat-icon>email</mat-icon></a>
+                <a class="sub-button br" (click)="newsocialmedia(i)" matTooltip="Copy to Social Media "><mat-icon>share</mat-icon></a>
               </div>
-
+              </mat-card>
+            </div>
            
 
           </div>

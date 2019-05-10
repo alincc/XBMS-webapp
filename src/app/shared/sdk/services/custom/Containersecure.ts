@@ -306,8 +306,6 @@ export class ContainersecureApi extends BaseLoopBackApi {
          * (The remote method definition does not provide any description.)
          * </em>
    *
-   * @param {string} id 
-   *
    * @param {string} companyId 
    *
    * @param {string} itemName 
@@ -325,13 +323,11 @@ export class ContainersecureApi extends BaseLoopBackApi {
    * This usually means the response is a `Containersecure` object.)
    * </em>
    */
-  public getFilesByFilename(id: any = {}, companyId: any = {}, itemName: any = {}, customHeaders?: Function): Observable<any> {
+  public getFilesByFilename(companyId: any = {}, itemName: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "POST";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/containersecures/getfilesbyfilename/:id";
-    let _routeParams: any = {
-      id: id
-    };
+    "/containersecures/getfilesbyfilename/:companyId";
+    let _routeParams: any = {};
     let _postBody: any = {};
     let _urlParams: any = {};
     if (typeof companyId !== 'undefined' && companyId !== null) _urlParams.companyId = companyId;
@@ -345,13 +341,7 @@ export class ContainersecureApi extends BaseLoopBackApi {
          * (The remote method definition does not provide any description.)
          * </em>
    *
-   * @param {string} id 
-   *
    * @param {string} companyId 
-   *
-   * @param {object} data Request data.
-   *
-   * This method does not accept any data. Supply an empty object.
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -362,16 +352,15 @@ export class ContainersecureApi extends BaseLoopBackApi {
    * This usually means the response is a `Containersecure` object.)
    * </em>
    */
-  public getFilesByContainer(id: any = {}, companyId: any = {}, customHeaders?: Function): Observable<any> {
-    let _method: string = "POST";
+  public getFilesByContainer(companyId: any = {}, customHeaders?: Function): Observable<any> {
+    let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/containersecures/getfilesbycontainer/:id";
+    "/containersecures/getfilesbycontainer/:companyId";
     let _routeParams: any = {
-      id: id
+      companyId: companyId
     };
     let _postBody: any = {};
     let _urlParams: any = {};
-    if (typeof companyId !== 'undefined' && companyId !== null) _urlParams.companyId = companyId;
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
     return result;
   }

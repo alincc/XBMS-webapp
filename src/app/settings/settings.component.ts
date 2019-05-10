@@ -494,8 +494,8 @@ export class SettingsComponent implements OnInit {
   }
 
   setAddress(addrObj) {
-    //We are wrapping this in a NgZone to reflect the changes
-    //to the object in the DOM 
+    // We are wrapping this in a NgZone to reflect the changes
+    // to the object in the DOM
     this.zone.run(() => {
       this.newRelation.relationname = addrObj.name;
       this.newRelation.address1 = addrObj.route +" "+ addrObj.street_number;
@@ -509,10 +509,34 @@ export class SettingsComponent implements OnInit {
   }
 
   getInvoices(): void {
-    //get files detailss
-    this.ContainersecureApi.getFilesByContainer(this.Account.id, this.Account.companyId).subscribe(res => {
-      this.files = res,
+    // get files detailss
+    this.ContainersecureApi.getFilesByContainer(this.Account.companyId).subscribe(res => {
+      let response = res;
+      this.files = response.Contents
       console.log(this.files);
     });
     }
+
+  getFile(i): void {
+    // get stream and encode base64 to pdf 
+    let itemName = this.files[i];
+    console.log(itemName.Key);
+    this.ContainersecureApi.getFilesByFilename(this.Account.companyId, itemName.Key)
+    .subscribe(res => {
+      //console.log(res);
+      const byteCharacters = atob(res.$data);
+      const byteNumbers = new Array(byteCharacters.length);
+        for (let i = 0; i < byteCharacters.length; i++) {
+        byteNumbers[i] = byteCharacters.charCodeAt(i);
+        }
+        const byteArray = new Uint8Array(byteNumbers);
+
+      const blob = new Blob([byteArray], { type: 'application/pdf' });
+      const url = window.URL.createObjectURL(blob);
+      window.open(url);
+
+    }
+
+    );
+  }
 }

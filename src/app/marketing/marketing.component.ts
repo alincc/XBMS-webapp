@@ -524,6 +524,7 @@ export class MarketingComponent implements OnInit {
     this.newTranslation.companyId = this.Account.companyId,
       this.newTranslation.title = 'New',
       this.newTranslation.status = 'Draft',
+      this.newTranslation.paymentreceived = 'Not Submitted'
       this.RelationsApi.createTranslation(this.option.id, this.newTranslation)
         .subscribe(result => {
           this.selectedTranslation = result,
@@ -696,9 +697,12 @@ export class MarketingComponent implements OnInit {
     this.TranslationApi.updateByIdTranslationjob(
       this.selectedTranslation.id, this.selectedTranslationjob.id,
       this.selectedTranslationjob)
-      .subscribe(res =>
-        this.error = res);
-  }
+      .subscribe(res => {
+        const amount = this.priceCalculator();
+        this.selectedTranslation.amount = amount;
+        this.updateTranslationHolder();
+      });
+  };
 
   // dialog delete on yes activates deletePublications
   public openDialogDelete() {
