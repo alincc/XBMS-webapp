@@ -509,6 +509,7 @@ export class SettingsComponent implements OnInit {
   }
 
   getInvoices(): void {
+    //get files detailss
     this.ContainersecureApi.getFilesByContainer(this.Account.id, this.Account.companyId).subscribe(res => {
       this.files = res,
       console.log(this.files);
