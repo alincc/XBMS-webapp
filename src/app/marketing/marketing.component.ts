@@ -51,7 +51,7 @@ import { Router, ActivatedRoute, Params } from '@angular/router';
 import { Location, NgClass, NgStyle } from '@angular/common';
 import { DialogsService } from './../dialogsservice/dialogs.service';
 import { RandomService } from '../dialogsservice/random.service';
-// import { Randomizer} from '../dialogsservice/randomize';
+import { WordpressUploadDialogComponent} from '../dialogsservice/wordpressupload-dialog.component';
 import { WordpressService } from '../shared/websiteservice';
 import { LinkedinService } from '../shared/socialservice';
 import { timeconv } from '../shared/timeconv';
@@ -77,6 +77,7 @@ const URL = 'http://localhost:3000/api/containers/tmp/upload';
 
 import { MarketingchannelsComponent } from './marketingchannels/marketingchannels.component';
 import { MaileditorComponent } from './maileditor/maileditor.component';
+import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material';
 
 export interface UploadResult {
   result: 'failure' | 'success';
@@ -265,6 +266,7 @@ export class MarketingComponent implements OnInit {
   public showconfirmation = false;
 
   constructor(
+    public dialogWordpress: MatDialog,
     private MarketingChannel: MarketingchannelsComponent,
     //private Maileditor: MaileditorComponent,
     private sanitizer: DomSanitizer,
@@ -286,6 +288,7 @@ export class MarketingComponent implements OnInit {
     public WordpressService: WordpressService,
     public dialogsService: DialogsService,
     public randomService: RandomService,
+    public WordpressUploadDialogComponent: WordpressUploadDialogComponent,
     public PublicationsApi: PublicationsApi,
     public location: Location,
     public router: Router,
@@ -771,7 +774,19 @@ export class MarketingComponent implements OnInit {
   }
 
   public newwebsite(i): void {
-    const newwebsie = this.translationJob[i];
+    const newwebsid = this.translationJob[i];
+    const dialogRef = this.dialogWordpress.open(WordpressUploadDialogComponent, {
+        width: '250px',
+        data: {id: newwebsid,
+                req: {user: '', password: '' }
+              }
+      });
+  
+      dialogRef.afterClosed().subscribe(result => {
+        console.log(result);
+        this.PublicationsApi.updatewordpress(newwebsid, result.url, result.req)
+        .subscribe();
+      });
 
     // open dialog select new page or translation total website
     // new page upload new page check wp options

@@ -1,0 +1,32 @@
+<table>
+    <tr>
+        <td>
+            <mat-form-field>
+                <input matInput [(ngModel)]="data.website" placeholder="Which website do like to upload to?">
+              </mat-form-field>  
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <mat-form-field>
+                <input matInput [(ngModel)]="data.req.username" placeholder="Which website do like to upload to?">
+              </mat-form-field>  
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <mat-form-field class="form-full-width">
+                <input matInput placeholder="Enter your password"  name="password" [(ngModel)]="data.req.password" [type]="!hide ? 'password' : 'text'">
+                <mat-icon matSuffix (click)="!hide = hide">{{hide ? 'visibility' : 'visibility_off'}}</mat-icon>
+              </mat-form-field>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <button mat-raised-button >Upload</button>
+        </td>
+        <td>
+            <button mat-raised-button (click)="onNoClick()">Cancel</button>
+        </td>
+    </tr>
+</table>

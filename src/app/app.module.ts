@@ -35,6 +35,7 @@ import { ConfirmDialog } from './dialogsservice/confirm-dialog.component';
 import { RandomService } from './dialogsservice/random.service';
 import { DialogsService } from './dialogsservice/dialogs.service';
 import { RandomDialog } from './dialogsservice/random-dialog.component';
+import { WordpressUploadDialogComponent } from './dialogsservice/wordpressupload-dialog.component';
 import { FileUploadModule } from 'ng2-file-upload';
 
 import { ChartsModule } from 'ng2-charts';
@@ -89,14 +90,16 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
     MaileditorComponent,
     FileuploadComponent,
     dialoggallerycomponent,
-    TextEditorDialog
+    TextEditorDialog,
+    WordpressUploadDialogComponent
   ],
 
    entryComponents: [
     dialoggallerycomponent,
     ConfirmDialog,
     TextEditorDialog,
-    RandomDialog
+    RandomDialog,
+    WordpressUploadDialogComponent
   ],
 
   imports: [
