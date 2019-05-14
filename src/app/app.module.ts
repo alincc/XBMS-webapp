@@ -37,6 +37,7 @@ import { DialogsService } from './dialogsservice/dialogs.service';
 import { RandomDialog } from './dialogsservice/random-dialog.component';
 import { WordpressUploadDialogComponent } from './dialogsservice/wordpressupload-dialog.component';
 import { FileUploadModule } from 'ng2-file-upload';
+import { PickerModule } from '@ctrl/ngx-emoji-mart'
 
 import { ChartsModule } from 'ng2-charts';
 import { AgmCoreModule } from '@agm/core';
@@ -103,6 +104,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
   ],
 
   imports: [
+    PickerModule,
     ColorPickerModule,
     NgxChartsModule,
     FlexLayoutModule,

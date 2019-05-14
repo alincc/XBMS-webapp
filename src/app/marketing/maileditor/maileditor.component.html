@@ -43,9 +43,19 @@
           </mat-form-field>
         </td>
         <td>
-          <mat-form-field style="width: 95%;" appearance="outline">
+          <!-- <mat-form-field style="width: 95%;" appearance="outline">
             <input [(ngModel)]=preview type="text" matInput placeholder="preview">
-          </mat-form-field>
+          </mat-form-field> -->
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <mat-icon (click)="onshowemoji()">insert_emoticon</mat-icon>
+        </td>
+      </tr>
+      <tr *ngIf="showemoji">
+        <td>
+          <emoji-mart (emojiClick)="setemojisubjectline($event)" set="emojione"></emoji-mart>
         </td>
       </tr>
     </table>

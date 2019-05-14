@@ -37,6 +37,7 @@ export class MaileditorComponent implements OnInit {
   public Divider = false;
   public Carousel = false;
   public Accordion = false;
+  public showemoji = false; 
 
   public maileditorText: MaileditorText = new MaileditorText();
   public maileditorImage: MaileditorImage = new MaileditorImage();
@@ -615,6 +616,22 @@ export class MaileditorComponent implements OnInit {
      slides[this.slideIndex - 1].style.display = "block";
     dots[this.slideIndex - 1].className += "active";
   }
+
+  setemojisubjectline(event){
+    console.log(event);
+    const bufStr = String.fromCodePoint(parseInt(event.emoji.unified, 16));
+    console.log(bufStr);
+    if (this.subject === undefined) {this.subject = ""}
+    this.subject = this.subject + bufStr;
+    this.onshowemoji();
+  }
+
+  onshowemoji(){
+    if(this.showemoji){this.showemoji = false} else {
+      this.showemoji = true; 
+    }
+  }
+
 
 
 }
