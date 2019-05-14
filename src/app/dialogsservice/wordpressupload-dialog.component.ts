@@ -10,11 +10,12 @@ export class WordpressUploadDialogComponent {
 
   constructor(
     public dialogRef: MatDialogRef<WordpressUploadDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data) {}
+    @Inject(MAT_DIALOG_DATA) public data) {} 
 
   onNoClick(): void {
     this.dialogRef.close();
   }
+
   
 
 }

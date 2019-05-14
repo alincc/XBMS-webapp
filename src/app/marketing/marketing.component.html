@@ -281,6 +281,14 @@
                 </tr>
                 <tr>
                   <td>
+                    <mat-form-field class="form-full-width">
+                      <textarea matInput [(ngModel)]=Translationjob.comment placeholder="instructions for translator"
+                        class="InputField"></textarea>
+                    </mat-form-field>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
                     {{Translationjob.status}}
                   </td>
                 </tr>
@@ -314,7 +322,7 @@
                   </td>
                 </tr>
               </table>
-            <div class="add-button" >
+            <div class="add-button">
                 <a class="sub-button tl" (click)="newpublication(i)" matTooltip="Copy to publication"><mat-icon>publish</mat-icon></a>
                 <a class="sub-button tr" (click)="newwebsite(i)" matTooltip="Copy to Website"><mat-icon>web</mat-icon></a>
                 <a class="sub-button bl" (click)="newmailcampaign(i)" matTooltip="Copy to Email campaign"><mat-icon>email</mat-icon></a>

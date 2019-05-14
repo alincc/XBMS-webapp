@@ -144,6 +144,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
     IconService,
     timeconv,
     MarketingchannelsComponent,
+    WordpressUploadDialogComponent,
 
       { provide: MAT_DIALOG_DATA, useValue: {} },
       { provide: MatDialogRef, useValue: {} }

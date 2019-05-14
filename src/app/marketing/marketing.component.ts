@@ -764,7 +764,7 @@ export class MarketingComponent implements OnInit {
 
   // publish to apps part
   public newpublication(i): void {
-    const publication = this.translationJob[i];
+    const publication = this.Translationjob[i];
     const publicationdata: Publications = new Publications();
     publicationdata.text = publication.translation
     this.RelationsApi.createPublications(this.option, publicationdata)
@@ -774,17 +774,21 @@ export class MarketingComponent implements OnInit {
   }
 
   public newwebsite(i): void {
-    const newwebsid = this.translationJob[i];
+    const newwebsid = this.Translationjob[i].id;
     const dialogRef = this.dialogWordpress.open(WordpressUploadDialogComponent, {
-        width: '250px',
-        data: {id: newwebsid,
-                req: {user: '', password: '' }
+        width: '400px',
+        data: {
+          id: newwebsid,
+          website: '',
+          req: {
+            user: '', 
+            password: '' }
               }
       });
   
       dialogRef.afterClosed().subscribe(result => {
         console.log(result);
-        this.PublicationsApi.updatewordpress(newwebsid, result.url, result.req)
+        this.TranslationjobApi.updatewordpress(newwebsid, result.website, result.req)
         .subscribe();
       });
 

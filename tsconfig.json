@@ -11,7 +11,9 @@
     "target": "es5",
     "allowJs": true,
     "typeRoots": [
-      "node_modules"
+      "node_modules",
+      "shared/sdk/sockets",
+      "share/sdk/storage"
     ],
     "lib": [
       "es2016",

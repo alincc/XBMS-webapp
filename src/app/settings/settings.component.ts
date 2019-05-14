@@ -307,8 +307,6 @@ export class SettingsComponent implements OnInit {
     }
   }
 
-
-
   public getUnCalls(): void {
     this.newRelation.relationname = undefined;
     this.newRelation.status = undefined;

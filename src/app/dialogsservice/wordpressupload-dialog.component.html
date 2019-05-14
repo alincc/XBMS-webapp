@@ -9,7 +9,7 @@
     <tr>
         <td>
             <mat-form-field>
-                <input matInput [(ngModel)]="data.req.username" placeholder="Which website do like to upload to?">
+                <input matInput [(ngModel)]="data.req.user" placeholder="Which website do like to upload to?">
               </mat-form-field>  
         </td>
     </tr>
@@ -23,7 +23,7 @@
     </tr>
     <tr>
         <td>
-            <button mat-raised-button >Upload</button>
+            <button mat-raised-button [mat-dialog-close]="data">Upload</button>
         </td>
         <td>
             <button mat-raised-button (click)="onNoClick()">Cancel</button>
