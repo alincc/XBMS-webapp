@@ -424,7 +424,7 @@ export class MaileditorComponent implements OnInit {
     let columnStyle = this.columnStyleArray;
     let sendobject = { templArray, sectionStyle, columnStyle };
     
-    this.mailingApi.mjml(sendobject).subscribe((data) => {
+    this.mailingApi.mjml(this.option.id, sendobject).subscribe((data) => {
       
       console.log(data.html);
       let previewhtml= [];
@@ -542,13 +542,14 @@ export class MaileditorComponent implements OnInit {
     this.mailtemplateArray[i1][i2][i3].url = url + ' ';
   }
 
-  setbackgroundImageColumn(url: string) {
-    this.maileditorColumn.style['background-image'] = 'url(' + url + ')';
-    console.log(this.maileditorColumn);
-  }
+  // setbackgroundImageColumn(url: string) {
+  //   this.maileditorColumn.style['background-image'] = 'url(' + url + ')';
+  //   console.log(this.maileditorColumn);
+  // }
 
   setbackgroundImageSection(url: string) {
-    this.maileditorSection.style['background-image'] = 'url(' + url + ')';
+    this.maileditorSection.style['background-url'] = url;
+    this.maileditorSection.style['background-image'] = 'url(' + url + ')'; //pure for editor purposes
     console.log(this.maileditorSection);
   }
 
@@ -589,6 +590,13 @@ export class MaileditorComponent implements OnInit {
     this.maileditorAccordion.elements.push(newAccordionElement);
   }
 
+  togglebackgroundrepeat(){
+    if (this.maileditorSection.style['background-repeat'] === "repeat"){
+      this.maileditorSection.style['background-repeat']= "no-repeat"
+    } else {
+    this.maileditorSection.style['background-repeat']= "repeat"}
+  }
+
   // Next/previous controls
   plusSlides(n) {
     this.showSlides(this.slideIndex += n);
@@ -618,9 +626,9 @@ export class MaileditorComponent implements OnInit {
   }
 
   setemojisubjectline(event){
-    console.log(event);
+    // console.log(event);
     const bufStr = String.fromCodePoint(parseInt(event.emoji.unified, 16));
-    console.log(bufStr);
+    // console.log(bufStr);
     if (this.subject === undefined) {this.subject = ""}
     this.subject = this.subject + bufStr;
     this.onshowemoji();

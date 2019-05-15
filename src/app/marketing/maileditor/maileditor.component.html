@@ -40,6 +40,7 @@
         <td>
           <mat-form-field style="width: 95%;" appearance="outline">
             <input [(ngModel)]=subject type="text" matInput placeholder="Subject Line">
+            <mat-icon matTooltip="select Emoji" (click)="onshowemoji()" matSuffix>insert_emoticon</mat-icon>
           </mat-form-field>
         </td>
         <td>
@@ -50,7 +51,7 @@
       </tr>
       <tr>
         <td>
-          <mat-icon (click)="onshowemoji()">insert_emoticon</mat-icon>
+          
         </td>
       </tr>
       <tr *ngIf="showemoji">
@@ -165,18 +166,11 @@
         </tr>
         <tr>
           <td>
-            <app-fileupload [account]="account" [option]="option" (imgurl)="setbackgroundImageColumn($event)">
-            </app-fileupload>
+
           </td>
         </tr>
         <tr>
           <td>
-            <mat-form-field>
-              <input [(ngModel)]="maileditorColumn.style['background-image']" type="text" matInput
-                placeholder="Image url">
-              <mat-icon matSuffix>mode_edit</mat-icon>
-              <mat-hint>url</mat-hint>
-            </mat-form-field>
           </td>
         </tr>
         <tr>
@@ -273,7 +267,16 @@
         </tr>
         <tr>
           <td>
-
+            <mat-form-field>
+              <input [(ngModel)]="maileditorSection.style['background-size']" type="text" matInput placeholder="Background size">
+              <mat-icon matSuffix>mode_edit</mat-icon>
+              <mat-hint>%/px</mat-hint>
+            </mat-form-field>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <mat-slide-toggle (change)="togglebackgroundrepeat()" >Background Image Repeat</mat-slide-toggle>
           </td>
         </tr>
       </table>

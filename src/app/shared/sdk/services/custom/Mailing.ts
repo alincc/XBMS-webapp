@@ -556,6 +556,8 @@ export class MailingApi extends BaseLoopBackApi {
          * (The remote method definition does not provide any description.)
          * </em>
    *
+   * @param {string} id 
+   *
    * @param {string} templatename 
    *
    * @param {object} data Request data.
@@ -571,11 +573,13 @@ export class MailingApi extends BaseLoopBackApi {
    * This usually means the response is a `Mailing` object.)
    * </em>
    */
-  public mjml(mailtemplateArray: any = {}, templatename: any = {}, customHeaders?: Function): Observable<any> {
+  public mjml(id: any = {}, mailtemplateArray: any = {}, templatename: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "POST";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
     "/mailings/mjml";
-    let _routeParams: any = {};
+    let _routeParams: any = {
+      id: id
+    };
     let _postBody: any = {
       mailtemplateArray: mailtemplateArray
     };
