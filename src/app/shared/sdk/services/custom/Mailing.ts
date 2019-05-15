@@ -576,7 +576,7 @@ export class MailingApi extends BaseLoopBackApi {
   public mjml(id: any = {}, mailtemplateArray: any = {}, templatename: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "POST";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/mailings/mjml";
+    "/mailings/mjml/:id";
     let _routeParams: any = {
       id: id
     };

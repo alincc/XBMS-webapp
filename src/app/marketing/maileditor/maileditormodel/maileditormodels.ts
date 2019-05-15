@@ -354,7 +354,6 @@ export class MaileditorColumn implements MaileditorColumnInterface {
 
 }
 
-
 export class MaileditorSection implements MaileditorSectionInterface {
   style: {
     'background-color': string,
