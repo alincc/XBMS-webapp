@@ -28,6 +28,7 @@ import { MatSnackBar, MatSnackBarConfig, MatInput, MatAutocompleteSelectedEvent 
 export class MaileditorComponent implements OnInit {
 
   public slideIndex = 1;
+  public showprogressbar = false;
 
   public Section = false;
   public Column = false;
@@ -419,13 +420,14 @@ export class MaileditorComponent implements OnInit {
    * @returns confirmation of created template
   */
   private ConvertToMail(): void {
+    this.showprogressbar = true;
     let templArray = this.mailtemplateArray;
     let sectionStyle = this.sectionStyleArray;
     let columnStyle = this.columnStyleArray;
     let sendobject = { templArray, sectionStyle, columnStyle };
     
     this.mailingApi.mjml(this.option.id, sendobject).subscribe((data) => {
-      
+      this.showprogressbar = false;
       console.log(data.html);
       let previewhtml= [];
       previewhtml.push(this.sanitizer.bypassSecurityTrustHtml(data.html))
@@ -456,6 +458,7 @@ export class MaileditorComponent implements OnInit {
   private onSelectSectionPart(i1): void {
     this.resetEdit()
     this.Section = true;
+    this.maileditorSection = new MaileditorSection();
     this.maileditorSection = this.sectionStyleArray[i1]
   }
 
