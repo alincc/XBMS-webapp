@@ -147,7 +147,7 @@ export class MaileditorComponent implements OnInit {
     this.mailtemplateArray[i1].push([]);
     const columnstyleIns: MaileditorColumn = new MaileditorColumn();
     columnstyleIns.style = {
-      'background-color': 'white',
+      'background-color': '',
       'border': '',
       'border-bottom': '',
       'border-left': '',
@@ -248,7 +248,7 @@ export class MaileditorComponent implements OnInit {
       newButton.buttonurl = 'www.xbms.io';
       newButton.style = {
         'color': 'black',
-        'background-color': 'white',
+        'background-color': '',
         'width': '200px',
         'height': '40px',
         'align': 'center',
@@ -542,7 +542,7 @@ export class MaileditorComponent implements OnInit {
 
   private setimgurl(url: string, i1, i2, i3) {
     // url direct
-    this.mailtemplateArray[i1][i2][i3].url = url + ' ';
+    this.mailtemplateArray[i1][i2][i3].url = url;
   }
 
   // setbackgroundImageColumn(url: string) {

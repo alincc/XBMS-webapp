@@ -57,7 +57,14 @@
       </tr>
       <tr *ngIf="showemoji">
         <td>
+          <div style="width: 100%;
+          height: 100%;
+          position: absolute;
+          top: 8;
+          left: 12;
+          z-index: 20;">
           <emoji-mart (emojiClick)="setemojisubjectline($event)" set="emojione"></emoji-mart>
+          </div>
         </td>
       </tr>
     </table>
@@ -157,12 +164,21 @@
 
         <tr>
           <td>
-            <input [style.background]="rgbaText" matInput Placeholder="background color"
-              [value]="maileditorColumn.style['background-color']"
-              [style.background]="maileditorColumn.style['background-color']" [cpAlphaChannel]="'always'"
-              [cpOutputFormat]="'hex'" [cpPosition]="'left'"
-              [(colorPicker)]="maileditorColumn.style['background-color']" />
-            <mat-hint>Background Color</mat-hint>
+            <mat-accordion>
+                <mat-expansion-panel>
+                  <mat-expansion-panel-header>
+                    <mat-panel-title>
+                      Select Background Color
+                    </mat-panel-title>
+                  </mat-expansion-panel-header>
+                  <br>
+                  <span [style.background]="maileditorColumn.style['background-color']"
+                  [cpToggle]="true"
+                  [cpDialogDisplay]="'inline'"
+                  [cpCancelButton]="true"
+                  [(colorPicker)]="maileditorColumn.style['background-color']"></span>
+                </mat-expansion-panel>
+              </mat-accordion>
           </td>
         </tr>
         <tr>
@@ -244,17 +260,30 @@
         </tr>
         <tr>
           <td>
-            <input [style.background]="rgbaText" [value]="maileditorSection.style['background-color']"
-              [style.background]="maileditorSection.style['background-color']" [cpAlphaChannel]="'always'"
-              [cpOutputFormat]="'hex'" [cpPosition]="'left'"
-              [(colorPicker)]="maileditorSection.style['background-color']" />
-            <mat-hint>Background Color</mat-hint>
+              <mat-accordion>
+                  <mat-expansion-panel>
+                    <mat-expansion-panel-header>
+                      <mat-panel-title>
+                        Select Background Color
+                      </mat-panel-title>
+                    </mat-expansion-panel-header>
+                    <br>
+                    <span [style.background]="maileditorSection.style['background-color']"
+                    [cpToggle]="true"
+                    [cpDialogDisplay]="'inline'"
+                    [cpCancelButton]="true"
+                    [(colorPicker)]="maileditorSection.style['background-color']"></span>
+
+                  </mat-expansion-panel>
+                </mat-accordion>
           </td>
         </tr>
         <tr>
           <td>
-            <app-fileupload [account]="account" [option]="option" (imgurl)="setbackgroundImageSection($event)">
-            </app-fileupload>
+              <img *ngIf="maileditorSection.style['background-url']" [src]= "maileditorSection.style['background-url']" class="carouselimages">
+              <app-fileupload *ngIf="!maileditorSection.style['background-url']" [account]="account" [option]="option"
+              (imgurl)="setbackgroundImageSection($event)">
+              </app-fileupload>
           </td>
         </tr>
         <tr>

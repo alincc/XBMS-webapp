@@ -351,7 +351,7 @@
 
     <!-- Mailing tab _____________________________ -->
 
-    <mat-tab label="Mailing" fxFlex="100%" fxFlexAlign="start" label="New Publications" on-focusout="savePublication()">
+    <mat-tab class="tabmenu" label="Mailing" fxFlex="100%" fxFlexAlign="start" label="New Publications" on-focusout="savePublication()">
       <ng-template mat-tab-label class="mat-tab-labels">
         <mat-icon>email</mat-icon>
         <div fxShow.xs="false">Mailing/Newsletters</div>
@@ -396,7 +396,7 @@
               </tr>
             </div>
 
-            <div fxFlex="90%" class="listview">
+            <div  class="listview">
               <div *ngFor="let Mailing of Mailing" (click)="onSelectMailing(Mailing)"
                 [class.selected]="Mailing === selectedMailing">
                 <span class="boxmailing">
