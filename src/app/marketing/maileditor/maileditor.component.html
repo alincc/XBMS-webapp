@@ -25,7 +25,8 @@
           <mat-icon matSuffix>view_carousel</mat-icon> {{item.type}}
         </div>
       </div>
-      <button a mat-raised-button (click)="ConvertToMail()">Convert</button>
+      <button *ngIf="!updatemail" a mat-raised-button (click)="ConvertToMail()">Convert</button>
+      <button *ngIf="updatemail" a mat-raised-button (click)="ConvertToMail()">Update</button>
       <mat-progress-bar *ngIf='showprogressbar' mode="indeterminate"></mat-progress-bar>
     </div>
   </div>

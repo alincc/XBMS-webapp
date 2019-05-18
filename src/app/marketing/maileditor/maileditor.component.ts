@@ -65,17 +65,16 @@ export class MaileditorComponent implements OnInit {
   public columnStyleArray = [];
   public subject: string;
   public preview: string;
+  public updatemail = false;
   // create version 0n drop event
   // needs at least one item at init
   // Connect Toolsect to SectionArray
-
   private toolboximage = this.createNewItem('Image');
   private toolboxtext = this.createNewItem('Text');
   private toolboxbutton = this.createNewItem('Button');
   private toolboxdivider = this.createNewItem('Divider');
   private toolboxcarousel = this.createNewItem('Carousel');
   private toolboxAccordion = this.createNewItem('Accordion');
-
 
   toolset = [
     this.toolboximage,
@@ -88,6 +87,7 @@ export class MaileditorComponent implements OnInit {
 
   @Input('option') option: Relations;
   @Input('account') account: Account;
+  @Input('updateMailingObj') updateMailingObj: Mailing;
 
   constructor(
     public snackBar: MatSnackBar,
@@ -100,12 +100,22 @@ export class MaileditorComponent implements OnInit {
 
   ngOnInit() {
     // init first component
-    this.addToMailTemplateArray()
-    const texttool = this.createNewItem('Text')
-    this.mailtemplateArray[0][0].push(texttool);
-    console.log(this.toolset)
-  }
+      for (let key in this.updateMailingObj.sectionStyle) {
+        this.sectionStyleArray.push(this.updateMailingObj.sectionStyle[key];);
 
+    }
+      this.updateMailingObj.sectionStyle);
+      this.mailtemplateArray.push(this.updateMailingObj.templatearray);
+      console.log("existing mailing", this.updateMailingObj);
+      this.updatemail = true;
+    } else {
+      this.addToMailTemplateArray()
+      const texttool = this.createNewItem('Text')
+      this.mailtemplateArray[0][0].push(texttool);
+      console.log("standard components created");
+      console.log(this.updateMailingObj);
+    }
+  }
 
   addToMailTemplateArray(): void {
     // add section to mailtemplate and to style array
@@ -429,31 +439,46 @@ export class MaileditorComponent implements OnInit {
     this.mailingApi.mjml(this.option.id, sendobject).subscribe((data) => {
       this.showprogressbar = false;
       console.log(data.html);
-      let previewhtml= [];
+      let previewhtml = [];
       previewhtml.push(this.sanitizer.bypassSecurityTrustHtml(data.html))
       this.dialogsService
       .confirm('Preview', 'Add to Templates?', previewhtml[0])
       .subscribe((res) => { 
         if (res){
+          if (Object.keys(this.updateMailingObj).length > 0) {
+            this.updateMailingObj.subject = this.subject;
+            this.updateMailingObj.relationname = this.option.relationname;
+            this.updateMailingObj.html = data.html;
+            this.updateMailingObj.templatearray = JSON.stringify(templArray);
+            this.updateMailingObj.sectionStyle = JSON.stringify(sectionStyle);
+            this.updateMailingObj.columnStyle = JSON.stringify(columnStyle);
+
+            this.RelationsApi.updateByIdMailing(this.option.id, this.updateMailingObj.id, this.updateMailingObj)
+            .subscribe(res => { this.snackBar.open("Template Updated", undefined, {
+              duration: 2000,
+              panelClass: 'snackbar-class'
+            });
+          });
+          } else {
             this.RelationsApi.createMailing(this.option.id, { 
               subject: this.subject, 
               relationname: this.option.relationname,
               html: data.html,
               templatearray: templArray,
-              sectionstyle: sectionStyle,
-              columnstyle: columnStyle
+              sectionStyle: sectionStyle,
+              columnStyle: columnStyle
             })
-              .subscribe(res => {    this.snackBar.open("Template Created", undefined, {
+              .subscribe(res => { this.snackBar.open("Template Created", undefined, {
                 duration: 2000,
                 panelClass: 'snackbar-class'
               });
             });
+          }
+
         }
       });
     })
-
   }
-
 
   private onSelectSectionPart(i1): void {
     this.resetEdit()

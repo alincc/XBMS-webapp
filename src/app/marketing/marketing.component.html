@@ -536,7 +536,7 @@
           <div fxFlex="80%" fxLayout="column" fxFlexOffset="10px" class="bottomlist"
             *ngIf="group.value == 'maileditor'">
 
-            <app-maileditor [account]="Account" [option]="option">
+            <app-maileditor [account]="Account" [option]="option" [updateMailingObj]="updateMailingObj">
 
             </app-maileditor>
 
@@ -572,6 +572,14 @@
                           <button mat-menu-item (click)="randomizeMailing()">
                             <mat-icon>merge_type</mat-icon>
                             <span>Schedule</span>
+                          </button>
+                          <button *ngIf="!this.selectedMailing.templatearray" mat-menu-item (click)="editMailing()" disabled>
+                            <mat-icon>edit</mat-icon>
+                            <span>Edit in Maileditor</span>
+                          </button>
+                          <button (click)="group.value ='maileditor'" *ngIf="this.selectedMailing.templatearray" mat-menu-item (click)="editMailing()">
+                            <mat-icon>edit</mat-icon>
+                            <span>Edit in Maileditor</span>
                           </button>
 
 

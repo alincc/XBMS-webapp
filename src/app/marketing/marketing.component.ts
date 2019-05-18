@@ -264,6 +264,7 @@ export class MarketingComponent implements OnInit {
   public urlparameter: string;
   public selectedIndex = 0;
   public showconfirmation = false;
+  public updateMailingObj: Mailing = new Mailing;
 
   constructor(
     public dialogWordpress: MatDialog,
@@ -925,6 +926,10 @@ export class MarketingComponent implements OnInit {
   createMailing(): void {
     this.RelationsApi.createMailing(this.option.id, { subject: 'new', relationname: this.option.relationname })
       .subscribe(res => { res = res, this.onSelectMailing(res), this.getMailing() });
+  }
+
+  editMailing(): void {
+    this.updateMailingObj = this.selectedMailing;
   }
 
   copyFromMailing(): void {
