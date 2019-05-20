@@ -100,12 +100,20 @@ export class MaileditorComponent implements OnInit {
 
   ngOnInit() {
     // init first component
-      for (let key in this.updateMailingObj.sectionStyle) {
-        this.sectionStyleArray.push(this.updateMailingObj.sectionStyle[key];);
 
-    }
-      this.updateMailingObj.sectionStyle);
-      this.mailtemplateArray.push(this.updateMailingObj.templatearray);
+    // var array = string.split(",").map(Number);
+
+    if (Object.keys(this.updateMailingObj).length > 0) {
+    //  let mailobj = this.updateMailingObj.sectionStyle;
+    //   for (let [key, value] of Object(mailobj)) {
+    //     console.log(key, value);
+    //     this.sectionStyleArray.push(value);
+    // }
+    this.mailtemplateArray = this.updateMailingObj.templatearray;
+    this.sectionStyleArray = this.updateMailingObj.sectionStyle;
+    this.columnStyleArray = this.updateMailingObj.columnStyle;
+      // this.updateMailingObj.sectionStyle;
+      // this.mailtemplateArray.push(this.updateMailingObj.templatearray);
       console.log("existing mailing", this.updateMailingObj);
       this.updatemail = true;
     } else {
@@ -449,9 +457,9 @@ export class MaileditorComponent implements OnInit {
             this.updateMailingObj.subject = this.subject;
             this.updateMailingObj.relationname = this.option.relationname;
             this.updateMailingObj.html = data.html;
-            this.updateMailingObj.templatearray = JSON.stringify(templArray);
-            this.updateMailingObj.sectionStyle = JSON.stringify(sectionStyle);
-            this.updateMailingObj.columnStyle = JSON.stringify(columnStyle);
+            this.updateMailingObj.templatearray = templArray;
+            this.updateMailingObj.sectionStyle = sectionStyle;
+            this.updateMailingObj.columnStyle = columnStyle;
 
             this.RelationsApi.updateByIdMailing(this.option.id, this.updateMailingObj.id, this.updateMailingObj)
             .subscribe(res => { this.snackBar.open("Template Updated", undefined, {
