@@ -9,7 +9,7 @@ import { CdkDragDrop, moveItemInArray, transferArrayItem, copyArrayItem } from '
 import {
   Maileditormodels, MaileditorSection, MaileditorColumn,
   MaileditorImage, MaileditorText, MaileditorButton, MaileditorDivider, MaileditorCarousel, MaileditorCarouselImage, MaileditorAccordion,
-  MaileditorAccordionElement, MaileditorAccordionText, MaileditorAccordionTitle
+  MaileditorAccordionElement, MaileditorAccordionText, MaileditorAccordionTitle, MaileditorSocial, MaileditorSocialElement
 } from './maileditormodel/maileditormodels';
 import { FileuploadComponent } from '../../shared/fileupload/fileupload.component';
 import { Relations, RelationsApi, BASE_URL } from '../../shared';
@@ -38,7 +38,15 @@ export class MaileditorComponent implements OnInit {
   public Divider = false;
   public Carousel = false;
   public Accordion = false;
-  public showemoji = false; 
+  public Social = false;
+  public showemoji = false;
+  public showemojibutton = false;
+
+  public selectedborder = {
+    width: '0px',
+    style: 'solid',
+    color: 'black',
+  }
 
   public maileditorText: MaileditorText = new MaileditorText();
   public maileditorImage: MaileditorImage = new MaileditorImage();
@@ -49,6 +57,8 @@ export class MaileditorComponent implements OnInit {
   public maileditorCarousel: MaileditorCarousel = new MaileditorCarousel();
   public maileditorCarouselImage: MaileditorCarouselImage = new MaileditorCarouselImage();
   public maileditorAccordion: MaileditorAccordion = new MaileditorAccordion();
+  public maileditorSocial: MaileditorSocial = new MaileditorSocial();
+  public maileditorSocialElement: MaileditorSocialElement = new MaileditorSocialElement();
 
   // Delete seperate accordion parts?
   public maileditorAccordionElement: MaileditorAccordionElement = new MaileditorAccordionElement();
@@ -75,6 +85,7 @@ export class MaileditorComponent implements OnInit {
   private toolboxdivider = this.createNewItem('Divider');
   private toolboxcarousel = this.createNewItem('Carousel');
   private toolboxAccordion = this.createNewItem('Accordion');
+  private toolboxSocial = this.createNewItem('Social');
 
   toolset = [
     this.toolboximage,
@@ -82,7 +93,8 @@ export class MaileditorComponent implements OnInit {
     this.toolboxbutton,
     this.toolboxdivider,
     this.toolboxcarousel,
-    this.toolboxAccordion
+    this.toolboxAccordion,
+    this.toolboxSocial
   ];
 
   @Input('option') option: Relations;
@@ -99,30 +111,29 @@ export class MaileditorComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    // init first component
-
-    // var array = string.split(",").map(Number);
-
-    if (Object.keys(this.updateMailingObj).length > 0) {
-    //  let mailobj = this.updateMailingObj.sectionStyle;
-    //   for (let [key, value] of Object(mailobj)) {
-    //     console.log(key, value);
-    //     this.sectionStyleArray.push(value);
-    // }
-    this.mailtemplateArray = this.updateMailingObj.templatearray;
-    this.sectionStyleArray = this.updateMailingObj.sectionStyle;
-    this.columnStyleArray = this.updateMailingObj.columnStyle;
-      // this.updateMailingObj.sectionStyle;
-      // this.mailtemplateArray.push(this.updateMailingObj.templatearray);
-      console.log("existing mailing", this.updateMailingObj);
-      this.updatemail = true;
+    // when openeing existing mail from template overview udpatemailingobj will exist. 
+    if (this.updateMailingObj !== undefined) {
+      if (Object.keys(this.updateMailingObj).length > 0) {
+        this.mailtemplateArray = this.updateMailingObj.templatearray;
+        this.sectionStyleArray = this.updateMailingObj.sectionStyle;
+        this.columnStyleArray = this.updateMailingObj.columnStyle;
+        this.subject = this.updateMailingObj.subject;
+        console.log("existing mailing", this.updateMailingObj);
+        this.updatemail = true;
+      } else {
+        this.setupTemplate();
+      }
     } else {
-      this.addToMailTemplateArray()
-      const texttool = this.createNewItem('Text')
-      this.mailtemplateArray[0][0].push(texttool);
-      console.log("standard components created");
-      console.log(this.updateMailingObj);
+      this.setupTemplate();
     }
+  }
+
+  setupTemplate(): void {
+    this.addToMailTemplateArray()
+    const texttool = this.createNewItem('Text')
+    this.mailtemplateArray[0][0].push(texttool);
+    console.log("standard components created");
+    console.log(this.updateMailingObj);
   }
 
   addToMailTemplateArray(): void {
@@ -133,28 +144,28 @@ export class MaileditorComponent implements OnInit {
     const sectionstyleIns: MaileditorSection = new MaileditorSection();
     sectionstyleIns.style = {
       'background-color': '',
-      'background-repeat': 'no-repeat',
+      'background-repeat': '',
       'background-size': '',
       'background-url': '',
-      'border': '0px',
-      'border-bottom': '0px',
-      'border-left': '0px',
-      'border-radius': '0px',
-      'border-right': '0px',
-      'border-top': '0px',
+      'border': '',
+      'border-bottom': '',
+      'border-left': '',
+      'border-radius': '',
+      'border-right': '',
+      'border-top': '',
       'direction': 'ltr',
       'full-width': 'full-width', // full-width
-      'padding': '0px',
-      'padding-bottom': '0px',
-      'padding-left': '0px',
-      'padding-right': '0px',
-      'padding-top': '0px',
+      'padding': '',
+      'padding-bottom': '',
+      'padding-left': '',
+      'padding-right': '',
+      'padding-top': '',
       'text-align': 'center',
       'vertical-align': 'top'
     }
     this.sectionStyleArray.push(sectionstyleIns);
-
-    let index = this.mailtemplateArray.length
+    this.columnStyleArray.push([]);
+    let index = this.mailtemplateArray.length // add reference column for style 
     index = index - 1; // array count
     this.addToSectionArray(index);
   }
@@ -180,8 +191,7 @@ export class MaileditorComponent implements OnInit {
       'padding-left': '',
       'padding-right': '',
     }
-    this.columnStyleArray.push([]);
-    console.log(i1, this.columnStyleArray)
+    // console.log(i1, this.columnStyleArray)
     this.columnStyleArray[i1].push(columnstyleIns);
   }
 
@@ -352,6 +362,43 @@ export class MaileditorComponent implements OnInit {
       }
       return newAccordion;
     }
+    if (type === 'Social') {
+      const newSocial: MaileditorSocial = new MaileditorSocial();
+      newSocial.type = 'Social';
+      const newSocialElement = this.newSocialElement();
+      newSocial.elements = [];
+      newSocial.elements.push(newSocialElement);
+      newSocial.style = {
+        'color': '',
+        'container-background-color': '',
+        'width': '',
+        'height': '',
+        'align': '',
+        'border': '',
+        'border-bottom': '',
+        'border-left': '',
+        'border-radius': '',
+        'border-right': '',
+        'border-top': '',
+        'font-family': '',
+        'font-size': '',
+        'font-style': '',
+        'font-weight': '',
+        'padding': '',
+        'text-transform': '',
+        'vertical-align': '',
+        'icon-height': '',
+        'icon-size': '',
+        'inner-padding': '',
+        'line-height': '',
+        'mode': '',
+        'icon-padding': '',
+        'text-padding': '',
+        'text-decoration': ''
+      }
+      return newSocial;
+    }
+
   }
 
 
@@ -382,7 +429,7 @@ export class MaileditorComponent implements OnInit {
       'icon-height': '20px',
       'icon-position': 'right',
       'icon-unwrapped-alt': '-',
-      'icon-unwrapped-url': BASE_URL +'/assets/baseline_keyboard_arrow_down_black_18dp.png',
+      'icon-unwrapped-url': BASE_URL + '/assets/baseline_keyboard_arrow_down_black_18dp.png',
       'icon-width': '20px',
       'icon-wrapped-alt': '+',
       'icon-wrapped-url': BASE_URL + '/assets/baseline_keyboard_arrow_up_black_18dp.png',
@@ -430,7 +477,45 @@ export class MaileditorComponent implements OnInit {
       'padding-right': '5px',
       'padding-top': '5px',
     }
-    return newAccordionText
+    return newAccordionText;
+  }
+
+  private newSocialElement() {
+    const newSocialElement: MaileditorSocialElement = new MaileditorSocialElement();
+    newSocialElement.type = 'Socialelement';
+    newSocialElement.content = 'My Social Link';
+    newSocialElement.iconlocation = '';
+    newSocialElement.style = {
+      'color': '',
+      'container-background-color': '',
+      'width': '',
+      'height': '',
+      'align': '',
+      'border': '',
+      'border-bottom': '',
+      'border-left': '',
+      'border-radius': '',
+      'border-right': '',
+      'border-top': '',
+      'font-family': '',
+      'font-size': '',
+      'font-style': '',
+      'font-weight': '',
+      'padding': '',
+      'text-transform': '',
+      'vertical-align': '',
+      'icon-height': '',
+      'icon-size': '',
+      'inner-padding': '',
+      'line-height': '',
+      'mode': '',
+      'icon-padding': '',
+      'text-padding': '',
+      'text-decoration': '',
+      'href': '',
+      'name': '',
+    }
+    return newSocialElement;
   }
 
   /**  Convert to html template
@@ -443,48 +528,50 @@ export class MaileditorComponent implements OnInit {
     let sectionStyle = this.sectionStyleArray;
     let columnStyle = this.columnStyleArray;
     let sendobject = { templArray, sectionStyle, columnStyle };
-    
+
     this.mailingApi.mjml(this.option.id, sendobject).subscribe((data) => {
       this.showprogressbar = false;
       console.log(data.html);
       let previewhtml = [];
       previewhtml.push(this.sanitizer.bypassSecurityTrustHtml(data.html))
       this.dialogsService
-      .confirm('Preview', 'Add to Templates?', previewhtml[0])
-      .subscribe((res) => { 
-        if (res){
-          if (Object.keys(this.updateMailingObj).length > 0) {
-            this.updateMailingObj.subject = this.subject;
-            this.updateMailingObj.relationname = this.option.relationname;
-            this.updateMailingObj.html = data.html;
-            this.updateMailingObj.templatearray = templArray;
-            this.updateMailingObj.sectionStyle = sectionStyle;
-            this.updateMailingObj.columnStyle = columnStyle;
+        .confirm('Preview', 'Add to Templates?', previewhtml[0])
+        .subscribe((res) => {
+          if (res) {
+            if (Object.keys(this.updateMailingObj).length > 0) {
+              this.updateMailingObj.subject = this.subject;
+              this.updateMailingObj.relationname = this.option.relationname;
+              this.updateMailingObj.html = data.html;
+              this.updateMailingObj.templatearray = templArray;
+              this.updateMailingObj.sectionStyle = sectionStyle;
+              this.updateMailingObj.columnStyle = columnStyle;
 
-            this.RelationsApi.updateByIdMailing(this.option.id, this.updateMailingObj.id, this.updateMailingObj)
-            .subscribe(res => { this.snackBar.open("Template Updated", undefined, {
-              duration: 2000,
-              panelClass: 'snackbar-class'
-            });
-          });
-          } else {
-            this.RelationsApi.createMailing(this.option.id, { 
-              subject: this.subject, 
-              relationname: this.option.relationname,
-              html: data.html,
-              templatearray: templArray,
-              sectionStyle: sectionStyle,
-              columnStyle: columnStyle
-            })
-              .subscribe(res => { this.snackBar.open("Template Created", undefined, {
-                duration: 2000,
-                panelClass: 'snackbar-class'
-              });
-            });
+              this.RelationsApi.updateByIdMailing(this.option.id, this.updateMailingObj.id, this.updateMailingObj)
+                .subscribe(res => {
+                  this.snackBar.open("Template Updated", undefined, {
+                    duration: 2000,
+                    panelClass: 'snackbar-class'
+                  });
+                });
+            } else {
+              this.RelationsApi.createMailing(this.option.id, {
+                subject: this.subject,
+                relationname: this.option.relationname,
+                html: data.html,
+                templatearray: templArray,
+                sectionStyle: sectionStyle,
+                columnStyle: columnStyle
+              })
+                .subscribe(res => {
+                  this.snackBar.open("Template Created", undefined, {
+                    duration: 2000,
+                    panelClass: 'snackbar-class'
+                  });
+                });
+            }
+
           }
-
-        }
-      });
+        });
     })
   }
 
@@ -492,7 +579,8 @@ export class MaileditorComponent implements OnInit {
     this.resetEdit()
     this.Section = true;
     this.maileditorSection = new MaileditorSection();
-    this.maileditorSection = this.sectionStyleArray[i1]
+    this.maileditorSection = this.sectionStyleArray[i1];
+    this.onSelectBorder(this.maileditorSection);
   }
 
   private onSelectColumnPart(i1, i2): void {
@@ -500,6 +588,37 @@ export class MaileditorComponent implements OnInit {
     this.Column = true;
     this.maileditorColumn = this.columnStyleArray[i1][i2]
     // console.log(this.maileditorColumn);
+    this.onSelectBorder(this.maileditorColumn);
+  }
+
+  private onSelectBorder(maileditorPart): void {
+    console.log(maileditorPart);
+    if (maileditorPart.style.border.length > 0) {
+      const borderarray = maileditorPart.style.border.split(' ');
+      this.selectedborder.width = borderarray[0];
+      this.selectedborder.width = this.selectedborder.width.replace('px', '')
+      this.selectedborder.style = borderarray[1];
+      this.selectedborder.color = borderarray[2];
+    } else {
+      this.selectedborder = {
+        width: '0',
+        style: 'solid',
+        color: 'black',
+      }
+    }
+  }
+
+  private onChangeBorder(maileditorPart): void {
+    console.log(maileditorPart);
+    const borderarray = [];
+    borderarray.push(this.selectedborder.width + 'px');
+    borderarray.push(this.selectedborder.style);
+    const indexChar = this.selectedborder.color.indexOf(';')
+    if (indexChar !== -1) { this.selectedborder.color = this.selectedborder.color + ';' }
+    borderarray.push(this.selectedborder.color);
+    const borderstring = borderarray.join(' ');
+    maileditorPart.style.border = borderstring;
+    console.log(maileditorPart.style.border)
   }
 
   private resetEdit(): void {
@@ -552,6 +671,12 @@ export class MaileditorComponent implements OnInit {
         this.maileditorAccordion = item;
         break;
       }
+      case 'Social': {
+        console.log(item);
+        this.Social = true;
+        this.maileditorSocial = item;
+        break;
+      }
       default: {
         // statements;
         break;
@@ -578,10 +703,6 @@ export class MaileditorComponent implements OnInit {
     this.mailtemplateArray[i1][i2][i3].url = url;
   }
 
-  // setbackgroundImageColumn(url: string) {
-  //   this.maileditorColumn.style['background-image'] = 'url(' + url + ')';
-  //   console.log(this.maileditorColumn);
-  // }
 
   setbackgroundImageSection(url: string) {
     this.maileditorSection.style['background-url'] = url;
@@ -595,9 +716,9 @@ export class MaileditorComponent implements OnInit {
   }
 
   setCarouselImage(url: string, i) {
-    this.maileditorCarousel.images[i].style.src =  url;
+    this.maileditorCarousel.images[i].style.src = url;
     console.log(this.maileditorSection);
-    if (this.maileditorCarouselImage.style.src) {this.showSlides(this.slideIndex);}
+    if (this.maileditorCarouselImage.style.src) { this.showSlides(this.slideIndex); }
   }
 
   openDialog(): void {
@@ -614,23 +735,29 @@ export class MaileditorComponent implements OnInit {
   }
 
 
-  addImageToCarouselArray(){
+  addImageToCarouselArray() {
     let newCarouselImage = this.NewCarouselImage();
     this.maileditorCarousel.images.push(newCarouselImage);
     this.slideIndex = 1;
     this.showSlides(this.slideIndex);
   }
 
-  addElementToAccordionArray(){
+  addElementToAccordionArray() {
     let newAccordionElement = this.newAccordionElement();
     this.maileditorAccordion.elements.push(newAccordionElement);
   }
 
-  togglebackgroundrepeat(){
-    if (this.maileditorSection.style['background-repeat'] === "repeat"){
-      this.maileditorSection.style['background-repeat']= "no-repeat"
+  addElementToSocialArray() {
+    let newSocialElement = this.newSocialElement();
+    this.maileditorSocial.elements.push(newSocialElement);
+  }
+
+  togglebackgroundrepeat() {
+    if (this.maileditorSection.style['background-repeat'] === 'repeat') {
+      this.maileditorSection.style['background-repeat'] = 'no-repeat'
     } else {
-    this.maileditorSection.style['background-repeat']= "repeat"}
+      this.maileditorSection.style['background-repeat'] = 'repeat'
+    }
   }
 
   // Next/previous controls
@@ -640,7 +767,7 @@ export class MaileditorComponent implements OnInit {
 
   // Thumbnail image controls
   currentSlide(n) {
-    this.showSlides(this.slideIndex = n +1);
+    this.showSlides(this.slideIndex = n + 1);
   }
 
   showSlides(n) {
@@ -657,27 +784,89 @@ export class MaileditorComponent implements OnInit {
     for (i = 0; i < dots.length; i++) {
       dots[i].className = dots[i].className.replace("active", "");
     }
-     slides[this.slideIndex - 1].style.display = "block";
+    slides[this.slideIndex - 1].style.display = "block";
     dots[this.slideIndex - 1].className += "active";
   }
 
-  setemojisubjectline(event){
+  setemojisubjectline(event) {
     // console.log(event);
     const bufStr = String.fromCodePoint(parseInt(event.emoji.unified, 16));
     // console.log(bufStr);
-    if (this.subject === undefined) {this.subject = ""}
+    if (this.subject === undefined) { this.subject = "" }
     this.subject = this.subject + bufStr;
     this.onshowemoji();
   }
 
-  onshowemoji(){
-    if(this.showemoji){this.showemoji = false} else {
-      this.showemoji = true; 
+  onshowemoji() {
+    if (this.showemoji) { this.showemoji = false } else {
+      this.showemoji = true;
     }
   }
 
+  setemojibutton(event) {
+    const bufStr = String.fromCodePoint(parseInt(event.emoji.unified, 16));
+    // console.log(bufStr);
+    if (this.maileditorButton.buttontext === undefined) { this.maileditorButton.buttontext = "" }
+    this.maileditorButton.buttontext = this.maileditorButton.buttontext + bufStr;
+    this.onshowemojiButton();
+  }
 
+  onshowemojiButton() {
+    if (this.showemojibutton) { this.showemojibutton = false } else {
+      this.showemojibutton = true;
+    }
+  }
 
+  CreateNewMail(): void {
+    // reset existing and rebuild component
+    this.updateMailingObj = undefined;
+    this.ngOnInit();
+  }
+
+  onChangeSocial(maileditorSocial: MaileditorSocial, i): void {
+    if (maileditorSocial.elements[i].style.name === 'facebook') {
+      maileditorSocial.elements[i].iconlocation = BASE_URL + '/assets/icons/facebook.png'
+    }
+
+    if (maileditorSocial.elements[i].style.name === 'xing') {
+      maileditorSocial.elements[i].iconlocation = BASE_URL + '/assets/icons/facebook.png'
+    }
+
+    if (maileditorSocial.elements[i].style.name === 'instagram') {
+      maileditorSocial.elements[i].iconlocation = BASE_URL + '/assets/icons/instagram.png'
+    }
+
+    if (maileditorSocial.elements[i].style.name === 'tumblr') {
+      maileditorSocial.elements[i].iconlocation = BASE_URL + '/assets/icons/tumblr.png'
+    }
+
+    if (maileditorSocial.elements[i].style.name === 'linkedin') {
+      maileditorSocial.elements[i].iconlocation = BASE_URL + '/assets/icons/linkedin.png'
+    }
+
+    if (maileditorSocial.elements[i].style.name === 'twitter') {
+      maileditorSocial.elements[i].iconlocation = BASE_URL + '/assets/icons/twitter.png'
+    }
+
+    if (maileditorSocial.elements[i].style.name === 'github') {
+      maileditorSocial.elements[i].iconlocation = BASE_URL + '/assets/icons/github.png'
+    }
+    if (maileditorSocial.elements[i].style.name === 'instagram') {
+      maileditorSocial.elements[i].iconlocation = BASE_URL + '/assets/icons/instagram.png'
+    }
+    if (maileditorSocial.elements[i].style.name === 'web') {
+      maileditorSocial.elements[i].iconlocation = BASE_URL + '/assets/icons/web.png'
+    }
+    if (maileditorSocial.elements[i].style.name === 'snapchat') {
+      maileditorSocial.elements[i].iconlocation = BASE_URL + '/assets/icons/snapchat.png'
+    }
+    if (maileditorSocial.elements[i].style.name === 'youtube') {
+      maileditorSocial.elements[i].iconlocation = BASE_URL + '/assets/icons/youtube.png'
+    }
+    if (maileditorSocial.elements[i].style.name === 'vimeo') {
+      maileditorSocial.elements[i].iconlocation = BASE_URL + '/assets/icons/vimeo.png'
+    }
+  }
 }
 
 

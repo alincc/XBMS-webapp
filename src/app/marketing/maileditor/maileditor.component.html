@@ -24,9 +24,13 @@
         <div *ngIf="item.type === 'Carousel'">
           <mat-icon matSuffix>view_carousel</mat-icon> {{item.type}}
         </div>
+        <div *ngIf="item.type === 'Social'">
+          <mat-icon matSuffix>thumb_up_alt</mat-icon> {{item.type}}
+        </div>
       </div>
       <button *ngIf="!updatemail" a mat-raised-button (click)="ConvertToMail()">Convert</button>
       <button *ngIf="updatemail" a mat-raised-button (click)="ConvertToMail()">Update</button>
+      <button a mat-raised-button (click)="CreateNewMail()">Create New</button>
       <mat-progress-bar *ngIf='showprogressbar' mode="indeterminate"></mat-progress-bar>
     </div>
   </div>
@@ -90,7 +94,7 @@
             <div class="item-box" *ngFor="let item of column; let i3 = index;" (click)="onSelectTemplatePart(item, i3)"
               cdkDrag>
               <div *ngIf="item.type === 'Text'" (click)="onSelectTemplatePart(item, i3)">
-                <div [innerHTML]="item.content"></div>
+                <div (click)="onSelectTemplatePart(item, i3)" [innerHTML]="item.content"></div>
                 <mat-icon class="textbox-edit-button" class="iconsize-10 text-edit-icon" (click)="onSelectTemplatePart(item, i3)"
                   (click)="openDialog()">mode_edit</mat-icon>
               </div>
@@ -125,6 +129,14 @@
                   <div  *ngFor="let imagethumb of item.images; let i = index" style="display: inline-block;">
                       <img *ngIf="imagethumb.style.src" (click)="currentSlide(i)" src={{imagethumb.style.src}} class="thumbnails">
                     </div>
+                </div>
+              </div>
+              <div *ngIf="item.type == 'Social'" [ngStyle]="item.style">
+                <div class="social-container">
+                  <div *ngFor="let socialelement of item.elements">
+                    <img [ngStyle]="socialelement.style" src={{socialelement.iconlocation}}>
+                    <label (click)="onSelectTemplatePart(item, i3)" >{{socialelement.content}}</label>
+                  </div>
                 </div>
               </div>
               <div *ngIf="item.type === 'Button'">
@@ -212,17 +224,17 @@
         <tr>
           <td>
             <mat-form-field>
-              <input [(ngModel)]="maileditorColumn.style['border-width']" type="text" matInput
-                placeholder="border width">
+              <input [(ngModel)]="selectedborder.width" type="number" matInput
+                placeholder="border width" (change)="onChangeBorder(maileditorColumn)">
               <mat-icon matSuffix>mode_edit</mat-icon>
-              <mat-hint>%/px</mat-hint>
+              <mat-hint>px</mat-hint>
             </mat-form-field>
           </td>
         </tr>
         <tr>
           <td>
             <mat-form-field>
-              <mat-select [(value)]="maileditorColumn.style['border-style']" placeholder="style">
+              <mat-select [(value)]="selectedborder.style" placeholder="style" (selectionChange)="onChangeBorder(maileditorColumn)">
                 <mat-option value="none">None</mat-option>
                 <mat-option value="solid">Solid</mat-option>
                 <mat-option value="dotted">Dotted</mat-option>
@@ -234,6 +246,26 @@
                 <mat-option value="outset">Outset</mat-option>
               </mat-select>
             </mat-form-field>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <mat-accordion>
+              <mat-expansion-panel>
+                <mat-expansion-panel-header>
+                  <mat-panel-title>
+                    Border Color
+                  </mat-panel-title>
+                </mat-expansion-panel-header>
+                <br>
+                <span [style.background]="selectedborder.color" 
+                [cpToggle]="true"
+                [cpDialogDisplay]="'inline'"
+                [cpCancelButton]="true"
+                [(colorPicker)]="selectedborder.color"></span>
+                <button mat-button (click)="onChangeBorder(maileditorColumn)">confirm</button>
+              </mat-expansion-panel>
+            </mat-accordion>
           </td>
         </tr>
       </table>
@@ -250,15 +282,15 @@
             </mat-form-field>
           </td>
         </tr>
-        <tr>
+        <!-- <tr>
           <td>
             <mat-form-field>
               <input [(ngModel)]=maileditorSection.style.border type="text" matInput placeholder="border">
               <mat-icon matSuffix>mode_edit</mat-icon>
-              <mat-hint>%/px</mat-hint>
+              <mat-hint>px</mat-hint>
             </mat-form-field>
           </td>
-        </tr>
+        </tr> -->
         <tr>
           <td>
               <mat-accordion>
@@ -274,7 +306,6 @@
                     [cpDialogDisplay]="'inline'"
                     [cpCancelButton]="true"
                     [(colorPicker)]="maileditorSection.style['background-color']"></span>
-
                   </mat-expansion-panel>
                 </mat-accordion>
           </td>
@@ -308,6 +339,53 @@
         <tr>
           <td>
             <mat-slide-toggle (change)="togglebackgroundrepeat()" >Background Image Repeat</mat-slide-toggle>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <mat-form-field>
+              <input [(ngModel)]="selectedborder.width" type="number" matInput
+                placeholder="border width" (change)="onChangeBorder(maileditorSection)">
+              <mat-icon matSuffix>mode_edit</mat-icon>
+              <mat-hint>px</mat-hint>
+            </mat-form-field>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <mat-form-field>
+              <mat-select [(value)]="selectedborder.style" placeholder="style" (selectionChange)="onChangeBorder(maileditorSection)">
+                <mat-option value="none">None</mat-option>
+                <mat-option value="solid">Solid</mat-option>
+                <mat-option value="dotted">Dotted</mat-option>
+                <mat-option value="dashed">Dashed</mat-option>
+                <mat-option value="double">Double</mat-option>
+                <mat-option value="groove">Groove</mat-option>
+                <mat-option value="ridge">Ridge</mat-option>
+                <mat-option value="inset">Inset</mat-option>
+                <mat-option value="outset">Outset</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <mat-accordion>
+              <mat-expansion-panel>
+                <mat-expansion-panel-header>
+                  <mat-panel-title>
+                    Border Color
+                  </mat-panel-title>
+                </mat-expansion-panel-header>
+                <br>
+                <span [style.background]="selectedborder.color" 
+                [cpToggle]="true"
+                [cpDialogDisplay]="'inline'"
+                [cpCancelButton]="true"
+                [(colorPicker)]="selectedborder.color"></span>
+                <button mat-button (click)="onChangeBorder(maileditorSection)">confirm</button>
+              </mat-expansion-panel>
+            </mat-accordion>
           </td>
         </tr>
       </table>
@@ -411,8 +489,20 @@
           <td>
             <mat-form-field>
               <input [(ngModel)]="maileditorButton.buttontext" type="text" matInput placeholder="Button Text">
-              <mat-icon matSuffix>mode_edit</mat-icon>
+              <mat-icon matTooltip="select Emoji" (click)="onshowemojiButton()" matSuffix>insert_emoticon</mat-icon>
             </mat-form-field>
+          </td>
+        </tr>
+        <tr *ngIf="showemojibutton">
+          <td>
+            <div style="width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 8;
+            left: 20;
+            z-index: 20;">
+            <emoji-mart (emojiClick)="setemojibutton($event)" set="emojione"></emoji-mart>
+            </div>
           </td>
         </tr>
         <tr>
@@ -425,18 +515,40 @@
         </tr>
         <tr>
           <td>
-            <input [style.background]="rgbaText" matInput Placeholder="background color"
-              [value]="maileditorButton.style['background-color']" [cpAlphaChannel]="'always'" [cpOutputFormat]="'hex'"
-              [cpPosition]="'left'" [(colorPicker)]="maileditorButton.style['background-color']" />
-            <mat-hint>Background Color</mat-hint>
+             <mat-accordion>
+              <mat-expansion-panel>
+                <mat-expansion-panel-header>
+                  <mat-panel-title>
+                    Background Color
+                  </mat-panel-title>
+                </mat-expansion-panel-header>
+                <br>
+                <span [style.background]="maileditorButton.style['background-color']"
+                [cpToggle]="true"
+                [cpDialogDisplay]="'inline'"
+                [cpCancelButton]="true"
+                [(colorPicker)]="maileditorButton.style['background-color']"></span>
+              </mat-expansion-panel>
+            </mat-accordion>
           </td>
         </tr>
         <tr>
           <td>
-            <input [style.background]="rgbaText" matInput Placeholder="text color"
-              [value]="maileditorButton.style.color" [cpAlphaChannel]="'always'" [cpOutputFormat]="'hex'"
-              [cpPosition]="'left'" [(colorPicker)]="maileditorButton.style.color" />
-            <mat-hint>Text Color</mat-hint>
+            <mat-accordion>
+              <mat-expansion-panel>
+                <mat-expansion-panel-header>
+                  <mat-panel-title>
+                    Text Color
+                  </mat-panel-title>
+                </mat-expansion-panel-header>
+                <br>
+                <span [style.background]="maileditorButton.style.color"
+                [cpToggle]="true"
+                [cpDialogDisplay]="'inline'"
+                [cpCancelButton]="true"
+                [(colorPicker)]="maileditorButton.style.color"></span>
+              </mat-expansion-panel>
+            </mat-accordion>
           </td>
         </tr>
         <tr>
@@ -475,6 +587,53 @@
               <input [(ngModel)]="maileditorButton.style.width" type="text" matInput placeholder="width">
               <mat-icon matSuffix>mode_edit</mat-icon>
             </mat-form-field>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <mat-form-field>
+              <input [(ngModel)]="selectedborder.width" type="number" matInput
+                placeholder="border width" (change)="onChangeBorder(maileditorButton)">
+              <mat-icon matSuffix>mode_edit</mat-icon>
+              <mat-hint>px</mat-hint>
+            </mat-form-field>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <mat-form-field>
+              <mat-select [(value)]="selectedborder.style" placeholder="style" (selectionChange)="onChangeBorder(maileditorButton)">
+                <mat-option value="none">None</mat-option>
+                <mat-option value="solid">Solid</mat-option>
+                <mat-option value="dotted">Dotted</mat-option>
+                <mat-option value="dashed">Dashed</mat-option>
+                <mat-option value="double">Double</mat-option>
+                <mat-option value="groove">Groove</mat-option>
+                <mat-option value="ridge">Ridge</mat-option>
+                <mat-option value="inset">Inset</mat-option>
+                <mat-option value="outset">Outset</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <mat-accordion>
+              <mat-expansion-panel>
+                <mat-expansion-panel-header>
+                  <mat-panel-title>
+                    Border Color
+                  </mat-panel-title>
+                </mat-expansion-panel-header>
+                <br>
+                <span [style.background]="selectedborder.color" 
+                [cpToggle]="true"
+                [cpDialogDisplay]="'inline'"
+                [cpCancelButton]="true"
+                [(colorPicker)]="selectedborder.color"></span>
+                <button mat-button (click)="onChangeBorder(maileditorButton)">confirm</button>
+              </mat-expansion-panel>
+            </mat-accordion>
           </td>
         </tr>
       </table>
@@ -550,6 +709,44 @@
           <mat-icon (click)="addElementToAccordionArray()">add</mat-icon>
         </tr>
       </table>
+    </div>
+
+    <div *ngIf="Social" class="edit_table">Edit social-container
+      <table>
+        <tr>
+          <td>
+            <div *ngFor="let socialelement of maileditorSocial.elements; let i = index;">
+              <mat-form-field>
+                <input [(ngModel)]="socialelement.content" type="text" matInput placeholder="Title">
+              </mat-form-field>
+              <mat-form-field>
+                <input [(ngModel)]="socialelement.href" type="text" matInput placeholder="Link">
+              </mat-form-field>
+              <mat-form-field>
+                <mat-select [(value)]="socialelement.name" placeholder="Socialnetwork" (selectionChange)="onChangeSocial(maileditorSocial, i)">
+                  <mat-option value="facebook">facebook</mat-option>
+                  <mat-option value="twitter">twitter</mat-option>
+                  <mat-option value="pinterest">pinterest</mat-option>
+                  <mat-option value="linkedin">linkedin</mat-option>
+                  <mat-option value="tumblr">tumblr</mat-option>
+                  <mat-option value="xing">xing</mat-option>
+                  <mat-option value="github">github</mat-option>
+                  <mat-option value="instagram">instagram</mat-option>
+                  <mat-option value="web">web</mat-option>
+                  <mat-option value="snapchat">snapchat</mat-option>
+                  <mat-option value="youtube">youtube</mat-option>
+                  <mat-option value="vimeo">vimeo</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <mat-icon (click)="addElementToSocialArray()">add</mat-icon>
+        </tr>
+      </table>
+
+
     </div>
   </mat-card>
 

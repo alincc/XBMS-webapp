@@ -361,5 +361,17 @@ export const Icons = [
 '/assets/icons/colour-accent-set/analytics/network.png',
 '/assets/icons/colour-accent-set/analytics/arrow chart.png',
 '/assets/icons/icon-128x128.png',
+'/assets/icons/facebook.png',
+'/assets/icons/xing.png',
+'/assets/icons/instagram.png',
+'/assets/icons/tumblr.png',
+'/assets/icons/linkedin.png',
+'/assets/icons/twitter.png',
+'/assets/icons/github.png',
+'/assets/icons/instagram.png',
+'/assets/icons/web.png',
+'/assets/icons/snapchat.png',
+'/assets/icons/youtube.png',
+'/assets/icons/vimeo.png',
 ]
 

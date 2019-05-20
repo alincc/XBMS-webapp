@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { setFlagsFromString } from 'v8';
 export interface Maileditormodels {
   type: string;
 }
@@ -251,6 +252,75 @@ export interface MaileditorAccordionTitleInterface {
     'padding-left': string;
     'padding-right': string;
     'padding-top': string;
+  }
+}
+
+export interface MaileditorSocialInterface {
+  type: string;
+  elements: Array<MaileditorSocialElementInterface>;
+  style: {
+    'color': string;
+    'container-background-color': string;
+    'width': string;
+    'height': string;
+    'align': string;
+    'border': string;
+    'border-bottom': string;
+    'border-left': string;
+    'border-radius': string;
+    'border-right': string;
+    'border-top': string;
+    'font-family': string;
+    'font-size': string;
+    'font-style': string;
+    'font-weight': string;
+    'padding': string;
+    'text-transform': string;
+    'vertical-align': string;
+    'icon-height': string;
+    'icon-size': string;
+    'inner-padding': string;
+    'line-height': string;
+    'mode': string;
+    'icon-padding': string;
+    'text-padding': string;
+    'text-decoration': string;
+  }
+}
+
+export interface MaileditorSocialElementInterface {
+  type: string;
+  content: string;
+  iconlocation: string;
+  style: {
+    'color': string;
+    'container-background-color': string;
+    'width': string;
+    'height': string;
+    'align': string;
+    'border': string;
+    'border-bottom': string;
+    'border-left': string;
+    'border-radius': string;
+    'border-right': string;
+    'border-top': string;
+    'font-family': string;
+    'font-size': string;
+    'font-style': string;
+    'font-weight': string;
+    'padding': string;
+    'text-transform': string;
+    'vertical-align': string;
+    'icon-height': string;
+    'icon-size': string;
+    'inner-padding': string;
+    'line-height': string;
+    'mode': string;
+    'icon-padding': string;
+    'text-padding': string;
+    'text-decoration': string;
+    'href': string;
+    'name': string;
   }
 }
 
@@ -598,6 +668,90 @@ export class MaileditorAccordionText implements MaileditorAccordionTextInterface
   }
 
   constructor(data?: MaileditorAccordionTextInterface ) {
+    Object.assign(this, data);
+  }
+}
+
+export class MaileditorSocial implements MaileditorSocialInterface {
+  type: string;
+  elements: Array<MaileditorSocialElementInterface>;
+  style: {
+    'color': string;
+    'container-background-color': string;
+    'width': string;
+    'height': string;
+    'align': string;
+    'border': string;
+    'border-bottom': string;
+    'border-left': string;
+    'border-radius': string;
+    'border-right': string;
+    'border-top': string;
+    'font-family': string;
+    'font-size': string;
+    'font-style': string;
+    'font-weight': string;
+    'padding': string;
+    'text-transform': string;
+    'vertical-align': string;
+    'icon-height': string;
+    'icon-size': string;
+    'inner-padding': string;
+    'line-height': string;
+    'mode': string;
+    'icon-padding': string;
+    'text-padding': string;
+    'text-decoration': string;
+  }
+  public static factory(data: MaileditorSocialInterface): MaileditorSocial {
+    return new MaileditorSocial(data);
+  }
+
+  constructor(data?: MaileditorSocialInterface ) {
+    Object.assign(this, data);
+  }
+}
+
+
+export class MaileditorSocialElement implements MaileditorSocialElement {
+  type: string;
+  content: string;
+  iconlocation: string;
+  style: {
+    'color': string;
+    'container-background-color': string;
+    'width': string;
+    'height': string;
+    'align': string;
+    'border': string;
+    'border-bottom': string;
+    'border-left': string;
+    'border-radius': string;
+    'border-right': string;
+    'border-top': string;
+    'font-family': string;
+    'font-size': string;
+    'font-style': string;
+    'font-weight': string;
+    'padding': string;
+    'text-transform': string;
+    'vertical-align': string;
+    'icon-height': string;
+    'icon-size': string;
+    'inner-padding': string;
+    'line-height': string;
+    'mode': string;
+    'icon-padding': string;
+    'text-padding': string;
+    'text-decoration': string;
+    'href': string;
+    'name': string;
+  }
+  public static factory(data: MaileditorSocialElementInterface): MaileditorSocialElement {
+    return new MaileditorSocialElement(data);
+  }
+
+  constructor(data?: MaileditorSocialElementInterface ) {
     Object.assign(this, data);
   }
 }
