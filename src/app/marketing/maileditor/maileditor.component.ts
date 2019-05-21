@@ -75,7 +75,9 @@ export class MaileditorComponent implements OnInit {
   public columnStyleArray = [];
   public subject: string;
   public preview: string;
+  public font: string;
   public updatemail = false;
+  public previewOrSubject: string;
   // create version 0n drop event
   // needs at least one item at init
   // Connect Toolsect to SectionArray
@@ -560,7 +562,9 @@ export class MaileditorComponent implements OnInit {
                 html: data.html,
                 templatearray: templArray,
                 sectionStyle: sectionStyle,
-                columnStyle: columnStyle
+                columnStyle: columnStyle,
+                preview: this.preview,
+                font: this.font
               })
                 .subscribe(res => {
                   this.snackBar.open("Template Created", undefined, {
@@ -788,19 +792,25 @@ export class MaileditorComponent implements OnInit {
     dots[this.slideIndex - 1].className += "active";
   }
 
-  setemojisubjectline(event) {
+  setemoji(event) {
     // console.log(event);
     const bufStr = String.fromCodePoint(parseInt(event.emoji.unified, 16));
     // console.log(bufStr);
+    if (this.previewOrSubject === 'subject'){
     if (this.subject === undefined) { this.subject = "" }
-    this.subject = this.subject + bufStr;
+    this.subject = this.subject + bufStr; } else {
+      if (this.preview === undefined) { this.preview = "" }
+      this.preview = this.preview + bufStr; 
+    }
     this.onshowemoji();
   }
 
-  onshowemoji() {
+  onshowemoji(selected?) {
     if (this.showemoji) { this.showemoji = false } else {
       this.showemoji = true;
     }
+    if (selected){
+    this.previewOrSubject = selected; }
   }
 
   setemojibutton(event) {
@@ -824,6 +834,7 @@ export class MaileditorComponent implements OnInit {
   }
 
   onChangeSocial(maileditorSocial: MaileditorSocial, i): void {
+    
     if (maileditorSocial.elements[i].style.name === 'facebook') {
       maileditorSocial.elements[i].iconlocation = BASE_URL + '/assets/icons/facebook.png'
     }
@@ -866,6 +877,7 @@ export class MaileditorComponent implements OnInit {
     if (maileditorSocial.elements[i].style.name === 'vimeo') {
       maileditorSocial.elements[i].iconlocation = BASE_URL + '/assets/icons/vimeo.png'
     }
+    console.log(maileditorSocial);
   }
 }
 

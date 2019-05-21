@@ -30,6 +30,9 @@ export interface CompanyInterface {
   "billingcontact"?: string;
   "billingemail"?: string;
   "phonenumber"?: string;
+  "companyprimairycolor"?: string;
+  "companysecondarycolor"?: string;
+  "companyfont"?: string;
   "id"?: any;
   relations?: Relations[];
   googleanalytics?: Googleanalytics[];
@@ -60,6 +63,9 @@ export class Company implements CompanyInterface {
   "billingcontact": string;
   "billingemail": string;
   "phonenumber": string;
+  "companyprimairycolor": string;
+  "companysecondarycolor": string;
+  "companyfont": string;
   "id": any;
   relations: Relations[];
   googleanalytics: Googleanalytics[];
@@ -166,6 +172,18 @@ export class Company implements CompanyInterface {
         },
         "phonenumber": {
           name: 'phonenumber',
+          type: 'string'
+        },
+        "companyprimairycolor": {
+          name: 'companyprimairycolor',
+          type: 'string'
+        },
+        "companysecondarycolor": {
+          name: 'companysecondarycolor',
+          type: 'string'
+        },
+        "companyfont": {
+          name: 'companyfont',
           type: 'string'
         },
         "id": {

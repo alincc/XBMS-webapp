@@ -49,6 +49,70 @@
         </button>
       </div>
 
+      <div class="accountinfo">
+        <table>
+          <tr>
+            <td>
+              <label>Set Standard Font and Colors</label>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <form>
+              <mat-form-field class="example-full-width">
+                <input [(ngModel)]=Company.font type="text" placeholder="Pick one" aria-label="Number" matInput
+                  [formControl]="myControlfont" [matAutocomplete]="auto">
+                <mat-autocomplete #auto="matAutocomplete">
+                  <mat-option *ngFor="let font of filteredfonts | async" [value]="font">
+                    {{font}}
+                  </mat-option>
+                </mat-autocomplete>
+              </mat-form-field>
+            </form>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <mat-accordion>
+                <mat-expansion-panel>
+                  <mat-expansion-panel-header>
+                    <mat-panel-title>
+                      Primairy Color
+                    </mat-panel-title>
+                  </mat-expansion-panel-header>
+                  <br>
+                  <span [style.background]="Company.companyprimairycolor" [cpToggle]="true" [cpDialogDisplay]="'inline'"
+                    [cpCancelButton]="true" [(colorPicker)]="Company.companyprimairycolor"></span>
+                </mat-expansion-panel>
+              </mat-accordion>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <mat-accordion>
+                <mat-expansion-panel>
+                  <mat-expansion-panel-header>
+                    <mat-panel-title>
+                      Secondary Color
+                    </mat-panel-title>
+                  </mat-expansion-panel-header>
+                  <br>
+                  <span [style.background]="Company.companysecondarycolor" [cpToggle]="true"
+                    [cpDialogDisplay]="'inline'" [cpCancelButton]="true"
+                    [(colorPicker)]="Company.companysecondarycolor"></span>
+                </mat-expansion-panel>
+              </mat-accordion>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <button (click)="saveCompany()" a mat-raised-button class="button">Save Changes</button>
+            </td>
+          </tr>
+        </table>
+
+      </div>
+
       <div *ngIf="!toggleedituser" class="accountinfo">
         <table>
           <tr>
@@ -86,14 +150,14 @@
           </tr>
           <tr>
             <td>
-              <mat-form-field  fxFlex="90" class="form-full-width">
+              <mat-form-field fxFlex="90" class="form-full-width">
                 <input matInput [(ngModel)]=Company.companyname placeholder="Company Name" class="InputField">
               </mat-form-field>
             </td>
           </tr>
           <tr>
             <td>
-              <mat-form-field fxFlex="90"  class="form-full-width">
+              <mat-form-field fxFlex="90" class="form-full-width">
                 <input matInput [(ngModel)]=Company.address placeholder="Address" class="InputField">
               </mat-form-field>
             </td>
@@ -101,22 +165,22 @@
         </table>
         <table>
           <tr>
-          <td>
-            <mat-form-field fxFlex="30" class="form-full-width">
-              <input matInput [(ngModel)]=Company.city placeholder="City" class="InputField">
-            </mat-form-field>
-          </td>
-          <td>
-            <mat-form-field fxFlex="30"  class="form-full-width">
-              <input matInput [(ngModel)]=Company.zipcode placeholder="Zipcode" class="InputField">
-            </mat-form-field>
-          </td>
-          <td>
-            <mat-form-field fxFlex="30" class="form-full-width">
-              <input matInput [(ngModel)]=Company.stateprov placeholder="State/Province" class="InputField">
-            </mat-form-field>
-          </td>
-        </tr>
+            <td>
+              <mat-form-field fxFlex="30" class="form-full-width">
+                <input matInput [(ngModel)]=Company.city placeholder="City" class="InputField">
+              </mat-form-field>
+            </td>
+            <td>
+              <mat-form-field fxFlex="30" class="form-full-width">
+                <input matInput [(ngModel)]=Company.zipcode placeholder="Zipcode" class="InputField">
+              </mat-form-field>
+            </td>
+            <td>
+              <mat-form-field fxFlex="30" class="form-full-width">
+                <input matInput [(ngModel)]=Company.stateprov placeholder="State/Province" class="InputField">
+              </mat-form-field>
+            </td>
+          </tr>
         </table>
         <table>
           <tr>
@@ -127,10 +191,11 @@
             </td>
           </tr>
           <tr>
-              <td>
-                <button fxFlex="90"  (click)="billingCompanyCopy()" a mat-raised-button class="button">Billing address is the same</button>
-              </td>
-            </tr>
+            <td>
+              <button fxFlex="90" (click)="billingCompanyCopy()" a mat-raised-button class="button">Billing address is
+                the same</button>
+            </td>
+          </tr>
           <tr>
             <td>
               <mat-form-field fxFlex="90" class="form-full-width">
@@ -401,11 +466,11 @@
       <mat-icon>money</mat-icon>Invoices
     </ng-template>
     <div class="tab">
-    <button mat-button (click)="getInvoices()">Load Invoices</button>
-    <div *ngFor="let file of files; let i = index;" class="invoicelabel">
-    <mat-icon>money</mat-icon> 
-    <label class="invoicelabel">{{file.Key}}</label>
-    <mat-icon (click)="getFile(i)">cloud_download</mat-icon>
+      <button mat-button (click)="getInvoices()">Load Invoices</button>
+      <div *ngFor="let file of files; let i = index;" class="invoicelabel">
+        <mat-icon>money</mat-icon>
+        <label class="invoicelabel">{{file.Key}}</label>
+        <mat-icon (click)="getFile(i)">cloud_download</mat-icon>
       </div>
     </div>
   </mat-tab>

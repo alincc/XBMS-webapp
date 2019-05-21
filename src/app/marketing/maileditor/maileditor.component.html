@@ -46,13 +46,14 @@
         <td>
           <mat-form-field style="width: 95%;" appearance="outline">
             <input [(ngModel)]=subject type="text" matInput placeholder="Subject Line">
-            <mat-icon matTooltip="select Emoji" (click)="onshowemoji()" matSuffix>insert_emoticon</mat-icon>
+            <mat-icon matTooltip="select Emoji" (click)="onshowemoji('subject')" matSuffix>insert_emoticon</mat-icon>
           </mat-form-field>
         </td>
         <td>
-          <!-- <mat-form-field style="width: 95%;" appearance="outline">
+          <mat-form-field style="width: 95%;" appearance="outline">
             <input [(ngModel)]=preview type="text" matInput placeholder="preview">
-          </mat-form-field> -->
+            <mat-icon matTooltip="select Emoji" (click)="onshowemoji('preview')" matSuffix>insert_emoticon</mat-icon>
+          </mat-form-field>
         </td>
       </tr>
       <tr>
@@ -68,7 +69,7 @@
           top: 8;
           left: 12;
           z-index: 20;">
-          <emoji-mart (emojiClick)="setemojisubjectline($event)" set="emojione"></emoji-mart>
+          <emoji-mart (emojiClick)="setemoji($event)" set="emojione"></emoji-mart>
           </div>
         </td>
       </tr>
@@ -131,7 +132,7 @@
                     </div>
                 </div>
               </div>
-              <div *ngIf="item.type == 'Social'" [ngStyle]="item.style">
+              <div *ngIf="item.type === 'Social'" [ngStyle]="item.style">
                 <div class="social-container">
                   <div *ngFor="let socialelement of item.elements">
                     <img [ngStyle]="socialelement.style" src={{socialelement.iconlocation}}>
@@ -723,7 +724,7 @@
                 <input [(ngModel)]="socialelement.href" type="text" matInput placeholder="Link">
               </mat-form-field>
               <mat-form-field>
-                <mat-select [(value)]="socialelement.name" placeholder="Socialnetwork" (selectionChange)="onChangeSocial(maileditorSocial, i)">
+                <mat-select [(value)]="socialelement.style.name" placeholder="Socialnetwork" (selectionChange)="onChangeSocial(maileditorSocial, i)">
                   <mat-option value="facebook">facebook</mat-option>
                   <mat-option value="twitter">twitter</mat-option>
                   <mat-option value="pinterest">pinterest</mat-option>

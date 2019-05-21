@@ -44,6 +44,8 @@ import { FormControl, FormGroupDirective, NgForm, Validators, FormBuilder, FormG
 import { ErrorStateMatcher } from '@angular/material/core';
 import { forEach } from '@angular/router/src/utils/collection';
 import { MatSnackBar, MatSnackBarConfig, MatInput, MatAutocompleteSelectedEvent } from '@angular/material';
+import { fontoptions } from './google-fonts-list';
+
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
   isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
@@ -93,6 +95,8 @@ export class SettingsComponent implements OnInit {
   public option: Relations = new Relations();
   public newRelation: Relations = new Relations();
   public files;
+  
+  myControl = new FormControl();
 
   calltype = [
     { value: 'PhoneCall', viewValue: 'Phone Call' },
@@ -125,6 +129,8 @@ export class SettingsComponent implements OnInit {
   secondFormGroup: FormGroup;
   oldpassword: string;
   newpassword: string;
+
+  public fontlist: string[] = fontoptions;
 
   constructor(
     public zone: NgZone,
@@ -171,21 +177,19 @@ export class SettingsComponent implements OnInit {
 
 
   matcher = new MyErrorStateMatcher();
-
   filteredOptions: Observable<string[]>;
-
-  myControl: FormControl = new FormControl();
-
+  
+  myControlfont: FormControl = new FormControl();
+  filteredfonts: Observable<string[]>;
 
   ngOnInit(): void {
     if (this.AccountApi.isAuthenticated() == false ){this.router.navigate(['login'])}
-
     this.filteredOptions = this.myControl.valueChanges
     .pipe(
       startWith(''),
       //map(options => options && typeof options === 'object' ? options.relationname : options),
       map(relationname => relationname ? this.filter(relationname) : this.options.slice())
-    );
+      );
   
     this.firstFormGroup = this._formBuilder.group({
       firstCtrl: ['', Validators.required]
@@ -207,6 +211,15 @@ export class SettingsComponent implements OnInit {
     });
     this.ContainerApi.create({ name: "tmp" }).subscribe(res => res = res);
 
+    this.filteredfonts = this.myControlfont.valueChanges.pipe(
+      startWith(''),
+      map(value => this._filterfont(value))
+    );
+  }
+
+  private _filterfont(value: string): string[] {
+    const filterValue = value.toLowerCase();
+    return this.fontlist.filter(font => font.toLowerCase().includes(filterValue));
   }
 
   logout(): void {
@@ -475,7 +488,9 @@ export class SettingsComponent implements OnInit {
 
   saveAccount(): void {
     this.AccountApi.patchAttributes(this.Account.id, this.Account)
-    .subscribe(res => this.openSnackBar("Changes saved"));
+    .subscribe(res => {
+      console.log(res);
+      this.openSnackBar("Changes saved")});
   }
 
   saveCompany(): void {

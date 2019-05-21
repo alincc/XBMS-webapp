@@ -3,6 +3,8 @@
   "compilerOptions": {
     "outDir": "../out-tsc/spec",
     "module": "commonjs",
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
     "target": "es5",
     "baseUrl": "",
     "types": [
