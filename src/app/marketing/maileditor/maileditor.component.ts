@@ -12,7 +12,7 @@ import {
   MaileditorAccordionElement, MaileditorAccordionText, MaileditorAccordionTitle, MaileditorSocial, MaileditorSocialElement
 } from './maileditormodel/maileditormodels';
 import { FileuploadComponent } from '../../shared/fileupload/fileupload.component';
-import { Relations, RelationsApi, BASE_URL } from '../../shared';
+import { Relations, RelationsApi, BASE_URL, CompanyApi, Company } from '../../shared';
 import { Mailing, MailingApi } from '../../shared/sdk';
 import { TextEditorDialog } from './texteditordialog.component';
 import { DomSanitizer } from '@angular/platform-browser';
@@ -26,6 +26,12 @@ import { MatSnackBar, MatSnackBarConfig, MatInput, MatAutocompleteSelectedEvent 
   styleUrls: ['./maileditor.component.scss']
 })
 export class MaileditorComponent implements OnInit {
+
+
+  @Input('option') option: Relations;
+  @Input('account') account: Account;
+  @Input('updateMailingObj') updateMailingObj: Mailing;
+  @Input('company') company: Company; 
 
   public slideIndex = 1;
   public showprogressbar = false;
@@ -41,6 +47,7 @@ export class MaileditorComponent implements OnInit {
   public Social = false;
   public showemoji = false;
   public showemojibutton = false;
+  public Footer = false;
 
   public selectedborder = {
     width: '0px',
@@ -49,6 +56,7 @@ export class MaileditorComponent implements OnInit {
   }
 
   public maileditorText: MaileditorText = new MaileditorText();
+  public maileditorFooter: MaileditorText = new MaileditorText();
   public maileditorImage: MaileditorImage = new MaileditorImage();
   public maileditorColumn: MaileditorColumn = new MaileditorColumn();
   public maileditorSection: MaileditorSection = new MaileditorSection();
@@ -67,7 +75,7 @@ export class MaileditorComponent implements OnInit {
   // template --> Section --> Column
   // section can contain only column
   // template can contain only sections
-
+  public textfont: string;
   public columnArray = [];
   public sectionArray = []; // this.ColumnArray
   public mailtemplateArray = [];
@@ -78,6 +86,8 @@ export class MaileditorComponent implements OnInit {
   public font: string;
   public updatemail = false;
   public previewOrSubject: string;
+  // public company: Company; 
+
   // create version 0n drop event
   // needs at least one item at init
   // Connect Toolsect to SectionArray
@@ -88,6 +98,7 @@ export class MaileditorComponent implements OnInit {
   private toolboxcarousel = this.createNewItem('Carousel');
   private toolboxAccordion = this.createNewItem('Accordion');
   private toolboxSocial = this.createNewItem('Social');
+  private toolboxfooter;
 
   toolset = [
     this.toolboximage,
@@ -96,16 +107,15 @@ export class MaileditorComponent implements OnInit {
     this.toolboxdivider,
     this.toolboxcarousel,
     this.toolboxAccordion,
-    this.toolboxSocial
+    this.toolboxSocial,
   ];
 
-  @Input('option') option: Relations;
-  @Input('account') account: Account;
-  @Input('updateMailingObj') updateMailingObj: Mailing;
+
 
   constructor(
     public snackBar: MatSnackBar,
     public RelationsApi: RelationsApi,
+    public CompanyApi: CompanyApi,
     public dialogsService: DialogsService,
     public mailingApi: MailingApi,
     public dialog: MatDialog,
@@ -128,6 +138,11 @@ export class MaileditorComponent implements OnInit {
     } else {
       this.setupTemplate();
     }
+
+    // move creation to wait for company info to resolve
+    console.log(this.company);
+    this.toolboxfooter = this.createNewItem('Footer');
+    this.toolset.push(this.toolboxfooter);
   }
 
   setupTemplate(): void {
@@ -243,6 +258,35 @@ export class MaileditorComponent implements OnInit {
         'padding-right': ''
       }
       return newtext
+    }
+    if (type === 'Footer') {
+      const newfooter: MaileditorText = new MaileditorText();
+      newfooter.type = 'Footer';
+      const footercontent =  this.company.companyname + ', ' + this.company.address + ', ' +
+      this.company.zipcode + ', ' + this.company.country +
+      ', feel free to unsubscribe if you do not like to receive our emails %unsubscribe_url%';
+      newfooter.content = footercontent; //this.sanitizer.bypassSecurityTrustHtml(footercontent);
+      newfooter.typeformat = 'p';
+      newfooter.style = {
+        'color': 'grey',
+        'font-family': 'Verdana',
+        'font-size': '6pt',
+        'font-style': 'normal',
+        'font-weight': '',
+        'line-height': '',
+        'letter-spacing': '1px',
+        'height': '100%',
+        'text-decoration': '',
+        'text-transform': '',
+        'align': 'center',
+        'container-background-color': '',
+        'padding': '',
+        'padding-top': '',
+        'padding-bottom': '',
+        'padding-left': '',
+        'padding-right': ''
+      }
+      return newfooter
     }
     if (type === 'Image') {
       const newImage: MaileditorImage = new MaileditorImage();
@@ -491,7 +535,7 @@ export class MaileditorComponent implements OnInit {
       'color': '',
       'container-background-color': '',
       'width': '',
-      'height': '',
+      'height': '20px',
       'align': '',
       'border': '',
       'border-bottom': '',
@@ -507,7 +551,7 @@ export class MaileditorComponent implements OnInit {
       'text-transform': '',
       'vertical-align': '',
       'icon-height': '',
-      'icon-size': '',
+      'icon-size': '20px',
       'inner-padding': '',
       'line-height': '',
       'mode': '',
@@ -681,6 +725,13 @@ export class MaileditorComponent implements OnInit {
         this.maileditorSocial = item;
         break;
       }
+      case 'Footer': {
+        console.log(item);
+        this.Footer = true;
+        this.maileditorFooter = item;
+        break;
+      }
+      
       default: {
         // statements;
         break;
@@ -758,10 +809,12 @@ export class MaileditorComponent implements OnInit {
 
   togglebackgroundrepeat() {
     if (this.maileditorSection.style['background-repeat'] === 'repeat') {
-      this.maileditorSection.style['background-repeat'] = 'no-repeat'
-    } else {
-      this.maileditorSection.style['background-repeat'] = 'repeat'
+      this.maileditorSection.style['background-repeat'] = null;
     }
+    if (this.maileditorSection.style['background-repeat'] !== 'repeat') {
+      this.maileditorSection.style['background-repeat'] = 'repeat';
+    }
+
   }
 
   // Next/previous controls
@@ -840,7 +893,7 @@ export class MaileditorComponent implements OnInit {
     }
 
     if (maileditorSocial.elements[i].style.name === 'xing') {
-      maileditorSocial.elements[i].iconlocation = BASE_URL + '/assets/icons/facebook.png'
+      maileditorSocial.elements[i].iconlocation = BASE_URL + '/assets/icons/xing.png'
     }
 
     if (maileditorSocial.elements[i].style.name === 'instagram') {
@@ -866,7 +919,7 @@ export class MaileditorComponent implements OnInit {
       maileditorSocial.elements[i].iconlocation = BASE_URL + '/assets/icons/instagram.png'
     }
     if (maileditorSocial.elements[i].style.name === 'web') {
-      maileditorSocial.elements[i].iconlocation = BASE_URL + '/assets/icons/web.png'
+      maileditorSocial.elements[i].iconlocation = BASE_URL + '/assets/icons/colour-cirle-set/web/cloud.png'
     }
     if (maileditorSocial.elements[i].style.name === 'snapchat') {
       maileditorSocial.elements[i].iconlocation = BASE_URL + '/assets/icons/snapchat.png'
@@ -878,6 +931,20 @@ export class MaileditorComponent implements OnInit {
       maileditorSocial.elements[i].iconlocation = BASE_URL + '/assets/icons/vimeo.png'
     }
     console.log(maileditorSocial);
+  }
+
+  copyMessage(val: string){
+    let selBox = document.createElement('textarea');
+    selBox.style.position = 'fixed';
+    selBox.style.left = '0';
+    selBox.style.top = '0';
+    selBox.style.opacity = '0';
+    selBox.value = val;
+    document.body.appendChild(selBox);
+    selBox.focus();
+    selBox.select();
+    document.execCommand('copy');
+    document.body.removeChild(selBox);
   }
 }
 

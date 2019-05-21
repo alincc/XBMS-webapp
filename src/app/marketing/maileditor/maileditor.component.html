@@ -27,7 +27,19 @@
         <div *ngIf="item.type === 'Social'">
           <mat-icon matSuffix>thumb_up_alt</mat-icon> {{item.type}}
         </div>
+        <div *ngIf="item.type === 'Footer'">
+          <mat-icon matSuffix>fingerprint</mat-icon> {{item.type}}
+        </div>
       </div>
+      <br>
+      <div fxLayout="column" style="width: 200px;" matTooltip="Click to Copy, insert in text to retreive mailinglist information">
+      <label (mouseenter)="$event.stopImmediatePropagation()" (mouseleave)="$event.stopImmediatePropagation()" matTooltip="Copied!" #tooltip="matTooltip" (click)="tooltip.toggle()" (click)="copyMessage('%recipient_name%')">%recipient_name%</label>
+      <label (mouseenter)="$event.stopImmediatePropagation()" (mouseleave)="$event.stopImmediatePropagation()" matTooltip="Copied!" #tooltip="matTooltip" (click)="tooltip.toggle()" (click)="copyMessage('%recipient.company%')">%recipient.company%</label>
+      <label (mouseenter)="$event.stopImmediatePropagation()" (mouseleave)="$event.stopImmediatePropagation()" matTooltip="Copied!" #tooltip="matTooltip" (click)="tooltip.toggle()" (click)="copyMessage('%recipient%')">%recipient%</label>
+      <label (mouseenter)="$event.stopImmediatePropagation()" (mouseleave)="$event.stopImmediatePropagation()" matTooltip="Copied!" #tooltip="matTooltip" (click)="tooltip.toggle()" (click)="copyMessage('%recipient.firstname%')">%recipient.firstname%</label>
+      <label (mouseenter)="$event.stopImmediatePropagation()" (mouseleave)="$event.stopImmediatePropagation()" matTooltip="Copied!" #tooltip="matTooltip" (click)="tooltip.toggle()" (click)="copyMessage('%recipient.lastname%')">%recipient.lastname%</label>
+      </div>
+      <br>
       <button *ngIf="!updatemail" a mat-raised-button (click)="ConvertToMail()">Convert</button>
       <button *ngIf="updatemail" a mat-raised-button (click)="ConvertToMail()">Update</button>
       <button a mat-raised-button (click)="CreateNewMail()">Create New</button>
@@ -45,14 +57,16 @@
       <tr>
         <td>
           <mat-form-field style="width: 95%;" appearance="outline">
-            <input [(ngModel)]=subject type="text" matInput placeholder="Subject Line">
+            <input #inputsubject [(ngModel)]=subject type="text" matInput placeholder="Subject Line">
             <mat-icon matTooltip="select Emoji" (click)="onshowemoji('subject')" matSuffix>insert_emoticon</mat-icon>
+            <mat-hint align="end">{{inputsubject.value?.length || 0}}/78</mat-hint>
           </mat-form-field>
         </td>
         <td>
           <mat-form-field style="width: 95%;" appearance="outline">
-            <input [(ngModel)]=preview type="text" matInput placeholder="preview">
+            <input #inputpreview [(ngModel)]=preview type="text" matInput placeholder="Preview">
             <mat-icon matTooltip="select Emoji" (click)="onshowemoji('preview')" matSuffix>insert_emoticon</mat-icon>
+            <mat-hint align="end">{{inputpreview.value?.length || 0}}/90</mat-hint>
           </mat-form-field>
         </td>
       </tr>
@@ -134,7 +148,7 @@
               </div>
               <div *ngIf="item.type === 'Social'" [ngStyle]="item.style">
                 <div class="social-container">
-                  <div *ngFor="let socialelement of item.elements">
+                  <div *ngFor="let socialelement of item.elements" [ngClass]="{ verticalSocial: item.style.mode === 'horizontal', horizontalSocial: item.style.mode === 'vertical' }">
                     <img [ngStyle]="socialelement.style" src={{socialelement.iconlocation}}>
                     <label (click)="onSelectTemplatePart(item, i3)" >{{socialelement.content}}</label>
                   </div>
@@ -142,6 +156,10 @@
               </div>
               <div *ngIf="item.type === 'Button'">
                 <button (click)="onSelectTemplatePart(item, i3)" [ngStyle]="item.style">{{item.buttontext}}</button>
+              </div>
+              <div *ngIf="item.type === 'Footer'" (click)="onSelectTemplatePart(item, i3)">
+                
+                <p [ngStyle]="item.style" [innerHTML]="item.content"></p>
               </div>
               <mat-icon (click)="onDeleteItemPart(i1, i2, i3)" class="iconsize-10 icon-label" matSuffix>delete
               </mat-icon>
@@ -716,6 +734,16 @@
       <table>
         <tr>
           <td>
+              <mat-form-field>
+              <mat-select [(value)]="maileditorSocial.style.mode" placeholder="Direction Icons">
+                  <mat-option value="horizontal">horizontal</mat-option>
+                  <mat-option value="vertical">vertical</mat-option>
+                </mat-select>
+              </mat-form-field>
+          </td>
+        </tr>
+        <tr>
+          <td>
             <div *ngFor="let socialelement of maileditorSocial.elements; let i = index;">
               <mat-form-field>
                 <input [(ngModel)]="socialelement.content" type="text" matInput placeholder="Title">
@@ -746,8 +774,25 @@
           <mat-icon (click)="addElementToSocialArray()">add</mat-icon>
         </tr>
       </table>
+    </div>
 
-
+    <div *ngIf="Footer" class="edit_table">Edit Footer
+      <table style="width: 100%;">
+        <tr>
+          <td>
+              <mat-form-field style="width: 90%;">
+                  <textarea style="width: 90%;" [(ngModel)]="maileditorFooter.content" [matTextareaAutosize] type="text" matInput placeholder="Footer Text"></textarea>
+                </mat-form-field>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <mat-form-field>
+              <input [(ngModel)]="maileditorFooter.style['font-size']"  type="text" matInput placeholder="font size">
+            </mat-form-field>
+          </td>
+        </tr>
+      </table>
     </div>
   </mat-card>
 

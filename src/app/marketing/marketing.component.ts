@@ -131,6 +131,7 @@ export class MarketingComponent implements OnInit {
 
   public Account: Account = new Account();
   public Company: Company[];
+  public company: Company = new Company;
   public Mailing: Mailing[];
   public newMailing: Mailing = new Mailing();
   public selectedMailing: Mailing;
@@ -239,7 +240,7 @@ export class MarketingComponent implements OnInit {
 
   public firstname;
   public lastname;
-  public company;
+  public companyname;
   public title;
   public minDate = new Date(2017, 0, 1);
   public maxDate = new Date(2030, 0, 1);
@@ -351,7 +352,12 @@ export class MarketingComponent implements OnInit {
               // console.log(this.Account.standardrelation);
               this.RelationsApi.findById(this.Account.standardrelation)
                 .subscribe(rel => {
-                  this.onSelectRelation(rel, null)
+                  this.onSelectRelation(rel, null),
+                  this.CompanyApi.findById(this.Account.companyId)
+                  .subscribe((company: Company) => {
+                    this.company = company;
+                    //console.log(this.company);
+                  });
                 })
             }
             this.getrelationsEntry()
