@@ -18,7 +18,11 @@ import { TextEditorDialog } from './texteditordialog.component';
 import { DomSanitizer } from '@angular/platform-browser';
 import { DialogsService } from './../../dialogsservice/dialogs.service';
 import { MatSnackBar, MatSnackBarConfig, MatInput, MatAutocompleteSelectedEvent } from '@angular/material';
+import { map, startWith } from "rxjs/operators";
+import { Observable, BehaviorSubject } from 'rxjs';
+import { fontoptions } from '../../settings/google-fonts-list';
 
+import { FormControl, FormGroupDirective, NgForm, Validators, FormBuilder, FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'app-maileditor',
@@ -99,6 +103,7 @@ export class MaileditorComponent implements OnInit {
   private toolboxAccordion = this.createNewItem('Accordion');
   private toolboxSocial = this.createNewItem('Social');
   private toolboxfooter;
+  public fontlist: string[] = fontoptions;
 
   toolset = [
     this.toolboximage,
@@ -110,6 +115,8 @@ export class MaileditorComponent implements OnInit {
     this.toolboxSocial,
   ];
 
+  myControlfont: FormControl = new FormControl();
+  filteredfonts: Observable<string[]>;
 
 
   constructor(
@@ -143,6 +150,16 @@ export class MaileditorComponent implements OnInit {
     console.log(this.company);
     this.toolboxfooter = this.createNewItem('Footer');
     this.toolset.push(this.toolboxfooter);
+
+    this.filteredfonts = this.myControlfont.valueChanges.pipe(
+      startWith(''),
+      map(value => this._filterfont(value))
+    );
+  }
+
+  private _filterfont(value: string): string[] {
+    const filterValue = value.toLowerCase();
+    return this.fontlist.filter(font => font.toLowerCase().includes(filterValue));
   }
 
   setupTemplate(): void {
@@ -236,7 +253,7 @@ export class MaileditorComponent implements OnInit {
     if (type === 'Text') {
       const newtext: MaileditorText = new MaileditorText();
       newtext.type = 'Text';
-      newtext.content = this.sanitizer.bypassSecurityTrustHtml('start writing');
+      newtext.content = 'start writing'; //this.sanitizer.bypassSecurityTrustHtml('start writing');
       newtext.typeformat = 'p';
       newtext.style = {
         'color': 'black',
@@ -613,8 +630,9 @@ export class MaileditorComponent implements OnInit {
                 .subscribe(res => {
                   this.snackBar.open("Template Created", undefined, {
                     duration: 2000,
-                    panelClass: 'snackbar-class'
-                  });
+                    panelClass: 'snackbar-class',
+                  }
+                  );
                 });
             }
 
@@ -678,6 +696,8 @@ export class MaileditorComponent implements OnInit {
     this.Divider = false;
     this.Carousel = false;
     this.Accordion = false;
+    this.Social = false;
+    this.Footer = false;
   }
 
   private onSelectTemplatePart(item, i3): void {

@@ -4,7 +4,13 @@
   <div fxFlex="20%" class="tools">
     <div cdkDropList #toolsetList="cdkDropList" [cdkDropListData]="toolset" class="tools-list"
       (cdkDropListDropped)="drop($event)">
-      <h2>Tools</h2>
+      <span>Tools</span>
+      <br style='margin: 5px'>
+      <button *ngIf="!updatemail" a mat-raised-button (click)="ConvertToMail()">Convert</button>
+      <button *ngIf="updatemail" a mat-raised-button (click)="ConvertToMail()">Update</button>
+      <button a mat-raised-button (click)="CreateNewMail()">Create New</button>
+      <br style='margin: 5px'>
+      <mat-progress-bar *ngIf='showprogressbar' mode="indeterminate"></mat-progress-bar>
       <div class="tool-box" *ngFor="let item of toolset" cdkDrag>
         <div *ngIf="item.type === 'Image'">
           <mat-icon matSuffix>add_photo_alternate</mat-icon> {{item.type}}
@@ -32,28 +38,59 @@
         </div>
       </div>
       <br>
-      <div fxLayout="column" style="width: 200px;" matTooltip="Click to Copy, insert in text to retreive mailinglist information">
-      <label (mouseenter)="$event.stopImmediatePropagation()" (mouseleave)="$event.stopImmediatePropagation()" matTooltip="Copied!" #tooltip="matTooltip" (click)="tooltip.toggle()" (click)="copyMessage('%recipient_name%')">%recipient_name%</label>
-      <label (mouseenter)="$event.stopImmediatePropagation()" (mouseleave)="$event.stopImmediatePropagation()" matTooltip="Copied!" #tooltip="matTooltip" (click)="tooltip.toggle()" (click)="copyMessage('%recipient.company%')">%recipient.company%</label>
-      <label (mouseenter)="$event.stopImmediatePropagation()" (mouseleave)="$event.stopImmediatePropagation()" matTooltip="Copied!" #tooltip="matTooltip" (click)="tooltip.toggle()" (click)="copyMessage('%recipient%')">%recipient%</label>
-      <label (mouseenter)="$event.stopImmediatePropagation()" (mouseleave)="$event.stopImmediatePropagation()" matTooltip="Copied!" #tooltip="matTooltip" (click)="tooltip.toggle()" (click)="copyMessage('%recipient.firstname%')">%recipient.firstname%</label>
-      <label (mouseenter)="$event.stopImmediatePropagation()" (mouseleave)="$event.stopImmediatePropagation()" matTooltip="Copied!" #tooltip="matTooltip" (click)="tooltip.toggle()" (click)="copyMessage('%recipient.lastname%')">%recipient.lastname%</label>
-      </div>
+      <mat-accordion>
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              Dynamic input
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+          <div fxLayout="column" style="width: 200px;"
+            matTooltip="Click to copy, insert in text to retreive mailinglist information">
+            <label (mouseenter)="$event.stopImmediatePropagation()" (mouseleave)="$event.stopImmediatePropagation()"
+              matTooltip="Copied!" #tooltip="matTooltip" (click)="tooltip.toggle()"
+              (click)="copyMessage('%recipient_name%')">%recipient_name%</label>
+            <label (mouseenter)="$event.stopImmediatePropagation()" (mouseleave)="$event.stopImmediatePropagation()"
+              matTooltip="Copied!" #tooltip="matTooltip" (click)="tooltip.toggle()"
+              (click)="copyMessage('%recipient.company%')">%recipient.company%</label>
+            <label (mouseenter)="$event.stopImmediatePropagation()" (mouseleave)="$event.stopImmediatePropagation()"
+              matTooltip="Copied!" #tooltip="matTooltip" (click)="tooltip.toggle()"
+              (click)="copyMessage('%recipient%')">%recipient%</label>
+            <label (mouseenter)="$event.stopImmediatePropagation()" (mouseleave)="$event.stopImmediatePropagation()"
+              matTooltip="Copied!" #tooltip="matTooltip" (click)="tooltip.toggle()"
+              (click)="copyMessage('%recipient.firstname%')">%recipient.firstname%</label>
+            <label (mouseenter)="$event.stopImmediatePropagation()" (mouseleave)="$event.stopImmediatePropagation()"
+              matTooltip="Copied!" #tooltip="matTooltip" (click)="tooltip.toggle()"
+              (click)="copyMessage('%recipient.lastname%')">%recipient.lastname%</label>
+          </div>
+        </mat-expansion-panel>
+      </mat-accordion>
       <br>
-      <button *ngIf="!updatemail" a mat-raised-button (click)="ConvertToMail()">Convert</button>
-      <button *ngIf="updatemail" a mat-raised-button (click)="ConvertToMail()">Update</button>
-      <button a mat-raised-button (click)="CreateNewMail()">Create New</button>
-      <mat-progress-bar *ngIf='showprogressbar' mode="indeterminate"></mat-progress-bar>
+      <mat-accordion>
+          <mat-expansion-panel>
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                Company Settings
+              </mat-panel-title>
+            </mat-expansion-panel-header>
+            <form>
+                <mat-form-field class="example-full-width">
+                  <input [(ngModel)]=company.font type="text" placeholder="Pick one" aria-label="Number" matInput
+                    [formControl]="myControlfont" [matAutocomplete]="auto">
+                  <mat-autocomplete #auto="matAutocomplete">
+                    <mat-option *ngFor="let font of filteredfonts | async" [value]="font">
+                      {{font}}
+                    </mat-option>
+                  </mat-autocomplete>
+                </mat-form-field>
+              </form>
+          </mat-expansion-panel>
+        </mat-accordion>
     </div>
   </div>
 
   <div fxFlex="70%" class="template" fxLayout="column">
     <table>
-      <tr>
-        <td>
-          <h2>Template</h2>
-        </td>
-      </tr>
       <tr>
         <td>
           <mat-form-field style="width: 95%;" appearance="outline">
@@ -64,7 +101,7 @@
         </td>
         <td>
           <mat-form-field style="width: 95%;" appearance="outline">
-            <input #inputpreview [(ngModel)]=preview type="text" matInput placeholder="Preview">
+            <input matTooltip="First lines shown in email client" #inputpreview [(ngModel)]=preview type="text" matInput placeholder="Preview">
             <mat-icon matTooltip="select Emoji" (click)="onshowemoji('preview')" matSuffix>insert_emoticon</mat-icon>
             <mat-hint align="end">{{inputpreview.value?.length || 0}}/90</mat-hint>
           </mat-form-field>
@@ -72,7 +109,7 @@
       </tr>
       <tr>
         <td>
-          
+
         </td>
       </tr>
       <tr *ngIf="showemoji">
@@ -83,7 +120,7 @@
           top: 8;
           left: 12;
           z-index: 20;">
-          <emoji-mart (emojiClick)="setemoji($event)" set="emojione"></emoji-mart>
+            <emoji-mart (emojiClick)="setemoji($event)" set="emojione"></emoji-mart>
           </div>
         </td>
       </tr>
@@ -110,11 +147,12 @@
               cdkDrag>
               <div *ngIf="item.type === 'Text'" (click)="onSelectTemplatePart(item, i3)">
                 <div (click)="onSelectTemplatePart(item, i3)" [innerHTML]="item.content"></div>
-                <mat-icon class="textbox-edit-button" class="iconsize-10 text-edit-icon" (click)="onSelectTemplatePart(item, i3)"
-                  (click)="openDialog()">mode_edit</mat-icon>
+                <mat-icon class="textbox-edit-button" class="iconsize-10 text-edit-icon"
+                  (click)="onSelectTemplatePart(item, i3)" (click)="openDialog()">mode_edit</mat-icon>
               </div>
               <div *ngIf="item.type === 'Image'">
-                <app-fileupload *ngIf="item.url.length < 1" [account]="account" [option]="option" (imgurl)="setimgurl($event, i1, i2, i3)">
+                <app-fileupload *ngIf="item.url.length < 1" [account]="account" [option]="option"
+                  (imgurl)="setimgurl($event, i1, i2, i3)">
                 </app-fileupload>
                 <img *ngIf="item.url.length > 0" src={{item.url}} [ngStyle]="item.style">
               </div>
@@ -139,18 +177,20 @@
                   <div *ngFor="let image of item.images">
                     <img class="mySlides fade" *ngIf="image.style.src" src={{image.style.src}} style="width:100%">
                   </div>
-                  <img  (click)="plusSlides(-1)" src={{item.style[right-icon]}}>
-                  <img  (click)="plusSlides(1)" src={{item.style[left-icon]}}>
-                  <div  *ngFor="let imagethumb of item.images; let i = index" style="display: inline-block;">
-                      <img *ngIf="imagethumb.style.src" (click)="currentSlide(i)" src={{imagethumb.style.src}} class="thumbnails">
-                    </div>
+                  <img (click)="plusSlides(-1)" src={{item.style[right-icon]}}>
+                  <img (click)="plusSlides(1)" src={{item.style[left-icon]}}>
+                  <div *ngFor="let imagethumb of item.images; let i = index" style="display: inline-block;">
+                    <img *ngIf="imagethumb.style.src" (click)="currentSlide(i)" src={{imagethumb.style.src}}
+                      class="thumbnails">
+                  </div>
                 </div>
               </div>
               <div *ngIf="item.type === 'Social'" [ngStyle]="item.style">
                 <div class="social-container">
-                  <div *ngFor="let socialelement of item.elements" [ngClass]="{ verticalSocial: item.style.mode === 'horizontal', horizontalSocial: item.style.mode === 'vertical' }">
+                  <div *ngFor="let socialelement of item.elements"
+                    [ngClass]="{ verticalSocial: item.style.mode === 'horizontal', horizontalSocial: item.style.mode === 'vertical' }">
                     <img [ngStyle]="socialelement.style" src={{socialelement.iconlocation}}>
-                    <label (click)="onSelectTemplatePart(item, i3)" >{{socialelement.content}}</label>
+                    <label (click)="onSelectTemplatePart(item, i3)">{{socialelement.content}}</label>
                   </div>
                 </div>
               </div>
@@ -158,7 +198,7 @@
                 <button (click)="onSelectTemplatePart(item, i3)" [ngStyle]="item.style">{{item.buttontext}}</button>
               </div>
               <div *ngIf="item.type === 'Footer'" (click)="onSelectTemplatePart(item, i3)">
-                
+
                 <p [ngStyle]="item.style" [innerHTML]="item.content"></p>
               </div>
               <mat-icon (click)="onDeleteItemPart(i1, i2, i3)" class="iconsize-10 icon-label" matSuffix>delete
@@ -197,20 +237,18 @@
         <tr>
           <td>
             <mat-accordion>
-                <mat-expansion-panel>
-                  <mat-expansion-panel-header>
-                    <mat-panel-title>
-                      Select Background Color
-                    </mat-panel-title>
-                  </mat-expansion-panel-header>
-                  <br>
-                  <span [style.background]="maileditorColumn.style['background-color']"
-                  [cpToggle]="true"
-                  [cpDialogDisplay]="'inline'"
-                  [cpCancelButton]="true"
+              <mat-expansion-panel>
+                <mat-expansion-panel-header>
+                  <mat-panel-title>
+                    Select Background Color
+                  </mat-panel-title>
+                </mat-expansion-panel-header>
+                <br>
+                <span [style.background]="maileditorColumn.style['background-color']" [cpToggle]="true"
+                  [cpDialogDisplay]="'inline'" [cpCancelButton]="true"
                   [(colorPicker)]="maileditorColumn.style['background-color']"></span>
-                </mat-expansion-panel>
-              </mat-accordion>
+              </mat-expansion-panel>
+            </mat-accordion>
           </td>
         </tr>
         <tr>
@@ -243,8 +281,8 @@
         <tr>
           <td>
             <mat-form-field>
-              <input [(ngModel)]="selectedborder.width" type="number" matInput
-                placeholder="border width" (change)="onChangeBorder(maileditorColumn)">
+              <input [(ngModel)]="selectedborder.width" type="number" matInput placeholder="border width"
+                (change)="onChangeBorder(maileditorColumn)">
               <mat-icon matSuffix>mode_edit</mat-icon>
               <mat-hint>px</mat-hint>
             </mat-form-field>
@@ -253,7 +291,8 @@
         <tr>
           <td>
             <mat-form-field>
-              <mat-select [(value)]="selectedborder.style" placeholder="style" (selectionChange)="onChangeBorder(maileditorColumn)">
+              <mat-select [(value)]="selectedborder.style" placeholder="style"
+                (selectionChange)="onChangeBorder(maileditorColumn)">
                 <mat-option value="none">None</mat-option>
                 <mat-option value="solid">Solid</mat-option>
                 <mat-option value="dotted">Dotted</mat-option>
@@ -277,11 +316,8 @@
                   </mat-panel-title>
                 </mat-expansion-panel-header>
                 <br>
-                <span [style.background]="selectedborder.color" 
-                [cpToggle]="true"
-                [cpDialogDisplay]="'inline'"
-                [cpCancelButton]="true"
-                [(colorPicker)]="selectedborder.color"></span>
+                <span [style.background]="selectedborder.color" [cpToggle]="true" [cpDialogDisplay]="'inline'"
+                  [cpCancelButton]="true" [(colorPicker)]="selectedborder.color"></span>
                 <button mat-button (click)="onChangeBorder(maileditorColumn)">confirm</button>
               </mat-expansion-panel>
             </mat-accordion>
@@ -312,29 +348,31 @@
         </tr> -->
         <tr>
           <td>
-              <mat-accordion>
-                  <mat-expansion-panel>
-                    <mat-expansion-panel-header>
-                      <mat-panel-title>
-                        Select Background Color
-                      </mat-panel-title>
-                    </mat-expansion-panel-header>
-                    <br>
-                    <span [style.background]="maileditorSection.style['background-color']"
-                    [cpToggle]="true"
-                    [cpDialogDisplay]="'inline'"
-                    [cpCancelButton]="true"
-                    [(colorPicker)]="maileditorSection.style['background-color']"></span>
-                  </mat-expansion-panel>
-                </mat-accordion>
+            <mat-accordion>
+              <mat-expansion-panel>
+                <mat-expansion-panel-header>
+                  <mat-panel-title>
+                    Select Background Color
+                  </mat-panel-title>
+                </mat-expansion-panel-header>
+                <br>
+                <span [style.background]="maileditorSection.style['background-color']" [cpToggle]="true"
+                  [cpDialogDisplay]="'inline'" [cpCancelButton]="true"
+                  [(colorPicker)]="maileditorSection.style['background-color']"></span>
+              </mat-expansion-panel>
+            </mat-accordion>
           </td>
         </tr>
         <tr>
           <td>
-              <img *ngIf="maileditorSection.style['background-url']" [src]= "maileditorSection.style['background-url']" class="carouselimages">
+            <div *ngIf="maileditorSection.style['background-url']">
+            <img  [src]="maileditorSection.style['background-url']"
+              class="carouselimages">
+              <mat-icon (click) = "maileditorSection.style['background-url'] = ''" class="icon-label" class="iconsize-12">delete</mat-icon>
+            </div>
               <app-fileupload *ngIf="!maileditorSection.style['background-url']" [account]="account" [option]="option"
               (imgurl)="setbackgroundImageSection($event)">
-              </app-fileupload>
+            </app-fileupload>
           </td>
         </tr>
         <tr>
@@ -349,7 +387,8 @@
         <tr>
           <td>
             <mat-form-field>
-              <input [(ngModel)]="maileditorSection.style['background-size']" type="text" matInput placeholder="Background size">
+              <input [(ngModel)]="maileditorSection.style['background-size']" type="text" matInput
+                placeholder="Background size">
               <mat-icon matSuffix>mode_edit</mat-icon>
               <mat-hint>%/px</mat-hint>
             </mat-form-field>
@@ -357,14 +396,14 @@
         </tr>
         <tr>
           <td>
-            <mat-slide-toggle (change)="togglebackgroundrepeat()" >Background Image Repeat</mat-slide-toggle>
+            <mat-slide-toggle (change)="togglebackgroundrepeat()">Background Image Repeat</mat-slide-toggle>
           </td>
         </tr>
         <tr>
           <td>
             <mat-form-field>
-              <input [(ngModel)]="selectedborder.width" type="number" matInput
-                placeholder="border width" (change)="onChangeBorder(maileditorSection)">
+              <input [(ngModel)]="selectedborder.width" type="number" matInput placeholder="border width"
+                (change)="onChangeBorder(maileditorSection)">
               <mat-icon matSuffix>mode_edit</mat-icon>
               <mat-hint>px</mat-hint>
             </mat-form-field>
@@ -373,7 +412,8 @@
         <tr>
           <td>
             <mat-form-field>
-              <mat-select [(value)]="selectedborder.style" placeholder="style" (selectionChange)="onChangeBorder(maileditorSection)">
+              <mat-select [(value)]="selectedborder.style" placeholder="style"
+                (selectionChange)="onChangeBorder(maileditorSection)">
                 <mat-option value="none">None</mat-option>
                 <mat-option value="solid">Solid</mat-option>
                 <mat-option value="dotted">Dotted</mat-option>
@@ -397,11 +437,8 @@
                   </mat-panel-title>
                 </mat-expansion-panel-header>
                 <br>
-                <span [style.background]="selectedborder.color" 
-                [cpToggle]="true"
-                [cpDialogDisplay]="'inline'"
-                [cpCancelButton]="true"
-                [(colorPicker)]="selectedborder.color"></span>
+                <span [style.background]="selectedborder.color" [cpToggle]="true" [cpDialogDisplay]="'inline'"
+                  [cpCancelButton]="true" [(colorPicker)]="selectedborder.color"></span>
                 <button mat-button (click)="onChangeBorder(maileditorSection)">confirm</button>
               </mat-expansion-panel>
             </mat-accordion>
@@ -520,7 +557,7 @@
             top: 8;
             left: 20;
             z-index: 20;">
-            <emoji-mart (emojiClick)="setemojibutton($event)" set="emojione"></emoji-mart>
+              <emoji-mart (emojiClick)="setemojibutton($event)" set="emojione"></emoji-mart>
             </div>
           </td>
         </tr>
@@ -534,7 +571,7 @@
         </tr>
         <tr>
           <td>
-             <mat-accordion>
+            <mat-accordion>
               <mat-expansion-panel>
                 <mat-expansion-panel-header>
                   <mat-panel-title>
@@ -542,11 +579,9 @@
                   </mat-panel-title>
                 </mat-expansion-panel-header>
                 <br>
-                <span [style.background]="maileditorButton.style['background-color']"
-                [cpToggle]="true"
-                [cpDialogDisplay]="'inline'"
-                [cpCancelButton]="true"
-                [(colorPicker)]="maileditorButton.style['background-color']"></span>
+                <span [style.background]="maileditorButton.style['background-color']" [cpToggle]="true"
+                  [cpDialogDisplay]="'inline'" [cpCancelButton]="true"
+                  [(colorPicker)]="maileditorButton.style['background-color']"></span>
               </mat-expansion-panel>
             </mat-accordion>
           </td>
@@ -561,11 +596,8 @@
                   </mat-panel-title>
                 </mat-expansion-panel-header>
                 <br>
-                <span [style.background]="maileditorButton.style.color"
-                [cpToggle]="true"
-                [cpDialogDisplay]="'inline'"
-                [cpCancelButton]="true"
-                [(colorPicker)]="maileditorButton.style.color"></span>
+                <span [style.background]="maileditorButton.style.color" [cpToggle]="true" [cpDialogDisplay]="'inline'"
+                  [cpCancelButton]="true" [(colorPicker)]="maileditorButton.style.color"></span>
               </mat-expansion-panel>
             </mat-accordion>
           </td>
@@ -611,8 +643,8 @@
         <tr>
           <td>
             <mat-form-field>
-              <input [(ngModel)]="selectedborder.width" type="number" matInput
-                placeholder="border width" (change)="onChangeBorder(maileditorButton)">
+              <input [(ngModel)]="selectedborder.width" type="number" matInput placeholder="border width"
+                (change)="onChangeBorder(maileditorButton)">
               <mat-icon matSuffix>mode_edit</mat-icon>
               <mat-hint>px</mat-hint>
             </mat-form-field>
@@ -621,7 +653,8 @@
         <tr>
           <td>
             <mat-form-field>
-              <mat-select [(value)]="selectedborder.style" placeholder="style" (selectionChange)="onChangeBorder(maileditorButton)">
+              <mat-select [(value)]="selectedborder.style" placeholder="style"
+                (selectionChange)="onChangeBorder(maileditorButton)">
                 <mat-option value="none">None</mat-option>
                 <mat-option value="solid">Solid</mat-option>
                 <mat-option value="dotted">Dotted</mat-option>
@@ -645,11 +678,8 @@
                   </mat-panel-title>
                 </mat-expansion-panel-header>
                 <br>
-                <span [style.background]="selectedborder.color" 
-                [cpToggle]="true"
-                [cpDialogDisplay]="'inline'"
-                [cpCancelButton]="true"
-                [(colorPicker)]="selectedborder.color"></span>
+                <span [style.background]="selectedborder.color" [cpToggle]="true" [cpDialogDisplay]="'inline'"
+                  [cpCancelButton]="true" [(colorPicker)]="selectedborder.color"></span>
                 <button mat-button (click)="onChangeBorder(maileditorButton)">confirm</button>
               </mat-expansion-panel>
             </mat-accordion>
@@ -679,7 +709,10 @@
         <tr>
           <td>
             <div *ngFor="let image of maileditorCarousel.images; let i = index">
-              <img *ngIf="image.style.src" src={{image.style.src}} class="carouselimages">
+              <div *ngIf="image.style.src">
+              <img src={{image.style.src}} class="carouselimages">
+              <mat-icon (click) = "image.style.src = ''" class="icon-label" class="iconsize-12">delete</mat-icon>
+            </div>
               <app-fileupload *ngIf="!image.style.src" [account]="account" [option]="option"
                 (imgurl)="setCarouselImage($event, i)">
               </app-fileupload>
@@ -688,7 +721,7 @@
         </tr>
         <tr>
           <td>
-              <mat-icon (click)="addImageToCarouselArray()">add</mat-icon>
+            <mat-icon (click)="addImageToCarouselArray()">add</mat-icon>
           </td>
         </tr>
       </table>
@@ -734,39 +767,51 @@
       <table>
         <tr>
           <td>
-              <mat-form-field>
+            <mat-form-field>
               <mat-select [(value)]="maileditorSocial.style.mode" placeholder="Direction Icons">
-                  <mat-option value="horizontal">horizontal</mat-option>
-                  <mat-option value="vertical">vertical</mat-option>
-                </mat-select>
-              </mat-form-field>
+                <mat-option value="horizontal">horizontal</mat-option>
+                <mat-option value="vertical">vertical</mat-option>
+              </mat-select>
+            </mat-form-field>
           </td>
         </tr>
         <tr>
           <td>
+
             <div *ngFor="let socialelement of maileditorSocial.elements; let i = index;">
-              <mat-form-field>
-                <input [(ngModel)]="socialelement.content" type="text" matInput placeholder="Title">
-              </mat-form-field>
-              <mat-form-field>
-                <input [(ngModel)]="socialelement.href" type="text" matInput placeholder="Link">
-              </mat-form-field>
-              <mat-form-field>
-                <mat-select [(value)]="socialelement.style.name" placeholder="Socialnetwork" (selectionChange)="onChangeSocial(maileditorSocial, i)">
-                  <mat-option value="facebook">facebook</mat-option>
-                  <mat-option value="twitter">twitter</mat-option>
-                  <mat-option value="pinterest">pinterest</mat-option>
-                  <mat-option value="linkedin">linkedin</mat-option>
-                  <mat-option value="tumblr">tumblr</mat-option>
-                  <mat-option value="xing">xing</mat-option>
-                  <mat-option value="github">github</mat-option>
-                  <mat-option value="instagram">instagram</mat-option>
-                  <mat-option value="web">web</mat-option>
-                  <mat-option value="snapchat">snapchat</mat-option>
-                  <mat-option value="youtube">youtube</mat-option>
-                  <mat-option value="vimeo">vimeo</mat-option>
-                </mat-select>
-              </mat-form-field>
+
+              <mat-accordion>
+                <mat-expansion-panel>
+                  <mat-expansion-panel-header>
+                    <mat-panel-title>
+                     Social link: {{socialelement.style.name}}
+                    </mat-panel-title>
+                  </mat-expansion-panel-header>
+                  <mat-form-field>
+                    <input [(ngModel)]="socialelement.content" type="text" matInput placeholder="Title">
+                  </mat-form-field>
+                  <mat-form-field>
+                    <input [(ngModel)]="socialelement.href" type="text" matInput placeholder="Link">
+                  </mat-form-field>
+                  <mat-form-field>
+                    <mat-select [(value)]="socialelement.style.name" placeholder="Socialnetwork"
+                      (selectionChange)="onChangeSocial(maileditorSocial, i)">
+                      <mat-option value="facebook">facebook</mat-option>
+                      <mat-option value="twitter">twitter</mat-option>
+                      <mat-option value="pinterest">pinterest</mat-option>
+                      <mat-option value="linkedin">linkedin</mat-option>
+                      <mat-option value="tumblr">tumblr</mat-option>
+                      <mat-option value="xing">xing</mat-option>
+                      <mat-option value="github">github</mat-option>
+                      <mat-option value="instagram">instagram</mat-option>
+                      <mat-option value="web">web</mat-option>
+                      <mat-option value="snapchat">snapchat</mat-option>
+                      <mat-option value="youtube">youtube</mat-option>
+                      <mat-option value="vimeo">vimeo</mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </mat-expansion-panel>
+              </mat-accordion>
             </div>
           </td>
         </tr>
@@ -780,15 +825,16 @@
       <table style="width: 100%;">
         <tr>
           <td>
-              <mat-form-field style="width: 90%;">
-                  <textarea style="width: 90%;" [(ngModel)]="maileditorFooter.content" [matTextareaAutosize] type="text" matInput placeholder="Footer Text"></textarea>
-                </mat-form-field>
+            <mat-form-field style="width: 90%;">
+              <textarea style="width: 90%;" [(ngModel)]="maileditorFooter.content" [matTextareaAutosize] type="text"
+                matInput placeholder="Footer Text"></textarea>
+            </mat-form-field>
           </td>
         </tr>
         <tr>
           <td>
             <mat-form-field>
-              <input [(ngModel)]="maileditorFooter.style['font-size']"  type="text" matInput placeholder="font size">
+              <input [(ngModel)]="maileditorFooter.style['font-size']" type="text" matInput placeholder="font size">
             </mat-form-field>
           </td>
         </tr>
