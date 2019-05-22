@@ -29,6 +29,7 @@ export interface MaileditorSectionInterface {
 }
 
 export interface MaileditorColumnInterface {
+  setflexalign: string;
   style: {
     'background-color': string,
     'border': string,
@@ -397,6 +398,7 @@ export class MaileditorImage implements MaileditorImageInterface {
 }
 
 export class MaileditorColumn implements MaileditorColumnInterface {
+  setflexalign: string;
   style: {
     'background-color': string,
     'border': string,

@@ -144,21 +144,21 @@
               <mat-icon (click)="onDeleteColumnPart(i1, i2)" class="iconsize-10" matSuffix>delete</mat-icon>
             </label>
             <div class="item-box" *ngFor="let item of column; let i3 = index;" (click)="onSelectTemplatePart(item, i3)"
-              cdkDrag>
-              <div *ngIf="item.type === 'Text'" (click)="onSelectTemplatePart(item, i3)">
+              cdkDrag [fxLayoutAlign]="columnStyleArray[i1][i2].setflexalign"> 
+              <div *ngIf="item.type === 'Text'" (click)="onSelectTemplatePart(item, i3)" class="full-width-item">
                 <div (click)="onSelectTemplatePart(item, i3)" [innerHTML]="item.content | safeHtml"></div>
                 <mat-icon class="textbox-edit-button" class="iconsize-10 text-edit-icon"
                   (click)="onSelectTemplatePart(item, i3)" (click)="openDialog()">mode_edit</mat-icon>
               </div>
-              <div *ngIf="item.type === 'Image'">
+              <div *ngIf="item.type === 'Image'" class="full-width-item">
                 <app-fileupload *ngIf="item.url.length < 1" [account]="account" [option]="option"
                   (imgurl)="setimgurl($event, i1, i2, i3)">
                 </app-fileupload>
                 <img *ngIf="item.url.length > 0" src={{item.url}} [ngStyle]="item.style">
               </div>
-              <div *ngIf="item.type === 'Divider'" [ngStyle]="item.style">
+              <div *ngIf="item.type === 'Divider'" [ngStyle]="item.style" class="full-width-item">
               </div>
-              <div *ngIf="item.type === 'Accordion'" [ngStyle]="item.style">
+              <div *ngIf="item.type === 'Accordion'" [ngStyle]="item.style" class="full-width-item">
                 <mat-accordion>
                   <div *ngFor="let elementAccordion of item.elements">
                     <mat-expansion-panel>
@@ -172,7 +172,7 @@
                   </div>
                 </mat-accordion>
               </div>
-              <div *ngIf="item.type === 'Carousel'" [ngStyle]="item.style">
+              <div *ngIf="item.type === 'Carousel'" [ngStyle]="item.style" class="full-width-item">
                 <div class="slideshow-container">
                   <div *ngFor="let image of item.images">
                     <img class="mySlides fade" *ngIf="image.style.src" src={{image.style.src}} style="width:100%">
@@ -185,7 +185,7 @@
                   </div>
                 </div>
               </div>
-              <div *ngIf="item.type === 'Social'" [ngStyle]="item.style">
+              <div *ngIf="item.type === 'Social'" [ngStyle]="item.style" class="full-width-item">
                 <div class="social-container">
                   <div *ngFor="let socialelement of item.elements"
                     [ngClass]="{ verticalSocial: item.style.mode === 'horizontal', horizontalSocial: item.style.mode === 'vertical' }">
@@ -194,7 +194,8 @@
                   </div>
                 </div>
               </div>
-              <div *ngIf="item.type === 'Button'">
+              <!--create dynamic flex-start  flex-end space-around center-->
+              <div *ngIf="item.type === 'Button'" class="full-width-item"> 
                 <button (click)="onSelectTemplatePart(item, i3)" [ngStyle]="item.style">{{item.buttontext}}</button>
               </div>
               <div *ngIf="item.type === 'Footer'" (click)="onSelectTemplatePart(item, i3)">
@@ -204,7 +205,7 @@
               <mat-icon (click)="onDeleteItemPart(i1, i2, i3)" class="iconsize-10 icon-label" matSuffix>delete
               </mat-icon>
             </div>
-          </div>
+          </div> 
         </div>
       </div>
 
@@ -224,7 +225,7 @@
               <mat-hint>%/px</mat-hint>
             </mat-form-field>
           </td>
-
+          </tr>
         <tr>
           <td>
             <mat-form-field>
@@ -233,6 +234,20 @@
               <mat-hint>%/px</mat-hint>
             </mat-form-field>
           </td>
+        </tr>
+        <tr>
+          <td>
+            <mat-form-field>
+              <mat-select [(value)]="maileditorColumn.style['vertical-align']" placeholder="Vertical align"  
+              (selectionChange)="changeverticalalign($event)">
+                <mat-option value="middle">middle</mat-option>
+                <mat-option value="top">top</mat-option>
+                <mat-option value="bottom">bottom</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </td>
+        </tr>
+         
 
         <tr>
           <td>
@@ -564,6 +579,22 @@
         <tr>
           <td>
             <mat-form-field>
+              <mat-select [(value)]="maileditorButton.style['font-family']">
+                <mat-option>None</mat-option>
+                <mat-option value="Arial, Helvetica, sans-serif">Arial</mat-option>
+                <mat-option value="'Arial Black', Gadget, sans-serif">Arial Black</mat-option>
+                <mat-option value="Tahoma, Geneva, sans-serif">Tahoma</mat-option>
+                <mat-option value="'Times New Roman', Times, serif">Times New Roman</mat-option>
+                <mat-option value="Roboto">Roboto</mat-option>
+                <mat-option value="Open Sans">Open Sans</mat-option>
+                <mat-option value="Baloo Bhai">Baloo Bhai</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <mat-form-field>
               <input [(ngModel)]="maileditorButton.url" type="text" matInput placeholder="Button URL">
               <mat-icon matSuffix>mode_edit</mat-icon>
             </mat-form-field>
@@ -602,20 +633,7 @@
             </mat-accordion>
           </td>
         </tr>
-        <tr>
-          <td>
-            <mat-form-field>
-              <mat-select [(value)]="maileditorButton.style['font-family']">
-                <mat-option>None</mat-option>
-                <mat-option value="Arial, Helvetica, sans-serif">Arial</mat-option>
-                <mat-option value="'Arial Black', Gadget, sans-serif">Arial Black</mat-option>
-                <mat-option value="Tahoma, Geneva, sans-serif">Tahoma</mat-option>
-                <mat-option value="'Times New Roman', Times, serif">Times New Roman</mat-option>
-              </mat-select>
-            </mat-form-field>
-          </td>
-        </tr>
-        <tr>
+         <tr>
           <td>
             <mat-form-field>
               <input [(ngModel)]="maileditorButton.style['border-radius']" type="text" matInput
@@ -835,6 +853,39 @@
           <td>
             <mat-form-field>
               <input [(ngModel)]="maileditorFooter.style['font-size']" type="text" matInput placeholder="font size">
+            </mat-form-field>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <mat-accordion>
+              <mat-expansion-panel>
+                <mat-expansion-panel-header>
+                  <mat-panel-title>
+                    Background Color
+                  </mat-panel-title>
+                </mat-expansion-panel-header>
+                <br>
+                <span [style.background]="maileditorFooter.style['color']" [cpToggle]="true"
+                  [cpDialogDisplay]="'inline'" [cpCancelButton]="true"
+                  [(colorPicker)]="maileditorFooter.style['color']"></span>
+              </mat-expansion-panel>
+            </mat-accordion>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <mat-form-field>
+              <mat-select [(value)]="maileditorFooter.style['font-family']">
+                <mat-option>None</mat-option>
+                <mat-option value="Arial, Helvetica, sans-serif">Arial</mat-option>
+                <mat-option value="'Arial Black', Gadget, sans-serif">Arial Black</mat-option>
+                <mat-option value="Tahoma, Geneva, sans-serif">Tahoma</mat-option>
+                <mat-option value="'Times New Roman', Times, serif">Times New Roman</mat-option>
+                <mat-option value="Roboto">Roboto</mat-option>
+                <mat-option value="Open Sans">Open Sans</mat-option>
+                <mat-option value="Baloo Bhai">Baloo Bhai</mat-option>
+              </mat-select>
             </mat-form-field>
           </td>
         </tr>

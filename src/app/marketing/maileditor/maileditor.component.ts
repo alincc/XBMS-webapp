@@ -105,6 +105,7 @@ export class MaileditorComponent implements OnInit {
   private toolboxfooter;
   public fontlist: string[] = fontoptions;
 
+  
   toolset = [
     this.toolboximage,
     this.toolboxtext,
@@ -210,11 +211,12 @@ export class MaileditorComponent implements OnInit {
 
   addToSectionArray(i1): void {
     // add column to section array and to style array
-    const column = [];
+    const column = [[]];
     this.mailtemplateArray[i1].push([]);
     const columnstyleIns: MaileditorColumn = new MaileditorColumn();
+    columnstyleIns.setflexalign = 'space-around center';
     columnstyleIns.style = {
-      'background-color': '',
+      'background-color': 'none',
       'border': '',
       'border-bottom': '',
       'border-left': '',
@@ -248,6 +250,7 @@ export class MaileditorComponent implements OnInit {
       console.log(type, arrayItem)
       const newdata = this.createNewItem(type);
       this.mailtemplateArray[i1][i2].push(newdata);
+
     } else {
       transferArrayItem(event.previousContainer.data, event.container.data, event.previousIndex, event.currentIndex);
     }
@@ -257,7 +260,7 @@ export class MaileditorComponent implements OnInit {
     if (type === 'Text') {
       const newtext: MaileditorText = new MaileditorText();
       newtext.type = 'Text';
-      newtext.content = 'start writing'; //this.sanitizer.bypassSecurityTrustHtml('start writing');
+      newtext.content = 'start writing'; // this.sanitizer.bypassSecurityTrustHtml('start writing');
       newtext.typeformat = 'p';
       newtext.style = {
         'color': 'black',
@@ -285,8 +288,8 @@ export class MaileditorComponent implements OnInit {
       newfooter.type = 'Footer';
       const footercontent =  this.company.companyname + ', ' + this.company.address + ', ' +
       this.company.zipcode + ', ' + this.company.country +
-      ', feel free to unsubscribe if you do not like to receive our emails %unsubscribe_url%';
-      newfooter.content = footercontent; //this.sanitizer.bypassSecurityTrustHtml(footercontent);
+      ', feel free to <a href="%unsubscribe_url%">unsubscribe</a> if you do not like to receive our emails';
+      newfooter.content = footercontent; // this.sanitizer.bypassSecurityTrustHtml(footercontent);
       newfooter.typeformat = 'p';
       newfooter.style = {
         'color': 'grey',
@@ -599,7 +602,7 @@ export class MaileditorComponent implements OnInit {
     this.mailingApi.mjml(this.option.id, sendobject).subscribe((data) => {
       this.showprogressbar = false;
       // console.log(data.html);
-      const previewstring = '<div style="width: 600px; height: 800px;>"' + data.html + '</div>';
+      const previewstring = '<div style="width: 600px; height: 500px;>"' + data.html + '</div>';
       const previewhtml = [];
       previewhtml.push(this.sanitizer.bypassSecurityTrustHtml(previewstring));
       this.dialogsService
@@ -958,7 +961,7 @@ export class MaileditorComponent implements OnInit {
     console.log(maileditorSocial);
   }
 
-  copyMessage(val: string){
+  copyMessage(val: string) {
     let selBox = document.createElement('textarea');
     selBox.style.position = 'fixed';
     selBox.style.left = '0';
@@ -970,6 +973,14 @@ export class MaileditorComponent implements OnInit {
     selBox.select();
     document.execCommand('copy');
     document.body.removeChild(selBox);
+  }
+
+  changeverticalalign() {
+    // flex-start  flex-end space-around center
+    if (this.maileditorColumn.style['vertical-align'] === 'top') { this.maileditorColumn.setflexalign = 'start' }
+    if (this.maileditorColumn.style['vertical-align'] === 'middle') { this.maileditorColumn.setflexalign = 'space-around center' }
+    if (this.maileditorColumn.style['vertical-align'] === 'bottom') { this.maileditorColumn.setflexalign = 'end' }
+    console.log(this.maileditorColumn);
   }
 }
 
