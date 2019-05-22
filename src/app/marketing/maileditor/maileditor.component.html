@@ -70,7 +70,7 @@
           <mat-expansion-panel>
             <mat-expansion-panel-header>
               <mat-panel-title>
-                Company Settings
+                Email Settings
               </mat-panel-title>
             </mat-expansion-panel-header>
             <form>
@@ -146,7 +146,7 @@
             <div class="item-box" *ngFor="let item of column; let i3 = index;" (click)="onSelectTemplatePart(item, i3)"
               cdkDrag>
               <div *ngIf="item.type === 'Text'" (click)="onSelectTemplatePart(item, i3)">
-                <div (click)="onSelectTemplatePart(item, i3)" [innerHTML]="item.content"></div>
+                <div (click)="onSelectTemplatePart(item, i3)" [innerHTML]="item.content | safeHtml"></div>
                 <mat-icon class="textbox-edit-button" class="iconsize-10 text-edit-icon"
                   (click)="onSelectTemplatePart(item, i3)" (click)="openDialog()">mode_edit</mat-icon>
               </div>

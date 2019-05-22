@@ -69,7 +69,7 @@ import {DragDropModule} from '@angular/cdk/drag-drop';
 import { ColorPickerModule } from 'ngx-color-picker';
 import { FileuploadComponent, dialoggallerycomponent } from './shared/fileupload/fileupload.component';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-
+import { SafeHtml } from './pipe/safehtmlpipe.component';
 
 @NgModule({
   declarations: [
@@ -92,7 +92,8 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
     FileuploadComponent,
     dialoggallerycomponent,
     TextEditorDialog,
-    WordpressUploadDialogComponent
+    WordpressUploadDialogComponent,
+    SafeHtml
   ],
 
    entryComponents: [

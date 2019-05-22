@@ -130,6 +130,8 @@ export class MaileditorComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.toolboxfooter = this.createNewItem('Footer');
+    this.toolset.push(this.toolboxfooter);
     // when openeing existing mail from template overview udpatemailingobj will exist. 
     if (this.updateMailingObj !== undefined) {
       if (Object.keys(this.updateMailingObj).length > 0) {
@@ -147,9 +149,8 @@ export class MaileditorComponent implements OnInit {
     }
 
     // move creation to wait for company info to resolve
-    console.log(this.company);
-    this.toolboxfooter = this.createNewItem('Footer');
-    this.toolset.push(this.toolboxfooter);
+    // console.log(this.company);
+
 
     this.filteredfonts = this.myControlfont.valueChanges.pipe(
       startWith(''),
@@ -163,11 +164,14 @@ export class MaileditorComponent implements OnInit {
   }
 
   setupTemplate(): void {
+    this.mailtemplateArray = [];
+    this.sectionStyleArray = [];
+    this.columnStyleArray = [];
     this.addToMailTemplateArray()
     const texttool = this.createNewItem('Text')
     this.mailtemplateArray[0][0].push(texttool);
     console.log("standard components created");
-    console.log(this.updateMailingObj);
+
   }
 
   addToMailTemplateArray(): void {
@@ -594,9 +598,10 @@ export class MaileditorComponent implements OnInit {
 
     this.mailingApi.mjml(this.option.id, sendobject).subscribe((data) => {
       this.showprogressbar = false;
-      console.log(data.html);
-      let previewhtml = [];
-      previewhtml.push(this.sanitizer.bypassSecurityTrustHtml(data.html))
+      // console.log(data.html);
+      const previewstring = '<div style="width: 600px; height: 800px;>"' + data.html + '</div>';
+      const previewhtml = [];
+      previewhtml.push(this.sanitizer.bypassSecurityTrustHtml(previewstring));
       this.dialogsService
         .confirm('Preview', 'Add to Templates?', previewhtml[0])
         .subscribe((res) => {
@@ -800,12 +805,12 @@ export class MaileditorComponent implements OnInit {
     console.log(this.maileditorText.content)
     const dialogRef = this.dialog.open(TextEditorDialog, {
       width: '800px',
-      data: this.maileditorText.content.changingThisBreaksApplicationSecurity,
+      data: this.maileditorText.content, //changingThisBreaksApplicationSecurity,
       id: this.option.id
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      this.maileditorText.content = this.sanitizer.bypassSecurityTrustHtml(result);
+      this.maileditorText.content = result; //this.sanitizer.bypassSecurityTrustHtml(result);
     });
   }
 
@@ -903,7 +908,7 @@ export class MaileditorComponent implements OnInit {
   CreateNewMail(): void {
     // reset existing and rebuild component
     this.updateMailingObj = undefined;
-    this.ngOnInit();
+    this.setupTemplate();
   }
 
   onChangeSocial(maileditorSocial: MaileditorSocial, i): void {
