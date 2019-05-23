@@ -19,7 +19,7 @@
   min-width: 300px;
   margin-top: 10px;
   position: relative;
-  overflow: hidden;
+  // overflow: hidden;
 }
 
 .template {
@@ -283,16 +283,34 @@
 }
 
 .verticalSocial {
-
+  display: inline-block;
 }
 
 .horizontalSocial {
-  display: inline-block;
+  
 }
 
 .full-width-item {
   width: 100%;
 }
+
+p {
+  font-family: Lato;
+}
+
+.speed-dial-container {
+  position: absolute;
+  right: 15px;
+}
+
+.speed-dial-container.top {
+  top: 15px;
+}
+
+.speed-dial-container.bottom {
+  bottom: 15px;
+}
+
 
 
 

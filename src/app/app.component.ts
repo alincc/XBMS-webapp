@@ -9,6 +9,11 @@ import { Router } from '@angular/router';
 import { map, distinctUntilChanged, share, filter, throttleTime, pairwise } from 'rxjs/operators';
 import { fromEvent, Observable } from 'rxjs';
 import { PwaService } from './pwa.service';
+import {
+  BASE_URL,
+  API_VERSION,
+  LoopBackConfig
+} from './shared/';
 
 enum VisibilityState {
   Visible = 'visible',
@@ -28,7 +33,9 @@ enum Direction {
 })
 
 
+
 export class AppComponent implements AfterViewInit {
+
   public scrolleffect = false;
   public Account: Account = new Account();
   public position = false;
@@ -46,22 +53,61 @@ export class AppComponent implements AfterViewInit {
     private renderer: Renderer2,
     public router: Router,
     public accountApi: AccountApi,
-    iconRegistry: MatIconRegistry, sanitizer: DomSanitizer) {
-    iconRegistry.addSvgIcon(
-      'linkedin',
-      sanitizer.bypassSecurityTrustResourceUrl('assets/icons/linkedin.svg'));
+    private iconRegistry: MatIconRegistry,
+    private sanitizer: DomSanitizer) {
+    this.iconRegistry.addSvgIcon(
+      'xbms_linkedin',
+      this.sanitizer.bypassSecurityTrustResourceUrl('assets/icons/linkedin.svg'));
 
-    iconRegistry.addSvgIcon(
-      'twitter',
-      sanitizer.bypassSecurityTrustResourceUrl('assets/icons/twitter.svg'));
+    this.iconRegistry.addSvgIcon(
+      'xbms_twitter',
+      this.sanitizer.bypassSecurityTrustResourceUrl('assets/icons/twitter.svg'));
 
-    iconRegistry.addSvgIcon(
-      'facebook',
-      sanitizer.bypassSecurityTrustResourceUrl('assets/icons/facebook.svg'));
+    this.iconRegistry.addSvgIcon(
+      'xbms_facebook',
+      this.sanitizer.bypassSecurityTrustResourceUrl('assets/icons/facebook.svg'));
 
-    iconRegistry.addSvgIcon(
-      'instagram',
-      sanitizer.bypassSecurityTrustResourceUrl('assets/icons/instagram.svg'));
+    this.iconRegistry.addSvgIcon(
+      'xbms_instagram',
+      this.sanitizer.bypassSecurityTrustResourceUrl('assets/icons/instagram.svg'));
+
+    this.iconRegistry.addSvgIcon(
+      'xbms_pinterest',
+      this.sanitizer.bypassSecurityTrustResourceUrl('assets/icons/pinterest.svg'));
+
+    this.iconRegistry.addSvgIcon(
+      'xbms_tumblr',
+      this.sanitizer.bypassSecurityTrustResourceUrl('assets/icons/tumblr.svg'));
+
+    this.iconRegistry.addSvgIcon(
+      'xbms_web',
+      this.sanitizer.bypassSecurityTrustResourceUrl('assets/icons/web.svg'));
+
+    this.iconRegistry.addSvgIcon(
+      'xbms_xing',
+      this.sanitizer.bypassSecurityTrustResourceUrl('assets/icons/xing.svg'));
+
+
+    this.iconRegistry.addSvgIcon(
+      'xbms_snapchat',
+      this.sanitizer.bypassSecurityTrustResourceUrl('assets/icons/snapchat.svg'));
+
+
+    this.iconRegistry.addSvgIcon(
+      'xbms_youtube',
+      this.sanitizer.bypassSecurityTrustResourceUrl('assets/icons/youtube.svg'));
+
+
+    this.iconRegistry.addSvgIcon(
+      'xbms_vimeo',
+      this.sanitizer.bypassSecurityTrustResourceUrl('assets/icons/vimeo.svg'));
+
+    this.iconRegistry.addSvgIcon(
+      'xbms_github',
+      this.sanitizer.bypassSecurityTrustResourceUrl('assets/icons/github.svg'));
+
+    LoopBackConfig.setBaseURL(BASE_URL);
+    LoopBackConfig.setApiVersion(API_VERSION);
   }
 
 

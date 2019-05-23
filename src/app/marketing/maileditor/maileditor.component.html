@@ -888,7 +888,7 @@
       </table>
     </div>
 
-    <div *ngIf="Social" class="edit_table">Edit social-container
+    <div *ngIf="Social" class="edit_table">Edit Socialmedia
       <table>
         <tr>
           <td>
@@ -924,6 +924,11 @@
                     <mat-hint>%/px</mat-hint>
                   </mat-form-field>
                   <mat-form-field>
+                    <input [(ngModel)]="socialelement.style['icon-size']" type="text" (change)="socialelement.style['icon-height'] = socialelement.style['icon-size']" matInput placeholder="padding">
+                    <mat-icon matSuffix>mode_edit</mat-icon>
+                    <mat-hint>%/px</mat-hint>
+                  </mat-form-field>
+                  <!-- <mat-form-field>
                     <mat-select [(value)]="socialelement.style.name" placeholder="Socialnetwork"
                       (selectionChange)="onChangeSocial(maileditorSocial, i)">
                       <mat-option value="facebook">facebook</mat-option>
@@ -939,7 +944,7 @@
                       <mat-option value="youtube">youtube</mat-option>
                       <mat-option value="vimeo">vimeo</mat-option>
                     </mat-select>
-                  </mat-form-field>
+                  </mat-form-field>  -->
 
                   <mat-form-field>
                     <mat-select [(value)]="socialelement.style.mode" placeholder="Direction Icons">
@@ -947,26 +952,29 @@
                       <mat-option value="vertical">vertical</mat-option>
                     </mat-select>
                   </mat-form-field>
-
+                  <mat-icon  matTooltip="delete" (click)="deletesocial(i)">delete</mat-icon>
                 </mat-expansion-panel>
               </mat-accordion>
             </div>
             <mat-form-field>
-                <input [(ngModel)]=maileditorsocial.style.width type="text" matInput placeholder="width">
+                <input [(ngModel)]="maileditorSocial.style.width" type="text" matInput placeholder="width">
                 <mat-icon matSuffix>mode_edit</mat-icon>
                 <mat-hint>%/px</mat-hint>
               </mat-form-field>
               <mat-form-field>
-                <input [(ngModel)]=maileditorsocial.style.height type="text" matInput placeholder="height">
+                <input [(ngModel)]="maileditorSocial.style.height" type="text" matInput placeholder="height">
                 <mat-icon matSuffix>mode_edit</mat-icon>
                 <mat-hint>%/px</mat-hint>
               </mat-form-field>
           </td>
         </tr>
         <tr>
-          <mat-icon (click)="addElementToSocialArray()">add</mat-icon>
         </tr>
       </table>
+      <speed-dial-fab class="speed-dial-container" [ngClass]="speedDialFabPosition" 
+      [reverse-column-direction]="false" 
+      (fabClick)="onSpeedDialFabClicked($event)" [buttons]="speedDialFabButtons">
+    </speed-dial-fab>
     </div>
 
     <div *ngIf="Footer" class="edit_table">Edit Footer

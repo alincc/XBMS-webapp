@@ -38,6 +38,7 @@ import { RandomDialog } from './dialogsservice/random-dialog.component';
 import { WordpressUploadDialogComponent } from './dialogsservice/wordpressupload-dialog.component';
 import { FileUploadModule } from 'ng2-file-upload';
 import { PickerModule } from '@ctrl/ngx-emoji-mart'
+import { SpeedDialFabComponent } from './shared/speed-dial-fab/speed-dial-fab.component'
 
 import { ChartsModule } from 'ng2-charts';
 import { AgmCoreModule } from '@agm/core';
@@ -73,6 +74,7 @@ import { SafeHtml } from './pipe/safehtmlpipe.component';
 
 @NgModule({
   declarations: [
+    SpeedDialFabComponent,
     XlsxFileUploadComponent,
     AppComponent,
     RelationComponent,
@@ -105,7 +107,7 @@ import { SafeHtml } from './pipe/safehtmlpipe.component';
   ],
 
   imports: [
-    PickerModule,
+       PickerModule,
     ColorPickerModule,
     NgxChartsModule,
     FlexLayoutModule,

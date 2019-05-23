@@ -21,6 +21,7 @@ import { MatSnackBar, MatSnackBarConfig, MatInput, MatAutocompleteSelectedEvent 
 import { map, startWith } from "rxjs/operators";
 import { Observable, BehaviorSubject } from 'rxjs';
 import { fontoptions } from '../../settings/google-fonts-list';
+'../../shared/speed-dial-fab/speed-dial-fab.component';
 
 import { FormControl, FormGroupDirective, NgForm, Validators, FormBuilder, FormGroup } from '@angular/forms';
 
@@ -58,6 +59,55 @@ export class MaileditorComponent implements OnInit {
     style: 'solid',
     color: 'black',
   }
+
+  private speedDialFabButtons = [
+    {
+      svgIcon: 'xbms_facebook',
+      tooltip: 'facebook'
+    },
+    {
+      svgIcon: 'xbms_twitter',
+      tooltip: 'twitter'
+    },
+    {
+      svgIcon: 'xbms_linkedin',
+      tooltip: 'linkedin'
+    },
+    {
+      svgIcon: 'xbms_instagram',
+      tooltip: 'instagram'
+    },
+    {
+      svgIcon: 'xbms_pinterest',
+      tooltip: 'pinterest'
+    },
+    {
+      svgIcon: 'xbms_xing',
+      tooltip: 'xing'
+    },
+    {
+      svgIcon: 'xbms_youtube',
+      tooltip: 'youtube'
+    },
+    {
+      svgIcon: 'xbms_web',
+      tooltip: 'web'
+    },
+    {
+      svgIcon: 'xbms_snapchat',
+      tooltip: 'snapchat'
+    },
+    {
+      svgIcon: 'xbms_vimeo',
+      tooltip: 'vimeo'
+    },
+    {
+      svgIcon: 'xbms_github',
+      tooltip: 'github'
+    }
+
+  ];
+
 
   public maileditorText: MaileditorText = new MaileditorText();
   public maileditorFooter: MaileditorText = new MaileditorText();
@@ -194,7 +244,7 @@ export class MaileditorComponent implements OnInit {
       'border-top': '',
       'direction': 'ltr',
       'full-width': 'full-width', // full-width
-      'padding': '',
+      'padding': '5px',
       'padding-bottom': '',
       'padding-left': '',
       'padding-right': '',
@@ -225,7 +275,7 @@ export class MaileditorComponent implements OnInit {
       'border-radius': '',
       'width': '100%',
       'vertical-align': '',
-      'padding': '',
+      'padding': '5px',
       'padding-top': '',
       'padding-bottom': '',
       'padding-left': '',
@@ -275,7 +325,7 @@ export class MaileditorComponent implements OnInit {
         'text-transform': '',
         'align': 'center',
         'container-background-color': '',
-        'padding': '',
+        'padding': '5px',
         'padding-top': '',
         'padding-bottom': '',
         'padding-left': '',
@@ -304,7 +354,7 @@ export class MaileditorComponent implements OnInit {
         'text-transform': '',
         'align': 'center',
         'container-background-color': '',
-        'padding': '',
+        'padding': '5px',
         'padding-top': '',
         'padding-bottom': '',
         'padding-left': '',
@@ -553,8 +603,8 @@ export class MaileditorComponent implements OnInit {
   private newSocialElement() {
     const newSocialElement: MaileditorSocialElement = new MaileditorSocialElement();
     newSocialElement.type = 'Socialelement';
-    newSocialElement.content = 'My Social Link';
-    newSocialElement.iconlocation = '';
+    newSocialElement.content = 'facebook';
+    newSocialElement.iconlocation = BASE_URL + '/assets/icons/facebook.png';
     newSocialElement.style = {
       'color': '',
       'container-background-color': '',
@@ -583,7 +633,7 @@ export class MaileditorComponent implements OnInit {
       'text-padding': '',
       'text-decoration': '',
       'href': '',
-      'name': '',
+      'name': 'facebook',
     }
     return newSocialElement;
   }
@@ -830,10 +880,7 @@ export class MaileditorComponent implements OnInit {
     this.maileditorAccordion.elements.push(newAccordionElement);
   }
 
-  addElementToSocialArray() {
-    let newSocialElement = this.newSocialElement();
-    this.maileditorSocial.elements.push(newSocialElement);
-  }
+
 
   togglebackgroundrepeat() {
     if (this.maileditorSection.style['background-repeat'] === 'repeat') {
@@ -982,6 +1029,30 @@ export class MaileditorComponent implements OnInit {
     if (this.maileditorColumn.style['vertical-align'] === 'bottom') { this.maileditorColumn.setflexalign = 'end' }
     console.log(this.maileditorColumn);
   }
+
+  addElementToSocialArray() {
+    const newSocialElement = this.newSocialElement();
+    newSocialElement.content =  'facebook';
+    newSocialElement.style.name = 'facebook';
+    this.maileditorSocial.elements.push(newSocialElement);
+    this.onChangeSocial(this.maileditorSocial, this.maileditorSocial.elements.length - 1)
+  }
+
+
+  onSpeedDialFabClicked(btn) {
+    const newSocialElement = this.newSocialElement();
+    newSocialElement.content =  btn.tooltip;
+    newSocialElement.style.name = btn.tooltip;
+    this.maileditorSocial.elements.push(newSocialElement);
+    this.onChangeSocial(this.maileditorSocial, this.maileditorSocial.elements.length - 1)
+  }
+
+  deletesocial(i) {
+    this.maileditorSocial.elements.splice(i, 1);
+  }
+
+
+
 }
 
 

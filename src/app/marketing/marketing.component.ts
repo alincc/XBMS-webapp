@@ -46,7 +46,6 @@ import {
   PreviewConfig
 } from '@ks89/angular-modal-gallery'
 import { FileuploadComponent } from '../shared/fileupload/fileupload.component';
-
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { Location, NgClass, NgStyle } from '@angular/common';
 import { DialogsService } from './../dialogsservice/dialogs.service';
@@ -55,11 +54,9 @@ import { WordpressUploadDialogComponent} from '../dialogsservice/wordpressupload
 import { WordpressService } from '../shared/websiteservice';
 import { LinkedinService } from '../shared/socialservice';
 import { timeconv } from '../shared/timeconv';
-
 import { FormControl } from '@angular/forms';
 import { UploadResult } from './xlsx-file-upload/xlsx-file-upload.component';
 import { MatSnackBar, MatSnackBarConfig, MatInput, MatAutocompleteSelectedEvent } from '@angular/material';
-
 import { ENTER, COMMA } from '@angular/cdk/keycodes';
 import { map, startWith } from 'rxjs/operators';
 import { Observable, BehaviorSubject } from 'rxjs';
