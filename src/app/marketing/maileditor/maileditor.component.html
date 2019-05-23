@@ -230,9 +230,9 @@
         <tr>
           <td>
             <mat-form-field>
-              <input [(ngModel)]=maileditorColumn.style.height type="text" matInput placeholder="height">
+              <input [(ngModel)]=maileditorColumn.style.padding type="text" matInput placeholder="height/padding">
               <mat-icon matSuffix>mode_edit</mat-icon>
-              <mat-hint>%/px</mat-hint>
+              <mat-hint>px</mat-hint>
             </mat-form-field>
           </td>
         </tr>
@@ -292,15 +292,6 @@
           <td>
             <mat-form-field>
               <input [(ngModel)]=maileditorColumn.style.margin type="text" matInput placeholder="margin">
-              <mat-icon matSuffix>mode_edit</mat-icon>
-              <mat-hint>%/px</mat-hint>
-            </mat-form-field>
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <mat-form-field>
-              <input [(ngModel)]=maileditorColumn.style.padding type="text" matInput placeholder="padding">
               <mat-icon matSuffix>mode_edit</mat-icon>
               <mat-hint>%/px</mat-hint>
             </mat-form-field>

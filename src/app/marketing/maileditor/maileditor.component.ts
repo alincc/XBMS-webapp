@@ -820,6 +820,7 @@ export class MaileditorComponent implements OnInit {
   private onDeleteSectionPart(i1): void {
     this.mailtemplateArray.splice(i1, 1);
     this.sectionStyleArray.splice(i1, 1);
+    this.columnStyleArray.splice(i1, 1);
   }
 
   private onDeleteColumnPart(i1, i2): void {
