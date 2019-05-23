@@ -461,7 +461,7 @@ export class MaileditorComponent implements OnInit {
         'icon-size': '',
         'inner-padding': '',
         'line-height': '',
-        'mode': '',
+        'mode': 'horizontal',
         'icon-padding': '',
         'text-padding': '',
         'text-decoration': ''
@@ -578,7 +578,7 @@ export class MaileditorComponent implements OnInit {
       'icon-size': '20px',
       'inner-padding': '',
       'line-height': '',
-      'mode': '',
+      'mode': 'horizontal',
       'icon-padding': '',
       'text-padding': '',
       'text-decoration': '',
@@ -943,8 +943,8 @@ export class MaileditorComponent implements OnInit {
     if (maileditorSocial.elements[i].style.name === 'github') {
       maileditorSocial.elements[i].iconlocation = BASE_URL + '/assets/icons/github.png'
     }
-    if (maileditorSocial.elements[i].style.name === 'instagram') {
-      maileditorSocial.elements[i].iconlocation = BASE_URL + '/assets/icons/instagram.png'
+    if (maileditorSocial.elements[i].style.name === 'pinterest') {
+      maileditorSocial.elements[i].iconlocation = BASE_URL + '/assets/icons/pinterest.png'
     }
     if (maileditorSocial.elements[i].style.name === 'web') {
       maileditorSocial.elements[i].iconlocation = BASE_URL + '/assets/icons/colour-cirle-set/web/cloud.png'
