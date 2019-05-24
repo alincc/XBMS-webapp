@@ -316,7 +316,7 @@ export class MaileditorComponent implements OnInit {
       newtext.style = {
         'color': 'black',
         'font-family': 'Verdana',
-        'font-size': '12pt',
+        'font-size': '12px',
         'font-style': 'normal',
         'font-weight': '',
         'line-height': '',
@@ -346,7 +346,7 @@ export class MaileditorComponent implements OnInit {
       newfooter.style = {
         'color': 'grey',
         'font-family': 'Verdana',
-        'font-size': '6pt',
+        'font-size': '6px',
         'font-style': 'normal',
         'font-weight': '',
         'line-height': '',
@@ -410,7 +410,7 @@ export class MaileditorComponent implements OnInit {
         'border-right': '0px',
         'border-top': '0px',
         'font-family': 'Verdana',
-        'font-size': '12pt',
+        'font-size': '12px',
         'font-style': '',
         'font-weight': '',
         'padding': '2px',
