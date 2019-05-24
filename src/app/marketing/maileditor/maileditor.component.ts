@@ -202,11 +202,12 @@ export class MaileditorComponent implements OnInit {
     // move creation to wait for company info to resolve
     // console.log(this.company);
 
-
     this.filteredfonts = this.myControlfont.valueChanges.pipe(
       startWith(''),
       map(value => this._filterfont(value))
     );
+      if (this.company.companyfont) {this.setstandardfont()}
+    
   }
 
   private _filterfont(value: string): string[] {
@@ -331,6 +332,7 @@ export class MaileditorComponent implements OnInit {
         'padding-left': '',
         'padding-right': ''
       }
+      
       return newtext
     }
     if (type === 'Footer') {
@@ -360,6 +362,7 @@ export class MaileditorComponent implements OnInit {
         'padding-left': '',
         'padding-right': ''
       }
+      
       return newfooter
     }
     if (type === 'Image') {
@@ -1052,6 +1055,16 @@ export class MaileditorComponent implements OnInit {
     this.maileditorSocial.elements.splice(i, 1);
   }
 
+  setstandardfont(){
+    this.mailtemplateArray.forEach((section) => {
+      section((column) => {
+        column((item) => {
+          if (item.type === 'footer') { item.style['font-family']= this.company.companyfont};
+          if (item.type === 'text') { item.style['font-family']= this.company.companyfont};
+        })
+      })
+    })
+  }
 
 
 }
