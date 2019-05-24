@@ -60,7 +60,7 @@
             <td>
               <form>
               <mat-form-field class="example-full-width">
-                <input [(ngModel)]=Company.font type="text" placeholder="Pick one" aria-label="Number" matInput
+                <input [(ngModel)]=Company.companyfont type="text" placeholder="Pick one" aria-label="Number" matInput
                   [formControl]="myControlfont" [matAutocomplete]="auto">
                 <mat-autocomplete #auto="matAutocomplete">
                   <mat-option *ngFor="let font of filteredfonts | async" [value]="font">

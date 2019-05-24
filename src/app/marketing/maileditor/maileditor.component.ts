@@ -60,6 +60,13 @@ export class MaileditorComponent implements OnInit {
     color: 'black',
   }
 
+  public selectedPadding = {
+    'padding-top': 0,
+    'paddin-right': 0,
+    'padding-bottom': 0,
+    'padding-left': 0
+  }
+
   private speedDialFabButtons = [
     {
       svgIcon: 'xbms_facebook',
@@ -154,7 +161,7 @@ export class MaileditorComponent implements OnInit {
   private toolboxSocial = this.createNewItem('Social');
   private toolboxfooter;
   public fontlist: string[] = fontoptions;
-
+  public generalfont = ""
   
   toolset = [
     this.toolboximage,
@@ -206,8 +213,10 @@ export class MaileditorComponent implements OnInit {
       startWith(''),
       map(value => this._filterfont(value))
     );
-      if (this.company.companyfont) {this.setstandardfont()}
-    
+    // console.log(this.company);
+      if (this.company.companyfont !== undefined) {
+        this.generalfont = this.company.companyfont
+      }
   }
 
   private _filterfont(value: string): string[] {
@@ -220,9 +229,9 @@ export class MaileditorComponent implements OnInit {
     this.sectionStyleArray = [];
     this.columnStyleArray = [];
     this.addToMailTemplateArray()
-    const texttool = this.createNewItem('Text')
-    this.mailtemplateArray[0][0].push(texttool);
-    console.log("standard components created");
+    // const texttool = this.createNewItem('Text')
+    // this.mailtemplateArray[0][0].push(texttool);
+    // console.log("standard components created");
 
   }
 
@@ -245,7 +254,7 @@ export class MaileditorComponent implements OnInit {
       'border-top': '',
       'direction': 'ltr',
       'full-width': 'full-width', // full-width
-      'padding': '5px',
+      'padding': '',
       'padding-bottom': '',
       'padding-left': '',
       'padding-right': '',
@@ -276,7 +285,7 @@ export class MaileditorComponent implements OnInit {
       'border-radius': '',
       'width': '100%',
       'vertical-align': '',
-      'padding': '5px',
+      'padding': '',
       'padding-top': '',
       'padding-bottom': '',
       'padding-left': '',
@@ -288,7 +297,7 @@ export class MaileditorComponent implements OnInit {
 
   // creat array per
   drop(event: CdkDragDrop<string[]>, i1, i2) {
-    console.log(i1, i2, event)
+    // console.log(i1, i2, event)
     if (event.previousContainer === event.container) {
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
       // if eventcontainer is new column create new eventcontainer
@@ -298,11 +307,12 @@ export class MaileditorComponent implements OnInit {
         arrayItem.push(element)
       })
       const type = arrayItem[event.previousIndex].type;
-      console.log(type, arrayItem)
+      // console.log(type, arrayItem)
       const newdata = this.createNewItem(type);
       this.mailtemplateArray[i1][i2].push(newdata);
-
-    } else {
+      this.onSelectTemplatePart(newdata, null);
+      this.setstandardfont(newdata);
+      } else {
       transferArrayItem(event.previousContainer.data, event.container.data, event.previousIndex, event.currentIndex);
     }
   }
@@ -326,7 +336,7 @@ export class MaileditorComponent implements OnInit {
         'text-transform': '',
         'align': 'center',
         'container-background-color': '',
-        'padding': '5px',
+        'padding': '',
         'padding-top': '',
         'padding-bottom': '',
         'padding-left': '',
@@ -356,7 +366,7 @@ export class MaileditorComponent implements OnInit {
         'text-transform': '',
         'align': 'center',
         'container-background-color': '',
-        'padding': '5px',
+        'padding': '',
         'padding-top': '',
         'padding-bottom': '',
         'padding-left': '',
@@ -378,7 +388,7 @@ export class MaileditorComponent implements OnInit {
         'fluid-on-mobile': '',
         'height': "auto",
         'href': '',
-        'padding': "10px",
+        'padding': "",
         'padding-bottom': '',
         'padding-left': '',
         'padding-right': '',
@@ -413,7 +423,7 @@ export class MaileditorComponent implements OnInit {
         'font-size': '12px',
         'font-style': '',
         'font-weight': '',
-        'padding': '2px',
+        'padding': '',
         'text-decoration': '',
         'text-transform': '',
         'vertical-align': '',
@@ -428,7 +438,7 @@ export class MaileditorComponent implements OnInit {
         'border-style': 'solid',
         'border-width': '2px',
         'container-background-color': '',
-        'padding': '1px',
+        'padding': '',
         'padding-bottom': '0px',
         'padding-left': '0px',
         'padding-right': '0px',
@@ -477,7 +487,7 @@ export class MaileditorComponent implements OnInit {
         'icon-width': '20px',
         'icon-wrapped-alt': '+',
         'icon-wrapped-url': BASE_URL + '/assets/baseline_keyboard_arrow_up_black_18dp.png',
-        'padding': '2px 2px',
+        'padding': '',
         'padding-bottom': '',
         'paddinng-left': '',
         'padding-right': '',
@@ -708,6 +718,7 @@ export class MaileditorComponent implements OnInit {
     this.maileditorSection = new MaileditorSection();
     this.maileditorSection = this.sectionStyleArray[i1];
     this.onSelectBorder(this.maileditorSection);
+    this.onSelectPadding(this.maileditorSection);
   }
 
   private onSelectColumnPart(i1, i2): void {
@@ -716,6 +727,7 @@ export class MaileditorComponent implements OnInit {
     this.maileditorColumn = this.columnStyleArray[i1][i2]
     // console.log(this.maileditorColumn);
     this.onSelectBorder(this.maileditorColumn);
+    this.onSelectPadding(this.maileditorColumn);
   }
 
   private onSelectBorder(maileditorPart): void {
@@ -748,6 +760,39 @@ export class MaileditorComponent implements OnInit {
     console.log(maileditorPart.style.border)
   }
 
+
+    private onSelectPadding(maileditorPart): void {
+    console.log(this.selectedPadding);
+    if (maileditorPart.style['padding-top'] !== undefined ) {
+        this.selectedPadding['padding-top'] = maileditorPart.style['padding-top']}
+    if (maileditorPart.style['paddin-right'] !== undefined) {
+      this.selectedPadding['paddin-right'] = maileditorPart.style['padding-right']}
+    if (maileditorPart.style['padding-bottom'] !== undefined) {
+      this.selectedPadding['padding-bottom'] = maileditorPart.style['padding-bottom']}
+    if ( maileditorPart.style['padding-left'] !== undefined) {
+      this.selectedPadding['padding-left'] = maileditorPart.style['padding-left']}
+    if (maileditorPart.style['padding-top'] === undefined || maileditorPart.style['paddin-right']=== undefined || maileditorPart.style['padding-bottom'] === undefined || maileditorPart.style['padding-left'] === undefined) {
+      this.selectedPadding = {
+        'padding-top': 0,
+        'paddin-right': 0,
+        'padding-bottom': 0,
+        'padding-left': 0
+      }
+    }
+   
+  }
+
+  private onChangePadding(maileditorPart, paddingpos, padding): void {
+    padding = this.selectedPadding[paddingpos];
+    console.log(maileditorPart);
+    padding = padding + 'px';
+    maileditorPart.style[paddingpos] = padding;
+    console.log(maileditorPart)
+    maileditorPart.style.padding = maileditorPart.style['padding-top'] +' '+  maileditorPart.style['padding-right']  +' '+  maileditorPart.style['padding-bottom'] +' '+  maileditorPart.style['padding-left'];
+    maileditorPart.style.padding = maileditorPart.style.padding.replace(';', '')
+    console.log(maileditorPart);
+  }
+
   private resetEdit(): void {
     this.Section = false;
     this.Column = false;
@@ -764,6 +809,7 @@ export class MaileditorComponent implements OnInit {
   private onSelectTemplatePart(item, i3): void {
     // const item = this.mailtemplateArray[i1][i2][i3]
     this.resetEdit()
+    this.onSelectPadding(item);
 
     switch (item.type) {
       case 'Image': {
@@ -1055,15 +1101,19 @@ export class MaileditorComponent implements OnInit {
     this.maileditorSocial.elements.splice(i, 1);
   }
 
-  setstandardfont(){
-    this.mailtemplateArray.forEach((section) => {
-      section((column) => {
-        column((item) => {
-          if (item.type === 'footer') { item.style['font-family']= this.company.companyfont};
-          if (item.type === 'text') { item.style['font-family']= this.company.companyfont};
-        })
-      })
-    })
+  setstandardfont(item) {
+          if (item.type === 'Footer') { item.style['font-family'] = this.generalfont};
+          if (item.type === 'Text') {
+            this.maileditorText.content = '<p><span style="font-family:' + this.company.companyfont + '">start writing</span></p>'
+            item.style['font-family'] = this.generalfont };
+          if (item.type === 'Social') {
+            this.maileditorSocial.elements[0].style['font-family'] = this.generalfont;
+            item.style['font-family'] = this.generalfont};
+          if (item.type === 'Accordion') {
+            item.style['font-family'] = this.generalfont;
+            this.maileditorAccordion.elements[0].style['font-family'] = this.generalfont}
+          if (item.type === 'Button') { item.style['font-family'] = this.generalfont};
+          // this.toolset.forEach((item) => {})
   }
 
 
