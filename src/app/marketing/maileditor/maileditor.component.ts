@@ -62,7 +62,7 @@ export class MaileditorComponent implements OnInit {
 
   public selectedPadding = {
     'padding-top': 0,
-    'paddin-right': 0,
+    'padding-right': 0,
     'padding-bottom': 0,
     'padding-left': 0
   }
@@ -283,7 +283,7 @@ export class MaileditorComponent implements OnInit {
       'border-right': '',
       'border-top': '',
       'border-radius': '',
-      'width': '100%',
+      'width': '',
       'vertical-align': '',
       'padding': '',
       'padding-top': '',
@@ -517,7 +517,7 @@ export class MaileditorComponent implements OnInit {
         'font-size': '',
         'font-style': '',
         'font-weight': '',
-        'padding': '',
+        'padding': '0px 0px 0px 0px',
         'text-transform': '',
         'vertical-align': '',
         'icon-height': '',
@@ -634,7 +634,7 @@ export class MaileditorComponent implements OnInit {
       'font-size': '',
       'font-style': '',
       'font-weight': '',
-      'padding': '',
+      'padding': '0px 0px 0px 0px',
       'text-transform': '',
       'vertical-align': '',
       'icon-height': '',
@@ -765,16 +765,16 @@ export class MaileditorComponent implements OnInit {
     console.log(this.selectedPadding);
     if (maileditorPart.style['padding-top'] !== undefined ) {
         this.selectedPadding['padding-top'] = maileditorPart.style['padding-top']}
-    if (maileditorPart.style['paddin-right'] !== undefined) {
-      this.selectedPadding['paddin-right'] = maileditorPart.style['padding-right']}
+    if (maileditorPart.style['padding-right'] !== undefined) {
+      this.selectedPadding['padding-right'] = maileditorPart.style['padding-right']}
     if (maileditorPart.style['padding-bottom'] !== undefined) {
       this.selectedPadding['padding-bottom'] = maileditorPart.style['padding-bottom']}
     if ( maileditorPart.style['padding-left'] !== undefined) {
       this.selectedPadding['padding-left'] = maileditorPart.style['padding-left']}
-    if (maileditorPart.style['padding-top'] === undefined || maileditorPart.style['paddin-right']=== undefined || maileditorPart.style['padding-bottom'] === undefined || maileditorPart.style['padding-left'] === undefined) {
+    if (maileditorPart.style['padding-top'] === undefined || maileditorPart.style['padding-right']=== undefined || maileditorPart.style['padding-bottom'] === undefined || maileditorPart.style['padding-left'] === undefined) {
       this.selectedPadding = {
         'padding-top': 0,
-        'paddin-right': 0,
+        'padding-right': 0,
         'padding-bottom': 0,
         'padding-left': 0
       }
