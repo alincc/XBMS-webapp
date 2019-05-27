@@ -75,7 +75,7 @@
           </mat-expansion-panel-header>
           <form>
             <mat-form-field class="example-full-width">
-              <input [(ngModel)]=company.font type="text" placeholder="Pick one" aria-label="Number" matInput
+              <input [(ngModel)]=company.companyfont type="text" placeholder="Pick one" aria-label="Number" matInput
                 [formControl]="myControlfont" [matAutocomplete]="auto">
               <mat-autocomplete #auto="matAutocomplete">
                 <mat-option *ngFor="let font of filteredfonts | async" [value]="font">
@@ -135,7 +135,7 @@
       </label>
 
       <div [ngStyle]="sectionStyleArray[i1].style" class="section-box" *ngFor="let column of section; let i2 = index"
-        fxLayout="column">
+        fxLayout="column" [class.imggreysection]="sectionStyleArray[i1].imggrey" [class.fullwidthsection]="sectionStyleArray[i1].style['full-width'] === 'full-width'">
         <div class="section-container">
           <div [ngStyle]="columnStyleArray[i1][i2].style" class="column-box" fxLayout="row" cdkDropList
             #mailtemplateList="cdkDropList" [cdkDropListData]="mailtemplateArray[i1][i2]"
@@ -146,7 +146,7 @@
             </label>
             <div class="item-box" *ngFor="let item of column; let i3 = index;" (click)="onSelectTemplatePart(item, i3)"
               cdkDrag [fxLayoutAlign]="columnStyleArray[i1][i2].setflexalign">
-              <div *ngIf="item.type === 'Text'" (click)="onSelectTemplatePart(item, i3)" class="full-width-item">
+              <div *ngIf="item.type === 'Text'" (click)="openDialog()" class="full-width-item">
                 <div (click)="onSelectTemplatePart(item, i3)" [innerHTML]="item.content | safeHtml"></div>
                 <mat-icon class="textbox-edit-button" class="iconsize-10 text-edit-icon"
                   (click)="onSelectTemplatePart(item, i3)" (click)="openDialog()">mode_edit</mat-icon>
@@ -155,7 +155,7 @@
                 <app-fileupload *ngIf="item.url.length < 1" [account]="account" [option]="option"
                   (imgurl)="setimgurl($event, i1, i2, i3)">
                 </app-fileupload>
-                <img *ngIf="item.url.length > 0" src={{item.url}} [ngStyle]="item.style">
+                <img *ngIf="item.url.length > 0" src={{item.url}} [ngStyle]="item.style"  [class.imggreyclass]="item.imggrey">
               </div>
               <div *ngIf="item.type === 'Divider'" [ngStyle]="item.style" class="full-width-item">
               </div>
@@ -188,10 +188,10 @@
               </div>
               <div *ngIf="item.type === 'Social'"  class="full-width-item">
                 <div class="social-container" [ngStyle]="item.style">
-                  <div *ngFor="let socialelement of item.elements"
+                  <div *ngFor="let socialelement of item.elements" [style.text-align]=item.style.align
                     [ngClass]="{ verticalSocial: item.style.mode === 'horizontal', horizontalSocial: item.style.mode === 'vertical' }">
-                    <img src={{socialelement.iconlocation}}>
-                    <label [ngStyle]="socialelement.style" (click)="onSelectTemplatePart(item, i3)">{{socialelement.content}}</label>
+                    <img src={{socialelement.iconlocation}} [style.width]="socialelement.style['icon-size']">
+                    <label [style.padding]="socialelement.style.padding" [ngStyle]="socialelement.style" (click)="onSelectTemplatePart(item, i3)">{{socialelement.content}}</label>
                   </div>
                 </div>
               </div>
@@ -389,7 +389,7 @@
         <tr>
           <td>
               <mat-slide-toggle [(ngModel)]='fullwidth'
-              (click)="changefullwidthSection()">Full width</mat-slide-toggle>
+              (change)="changefullwidthSection()">Full width</mat-slide-toggle>
           </td>
         </tr>
         <tr>
@@ -440,6 +440,11 @@
                 placeholder="Image url">
               <mat-icon matSuffix>mode_edit</mat-icon>
             </mat-form-field>
+          </td>
+        </tr>
+        <tr>
+          <td>
+              <mat-slide-toggle [(ngModel)]="maileditorSection.imggrey">Greyscale</mat-slide-toggle>
           </td>
         </tr>
         <tr>
@@ -534,6 +539,11 @@
               <input [(ngModel)]="maileditorImage.style.height" type="text" matInput placeholder="height">
               <label matSuffix>px/%</label>
             </mat-form-field>
+          </td>
+        </tr>
+        <tr>
+          <td>
+              <mat-slide-toggle [(ngModel)]="maileditorImage.imggrey">Greyscale</mat-slide-toggle>
           </td>
         </tr>
       </table>
@@ -902,15 +912,30 @@
                 <mat-option value="vertical">vertical</mat-option>
               </mat-select>
             </mat-form-field>
-  
 
+              
+            <mat-form-field>
+                <mat-select [(value)]="maileditorSocial.style.align" placeholder="Direction Icons">
+                  <mat-option value="left">left</mat-option>
+                  <mat-option value="right">right</mat-option>
+                  <mat-option value="center">center</mat-option>
+                </mat-select>
+              </mat-form-field>
+  
+              <mat-accordion>
             <div *ngFor="let socialelement of maileditorSocial.elements; let i = index;">
 
-              <mat-accordion>
+             
                 <mat-expansion-panel style="max-width: 290px;">
                   <mat-expansion-panel-header>
                     <mat-panel-title>
-                      Social link: {{socialelement.style.name}}
+                      <table>
+                        <tr>
+                          <td><img src={{socialelement.iconlocation}} style="width: 20px;"></td>
+                          <td> Social link: {{socialelement.style.name}}</td>
+                        </tr>
+                      </table>
+                     
                     </mat-panel-title>
                   </mat-expansion-panel-header>
 
@@ -923,16 +948,16 @@
                 </tr>
                 <tr>
                   <mat-form-field style="max-width: 200px;">
-                    <input [(ngModel)]="socialelement.href" type="text" matInput placeholder="Link">
+                    <input [(ngModel)]="socialelement.style.href" type="text" matInput placeholder="Link to company page ">
                   </mat-form-field>
                 </tr>
-                <tr>
+                <!-- <tr>
                   <mat-form-field style="max-width: 200px;">
                     <input [(ngModel)]=socialelement.style.padding type="text" matInput placeholder="padding">
                     <mat-icon matSuffix>mode_edit</mat-icon>
                     <mat-hint>px</mat-hint>
                   </mat-form-field>
-                </tr>
+                </tr> -->
     
                  
                     <tr fxLayout="row">                    
@@ -962,6 +987,35 @@
                           <mat-hint>px</mat-hint>
                         </mat-form-field>
                     </tr>
+                    <tr>
+                        <td>
+                          <mat-accordion>
+                            <mat-expansion-panel>
+                              <mat-expansion-panel-header>
+                                <mat-panel-title>
+                                  Select font color
+                                </mat-panel-title>
+                              </mat-expansion-panel-header>
+                              <br>
+                              <span [style.background]="socialelement.style.color" [cpToggle]="true"
+                                [cpDialogDisplay]="'inline'" [cpCancelButton]="true"
+                                [(colorPicker)]="socialelement.style.color"></span>
+                              <table matTooltip="click to set color">
+                                <tr>
+                                  <td>Primairy color</td>
+                                  <td>Secondairy color</td>
+                                </tr>
+                                <tr>
+                                  <td (click)="maileditorSection.style['background-color'] = company.companyprimairycolor">
+                                    {{company.companyprimairycolor}}</td>
+                                  <td (click)="maileditorSection.style['background-color'] = company.companysecondarycolor">
+                                    {{company.companysecondarycolor}}</td>
+                                </tr>
+                              </table>
+                            </mat-expansion-panel>
+                          </mat-accordion>
+                        </td>
+                      </tr>
                  
                     <tr>
                   <mat-form-field style="max-width: 200px;">
@@ -990,18 +1044,19 @@
                     </mat-select>
                   </mat-form-field>  -->
                   <tr>
-                  <mat-form-field style="max-width: 200px;">
+                  <!-- <mat-form-field style="max-width: 200px;">
                     <mat-select [(value)]="socialelement.style.mode" placeholder="Direction Icons">
                       <mat-option value="horizontal">horizontal</mat-option>
                       <mat-option value="vertical">vertical</mat-option>
                     </mat-select>
-                  </mat-form-field>
+                  </mat-form-field> -->
                   <mat-icon matTooltip="delete" (click)="deletesocial(i)">delete</mat-icon>
                 </tr>
                 </table>
                 </mat-expansion-panel>
-              </mat-accordion>
+              
             </div>
+          </mat-accordion>
             <mat-form-field>
               <input [(ngModel)]="maileditorSocial.style.width" type="text" matInput placeholder="width">
               <mat-icon matSuffix>mode_edit</mat-icon>

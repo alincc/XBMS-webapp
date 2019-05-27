@@ -242,10 +242,11 @@ export class MaileditorComponent implements OnInit {
     this.mailtemplateArray.push(section);
 
     const sectionstyleIns: MaileditorSection = new MaileditorSection();
+    sectionstyleIns.imggrey = false;
     sectionstyleIns.style = {
       'background-color': '',
-      'background-repeat': '',
-      'background-size': '',
+      'background-repeat': 'no-repeat',
+      'background-size': '100%',
       'background-url': '',
       'border': '',
       'border-bottom': '',
@@ -254,7 +255,7 @@ export class MaileditorComponent implements OnInit {
       'border-right': '',
       'border-top': '',
       'direction': 'ltr',
-      'full-width': '', // full-width
+      'full-width': 'full-width', // full-width
       'padding': '',
       'padding-bottom': '',
       'padding-left': '',
@@ -286,11 +287,11 @@ export class MaileditorComponent implements OnInit {
       'border-radius': '',
       'width': '',
       'vertical-align': '',
-      'padding': '',
-      'padding-top': '',
-      'padding-bottom': '',
-      'padding-left': '',
-      'padding-right': '',
+      'padding': '0px, 0px, 0px, 0px',
+      'padding-top': '0',
+      'padding-bottom': '0',
+      'padding-left': '0',
+      'padding-right': '0',
     }
     // console.log(i1, this.columnStyleArray)
     this.columnStyleArray[i1].push(columnstyleIns);
@@ -378,6 +379,7 @@ export class MaileditorComponent implements OnInit {
     }
     if (type === 'Image') {
       const newImage: MaileditorImage = new MaileditorImage();
+      newImage.imggrey = false;
       newImage.type = 'Image';
       newImage.url = '';
       newImage.style = {
@@ -518,7 +520,7 @@ export class MaileditorComponent implements OnInit {
         'font-size': '',
         'font-style': '',
         'font-weight': '',
-        'padding': '0px 0px 0px 0px',
+        'padding': '4px 4px 4px 0px',
         'text-transform': '',
         'vertical-align': '',
         'icon-height': '',
@@ -527,8 +529,12 @@ export class MaileditorComponent implements OnInit {
         'line-height': '',
         'mode': 'horizontal',
         'icon-padding': '',
-        'text-padding': '',
-        'text-decoration': ''
+        'text-padding': '4px 4px 4px 0px',
+        'text-decoration': '',
+        'padding-bottom': '4',
+        'padding-left': '0',
+        'padding-right': '4',
+        'padding-top': '4'
       }
       return newSocial;
     }
@@ -569,7 +575,7 @@ export class MaileditorComponent implements OnInit {
       'icon-wrapped-url': BASE_URL + '/assets/baseline_keyboard_arrow_up_black_18dp.png',
       'padding': '',
       'padding-bottom': '10px',
-      'paddinng-left': '10px',
+      'padding-left': '10px',
       'padding-right': '10px',
       'padding-top': '10px'
     }
@@ -635,10 +641,10 @@ export class MaileditorComponent implements OnInit {
       'font-size': '',
       'font-style': '',
       'font-weight': '',
-      'padding': '0px 0px 0px 0px',
+      'padding': '4px 4px 4px 0px',
       'text-transform': '',
       'vertical-align': '',
-      'icon-height': '',
+      'icon-height': '20px',
       'icon-size': '20px',
       'inner-padding': '',
       'line-height': '',
@@ -648,6 +654,10 @@ export class MaileditorComponent implements OnInit {
       'text-decoration': '',
       'href': '',
       'name': 'facebook',
+      'padding-bottom': '4',
+      'padding-left': '0',
+      'padding-right': '4',
+      'padding-top': '4'
     }
     return newSocialElement;
   }
@@ -733,7 +743,7 @@ export class MaileditorComponent implements OnInit {
   }
 
   private onSelectBorder(maileditorPart): void {
-    console.log(maileditorPart);
+    // console.log(maileditorPart);
     if (maileditorPart.style.border.length > 0) {
       const borderarray = maileditorPart.style.border.split(' ');
       this.selectedborder.width = borderarray[0];
@@ -750,7 +760,7 @@ export class MaileditorComponent implements OnInit {
   }
 
   private onChangeBorder(maileditorPart): void {
-    console.log(maileditorPart);
+    // console.log(maileditorPart);
     const borderarray = [];
     borderarray.push(this.selectedborder.width + 'px');
     borderarray.push(this.selectedborder.style);
@@ -759,45 +769,45 @@ export class MaileditorComponent implements OnInit {
     borderarray.push(this.selectedborder.color);
     const borderstring = borderarray.join(' ');
     maileditorPart.style.border = borderstring;
-    console.log(maileditorPart.style.border)
+    // console.log(maileditorPart.style.border)
   }
 
 
   private onSelectPadding(maileditorPart): void {
-    console.log(this.selectedPadding);
+    // console.log(this.selectedPadding);
     if (maileditorPart.style['padding-top'] !== undefined) {
       this.selectedPadding['padding-top'] = maileditorPart.style['padding-top']
-    }
+    } else {this.selectedPadding['padding-top'] = 0}
     if (maileditorPart.style['padding-right'] !== undefined) {
       this.selectedPadding['padding-right'] = maileditorPart.style['padding-right']
-    }
+    } else { this.selectedPadding['padding-right'] = 0}
     if (maileditorPart.style['padding-bottom'] !== undefined) {
       this.selectedPadding['padding-bottom'] = maileditorPart.style['padding-bottom']
-    }
+    } else { this.selectedPadding['padding-bottom'] = 0}
     if (maileditorPart.style['padding-left'] !== undefined) {
       this.selectedPadding['padding-left'] = maileditorPart.style['padding-left']
-    }
+    } else {  this.selectedPadding['padding-left'] = 0 }
 
-    if (maileditorPart.style['padding-top'] === undefined || maileditorPart.style['padding-right'] === undefined || maileditorPart.style['padding-bottom'] === undefined || maileditorPart.style['padding-left'] === undefined) {
-      this.selectedPadding = {
-        'padding-top': 0,
-        'padding-right': 0,
-        'padding-bottom': 0,
-        'padding-left': 0
-      }
-    }
+    // if (maileditorPart.style['padding-top'] === undefined || maileditorPart.style['padding-right'] === undefined || maileditorPart.style['padding-bottom'] === undefined || maileditorPart.style['padding-left'] === undefined) {
+    //   this.selectedPadding = {
+    //     'padding-top': 0,
+    //     'padding-right': 0,
+    //     'padding-bottom': 0,
+    //     'padding-left': 0
+    //   }
+    // }
 
   }
 
   private onChangePadding(maileditorPart, paddingpos, padding): void {
     padding = this.selectedPadding[paddingpos];
-    console.log(maileditorPart);
-    padding = padding + 'px';
+    // console.log(maileditorPart);
+    padding = padding;
     maileditorPart.style[paddingpos] = padding;
-    console.log(maileditorPart)
-    maileditorPart.style.padding = maileditorPart.style['padding-top'] + ' ' + maileditorPart.style['padding-right'] + ' ' + maileditorPart.style['padding-bottom'] + ' ' + maileditorPart.style['padding-left'];
+    // console.log(maileditorPart);
+    maileditorPart.style.padding = maileditorPart.style['padding-top'] + 'px ' + maileditorPart.style['padding-right'] + 'px ' + maileditorPart.style['padding-bottom'] + 'px ' + maileditorPart.style['padding-left'] + 'px';
     maileditorPart.style.padding = maileditorPart.style.padding.replace(';', '')
-    console.log(maileditorPart);
+    // console.log(maileditorPart);
   }
 
   private resetEdit(): void {
@@ -890,13 +900,13 @@ export class MaileditorComponent implements OnInit {
 
   private setimgurl(url: string, i1, i2, i3) {
     // url direct
-    console.log(url, i1, i2, i3);
+    // console.log(url, i1, i2, i3);
 
     // this.setbackgroundImageSection(url);
     setTimeout(() => {
       this.mailtemplateArray[i1][i2][i3].url = url;
     },
-      5000);
+      2000);
   }
 
 
@@ -946,11 +956,15 @@ export class MaileditorComponent implements OnInit {
 
 
   togglebackgroundrepeat() {
-    if (this.maileditorSection.style['background-repeat'] === 'repeat') {
-      this.maileditorSection.style['background-repeat'] = null;
+    let norep: string;
+    let rep: string;
+    norep = 'no-repeat';
+    rep = 'repeat'
+    if (this.maileditorSection.style['background-repeat'] === rep) {
+      this.maileditorSection.style['background-repeat'] = norep;
     }
-    if (this.maileditorSection.style['background-repeat'] !== 'repeat') {
-      this.maileditorSection.style['background-repeat'] = 'repeat';
+    if (this.maileditorSection.style['background-repeat'] !== rep) {
+      this.maileditorSection.style['background-repeat'] = rep;
     }
 
   }
@@ -1119,7 +1133,7 @@ export class MaileditorComponent implements OnInit {
   setstandardfont(item) {
     if (item.type === 'Footer') { item.style['font-family'] = this.generalfont };
     if (item.type === 'Text') {
-      this.maileditorText.content = '<p><span style="font-family:' + this.company.companyfont + '">start writing</span></p>'
+      this.maileditorText.content = '<p><span style="font-family:' + this.generalfont + '">start writing</span></p>'
       item.style['font-family'] = this.generalfont
     };
     if (item.type === 'Social') {
@@ -1137,8 +1151,10 @@ export class MaileditorComponent implements OnInit {
   changefullwidthSection(): void {
     const value = 'full-width';
     const emptyvalue = '';
-    if (this.fullwidth) { this.maileditorSection.style['full-width'] = value }
-    else { this.maileditorSection.style['full-width'] = emptyvalue }
+    console.log(this.fullwidth, this.maileditorSection);
+    if (this.fullwidth === true) { this.maileditorSection.style['full-width'] = value } else {
+      this.maileditorSection.style['full-width'] = emptyvalue }
+      console.log(this.maileditorSection);
   }
 
 }

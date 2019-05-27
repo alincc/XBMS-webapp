@@ -311,3 +311,17 @@ p {
   bottom: 15px;
 }
 
+.imggreyclass {
+  -webkit-filter: grayscale(1); /* Webkit */
+  filter: gray; /* IE6-9 */
+  filter: grayscale(1); /* W3C */
+}
+
+.imggreysection {
+  -webkit-filter: grayscale(100%); /* Safari 6.0 - 9.0 */
+  filter: grayscale(100%);
+}
+
+.fullwidthsection {
+  padding: 0px 20px 0px 20px;
+}

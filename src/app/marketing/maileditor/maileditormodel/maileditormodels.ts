@@ -5,6 +5,7 @@ export interface Maileditormodels {
 }
 
 export interface MaileditorSectionInterface {
+  imggrey: boolean;
   style: {
     'background-color': string,
     'background-repeat': string,
@@ -75,6 +76,7 @@ export interface MaileditorTextInterface {
 }
 
 export interface MaileditorImageInterface {
+  imggrey: boolean;
   type: string;
   url: string;
   style: {
@@ -216,7 +218,7 @@ export interface MaileditorAccordionElementInterface {
     'icon-wrapped-url': string;
     'padding': string;
     'padding-bottom': string;
-    'paddinng-left': string;
+    'padding-left': string;
     'padding-right': string;
     'padding-top': string;
   }
@@ -286,6 +288,10 @@ export interface MaileditorSocialInterface {
     'icon-padding': string;
     'text-padding': string;
     'text-decoration': string;
+    'padding-bottom': string;
+    'padding-left': string;
+    'padding-right': string;
+    'padding-top': string;
   }
 }
 
@@ -322,6 +328,10 @@ export interface MaileditorSocialElementInterface {
     'text-decoration': string;
     'href': string;
     'name': string;
+    'padding-bottom': string;
+    'padding-left': string;
+    'padding-right': string;
+    'padding-top': string;
   }
 }
 
@@ -363,6 +373,7 @@ export class MaileditorText implements MaileditorTextInterface {
 }
 
 export class MaileditorImage implements MaileditorImageInterface {
+  imggrey: boolean;
   type: string;
   content: string;
   url: string;
@@ -427,6 +438,7 @@ export class MaileditorColumn implements MaileditorColumnInterface {
 }
 
 export class MaileditorSection implements MaileditorSectionInterface {
+  imggrey: boolean;
   style: {
     'background-color': string,
     'background-repeat': string,
@@ -613,7 +625,7 @@ export class MaileditorAccordionElement implements MaileditorAccordionElementInt
     'icon-wrapped-url': string;
     'padding': string;
     'padding-bottom': string;
-    'paddinng-left': string;
+    'padding-left': string;
     'padding-right': string;
     'padding-top': string;
   }
@@ -704,6 +716,10 @@ export class MaileditorSocial implements MaileditorSocialInterface {
     'icon-padding': string;
     'text-padding': string;
     'text-decoration': string;
+    'padding-bottom': string;
+    'padding-left': string;
+    'padding-right': string;
+    'padding-top': string;
   }
   public static factory(data: MaileditorSocialInterface): MaileditorSocial {
     return new MaileditorSocial(data);
@@ -748,6 +764,10 @@ export class MaileditorSocialElement implements MaileditorSocialElement {
     'text-decoration': string;
     'href': string;
     'name': string;
+    'padding-bottom': string;
+    'padding-left': string;
+    'padding-right': string;
+    'padding-top': string;
   }
   public static factory(data: MaileditorSocialElementInterface): MaileditorSocialElement {
     return new MaileditorSocialElement(data);
