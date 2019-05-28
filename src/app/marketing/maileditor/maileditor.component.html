@@ -1,7 +1,7 @@
-<div fxFlex fxLayout="row" cdkDropListGroup style="width: 100%;">
+<div fxLayout="row" cdkDropListGroup style="width: 100%;">
 
 
-  <div fxFlex="20%" class="tools">
+  <div fxFlex="10%" class="tools">
     <div cdkDropList #toolsetList="cdkDropList" [cdkDropListData]="toolset" class="tools-list"
       (cdkDropListDropped)="drop($event)">
       <span>Tools</span>
@@ -203,7 +203,7 @@
               <div *ngIf="item.type === 'Button'" class="full-width-item">
                 <button (click)="onSelectTemplatePart(item, i3)" [ngStyle]="item.style">{{item.buttontext}}</button>
               </div>
-              <div *ngIf="item.type === 'Footer'" (click)="onSelectTemplatePart(item, i3)">
+              <div *ngIf="item.type === 'Footer'" (click)="onSelectTemplatePart(item, i3)" class="full-width-item">
 
                 <p [ngStyle]="item.style" [innerHTML]="item.content"></p>
               </div>
@@ -213,7 +213,7 @@
           </div>
        
       </div>
-      <div  style="background-color: whitesmoke; height: 100%;">
+      <div  style="background-color: rgba(250, 250, 250, 1); height: 100%;">
       <mat-icon style="padding-top: 25px;" (click)="addToSectionArray(i1)">add</mat-icon>
     </div>
     </div>
@@ -550,6 +550,13 @@
         <tr>
           <td>
               <mat-slide-toggle [(ngModel)]="maileditorImage.imggrey">Greyscale</mat-slide-toggle>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <mat-form-field>
+              <input [(ngModel)]="maileditorImage.style.href" type="text" matInput placeholder="link to website">
+            </mat-form-field>
           </td>
         </tr>
       </table>
@@ -932,7 +939,7 @@
             <div *ngFor="let socialelement of maileditorSocial.elements; let i = index;">
 
              
-                <mat-expansion-panel style="max-width: 290px;">
+                <mat-expansion-panel style="max-width: 270px;" [expanded]="onSelectPadding(socialelement)">
                   <mat-expansion-panel-header>
                     <mat-panel-title>
                       <table>

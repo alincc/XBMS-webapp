@@ -3,7 +3,7 @@
   min-width: 200px;
   margin: 2px;
   padding: 2px;
-  background: whitesmoke;
+
 }
 
 .tool-box {
@@ -25,7 +25,7 @@
 
 .template {
   min-width: 600px;
-  width: 100%;
+  // width: 100%;
   margin: 2px;
   padding: 2px;
 }
@@ -33,7 +33,7 @@
 .edit {
   min-width: 300px;
   margin: auto;
-  padding: 2px;
+  // padding: 2px;
   height: 100%;
 }
 
@@ -119,6 +119,7 @@
     background-color: white;
     top: 0;
     right: 0;
+    margin-right: 40px;
   }
 
   .sectionlabel:hover{

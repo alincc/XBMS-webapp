@@ -156,9 +156,11 @@
 
 .listview{
   min-height: 300px;
-  max-height : 400px;
+  height: 75vh;
   overflow-y: scroll;
   overflow-x: visible;
+  margin-right: 5px;
+  padding-right: 5px;
 }
 
 @for $i from 1 through 100{
