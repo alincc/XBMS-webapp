@@ -7,6 +7,7 @@ import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material';
   templateUrl: 'wordpressupload-dialog.component.html',
 })
 export class WordpressUploadDialogComponent {
+  public hide;
 
   constructor(
     public dialogRef: MatDialogRef<WordpressUploadDialogComponent>,

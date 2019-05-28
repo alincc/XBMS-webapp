@@ -590,7 +590,7 @@
                   <tr>
                     <td>
                       <mat-select placeholder="Copy from:" [(value)]="copyfrommailing">
-                        <mat-option *ngFor="let Mailing of Mailing" [value]="Mailing">
+                        <mat-option *ngFor="let Mailing of Mailing; let i = index" [value]="Mailing">
                           {{ Mailing.subject }} {{ Mailing.date }}
                         </mat-option>
                       </mat-select>
@@ -627,7 +627,7 @@
                         <mat-autocomplete #mailinglist="matAutocomplete" [displayWith]="displayFnMailing">
                           <mat-option *ngFor="let mailingaddress of filteredmailinglist | async"
                             [value]="mailingaddress">
-                            {{ mailingaddress.listname }}
+                            {{ mailingaddress }}
                           </mat-option>
                         </mat-autocomplete>
                       </mat-form-field>
@@ -684,15 +684,18 @@
                 </mat-expansion-panel>
                 <table>
                   <td>
-                    <mat-checkbox [(ngModel)]=selectedMailing.done>
+                    <!-- <mat-checkbox [(ngModel)]=selectedMailing.done>
                       Show Message
-                    </mat-checkbox>
+                    </mat-checkbox> -->
+                    <button a mat-raised-button (click)="showTemplatePreview()">Preview
+                      <mat-icon>view</mat-icon>
+                    </button>
                   </td>
                   <br>
-                  <tr>
+                  <!-- <tr>
                     <label style="font-size: 8pt"> %recipient_name%, %recipient.company%, %recipient%,
                       %recipient.firstname%, %recipient.lastname%</label>
-                  </tr>
+                  </tr> -->
                   <!-- uploadUrl: 'http://localhost:3000/api/Containers/5af0573e196178122c6bb4a4/upload/', -->
                 </table>
 

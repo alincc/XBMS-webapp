@@ -1,4 +1,4 @@
-<ckeditor  #content [name]="editor1" [(ngModel)]="data" [config]="{
+<ckeditor  #content [(ngModel)]="data" [config]="{
     extraPlugins: 'emoji,font',
     toolbarCanCollapse: 'true',
     width: '100%',
@@ -8,6 +8,8 @@
      (fileUploadResponse)="onRequestCkEvent($event)">
   </ckeditor>
   
+<!-- [name]="editor1" -->
+
   <div mat-dialog-actions>
         <button mat-button [mat-dialog-close]="data" cdkFocusInitial>Ok</button>
       </div>

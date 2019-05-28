@@ -255,7 +255,7 @@ export class MaileditorComponent implements OnInit {
       'border-right': '',
       'border-top': '',
       'direction': 'ltr',
-      'full-width': 'full-width', // full-width
+      'full-width': '', // full-width
       'padding': '',
       'padding-bottom': '',
       'padding-left': '',
@@ -298,7 +298,7 @@ export class MaileditorComponent implements OnInit {
   }
 
   // creat array per
-  drop(event: CdkDragDrop<string[]>, i1, i2) {
+  drop(event: CdkDragDrop<string[]>, i1?, i2?) {
     // console.log(i1, i2, event)
     if (event.previousContainer === event.container) {
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);

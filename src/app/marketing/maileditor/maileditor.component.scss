@@ -3,6 +3,7 @@
   min-width: 200px;
   margin: 2px;
   padding: 2px;
+  background: whitesmoke;
 }
 
 .tool-box {
@@ -37,8 +38,9 @@
 }
 
 .template-container {
+    position: relative;
     height: auto;
-    padding-right: 30px;
+    padding: 0px 20px 0px 20px;
 }
   
   .tools-list {
@@ -58,18 +60,14 @@
   }
 
   .section-box {
+    position: relative;
     height: auto;
-    // margin: 1px;
-    // padding: 1px;
     min-height: 60px;
-    width: 100%;
+    width: auto;
     overflow:hidden;
   }
 
-  .section-container{
-    //max-width: 95%;
-    
-  }
+
   
   .column-box {
     border: solid 1px #ccc;
@@ -77,7 +75,7 @@
     color: rgba(0, 0, 0, 0.87);
     cursor: move;
     max-height: 100%;
-    min-height: 50px;
+    min-height: 60px;
     width: 100%;
     top: 0;
     left: 0;
@@ -112,27 +110,30 @@
   }
 
   .sectionlabel {
-    margin-right: 1px;
-    padding-right: 20px;
-    width: 25px;
+    width: 60px;
     height: 10px;
     font-size: 6pt;
-    position: relative;
-    overflow: visible;
-    z-index: 8;
+    position: absolute;
+    z-index: 30;
     opacity: 0.4;
     background-color: white;
+    top: 0;
+    right: 0;
+  }
+
+  .sectionlabel:hover{
+    opacity: 1;
   }
 
   .columnlabel {
     height: 10px;
     font-size: 6pt;
-    position: relative;
-    overflow: visible;
-    z-index: 8;
+    position: absolute;
+     z-index: 30;
+    top: 0;
+    left: 0;
     opacity: 0.4;
     background-color: white;
-    margin-right: -60px;
     width: 60px;
   }
   
@@ -323,5 +324,5 @@ p {
 }
 
 .fullwidthsection {
-  padding: 0px 20px 0px 20px;
+  padding: 0px 0px 0px 0px;
 }

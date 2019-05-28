@@ -919,6 +919,7 @@ export class MarketingComponent implements OnInit {
   getMailing(): void {
     this.RelationsApi.getMailing(this.option.id,
       {
+        order: 'id DESC',
         include: {
           relation: 'mailinglist'
         }
@@ -1621,6 +1622,14 @@ export class MarketingComponent implements OnInit {
   copyFromMailingCampaign(i): void {
     this.CampaignMailing[i].html = this.copyfrommailing.html;
     this.CampaignMailing[i].subject = this.copyfrommailing.subject;
+  }
+
+  public showTemplatePreview(): void {
+    let htmlpreview = [];
+    htmlpreview.push(this.sanitizer.bypassSecurityTrustHtml(this.selectedMailing.html));
+    this.dialogsService
+      .confirm('', '', htmlpreview[0])
+      .subscribe();
   }
 
   public showMailPreview(i): void {

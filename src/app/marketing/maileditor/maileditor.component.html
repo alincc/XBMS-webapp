@@ -1,4 +1,4 @@
-<div fxFlex fxLayout="row" cdkDropListGroup>
+<div fxFlex fxLayout="row" cdkDropListGroup style="width: 100%;">
 
 
   <div fxFlex="20%" class="tools">
@@ -127,16 +127,20 @@
       </tr>
     </table>
 
-    <div class="template-container" *ngFor="let section of mailtemplateArray; let i1 = index" fxLayout="row">
+    <div class="template-container" *ngFor="let section of mailtemplateArray; let i1 = index" 
+    [ngStyle]="sectionStyleArray[i1].style" fxLayout="row" [class.imggreysection]="sectionStyleArray[i1].imggrey" 
+    [class.fullwidthsection]="sectionStyleArray[i1].style['full-width'] === 'full-width'">
       <!-- cdkDropList #listSection="cdkDropList" (cdkDropListDropped)="drop($event, i1, i2)" [cdkDropListData]="mailtemplateArray" -->
       <label class="sectionlabel">Section <mat-icon (click)="onSelectSectionPart(i1)" class="iconsize-10" matSuffix>
-          mode_edit</mat-icon>
-        <mat-icon (click)="onDeleteSectionPart(i1)" class="icon-label" class="iconsize-10" matSuffix>delete</mat-icon>
-      </label>
+        mode_edit</mat-icon>
+      <mat-icon (click)="onDeleteSectionPart(i1)" class="icon-label" class="iconsize-10" matSuffix>delete</mat-icon>
+    </label>
 
-      <div [ngStyle]="sectionStyleArray[i1].style" class="section-box" *ngFor="let column of section; let i2 = index"
-        fxLayout="column" [class.imggreysection]="sectionStyleArray[i1].imggrey" [class.fullwidthsection]="sectionStyleArray[i1].style['full-width'] === 'full-width'">
-        <div class="section-container">
+
+      <div class="section-box" *ngFor="let column of section; let i2 = index"
+        fxLayout="column" fxFlex>
+
+      
           <div [ngStyle]="columnStyleArray[i1][i2].style" class="column-box" fxLayout="row" cdkDropList
             #mailtemplateList="cdkDropList" [cdkDropListData]="mailtemplateArray[i1][i2]"
             (cdkDropListDropped)="drop($event, i1, i2)">
@@ -207,12 +211,14 @@
               </mat-icon>
             </div>
           </div>
-        </div>
+       
       </div>
-
-      <mat-icon (click)="addToSectionArray(i1)">add</mat-icon>
+      <div  style="background-color: whitesmoke; height: 100%;">
+      <mat-icon style="padding-top: 25px;" (click)="addToSectionArray(i1)">add</mat-icon>
     </div>
-    <mat-icon (click)="addToMailTemplateArray()">add</mat-icon>
+    </div>
+    <mat-icon  (click)="addToMailTemplateArray()">add</mat-icon>
+  
   </div>
 
   <mat-card fxFlex="10%" class="edit">
