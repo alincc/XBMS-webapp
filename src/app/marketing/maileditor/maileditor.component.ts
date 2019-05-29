@@ -203,13 +203,6 @@ export class MaileditorComponent implements OnInit {
         console.log("existing mailing", this.updateMailingObj);
         this.updatemail = true;
       } }
-    //   else {
-    //     this.setupTemplate();
-    //   }
-    // } else {
-    //   this.setupTemplate();
-    // }
-
     // move creation to wait for company info to resolve
     // console.log(this.company);
 
@@ -734,6 +727,10 @@ export class MaileditorComponent implements OnInit {
     this.Section = true;
     this.maileditorSection = new MaileditorSection();
     this.maileditorSection = this.sectionStyleArray[i1];
+    if (this.maileditorSection.boxalignment === 'row') {
+      this.columnverticalalign = false;
+    } else {this.columnverticalalign = true}
+
     this.onSelectBorder(this.maileditorSection);
     this.onSelectPadding(this.maileditorSection);
     if (this.maileditorSection.style['full-width'] === 'full-width') { this.fullwidth = true }
@@ -1175,7 +1172,7 @@ export class MaileditorComponent implements OnInit {
   }
 
   updatecolumnalign(): void {
-    console.log(this.columnStyleArray);
+    console.log(this.sectionStyleArray);
     this.sectionStyleArray.forEach((section, index1) => {
     this.columnStyleArray.forEach((columnsection, index2) => {
       columnsection.forEach((column, index3) => {

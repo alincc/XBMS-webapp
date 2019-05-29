@@ -89,7 +89,7 @@
     </div>
   </div>
 
-  <div fxFlex="70%" class="template" fxLayout="column">
+  <div fxFlex="70%" class="template" >
     <table>
       <tr>
         <td>
@@ -135,8 +135,8 @@
         mode_edit</mat-icon>
       <mat-icon (click)="onDeleteSectionPart(i1)" class="icon-label" class="iconsize-10" matSuffix>delete</mat-icon>
     </label>
-      <div class="section-box" *ngFor="let column of section; let i2 = index"
-        fxLayout="column" fxFlex>
+      <div class="section-box full-width-item" *ngFor="let column of section; let i2 = index"
+        fxLayout="column" >
           <div [ngStyle]="columnStyleArray[i1][i2].style" class="column-box" fxLayout="row" cdkDropList
             #mailtemplateList="cdkDropList" [cdkDropListData]="mailtemplateArray[i1][i2]"
             (cdkDropListDropped)="drop($event, i1, i2)">

@@ -939,6 +939,9 @@ export class MarketingComponent implements OnInit {
   copyFromMailing(): void {
     this.selectedMailing.html = this.copyfrommailing.html;
     this.selectedMailing.subject = this.copyfrommailing.subject;
+    this.selectedMailing.sectionStyle = this.copyfrommailing.sectionStyle;
+    this.selectedMailing.templatearray = this.copyfrommailing.templatearray;
+    this.selectedMailing.columnStyle = this.copyfrommailing.columnStyle;
   }
 
   sendMailing(): void {
