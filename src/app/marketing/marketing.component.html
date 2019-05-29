@@ -389,7 +389,7 @@
 
         <div fxLayout="column" style="width: 100%;" fxFlex>
           <div fxFlexOffset="10px" fxLayout="row" class="bottomlist" *ngIf="group.value == 'mailing'">
-            <div fxFlex="20%" class="Relations" fxLayout="column">
+            <div fxFlex="25% " class="Relations" fxLayout="column">
               <div class="listview">
                 <div class="searchbutton">
               <tr>
@@ -435,7 +435,7 @@
               </div>
             </div>
 
-            <div fxFlex="79%" fxLayout="column" class="relationcontainer"
+            <div fxFlex="75%" fxLayout="column" class="relationcontainer"
               *ngIf="selectedMailing && group.value == 'mailing'">
               <mat-card>
                 <mat-card-content>
@@ -738,7 +738,7 @@
           </div>
 
           <div fxLayout="row" fxFlexOffset="10px" class="bottomlist" *ngIf="group.value == 'campaign'">
-            <div fxFlex="20%" class="Relations" fxLayout="column">
+            <div fxFlex="25%" class="Relations" fxLayout="column">
 
               <div class="listview">
                 <div class="searchbutton">
@@ -787,7 +787,7 @@
             </div>
 
             <!-- Mailing Campaign  -->
-            <div fxFlex="79%" fxLayout="column" class="relationcontainer"
+            <div fxFlex="75%" fxLayout="column" class="relationcontainer"
               *ngIf="selectedMarketingplannerevents && group.value == 'campaign'">
               <mat-card>
                 <mat-card-content>
@@ -1214,7 +1214,7 @@
           </div>
 
           <div fxLayout="row" fxFlexOffset="10px" class="bottomlist" *ngIf="group.value == 'maillist'">
-            <div fxFlex="20%" class="Relations" fxLayout="column">
+            <div fxFlex="25%" class="Relations" fxLayout="column">
                 <div class="listview">
               <div class="searchbutton">
               <tr>
@@ -1241,12 +1241,12 @@
             
                 <div *ngFor="let Mailinglist of Mailinglist" (click)="onSelectMailingList(Mailinglist)"
                   [class.selected]="Mailinglist === selectedMailingList">
-                  <span class="box">
+                  <span class="box" style="font-size: 8pt">
                     <tr>
                       <mat-icon color="primary">{{Mailinglist.listname | slice:0:1}}</mat-icon>{{Mailinglist.listname |
                     slice:1:22}} -
                     </tr>
-                    <tr style="font-size: 8pt"> <strong>{{Mailinglist.total}}</strong> | Clicked:
+                    <tr > <strong>{{Mailinglist.total}}</strong> | Clicked:
                       {{Mailinglist.totalclicked}} | Opened: {{Mailinglist.totalopened}}
                     </tr>
                   </span>
@@ -1276,7 +1276,7 @@
             </div>
 
             <!-- Mailing list  -->
-            <div fxFlex="79%" fxLayout="column" class="relationcontainer"
+            <div fxFlex="75%" fxLayout="column" class="relationcontainer"
               *ngIf="toggleuploadlist && group.value == 'maillist'">
 
 
