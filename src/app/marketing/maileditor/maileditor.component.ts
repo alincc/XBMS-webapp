@@ -55,6 +55,7 @@ export class MaileditorComponent implements OnInit {
   public Footer = false;
   public fullwidth = false;
   public columnverticalalign = false;
+  public sectionpartselect: number;
 
   public selectedborder = {
     width: '0px',
@@ -202,7 +203,8 @@ export class MaileditorComponent implements OnInit {
         this.subject = this.updateMailingObj.subject;
         console.log("existing mailing", this.updateMailingObj);
         this.updatemail = true;
-      } }
+      }
+    }
     // move creation to wait for company info to resolve
     // console.log(this.company);
 
@@ -302,7 +304,7 @@ export class MaileditorComponent implements OnInit {
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
       // if eventcontainer is new column create new eventcontainer
     } else if (event.previousContainer.element.nativeElement.className === 'tools-list cdk-drop-list') {
-    // } else if (event.previousContainer.id === 'cdk-drop-list-0') {
+      // } else if (event.previousContainer.id === 'cdk-drop-list-0') {
       const arrayItem = [];
       event.previousContainer.data.forEach((element) => {
         arrayItem.push(element)
@@ -723,13 +725,14 @@ export class MaileditorComponent implements OnInit {
   }
 
   private onSelectSectionPart(i1): void {
+    this.sectionpartselect = i1;
     this.resetEdit()
     this.Section = true;
     this.maileditorSection = new MaileditorSection();
     this.maileditorSection = this.sectionStyleArray[i1];
     if (this.maileditorSection.boxalignment === 'row') {
       this.columnverticalalign = false;
-    } else {this.columnverticalalign = true}
+    } else { this.columnverticalalign = true }
 
     this.onSelectBorder(this.maileditorSection);
     this.onSelectPadding(this.maileditorSection);
@@ -780,16 +783,16 @@ export class MaileditorComponent implements OnInit {
     // console.log(this.selectedPadding);
     if (maileditorPart.style['padding-top'] !== undefined) {
       this.selectedPadding['padding-top'] = maileditorPart.style['padding-top']
-    } else {this.selectedPadding['padding-top'] = 0}
+    } else { this.selectedPadding['padding-top'] = 0 }
     if (maileditorPart.style['padding-right'] !== undefined) {
       this.selectedPadding['padding-right'] = maileditorPart.style['padding-right']
-    } else { this.selectedPadding['padding-right'] = 0}
+    } else { this.selectedPadding['padding-right'] = 0 }
     if (maileditorPart.style['padding-bottom'] !== undefined) {
       this.selectedPadding['padding-bottom'] = maileditorPart.style['padding-bottom']
-    } else { this.selectedPadding['padding-bottom'] = 0}
+    } else { this.selectedPadding['padding-bottom'] = 0 }
     if (maileditorPart.style['padding-left'] !== undefined) {
       this.selectedPadding['padding-left'] = maileditorPart.style['padding-left']
-    } else {  this.selectedPadding['padding-left'] = 0 }
+    } else { this.selectedPadding['padding-left'] = 0 }
 
     // if (maileditorPart.style['padding-top'] === undefined || maileditorPart.style['padding-right'] === undefined || maileditorPart.style['padding-bottom'] === undefined || maileditorPart.style['padding-left'] === undefined) {
     //   this.selectedPadding = {
@@ -1156,14 +1159,15 @@ export class MaileditorComponent implements OnInit {
     const emptyvalue = '';
     console.log(this.fullwidth, this.maileditorSection);
     if (this.fullwidth === true) { this.maileditorSection.style['full-width'] = value } else {
-      this.maileditorSection.style['full-width'] = emptyvalue }
-      console.log(this.maileditorSection);
+      this.maileditorSection.style['full-width'] = emptyvalue
+    }
+    console.log(this.maileditorSection);
   }
 
-  setcolumnverticalalign(maileditorSection): void {
-    if (this.columnverticalalign) {
-    // maileditorColumn.style.width = '100%';
-    maileditorSection.boxalignment = 'column';
+  setcolumnverticalalign(maileditorSection, i1, i2): void {
+    if (this.columnverticalalign === true) {
+      // maileditorColumn.style.width = '100%';
+      maileditorSection.boxalignment = 'column';
     } else {
       // maileditorColumn.style.width = '';
       maileditorSection.boxalignment = 'row';
@@ -1172,19 +1176,9 @@ export class MaileditorComponent implements OnInit {
   }
 
   updatecolumnalign(): void {
-    console.log(this.sectionStyleArray);
-    this.sectionStyleArray.forEach((section, index1) => {
-    this.columnStyleArray.forEach((columnsection, index2) => {
-      columnsection.forEach((column, index3) => {
-      if (section.boxalignment === 'column') {
-        column.style.width = '100%';
-      }
-      if (section.boxalignment === 'row') {
-        column.style.width = '';
-      }
+    this.columnStyleArray[this.sectionpartselect].forEach(column => {
+      if (this.columnverticalalign === true) { column.style.width = '100%' };
+      if (this.columnverticalalign === false) { column.style.width = '' };
     });
-    });
-  });
   }
-
 }
