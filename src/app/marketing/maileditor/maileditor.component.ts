@@ -191,7 +191,6 @@ export class MaileditorComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.setupTemplate()
     this.toolboxfooter = this.createNewItem('Footer');
     this.toolset.push(this.toolboxfooter);
     // when openeing existing mail from template overview udpatemailingobj will exist. 
@@ -203,8 +202,8 @@ export class MaileditorComponent implements OnInit {
         this.subject = this.updateMailingObj.subject;
         console.log("existing mailing", this.updateMailingObj);
         this.updatemail = true;
-      }
-    }
+      } else {this.setupTemplate()}
+    } else {this.setupTemplate()}
     // move creation to wait for company info to resolve
     // console.log(this.company);
 
