@@ -128,19 +128,15 @@
     </table>
 
     <div class="template-container" *ngFor="let section of mailtemplateArray; let i1 = index" 
-    [ngStyle]="sectionStyleArray[i1].style" fxLayout="row" [class.imggreysection]="sectionStyleArray[i1].imggrey" 
+    [ngStyle]="sectionStyleArray[i1].style" [fxLayout]=sectionStyleArray[i1].boxalignment [class.imggreysection]="sectionStyleArray[i1].imggrey" 
     [class.fullwidthsection]="sectionStyleArray[i1].style['full-width'] === 'full-width'">
       <!-- cdkDropList #listSection="cdkDropList" (cdkDropListDropped)="drop($event, i1, i2)" [cdkDropListData]="mailtemplateArray" -->
       <label class="sectionlabel">Section <mat-icon (click)="onSelectSectionPart(i1)" class="iconsize-10" matSuffix>
         mode_edit</mat-icon>
       <mat-icon (click)="onDeleteSectionPart(i1)" class="icon-label" class="iconsize-10" matSuffix>delete</mat-icon>
     </label>
-
-
       <div class="section-box" *ngFor="let column of section; let i2 = index"
         fxLayout="column" fxFlex>
-
-      
           <div [ngStyle]="columnStyleArray[i1][i2].style" class="column-box" fxLayout="row" cdkDropList
             #mailtemplateList="cdkDropList" [cdkDropListData]="mailtemplateArray[i1][i2]"
             (cdkDropListDropped)="drop($event, i1, i2)">
@@ -233,6 +229,7 @@
             </mat-form-field>
           </td>
         </tr>
+
         <tr fxLayout="row">                    
             <span style="width: 50px; margin: 10px;"><mat-icon>border_top</mat-icon></span>                
             <span style="width: 50px; margin: 10px;"><mat-icon>border_right</mat-icon></span>                  
@@ -396,6 +393,11 @@
           <td>
               <mat-slide-toggle [(ngModel)]='fullwidth'
               (change)="changefullwidthSection()">Full width</mat-slide-toggle>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <mat-slide-toggle [(ngModel)]="columnverticalalign" (change)="setcolumnverticalalign(maileditorSection)">Set column vertical align </mat-slide-toggle>
           </td>
         </tr>
         <tr>
@@ -586,43 +588,60 @@
         </tr>
         <tr>
           <td>
-            <input [style.background]="rgbaText" matInput Placeholder="background color"
-              [value]="maileditorDivider.style['background-color']" [cpAlphaChannel]="'always'" [cpOutputFormat]="'hex'"
-              [cpPosition]="'left'" [(colorPicker)]="maileditorDivider.style['container-background-color']" />
-            <mat-hint>Background Color</mat-hint>
-            <table matTooltip="click to set color">
-              <tr>
-                <td>Primairy color</td>
-                <td>Secondairy color</td>
-              </tr>
-              <tr>
-                <td (click)="maileditorDivider.style['container-background-color'] = company.companyprimairycolor">
-                  {{company.companyprimairycolor}}</td>
-                <td (click)="maileditorDivider.style['container-background-color'] = company.companysecondarycolor">
-                  {{company.companysecondarycolor}}</td>
-              </tr>
-            </table>
+            <mat-accordion>
+              <mat-expansion-panel>
+                <mat-expansion-panel-header>
+                  <mat-panel-title>
+                    Border Color
+                  </mat-panel-title>
+                </mat-expansion-panel-header>
+                <br>
+                <span [style.background]="maileditorDivider.style['border-color']" [cpToggle]="true" [cpDialogDisplay]="'inline'"
+                  [cpCancelButton]="true" [(colorPicker)]="selectedborder.color"></span>
+                <table matTooltip="click to set color">
+                  <tr>
+                    <td>Primairy color</td>
+                    <td>Secondairy color</td>
+                  </tr>
+                  <tr>
+                    <td (click)="selectedborder.color = company.companyprimairycolor">{{company.companyprimairycolor}}
+                    </td>
+                    <td (click)="selectedborder.color = company.companysecondarycolor">{{company.companysecondarycolor}}
+                    </td>
+                  </tr>
+                </table>
+                <!-- <button mat-button (click)="onChangeBorder(maileditorDivider)">confirm</button> -->
+              </mat-expansion-panel>
+            </mat-accordion>
           </td>
         </tr>
-        <tr>
-          <td>
-            <mat-form-field>
-              <input [(ngModel)]=maileditorDivider.style.padding type="text" matInput placeholder="padding">
-              <mat-icon matSuffix>mode_edit</mat-icon>
-              <mat-hint>%/px</mat-hint>
-            </mat-form-field>
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <mat-form-field>
-              <input [(ngModel)]="maileditorDivider.style['border-width']" type="text" matInput
-                placeholder="border width">
-              <mat-icon matSuffix>mode_edit</mat-icon>
-              <mat-hint>%/px</mat-hint>
-            </mat-form-field>
-          </td>
-        </tr>
+        <tr fxLayout="row">                    
+          <span style="width: 50px; margin: 10px;"><mat-icon>border_top</mat-icon></span>                
+          <span style="width: 50px; margin: 10px;"><mat-icon>border_right</mat-icon></span>                  
+          <span style="width: 50px; margin: 10px;"><mat-icon>border_bottom</mat-icon></span>
+          <span style="width: 50px; margin: 10px;"><mat-icon>border_left</mat-icon></span>                    
+      </tr>
+      <tr fxLayout="row"> 
+          <mat-form-field style="max-width: 46px;">
+            <input [(ngModel)]="selectedPadding['padding-top']" type="number" matInput (change)="onChangePadding(maileditorDivider, 'padding-top');">
+            <mat-hint>px</mat-hint>
+          </mat-form-field>
+        
+          <mat-form-field style="max-width: 46px;">
+            <input [(ngModel)]="selectedPadding['padding-right']" type="number" matInput (change)="onChangePadding(maileditorDivider, 'padding-right');">
+            <mat-hint>px</mat-hint>
+          </mat-form-field>
+        
+          <mat-form-field style="max-width: 46px;">
+            <input  [(ngModel)]="selectedPadding['padding-bottom']" type="number" matInput (change)="onChangePadding(maileditorDivider, 'padding-bottom');">
+            <mat-hint>px</mat-hint>
+          </mat-form-field>
+        
+          <mat-form-field style="max-width: 46px;">
+            <input  [(ngModel)]="selectedPadding['padding-left']" type="number" matInput (change)="onChangePadding(maileditorDivider, 'padding-left');">
+            <mat-hint>px</mat-hint>
+          </mat-form-field>
+      </tr>
         <tr>
           <td>
             <mat-form-field>

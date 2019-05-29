@@ -54,6 +54,7 @@ export class MaileditorComponent implements OnInit {
   public showemojibutton = false;
   public Footer = false;
   public fullwidth = false;
+  public columnverticalalign = false;
 
   public selectedborder = {
     width: '0px',
@@ -189,6 +190,7 @@ export class MaileditorComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.setupTemplate()
     this.toolboxfooter = this.createNewItem('Footer');
     this.toolset.push(this.toolboxfooter);
     // when openeing existing mail from template overview udpatemailingobj will exist. 
@@ -200,12 +202,13 @@ export class MaileditorComponent implements OnInit {
         this.subject = this.updateMailingObj.subject;
         console.log("existing mailing", this.updateMailingObj);
         this.updatemail = true;
-      } else {
-        this.setupTemplate();
-      }
-    } else {
-      this.setupTemplate();
-    }
+      } }
+    //   else {
+    //     this.setupTemplate();
+    //   }
+    // } else {
+    //   this.setupTemplate();
+    // }
 
     // move creation to wait for company info to resolve
     // console.log(this.company);
@@ -243,6 +246,7 @@ export class MaileditorComponent implements OnInit {
 
     const sectionstyleIns: MaileditorSection = new MaileditorSection();
     sectionstyleIns.imggrey = false;
+    sectionstyleIns.boxalignment = 'row';
     sectionstyleIns.style = {
       'background-color': '',
       'background-repeat': 'no-repeat',
@@ -295,15 +299,17 @@ export class MaileditorComponent implements OnInit {
     }
     // console.log(i1, this.columnStyleArray)
     this.columnStyleArray[i1].push(columnstyleIns);
+    this.updatecolumnalign();
   }
 
   // creat array per
   drop(event: CdkDragDrop<string[]>, i1?, i2?) {
-    // console.log(i1, i2, event)
+    console.log(i1, i2, event)
     if (event.previousContainer === event.container) {
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
       // if eventcontainer is new column create new eventcontainer
-    } else if (event.previousContainer.id === 'cdk-drop-list-0') {
+    } else if (event.previousContainer.element.nativeElement.className === 'tools-list cdk-drop-list') {
+    // } else if (event.previousContainer.id === 'cdk-drop-list-0') {
       const arrayItem = [];
       event.previousContainer.data.forEach((element) => {
         arrayItem.push(element)
@@ -441,11 +447,11 @@ export class MaileditorComponent implements OnInit {
         'border-style': 'solid',
         'border-width': '2px',
         'container-background-color': '',
-        'padding': '',
-        'padding-bottom': '0px',
-        'padding-left': '0px',
-        'padding-right': '0px',
-        'padding-top': '0px',
+        'padding': '0px 0px 0px 0px',
+        'padding-bottom': '0',
+        'padding-left': '0',
+        'padding-right': '0',
+        'padding-top': '0',
         'width': '100%'
       }
       return newDivider
@@ -1155,6 +1161,33 @@ export class MaileditorComponent implements OnInit {
     if (this.fullwidth === true) { this.maileditorSection.style['full-width'] = value } else {
       this.maileditorSection.style['full-width'] = emptyvalue }
       console.log(this.maileditorSection);
+  }
+
+  setcolumnverticalalign(maileditorSection): void {
+    if (this.columnverticalalign) {
+    // maileditorColumn.style.width = '100%';
+    maileditorSection.boxalignment = 'column';
+    } else {
+      // maileditorColumn.style.width = '';
+      maileditorSection.boxalignment = 'row';
+    }
+    this.updatecolumnalign();
+  }
+
+  updatecolumnalign(): void {
+    console.log(this.columnStyleArray);
+    this.sectionStyleArray.forEach((section, index1) => {
+    this.columnStyleArray.forEach((columnsection, index2) => {
+      columnsection.forEach((column, index3) => {
+      if (section.boxalignment === 'column') {
+        column.style.width = '100%';
+      }
+      if (section.boxalignment === 'row') {
+        column.style.width = '';
+      }
+    });
+    });
+  });
   }
 
 }
