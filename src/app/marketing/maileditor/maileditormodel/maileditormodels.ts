@@ -6,6 +6,7 @@ export interface Maileditormodels {
 
 export interface MaileditorSectionInterface {
   imggrey: boolean;
+  imgblur: boolean;
   boxalignment: string;
   style: {
     'background-color': string,
@@ -441,6 +442,7 @@ export class MaileditorColumn implements MaileditorColumnInterface {
 export class MaileditorSection implements MaileditorSectionInterface {
   boxalignment: string;
   imggrey: boolean;
+  imgblur: boolean;
   style: {
     'background-color': string,
     'background-repeat': string,

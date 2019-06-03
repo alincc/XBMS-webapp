@@ -240,6 +240,7 @@ export class MaileditorComponent implements OnInit {
 
     const sectionstyleIns: MaileditorSection = new MaileditorSection();
     sectionstyleIns.imggrey = false;
+    sectionstyleIns.imgblur = false;
     sectionstyleIns.boxalignment = 'row';
     sectionstyleIns.style = {
       'background-color': '',
@@ -911,15 +912,32 @@ export class MaileditorComponent implements OnInit {
     setTimeout(() => {
       this.mailtemplateArray[i1][i2][i3].url = url;
     },
-      2000);
+      1000);
   }
 
 
-  setbackgroundImageSection(url: string) {
+  setbackgroundImageSection(url: string, grey?, blur?) {
+    this.maileditorSection.style['background-blend-mode'] = '';
     this.maileditorSection.style['background-url'] = url;
-    this.maileditorSection.style['background-image'] = 'url(' + url + ')'; //pure for editor purposes
-    console.log(this.maileditorSection);
+    this.maileditorSection.style['background-image'] = 'url(' + url + ')';
+    this.maileditorSection.style['filter'] = "";
+    if (grey && blur) {
+      this.maileditorSection.style['background-image'] = 
+      'linear-gradient(black, black), url(' + url + ')';
+      this.maileditorSection.style['background-blend-mode'] = 'saturation';
+      this.maileditorSection.style['filter'] = "blur(4px)";
+    }
+    else if (blur) { 
+    this.maileditorSection.style['filter'] = "blur(4px)";
+    }
+    else if (grey) {
+      this.maileditorSection.style['background-image'] = 
+      'linear-gradient(black, black), url(' + url + ')';
+      this.maileditorSection.style['background-blend-mode'] = 'saturation';
+    }
   }
+
+  
 
   setbackgroundImageDivider(url: string) {
     this.maileditorDivider.style['background-image'] = 'url(' + url + ')';

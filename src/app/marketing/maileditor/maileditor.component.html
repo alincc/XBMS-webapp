@@ -128,8 +128,9 @@
     </table>
 
     <div class="template-container" *ngFor="let section of mailtemplateArray; let i1 = index" 
-    [ngStyle]="sectionStyleArray[i1].style" [fxLayout]=sectionStyleArray[i1].boxalignment [class.imggreysection]="sectionStyleArray[i1].imggrey" 
-    [class.fullwidthsection]="sectionStyleArray[i1].style['full-width'] === 'full-width'">
+    [ngStyle]="sectionStyleArray[i1].style" [fxLayout]=sectionStyleArray[i1].boxalignment 
+    [class.fullwidthsection]="sectionStyleArray[i1].style['full-width'] === 'full-width'"
+    [class.imggreysection]="sectionStyleArray[i1].imggrey">
       <!-- cdkDropList #listSection="cdkDropList" (cdkDropListDropped)="drop($event, i1, i2)" [cdkDropListData]="mailtemplateArray" -->
       <label class="sectionlabel">Section <mat-icon (click)="onSelectSectionPart(i1)" class="iconsize-10" matSuffix>
         mode_edit</mat-icon>
@@ -452,7 +453,12 @@
         </tr>
         <tr>
           <td>
-              <mat-slide-toggle [(ngModel)]="maileditorSection.imggrey">Greyscale</mat-slide-toggle>
+              <mat-slide-toggle (change)="setbackgroundImageSection(maileditorSection.style['background-url'], maileditorSection.imggrey, maileditorSection.imgblur)" [(ngModel)]="maileditorSection.imggrey">Greyscale</mat-slide-toggle>
+          </td>
+        </tr>
+        <tr>
+          <td>
+              <mat-slide-toggle (change)="setbackgroundImageSection(maileditorSection.style['background-url'], maileditorSection.imggrey, maileditorSection.imgblur)" [(ngModel)]="maileditorSection.imgblur">Blur</mat-slide-toggle>
           </td>
         </tr>
         <tr>
@@ -597,10 +603,9 @@
                 </mat-expansion-panel-header>
                 <br>
                 <span [style.background]="maileditorDivider.style['border-color']" [cpToggle]="true" [cpDialogDisplay]="'inline'"
-                  [cpCancelButton]="true" [(colorPicker)]="selectedborder.color"></span>
+                  [cpCancelButton]="true" [(colorPicker)]="maileditorDivider.style['border-color']"></span>
                 <table matTooltip="click to set color">
                   <tr>
-                    <td>Primairy color</td>
                     <td>Secondairy color</td>
                   </tr>
                   <tr>
@@ -610,10 +615,13 @@
                     </td>
                   </tr>
                 </table>
-                <!-- <button mat-button (click)="onChangeBorder(maileditorDivider)">confirm</button> -->
+                <button mat-button (click)="onChangeBorder(maileditorDivider)">confirm</button>
               </mat-expansion-panel>
             </mat-accordion>
           </td>
+        </tr>
+        <tr>
+          Padding
         </tr>
         <tr fxLayout="row">                    
           <span style="width: 50px; margin: 10px;"><mat-icon>border_top</mat-icon></span>                
