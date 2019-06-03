@@ -920,15 +920,15 @@ export class MaileditorComponent implements OnInit {
     this.maileditorSection.style['background-blend-mode'] = '';
     this.maileditorSection.style['background-url'] = url;
     this.maileditorSection.style['background-image'] = 'url(' + url + ')';
-    this.maileditorSection.style['filter'] = "";
+     this.maileditorSection.style['filter'] = "";
     if (grey && blur) {
       this.maileditorSection.style['background-image'] = 
       'linear-gradient(black, black), url(' + url + ')';
       this.maileditorSection.style['background-blend-mode'] = 'saturation';
-      this.maileditorSection.style['filter'] = "blur(4px)";
+       //this.maileditorSection.style['filter'] = "blur(4px)";
     }
     else if (blur) { 
-    this.maileditorSection.style['filter'] = "blur(4px)";
+     //this.maileditorSection.style['filter'] = "blur(4px)";
     }
     else if (grey) {
       this.maileditorSection.style['background-image'] = 

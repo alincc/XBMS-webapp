@@ -127,10 +127,12 @@
       </tr>
     </table>
 
+   
     <div class="template-container" *ngFor="let section of mailtemplateArray; let i1 = index" 
     [ngStyle]="sectionStyleArray[i1].style" [fxLayout]=sectionStyleArray[i1].boxalignment 
-    [class.fullwidthsection]="sectionStyleArray[i1].style['full-width'] === 'full-width'"
-    [class.imggreysection]="sectionStyleArray[i1].imggrey">
+    [class.fullwidthsection]="sectionStyleArray[i1].style['full-width'] === 'full-width'">
+    <div *ngIf="sectionStyleArray[i1].imgblur" [class.imgblursection]="sectionStyleArray[i1].imgblur" [style.background-image]= "sectionStyleArray[i1].style['background-image']" 
+    style="background-size: 100%; background-repeat: no-repeat;"></div>
       <!-- cdkDropList #listSection="cdkDropList" (cdkDropListDropped)="drop($event, i1, i2)" [cdkDropListData]="mailtemplateArray" -->
       <label class="sectionlabel">Section <mat-icon (click)="onSelectSectionPart(i1)" class="iconsize-10" matSuffix>
         mode_edit</mat-icon>
@@ -210,8 +212,8 @@
           </div>
        
       </div>
-      <div  style="background-color: rgba(250, 250, 250, 1); height: 100%;">
-      <mat-icon style="padding-top: 25px;" (click)="addToSectionArray(i1)">add</mat-icon>
+      <div  style="background-color: rgba(250, 250, 250, 1);">
+      <mat-icon style="float: right;" (click)="addToSectionArray(i1)">add</mat-icon>
     </div>
     </div>
     <mat-icon  (click)="addToMailTemplateArray()">add</mat-icon>
@@ -398,7 +400,7 @@
         </tr>
         <tr>
           <td>
-            <mat-slide-toggle [(ngModel)]="columnverticalalign" (change)="setcolumnverticalalign(maileditorSection)">Set column vertical align </mat-slide-toggle>
+            <mat-slide-toggle [(ngModel)]="columnverticalalign" (change)="setcolumnverticalalign(maileditorSection)">Align Vertical </mat-slide-toggle>
           </td>
         </tr>
         <tr>
