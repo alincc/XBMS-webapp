@@ -407,7 +407,7 @@
         <tr>
           <td>
             <mat-accordion>
-              <mat-expansion-panel>
+              <mat-expansion-panel style="width: 270px;">
                 <mat-expansion-panel-header>
                   <mat-panel-title>
                     Select Background Color
@@ -435,7 +435,15 @@
         </tr>
         <tr>
           <td>
-            <div *ngIf="maileditorSection.style['background-url']">
+              <mat-accordion>
+                  <mat-expansion-panel style="width: 270px;">
+                    <mat-expansion-panel-header>
+                      <mat-panel-title>
+                        Select Background Image
+                      </mat-panel-title>
+                    </mat-expansion-panel-header>
+             
+                    <div *ngIf="maileditorSection.style['background-url']">
               <img [src]="maileditorSection.style['background-url']" class="carouselimages">
               <mat-icon (click)="maileditorSection.style['background-url'] = ''; maileditorSection.style['background-image'] =''" class="icon-label" class="iconsize-12">
                 delete</mat-icon>
@@ -443,41 +451,28 @@
             <app-fileupload *ngIf="!maileditorSection.style['background-url']" [account]="account" [option]="option"
               (imgurl)="setbackgroundImageSection($event)">
             </app-fileupload>
-          </td>
-        </tr>
-        <tr>
-          <td>
+       
             <mat-form-field>
               <input [(ngModel)]="maileditorSection.style['background-url']" type="text" matInput
                 placeholder="Image url">
               <mat-icon matSuffix>mode_edit</mat-icon>
             </mat-form-field>
-          </td>
-        </tr>
-        <tr>
-          <td>
+       
               <mat-slide-toggle (change)="setbackgroundImageSection(maileditorSection.style['background-url'], maileditorSection.imggrey, maileditorSection.imgblur)" [(ngModel)]="maileditorSection.imggrey">Greyscale</mat-slide-toggle>
-          </td>
-        </tr>
-        <tr>
-          <td>
+        
               <mat-slide-toggle (change)="setbackgroundImageSection(maileditorSection.style['background-url'], maileditorSection.imggrey, maileditorSection.imgblur)" [(ngModel)]="maileditorSection.imgblur">Blur</mat-slide-toggle>
-          </td>
-        </tr>
-        <tr>
-          <td>
+        
             <mat-form-field>
               <input [(ngModel)]="maileditorSection.style['background-size']" type="text" matInput
                 placeholder="Background size">
               <mat-icon matSuffix>mode_edit</mat-icon>
               <mat-hint>%/px</mat-hint>
             </mat-form-field>
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <mat-slide-toggle (change)="togglebackgroundrepeat()">Background Image Repeat</mat-slide-toggle>
-          </td>
+                      <mat-slide-toggle (change)="togglebackgroundrepeat()">Background Image Repeat</mat-slide-toggle>
+     
+      </mat-expansion-panel>
+    </mat-accordion>
+    </td>
         </tr>
         <tr>
           <td>
@@ -510,7 +505,7 @@
         <tr>
           <td>
             <mat-accordion>
-              <mat-expansion-panel>
+              <mat-expansion-panel style="width: 270px;">
                 <mat-expansion-panel-header>
                   <mat-panel-title>
                     Border Color
@@ -610,7 +605,7 @@
         <tr>
           <td>
             <mat-accordion>
-              <mat-expansion-panel>
+              <mat-expansion-panel style="width: 270px;">
                 <mat-expansion-panel-header>
                   <mat-panel-title>
                     Border Color

@@ -72,8 +72,8 @@ export class FileuploadComponent implements OnInit {
         this.uploader = new FileUploader({
           url: URL,
           allowedMimeType: this.allowedMimeType,
-          headers: [{name:'Accept', value:'application/json'}],
-          autoUpload: true,
+          // headers: [{name:'Accept', value:'application/json'}],
+          // autoUpload: true,
           maxFileSize: this.maxFileSize,
         });
         this.uploader.onWhenAddingFileFailed = (item, filter, options) => this.onWhenAddingFileFailed(item, filter, options);

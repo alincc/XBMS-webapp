@@ -4,52 +4,56 @@
       [uploader]="uploader" class="drop-zone">
       Drop Image Here
     </div>
+     <input type="file" ng2FileSelect [uploader]="uploader"/>
     <div *ngIf="errorMessage">{{errorMessage}}</div>
     <table class="table">
-      <thead>
+      <!-- <thead>
         <tr>
           <th>Progress</th>
           <th>Status</th>
           <th>Actions</th>
         </tr>
       </thead>
-      <tbody>
-        <tr *ngFor="let item of uploader.queue">
+      <tbody> -->
+      <tr *ngFor="let item of uploader.queue" style="min-width: 20px;">
+              {{ item?.file?.name}}
+             </tr>
+      <tr *ngFor="let item of uploader.queue">
+        <div class="progress" style="margin-bottom: 0;">
+          <!-- <div class="progress-bar" role="progressbar" [ngStyle]="{ 'width': item.progress + '%' }"></div> -->
+  
+        </div>
+        <td>
+          <mat-progress-bar [mode]="determinate" [value]="item.progress">
+          upload </mat-progress-bar>
+        </td>
 
-          <td *ngIf="uploader.isHTML5" nowrap>{{ item?.file?.size/1024/1024 | number:'.2' }} MB</td>
-          <td *ngIf="uploader.isHTML5">
-            <div class="progress" style="margin-bottom: 0;">
-              <!-- <div class="progress-bar" role="progressbar" [ngStyle]="{ 'width': item.progress + '%' }"></div> -->
-              <mat-progress-bar
-          class="example-margin"
-          [color]="color"
-          [mode]="mode"
-          [value]="value"
-          [bufferValue]="item.progress">
-      </mat-progress-bar>
-            </div>
-          </td>
-          <td class="text-center">
-            <span *ngIf="item.isSuccess">
-              <mat-icon aria-hidden="false" class="iconsize-10">done</mat-icon>
-            </span>
-            <span *ngIf="item.isCancel">
-              <mat-icon aria-hidden="false" class="iconsize-10">cancel</mat-icon>
-            </span>
-            <span *ngIf="item.isError">
-              <mat-icon aria-hidden="false" class="iconsize-10">error</mat-icon>
-            </span>
-          </td>
-          <td nowrap>
-            <button mat-button (click)="setupload(item?.file?.name)"
-              [disabled]="item.isReady || item.isUploading || item.isSuccess">
-              <mat-icon aria-hidden="false" class="iconsize-10">cloud_upload</mat-icon>Upload
-            </button>
-            <button mat-button (click)="item.cancel()" [disabled]="!item.isUploading">
-              <mat-icon aria-hidden="false" class="iconsize-10">cancel</mat-icon> Cancel
-            </button>
-          </td>
-        </tr>
+        <!-- <td *ngIf="uploader.isHTML5" nowrap>{{ item?.file?.size/1024/1024 | number:'.2' }} MB</td>
+        <td *ngIf="uploader.isHTML5">
+          test
+        </td> -->
+
+        <td class="text-center">
+          <span *ngIf="item.isSuccess">
+            <mat-icon aria-hidden="false" class="iconsize-10">done</mat-icon>
+          </span>
+          <span *ngIf="item.isCancel">
+            <mat-icon aria-hidden="false" class="iconsize-10">cancel</mat-icon>
+          </span>
+          <span *ngIf="item.isError">
+            <mat-icon aria-hidden="false" class="iconsize-10">error</mat-icon>
+          </span>
+        </td>
+        <td nowrap>
+          <button mat-button (click)="setupload(item?.file?.name)"
+            [disabled]="item.isReady || item.isUploading || item.isSuccess">
+            <mat-icon aria-hidden="false" class="iconsize-10">cloud_upload</mat-icon>Upload
+          </button>
+          <button mat-button (click)="item.cancel()" [disabled]="!item.isUploading">
+            <mat-icon aria-hidden="false" class="iconsize-10">cancel</mat-icon> Cancel
+          </button>
+        </td>
+      </tr>
       </tbody>
     </table>
     <button matTooltip="Open gallery" class="deletepicture" mat-mini-fab color="primary" (click)="onOpenGallery()">
@@ -57,7 +61,7 @@
     </button>
   </div>
 
-    <!-- <div *ngIf="showgallery" fxLayout="row wrap" class="gallery">
+  <!-- <div *ngIf="showgallery" fxLayout="row wrap" class="gallery">
       
       <div *ngFor="let image of images; let i = index" fxFlex="20%">
         <div>
@@ -66,4 +70,3 @@
       </div>
     </div> -->
 </div>
-

@@ -65,7 +65,7 @@
   min-width: 100px;
   min-height: 100px;
   height: auto;
-  max-width: 600px;
+  max-width: 500px;
   margin: 20px;
   padding: 20px;
   border-style: dashed;
@@ -78,7 +78,7 @@
 .drop-zone-over {
   min-width: 100px;
   min-height: 100px;
-  max-width: 600px;
+  max-width: 500px;
   margin: 20px;
   padding: 20px;
   border-style: dashed;
@@ -86,4 +86,14 @@
   border-color: red;
   margin: 10px;
   z-index: 20;
+}
+
+.mat-progress-bar {
+  display: block;
+  height: 4px;
+  overflow: hidden;
+  position: relative;
+  transition: opacity 250ms linear;
+  width: 100%;
+  min-width: 50px;
 }

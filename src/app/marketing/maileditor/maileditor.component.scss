@@ -80,7 +80,7 @@
     position: fixed;
     top: 180px;
     left: 10px;
-    
+    z-index: 60;
   }
 
   .section-box {
@@ -142,7 +142,7 @@
     z-index: 30;
     opacity: 0.4;
     background-color: white;
-    top: 0;
+    bottom: 0;
     right: 0;
     margin-right: 10px;
   }
