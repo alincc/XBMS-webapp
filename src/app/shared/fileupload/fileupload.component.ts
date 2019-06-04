@@ -30,7 +30,13 @@ export interface DialogData {
 })
 
 export class FileuploadComponent implements OnInit {
-  public uploader: FileUploader = new FileUploader({ url: URL });
+  // public uploader: FileUploader = new FileUploader({ 
+    
+  //   url: URL });
+    uploader:FileUploader;
+    errorMessage: string;
+    allowedMimeType = ['image/png', 'image/jpg', 'image/jpeg', 'image/gif'];
+    maxFileSize = 10 * 1024 * 1024;
   public hasBaseDropZoneOver = false;
   public hasAnotherDropZoneOver = false;
   public PlainGalleryConfig: PlainGalleryConfig;
@@ -55,13 +61,38 @@ export class FileuploadComponent implements OnInit {
   constructor(
     public dialog: MatDialog,
     public ContainerApi: ContainerApi,
-    public relationsApi: RelationsApi
+    public relationsApi: RelationsApi,
+
     ) { }
+
+
 
   ngOnInit() {
         // Clear the item queue (somehow they will upload to the old URL)
+        this.uploader = new FileUploader({
+          url: URL,
+          allowedMimeType: this.allowedMimeType,
+          headers: [{name:'Accept', value:'application/json'}],
+          autoUpload: true,
+          maxFileSize: this.maxFileSize,
+        });
+        this.uploader.onWhenAddingFileFailed = (item, filter, options) => this.onWhenAddingFileFailed(item, filter, options);
         this.uploader.clearQueue();
   }
+
+  onWhenAddingFileFailed(item, filter: any, options: any) {
+    switch (filter.name) {
+        case 'fileSize':
+            this.errorMessage = `Maximum upload size exceeded (${item.size} of ${this.maxFileSize} allowed)`;
+            break;
+        case 'mimeType':
+            const allowedTypes = this.allowedMimeType.join();
+            this.errorMessage = `Type "${item.type} is not allowed. Allowed types: "${allowedTypes}"`;
+            break;
+        default:
+            this.errorMessage = `Unknown error (filter is ${filter.name})`;
+    }
+}
 
       // file upload 1
   public fileOverBase(e: any): void {

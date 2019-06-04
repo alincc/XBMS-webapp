@@ -294,6 +294,7 @@ export class MaileditorComponent implements OnInit {
     }
     // console.log(i1, this.columnStyleArray)
     this.columnStyleArray[i1].push(columnstyleIns);
+    this.sectionpartselect = i1;
     this.updatecolumnalign();
   }
 
@@ -829,8 +830,9 @@ export class MaileditorComponent implements OnInit {
     this.Footer = false;
   }
 
-  private onSelectTemplatePart(item, i3): void {
+  private onSelectTemplatePart(item, i1?, i2?, i3?): void {
     // const item = this.mailtemplateArray[i1][i2][i3]
+    if (i1) {this.sectionpartselect = i1;}
     this.resetEdit()
     this.onSelectPadding(item);
 
@@ -906,17 +908,18 @@ export class MaileditorComponent implements OnInit {
 
   private setimgurl(url: string, i1, i2, i3) {
     // url direct
-    // console.log(url, i1, i2, i3);
+     console.log(url, i1, i2, i3);
 
     // this.setbackgroundImageSection(url);
     setTimeout(() => {
       this.mailtemplateArray[i1][i2][i3].url = url;
     },
-      1000);
+      500);
   }
 
 
   setbackgroundImageSection(url: string, grey?, blur?) {
+    setTimeout(() => {
     this.maileditorSection.style['background-blend-mode'] = '';
     this.maileditorSection.style['background-url'] = url;
     this.maileditorSection.style['background-image'] = 'url(' + url + ')';
@@ -935,6 +938,8 @@ export class MaileditorComponent implements OnInit {
       'linear-gradient(black, black), url(' + url + ')';
       this.maileditorSection.style['background-blend-mode'] = 'saturation';
     }
+  },
+  500);
   }
 
   
@@ -1197,5 +1202,10 @@ export class MaileditorComponent implements OnInit {
       if (this.columnverticalalign === true) { column.style.width = '100%' };
       if (this.columnverticalalign === false) { column.style.width = '' };
     });
+  }
+
+  changetextalign(event): void {
+    // console.log(event);
+    this.sectionStyleArray[this.sectionpartselect].style['text-align'] = event.value;
   }
 }

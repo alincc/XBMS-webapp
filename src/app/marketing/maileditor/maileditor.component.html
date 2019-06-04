@@ -132,7 +132,7 @@
     [ngStyle]="sectionStyleArray[i1].style" [fxLayout]=sectionStyleArray[i1].boxalignment 
     [class.fullwidthsection]="sectionStyleArray[i1].style['full-width'] === 'full-width'">
     <div *ngIf="sectionStyleArray[i1].imgblur" [class.imgblursection]="sectionStyleArray[i1].imgblur" [style.background-image]= "sectionStyleArray[i1].style['background-image']" 
-    style="background-size: 100%; background-repeat: no-repeat;"></div>
+    style="background-size: 100%; background-repeat: no-repeat;" [ngStyle]="sectionStyleArray[i1].style" ></div>
       <!-- cdkDropList #listSection="cdkDropList" (cdkDropListDropped)="drop($event, i1, i2)" [cdkDropListData]="mailtemplateArray" -->
       <label class="sectionlabel">Section <mat-icon (click)="onSelectSectionPart(i1)" class="iconsize-10" matSuffix>
         mode_edit</mat-icon>
@@ -147,9 +147,9 @@
                 class="iconsize-10" matSuffix>mode_edit</mat-icon>
               <mat-icon (click)="onDeleteColumnPart(i1, i2)" class="iconsize-10" matSuffix>delete</mat-icon>
             </label>
-            <div class="item-box" *ngFor="let item of column; let i3 = index;" (click)="onSelectTemplatePart(item, i3)"
+            <div class="item-box" *ngFor="let item of column; let i3 = index;" (click)="onSelectTemplatePart(item, i1, i2, i3)"
               cdkDrag [fxLayoutAlign]="columnStyleArray[i1][i2].setflexalign">
-              <div *ngIf="item.type === 'Text'" (click)="openDialog()" class="full-width-item">
+              <div *ngIf="item.type === 'Text'" (click)="openDialog()" (click)="onSelectTemplatePart(item, i1, i2, i3)" class="full-width-item">
                 <div (click)="onSelectTemplatePart(item, i3)" [innerHTML]="item.content | safeHtml"></div>
                 <mat-icon class="textbox-edit-button" class="iconsize-10 text-edit-icon"
                   (click)="onSelectTemplatePart(item, i3)" (click)="openDialog()">mode_edit</mat-icon>
@@ -272,6 +272,7 @@
             </mat-form-field>
           </td>
         </tr>
+
 
 
         <tr>
@@ -533,6 +534,18 @@
                 <button mat-button (click)="onChangeBorder(maileditorSection)">confirm</button>
               </mat-expansion-panel>
             </mat-accordion>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <mat-form-field>
+              <mat-select [(value)]="maileditorSection.style['align']" placeholder="Vertical align">
+                <mat-option value="left">left</mat-option>
+                <mat-option value="center">center</mat-option>
+                <mat-option value="right">right</mat-option>
+                <mat-option value="justify">justify</mat-option>
+              </mat-select>
+            </mat-form-field>
           </td>
         </tr>
       </table>
@@ -1058,6 +1071,11 @@
                           </mat-accordion>
                         </td>
                       </tr>
+                      <tr>
+                        <speed-dial-fab class="speed-dial-container" [ngClass]="speedDialFabPosition" [reverse-column-direction]="false"
+                        (fabClick)="onSpeedDialFabClicked($event)" [buttons]="speedDialFabButtons">
+                      </speed-dial-fab>
+                      </tr>
                  
                     <tr>
                   <mat-form-field style="max-width: 200px;">
@@ -1109,9 +1127,7 @@
               <mat-icon matSuffix>mode_edit</mat-icon>
               <mat-hint>%/px</mat-hint>
             </mat-form-field>
-      <speed-dial-fab class="speed-dial-container" [ngClass]="speedDialFabPosition" [reverse-column-direction]="false"
-        (fabClick)="onSpeedDialFabClicked($event)" [buttons]="speedDialFabButtons">
-      </speed-dial-fab>
+
     </div>
 
     <div *ngIf="Footer" class="edit_table">Edit Footer
@@ -1188,6 +1204,27 @@
         </tr>
       </table>
     </div>
+
+      <!-- <div *ngIf="Text">Edit text
+        <table>
+          <tr>
+            <td>
+              <mat-form-field>
+                <mat-select [(value)]="maileditorText.style['align']" placeholder="Vertical align"
+                  (selectionChange)="changetextalign($event)">
+                  <mat-option value="left">left</mat-option>
+                  <mat-option value="center">center</mat-option>
+                  <mat-option value="right">right</mat-option>
+                  <mat-option value="justify">justify</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </td>
+          </tr>
+          </table>
+       </div> -->
+
+
+
   </mat-card>
 
 </div>

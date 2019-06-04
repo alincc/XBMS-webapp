@@ -4,6 +4,7 @@
       [uploader]="uploader" class="drop-zone">
       Drop Image Here
     </div>
+    <div *ngIf="errorMessage">{{errorMessage}}</div>
     <table class="table">
       <thead>
         <tr>
