@@ -908,13 +908,13 @@ export class MaileditorComponent implements OnInit {
 
   private setimgurl(url: string, i1, i2, i3) {
     // url direct
-     console.log(url, i1, i2, i3);
+     //console.log(url, i1, i2, i3);
 
     // this.setbackgroundImageSection(url);
     setTimeout(() => {
       this.mailtemplateArray[i1][i2][i3].url = url;
     },
-      500);
+      800);
   }
 
 
@@ -939,7 +939,7 @@ export class MaileditorComponent implements OnInit {
       this.maileditorSection.style['background-blend-mode'] = 'saturation';
     }
   },
-  500);
+  800);
   }
 
   
