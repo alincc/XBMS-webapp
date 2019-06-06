@@ -84,6 +84,20 @@
               </mat-autocomplete>
             </mat-form-field>
           </form>
+          <table matTooltip="click to set color">
+            <tr>
+              <td>Primairy color</td>
+              <td>Secondairy color</td>
+            </tr>
+            <tr>
+              <td (mouseenter)="$event.stopImmediatePropagation()" (mouseleave)="$event.stopImmediatePropagation()"
+              matTooltip="Copied!" #tooltip="matTooltip" (click)="tooltip.toggle()"(click)="copyMessage(company.companyprimairycolor)">
+                {{company.companyprimairycolor}}</td>
+              <td (mouseenter)="$event.stopImmediatePropagation()" (mouseleave)="$event.stopImmediatePropagation()"
+              matTooltip="Copied!" #tooltip="matTooltip" (click)="tooltip.toggle()"(click)="copyMessage(company.companysecondarycolor)">
+                {{company.companysecondarycolor}}</td>
+            </tr>
+          </table>
         </mat-expansion-panel>
       </mat-accordion>
     </div>
@@ -149,10 +163,10 @@
             </label>
             <div class="item-box" *ngFor="let item of column; let i3 = index;" (click)="onSelectTemplatePart(item, i1, i2, i3)"
               cdkDrag [fxLayoutAlign]="columnStyleArray[i1][i2].setflexalign">
-              <div *ngIf="item.type === 'Text'" (click)="openDialog()" (click)="onSelectTemplatePart(item, i1, i2, i3)" class="full-width-item">
-                <div (click)="onSelectTemplatePart(item, i3)" [innerHTML]="item.content | safeHtml"></div>
+              <div *ngIf="item.type === 'Text'"  (click)="openDialog()" class="full-width-item">
+                <div  [innerHTML]="item.content | safeHtml"></div>
                 <mat-icon class="textbox-edit-button" class="iconsize-10 text-edit-icon"
-                  (click)="onSelectTemplatePart(item, i3)" (click)="openDialog()">mode_edit</mat-icon>
+                  (click)="openDialog()">mode_edit</mat-icon>
               </div>
               <div *ngIf="item.type === 'Image'" class="full-width-item">
                 <app-fileupload *ngIf="item.url.length < 1" [account]="account" [option]="option"
@@ -194,15 +208,15 @@
                   <div *ngFor="let socialelement of item.elements" [style.text-align]=item.style.align
                     [ngClass]="{ verticalSocial: item.style.mode === 'horizontal', horizontalSocial: item.style.mode === 'vertical' }">
                     <img src={{socialelement.iconlocation}} [style.width]="socialelement.style['icon-size']">
-                    <label [style.padding]="socialelement.style.padding" [ngStyle]="socialelement.style" (click)="onSelectTemplatePart(item, i3)">{{socialelement.content}}</label>
+                    <label [style.padding]="socialelement.style.padding" [ngStyle]="socialelement.style" (click)="onSelectTemplatePart(item, i1, i2, i3)">{{socialelement.content}}</label>
                   </div>
                 </div>
               </div>
               <!--create dynamic flex-start  flex-end space-around center-->
               <div *ngIf="item.type === 'Button'" class="full-width-item">
-                <button (click)="onSelectTemplatePart(item, i3)" [ngStyle]="item.style">{{item.buttontext}}</button>
+                <button (click)="onSelectTemplatePart(item, i1, i2, i3)" [ngStyle]="item.style">{{item.buttontext}}</button>
               </div>
-              <div *ngIf="item.type === 'Footer'" (click)="onSelectTemplatePart(item, i3)" class="full-width-item">
+              <div *ngIf="item.type === 'Footer'" (click)="onSelectTemplatePart(item, i1, i2, i3)" class="full-width-item">
 
                 <p [ngStyle]="item.style" [innerHTML]="item.content"></p>
               </div>
@@ -534,7 +548,7 @@
         <tr>
           <td>
             <mat-form-field>
-              <mat-select [(value)]="maileditorSection.style['align']" placeholder="Vertical align">
+              <mat-select [(value)]="maileditorSection.style['text-align']" placeholder="Vertical align">
                 <mat-option value="left">left</mat-option>
                 <mat-option value="center">center</mat-option>
                 <mat-option value="right">right</mat-option>
@@ -559,6 +573,11 @@
         </tr>
         <tr>
           <td>
+            <mat-slide-toggle [(ngModel)]="maileditorImage.style['fluid-on-mobile']">Fluid size on mobile devices</mat-slide-toggle>
+          </td>
+        </tr>
+        <tr>
+          <td>
             <mat-form-field>
               <input [(ngModel)]="maileditorImage.style.height" type="text" matInput placeholder="height">
               <label matSuffix>px/%</label>
@@ -577,6 +596,49 @@
             </mat-form-field>
           </td>
         </tr>
+            <tr>
+                Padding
+              </tr>
+              <tr fxLayout="row">                    
+                <span style="width: 50px; margin: 10px;"><mat-icon>border_top</mat-icon></span>                
+                <span style="width: 50px; margin: 10px;"><mat-icon>border_right</mat-icon></span>                  
+                <span style="width: 50px; margin: 10px;"><mat-icon>border_bottom</mat-icon></span>
+                <span style="width: 50px; margin: 10px;"><mat-icon>border_left</mat-icon></span>                    
+            </tr>
+            <tr fxLayout="row"> 
+                <mat-form-field style="max-width: 46px;">
+                  <input [(ngModel)]="selectedPadding['padding-top']" type="number" matInput (change)="onChangePadding(maileditorImage, 'padding-top');">
+                  <mat-hint>px</mat-hint>
+                </mat-form-field>
+              
+                <mat-form-field style="max-width: 46px;">
+                  <input [(ngModel)]="selectedPadding['padding-right']" type="number" matInput (change)="onChangePadding(maileditorImage, 'padding-right');">
+                  <mat-hint>px</mat-hint>
+                </mat-form-field>
+              
+                <mat-form-field style="max-width: 46px;">
+                  <input  [(ngModel)]="selectedPadding['padding-bottom']" type="number" matInput (change)="onChangePadding(maileditorImage, 'padding-bottom');">
+                  <mat-hint>px</mat-hint>
+                </mat-form-field>
+              
+                <mat-form-field style="max-width: 46px;">
+                  <input  [(ngModel)]="selectedPadding['padding-left']" type="number" matInput (change)="onChangePadding(maileditorImage, 'padding-left');">
+                  <mat-hint>px</mat-hint>
+                </mat-form-field>
+            </tr>
+            <tr>
+                <td>
+                  <mat-form-field>
+                    <mat-select [(value)]="maileditorImage.style['align']" placeholder="Align"
+                      (selectionChange)="changetextalign(maileditorImage.style['align'])">
+                      <mat-option value="left">left</mat-option>
+                      <mat-option value="center">center</mat-option>
+                      <mat-option value="right">right</mat-option>
+                      <mat-option value="justify">justify</mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </td>
+              </tr>
       </table>
     </div>
 
@@ -619,9 +681,9 @@
                     <td>Secondairy color</td>
                   </tr>
                   <tr>
-                    <td (click)="selectedborder.color = company.companyprimairycolor">{{company.companyprimairycolor}}
+                    <td (click)="maileditorDivider.style['border-color'] = company.companyprimairycolor">{{company.companyprimairycolor}}
                     </td>
-                    <td (click)="selectedborder.color = company.companysecondarycolor">{{company.companysecondarycolor}}
+                    <td (click)="maileditorDivider.style['border-color'] = company.companysecondarycolor">{{company.companysecondarycolor}}
                     </td>
                   </tr>
                 </table>
@@ -703,6 +765,22 @@
             </div>
           </td>
         </tr>
+        <tr>
+            <td>
+              <mat-form-field>
+                <input [(ngModel)]="maileditorButton.style.height" type="text" matInput placeholder="Height">
+                <mat-icon matSuffix>mode_edit</mat-icon>
+              </mat-form-field>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <mat-form-field>
+                <input [(ngModel)]="maileditorButton.style.width" type="text" matInput placeholder="Width">
+                <mat-icon matSuffix>mode_edit</mat-icon>
+              </mat-form-field>
+            </td>
+          </tr>
         <tr>
           <td>
             <mat-form-field>
@@ -806,22 +884,6 @@
         <tr>
           <td>
             <mat-form-field>
-              <input [(ngModel)]="maileditorButton.style.height" type="text" matInput placeholder="Height">
-              <mat-icon matSuffix>mode_edit</mat-icon>
-            </mat-form-field>
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <mat-form-field>
-              <input [(ngModel)]="maileditorButton.style.width" type="text" matInput placeholder="width">
-              <mat-icon matSuffix>mode_edit</mat-icon>
-            </mat-form-field>
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <mat-form-field>
               <input [(ngModel)]="selectedborder.width" type="number" matInput placeholder="border width"
                 (change)="onChangeBorder(maileditorButton)">
               <mat-icon matSuffix>mode_edit</mat-icon>
@@ -876,6 +938,31 @@
             </mat-accordion>
           </td>
         </tr>
+        <tr>
+            <td>
+              <mat-form-field>
+                <mat-select [(value)]="maileditorButton.style['text-align']" placeholder="Text align">
+                  <mat-option value="left">left</mat-option>
+                  <mat-option value="center">center</mat-option>
+                  <mat-option value="right">right</mat-option>
+                  <mat-option value="justify">justify</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </td>
+          </tr>
+          <tr>
+              <td>
+                <mat-form-field>
+                  <mat-select [(value)]="maileditorButton.style['align']" placeholder="Horizontal align"
+                  (selectionChange)="changetextalign(maileditorButton.style['align'])">
+                    <mat-option value="left">left</mat-option>
+                    <mat-option value="center">center</mat-option>
+                    <mat-option value="right">right</mat-option>
+                    <mat-option value="justify">justify</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </td>
+            </tr>
       </table>
     </div>
 
@@ -954,8 +1041,12 @@
       </table>
     </div>
 
-    <div *ngIf="Social" class="edit_table">Edit Socialmedia
-  
+    <div *ngIf="Social" class="edit_table">Edit Social Media
+           
+        <speed-dial-fab matTooltip="Add social media link" class="speed-dial-container" [ngClass]="speedDialFabPosition" [reverse-column-direction]="false"
+        (fabClick)="onSpeedDialFabClicked($event)" [buttons]="speedDialFabButtons">
+      </speed-dial-fab>
+      
             <mat-form-field>
               <mat-select [(value)]="maileditorSocial.style.mode" placeholder="Direction Icons">
                 <mat-option value="horizontal">horizontal</mat-option>
@@ -964,18 +1055,19 @@
             </mat-form-field>
 
               
-            <mat-form-field>
-                <mat-select [(value)]="maileditorSocial.style.align" placeholder="Direction Icons">
-                  <mat-option value="left">left</mat-option>
-                  <mat-option value="right">right</mat-option>
-                  <mat-option value="center">center</mat-option>
-                </mat-select>
-              </mat-form-field>
+                    <mat-form-field>
+                      <mat-select [(value)]="maileditorSocial.style['align']" placeholder="Align"
+                        (selectionChange)="changetextalign(maileditorSocial.style['align'])">
+                        <mat-option value="left">left</mat-option>
+                        <mat-option value="center">center</mat-option>
+                        <mat-option value="right">right</mat-option>
+                        <mat-option value="justify">justify</mat-option>
+                      </mat-select>
+                    </mat-form-field>
+
   
               <mat-accordion>
-            <div *ngFor="let socialelement of maileditorSocial.elements; let i = index;">
-
-             
+            <div *ngFor="let socialelement of maileditorSocial.elements; let i = index;">            
                 <mat-expansion-panel style="max-width: 270px;" [expanded]="onSelectPadding(socialelement)">
                   <mat-expansion-panel-header>
                     <mat-panel-title>
@@ -1037,6 +1129,7 @@
                           <mat-hint>px</mat-hint>
                         </mat-form-field>
                     </tr>
+ 
                     <tr>
                         <td>
                           <mat-accordion>
@@ -1066,12 +1159,7 @@
                           </mat-accordion>
                         </td>
                       </tr>
-                      <tr>
-                        <speed-dial-fab class="speed-dial-container" [ngClass]="speedDialFabPosition" [reverse-column-direction]="false"
-                        (fabClick)="onSpeedDialFabClicked($event)" [buttons]="speedDialFabButtons">
-                      </speed-dial-fab>
-                      </tr>
-                 
+                
                     <tr>
                   <mat-form-field style="max-width: 200px;">
                     <input [(ngModel)]="socialelement.style['icon-size']" type="text"
@@ -1194,29 +1282,39 @@
                 <td (click)="maileditorButton.style['font-family'] = company.companyfont">
                   {{company.companyfont}}</td>
               </tr>
+                        
+              <mat-form-field>
+                  <mat-select [(value)]="maileditorFooter.style['align']" placeholder="Align"
+                    (selectionChange)="changetextalign(maileditorFooter.style['align'])">
+                    <mat-option value="left">left</mat-option>
+                    <mat-option value="center">center</mat-option>
+                    <mat-option value="right">right</mat-option>
+                    <mat-option value="justify">justify</mat-option>
+                  </mat-select>
+                </mat-form-field>
             </table>
           </td>
         </tr>
       </table>
     </div>
 
-      <!-- <div *ngIf="Text">Edit text
+      <div *ngIf="Text">Edit text
         <table>
           <tr>
-            <td>
-              <mat-form-field>
-                <mat-select [(value)]="maileditorText.style['align']" placeholder="Vertical align"
-                  (selectionChange)="changetextalign($event)">
-                  <mat-option value="left">left</mat-option>
-                  <mat-option value="center">center</mat-option>
-                  <mat-option value="right">right</mat-option>
-                  <mat-option value="justify">justify</mat-option>
-                </mat-select>
-              </mat-form-field>
-            </td>
-          </tr>
+              <td>
+                <mat-form-field>
+                  <mat-select [(value)]="maileditorText.style['align']" placeholder="Align"
+                    (selectionChange)="changetextalign(maileditorText.style['align'])">
+                    <mat-option value="left">left</mat-option>
+                    <mat-option value="center">center</mat-option>
+                    <mat-option value="right">right</mat-option>
+                    <mat-option value="justify">justify</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </td>
+            </tr>
           </table>
-       </div> -->
+       </div>
 
 
 

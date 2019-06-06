@@ -6,12 +6,12 @@ import { Component } from '@angular/core';
     selector: 'confirm-dialog',
     template: `
     <div style="max-height: calc(100vh - 200px); overflow-y: auto;">
-        <p>{{ title }}</p>
-        <p>{{ message }}</p>
+        <p style="font-family: Roboto, Arial, sans-serif;">{{ title }}</p>
+        <p style="font-family: Roboto, Arial, sans-serif;">{{ message }}</p>
         <div class="mailpreview" [innerHTML]="preview"></div>
-        <button type="button" md-raised-button 
+        <button mat-button type="button"
             (click)="dialogRef.close(true)">OK</button>
-        <button type="button" md-button 
+        <button mat-button type="button"
             (click)="dialogRef.close()">Cancel</button>
             </div>
     `

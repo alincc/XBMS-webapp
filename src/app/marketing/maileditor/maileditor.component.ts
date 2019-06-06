@@ -300,7 +300,8 @@ export class MaileditorComponent implements OnInit {
 
   // creat array per
   drop(event: CdkDragDrop<string[]>, i1?, i2?) {
-    console.log(i1, i2, event)
+    this.sectionpartselect = i1;
+    console.log(i1, i2, event, this.sectionpartselect)
     if (event.previousContainer === event.container) {
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
       // if eventcontainer is new column create new eventcontainer
@@ -314,7 +315,7 @@ export class MaileditorComponent implements OnInit {
       // console.log(type, arrayItem)
       const newdata = this.createNewItem(type);
       this.mailtemplateArray[i1][i2].push(newdata);
-      this.onSelectTemplatePart(newdata, null);
+      this.onSelectTemplatePart(newdata, i1, i2);
       this.setstandardfont(newdata);
     } else {
       transferArrayItem(event.previousContainer.data, event.container.data, event.previousIndex, event.currentIndex);
@@ -328,14 +329,14 @@ export class MaileditorComponent implements OnInit {
       newtext.content = 'start writing'; // this.sanitizer.bypassSecurityTrustHtml('start writing');
       newtext.typeformat = 'p';
       newtext.style = {
-        'color': 'black',
-        'font-family': 'Verdana',
-        'font-size': '12px',
-        'font-style': 'normal',
+        'color': '',
+        'font-family': '',
+        'font-size': '',
+        'font-style': '',
         'font-weight': '',
         'line-height': '',
-        'letter-spacing': '2px',
-        'height': '100%',
+        'letter-spacing': '',
+        'height': '',
         'text-decoration': '',
         'text-transform': '',
         'align': 'center',
@@ -387,23 +388,23 @@ export class MaileditorComponent implements OnInit {
       newImage.style = {
         'align': "center",
         'alt': '',
-        'border': "none",
+        'border': "",
         'border-radius': '',
         'container-background-color': '',
-        'fluid-on-mobile': '',
+        'fluid-on-mobile': 'true',
         'height': "auto",
         'href': '',
-        'padding': "",
-        'padding-bottom': '',
-        'padding-left': '',
-        'padding-right': '',
-        'padding-top': '',
+        'padding': '0px 0px 0px 0px',
+        'padding-bottom': '0',
+        'padding-left': '0',
+        'padding-right': '0',
+        'padding-top': '0',
         'rel': '',
         'src': '',
         'srcset': '',
         'target': "_blank",
         'title': '',
-        'width': "100px"
+        'width': "200px"
       }
       return newImage
     }
@@ -511,7 +512,7 @@ export class MaileditorComponent implements OnInit {
         'container-background-color': '',
         'width': '',
         'height': '',
-        'align': '',
+        'align': 'center',
         'border': '',
         'border-bottom': '',
         'border-left': '',
@@ -591,7 +592,7 @@ export class MaileditorComponent implements OnInit {
     newAccordionTitle.style = {
       'color': '',
       'background-color': '',
-      'align': '',
+      'align': 'center',
       'font-family': 'Verdana',
       'font-size': '',
       'padding': '',
@@ -610,7 +611,7 @@ export class MaileditorComponent implements OnInit {
     newAccordionText.style = {
       'color': '',
       'background-color': '',
-      'align': '',
+      'align': 'center',
       'font-family': 'Verdana',
       'font-size': '',
       'padding': '',
@@ -632,7 +633,7 @@ export class MaileditorComponent implements OnInit {
       'container-background-color': '',
       'width': '',
       'height': '20px',
-      'align': '',
+      'align': 'center',
       'border': '',
       'border-bottom': '',
       'border-left': '',
@@ -741,6 +742,7 @@ export class MaileditorComponent implements OnInit {
   }
 
   private onSelectColumnPart(i1, i2): void {
+    this.sectionpartselect = i1;
     this.resetEdit()
     this.Column = true;
     this.maileditorColumn = this.columnStyleArray[i1][i2]
@@ -832,7 +834,8 @@ export class MaileditorComponent implements OnInit {
 
   private onSelectTemplatePart(item, i1?, i2?, i3?): void {
     // const item = this.mailtemplateArray[i1][i2][i3]
-    if (i1) {this.sectionpartselect = i1;}
+    this.sectionpartselect = i1;
+    // console.log(this.sectionpartselect);
     this.resetEdit()
     this.onSelectPadding(item);
 
@@ -1194,7 +1197,7 @@ export class MaileditorComponent implements OnInit {
       // maileditorColumn.style.width = '';
       maileditorSection.boxalignment = 'row';
     }
-    this.updatecolumnalign();
+    // this.updatecolumnalign(); no need for wrapper text 
   }
 
   updatecolumnalign(): void {
@@ -1204,8 +1207,8 @@ export class MaileditorComponent implements OnInit {
     });
   }
 
-  changetextalign(event): void {
+  changetextalign(value): void {
     // console.log(event);
-    this.sectionStyleArray[this.sectionpartselect].style['text-align'] = event.value;
+    this.sectionStyleArray[this.sectionpartselect].style['text-align'] = value;
   }
 }
