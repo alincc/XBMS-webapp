@@ -56,6 +56,7 @@ export class MaileditorComponent implements OnInit {
   public fullwidth = false;
   public columnverticalalign = false;
   public sectionpartselect: number;
+  public backgroundrepeat = false;
 
   public selectedborder = {
     width: '0px',
@@ -200,10 +201,11 @@ export class MaileditorComponent implements OnInit {
         this.sectionStyleArray = this.updateMailingObj.sectionStyle;
         this.columnStyleArray = this.updateMailingObj.columnStyle;
         this.subject = this.updateMailingObj.subject;
+        this.preview = this.updateMailingObj.preview;
         console.log("existing mailing", this.updateMailingObj);
         this.updatemail = true;
-      } else {this.setupTemplate()}
-    } else {this.setupTemplate()}
+      } else { this.setupTemplate() }
+    } else { this.setupTemplate() }
     // move creation to wait for company info to resolve
     // console.log(this.company);
 
@@ -341,11 +343,11 @@ export class MaileditorComponent implements OnInit {
         'text-transform': '',
         'align': 'center',
         'container-background-color': '',
-        'padding': '',
-        'padding-top': '',
-        'padding-bottom': '',
-        'padding-left': '',
-        'padding-right': ''
+        'padding': '0px 0px 0px 0px',
+        'padding-top': '0',
+        'padding-bottom': '0',
+        'padding-left': '0',
+        'padding-right': '0'
       }
 
       return newtext
@@ -391,7 +393,7 @@ export class MaileditorComponent implements OnInit {
         'border': "",
         'border-radius': '',
         'container-background-color': '',
-        'fluid-on-mobile': 'true',
+        'fluid-on-mobile': 'false',
         'height': "auto",
         'href': '',
         'padding': '0px 0px 0px 0px',
@@ -404,7 +406,7 @@ export class MaileditorComponent implements OnInit {
         'srcset': '',
         'target': "_blank",
         'title': '',
-        'width': "200px"
+        'width': ''
       }
       return newImage
     }
@@ -688,6 +690,7 @@ export class MaileditorComponent implements OnInit {
           if (res) {
             if (Object.keys(this.updateMailingObj).length > 0) {
               this.updateMailingObj.subject = this.subject;
+              this.updateMailingObj.preview = this.preview;
               this.updateMailingObj.relationname = this.option.relationname;
               this.updateMailingObj.html = data.html;
               this.updateMailingObj.templatearray = templArray;
@@ -734,7 +737,10 @@ export class MaileditorComponent implements OnInit {
     this.maileditorSection = this.sectionStyleArray[i1];
     if (this.maileditorSection.boxalignment === 'row') {
       this.columnverticalalign = false;
-    } else { this.columnverticalalign = true }
+    } else { this.columnverticalalign = true };
+
+    if ( this.maileditorSection.style['background-repeat'] === 'no-repeat' ) {
+      this.backgroundrepeat = false } else {this.backgroundrepeat = true}
 
     this.onSelectBorder(this.maileditorSection);
     this.onSelectPadding(this.maileditorSection);
@@ -911,7 +917,7 @@ export class MaileditorComponent implements OnInit {
 
   private setimgurl(url: string, i1, i2, i3) {
     // url direct
-     //console.log(url, i1, i2, i3);
+    //console.log(url, i1, i2, i3);
 
     // this.setbackgroundImageSection(url);
     setTimeout(() => {
@@ -923,29 +929,29 @@ export class MaileditorComponent implements OnInit {
 
   setbackgroundImageSection(url: string, grey?, blur?) {
     setTimeout(() => {
-    this.maileditorSection.style['background-blend-mode'] = '';
-    this.maileditorSection.style['background-url'] = url;
-    this.maileditorSection.style['background-image'] = 'url(' + url + ')';
-     this.maileditorSection.style['filter'] = "";
-    if (grey && blur) {
-      this.maileditorSection.style['background-image'] = 
-      'linear-gradient(black, black), url(' + url + ')';
-      this.maileditorSection.style['background-blend-mode'] = 'saturation';
-       //this.maileditorSection.style['filter'] = "blur(4px)";
-    }
-    else if (blur) { 
-     //this.maileditorSection.style['filter'] = "blur(4px)";
-    }
-    else if (grey) {
-      this.maileditorSection.style['background-image'] = 
-      'linear-gradient(black, black), url(' + url + ')';
-      this.maileditorSection.style['background-blend-mode'] = 'saturation';
-    }
-  },
-  800);
+      this.maileditorSection.style['background-blend-mode'] = '';
+      this.maileditorSection.style['background-url'] = url;
+      this.maileditorSection.style['background-image'] = 'url(' + url + ')';
+      this.maileditorSection.style['filter'] = "";
+      if (grey && blur) {
+        this.maileditorSection.style['background-image'] =
+          'linear-gradient(black, black), url(' + url + ')';
+        this.maileditorSection.style['background-blend-mode'] = 'saturation';
+        //this.maileditorSection.style['filter'] = "blur(4px)";
+      }
+      else if (blur) {
+        //this.maileditorSection.style['filter'] = "blur(4px)";
+      }
+      else if (grey) {
+        this.maileditorSection.style['background-image'] =
+          'linear-gradient(black, black), url(' + url + ')';
+        this.maileditorSection.style['background-blend-mode'] = 'saturation';
+      }
+    },
+      800);
   }
 
-  
+
 
   setbackgroundImageDivider(url: string) {
     this.maileditorDivider.style['background-image'] = 'url(' + url + ')';
@@ -962,12 +968,16 @@ export class MaileditorComponent implements OnInit {
     console.log(this.maileditorText.content)
     const dialogRef = this.dialog.open(TextEditorDialog, {
       width: '800px',
-      data: this.maileditorText.content, //changingThisBreaksApplicationSecurity,
+      data: this.maileditorText.content, // changingThisBreaksApplicationSecurity,
       id: this.option.id
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      this.maileditorText.content = result; //this.sanitizer.bypassSecurityTrustHtml(result);
+      if (result !== undefined) {
+        if (result.length > 0) {
+          this.maileditorText.content = result
+        };  // this.sanitizer.bypassSecurityTrustHtml(result);
+      }
     });
   }
 
@@ -991,11 +1001,11 @@ export class MaileditorComponent implements OnInit {
     let rep: string;
     norep = 'no-repeat';
     rep = 'repeat'
-    if (this.maileditorSection.style['background-repeat'] === rep) {
-      this.maileditorSection.style['background-repeat'] = norep;
-    }
-    if (this.maileditorSection.style['background-repeat'] !== rep) {
+    if (this.backgroundrepeat === true) {
       this.maileditorSection.style['background-repeat'] = rep;
+    }
+    if (this.backgroundrepeat === false) {
+      this.maileditorSection.style['background-repeat'] = norep;
     }
 
   }
@@ -1210,5 +1220,37 @@ export class MaileditorComponent implements OnInit {
   changetextalign(value): void {
     // console.log(event);
     this.sectionStyleArray[this.sectionpartselect].style['text-align'] = value;
+  }
+
+  moveSectionUp(i1): void {
+    if (i1 !== 0) {
+    const tmp =  this.mailtemplateArray[i1];
+    this.mailtemplateArray[i1] = this.mailtemplateArray[i1 - 1];
+    this.mailtemplateArray[i1 - 1] = tmp;
+
+    const tmpsectstyle =  this.sectionStyleArray[i1];
+    this.sectionStyleArray[i1] = this.sectionStyleArray[i1 - 1];
+    this.sectionStyleArray[i1 - 1] = tmpsectstyle;
+
+    const tmpcolstyle =  this.columnStyleArray[i1];
+    this.columnStyleArray[i1] = this.columnStyleArray[i1 - 1];
+    this.columnStyleArray[i1 - 1] = tmpcolstyle;
+  }
+  }
+
+  moveSectionDown(i1): void {
+    if (i1 !== this.mailtemplateArray.length ) {
+    const tmp =  this.mailtemplateArray[i1];
+    this.mailtemplateArray[i1] = this.mailtemplateArray[i1 + 1];
+    this.mailtemplateArray[i1 + 1] = tmp;
+
+    const tmpsectstyle =  this.sectionStyleArray[i1];
+    this.sectionStyleArray[i1] = this.sectionStyleArray[i1 + 1];
+    this.sectionStyleArray[i1 + 1] = tmpsectstyle;
+
+    const tmpcolstyle =  this.columnStyleArray[i1];
+    this.columnStyleArray[i1] = this.columnStyleArray[i1 + 1];
+    this.columnStyleArray[i1 + 1] = tmpcolstyle;
+    }
   }
 }

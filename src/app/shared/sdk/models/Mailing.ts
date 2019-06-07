@@ -11,6 +11,7 @@ export interface MailingInterface {
   "to"?: string;
   "from"?: string;
   "subject"?: string;
+  "preview"?: string;
   "text"?: string;
   "html"?: string;
   "templatearray"?: any;
@@ -55,6 +56,7 @@ export class Mailing implements MailingInterface {
   "to": string;
   "from": string;
   "subject": string;
+  "preview": string;
   "text": string;
   "html": string;
   "templatearray": any;
@@ -139,6 +141,10 @@ export class Mailing implements MailingInterface {
         },
         "subject": {
           name: 'subject',
+          type: 'string'
+        },
+        "preview": {
+          name: 'preview',
           type: 'string'
         },
         "text": {

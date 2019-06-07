@@ -26,9 +26,7 @@ import {
   Files,
   FilesApi,
   Adwords,
-  AdwordsApi,
-  Crawler,
-  CrawlerApi
+  AdwordsApi
 } from '../shared/';
 import { DialogsService } from './../dialogsservice/dialogs.service';
 import { MatSnackBar, MatDatepickerModule } from '@angular/material';
@@ -90,7 +88,7 @@ export class RelationComponent implements OnInit {
   showSearchButton: boolean;
   speechData: string;
   public AccessToken: any;
-  public Crawler: Crawler[];
+  // public Crawler: Crawler[];
   public Relations: Relations[];
   public Contactpersons: Contactpersons[];
   public Googleanalytics: Googleanalytics[];
@@ -108,7 +106,7 @@ export class RelationComponent implements OnInit {
   public selectedRelation: Relations;
   public selectedContactperson: Contactpersons;
   public selectedCall: Calls;
-  public selectedCrawler: Crawler;
+  // public selectedCrawler: Crawler;
 
   public selectedAdwords: Adwords;
   public Adwords: Adwords[];
@@ -204,7 +202,7 @@ export class RelationComponent implements OnInit {
     private _formBuilder: FormBuilder,
     public snackBar: MatSnackBar,
     public router: Router,
-    public CrawlerApi: CrawlerApi,
+    // public CrawlerApi: CrawlerApi,
     public AdwordsApi: AdwordsApi,
     public FilesApi: FilesApi,
     public ContainerApi: ContainerApi,
@@ -876,33 +874,33 @@ export class RelationComponent implements OnInit {
 
   //run crawler once delete?
   crawlUrl(): void {
-    this.CrawlerApi.crawlurl(this.selectedRelation.id, this.selectedRelation.website).subscribe(res => res = res);
+ //   this.CrawlerApi.crawlurl(this.selectedRelation.id, this.selectedRelation.website).subscribe(res => res = res);
   }
 
   scheduleCrawler(): void {
     //update and queue
-    this.RelationsApi.updateByIdCrawler(this.selectedRelation.id, this.selectedCrawler.id, this.selectedCrawler)
-      .subscribe(res => {
-        //if (this.selectedCrawler.response == undefined){this.selectedCrawler.response = []}
-        this.CrawlerApi.crawlurl(this.selectedCrawler.id, this.selectedCrawler.url, this.selectedCrawler.term,
-          this.selectedCrawler.people, this.selectedCrawler.companies, this.selectedCrawler.locations, this.selectedCrawler.findlist, this.selectedCrawler.depth)
-          .subscribe(res => { res = res, this.openSnackBar(res.message) })
-      });
+    // this.RelationsApi.updateByIdCrawler(this.selectedRelation.id, this.selectedCrawler.id, this.selectedCrawler)
+    //   .subscribe(res => {
+    //     //if (this.selectedCrawler.response == undefined){this.selectedCrawler.response = []}
+    //     this.CrawlerApi.crawlurl(this.selectedCrawler.id, this.selectedCrawler.url, this.selectedCrawler.term,
+    //       this.selectedCrawler.people, this.selectedCrawler.companies, this.selectedCrawler.locations, this.selectedCrawler.findlist, this.selectedCrawler.depth)
+    //       .subscribe(res => { res = res, this.openSnackBar(res.message) })
+    //   });
   }
 
   getCrawlers(): void {
-    this.RelationsApi.getCrawler(this.selectedRelation.id)
-      .subscribe((Crawler: Crawler[]) => {
-        this.Crawler = Crawler
-      });
+    // this.RelationsApi.getCrawler(this.selectedRelation.id)
+    //   .subscribe((Crawler: Crawler[]) => {
+    //     this.Crawler = Crawler
+    //   });
   }
 
   newCrawler(): void {
-    this.RelationsApi.createCrawler(this.selectedRelation.id, { "name": "New Crawler" })
-      .subscribe(res => {
-        this.selectedCrawler = res,
-          this.editCrawler = true;
-      });
+    // this.RelationsApi.createCrawler(this.selectedRelation.id, { "name": "New Crawler" })
+    //   .subscribe(res => {
+    //     this.selectedCrawler = res,
+    //       this.editCrawler = true;
+    //   });
   }
 
   editCrawlerToggle(): void {
@@ -910,8 +908,8 @@ export class RelationComponent implements OnInit {
   }
 
   updateCrawler(): void {
-    this.RelationsApi.updateByIdCrawler(this.selectedRelation.id, this.selectedCrawler.id, this.selectedCrawler)
-      .subscribe();
+    // this.RelationsApi.updateByIdCrawler(this.selectedRelation.id, this.selectedCrawler.id, this.selectedCrawler)
+    //   .subscribe();
   }
 
 
@@ -920,18 +918,18 @@ export class RelationComponent implements OnInit {
     else this.togglesearch = true;
   }
 
-  onSelectCrawler(Crawler: Crawler, i): void {
-    this.editCrawler = false;
-    this.selectedCrawler = Crawler;
-  }
+  // onSelectCrawler(Crawler: Crawler, i): void {
+  //   this.editCrawler = false;
+  //   this.selectedCrawler = Crawler;
+  // }
 
-  deleteCrawler(): void {
-    this.RelationsApi.destroyByIdCrawler(this.selectedRelation.id, this.selectedCrawler.id)
-      .subscribe(res => { this.getCrawlers(), this.selectedCrawler = undefined, this.getCrawlers(), this.openSnackBar("Crawler Deleted"); });
-  }
+   deleteCrawler(): void {
+  //   this.RelationsApi.destroyByIdCrawler(this.selectedRelation.id, this.selectedCrawler.id)
+  //     .subscribe(res => { this.getCrawlers(), this.selectedCrawler = undefined, this.getCrawlers(), this.openSnackBar("Crawler Deleted"); });
+   }
 
   deleteCrawl(i): void {
-    this.selectedCrawler.response.splice(i, 1), this.updateCrawler()
+    // this.selectedCrawler.response.splice(i, 1), this.updateCrawler()
   }
 
   //Method to be invoked everytime we receive a new instance 

@@ -15,9 +15,7 @@ import {
   Files,
   Mailinglist,
   Facebook,
-  Instagram,
   Adwords,
-  Crawler,
   Websitetracker
 } from '../index';
 
@@ -55,9 +53,7 @@ export interface RelationsInterface {
   files?: Files[];
   mailinglist?: Mailinglist[];
   facebook?: Facebook[];
-  instagram?: Instagram[];
   adwords?: Adwords[];
-  crawler?: Crawler[];
   websitetracker?: Websitetracker[];
 }
 
@@ -94,9 +90,7 @@ export class Relations implements RelationsInterface {
   files: Files[];
   mailinglist: Mailinglist[];
   facebook: Facebook[];
-  instagram: Instagram[];
   adwords: Adwords[];
-  crawler: Crawler[];
   websitetracker: Websitetracker[];
   constructor(data?: RelationsInterface) {
     Object.assign(this, data);
@@ -322,26 +316,10 @@ export class Relations implements RelationsInterface {
                   keyFrom: 'id',
           keyTo: 'relationsId'
         },
-        instagram: {
-          name: 'instagram',
-          type: 'Instagram[]',
-          model: 'Instagram',
-          relationType: 'hasMany',
-                  keyFrom: 'id',
-          keyTo: 'relationsId'
-        },
         adwords: {
           name: 'adwords',
           type: 'Adwords[]',
           model: 'Adwords',
-          relationType: 'hasMany',
-                  keyFrom: 'id',
-          keyTo: 'relationsId'
-        },
-        crawler: {
-          name: 'crawler',
-          type: 'Crawler[]',
-          model: 'Crawler',
           relationType: 'hasMany',
                   keyFrom: 'id',
           keyTo: 'relationsId'

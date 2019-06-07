@@ -28,9 +28,7 @@ import { Mailinglist } from '../../models/Mailinglist';
 import { Emailhandler } from '../../models/Emailhandler';
 import { Translationjob } from '../../models/Translationjob';
 import { Facebook } from '../../models/Facebook';
-import { Instagram } from '../../models/Instagram';
 import { Adwords } from '../../models/Adwords';
-import { Crawler } from '../../models/Crawler';
 import { Mailverifier } from '../../models/Mailverifier';
 import { Websitetracker } from '../../models/Websitetracker';
 import { Ipcheckermodel } from '../../models/Ipcheckermodel';
@@ -72,9 +70,7 @@ export class SDKModels {
     Emailhandler: Emailhandler,
     Translationjob: Translationjob,
     Facebook: Facebook,
-    Instagram: Instagram,
     Adwords: Adwords,
-    Crawler: Crawler,
     Mailverifier: Mailverifier,
     Websitetracker: Websitetracker,
     Ipcheckermodel: Ipcheckermodel,

@@ -75,7 +75,7 @@
           </mat-expansion-panel-header>
           <form>
             <mat-form-field class="example-full-width">
-              <input [(ngModel)]=company.companyfont type="text" placeholder="Pick one" aria-label="Number" matInput
+              <input [(ngModel)]=company.companyfont type="text" placeholder="Template Font" aria-label="Number" matInput
                 [formControl]="myControlfont" [matAutocomplete]="auto">
               <mat-autocomplete #auto="matAutocomplete">
                 <mat-option *ngFor="let font of filteredfonts | async" [value]="font">
@@ -148,22 +148,24 @@
     <div *ngIf="sectionStyleArray[i1].imgblur" [class.imgblursection]="sectionStyleArray[i1].imgblur" [style.background-image]= "sectionStyleArray[i1].style['background-image']" 
     style="background-size: 100%; background-repeat: no-repeat;" [ngStyle]="sectionStyleArray[i1].style" ></div>
       <!-- cdkDropList #listSection="cdkDropList" (cdkDropListDropped)="drop($event, i1, i2)" [cdkDropListData]="mailtemplateArray" -->
-      <label class="sectionlabel">Section <mat-icon (click)="onSelectSectionPart(i1)" class="iconsize-10" matSuffix>
-        mode_edit</mat-icon>
-      <mat-icon (click)="onDeleteSectionPart(i1)" class="icon-label" class="iconsize-10" matSuffix>delete</mat-icon>
+      <label class="sectionlabel">Section 
+        <mat-icon (click)="onSelectSectionPart(i1)" class="iconsize-10 sectionlabelbuttons" matSuffix>mode_edit</mat-icon>
+        <mat-icon (click)="moveSectionUp(i1)" class="iconsize-10 sectionlabelbuttons" matSuffix>arrow_drop_up</mat-icon>
+        <mat-icon (click)="moveSectionDown(i1)" class="iconsize-10 sectionlabelbuttons" matSuffix>arrow_drop_down</mat-icon>
+      <mat-icon (click)="onDeleteSectionPart(i1)" class="sectionlabelbuttons iconsize-10" matSuffix>delete</mat-icon>
     </label>
       <div class="section-box full-width-item" *ngFor="let column of section; let i2 = index"
         fxLayout="column" >
           <div [ngStyle]="columnStyleArray[i1][i2].style" class="column-box" fxLayout="row" cdkDropList
             #mailtemplateList="cdkDropList" [cdkDropListData]="mailtemplateArray[i1][i2]"
             (cdkDropListDropped)="drop($event, i1, i2)">
-            <label class="columnlabel">Column <mat-icon class="icon-label" (click)="onSelectColumnPart(i1, i2)"
-                class="iconsize-10" matSuffix>mode_edit</mat-icon>
-              <mat-icon (click)="onDeleteColumnPart(i1, i2)" class="iconsize-10" matSuffix>delete</mat-icon>
+            <label class="columnlabel">Column 
+              <mat-icon (click)="onSelectColumnPart(i1, i2)" class="iconsize-10 sectionlabelbuttons" matSuffix>mode_edit</mat-icon>
+              <mat-icon (click)="onDeleteColumnPart(i1, i2)" class="iconsize-10 sectionlabelbuttons" matSuffix>delete</mat-icon>
             </label>
             <div class="item-box" *ngFor="let item of column; let i3 = index;" (click)="onSelectTemplatePart(item, i1, i2, i3)"
               cdkDrag [fxLayoutAlign]="columnStyleArray[i1][i2].setflexalign">
-              <div *ngIf="item.type === 'Text'"  (click)="openDialog()" class="full-width-item">
+              <div *ngIf="item.type === 'Text'" (click)="onSelectTemplatePart(item, i1, i2, i3)"  (click)="openDialog()" class="full-width-item">
                 <div  [innerHTML]="item.content | safeHtml"></div>
                 <mat-icon class="textbox-edit-button" class="iconsize-10 text-edit-icon"
                   (click)="openDialog()">mode_edit</mat-icon>
@@ -482,7 +484,7 @@
               <mat-icon matSuffix>mode_edit</mat-icon>
               <mat-hint>%/px</mat-hint>
             </mat-form-field>
-                      <mat-slide-toggle (change)="togglebackgroundrepeat()">Background Image Repeat</mat-slide-toggle>
+            <mat-slide-toggle [(ngModel)]="backgroundrepeat" (change)="togglebackgroundrepeat()">Background Image Repeat</mat-slide-toggle>
      
       </mat-expansion-panel>
     </mat-accordion>
@@ -1149,9 +1151,9 @@
                                   <td>Secondairy color</td>
                                 </tr>
                                 <tr>
-                                  <td (click)="maileditorSection.style['background-color'] = company.companyprimairycolor">
+                                  <td (click)="socialelement.style.color = company.companyprimairycolor">
                                     {{company.companyprimairycolor}}</td>
-                                  <td (click)="maileditorSection.style['background-color'] = company.companysecondarycolor">
+                                  <td (click)="socialelement.style.color = company.companysecondarycolor">
                                     {{company.companysecondarycolor}}</td>
                                 </tr>
                               </table>
@@ -1313,6 +1315,33 @@
                 </mat-form-field>
               </td>
             </tr>
+            <tr fxLayout="row">                    
+              <span style="width: 50px; margin: 10px;"><mat-icon>border_top</mat-icon></span>                
+              <span style="width: 50px; margin: 10px;"><mat-icon>border_right</mat-icon></span>                  
+              <span style="width: 50px; margin: 10px;"><mat-icon>border_bottom</mat-icon></span>
+              <span style="width: 50px; margin: 10px;"><mat-icon>border_left</mat-icon></span>                    
+          </tr>
+          <tr fxLayout="row"> 
+              <mat-form-field style="max-width: 46px;">
+                <input [(ngModel)]="selectedPadding['padding-top']" type="number" matInput (change)="onChangePadding(maileditorText, 'padding-top');">
+                <mat-hint>px</mat-hint>
+              </mat-form-field>
+            
+              <mat-form-field style="max-width: 46px;">
+                <input [(ngModel)]="selectedPadding['padding-right']" type="number" matInput (change)="onChangePadding(maileditorText, 'padding-right');">
+                <mat-hint>px</mat-hint>
+              </mat-form-field>
+            
+              <mat-form-field style="max-width: 46px;">
+                <input  [(ngModel)]="selectedPadding['padding-bottom']" type="number" matInput (change)="onChangePadding(maileditorText, 'padding-bottom');">
+                <mat-hint>px</mat-hint>
+              </mat-form-field>
+            
+              <mat-form-field style="max-width: 46px;">
+                <input  [(ngModel)]="selectedPadding['padding-left']" type="number" matInput (change)="onChangePadding(maileditorText, 'padding-left');">
+                <mat-hint>px</mat-hint>
+              </mat-form-field>
+          </tr>
           </table>
        </div>
 

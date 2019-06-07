@@ -135,7 +135,7 @@
   }
 
   .sectionlabel {
-    width: 60px;
+    width: 70px;
     height: 10px;
     font-size: 6pt;
     position: absolute;
@@ -145,6 +145,10 @@
     bottom: 0;
     right: 0;
     margin-right: 10px;
+  }
+
+  .sectionlabelbuttons:hover  {
+    background-color: grey;
   }
 
   .sectionlabel:hover{

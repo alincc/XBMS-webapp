@@ -76,9 +76,7 @@ import { MailinglistApi } from './services/custom/Mailinglist';
 import { EmailhandlerApi } from './services/custom/Emailhandler';
 import { TranslationjobApi } from './services/custom/Translationjob';
 import { FacebookApi } from './services/custom/Facebook';
-import { InstagramApi } from './services/custom/Instagram';
 import { AdwordsApi } from './services/custom/Adwords';
-import { CrawlerApi } from './services/custom/Crawler';
 import { MailverifierApi } from './services/custom/Mailverifier';
 import { WebsitetrackerApi } from './services/custom/Websitetracker';
 import { IpcheckermodelApi } from './services/custom/Ipcheckermodel';
@@ -143,9 +141,7 @@ export class SDKBrowserModule {
         EmailhandlerApi,
         TranslationjobApi,
         FacebookApi,
-        InstagramApi,
         AdwordsApi,
-        CrawlerApi,
         MailverifierApi,
         WebsitetrackerApi,
         IpcheckermodelApi,
