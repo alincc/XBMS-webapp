@@ -945,7 +945,25 @@ export class MarketingComponent implements OnInit {
   }
 
   sendMailing(): void {
+    // this.selectedMailing.to = '';
+    const mailtolist = [];
+    let tolist = '';
+
+    // join multiple lists
+    this.selectedMailing.mailinglist.forEach(list => {
+      if (list.mailgunid) {mailtolist.push(list.mailgunid)} else {
+        mailtolist.push(list)
+      }
+    })
+
+    if (this.selectedMailing.mailinglist.length > 1) {
+      // create comma seperate for mailgun processing
+      tolist = mailtolist.join(', ')
+    } else { tolist = mailtolist[0] };
+
+    this.selectedMailing.to = tolist;
     this.saveMailing();
+    console.log('test', this.selectedMailing.to, this.selectedMailing.mailinglist);
     this.selectedMailing.text = this.onChangeHtml(this.selectedMailing.html),
       this.MailingApi.sendmailing(this.selectedMailing, this.selectedMailing.id)
         .subscribe(res => {
@@ -958,6 +976,7 @@ export class MarketingComponent implements OnInit {
   }
 
   onSelectMailing(mailing: Mailing): void {
+    this.selectedItems = [];
     this.selectedMailing = null;
     this.selectedMailing = mailing;
     this.mailingaddress = '';
@@ -970,6 +989,17 @@ export class MarketingComponent implements OnInit {
     this.bounceRate = '';
     this.goalStartsAll = '';
     this.pageview = '';
+
+    this.mailingaddresscampaign = []; // first clean up a few things
+    this.selectedItems = [];
+    if (this.mailingaddress === undefined) { this.mailingaddress = []; }
+    if (this.selectedMailing.selectedlists[0] !== undefined) {
+      Object.keys(this.selectedMailing.selectedlists).forEach(key => {
+        const value = this.selectedMailing.selectedlists[key];
+        this.selectedItems.push(value.listname);
+      })
+    }
+    this.prepareFilterMaillist(); // quick selection list
 
 
     // set upload url for pictures and dialog
@@ -1741,8 +1771,20 @@ export class MarketingComponent implements OnInit {
     this.saveMailingCampaign('saved');
   }
 
+  
+  // removes the items based on its name
+  onRemoveItemsMailing(itemName: string, i): void {
+    this.selectedItems = this.selectedItems.filter((name: string) => name !== itemName);
+    this.itemsData = this.selectedItems;
+    this.chipInput['nativeElement'].blur();
+    this.selectedMailing.mailinglistId.splice(i);
+    this.selectedMailing.mailinglist.splice(i);
+    this.saveMailing('saved');
+  }
+
   // adding items
-  onAddItems(event: MatAutocompleteSelectedEvent, i) {
+  // todo change 
+  onAddItems(event: MatAutocompleteSelectedEvent) {
     const t: Mailinglist = event.option.value;
     // if array is empty then push the elements
     if (this.selectedItems.length === 0) {
@@ -1761,6 +1803,42 @@ export class MarketingComponent implements OnInit {
       }
     };
     // filter those mailinglists that are selected to avoid duplication
+    this.itemsData = this.selectedItems;
+    this.chipInput['nativeElement'].blur();
+    this.chipInput['nativeElement'].value = '';
+  }
+
+  onAddItemsMailing(event: MatAutocompleteSelectedEvent) {
+    const t: Mailinglist = event.option.value;
+    // if array is empty then push the elements
+    if (this.selectedItems.length === 0) {
+      this.selectedItems.push(t.listname);
+      this.selectedMailing.mailinglistId.push(t.id);
+      this.selectedMailing.mailinglist.push(t);
+    } else {
+
+      // if items already present then items will not be added to the array
+      // stringfying the array to find names similiar
+      const selectMailingStr = JSON.stringify(this.selectedItems);
+      if (selectMailingStr.indexOf(t.listname) === -1) {
+        this.selectedItems.push(t.listname);
+        this.selectedMailing.mailinglistId.push(t.id);
+        this.selectedMailing.mailinglist.push(t);
+      }
+    };
+
+    // filter those mailinglists that are selected to avoid duplication
+    this.itemsData = this.selectedItems;
+    this.chipInput['nativeElement'].blur();
+    this.chipInput['nativeElement'].value = '';
+  }
+
+
+  onAddItemManual($event){
+    console.log($event);
+    // this.mailingaddress = $event.srcElement.value;
+    this.selectedItems.push($event.srcElement.value);
+    this.selectedMailing.mailinglist.push($event.srcElement.value);
     this.itemsData = this.selectedItems;
     this.chipInput['nativeElement'].blur();
     this.chipInput['nativeElement'].value = '';

@@ -509,18 +509,36 @@
                     </tr>
                     <tr>
                       <td>
+
+                        <mat-chip-list #chipList>
+                          <mat-chip color="primary" *ngFor="let item of selectedItems; let i = index">
+                            {{item}}
+                            <mat-icon matChipRemove (click)="onRemoveItemsMailing(item, i)">cancel</mat-icon>
+                          </mat-chip>
+                          <!-- [(mailingaddresscampaign)] -->
+                          <input matInput (keydown.enter)="onAddItemManual($event)" placeholder="Type and Select mailinglist" [matChipInputFor]="chipList"
+                            [matChipInputSeparatorKeyCodes]="separatorKeysCodes" [matChipInputAddOnBlur]="true"
+                            [matAutocomplete]="maillists" [formControl]="addItems" #chipInput />
+                          <mat-autocomplete #maillists="matAutocomplete" (optionSelected)="onAddItemsMailing($event);">
+                            <mat-option *ngFor="let mailingaddress of filteredItems | async"
+                              [value]="mailingaddress">
+                              <span>{{ mailingaddress.listname }} | {{ mailingaddresscampaign.industry }}</span>
+                            </mat-option>
+                          </mat-autocomplete>
+                        </mat-chip-list>
+
                         <!-- <div *ngIf="selectedMailing.mailinglist"> {{ selectedMailing.mailinglist.listname }}</div> -->
-                        <mat-form-field>
+                        <!-- <mat-form-field>
                           <input type="text" matTooltip="Input email or select list" placeholder="Select Mailing"
                             [(ngModel)]=mailingaddress matInput [formControl]="myAddressListControl"
                             [matAutocomplete]="mailinglist">
                           <mat-autocomplete #mailinglist="matAutocomplete" [displayWith]="displayFnMailing">
                             <mat-option *ngFor="let mailingaddress of filteredmailinglist | async"
-                              [value]="mailingaddress">
+                              [value]="mailingaddress.listname">
                               {{ mailingaddress }}
                             </mat-option>
                           </mat-autocomplete>
-                        </mat-form-field>
+                        </mat-form-field> -->
                         <!-- <mat-icon (click)="addMailingList()">save</mat-icon> -->
                       </td>
                       <td>
