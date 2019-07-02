@@ -58,7 +58,7 @@ import { FormControl } from '@angular/forms';
 import { UploadResult } from './xlsx-file-upload/xlsx-file-upload.component';
 import { MatSnackBar, MatSnackBarConfig, MatInput, MatAutocompleteSelectedEvent } from '@angular/material';
 import { ENTER, COMMA } from '@angular/cdk/keycodes';
-import { map, startWith } from 'rxjs/operators';
+import { map, startWith, timeoutWith } from 'rxjs/operators';
 import { Observable, BehaviorSubject } from 'rxjs';
 import {
   trigger,
@@ -244,7 +244,7 @@ export class MarketingComponent implements OnInit {
 
   public copyfrommailing;
   public analytics_ids = 'ga:154403562';
-  public analytics_startdate = '30daysAgo';
+  public analytics_startdate = '2008-10-01';
   public analytics_enddate = 'today';
   public analytics_metrics = 'ga:bounceRate,ga:pageviewsPerSession,ga:goalStartsAll,ga:avgTimeOnPage';
   public analytics_dimensions = 'ga:adContent';
@@ -949,27 +949,27 @@ export class MarketingComponent implements OnInit {
     const mailtolist = [];
     let tolist = '';
 
-    this.selectedMailing.selectedlists.forEach(listitem => {
+        // join multiple lists
+    this.selectedMailing.selectedlists.forEach(list => {
+          mailtolist.push(list.listname)
+      })
+
+    this.selectedMailing.mailinglist.forEach(listitem => {
         mailtolist.push(listitem.mailgunid);
+        const checkpos = mailtolist.indexOf(listitem.listname);
+        console.log(checkpos);
+        if (checkpos !== -1 ){
+          mailtolist.splice(checkpos, 1);
+        }
     });
 
-    // join multiple lists
-    this.selectedMailing.mailinglist.forEach(list => {
-        mailtolist.push(list.mailgunid)
-        const checkpos = mailtolist.indexOf(list.listname)
-        mailtolist.splice(checkpos, 1);
-    })
-
-
+    console.log(mailtolist);
 
     if (Array.isArray(this.selectedMailing.mailinglist) && this.selectedMailing.mailinglist.length > 1) {
       // create comma seperate for mailgun processing
       this.selectedMailing.to = mailtolist.join(', ')
     } else { this.selectedMailing.to = mailtolist.join() };
 
-    // this.selectedMailing.to = tolist;
-    // this.saveMailing();
-    console.log('test', this.selectedMailing.to, this.selectedMailing.mailinglist, tolist);
     this.selectedMailing.text = this.onChangeHtml(this.selectedMailing.html),
       this.MailingApi.sendmailing(this.selectedMailing, this.selectedMailing.id)
         .subscribe(res => {
@@ -1597,8 +1597,10 @@ export class MarketingComponent implements OnInit {
           this.bounceRate = this.Googleanalyticsreturn[1];
           this.goalStartsAll = this.Googleanalyticsreturn[3];
           this.pageview = this.Googleanalyticsreturn[2];
-        } else { this.avgTimeOnPage = 'No Data to show' }
-      }), this.openSnackBar('No website statistics found, try back later'); // error =>
+        } else { this.avgTimeOnPage = 'No Data to show' };
+        if (!data){this.openSnackBar('No website statistics found, try back later');
+      }
+      }) 
   }
 
   public getAnalytics() {
@@ -1785,9 +1787,15 @@ export class MarketingComponent implements OnInit {
     this.selectedItems = this.selectedItems.filter((name: string) => name !== itemName);
     this.itemsData = this.selectedItems;
     this.chipInput['nativeElement'].blur();
-    this.selectedMailing.mailinglistId.splice(i);
-    this.selectedMailing.mailinglist.splice(i);
-    this.selectedMailing.selectedlists.splice(i);
+    //check name and remove from all lists
+    this.selectedMailing.mailinglist.forEach((list, index)=> {
+      if (list.listname === itemName){
+        console.log(index, 'index')
+        this.selectedMailing.mailinglist.splice(index, 1);
+        this.selectedMailing.mailinglistId.splice(index, 1);
+      }
+    })
+    this.selectedMailing.selectedlists.splice(i, 1);
     // this.saveMailing('saved');
   }
 
@@ -1825,21 +1833,21 @@ export class MarketingComponent implements OnInit {
     }
     const t = event.option.value;
     // if array is empty then push the elements
-    if (this.selectedItems.length === 0) {
-      const listn = t.listname;
-      this.selectedItems.push(listn);
-      this.selectedMailing.mailinglistId.push(t.id);
-      this.selectedMailing.mailinglist.push(listn);
-    } else {
+    // if (this.selectedItems.length === 0) {
+    //   const listn = t.listname;
+    //   this.selectedItems.push(listn);
+    //   this.selectedMailing.mailinglistId.push(t.id);
+    //   this.selectedMailing.mailinglist.push(listn);
+    // } else {
       // if items already present then items will not be added to the array
       // stringfying the array to find names similiar
       const selectMailingStr = JSON.stringify(this.selectedItems);
       if (selectMailingStr.indexOf(t.listname) === -1) {
         this.selectedItems.push(t.listname);
         this.selectedMailing.mailinglistId.push(t.id);
-        this.selectedMailing.mailinglist.push(t.listname);
-        this.selectedMailing.selectedlists.push(t);
-      }
+        this.selectedMailing.mailinglist.push(t);
+        this.selectedMailing.selectedlists.push(t.listname);
+      //}
     };
 
     // filter those mailinglists that are selected to avoid duplication

@@ -920,13 +920,13 @@
                             <tr>
                               <td style="width: 10%"></td>
                               <td>
-                                <label>Title: {{ CampaignMailing.title }}</label>
+                                <label style="font-size: 8pt">Title: {{ CampaignMailing.title }}</label>
                               </td>
                             </tr>
                             <tr>
                               <td style="width: 10%"></td>
                               <td>
-                                <label>Date: {{ CampaignMailing.date | date }}, {{ CampaignMailing.time }}</label>
+                                <label style="font-size: 8pt">Date: {{ CampaignMailing.date | date }}, {{ CampaignMailing.time }}</label>
                               </td>
                             </tr>
                           </table>
@@ -1041,14 +1041,14 @@
                               </table>
                             </mat-expansion-panel>
                             <br>
-                            <table>
+                            <!-- <table>
                               <tr *ngIf="CampaignMailing.done == false">
                                 <label style="font-size: 8pt">%recipient_name%, %recipient.company%, %recipient%,
                                   %recipient.firstname%, %recipient.lastname%</label>
                               </tr>
-                            </table>
+                            </table> -->
 
-                            <div *ngIf="CampaignMailing.done == false">
+                            <!-- <div *ngIf="CampaignMailing.done == false">
                               <ckeditor #content [name]="editor2" [(ngModel)]="CampaignMailing.html" [config]="{
                         extraPlugins: 'filebrowser,popup,filetools',
                           toolbarCanCollapse: 'true',
@@ -1057,7 +1057,7 @@
                           toolbarStartupExpanded: 'false'}" (fileUploadResponse)="onRequestCkEvent($event)"
                                 debounce="500">
                               </ckeditor>
-                            </div>
+                            </div> -->
 
                             <table style="width: 100%;">
                               <tr *ngIf="CampaignMailing.done == false" rowspan="10" style="width: 100%;">
