@@ -3493,6 +3493,57 @@ export class RelationsApi extends BaseLoopBackApi {
    *
    * @param {string} templatemailingid 
    *
+   * @param {string} date 
+   *
+   * @param {string} time 
+   *
+   * @param {any} campaignLists 
+   *
+   * @param {string} timezone 
+   *
+   * @param {object} data Request data.
+   *
+   * This method does not accept any data. Supply an empty object.
+   *
+   * @returns {object} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * <em>
+   * (The remote method definition does not provide any description.
+   * This usually means the response is a `Relations` object.)
+   * </em>
+   */
+  public addmailingtocampaign(id: any = {}, companyid: any = {}, templatemailingid: any = {}, date: any = {}, time: any = {}, campaignLists: any = {}, timezone: any = {}, customHeaders?: Function): Observable<any> {
+    let _method: string = "POST";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/relations/addmailingtocampaign/:id";
+    let _routeParams: any = {
+      id: id
+    };
+    let _postBody: any = {};
+    let _urlParams: any = {};
+    if (typeof companyid !== 'undefined' && companyid !== null) _urlParams.companyid = companyid;
+    if (typeof templatemailingid !== 'undefined' && templatemailingid !== null) _urlParams.templatemailingid = templatemailingid;
+    if (typeof date !== 'undefined' && date !== null) _urlParams.date = date;
+    if (typeof time !== 'undefined' && time !== null) _urlParams.time = time;
+    if (typeof campaignLists !== 'undefined' && campaignLists !== null) _urlParams.campaignLists = campaignLists;
+    if (typeof timezone !== 'undefined' && timezone !== null) _urlParams.timezone = timezone;
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
+   * <em>
+         * (The remote method definition does not provide any description.)
+         * </em>
+   *
+   * @param {string} id 
+   *
+   * @param {string} companyid 
+   *
+   * @param {string} templatemailingid 
+   *
    * @param {string} startdate 
    *
    * @param {string} enddate 

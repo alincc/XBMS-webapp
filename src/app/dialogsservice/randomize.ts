@@ -1,6 +1,9 @@
 import { Marketingplannerevents } from '../shared/';
 
 export interface Randomizer {
+    randomize: boolean;
+    time: string;
+    date: string;
     startdate: Date;
     enddate: Date;
     dayoftheweek: string;

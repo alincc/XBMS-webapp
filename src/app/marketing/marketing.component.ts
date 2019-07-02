@@ -670,14 +670,6 @@ export class MarketingComponent implements OnInit {
     this.randomService.openDialog(
       this.option.id, this.Account.companyId, this.selectedMailing, this.Mailinglist, this.Marketingplannerevents, this.Mailing)
     // console.log(this.selectedMailing)
-    if (this.randomService.ready === true) {
-      this.confirmRandomMailing(this.randomService.randomizer);
-    }
-  }
-
-  confirmRandomMailing(randomizer): void {
-    console.log(randomizer)
-    // this.MarketingplannereventsApi.randomizemailing(this.option.id. )
   }
 
   // select and set parameters PublicationsTranslation
@@ -1878,10 +1870,10 @@ export class MarketingComponent implements OnInit {
     // delay to anticipate css style change per mailing i = array mailing list
     if (this.togglecampaignclasstrans[i] === true) { this.togglecampaignclasstrans[i] = false } else {
       this.togglecampaignclasstrans[i] = true;
-      setTimeout(() => {
-        if (this.toggleCampaignMailing[i] === true) { this.toggleCampaignMailing[i] = false } else { this.toggleCampaignMailing[i] = true; }
-      }, 500);
     }
+    setTimeout(() => {
+      if (this.toggleCampaignMailing[i] === true) { this.toggleCampaignMailing[i] = false } else { this.toggleCampaignMailing[i] = true; }
+     }, 500);
   }
 
   toggleToFullText(i): void {

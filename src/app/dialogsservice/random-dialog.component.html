@@ -73,11 +73,45 @@
             <table>
                 <tr>
                     <td>
-                        <mat-checkbox [(ngModel)]="randomize">Create Random dates and Times</mat-checkbox>
+                        <mat-checkbox [(ngModel)]="data.randomize">Create Random dates and Times</mat-checkbox>
                     </td>
                 </tr>
             </table>
-            <table *ngIf="randomize">
+            <table *ngIf="!data.randomize">
+                <tr>
+                    <td>
+                        <label>Date</label>
+                    </td>
+                    <td>
+                        <mat-datepicker #picker2 class="form-half-width"></mat-datepicker>
+                        <input [min]="minDate" [max]="maxDate" [matDatepicker]="date"
+                            [(ngModel)]=data.date placeholder="Send Date">
+                        <mat-datepicker-toggle matSuffix [for]="date"></mat-datepicker-toggle>
+                        <mat-datepicker #date></mat-datepicker>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <mat-form-field>
+                          <input matInput [(ngModel)]=data.time placeholder="Time" class="InputField"
+                            type="time">
+                        </mat-form-field>
+                      </td>
+                </tr>
+                <tr>
+                    <td><label>Timezone</label></td>
+                    <td>
+                        <mat-form-field>
+                            <mat-select placeholder="Timezone" [(ngModel)]="data.timezone">
+                                <mat-option *ngFor="let timezone of timezones" [value]="timezone.value">
+                                    {{ timezone.value }}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </td>
+                </tr>
+            </table>
+            <table *ngIf="data.randomize">
                 <tr>
                     <td>
                         <label>Start date</label>

@@ -489,7 +489,7 @@
                         <button a mat-raised-button (click)="copyFromMailing()">Copy
                           <mat-icon>copy</mat-icon>
                         </button>
-                        <button a mat-raised-button (click)="randomizeMailing()">Randomize Mailing
+                        <button a mat-raised-button (click)="randomizeMailing()">Randomize Mailing/Add to Campaign
                           <mat-icon>merge_type</mat-icon>
                         </button>
                       </td>
@@ -894,9 +894,9 @@
                   <br>
                   <div (blur)="saveMailingCampaign()">
                     <div *ngFor="let CampaignMailing of CampaignMailing; let i = index">
-                      <a mat-mini-fab color="primary" *ngIf="toggleCampaignMailing[i] == false"
-                        (click)="toggleCampaignMailingNow(i)"
-                        [ngClass]="(togglecampaignclasstrans[i] == true)?'toggelcampaignwindowfade':'toggelcampaignwindow'">
+                      <a mat-mini-fab color="primary" *ngIf="toggleCampaignMailing[i] === false"
+                        (click)="toggleCampaignMailingNow(i)" matTooltip="Expand Panel"
+                        [ngClass]="(togglecampaignclasstrans[i] === true)?'toggelcampaignwindowfade':'toggelcampaignwindow'">
                         <mat-icon>aspect_ratio</mat-icon>
                       </a>
                       <mat-card *ngIf="toggleCampaignMailing[i] == false"
@@ -1203,8 +1203,8 @@
                             <mat-icon>save</mat-icon>
                           </a>
                           <a mat-mini-fab color="primary" class="toggelcampaignwindow"
-                            (click)="toggleCampaignMailingNow(i)"
-                            [ngClass]="(togglecampaignclasstrans[i] == false)?'toggelcampaignwindowfade':'toggelcampaignwindow'">
+                            (click)="toggleCampaignMailingNow(i)" matTooltip="Minimalize Panel"
+                            [ngClass]="(togglecampaignclasstrans[i] === false)?'toggelcampaignwindowfade':'toggelcampaignwindow'">
                             <mat-icon>aspect_ratio</mat-icon>
                           </a>
                         </mat-card-content>
