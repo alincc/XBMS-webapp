@@ -1078,6 +1078,8 @@ export class MaileditorComponent implements OnInit {
   CreateNewMail(): void {
     // reset existing and rebuild component
     this.updateMailingObj = undefined;
+    this.subject = '';
+    this.preview = '';
     this.setupTemplate();
   }
 
