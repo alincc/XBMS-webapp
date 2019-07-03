@@ -1856,7 +1856,7 @@ export class MarketingComponent implements OnInit {
     if (this.selectedMailing.selectedlists === undefined) {
       this.selectedMailing.selectedlists = [];
     }
-    console.log($event);
+    // console.log($event);
     // this.mailingaddress = $event.srcElement.value;
     this.selectedItems.push($event.srcElement.value);
     this.selectedMailing.mailinglist.push($event.srcElement.value);

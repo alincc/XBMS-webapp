@@ -78,6 +78,16 @@ export class FileuploadComponent implements OnInit {
         });
         this.uploader.onWhenAddingFileFailed = (item, filter, options) => this.onWhenAddingFileFailed(item, filter, options);
         this.uploader.clearQueue();
+        this.ContainerApi.getFiles(this.option.id).subscribe((files: Files[]) => {
+          this.Files = files,
+            this.Files.forEach((file, index) => {
+              // console.log(file, index);
+              const modalImage = { img: BASE_URL + '/api/Containers/' + this.option.id + '/download/' + file.name };
+              const modal = new Image(index, modalImage, null)
+              this.imagesNew.push(modal)
+            }),
+            this.images = this.imagesNew;
+      });
   }
 
   onWhenAddingFileFailed(item, filter: any, options: any) {
@@ -107,15 +117,10 @@ export class FileuploadComponent implements OnInit {
   onOpenGallery() {
     this.showdropbox = false;
     // this.showgallery = true;
-    this.ContainerApi.getFiles(this.option.id).subscribe((files: Files[]) => {
-      this.Files = files,
-        this.Files.forEach((file, index) => {
-          // console.log(file, index);
-          const modalImage = { img: BASE_URL + '/api/Containers/' + this.option.id + '/download/' + file.name };
-          const modal = new Image(index, modalImage, null)
-          this.imagesNew.push(modal)
-        }),
-        this.images = this.imagesNew;
+    if (this.Files === undefined) {
+
+  }
+
         // console.log(this.imagesNew)
       const dialogRef = this.dialog.open(dialoggallerycomponent, {
         width: '600px',
@@ -124,9 +129,12 @@ export class FileuploadComponent implements OnInit {
       dialogRef.afterClosed().subscribe(result => {
         console.log('The dialog was closed', result);
         // this.animal = result;
-        this.setimage(result);
-      });
-    });
+        if (result){
+        this.setimage(result)} else {
+          this.showdropbox = true;
+        };
+      }) 
+    
   }
 
   setimage(url){
@@ -193,6 +201,7 @@ export class dialoggallerycomponent implements OnInit {
     }
 
   onNoClick(): void {
+    this.data.selected = '';
     this.dialogRef.close();
   }
 
