@@ -394,7 +394,7 @@ export class MaileditorComponent implements OnInit {
         'border-radius': '',
         'container-background-color': '',
         'fluid-on-mobile': false,
-        'height': "auto",
+        'height': 'auto',
         'href': '',
         'padding': '0px 0px 0px 0px',
         'padding-bottom': '0',
@@ -406,7 +406,7 @@ export class MaileditorComponent implements OnInit {
         'srcset': '',
         'target': "_blank",
         'title': '',
-        'width': '200px'
+        'width': 'auto'
       }
       return newImage
     }

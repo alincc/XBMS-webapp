@@ -10,9 +10,9 @@ import { Component } from '@angular/core';
         <p style="font-family: Roboto, Arial, sans-serif;">{{ message }}</p>
         <div class="mailpreview" [innerHTML]="preview"></div>
         <div style="background-color: white; z-index: 90;">
-        <button mat-button type="button"
+        <button style="background-color: white" mat-button type="button"
             (click)="dialogRef.close(true)">OK</button>
-        <button mat-button type="button"
+        <button style="background-color: white;" mat-button type="button"
             (click)="dialogRef.close()">Cancel</button>
             <div>
             </div>
