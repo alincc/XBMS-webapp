@@ -556,8 +556,8 @@
         <div class="container">
 
           <div *ngFor="let Files of Files; let i = index" (click)="onDownload(Files)" class="files">
-            <a href="{{ urldownload }}">
-              {{ Files.name }} {{ Files.date | date }}
+            <a href="{{ Files.url }}">
+              {{ Files.name }} {{ Files.createdate | date }}
             </a>
             <a mat-mini-fab color="primary" (click)="dialogDeleteFile(Files)">
               <mat-icon>delete</mat-icon>

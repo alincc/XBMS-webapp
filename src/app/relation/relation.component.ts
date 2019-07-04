@@ -431,7 +431,7 @@ export class RelationComponent implements OnInit {
 
 
   saveRelation(): void {
-    this.RelationsApi.replaceById(this.selectedRelation.id, this.selectedRelation)
+    this.RelationsApi.updateAttributes(this.selectedRelation.id, this.selectedRelation)
       .subscribe(Relations => {
         this.Relations[this.relationindex] = this.selectedRelation;
       });
@@ -822,7 +822,10 @@ export class RelationComponent implements OnInit {
 
   deleteFiles(selectedOption, Files): void {
     if (selectedOption == true) {
-      this.RelationsApi.destroyByIdFiles(this.selectedRelation.id, Files.id).subscribe(res => this.getFiles());
+      this.ContainerApi.removeFile(this.selectedRelation.id, Files.name).subscribe(res => this.getFiles());
+      this.RelationsApi.destroyByIdFiles(Files.relationsId, Files.id).subscribe(
+        res =>  this.getFiles() );
+
     }
   }
 
@@ -835,16 +838,17 @@ export class RelationComponent implements OnInit {
   setupload(name): void {
     //define the file settings
     this.newFiles.name = name,
-      this.newFiles.url = this.newURL,
+      this.newFiles.url = BASE_URL + "/api/Containers/" + this.selectedRelation.id + "/download/" + name,
       this.newFiles.createdate = new Date(),
       this.newFiles.type = "general",
       this.newFiles.companyId = this.Account.companyId,
+      this.uploadFile();
       //check if container exists and create
-      this.ContainerApi.findById(this.selectedRelation.id)
-        .subscribe(res => this.uploadFile(),
-          error =>
-            this.ContainerApi.createContainer({ name: this.selectedRelation.id })
-              .subscribe(res => this.uploadFile()));
+      // this.ContainerApi.findById(this.selectedRelation.id)
+      //   .subscribe(res => this.uploadFile(),
+      //     error =>
+      //       this.ContainerApi.createContainer({ name: this.selectedRelation.id })
+      //         .subscribe(res => this.uploadFile()));
   }
 
   uploadFile(): void {
