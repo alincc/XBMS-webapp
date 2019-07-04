@@ -13,7 +13,7 @@ import {
   PlainGalleryStrategy,
   PreviewConfig
 } from '@ks89/angular-modal-gallery';
-import { ContainerApi, Files, Relations, RelationsApi, Company, Account } from '../sdk';
+import { ContainerApi, Files, Relations, RelationsApi, Company, Account, FilesApi } from '../sdk';
 import { BASE_URL, API_VERSION } from '../base.api'
 import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material';
 
@@ -62,7 +62,7 @@ export class FileuploadComponent implements OnInit {
     public dialog: MatDialog,
     public ContainerApi: ContainerApi,
     public relationsApi: RelationsApi,
-
+    public fileApi: FilesApi
     ) { }
 
 
@@ -78,7 +78,7 @@ export class FileuploadComponent implements OnInit {
         });
         this.uploader.onWhenAddingFileFailed = (item, filter, options) => this.onWhenAddingFileFailed(item, filter, options);
         this.uploader.clearQueue();
-        this.ContainerApi.getFiles(this.option.id).subscribe((files: Files[]) => {
+        this.relationsApi.getFiles(this.option.id).subscribe((files: Files[]) => {
           this.Files = files,
             this.Files.forEach((file, index) => {
               // console.log(file, index);
@@ -118,7 +118,6 @@ export class FileuploadComponent implements OnInit {
     this.showdropbox = false;
     // this.showgallery = true;
     if (this.Files === undefined) {
-
   }
 
         // console.log(this.imagesNew)
@@ -174,6 +173,7 @@ export class FileuploadComponent implements OnInit {
             // this.imgurl.emit(res.url)
           });
   }
+
 }
 
 import { Icons } from './filelist'

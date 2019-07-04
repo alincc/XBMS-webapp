@@ -807,7 +807,7 @@ export class RelationComponent implements OnInit {
   }
 
   getFiles(): void {
-    this.ContainerApi.getFiles(this.selectedRelation.id)
+    this.RelationsApi.getFiles(this.selectedRelation.id)
       .subscribe((Files: Files[]) => this.Files = Files)
   }
 
@@ -822,7 +822,7 @@ export class RelationComponent implements OnInit {
 
   deleteFiles(selectedOption, Files): void {
     if (selectedOption == true) {
-      this.ContainerApi.removeFile(this.selectedRelation.id, Files.name).subscribe(res => this.getFiles());
+      this.RelationsApi.destroyByIdFiles(this.selectedRelation.id, Files.id).subscribe(res => this.getFiles());
     }
   }
 
