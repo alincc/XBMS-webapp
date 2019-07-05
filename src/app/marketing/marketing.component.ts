@@ -1657,6 +1657,9 @@ export class MarketingComponent implements OnInit {
   copyFromMailingCampaign(i): void {
     this.CampaignMailing[i].html = this.copyfrommailing.html;
     this.CampaignMailing[i].subject = this.copyfrommailing.subject;
+    this.CampaignMailing[i].to = this.copyfrommailing.to;
+    this.CampaignMailing[i].from = this.copyfrommailing.from;
+    this.CampaignMailing[i].title = this.copyfrommailing.title;
   }
 
   public showTemplatePreview(): void {

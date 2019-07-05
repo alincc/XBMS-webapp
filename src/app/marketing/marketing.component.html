@@ -864,9 +864,7 @@
                         <button a mat-raised-button (click)="openDialogDeleteMailingCampaign()">Delete
                           <mat-icon>remove</mat-icon>
                         </button>
-                        <button a mat-raised-button (click)="openDialogScheduleMailingCampaign()">Schedule
-                          <mat-icon>schedule</mat-icon>
-                        </button>
+
                       </td>
                     </tr>
                     <tr>
@@ -1091,9 +1089,9 @@
                               <tr *ngIf="toggleshorttext[i]">
                                 <td colSpan="4">
                                   <br>
-                                  <div class="mailpreview">{{ CampaignMailing.text | slice:0:300 }}</div>
+                                  <!-- <div class="mailpreview">{{ CampaignMailing.text | slice:0:300 }}</div> -->
                                   <br>
-                                  <label (click)="toggleToFullText(i)">read more</label>
+                                  <label (click)="toggleToFullText(i)">Show Message</label>
                                   <br>
                                 </td>
                               </tr>
@@ -1196,6 +1194,9 @@
                               </table>
                             </mat-expansion-panel>
                           </div>
+                          <button a mat-raised-button *ngIf="!CampaignMailing.send" (click)="openDialogScheduleMailingCampaign()">Schedule
+                              <mat-icon>schedule</mat-icon>
+                            </button>
                           <a mat-mini-fab color="primary" (click)="openDialogDeleteMailingof(i)">
                             <mat-icon>delete</mat-icon>
                           </a>
