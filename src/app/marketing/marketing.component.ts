@@ -921,7 +921,7 @@ export class MarketingComponent implements OnInit {
 
   createMailing(): void {
     this.RelationsApi.createMailing(this.option.id, { subject: 'new', relationname: this.option.relationname })
-      .subscribe(res => { res = res, this.onSelectMailing(res), this.getMailing() });
+      .subscribe(res => {  this.onSelectMailing(res), this.Mailing.push(res); });
   }
 
   editMailing(): void {
@@ -1250,9 +1250,13 @@ export class MarketingComponent implements OnInit {
     this.uploaderContent.next(JSON.stringify(result.payload));
     this.maillist1 = result.payload[0];
 
+  //  this.headers.push(Object.keys(this.maillist1[0])[0]);
+
+
     let i = 0;
     do {
-      this.headers.push(Object.keys(this.maillist1[0])[i])
+      this.headers.push(Object.keys(this.maillist1[0])[i]);
+      console.log(Object.keys(this.maillist1[0])[i]);
       i++;
     }
     while (Object.keys(this.maillist1[0])[i] !== undefined);
@@ -1261,10 +1265,12 @@ export class MarketingComponent implements OnInit {
   }
 
   public openmailinglistwebsite(i): void {
-    let res = this.mailinglistdetails[i].consts.website.substring(0, 3);
+    console.log(this.mailinglistdetails[i]);
+    let res = this.mailinglistdetails[i].vars.website.substring(0, 3);
+    let web = this.mailinglistdetails[i].vars.website
     res = res.toLowerCase();
-    if (res === 'www') { window.open('http://' + this.mailinglistdetails[i].consts.website, '_blank'); }
-    else if (res === 'htt') { window.open(this.mailinglistdetails[i].consts.website, '_blank'); }
+    if (res === 'www') { window.open('http://' + web, '_blank'); }
+    else if (res === 'htt') { window.open(web, '_blank'); }
     else { this.dialogsService.confirm('Not a valid URL', 'Please edit'); };
   }
 
@@ -1272,7 +1278,7 @@ export class MarketingComponent implements OnInit {
     const importlist = this.maillist;
     let size = importlist.length;
     this.maillist1.forEach((value) => {
-      // fixed format name, firstname, lastname, address, company
+      // fixed format name, firstname, lastname, address, company, mailinglist
       if (this.companyheader === undefined) { this.openSnackBar('Info missing or wrong format'); }
       else {
         // create import value

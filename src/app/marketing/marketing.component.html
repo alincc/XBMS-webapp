@@ -399,11 +399,7 @@
                 <td>
                   <button a mat-raised-button (click)="getMailing()">Show All</button>
                 </td>
-                <td>
-                  <button mat-mini-fab color="primary" (click)="createMailing()">
-                    <mat-icon>add</mat-icon>
-                  </button>
-                </td>
+ 
               </tr>
               </div>
 
@@ -432,6 +428,11 @@
                   </table>
                 </span>
               </div>
+              <td>
+                <button mat-mini-fab color="primary" (click)="createMailing()">
+                  <mat-icon>add</mat-icon>
+                </button>
+              </td>
               </div>
             </div>
 
@@ -591,15 +592,6 @@
 
                   </mat-expansion-panel>
                   <table>
-                    <td>
-                      <!-- <mat-checkbox [(ngModel)]=selectedMailing.done>
-                    Show Message
-                  </mat-checkbox> -->
-                      <button a mat-raised-button (click)="showTemplatePreview()">Preview
-                        <mat-icon>view</mat-icon>
-                      </button>
-                    </td>
-                    <br>
                     <!-- <tr>
                   <label style="font-size: 8pt"> %recipient_name%, %recipient.company%, %recipient%,
                     %recipient.firstname%, %recipient.lastname%</label>
@@ -607,7 +599,7 @@
                     <!-- uploadUrl: 'http://localhost:3000/api/Containers/5af0573e196178122c6bb4a4/upload/', -->
                   </table>
 
-                  <div *ngIf="selectedMailing.done == true">
+                  <!-- <div *ngIf="selectedMailing.done == true">
                     <ckeditor #content [name]="editor1" [(ngModel)]="selectedMailing.html" [config]="{
                   extraPlugins: 'filebrowser,popup,filetools',
                   toolbarCanCollapse: 'true',
@@ -616,10 +608,10 @@
                   toolbarStartupExpanded: 'false'}" (fileUploadResponse)="onRequestCkEvent($event)" debounce="500">
                     </ckeditor>
 
-                  </div>
+                  </div> -->
 
 
-                  <table *ngIf="selectedMailing.done == true" class="max-table-content">
+                  <!-- <table *ngIf="selectedMailing.done == true" class="max-table-content">
                     <tr rowspan="10">
                       <td colspan="3">
 
@@ -640,7 +632,8 @@
                         </mat-form-field>
                       </td>
                     </tr>
-                  </table>
+                  </table> -->
+                  <br>
                   <mat-checkbox [(ngModel)]=selectedMailing.send>
                     Send
                   </mat-checkbox>
@@ -650,42 +643,42 @@
                   <button a mat-raised-button (click)="sendMailing()">Send
                     <mat-icon>send</mat-icon>
                   </button>
-                  <button a mat-raised-button (click)="openDialogDeleteMailing()">Delete
-                    <mat-icon>remove</mat-icon>
-                  </button>
                   <button a mat-raised-button (click)="openDialogScheduleMailing()">Schedule
                     <mat-icon>schedule</mat-icon>
+                  </button>
+                  <button a mat-raised-button (click)="showTemplatePreview()">Preview
+                    <mat-icon>view</mat-icon>
                   </button>
 
                   <br>
 
                   <div *ngIf="selectedMailing.send">
-                    <table class="max-table-content">
+                    <table style="margin: 20px 0px 40px 0px" class="max-table-content">
                       <tr>
-                        <td>
+                        <td style="width: 25%;">
                           <label>Opened </label>
                         </td>
-                        <td>
+                        <td style="width: 25%;">
                           <label>Clicked </label>
                         </td>
-                        <td>
+                        <td style="width: 25%;">
                           <label>Bounced</label>
                         </td>
-                        <td>
+                        <td style="width: 25%;">
                           <label>Unsubscribed</label>
                         </td>
                       </tr>
                       <tr>
-                        <td>
+                        <td style="width: 25%;">
                           {{ selectedMailing.totalopened }}
                         </td>
-                        <td>
+                        <td style="width: 25%;">
                           {{ selectedMailing.totalclicked }}
                         </td>
-                        <td>
+                        <td style="width: 25%;">
                           {{ selectedMailing.totalbounced }}
                         </td>
-                        <td>
+                        <td style="width: 25%;">
                           {{ selectedMailing.totalunsubscribed }}
                         </td>
                       </tr>
@@ -768,11 +761,6 @@
                     <td>
                       <button a mat-raised-button (click)="getMailingCampaign()">Show All</button>
                     </td>
-                    <td>
-                      <button mat-mini-fab color="primary" (click)="createMarketingPlannerevents()">
-                        <mat-icon>add</mat-icon>
-                      </button>
-                    </td>
                   </tr>
                 </div>
                 <div *ngFor="let Marketingplannerevents of Marketingplannerevents"
@@ -797,10 +785,14 @@
                 </div>
               </div>
 
-              <div fxFlex="10%">
-                <button mat-mini-fab color="primary" (click)="openDialogDeleteMailingCampaign()">
+              <div>
+                <button mat-mini-fab color="primary" matTooltip="Delete Campaign" (click)="openDialogDeleteMailingCampaign()">
                   <mat-icon>delete</mat-icon>
                 </button>
+                  <button mat-fab color="primary" matTooltip="Add Campaign" (click)="createMarketingPlannerevents()">
+                    <mat-icon>add</mat-icon>
+                  </button>
+                
               </div>
             </div>
 
@@ -1244,18 +1236,6 @@
                   <button a mat-raised-button (click)="getMailinglist()">Show All</button>
                 </td>
               </tr>
-              <tr>
-                <td>
-                  <button mat-mini-fab color="primary" (click)="deleteMailingList()">
-                    <mat-icon>delete</mat-icon>
-                  </button>
-                </td>
-                <td>
-                  <a mat-mini-fab color="primary" (click)="toggleNewMailinglist()">
-                    <mat-icon>add</mat-icon>
-                  </a>
-                </td>
-              </tr>
             </div>
             
                 <div *ngFor="let Mailinglist of Mailinglist" (click)="onSelectMailingList(Mailinglist)"
@@ -1290,22 +1270,27 @@
                       {{mailinglistcount}}
                     </td>
                   </tr>
+                  <tr>
+                    <td>
+                      <button matTooltip="Delete selected list" mat-mini-fab color="primary" (click)="deleteMailingList()">
+                        <mat-icon>delete</mat-icon>
+                      </button>
+                    </td>
+                  </tr>
                 </table>
               </div>
             </div>
 
             <!-- Mailing list  -->
-            <div fxFlex="75%" fxLayout="column" class="relationcontainer"
-              *ngIf="toggleuploadlist && group.value == 'maillist'">
+            <div fxFlex="75%" fxLayout="column" class="relationcontainer">
 
 
-              <div fxLayout="column" class="relationcontainer"
-                *ngIf="toggleuploadlist === false && selectedMailingList === undefined && group.value == 'maillist'">
+              <div fxLayout="column" class="relationcontainer">
                 <button a mat-raised-button (click)="togglemultiplelist()">Upload to or create Multiple Lists</button>
                 <button a mat-raised-button (click)="createMailingList()">Create new List</button>
               </div>
 
-              <mat-card fxFlex *ngIf="selectedMailingList && group.value == 'maillist'">
+              <mat-card fxFlex *ngIf="selectedMailingList">
                 <mat-card-content>
 
                   <table class="form-full-width">
@@ -1361,7 +1346,7 @@
 
 
 
-              <div fxFlex class="relationcontainer" *ngIf="newmailinglisttoggle && group.value == 'maillist'">
+              <div fxFlex class="relationcontainer" *ngIf="newmailinglisttoggle">
                 <mat-card>
                   <mat-card-content>
                     <table class="form-full-width">
@@ -1413,9 +1398,7 @@
               </div>
 
 
-
-
-              <div fxFlex class="uploadcontainer" *ngIf="toggleuploadlist && group.value == 'maillist'">
+              <div fxFlex class="uploadcontainer" *ngIf="toggleuploadlist">
 
                 <div *ngIf="selectedMailingList">
 
@@ -1425,7 +1408,7 @@
 
 
                   <div *ngFor="let mailinglistdetails of mailinglistdetails; let i = index">
-                    <table class="mailinglistdetails">
+                    <table style="width: 100%;">
                       <tr>
                         <td class="mailinglistdetailscell">
                           {{mailinglistdetails.vars.title}} {{mailinglistdetails.vars.firstname}}
@@ -1437,15 +1420,14 @@
                         <td class="mailinglistdetailscell">
                           {{mailinglistdetails.vars.company}}
                         </td>
-                        <td class="mailinglistdetailscell">
+                        <td style="color: blue;" class="mailinglistdetailscell" (click)="openmailinglistwebsite(i)">
                           {{mailinglistdetails.vars.website}}
-                          <mat-icon *ngIf="mailinglistdetails.vars.website" (click)="openmailinglistwebsite(i)">
-                            open_in_new</mat-icon>
+                          <!-- <mat-icon *ngIf="mailinglistdetails.vars.website" (click)="openmailinglistwebsite(i)">
+                            open_in_new</mat-icon> -->
                         </td>
                         <td class="mailinglistdetailscell">
-                          <a mat-mini-fab color="primary" (click)="deleteOneMailingList(mailinglistdetails.address)">
-                            <mat-icon>delete</mat-icon>
-                          </a>
+                          <mat-icon color="primary" (click)="deleteOneMailingList(mailinglistdetails.address)">
+                          delete</mat-icon>
                         </td>
                       </tr>
                     </table>
