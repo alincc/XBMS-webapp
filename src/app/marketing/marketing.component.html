@@ -1226,18 +1226,17 @@
 
           <div fxLayout="row" fxFlexOffset="10px" class="bottomlist" *ngIf="group.value == 'maillist'">
             <div fxFlex="25%" class="Relations" fxLayout="column">
+                <div class="searchbutton">
+                    <tr>
+                      <td>
+                        <button a mat-raised-button (click)="searchGoMailingList(searchTerm.value)">Search Result</button>
+                      </td>
+                      <td>
+                        <button a mat-raised-button (click)="getMailinglist()">Show All</button>
+                      </td>
+                    </tr>
+                  </div>
                 <div class="listview">
-              <div class="searchbutton">
-              <tr>
-                <td>
-                  <button a mat-raised-button (click)="searchGoMailingList(searchTerm.value)">Search Result</button>
-                </td>
-                <td>
-                  <button a mat-raised-button (click)="getMailinglist()">Show All</button>
-                </td>
-              </tr>
-            </div>
-            
                 <div *ngFor="let Mailinglist of Mailinglist" (click)="onSelectMailingList(Mailinglist)"
                   [class.selected]="Mailinglist === selectedMailingList">
                   <span class="box" style="font-size: 8pt">

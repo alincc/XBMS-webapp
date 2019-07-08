@@ -1298,7 +1298,6 @@ export class MarketingComponent implements OnInit {
             const4: value[this.const4header]
           }
         }
-
         this.maillist.push(importvalue);
       }
     })
