@@ -14,26 +14,26 @@
   margin-left: 100px;
 }
 
+
 .box {
+  font-size: 8pt;
   position: relative;
   display: inline-block;
   width: 90%;
-  // min-width: 300px;
-  height: 25px;
+  height: 40px;
   background-color: #fff;
   border-radius: 5px;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-  border-radius: 1px;
+  border-radius: 5px;
   -webkit-transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
   transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
-  margin: 5px;
-  padding: 5px;
-  box-sizing: border-box;
+  margin: 3px;
+  padding: 3px;
 }
- 
+
 .box::after {
   content: "";
-  border-radius: 1px;
+  border-radius: 5px;
   position: absolute;
   z-index: -1;
   top: 0;
@@ -44,18 +44,15 @@
   opacity: 0;
   -webkit-transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
   transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
-  box-sizing: border-box;
 }
- 
+
 .box:hover {
-  -webkit-transform: scale(1.10, 1.10);
-  transform: scale(1.10, 1.10);
-  box-sizing: border-box;
+  -webkit-transform: scale(1.05, 1.05);
+  transform: scale(1.05, 1.05);
 }
- 
+
 .box:hover::after {
-    opacity: 1;
-    box-sizing: border-box;
+  opacity: 1;
 }
 
  .selected {
@@ -67,15 +64,18 @@
 
 }
 
-
-// .searchbutton{
-//   width: 7%;
-//   float: left;
-// }
+.addtobutton {
+  // margin-left: 70%;
+  // margin-top: 40%;
+  bottom: 40px;
+  right: 50px;
+  position: fixed;
+  z-index: 99;
+}
 
 .search-component{
-  margin: 10px;
-  padding: 10px;
+  margin: 5px;
+  padding: 5px;
 }
 
 
@@ -100,7 +100,7 @@ agm-map {
 .content-form {
   min-height: 300px;
   min-width: 150px;
-  max-width: 500px;
+  // max-width: 500px;
   width: 98%;
   height: 98%;
 }
@@ -129,18 +129,8 @@ agm-map {
   margin: 20px;
 }
 
-.selectionbox{
-  display: -webkit-flex; /* Safari */
-  -webkit-align-items: center; /* Safari 7.0+ */
-  display: flex;
-  align-items: center;
-}
 
-.standarddivclass{
-  width: 100%;
-  margin: 5px;
-  padding: 1px;
-}
+
 
 .crawlerlistdetails{
   margin: 5px;
@@ -151,3 +141,14 @@ agm-map {
 .speechbutton{
   color: blue
 }
+
+.callstable{
+  margin: 1px;
+  width: 100%;
+  overflow:hidden;
+}
+
+.callstable td {
+  width: 50%;
+}
+

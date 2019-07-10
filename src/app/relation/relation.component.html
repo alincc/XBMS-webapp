@@ -23,46 +23,39 @@
         <mat-icon>contacts</mat-icon>
         <div fxShow.xs="false">Relations</div>
       </ng-template>
+
+      <div class="addtobutton">
+          <button mat-fab color="primary" matTooltip="Create new Relation" (click)="openDialogNewRelation()"><mat-icon>add</mat-icon></button>
+            <!-- <button mat-mini-fab color="primary" matTooltip="New Template" (click)="CreateNewMail()"><mat-icon>add</mat-icon></button> -->
+        </div>
+
+
       <div class="tabcontainer" fxLayout="row">
         <div fxFlex="20%">
-          <div>
+          <div fxLayout="column" class="search-component">
             <h4>Search</h4>
             <mat-form-field>
               <input matInput [(ngModel)]=searchterm (keyup.enter)="searchGo()" placeholder="Name/Address" />
             </mat-form-field>
             <br>
-            <tr>
-              <td>
-                <mat-select class="selectionbox" [(ngModel)]=selectstatus placeholder="Status">
+                <mat-select  [(ngModel)]=selectstatus placeholder="Status">
                   <mat-option *ngFor="let statustype of statustype" [value]="statustype.value">
                     {{ statustype.viewValue }}
                   </mat-option>
                 </mat-select>
-              </td>
-              <td>
-                <button mat-mini-fab color="primary" (click)="searchGo()">
-                  <mat-icon>search</mat-icon>
-                </button>
-              </td>
-              <td>
-                <label>{{totalrelationcount}}</label>
-              </td>
-            </tr>
+                <br>
+
           </div>
 
-          <div class="searchbutton">
-            <table>
-              <tr>
-                <td>
+          <div fxLayout="column" class="search-component">
+            
                   <button a mat-raised-button (click)="getRelations()">Show All</button>
-                </td>
-                <td>
-                  <button mat-mini-fab color="primary" (click)="openDialogNewRelation()">
-                    <mat-icon>add</mat-icon>
-                  </button>
-                </td>
-              </tr>
-            </table>
+             
+   
+                    <button a mat-raised-button color="primary" (click)="searchGo()">
+                        <mat-icon>search</mat-icon> Search
+                      </button>
+
 
             <div class="listview">
               <div *ngFor="let Relations of Relations; let i = index" (click)="onSelect(Relations, i)">
@@ -86,6 +79,10 @@
                 <td style="width: 50%">
                   <label>{{limit}}</label>
                 </td>
+              </tr>
+              <tr>
+                <td><label>Total</label></td>
+                <td><label>{{totalrelationcount}}</label></td>
               </tr>
             </table>
           </div>
@@ -218,46 +215,33 @@
         <mat-icon>perm_phone_msg</mat-icon>
         <div fxShow.xs="false">Calls</div>
       </ng-template>
-      <div class="tabcontainer">
-        <div class="listcontainer">
-          <div class="search-component">
+      <div class="addtobutton">
+          <button mat-fab color="primary" matTooltip="Create new Call" (click)="openDialogNewCall()"><mat-icon>add</mat-icon></button>
+            <!-- <button mat-mini-fab color="primary" matTooltip="New Template" (click)="CreateNewMail()"><mat-icon>add</mat-icon></button> -->
+        </div>
+      <div class="tabcontainer" fxLayout="row">
+        <div fxFlex="20%">
+          <div class="search-component" fxLayout="column">
             <h4>Search</h4>
-            <p>
-              <mat-form-field>
+                        <mat-form-field>
                 <input matInput #searchTerm id="seach-box" (keyup.enter)="searchGo()" placeholder="Call title/content" />
               </mat-form-field>
-            </p>
             <p>{{this.errorMessage}}</p>
 
-            <div class="searchbutton">
-              <table>
-                <tr>
-                  <td>
-                    <button a mat-raised-button (click)="searchCallGo(searchTerm.value)">Search</button>
-                  </td>
-                  <td>
-                    <button a mat-raised-button (click)="getCalls()">Show All Calls</button>
-                  </td>
-                  <td>
-                    <button mat-mini-fab color="primary" (click)="openDialogNewCall()">
-                      <mat-icon>add</mat-icon>
-                    </button>
-                  </td>
-                </tr>
-              </table>
-              <ul class="Relations">
+          
+              <button a mat-raised-button (click)="searchCallGo(searchTerm.value)">Search</button>
+              <button a mat-raised-button (click)="getCalls()">Show All Calls</button>
                 <div *ngFor="let Calls of Calls; let i = index" (click)="onSelectCall(Calls, i)" [class.selected]="Calls === selectedCall">
                   <span class="box">{{Calls.title | slice:0:20}} | {{Calls.date | date}}</span>
                 </div>
-              </ul>
-            </div>
+             
           </div>
         </div>
-        <div class="relationcontainer" *ngIf="selectedCall">
-          <mat-card class="standarddivclass">
-            <mat-card-content>
+        <div class="relationcontainer" *ngIf="selectedCall" fxFlex="80%">
+          <mat-card >
+            <mat-card-content fxLayout="column">
 
-              <table>
+              <table fxFlex class="callstable">
                 <tr>
                   <th colspan="2">
                     <mat-toolbar color="primary" class="titlebox">
@@ -340,15 +324,14 @@
                         </a>
                   </td>
                 </tr>
-                <tr rowspan="10">
+                <!-- <tr rowspan="10">
                   <td colspan="2">
                     <mat-form-field class="content-form">
                       <textarea matInput class="content-form" #content [(ngModel)]=selectedCall.content placeholder="content">Call Report</textarea>
                       <mat-hint align="end">{{content.value.length}}</mat-hint>
                     </mat-form-field>
                   </td>
-                </tr>
-
+                </tr> -->
                 <tr>
                   <td>
                     <mat-form-field>
@@ -396,10 +379,31 @@
                   </mat-checkbox>
                 </tr>
 
+
+                <tr *ngIf="!selectedCall.html" rowspan="10">
+                  <td colspan="2">
+                      <div style="border-style: solid; border-width: 1px; border-color: lightgray; padding: 5px;">
+                    <mat-form-field class="content-form">
+                      <textarea matInput class="content-form" #content [(ngModel)]=selectedCall.content placeholder="content">Call Report</textarea>
+                      <mat-hint align="end">{{content.value.length}}</mat-hint>
+                    </mat-form-field>
+                  </div>
+                  </td>
+                </tr>
+                <tr rowspan="10" *ngIf="selectedCall.html">
+                  <td colspan="2">
+                    <div style="border-style: solid; border-width: 1px; border-color: lightgray; padding: 5px;" [innerHTML]="selectedCall.html"></div>
+                  </td>
+                </tr>
+
+
+
+
               </table>
-
+            <div>
               <button a mat-raised-button (click)="saveCall()">Save</button>
-
+            </div>
+              
             </mat-card-content>
           </mat-card>
         </div>
@@ -413,8 +417,12 @@
         <mat-icon>contacts</mat-icon>
         <div fxShow.xs="false">Contact Person</div>
       </ng-template>
-      <div class="tabcontainer">
-        <div class="listcontainer">
+      <div class="addtobutton">
+          <button mat-fab color="primary" matTooltip="Create new Call" (click)="openDialogNewContactperson()"><mat-icon>add</mat-icon></button>
+            <!-- <button mat-mini-fab color="primary" matTooltip="New Template" (click)="CreateNewMail()"><mat-icon>add</mat-icon></button> -->
+        </div>
+      <div class="tabcontainer" fxLayout="row">
+        <div fxFlex="20%" fxLayout="column">
           <div class="search-component">
           </div>
 
@@ -429,7 +437,7 @@
             </div>
           </ul>
         </div>
-        <div class="relationcontainer" *ngIf="selectedContactperson" on-focusout="saveContactperson()">
+        <div  fxFlex="80%" class="relationcontainer" *ngIf="selectedContactperson" on-focusout="saveContactperson()">
           <mat-card class="standarddivclass">
             <mat-card-content>
               <div>

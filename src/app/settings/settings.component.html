@@ -453,7 +453,7 @@
               <button (click)="createEmailHandler()" a mat-raised-button class="button">Save</button>
             </td>
             <td>
-
+              <button (click)="deleteEmailhandler()" a mat-raised-button class="button">Delete</button>
             </td>
           </tr>
         </table>
@@ -503,45 +503,34 @@
     <ng-template mat-tab-label>
       <mat-icon>mail</mat-icon>Unsorted Emails
     </ng-template>
-    <div class="tabcontainer">
-      <div class="listcontainer">
-        <div class="searchbutton">
-          <h4>Search</h4>
-          <p>
+    <button a mat-raised-button (click)="openDialogDeleteAllCall()">Delete All</button>
+    <div class="tabcontainer" fxLayout="row">
+      <div class="listcontainer" fxFlex="20%">    
+          <h4>Search</h4>   
             <mat-form-field>
               <input matInput #searchTerm id="seach-box" (keyup.enter)="searchCallGo(searchTerm.value)"
                 placeholder="Call title/content" />
             </mat-form-field>
-          </p>
-          <tr>
-            <td>
+          
+          
               <button a mat-raised-button (click)="searchCallGo(searchTerm.value)">Search</button>
-            </td>
-            <td>
+         
               <button a mat-raised-button (click)="getUnCalls()">Show All</button>
-            </td>
-          </tr>
-        </div>
+      
+       
 
-        <ul class="Relations">
+        <div class="listview">
           <div *ngFor="let Unsortedcalls of Unsortedcalls; let i = index" (click)="onSelectCall(Unsortedcalls, i)"
             [class.selected]="Unsortedcalls === selectedCall">
             <span class="box">{{Unsortedcalls.title | slice:0:20 }} | {{Unsortedcalls.date | date}}</span>
           </div>
-        </ul>
+        </div>
 
       </div>
-
-      <button a mat-raised-button (click)="openDialogDeleteAllCall()">Delete All</button>
-
-
-
-
-      <div class="relationcontainer" *ngIf="selectedCall">
+      <div fxFlex="80%" *ngIf="selectedCall">
         <mat-card>
-          <mat-card-content style="padding: 30px;">
-            <div>
-              <table>
+          <mat-card-content style="padding: 30px;" fxLayout="row">
+              <table class="unsortedcalls" fxFlex>
                 <tr>
                   <td>
                     <mat-form-field class="example-full-width">
@@ -576,11 +565,9 @@
                     <button a mat-raised-button (click)="createNewAssign()">Assign and Create New</button>
                   </td>
                 </tr>
-
                 <br>
-
                 <tr>
-                  <th colspan="2">
+                  <td colspan="2">
                     <mat-toolbar color="primary" class="titlebox">
                       <h2>{{selectedCall.title | uppercase | slice:0:30 }}</h2>
                       <button mat-icon-button [matMenuTriggerFor]="menucall" class="menu">
@@ -593,10 +580,8 @@
                         </button>
                       </mat-menu>
                     </mat-toolbar>
-                  </th>
+                  </td>
                 </tr>
-
-
                 <tr>
                   <td>
                     <mat-form-field>
@@ -612,7 +597,7 @@
                   </td>
                 </tr>
                 <tr>
-                  <td>
+                  <td colspan="2">
                     <mat-datepicker #picker1></mat-datepicker>
                     <input [matDatepicker]="myDatepicker1" [(ngModel)]=selectedCall.date placeholder="Call Date">
                     <mat-datepicker-toggle matSuffix [for]="myDatepicker1"></mat-datepicker-toggle>
@@ -620,13 +605,14 @@
                   </td>
                 </tr>
                 <br>
-                <tr rowspan="10">
+                <tr *ngIf="!selectedCall.html" rowspan="10">
                   <td colspan="2">
-                    <mat-form-field class="content-form">
-                      <textarea matInput class="content-form" #content [(ngModel)]=selectedCall.content
-                        placeholder="content">Call Report</textarea>
-                      <mat-hint align="end">{{content.value.length}}</mat-hint>
-                    </mat-form-field>
+                    <div> {{selectedCall.content}} </div>
+                  </td>
+                </tr>
+                <tr *ngIf="selectedCall.html">
+                  <td colspan="2">
+                    <div [innerHTML]="selectedCall.html"></div>
                   </td>
                 </tr>
                 <br>
@@ -639,7 +625,6 @@
                             Follow Up
                           </mat-panel-title>
                         </mat-expansion-panel-header>
-
                         <table>
                           <tr>
                             <td class="tg-yw4l">
@@ -662,7 +647,6 @@
                   </td>
                 </tr>
               </table>
-            </div>
           </mat-card-content>
         </mat-card>
       </div>

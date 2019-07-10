@@ -28,22 +28,14 @@
     width: 100%;
    }
 
-.listcontainer{
-    width: 30%;
-    float: right;
-    margin: 1px 1px 1px 1px;
-    padding: 1px 1px 1px 1px;
-    box-sizing: border-box;
-  
-  }
 
 
-  .mat-form-field{
-    margin: 10px;
-    // min-width: 150px;
-    max-width: 500px;
-    width: 70%;
-  }
+  // .mat-form-field{
+  //   margin: 10px;
+  //   // min-width: 150px;
+  //   max-width: 500px;
+  //   width: 70%;
+  // }
 
   .form-full-width{
     width: 100%;
@@ -161,6 +153,10 @@
   overflow-x: visible;
   margin-right: 5px;
   padding-right: 5px;
+}
+
+.mat-tab-body-content {
+  overflow: hidden!important;
 }
 
 @for $i from 1 through 100{

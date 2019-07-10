@@ -97,10 +97,6 @@ h2 {
   }
 
 
-  table {
-    width: 100%;
- }
-
  .team {
     width: 100%;
  }
@@ -167,10 +163,17 @@ h2 {
   background-color: whitesmoke;
 }
   
-.invoicelabel{
-  
-}
 
 .tab{
   min-height: 800px;
+}
+
+.unsortedcalls{
+  margin: 1px;
+  width: 100%;
+  overflow:hidden;
+}
+
+.unsortedcalls td {
+  width: 50%;
 }

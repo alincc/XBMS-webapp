@@ -209,7 +209,8 @@ export class SettingsComponent implements OnInit {
       if (this.code !== undefined) { this.LinkedinService.getAccessToken(this.code, this.state) }
       else { this.LinkedinService.restoreCredentials() }
     });
-    this.ContainerApi.create({ name: "tmp" }).subscribe(res => res = res);
+
+    // this.ContainerApi.create({ name: "tmp" }).subscribe(res => res = res);
 
     this.filteredfonts = this.myControlfont.valueChanges.pipe(
       startWith(''),
@@ -312,7 +313,7 @@ export class SettingsComponent implements OnInit {
   }
 
   deleteAccount(selectedOption): void {
-    if (selectedOption == true) {
+    if (selectedOption === true) {
       this.accountApi.deleteById(this.Account.id).subscribe(res => {
         this.error = res,
           this.router.navigate(['/login'])
@@ -326,7 +327,7 @@ export class SettingsComponent implements OnInit {
     this.option = undefined;
     this.selectedCall = undefined;
     this.accountApi.getUnsortedcalls(this.Account.id)
-      .subscribe((Unsortedcalls: Unsortedcalls[]) => this.Unsortedcalls = Unsortedcalls);
+      .subscribe((unsortedcalls: Unsortedcalls[]) => this.Unsortedcalls = unsortedcalls);
   }
 
   saveCall(): void {
@@ -340,18 +341,18 @@ export class SettingsComponent implements OnInit {
       this.RelationsApi.createCalls(this.option.id, this.selectedCall)
         .subscribe(res => {
           this.RelationsApi.createContactpersons(this.option.id, { email: this.selectedCall.email })
-            .subscribe(res => {
+            .subscribe(res1 => {
               this.accountApi.destroyByIdUnsortedcalls(this.Account.id, this.UnsortedcallsId, )
-                .subscribe(res => this.getUnCalls());
+                .subscribe(res2 => this.getUnCalls());
             });
         });
   }
 
-  //create  
+  // create  
   createNewAssign(): void {
     if (this.newRelation !== undefined) {
       this.CompanyApi.createRelations(this.Account.companyId, this.newRelation)
-        .subscribe(res => { //send as par to dialog so process resumes
+        .subscribe(res => { // send as par to dialog so process resumes
           if (this.selectedCall.email !== undefined) { this.openDialogNewContactperson(res.id, this.selectedCall.email, this.selectedCall.attendee) }
           this.UnsortedcallsId = this.selectedCall.id,
             this.selectedCall.id = undefined, //err id already set => clear
@@ -362,37 +363,38 @@ export class SettingsComponent implements OnInit {
                 .subscribe(res => this.getUnCalls());
             });
         });
-    }
-
-    else {
+    } else {
       this.dialogsService
         .confirm('New Relation Empty', 'Please fill in Relation details order details can be filled in under the Relations Menu')
         .subscribe(res => { this.getUnCalls() })
     }
   }
 
-  //create new Contactperson
+  // create new Contactperson
   public openDialogNewContactperson(id, email, name) {
     this.dialogsService
       .confirm('Create new Contactperson', 'Do you want to create a new Entry?')
       .subscribe(res => {
-        this.selectedOption = res, this.newContactperson(this.selectedOption, id, email, name)
-      });
+        console.log(res, id, email, name);
+        if (res === true) {this.newContactperson(id, email, name);
+}      });
   }
 
-  public newContactperson(selectedOption, id, email, name) {
-    if (selectedOption == true) {
-      //split string name
-      
-      var temp = name[0].split(" ")//now you have 2 words in temp
+  public newContactperson(id, email, name) {
+      // split string name
+      let temp;
+      if (name !== undefined) {
+        temp = name.name.split(" "); // now you have 2 words in temp
+      } else {
+        temp = ['unknown', 'unknown']; // if attendee is undefined
+      }
       console.log(temp);
 
       this.RelationsApi.createContactpersons(id, {
         email: email,
-        firstname: temp[0],  //is your second word
+        firstname: temp[0],  // is your second word
         lastname: temp[1]// is your third word
-      }).subscribe(res => {this.Unsortedcalls.splice(this.callindex),this.getUnCalls()});
-    }
+      }).subscribe(res => {this.Unsortedcalls.splice(this.callindex), this.getUnCalls()});
   }
 
   openDialogDeleteCall() {
@@ -479,6 +481,11 @@ export class SettingsComponent implements OnInit {
     else this.accountApi.updateEmailhandler(this.Account.id, this.Emailhandler)
     .subscribe(res => this.error = res.message);
 
+  }
+
+  deleteEmailhandler(): void {
+    this.accountApi.destroyEmailhandler(this.Account.id)
+    .subscribe(res => {this.openSnackBar("Email Account deleted")});
   }
 
   toggleEditUser(): void {
