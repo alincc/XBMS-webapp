@@ -1005,7 +1005,7 @@ export class MarketingComponent implements OnInit {
         // console.log(this.selectedMailing.selectedlists);
         if (value.listname){
           this.selectedItems.push(value.listname);
-        } //else {this.selectedItems.push(value)}
+        } else {this.selectedItems.push(value)}
       })
     }
     this.prepareFilterMaillist(); // quick selection list
