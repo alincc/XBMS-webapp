@@ -889,6 +889,44 @@ export class MailinglistApi extends BaseLoopBackApi {
   }
 
   /**
+   * <em>
+         * (The remote method definition does not provide any description.)
+         * </em>
+   *
+   * @param {string} relationid 
+   *
+   * @param {string} companyid 
+   *
+   * @param {string} filelocation 
+   *
+   * @param {object} data Request data.
+   *
+   * This method does not accept any data. Supply an empty object.
+   *
+   * @returns {object} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * <em>
+   * (The remote method definition does not provide any description.
+   * This usually means the response is a `Mailinglist` object.)
+   * </em>
+   */
+  public addlargelist(relationid: any = {}, companyid: any = {}, filelocation: any = {}, customHeaders?: Function): Observable<any> {
+    let _method: string = "POST";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/mailinglists/addlargelist";
+    let _routeParams: any = {};
+    let _postBody: any = {};
+    let _urlParams: any = {};
+    if (typeof relationid !== 'undefined' && relationid !== null) _urlParams.relationid = relationid;
+    if (typeof companyid !== 'undefined' && companyid !== null) _urlParams.companyid = companyid;
+    if (typeof filelocation !== 'undefined' && filelocation !== null) _urlParams.filelocation = filelocation;
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
    * Creates a new instance in mailing of this model.
    *
    * @param {any} id mailinglist id

@@ -100,6 +100,9 @@ export interface UploadResult {
 })
 
 export class MarketingComponent implements OnInit {
+
+  allowedMimeType = ['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'];
+  maxFileSize = 10 * 1024 * 1024;
   public timezones = timezones;
   public showgallery = false;
   public uploaderContent: BehaviorSubject<string> = new BehaviorSubject('Drop File Here');
@@ -107,7 +110,13 @@ export class MarketingComponent implements OnInit {
   public newURL: string;
   public urlckeditorupload: string;
   public ID: string;
-  public uploader: FileUploader = new FileUploader({ url: URL });
+  public uploader = new FileUploader({
+    url: URL,
+    allowedMimeType: this.allowedMimeType,
+    // headers: [{name:'Accept', value:'application/json'}],
+    autoUpload: false,
+    maxFileSize: this.maxFileSize,
+  });
   public hasBaseDropZoneOver = false;
   public hasAnotherDropZoneOver = false;
   public sub: any;
@@ -1264,6 +1273,28 @@ export class MarketingComponent implements OnInit {
 
   }
 
+   // set variable and upload + save reference in Publications
+   setupload(name): void {
+    // this.uploader.clearQueue(),
+    // this.newURL = undefined,
+    // this.newURL = BASE_URL + '/api/Containers/' + this.option.id + '/upload',
+    // this.uploader.setOptions({ url: this.newURL }),
+    this.uploader.uploadAll();
+    // define the file settings
+    this.newFiles.name = name;
+      this.newFiles.url = BASE_URL + "/api/Containers/" + this.option.id + "/download/" + name;
+      this.newFiles.createdate = new Date();
+      this.newFiles.type = "general";
+      this.newFiles.companyId = this.Account.companyId;
+  }
+
+  uploadFilelarge(): void {
+      this.RelationsApi.createFiles(this.option.id, this.newFiles)
+        .subscribe(res => { this.MailinglistApi.addlargelist(this.option.id, this.Account.companyId, this.newFiles.url)
+        .subscribe(res1 => {this.openSnackBar(res1), this.uploader.clearQueue()})}
+        );
+  }
+
   public openmailinglistwebsite(i): void {
     console.log(this.mailinglistdetails[i]);
     let res = this.mailinglistdetails[i].vars.website.substring(0, 3);
@@ -1377,6 +1408,11 @@ export class MarketingComponent implements OnInit {
   }
 
   public togglemultiplelist(): void {
+    this.uploader.clearQueue(),
+    this.newURL = undefined,
+    this.newURL = BASE_URL + '/api/Containers/' + this.option.id + '/upload',
+    this.uploader.setOptions({ url: this.newURL }),
+    this.uploader.uploadAll();
     this.toggleuploadlist = true;
   }
 
@@ -2072,6 +2108,10 @@ export class MarketingComponent implements OnInit {
   }
 
   publishAdwordsCampaign(): void { }
+
+
+
+
 };
 
 
