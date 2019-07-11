@@ -66,8 +66,10 @@ header {
 }
 
 .add-button {
-  position: absolute;
-  right: 100px;
+  bottom: 40px;
+  right: 50px;
+  position: fixed;
+  z-index: 99;
   width: 56px;
   height: 56px;
   overflow: visible;
@@ -82,6 +84,7 @@ header {
   font-size: 28px;
   color: rgba(255,255,255,1);
 }
+
 
 .add-button:before {
   position: relative;
@@ -237,4 +240,17 @@ header {
   bottom: -25px;
   right: -25px;
   border-radius: 28px;
+}
+
+.speed-dial-container {
+  position: absolute;
+  right: 15px;
+}
+
+.speed-dial-container.top {
+  top: 15px;
+}
+
+.speed-dial-container.bottom {
+  bottom: 15px;
 }

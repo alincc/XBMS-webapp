@@ -17,6 +17,7 @@ import * as moment from 'moment-timezone';
 import { DialogsService } from './../../dialogsservice/dialogs.service';
 import { timeconv } from '../../shared/timeconv';
 //import { MarketingComponent } from '../marketing.component'
+// '../../shared/speed-dial-fab/speed-dial-fab.component';
 
 @Component({
   selector: 'app-marketingchannels',
@@ -73,6 +74,7 @@ export class MarketingchannelsComponent implements OnInit {
   ngOnInit() {
 
   }
+  
 
 
   public openSnackBar(message: string) {
@@ -82,17 +84,27 @@ export class MarketingchannelsComponent implements OnInit {
     });
   }
 
+  public toggleback(){
+    this.twitteroption = null;
+    this.linkedintoggle = false;
+    this.twittertoggle = false;
+    this.instagramtoggle = false;
+  }
+
   newlinkedin(): void {
+    this.toggleback();
     this.RelationsApi.createChannels(this.option.id, { type: "linkedin" })
       .subscribe(res => { this.selectedChannel = res, this.linkedintoggle = true })
   }
 
   newtwitter(): void {
+    this.toggleback();
     this.RelationsApi.createChannels(this.option.id, { type: "twitter" })
       .subscribe(res => { this.selectedChannel = res, this.twittertoggle = true })
   }
 
   newinstagram(): void {
+    this.toggleback();
     this.RelationsApi.createChannels(this.option.id, { type: "instagram" })
       .subscribe(res => { this.selectedChannel = res, this.instagramtoggle = true })
   }

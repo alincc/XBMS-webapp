@@ -1,7 +1,15 @@
 <div class="tabcontainer">
 
-  <div class="listcontainer">
-    <div class="search-component">
+  
+    <div class="add-button" >
+        <a class="sub-button tl" (click)="newlinkedin()" matTooltip="New LinkedIn message"></a>
+        <a class="sub-button tr" (click)="newtwitter()" matTooltip="New Twitter message"></a>
+        <a class="sub-button bl" (click)="newinstagram()" matTooltip="New Instagram message"></a>
+        <a class="sub-button br" (click)="newinstagram()" matTooltip="New Instagram message"></a>
+      </div>
+
+  <div fxLayout="row">
+    <div  fxLayout="column" fxFlex="20%">
       <h4>Search</h4>
       <p>
         <mat-form-field>
@@ -10,37 +18,22 @@
       </p>
       <p>{{this.errorMessage}}</p>
 
-      <div class="searchbutton">
-        <tr>
-          <td>
-            <button a mat-raised-button (click)="searchChannels(searchTerm.value)">Search Result</button>
-          </td>
-          <td>
-            <button a mat-raised-button (click)="getChannels()">Show All</button>
-          </td>
-        </tr>
-      </div>
+      <button a mat-raised-button color="primary" (click)="searchChannels(searchTerm.value)">
+        <mat-icon>search</mat-icon>Search Result</button>
+      <button a mat-raised-button (click)="getChannels()">Show All</button>
+     
 
-      <ul class="Relations">
+      <div class="listcontainer">
         <div *ngFor="let Channels of Channels; let i = index" (click)="onSelectChannels(Channels)"
           [class.selected]="Channels === selectedChannel">
           <span class="box">{{Channels.title}} {{Channels.type}}</span>
         </div>
-      </ul>
-    </div>
-
-    <div class="add-button" >
-      <a class="sub-button tl" (click)="newlinkedin()" matTooltip="New LinkedIn message"></a>
-      <a class="sub-button tr" (click)="newtwitter()" matTooltip="New Twitter message"></a>
-      <a class="sub-button bl" (click)="newinstagram()" matTooltip="New Instagram message"></a>
-      <a class="sub-button br" (click)="newinstagram()" matTooltip="New Instagram message"></a>
-    </div>
-
+      </div>
   </div>
 
 
 
-  <div class="relationcontainer" *ngIf="linkedintoggle">
+  <div class="relationcontainer" fxFlex="80%" *ngIf="linkedintoggle">
     <mat-card class="mat-card-xbms">
       <mat-card-content on-focusout="saveChannel()">
 
@@ -143,7 +136,7 @@
 
   <!-- Form Twitter_______________________________ -->
 
-  <div class="relationcontainer" *ngIf="twittertoggle">
+  <div class="relationcontainer" fxFlex="80%" *ngIf="twittertoggle">
     <mat-card>
       <mat-card-content>
         <mat-toolbar color="primary" class="titlebox">
@@ -336,7 +329,7 @@
 
   <!-- Form Facebook_______________________________ -->
 
-  <div class="relationcontainer" *ngIf="facebooktoggle">
+  <div class="relationcontainer" fxFlex="80%" *ngIf="facebooktoggle">
     <mat-card>
       <mat-card-content on-focusout="saveChannel()">
 
@@ -400,7 +393,7 @@
 
   <!-- Form Instagram_______________________________ -->
 
-  <div class="relationcontainer" *ngIf="instagramtoggle">
+  <div class="relationcontainer" fxFlex="80%" *ngIf="instagramtoggle">
 
     <mat-card>
       <mat-card-content on-focusout="saveChannel()">

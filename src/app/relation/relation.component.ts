@@ -279,7 +279,7 @@ export class RelationComponent implements OnInit {
     }
   }
 
-  //compare filter search Relations
+  // compare filter search Relations
   setFilter(): void {
     this.filteredOptionsRelations = this.myControlRelations.valueChanges
       .pipe(
@@ -289,7 +289,7 @@ export class RelationComponent implements OnInit {
       );
   }
 
-  //filter and to lower case for search
+  // filter and to lower case for search
   private filterRelations(relationname: string): Relations[] {
     const filterValue = relationname.toLowerCase();
     return this.relationsOptions.filter(option => option.relationname.toLowerCase().indexOf(filterValue) === 0);
@@ -412,14 +412,15 @@ export class RelationComponent implements OnInit {
 
 
   searchGo(): void {
-    this.searchterm = this.searchterm.charAt(0).toUpperCase() + this.searchterm.slice(1);
+    // this.searchterm = this.searchterm.charAt(0).toUpperCase() + this.searchterm.slice(1);
     this.searchterm = this.searchterm.trim();
     this.CompanyApi.getRelations(this.Account.companyId,
       {
         where:
         {
-          or: [{ "relationname": this.searchterm },
-          { "address1": this.searchterm }
+          or: [{ "relationname":  {"regexp": this.searchterm + '/i'} },
+          { "address1": {"regexp": this.searchterm + '/i'} },
+          { "city": {"regexp": this.searchterm + '/i'} }
           ]
         },
         order: 'relationname ASC',

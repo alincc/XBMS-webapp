@@ -362,6 +362,7 @@ export class MarketingComponent implements OnInit {
                   this.CompanyApi.findById(this.Account.companyId)
                   .subscribe((company: Company) => {
                     this.company = company;
+                    this.getTranslations();
                     //console.log(this.company);
                   });
                 })
@@ -1227,6 +1228,7 @@ export class MarketingComponent implements OnInit {
   }
 
   public deleteMailingList(): void {
+    this.toggleuploadlist = false;
     this.MailinglistApi.deletemailinglist(this.selectedMailingList.id)
       .subscribe();
     this.RelationsApi.destroyByIdMailinglist(this.option.id, this.selectedMailingList.id)
@@ -1413,7 +1415,9 @@ export class MarketingComponent implements OnInit {
     this.newURL = BASE_URL + '/api/Containers/' + this.option.id + '/upload',
     this.uploader.setOptions({ url: this.newURL }),
     this.uploader.uploadAll();
-    this.toggleuploadlist = true;
+    if (this.toggleuploadlist === true){
+      this.toggleuploadlist = false
+    } else { this.toggleuploadlist = true}
   }
 
   public uploadMultipleList(uploadlistId): void {

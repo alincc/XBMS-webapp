@@ -27,46 +27,37 @@
         <mat-icon>text_format</mat-icon>
         <div fxShow.xs="false">Publications</div>
       </ng-template>
+
+      <div class="addtobutton">
+        <button mat-fab color="primary" matTooltip="Create new Publication" (click)="newItem()">
+          <mat-icon>add</mat-icon>
+        </button>
+      </div>
+
+
       <div fxLayout fxLayout="row" fxLayoutWrap="wrap" fxFlexAlign="start" class="tabcontainer">
-        <div fxFlex="20%" class="listcontainer">
-          <div fxFlex class="search-component">
-            <h4>Search</h4>
-            <p>
-              <mat-form-field>
-                <input matInput #searchTerm id="seach-box" (keyup.enter)="searchGo(searchTerm.value)"
-                  placeholder="Name/Address" />
-              </mat-form-field>
-            </p>
-            <p>{{ this.errorMessage }}</p>
+        <div fxFlex="20%" class="listcontainer" fxLayout="column">
 
-            <div class="searchbutton">
-              <table>
-                <tr>
-                  <td>
-                    <button a mat-raised-button (click)="searchGo(searchTerm.value)">
-                      Search Result
-                    </button>
-                  </td>
-                  <td>
-                    <button a mat-raised-button (click)="getPublications()">
-                      Show All
-                    </button>
-                  </td>
-                  <td>
-                    <button mat-mini-fab color="primary" (click)="newItem()">
-                      <mat-icon>add</mat-icon>
-                    </button>
-                  </td>
-                </tr>
-              </table>
+          <h4>Search</h4>
+          <p>
+            <mat-form-field>
+              <input matInput #searchTerm id="seach-box" (keyup.enter)="searchGo(searchTerm.value)"
+                placeholder="Name/Address" />
+            </mat-form-field>
+          </p>
+          <p>{{ this.errorMessage }}</p>
+
+          <div fxFlex class="listview" fxLayout="column">
+            <button a mat-raised-button color="primary" (click)="searchGo(searchTerm.value)">
+              <mat-icon>search</mat-icon>Search Result
+            </button>
+            <button a mat-raised-button (click)="getPublications()">
+              Show All
+            </button>
+            <div *ngFor="let Publications of Publications" (click)="onSelect(Publications)"
+              [class.selected]="Publications === selectedPublication">
+              <span class="box">{{ Publications.title }}</span>
             </div>
-
-            <ul class="Relations">
-              <div *ngFor="let Publications of Publications" (click)="onSelect(Publications)"
-                [class.selected]="Publications === selectedPublication">
-                <span class="box">{{ Publications.title }}</span>
-              </div>
-            </ul>
           </div>
 
           <mat-select placeholder="Max number of results" [(ngModel)]="limitresult" name="limitresult">
@@ -77,86 +68,83 @@
         </div>
 
         <div fxFlex="80%">
-          <mat-card *ngIf="selectedPublications" class="relationcontainer">
-            <mat-card-content on-focusout="savePublication()">
-              <div class="contentcontainer">
-                <table class="form-full-width">
-                  <tr>
-                    <th colspan="2">
-                      <mat-toolbar color="primary" class="titlebox">
-                        <h2>
-                          {{
-                            selectedPublications.title | uppercase | slice: 0:30
-                          }}
-                        </h2>
-                        <button mat-icon-button [matMenuTriggerFor]="menumarketing" class="menu">
-                          <mat-icon>more_vert</mat-icon>
-                        </button>
-                        <mat-menu #menumarketing="matMenu">
-                          <button mat-menu-item (click)="openDialogDelete()">
-                            <mat-icon>delete</mat-icon>
-                            <span>Delete</span>
-                          </button>
-                          <button mat-menu-item (click)="newItem()">
-                            <mat-icon>note_add</mat-icon>
-                            <span>New</span>
-                          </button>
-                        </mat-menu>
-                      </mat-toolbar>
-                    </th>
-                  </tr>
-                  <br />
-                  <tr>
-                    <td>
-                      <mat-form-field class="form-full-width">
-                        <input matInput [(ngModel)]="selectedPublications.title" placeholder="Item Title"
-                          class="InputField" />
-                      </mat-form-field>
-                    </td>
-                  </tr>
-                  <tr rowspan="10">
-                    <td>
-                      <mat-form-field class="form-full-width">
-                        <textarea matInput class="content-form" #content [(ngModel)]="selectedPublications.content"
-                          placeholder="content">
-Content</textarea>
-                        <mat-hint align="end">{{
+          <!-- class="relationcontainer" -->
+          <mat-card *ngIf="selectedPublications">
+            <mat-card-content on-focusout="savePublication()" fxLayout="column">
+              <mat-toolbar color="primary">
+                <h2>
+                  {{
+                        selectedPublications.title | uppercase | slice: 0:30
+                      }}
+                </h2>
+                <button mat-icon-button [matMenuTriggerFor]="menumarketing" class="menu">
+                  <mat-icon>more_vert</mat-icon>
+                </button>
+                <mat-menu #menumarketing="matMenu">
+                  <button mat-menu-item (click)="openDialogDelete()">
+                    <mat-icon>delete</mat-icon>
+                    <span>Delete</span>
+                  </button>
+                  <button mat-menu-item (click)="newItem()">
+                    <mat-icon>note_add</mat-icon>
+                    <span>New</span>
+                  </button>
+                </mat-menu>
+              </mat-toolbar>
+              <div fxLayout="row">
+                <div fxFlex="50%">
+                  <table class="form-full-width">
+                    <tr>
+                      <td>
+                        <mat-form-field class="form-full-width">
+                          <input matInput [(ngModel)]="selectedPublications.title" placeholder="Item Title"
+                            class="InputField" />
+                        </mat-form-field>
+                      </td>
+                    </tr>
+                    <tr rowspan="10">
+                      <td>
+                        <mat-form-field class="form-full-width">
+                          <textarea matInput class="content-form" #content [(ngModel)]="selectedPublications.content"
+                            placeholder="content">Content</textarea>
+                          <mat-hint align="end">{{
                           content.value.length
                         }}</mat-hint>
-                      </mat-form-field>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <mat-form-field class="form-full-width">
-                        <input matInput [(ngModel)]="selectedPublications.description" placeholder="Description"
-                          class="InputField" />
-                      </mat-form-field>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <button a mat-raised-button (click)="savePublication()">
-                        Save
-                      </button>
-                      <button a mat-raised-button (click)="postToWordPress()">
-                        Publish to Wordpress
-                      </button>
-                    </td>
-                  </tr>
-                </table>
-              </div>
-
-              <div class="picturecontainer">
-                <div *ngIf="selectedPublications.pictureurl">
-                  <img src="{{ selectedPublications.pictureurl }}" class="picture" />
-                  <button class="deletepicture" mat-mini-fab color="primary" (click)="deletePicture()">
-                    <mat-icon>delete</mat-icon>
-                  </button>
+                        </mat-form-field>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <mat-form-field class="form-full-width">
+                          <input matInput [(ngModel)]="selectedPublications.description" placeholder="Description"
+                            class="InputField" />
+                        </mat-form-field>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <button a mat-raised-button (click)="savePublication()">
+                          Save
+                        </button>
+                        <button a mat-raised-button (click)="postToWordPress()">
+                          Publish to Wordpress
+                        </button>
+                      </td>
+                    </tr>
+                  </table>
                 </div>
-                <app-fileupload *ngIf="!selectedPublications.pictureurl" [account]="Account" [option]="option"
-                  (imgurl)="onSelectImage($event)">
-                </app-fileupload>
+
+                <div fxFlex="50%">
+                  <div *ngIf="selectedPublications.pictureurl">
+                    <img src="{{ selectedPublications.pictureurl }}" class="picture" />
+                    <button class="deletepicture" mat-mini-fab color="primary" (click)="deletePicture()">
+                      <mat-icon>delete</mat-icon>
+                    </button>
+                  </div>
+                  <app-fileupload *ngIf="!selectedPublications.pictureurl" [account]="Account" [option]="option"
+                    (imgurl)="onSelectImage($event)">
+                  </app-fileupload>
+                </div>
               </div>
             </mat-card-content>
           </mat-card>
@@ -165,66 +153,57 @@ Content</textarea>
     </mat-tab>
 
     <!-- TRANSLATIONS________________________________________ -->
-    <mat-tab label="Translations" (click)="this.getTranslations()">
+    <mat-tab label="Translations">
       <ng-template mat-tab-label class="mat-tab-labels">
         <mat-icon>public</mat-icon>
         <div fxShow.xs="false">Translations</div>
       </ng-template>
-      <div class="tabcontainer">
-        <div class="listcontainer">
-          <div class="search-component">
-            <h4>Search</h4>
-            <p>
-              <mat-form-field>
-                <input matInput #searchTerm id="seach-box" (keyup.enter)="searchGo(searchTerm.value)"
-                  placeholder="Name/Address" />
-              </mat-form-field>
-            </p>
-            <p>{{ this.errorMessage }}</p>
+      <div class="addtobutton">
+        <button mat-fab color="primary" matTooltip="Create new Translation Job" (click)="newTranslationItem()">
+          <mat-icon>add</mat-icon>
+        </button>
+      </div>
+      <div class="tabcontainer" fxLayout="row">
+        <div class="listcontainer" fxFlex="20%" fxLayout="column">
+          <h4>Search</h4>
+          <p>
+            <mat-form-field>
+              <input matInput #searchTerm id="seach-box" (keyup.enter)="searchGo(searchTerm.value)"
+                placeholder="Name/Address" />
+            </mat-form-field>
+          </p>
+          <p>{{ this.errorMessage }}</p>
 
-            <div class="searchbutton">
-              <tr>
-                <td>
-                  <button a mat-raised-button (click)="searchGo(searchTerm.value)">
-                    Search Result
-                  </button>
-                </td>
-                <td>
-                  <button a mat-raised-button (click)="getTranslations()">
-                    Show All
-                  </button>
-                </td>
-                <td>
-                  <button mat-mini-fab color="primary" (click)="newTranslationItem()">
-                    <mat-icon>add</mat-icon>
-                  </button>
-                </td>
-              </tr>
+          <button a mat-raised-button color="primary" (click)="searchGo(searchTerm.value)">
+            <mat-icon>search</mat-icon>Search
+          </button>
+
+          <button a mat-raised-button (click)="getTranslations()">
+            Show All
+          </button>
+
+          <div class="listview">
+            <div *ngFor="let Translation of Translation" (click)="onSelectTranslation(Translation)"
+              [class.selected]="Translation === selectedTranslation">
+              <span class="boxtranslation">
+                <tr>
+                  <td>
+                    {{ Translation.paymentreceived }}
+                  </td>
+                  <td>
+                    {{ Translation.amount }}
+                  </td>
+                </tr>
+                <tr></tr>
+              </span>
             </div>
-
-            <ul class="Relations">
-              <div *ngFor="let Translation of Translation" (click)="onSelectTranslation(Translation)"
-                [class.selected]="Translation === selectedTranslation">
-                <span class="boxtranslation">
-                  <tr>
-                    <td>
-                      {{ Translation.paymentreceived }}
-                    </td>
-                    <td>
-                      {{ Translation.amount }}
-                    </td>
-                  </tr>
-                  <tr></tr>
-                </span>
-              </div>
-              <button mat-mini-fab color="primary" (click)="openDialogDeleteTranslation()">
-                <mat-icon>delete</mat-icon>
-              </button>
-            </ul>
           </div>
+          <button mat-mini-fab color="primary" (click)="openDialogDeleteTranslation()">
+            <mat-icon>delete</mat-icon>
+          </button>
         </div>
 
-        <div *ngIf="selectedTranslation" class="relationcontainer">
+        <div *ngIf="selectedTranslation" class="relationcontainer" fxFlex="80%">
           <div *ngIf="showconfirmation">
             <mat-card>
               <label *ngIf="selectedTranslation.paymentreceived === 'paid'" style="color:green">Payment Received,
@@ -407,23 +386,23 @@ Content</textarea>
 
         <div fxLayout="column" style="width: 100%;" fxFlex>
           <div fxFlexOffset="10px" fxLayout="row" class="bottomlist" *ngIf="group.value == 'mailing'">
-            <div fxFlex="25% " class="Relations" fxLayout="column">
-              <div class="listview">
-                <div class="searchbutton">
-                  <tr>
-                    <td>
-                      <button a mat-raised-button (click)="searchGoMailing(searchTerm.value)">
-                        Search Result
-                      </button>
-                    </td>
-                    <td>
-                      <button a mat-raised-button (click)="getMailing()">
-                        Show All
-                      </button>
-                    </td>
-                  </tr>
+            
+              <div class="addtobutton">
+                  <button mat-fab color="primary" matTooltip="Upload to or create Multiple Lists" (click)="createMailing()" >
+                    <mat-icon>add</mat-icon>
+                  </button>
                 </div>
 
+            <div fxFlex="25% " class="Relations" fxLayout="column">
+                <button a mat-raised-button color="primary" (click)="searchGoMailing(searchTerm.value)">
+                    <mat-icon>search</mat-icon>Search Result
+                </button>
+       
+                <button a mat-raised-button (click)="getMailing()">
+                  Show All
+                </button>
+              <div class="listview">
+                                   
                 <div *ngFor="let Mailing of Mailing" (click)="onSelectMailing(Mailing)"
                   [class.selected]="Mailing === selectedMailing">
                   <span class="boxmailing">
@@ -448,11 +427,6 @@ Content</textarea>
                     </table>
                   </span>
                 </div>
-                <td>
-                  <button mat-mini-fab color="primary" (click)="createMailing()">
-                    <mat-icon>add</mat-icon>
-                  </button>
-                </td>
               </div>
             </div>
 
@@ -774,22 +748,26 @@ Content</textarea>
           </div>
 
           <div fxLayout="row" fxFlexOffset="10px" class="bottomlist" *ngIf="group.value == 'campaign'">
+
+            <div class="addtobutton">
+              <button mat-fab color="primary" matTooltip="Add Campaign" (click)="createMarketingPlannerevents()">
+                <mat-icon>add</mat-icon>
+              </button>
+              <button mat-mini-fab color="primary" matTooltip="Delete Campaign"
+                (click)="openDialogDeleteMailingCampaign()">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
+
             <div fxFlex="25%" class="Relations" fxLayout="column">
-              <div class="listview">
-                <div class="searchbutton">
-                  <tr>
-                    <td>
-                      <button a mat-raised-button (click)="searchGoMailingCampaign(searchTerm.value)">
-                        Search Result
-                      </button>
-                    </td>
-                    <td>
-                      <button a mat-raised-button (click)="getMailingCampaign()">
-                        Show All
-                      </button>
-                    </td>
-                  </tr>
-                </div>
+              <button a mat-raised-button color="primary" (click)="searchGoMailingCampaign(searchTerm.value)">
+                <mat-icon>search</mat-icon>Search
+              </button>
+
+              <button a mat-raised-button (click)="getMailingCampaign()">
+                Show All
+              </button>
+              <div class="listview" fxLayout="column">
 
                 <div *ngFor="let Marketingplannerevents of Marketingplannerevents" (click)="
                     onSelectMarketingplannerevents(Marketingplannerevents)
@@ -817,15 +795,7 @@ Content</textarea>
                 </div>
               </div>
 
-              <div>
-                <button mat-mini-fab color="primary" matTooltip="Delete Campaign"
-                  (click)="openDialogDeleteMailingCampaign()">
-                  <mat-icon>delete</mat-icon>
-                </button>
-                <button mat-fab color="primary" matTooltip="Add Campaign" (click)="createMarketingPlannerevents()">
-                  <mat-icon>add</mat-icon>
-                </button>
-              </div>
+
             </div>
 
             <!-- Mailing Campaign  -->
@@ -1301,21 +1271,28 @@ Text Version</textarea>
           </div>
 
           <div fxLayout="row" fxFlexOffset="10px" class="bottomlist" *ngIf="group.value == 'maillist'">
-            <div fxFlex="25%" class="Relations" fxLayout="column">
-              <div class="searchbutton">
-                <tr>
-                  <td>
-                    <button a mat-raised-button (click)="searchGoMailingList(searchTerm.value)">
-                      Search Result
-                    </button>
-                  </td>
-                  <td>
-                    <button a mat-raised-button (click)="getMailinglist()">
-                      Show All
-                    </button>
-                  </td>
-                </tr>
+            <div fxFlex="25%" class="relations" fxLayout="column">
+
+              <div class="addtobutton">
+                <button mat-fab color="primary" matTooltip="Upload to or create Multiple Lists" (click)="createMailingList()">
+                  <mat-icon>add</mat-icon>
+                </button>
+                <button mat-mini-fab color="primary" matTooltip="Delete selected list" (click)="deleteMailingList()" (click)="togglemultiplelist()">
+                  <mat-icon>delete</mat-icon>
+                </button>
+                
+                <button mat-mini-fab color="primary" matTooltip="Upload to multiple lists" (click)="togglemultiplelist()" >
+                  <mat-icon>cloud_upload</mat-icon>
+                </button>
               </div>
+
+              <button a mat-raised-button color="primary" (click)="searchGoMailingList(searchTerm.value)">
+                <mat-icon>searcj</mat-icon>Search Result
+              </button>
+
+              <button a mat-raised-button (click)="getMailinglist()">
+                Show All
+              </button>
 
               <div class="listview">
                 <div *ngFor="let Mailinglist of Mailinglist" (click)="onSelectMailingList(Mailinglist)"
@@ -1362,28 +1339,14 @@ Text Version</textarea>
                       {{ mailinglistcount }}
                     </td>
                   </tr>
-                  <tr>
-                    <td>
-                      <button matTooltip="Delete selected list" mat-mini-fab color="primary"
-                        (click)="deleteMailingList()">
-                        <mat-icon>delete</mat-icon>
-                      </button>
-                    </td>
-                  </tr>
+
                 </table>
               </div>
             </div>
 
             <!-- Mailing list  -->
             <div fxFlex="75%" fxLayout="column" class="relationcontainer">
-              <div fxLayout="column" class="relationcontainer">
-                <button a mat-raised-button (click)="togglemultiplelist()">
-                  Upload to or create Multiple Lists
-                </button>
-                <button a mat-raised-button (click)="createMailingList()">
-                  Create new List
-                </button>
-              </div>
+
 
               <mat-card fxFlex *ngIf="selectedMailingList">
                 <mat-card-content>
@@ -1754,10 +1717,10 @@ Text Version</textarea>
                           <div style="background-color:beige">
                             <table>
                               <tr>
-                                  <label>Please use standard xlsx format with the following header:</label>
+                                <label>Please use standard xlsx format with the following header:</label>
                               </tr>
                               <tr>
-                                  <label>company, firstname, lastname, title, website, mailing</label>
+                                <label>company, firstname, lastname, title, website, mailing</label>
                               </tr>
                             </table>
                           </div>
@@ -1836,8 +1799,8 @@ Text Version</textarea>
                             </div>
                           </div>
                           <br>
-                          <button mat-button (click)="uploadFilelarge()"
-                          [disabled]="!newFiles.url">Start Import</button>
+                          <button mat-button (click)="uploadFilelarge()" [disabled]="!newFiles.url">Start
+                            Import</button>
                         </div>
                       </td>
                     </tr>
