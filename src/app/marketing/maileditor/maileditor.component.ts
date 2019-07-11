@@ -389,7 +389,7 @@ export class MaileditorComponent implements OnInit {
       newImage.url = '';
       newImage.style = {
         'align': "center",
-        'alt': '',
+        'alt': '"xbms-image',
         'border': "",
         'border-radius': '',
         'container-background-color': '',
@@ -551,7 +551,7 @@ export class MaileditorComponent implements OnInit {
     const newCarouselImage: MaileditorCarouselImage = new MaileditorCarouselImage();
     newCarouselImage.type = 'Carouselimage';
     newCarouselImage.style = {
-      'alt': '',
+      'alt': 'xbms',
       'href': '',
       'rel': '',
       'src': '',
