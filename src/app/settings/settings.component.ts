@@ -183,6 +183,7 @@ export class SettingsComponent implements OnInit {
   filteredfonts: Observable<string[]>;
 
   ngOnInit(): void {
+    this.getRelations();
     if (this.AccountApi.isAuthenticated() == false ){this.router.navigate(['login'])}
     this.filteredOptions = this.myControl.valueChanges
     .pipe(
@@ -435,7 +436,7 @@ export class SettingsComponent implements OnInit {
   onSelectCall(Unsortedcalls: Unsortedcalls, i): void {
     this.selectedCall = Unsortedcalls;
     this.callindex = i;
-    this.getRelations();
+    
   }
 
   getRelations(): void {
