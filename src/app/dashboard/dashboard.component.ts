@@ -9,8 +9,6 @@ import {
   RelationsApi,
   Relations,
   PublicationsApi,
-  BASE_URL,
-  API_VERSION,
   Googleanalytics,
   GoogleanalyticsApi,
   MailingApi,
@@ -18,40 +16,21 @@ import {
   WebsitetrackerApi,
   MarketingplannereventsApi,
   Marketingplannerevents,
-  TwitterApi
+  TwitterApi,
+  BASE_URL,
+  API_VERSION
 } from '../shared/';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 import { FormControl } from '@angular/forms';
 import { BaseChartDirective } from 'ng2-charts';
 import { Router, ActivatedRoute, Params } from '@angular/router';
-import { NgxChartsModule } from '@swimlane/ngx-charts';
-
-import {
-  trigger,
-  state,
-  style,
-  animate,
-  transition
-} from '@angular/animations';
 
 
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
-  styleUrls: ['./dashboard.component.scss'],
-  animations: [
-    trigger('flyInOut', [
-      state('in', style({ transform: 'translateX(0)' })),
-      transition('void => *', [
-        style({ transform: 'translateX(-100%)' }),
-        animate(100)
-      ]),
-      transition('* => void', [
-        animate(100, style({ transform: 'translateX(100%)' }))
-      ])
-    ])
-  ]
+  styleUrls: ['./dashboard.component.scss']
 })
 export class DashboardComponent implements OnInit {
 
@@ -71,52 +50,37 @@ export class DashboardComponent implements OnInit {
   public Account: Account = new Account();
   public Relations: Relations[];
   public Mailing = [];
-
   public mailstatsspinner = false;
-
-
-  // public GoogleanalyticsSet: any;
-  // public Googleanalyticsreturn: any[];
   public Googleanalyticsnumbers = [];
   public Googleanalyticsnames = [];
   public GoogleanalyticsModel: Googleanalytics[];
   public Websitetracker: Websitetracker[];
-
   public analytics_ids: string;
   public analytics_startdate: string;
   public analytics_enddate: string;
   public analytics_dimensions: string;
   public analytics_metrics: string;
-
   public Googleanalytics2: any;
   public Googleanalyticsreturn2: any;
   public Googleanalyticsnumbers2 = [];
   public Googleanalyticsnames2 = [];
-  // Googleanalytics[];
-
   public Googleanalyticsnumbers3;
   public Googleanalyticsnames3;
-
   public analytics_ids2: string;
   public analytics_startdate2: string;
   public analytics_enddate2: string;
   public analytics_dimensions2: string;
   public analytics_metrics2: string;
-
   public analytics_ids3: string;
   public analytics_startdate3: string;
   public analytics_enddate3: string;
   public analytics_dimensions3: string;
   public analytics_metrics3: string;
-
   public googleanalyticsreturn: any[];
-
   public selectedanalytics: Googleanalytics = new Googleanalytics();
   public options = [];
   public option: Relations = new Relations();
-  // public relations: Relations = new Relations();
   public mailingstats = [];
-
   public acceptedNumbers = [];
   public acceptedLabel = [];
   public deliveredNumbers = [];
@@ -128,6 +92,8 @@ export class DashboardComponent implements OnInit {
   public mailStatsTimeSelected;
   public storedNumbers = [];
   public failedNumbers = [];
+
+
 
   mailStatsTime = [
     { value: '12m', viewValue: 'Year/months' },
@@ -192,12 +158,13 @@ export class DashboardComponent implements OnInit {
         )
           .subscribe((relations: Relations[]) => {
             this.Relations = relations,
-              this.getrelationsEntry()
+              this.getrelationsEntry();
+            this.getAdsMailing();
             if (this.Account.standardrelation !== undefined) {
               this.RelationsApi.findById(this.Account.standardrelation)
-              .subscribe(rel => {
-                this.onSelectRelation(rel, null)
-                     this.getWebsiteTracker()
+                .subscribe(rel => {
+                  this.onSelectRelation(rel, null)
+                  this.getWebsiteTracker()
                 })
             }
             if (this.Account.standardGa) {
@@ -211,60 +178,62 @@ export class DashboardComponent implements OnInit {
     })
   }
 
-    //  select relation --> get info for all tabs
-    onSelectRelation(option, i): void {
-      this.option = option;
-      this.AccountApi.addStdRelation(this.Account.id, option.id).subscribe()
-    }
+  //  select relation --> get info for all tabs
+  onSelectRelation(option, i): void {
+    this.option = option;
+    this.AccountApi.addStdRelation(this.Account.id, option.id).subscribe()
+  }
 
-  getAdsMailing(): void{
+  getAdsMailing(): void {
     //  get the planned mailings looks shitty because the mailings of are 
     //  part of the marketingplannerevents 
     //  and are not directly related to the Relation.id itself 
     //  used include to get the related mailings and then run foreach on the events and a foreach for all the mailings
-    this.RelationsApi.getMarketingplannerevents(this.option.id, 
+
+    this.Mailing = [];
+    this.RelationsApi.getMarketingplannerevents(this.option.id,
       {
-      where: { scheduled: true },
-      include: {
-        relation: 'mailing',
-        scope:
-          {where: { and: [{ send: false}, { scheduled: true }] }}
-      },
-      order: 'date ASC'
-    })
-    .subscribe((Marketingplannerevents: Marketingplannerevents[]) => {
-      this.Marketingplannerevents = Marketingplannerevents,
-      this.Marketingplannerevents.forEach((item) => {
-      const mailingsub = item.mailing;
-      mailingsub.forEach((itemMailing) => {
-        itemMailing.marketingplannereventsIds = item.name;
-        this.Mailing.push(itemMailing)
+        where: { scheduled: true },
+        include: {
+          relation: 'mailing',
+          scope:
+            { where: { and: [{ send: false }, { scheduled: true }] } }
+        },
+        order: 'date ASC'
       })
+      .subscribe((Marketingplannerevents: Marketingplannerevents[]) => {
+        this.Marketingplannerevents = Marketingplannerevents,
+          this.Marketingplannerevents.forEach((item) => {
+            const mailingsub = item.mailing;
+            mailingsub.forEach((itemMailing) => {
+              itemMailing.marketingplannereventsIds = item.name;
+              this.Mailing.push(itemMailing)
+            })
+          })
+        console.log(this.Mailing);
+        //  objects are being sorted
+        this.Mailing = this.Mailing.sort((n1, n2) => {
+          return this.naturalCompare(n1.date, n2.date)
+        })
       })
-      //  console.log(this.Mailing)
-      //  objects are being sorted
-      this.Mailing = this.Mailing.sort((n1, n2) => {
-  return this.naturalCompare(n1.date, n2.date)
-})
-    })
   }
 
   //  don't try to understand this method, just use it as it is and you'll get the result
-naturalCompare(a, b) {
-  const ax = [], bx = [];
+  naturalCompare(a, b) {
+    const ax = [], bx = [];
 
-  a.replace(/(\d+)|(\D+)/g, function (_, $1, $2) { ax.push([$1 || Infinity, $2 || '']) });
-  b.replace(/(\d+)|(\D+)/g, function (_, $1, $2) { bx.push([$1 || Infinity, $2 || '']) });
+    a.replace(/(\d+)|(\D+)/g, function (_, $1, $2) { ax.push([$1 || Infinity, $2 || '']) });
+    b.replace(/(\d+)|(\D+)/g, function (_, $1, $2) { bx.push([$1 || Infinity, $2 || '']) });
 
-  while (ax.length && bx.length) {
-    const an = ax.shift();
-    const bn = bx.shift();
-    const nn = (an[0] - bn[0]) || an[1].localeCompare(bn[1]);
-    if (nn) {return nn};
+    while (ax.length && bx.length) {
+      const an = ax.shift();
+      const bn = bx.shift();
+      const nn = (an[0] - bn[0]) || an[1].localeCompare(bn[1]);
+      if (nn) { return nn };
+    }
+
+    return ax.length - bx.length;
   }
-
-  return ax.length - bx.length;
-}
 
   getWebsiteTracker(): void {
     this.Websitetracker = [];
@@ -535,16 +504,16 @@ naturalCompare(a, b) {
         const googleanalyticsreturn1 = data.rows
         googleanalyticsreturn1.forEach((item, index) => {
           this.Googleanalyticsnumbers.push(item[1]);
-          const analyticsobject = {'name':item[0],'value':item[1]}
+          const analyticsobject = { 'name': item[0], 'value': item[1] }
           this.googleanalyticsreturn.push(analyticsobject);
           this.Googleanalyticsnames.push(item[0]);
         }),
-        console.log(this.googleanalyticsreturn);
-          // get array even and uneven split
-          // this.get1Numbers();
-          this.getDoughnutNumbers(); // Doughnut
-          // import to update for ngx charts
-          this.googleanalyticsreturn = [...this.googleanalyticsreturn]
+          console.log(this.googleanalyticsreturn);
+        // get array even and uneven split
+        // this.get1Numbers();
+        this.getDoughnutNumbers(); // Doughnut
+        // import to update for ngx charts
+        this.googleanalyticsreturn = [...this.googleanalyticsreturn]
       }, error => console.log('Could not load Analytics'));
   }
 

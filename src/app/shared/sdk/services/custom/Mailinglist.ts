@@ -13,6 +13,7 @@ import { Mailinglist } from '../../models/Mailinglist';
 import { SocketConnection } from '../../sockets/socket.connections';
 import { Relations } from '../../models/Relations';
 import { Mailing } from '../../models/Mailing';
+import { Marketingplannerevents } from '../../models/Marketingplannerevents';
 
 
 /**
@@ -150,6 +151,36 @@ export class MailinglistApi extends BaseLoopBackApi {
       data: data
     };
     let _urlParams: any = {};
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
+   * Fetches belongsTo relation marketingplannerevents.
+   *
+   * @param {any} id mailinglist id
+   *
+   * @param {boolean} refresh 
+   *
+   * @returns {object} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * <em>
+   * (The remote method definition does not provide any description.
+   * This usually means the response is a `Mailinglist` object.)
+   * </em>
+   */
+  public getMarketingplannerevents(id: any, refresh: any = {}, customHeaders?: Function): Observable<any> {
+    let _method: string = "GET";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/mailinglists/:id/marketingplannerevents";
+    let _routeParams: any = {
+      id: id
+    };
+    let _postBody: any = {};
+    let _urlParams: any = {};
+    if (typeof refresh !== 'undefined' && refresh !== null) _urlParams.refresh = refresh;
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
     return result;
   }

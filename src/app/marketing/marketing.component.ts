@@ -60,13 +60,13 @@ import { MatSnackBar, MatSnackBarConfig, MatInput, MatAutocompleteSelectedEvent 
 import { ENTER, COMMA } from '@angular/cdk/keycodes';
 import { map, startWith, timeoutWith } from 'rxjs/operators';
 import { Observable, BehaviorSubject } from 'rxjs';
-import {
-  trigger,
-  state,
-  style,
-  animate,
-  transition
-} from '@angular/animations';
+// import {
+//   trigger,
+//   state,
+//   style,
+//   animate,
+//   transition
+// } from '@angular/animations';
 import * as moment from 'moment-timezone';
 import { reject } from '../../../node_modules/@types/q';
 declare const CKEDITOR: any;
@@ -84,19 +84,19 @@ export interface UploadResult {
 @Component({
   selector: 'app-marketing',
   templateUrl: './marketing.component.html',
-  styleUrls: ['./marketing.component.scss'],
-  animations: [
-    trigger('flyInOut', [
-      state('in', style({ transform: 'translateX(0)' })),
-      transition('void => *', [
-        style({ transform: 'translateX(-100%)' }),
-        animate(100)
-      ]),
-      transition('* => void', [
-        animate(100, style({ transform: 'translateX(100%)' }))
-      ])
-    ])
-  ]
+  styleUrls: ['./marketing.component.scss']
+  // animations: [
+  //   trigger('flyInOut', [
+  //     state('in', style({ transform: 'translateX(0)' })),
+  //     transition('void => *', [
+  //       style({ transform: 'translateX(-100%)' }),
+  //       animate(100)
+  //     ]),
+  //     transition('* => void', [
+  //       animate(100, style({ transform: 'translateX(100%)' }))
+  //     ])
+  //   ])
+  // ]
 })
 
 export class MarketingComponent implements OnInit {

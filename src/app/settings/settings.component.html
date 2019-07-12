@@ -272,7 +272,7 @@
               <td>
                 <mat-form-field class="example-full-width">
                   <input matInput name="password" type="password" [(ngModel)]="oldpassword" placeholder="Old Password"
-                    [formControl]="passwordFormControl" [errorStateMatcher]="matcher">
+                    [formControl]="passwordFormControl">
                 </mat-form-field>
               </td>
               <td>
@@ -284,7 +284,7 @@
               <td>
                 <mat-form-field class="example-full-width">
                   <input matInput name="password" placeholder="New Password" type="password"
-                    [formControl]="passwordFormControl" [(ngModel)]="newpassword" [errorStateMatcher]="matcher">
+                    [formControl]="passwordFormControl" [(ngModel)]="newpassword">
                   <!-- <mat-hint>Errors appear instantly!</mat-hint> -->
                   <mat-error *ngIf="passwordFormControl.hasError('email') && !passwordFormControl.hasError('required')">
                     Please enter a Password
@@ -461,7 +461,7 @@
     </div>
   </mat-tab>
 
-  <mat-tab label="Invoices">
+  <mat-tab label="Invoices" (click)="getInvoices()">
     <ng-template mat-tab-label>
       <mat-icon>money</mat-icon>Invoices
     </ng-template>
@@ -520,7 +520,7 @@
        
 
         <div class="listview" fxLayout="column">
-          <div *ngFor="let Unsortedcalls of Unsortedcalls; let i = index" (click)="onSelectCall(Unsortedcalls, i)"
+          <div fxFlex *ngFor="let Unsortedcalls of Unsortedcalls; let i = index" (click)="onSelectCall(Unsortedcalls, i)"
             [class.selected]="Unsortedcalls === selectedCall">
             <span class="box">{{Unsortedcalls.title | slice:0:20 }} | {{Unsortedcalls.date | date}}</span>
           </div>

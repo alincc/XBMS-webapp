@@ -97,7 +97,7 @@
             <tr fxLayout="column" fxLayoutWrap="wrap" fxLayoutAlign="space-around" *ngFor="let Mailing of Mailing; let i = index ">
               <mat-list-item>
                   <td fxFlex="20%" class="tdwebsitetr">
-                      <label class="followuplist">{{ Mailing.Campaign}}</label>
+                      <label class="followuplist">{{ Mailing.selectedlists.listname}}</label>
                     </td>
                 <td fxFlex="20%" class="tdwebsitetr">
                   <label class="followuplist">{{ Mailing.subject}}</label>

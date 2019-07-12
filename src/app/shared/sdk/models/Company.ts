@@ -33,6 +33,7 @@ export interface CompanyInterface {
   "companyprimairycolor"?: string;
   "companysecondarycolor"?: string;
   "companyfont"?: string;
+  "companywebsite"?: string;
   "id"?: any;
   relations?: Relations[];
   googleanalytics?: Googleanalytics[];
@@ -66,6 +67,7 @@ export class Company implements CompanyInterface {
   "companyprimairycolor": string;
   "companysecondarycolor": string;
   "companyfont": string;
+  "companywebsite": string;
   "id": any;
   relations: Relations[];
   googleanalytics: Googleanalytics[];
@@ -184,6 +186,10 @@ export class Company implements CompanyInterface {
         },
         "companyfont": {
           name: 'companyfont',
+          type: 'string'
+        },
+        "companywebsite": {
+          name: 'companywebsite',
           type: 'string'
         },
         "id": {

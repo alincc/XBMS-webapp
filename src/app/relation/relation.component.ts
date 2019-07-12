@@ -32,13 +32,13 @@ import { DialogsService } from './../dialogsservice/dialogs.service';
 import { MatSnackBar, MatDatepickerModule } from '@angular/material';
 import { DatePipe } from '@angular/common';
 import { LinkedinService } from '../shared/socialservice';
-import {
-  trigger,
-  state,
-  style,
-  animate,
-  transition
-} from '@angular/animations';
+// import {
+//   trigger,
+//   state,
+//   style,
+//   animate,
+//   transition
+// } from '@angular/animations';
 import { HostBinding } from '@angular/core';
 import { GoogleMapService } from '../shared/googlemapservice/googlemap.service';
 import { Observable } from 'rxjs';
@@ -48,7 +48,7 @@ import { Router, ActivatedRoute, Params } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { OnDestroy } from '@angular/core';
 import { SpeechRecognitionService } from '../shared/speechservice/speechservice';
-
+import { fontoptions } from './../settings/google-fonts-list';
 const EMAIL_REGEX = /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
 
 import { FileUploader } from 'ng2-file-upload';
@@ -70,21 +70,23 @@ class Attendee {
 @Component({
   selector: 'app-relation',
   templateUrl: './relation.component.html',
-  styleUrls: ['./relation.component.scss'],
-  animations: [
-    trigger('flyInOut', [
-      state('in', style({ transform: 'translateX(0)' })),
-      transition('void => *', [
-        style({ transform: 'translateX(-100%)' }),
-        animate(100)
-      ]),
-      transition('* => void', [
-        animate(100, style({ transform: 'translateX(100%)' }))
-      ])
-    ])
-  ]
+  styleUrls: ['./relation.component.scss']
+  // animations: [
+  //   trigger('flyInOut', [
+  //     state('in', style({ transform: 'translateX(0)' })),
+  //     transition('void => *', [
+  //       style({ transform: 'translateX(-100%)' }),
+  //       animate(100)
+  //     ]),
+  //     transition('* => void', [
+  //       animate(100, style({ transform: 'translateX(100%)' }))
+  //     ])
+  //   ])
+  // ]
 })
 export class RelationComponent implements OnInit {
+  
+  public fontlist: string[] = fontoptions;
   showSearchButton: boolean;
   speechData: string;
   public AccessToken: any;
@@ -229,9 +231,10 @@ export class RelationComponent implements OnInit {
 
   myControl: FormControl = new FormControl();
   filteredOptions: Observable<string[]>;
-
   myControlRelations: FormControl = new FormControl();
   filteredOptionsRelations: Observable<string[]>;
+  myControlfont: FormControl = new FormControl();
+  filteredfonts: Observable<string[]>;
 
   ngOnInit() {
     if (this.AccountApi.isAuthenticated() == false) { this.router.navigate(['login']) }
@@ -245,6 +248,12 @@ export class RelationComponent implements OnInit {
     //     //map(options => options && typeof options === 'object' ? options.relationname : options),
     //     map(lastname => lastname ? this.filter(lastname) : this.options.slice())
     //   );
+
+    this.filteredfonts = this.myControlfont.valueChanges.pipe(
+      startWith(''),
+      map(value => this._filterfont(value))
+    );
+  
 
     this.crawl1FormGroup = this._formBuilder.group({
       firstCtrl: ['', Validators.required]
@@ -266,6 +275,11 @@ export class RelationComponent implements OnInit {
     const filterValue = lastname.toLowerCase();
     return this.options.filter(option =>
       option.lastname.toLowerCase().indexOf(filterValue) === 0);
+  }
+
+  private _filterfont(value: string): string[] {
+    const filterValue = value.toLowerCase();
+    return this.fontlist.filter(font => font.toLowerCase().includes(filterValue));
   }
 
   displayFn(options): string {

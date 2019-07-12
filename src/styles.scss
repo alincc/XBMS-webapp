@@ -156,7 +156,7 @@
 }
 
 .mat-tab-body-content {
-  overflow: hidden!important;
+  overflow-y: hidden!important;
 }
 
 @for $i from 1 through 100{

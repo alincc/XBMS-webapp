@@ -47,18 +47,18 @@ import { MatSnackBar, MatSnackBarConfig, MatInput, MatAutocompleteSelectedEvent 
 import { fontoptions } from './google-fonts-list';
 
 
-export class MyErrorStateMatcher implements ErrorStateMatcher {
-  isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
-    const isSubmitted = form && form.submitted;
-    return !!(control && control.invalid && (control.dirty || control.touched || isSubmitted));
-  }
-}
+// export class MyErrorStateMatcher implements ErrorStateMatcher {
+//   isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
+//     const isSubmitted = form && form.submitted;
+//     return !!(control && control.invalid && (control.dirty || control.touched || isSubmitted));
+//   }
+// }
 
 @Component({
   selector: 'app-settings',
   templateUrl: './settings.component.html',
-  styleUrls: ['./settings.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: ['./settings.component.scss']
+  //changeDetection: ChangeDetectionStrategy.OnPush
 })
 
 export class SettingsComponent implements OnInit {
@@ -176,15 +176,15 @@ export class SettingsComponent implements OnInit {
   ]);
 
 
-  matcher = new MyErrorStateMatcher();
+  // matcher = new MyErrorStateMatcher();
   filteredOptions: Observable<string[]>;
   
   myControlfont: FormControl = new FormControl();
   filteredfonts: Observable<string[]>;
 
   ngOnInit(): void {
-    this.getRelations();
-    if (this.AccountApi.isAuthenticated() == false ){this.router.navigate(['login'])}
+    const auth = this.AccountApi.isAuthenticated()
+    if (auth === false ){this.router.navigate(['login'])}
     this.filteredOptions = this.myControl.valueChanges
     .pipe(
       startWith(''),
@@ -201,12 +201,11 @@ export class SettingsComponent implements OnInit {
 
     this.getAccountInfo();
 
+
     //get Linkedin AccessToken Params
     this.sub = this.route.queryParams.subscribe(params => {
       this.code = params['code'],
-        this.state = params['state'],
-        console.log(this.code),
-        console.log(this.state)
+        this.state = params['state']
       if (this.code !== undefined) { this.LinkedinService.getAccessToken(this.code, this.state) }
       else { this.LinkedinService.restoreCredentials() }
     });
@@ -249,7 +248,7 @@ export class SettingsComponent implements OnInit {
       {this.Company = company})
       this.CompanyApi.getTeam(this.Account.companyId, { where: { accountId: { nlike: this.Account.id } } })
         .subscribe((Team: Team[]) => {
-          this.Team = Team
+          this.Team = Team,     this.getRelations();
         });
     }
   }
@@ -426,8 +425,7 @@ export class SettingsComponent implements OnInit {
     if (selectedOption == true) {
       this.Unsortedcalls.forEach((item, index) => {
         this.accountApi.destroyByIdUnsortedcalls(this.Account.id, item.id)
-        .subscribe();
-        //})
+        .subscribe( res => this.getUnCalls() );
       })
     }
   }

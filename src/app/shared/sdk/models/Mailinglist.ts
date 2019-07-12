@@ -1,7 +1,8 @@
 /* tslint:disable */
 import {
   Relations,
-  Mailing
+  Mailing,
+  Marketingplannerevents
 } from '../index';
 
 declare var Object: any;
@@ -18,8 +19,10 @@ export interface MailinglistInterface {
   "totalopened"?: string;
   "totalclicked"?: string;
   "id"?: any;
+  "marketingplannereventsId"?: any;
   relations?: Relations;
   mailing?: Mailing[];
+  marketingplannerevents?: Marketingplannerevents;
 }
 
 export class Mailinglist implements MailinglistInterface {
@@ -35,8 +38,10 @@ export class Mailinglist implements MailinglistInterface {
   "totalopened": string;
   "totalclicked": string;
   "id": any;
+  "marketingplannereventsId": any;
   relations: Relations;
   mailing: Mailing[];
+  marketingplannerevents: Marketingplannerevents;
   constructor(data?: MailinglistInterface) {
     Object.assign(this, data);
   }
@@ -118,6 +123,10 @@ export class Mailinglist implements MailinglistInterface {
           name: 'id',
           type: 'any'
         },
+        "marketingplannereventsId": {
+          name: 'marketingplannereventsId',
+          type: 'any'
+        },
       },
       relations: {
         relations: {
@@ -135,6 +144,14 @@ export class Mailinglist implements MailinglistInterface {
           relationType: 'hasMany',
                   keyFrom: 'id',
           keyTo: 'mailingId'
+        },
+        marketingplannerevents: {
+          name: 'marketingplannerevents',
+          type: 'Marketingplannerevents',
+          model: 'Marketingplannerevents',
+          relationType: 'belongsTo',
+                  keyFrom: 'marketingplannereventsId',
+          keyTo: 'id'
         },
       }
     }

@@ -66,19 +66,14 @@
             <table style="width: 100%">
               <tr style="width: 100%">
                 <td style="width: 50%">
-                  <label (click)="getRelationsbackpage()">back </label>
+                  <mat-icon (click)="getRelationsbackpage()">navigate_before</mat-icon>
                 </td>
                 <td style="width: 50%">
-                  <label (click)="getRelationsnextpage()"> next</label>
+                  <mat-icon (click)="getRelationsnextpage()">navigate_next</mat-icon>
                 </td>
               </tr>
-              <tr>
-                <td style="width: 50%">
-                  <label>{{skip}}</label>
-                </td>
-                <td style="width: 50%">
-                  <label>{{limit}}</label>
-                </td>
+              <tr>            
+                  <label>{{skip}} / {{limit}}</label>
               </tr>
               <tr>
                 <td><label>Total</label></td>
@@ -203,7 +198,53 @@
                     </agm-map>
                   </td>
                 </tr>
-
+                <tr>
+                  <td>
+                      <mat-accordion>
+                          <mat-expansion-panel>
+                            <mat-expansion-panel-header>
+                              <mat-panel-title>
+                                Secondary Color
+                              </mat-panel-title>
+                            </mat-expansion-panel-header>
+                            <br>
+                    <span [style.background]="selectedRelation.companyprimairycolor" [cpToggle]="true"
+                    [cpDialogDisplay]="'inline'" [cpCancelButton]="true"
+                    [(colorPicker)]="selectedRelation.companyprimairycolor"></span>
+                  </mat-expansion-panel>
+                </mat-accordion>
+                  </td>
+                  <td>
+                      <mat-accordion>
+                          <mat-expansion-panel>
+                            <mat-expansion-panel-header>
+                              <mat-panel-title>
+                                Secondary Color
+                              </mat-panel-title>
+                            </mat-expansion-panel-header>
+                            <br>
+                    <span [style.background]="selectedRelation.companysecondarycolor" [cpToggle]="true"
+                    [cpDialogDisplay]="'inline'" [cpCancelButton]="true"
+                    [(colorPicker)]="selectedRelation.companysecondarycolor"></span>
+                  </mat-expansion-panel>
+                </mat-accordion>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                      <form>
+                      <mat-form-field class="example-full-width">
+                          <input [(ngModel)]=selectedRelation.companyfont type="text" placeholder="Pick one" aria-label="Number" matInput
+                            [formControl]="myControlfont" [matAutocomplete]="auto">
+                          <mat-autocomplete #auto="matAutocomplete">
+                            <mat-option *ngFor="let font of filteredfonts | async" [value]="font">
+                              {{font}}
+                            </mat-option>
+                          </mat-autocomplete>
+                        </mat-form-field>
+                      </form>
+                  </td>
+                </tr>
               </table>
 
             </mat-card-content>
@@ -803,10 +844,10 @@
         <div fxFlex fxLayout="row">
           <div fxFlex="20%" class="standarddivclass">
 
-            <div *ngFor="let Crawler of Crawler; let i = index" (click)="onSelectCrawler(Crawler, i)"
+            <!-- <div *ngFor="let Crawler of Crawler; let i = index" (click)="onSelectCrawler(Crawler, i)"
               [class.selected]="Crawler === selectedCall">
               <span class="box">{{Crawler.name| slice:0:20}} | {{Crawler.date | date}}</span>
-            </div>
+            </div> -->
 
             <button a mat-raised-button (click)="getCrawlers()">Show All</button>
 
@@ -814,7 +855,7 @@
               <mat-icon>add</mat-icon>
             </a>
           </div>
-
+<!-- 
           <div fxFlex="78%" fxLayout="column" *ngIf="selectedCrawler" class="standarddivclass">
             <mat-card class="standarddivclass">
               <mat-card-content>
@@ -969,7 +1010,7 @@
                 </table>
               </mat-card-content>
             </mat-card>
-          </div>
+          </div> -->
         </div>
 
 
