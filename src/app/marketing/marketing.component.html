@@ -1357,24 +1357,25 @@ Text Version</textarea>
                       </th>
                     </tr>
                     <tr>
-                      <td colspan="3">
-                        <mat-form-field>
-                          <input matInput [(ngModel)]="selectedMailingList.listname" placeholder="Name"
-                            class="InputField" />
-                        </mat-form-field>
+                      <td colspan="2">
+                          <mat-form-field>
+                              <input matInput [(ngModel)]="selectedMailingList.listname" placeholder="Name"
+                             style="width: 500px;"/>
+                            </mat-form-field>
                       </td>
+                      
                     </tr>
                     <tr>
                       <td>
                         <mat-form-field>
                           <input matInput [(ngModel)]="selectedMailingList.categorie" placeholder="Categorie"
-                            class="InputField" />
+                          />
                         </mat-form-field>
                       </td>
                       <td>
                         <mat-form-field>
                           <input matInput [(ngModel)]="selectedMailingList.industry" placeholder="Industry/NAICS"
-                            class="InputField" />
+                          />
                         </mat-form-field>
                       </td>
                     </tr>
@@ -1382,20 +1383,22 @@ Text Version</textarea>
                       <td>
                         <mat-form-field>
                           <input matInput [(ngModel)]="selectedMailingList.geolocation" placeholder="Location"
-                            class="InputField" />
+                           />
                         </mat-form-field>
                       </td>
                       <td>
                         <mat-form-field>
                           <input matInput [(ngModel)]="selectedMailingList.description" placeholder="Description"
-                            class="InputField" />
+                        />
                         </mat-form-field>
                       </td>
-                      <td>
-                        <button a mat-raised-button color="primary" (click)="saveMailingList()">
-                          Save Mailinglist
-                        </button>
-                      </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <button a mat-raised-button color="primary" (click)="saveMailingList()">
+                              Save Mailinglist
+                            </button>
+                          </td>
                     </tr>
                   </table>
                 </mat-card-content>

@@ -519,7 +519,7 @@
       
        
 
-        <div class="listview">
+        <div class="listview" fxLayout="column">
           <div *ngFor="let Unsortedcalls of Unsortedcalls; let i = index" (click)="onSelectCall(Unsortedcalls, i)"
             [class.selected]="Unsortedcalls === selectedCall">
             <span class="box">{{Unsortedcalls.title | slice:0:20 }} | {{Unsortedcalls.date | date}}</span>
