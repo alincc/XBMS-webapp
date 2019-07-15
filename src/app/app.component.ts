@@ -9,11 +9,14 @@ import { Router } from '@angular/router';
 import { map, distinctUntilChanged, share, filter, throttleTime, pairwise } from 'rxjs/operators';
 import { fromEvent, Observable } from 'rxjs';
 import { PwaService } from './pwa.service';
+import { SwUpdate } from '@angular/service-worker';
+
 import {
   BASE_URL,
   API_VERSION,
   LoopBackConfig
 } from './shared/';
+
 
 enum VisibilityState {
   Visible = 'visible',
@@ -31,7 +34,6 @@ enum Direction {
   styleUrls: ['./app.component.scss'],
 
 })
-
 
 
 export class AppComponent implements AfterViewInit {
@@ -54,7 +56,13 @@ export class AppComponent implements AfterViewInit {
     public router: Router,
     public accountApi: AccountApi,
     private iconRegistry: MatIconRegistry,
-    private sanitizer: DomSanitizer) {
+    private sanitizer: DomSanitizer,
+    private swUpdate: SwUpdate) {
+      // swUpdate.available.subscribe(event => {
+      //   if (askUserToUpdate()) {
+      //     window.location.reload();
+      //   }
+      // });
     this.iconRegistry.addSvgIcon(
       'xbms_linkedin',
       this.sanitizer.bypassSecurityTrustResourceUrl('assets/icons/linkedin.svg'));

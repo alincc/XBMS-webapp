@@ -1,12 +1,7 @@
 <div class="topview">
-    <!-- <div *ngIf="router.url !== '/login' && router.url.indexOf('filemanager') === -1" class="maintoolbar1">
-    </div>
-
-    <div *ngIf="router.url !== '/login' && router.url.indexOf('filemanager') === -1" class="maintoolbar2">
-    </div> -->
 
     <button *ngIf="Pwa.promptEvent" mat-stroked-button color="primary" (click)="installPwa()">
-            <mat-icon>install</mat-icon>Install Update</button>
+            <mat-icon>install</mat-icon>Install</button>
 
     <div *ngIf="router.url !== '/login' && router.url.indexOf('filemanager') === -1" >
         <button mat-stroked-button color="primary" (click)="sidenav.open()" 

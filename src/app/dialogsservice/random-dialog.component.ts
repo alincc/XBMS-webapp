@@ -19,6 +19,11 @@ export interface Hour {
     viewValue: string;
 }
 
+export interface Category {
+    value: string;
+    viewValue: string;
+}
+
 
 @Component({
     templateUrl: './random-dialog.component.html',
@@ -83,6 +88,10 @@ export class RandomDialog {
         { value: '24', viewValue: '12PM' }
     ];
 
+    public Category: Category[] = [
+        { value: '', viewValue: 'none' }
+    ]
+
     public timezones = timezones;
 
     constructor(
@@ -92,6 +101,11 @@ export class RandomDialog {
         this.data.Selcampaignlists = [];
         this.createCheckboxMail(false); // create checkbox for every value
         this.createCheckboxCamp(false); // create checkbox for every value
+        this.addAllCat();
+    }
+
+    addAllCat(): void {
+        console.log(this.data.Selmailinglists);
     }
 
     toggleaddtomailing(booleanval): void {
@@ -116,7 +130,7 @@ export class RandomDialog {
         // add on index number of selection
         const listtochk1 = this.data.Selcampaignlists;
         const alreadySelected2 = listtochk1.indexOf(i);
-        console.log(i, alreadySelected2)
+        // console.log(i, alreadySelected2)
         if (alreadySelected2 > -1) {
             this.data.Selcampaignlists.splice(alreadySelected2, 1);
             // this.checkboxlist[i] = false;
@@ -128,7 +142,7 @@ export class RandomDialog {
         // add on index number of selection
         const listtochk2 = this.data.Selmailinglists;
         const alreadySelected2 = listtochk2.indexOf(i);
-        console.log(i, alreadySelected2)
+        // console.log(i, alreadySelected2)
         if (alreadySelected2 > -1) {
             this.data.Selmailinglists.splice(alreadySelected2, 1);
             // this.checkboxlist[i] = false;

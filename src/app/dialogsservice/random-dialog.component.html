@@ -28,6 +28,18 @@
                     <td>
                         <button mat-button (click)="deselectAllMail()">Deselect All</button>
                     </td>
+                    <td>
+     
+
+                          <mat-form-field>
+                            <mat-label>Select category</mat-label>
+                            <mat-select [disabled]="disableSelect.value">
+                                <mat-option *ngFor="let category of Category" [value]="category.value">
+                                    {{category.viewValue}}
+                                  </mat-option>
+                            </mat-select>
+                          </mat-form-field>
+                    </td>
                 </tr>
             </table>
 
