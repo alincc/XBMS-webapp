@@ -37,6 +37,13 @@ export interface RelationsInterface {
   "companyId"?: any;
   "callsId"?: string;
   "contactpersonId"?: string;
+  "standardcomponents"?: any;
+  "standardcomponentsstyle"?: any;
+  "standardcomponentscolumnstyle"?: any;
+  "standardfooter"?: string;
+  "companyprimairycolor"?: string;
+  "companysecondarycolor"?: string;
+  "companyfont"?: string;
   "id"?: any;
   contactpersons?: Contactpersons[];
   publications?: Publications[];
@@ -74,6 +81,13 @@ export class Relations implements RelationsInterface {
   "companyId": any;
   "callsId": string;
   "contactpersonId": string;
+  "standardcomponents": any;
+  "standardcomponentsstyle": any;
+  "standardcomponentscolumnstyle": any;
+  "standardfooter": string;
+  "companyprimairycolor": string;
+  "companysecondarycolor": string;
+  "companyfont": string;
   "id": any;
   contactpersons: Contactpersons[];
   publications: Publications[];
@@ -188,6 +202,34 @@ export class Relations implements RelationsInterface {
         },
         "contactpersonId": {
           name: 'contactpersonId',
+          type: 'string'
+        },
+        "standardcomponents": {
+          name: 'standardcomponents',
+          type: 'any'
+        },
+        "standardcomponentsstyle": {
+          name: 'standardcomponentsstyle',
+          type: 'any'
+        },
+        "standardcomponentscolumnstyle": {
+          name: 'standardcomponentscolumnstyle',
+          type: 'any'
+        },
+        "standardfooter": {
+          name: 'standardfooter',
+          type: 'string'
+        },
+        "companyprimairycolor": {
+          name: 'companyprimairycolor',
+          type: 'string'
+        },
+        "companysecondarycolor": {
+          name: 'companysecondarycolor',
+          type: 'string'
+        },
+        "companyfont": {
+          name: 'companyfont',
           type: 'string'
         },
         "id": {

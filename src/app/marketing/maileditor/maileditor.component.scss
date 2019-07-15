@@ -105,7 +105,7 @@
     height: auto;
     min-height: 60px;
     width: auto;
-    overflow:hidden;
+    // overflow:hidden;
     z-index: 2;
   }
 
@@ -133,7 +133,7 @@
 
   .item-box {
     height: auto;
-    width: 100%;
+    // width: 100%;
     top: 0;
     left: 0;
     margin: 5px;
@@ -152,7 +152,7 @@
   }
 
   .sectionlabel {
-    width: 70px;
+    width: 80px;
     height: 10px;
     font-size: 6pt;
     position: absolute;
@@ -344,6 +344,14 @@
 
 p {
   font-family: Lato;
+}
+
+.showprogressbardiv {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  z-index: 102;
+  background-color: white;
 }
 
 .speed-dial-container {

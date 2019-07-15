@@ -75,6 +75,7 @@ const URL = 'http://localhost:3000/api/containers/tmp/upload';
 import { MarketingchannelsComponent } from './marketingchannels/marketingchannels.component';
 import { MaileditorComponent } from './maileditor/maileditor.component';
 import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material';
+import { TextEditorDialog } from './maileditor/texteditordialog.component';
 
 export interface UploadResult {
   result: 'failure' | 'success';
@@ -85,18 +86,6 @@ export interface UploadResult {
   selector: 'app-marketing',
   templateUrl: './marketing.component.html',
   styleUrls: ['./marketing.component.scss']
-  // animations: [
-  //   trigger('flyInOut', [
-  //     state('in', style({ transform: 'translateX(0)' })),
-  //     transition('void => *', [
-  //       style({ transform: 'translateX(-100%)' }),
-  //       animate(100)
-  //     ]),
-  //     transition('* => void', [
-  //       animate(100, style({ transform: 'translateX(100%)' }))
-  //     ])
-  //   ])
-  // ]
 })
 
 export class MarketingComponent implements OnInit {
@@ -274,6 +263,7 @@ export class MarketingComponent implements OnInit {
   public updateMailingObj: Mailing = new Mailing;
 
   constructor(
+    public dialog: MatDialog,
     public dialogWordpress: MatDialog,
     private MarketingChannel: MarketingchannelsComponent,
     //private Maileditor: MaileditorComponent,
@@ -679,7 +669,10 @@ export class MarketingComponent implements OnInit {
   randomizeMailing(): void {
     this.randomService.openDialog(
       this.option.id, this.Account.companyId, this.selectedMailing, this.Mailinglist, this.Marketingplannerevents, this.Mailing)
-    // console.log(this.selectedMailing)
+      if (this.randomService.ready === true) {
+        this.openSnackBar('Scheduled');
+      }
+      // console.log(this.selectedMailing)
   }
 
   // select and set parameters PublicationsTranslation
@@ -931,7 +924,7 @@ export class MarketingComponent implements OnInit {
 
   createMailing(): void {
     this.RelationsApi.createMailing(this.option.id, { subject: 'new', relationname: this.option.relationname })
-      .subscribe(res => {  this.onSelectMailing(res), this.Mailing.push(res); });
+      .subscribe(res => {  this.onSelectMailing(res), this.getMailing(); });
   }
 
   editMailing(): void {
@@ -1036,6 +1029,25 @@ export class MarketingComponent implements OnInit {
     CKEDITOR.tools.callFunction(1, data.url);
 
   };
+
+  addTextMailing(): void {
+
+      console.log(this.selectedMailing.html);
+      const dialogRef = this.dialog.open(TextEditorDialog, {
+        width: '800px',
+        data: this.selectedMailing.html, // changingThisBreaksApplicationSecurity,
+        id: this.option.id
+      });
+  
+      dialogRef.afterClosed().subscribe(result => {
+        if (result !== undefined) {
+          if (result.length > 0) {
+            this.selectedMailing.html = result
+          };  // this.sanitizer.bypassSecurityTrustHtml(result);
+        }
+      });
+
+  }
 
 
   saveMailing(message?): void {

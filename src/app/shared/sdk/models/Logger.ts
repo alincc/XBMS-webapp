@@ -11,6 +11,7 @@ export interface LoggerInterface {
   "relation"?: string;
   "code"?: string;
   "id"?: any;
+  "companyId"?: any;
 }
 
 export class Logger implements LoggerInterface {

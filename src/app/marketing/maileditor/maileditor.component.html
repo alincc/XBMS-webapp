@@ -12,33 +12,54 @@
       <span>Tools</span>
       <br style='margin: 5px'>
       <mat-progress-bar *ngIf='showprogressbar' mode="indeterminate"></mat-progress-bar>
+      
       <div class="tool-box" *ngFor="let item of toolset" cdkDrag>
-        <div *ngIf="item.type === 'Image'">
-          <mat-icon matSuffix>add_photo_alternate</mat-icon> {{item.type}}
+        <div *ngIf="item.type === 'Image'" matTooltip="add iamge">
+          <mat-icon class="iconsize-18" matSuffix>add_photo_alternate</mat-icon> {{item.type}}
         </div>
-        <div *ngIf="item.type === 'Text'">
-          <mat-icon matSuffix>text_fields</mat-icon> {{item.type}}
+        <div *ngIf="item.type === 'Text'" matTooltip="add text">
+          <mat-icon class="iconsize-18" matSuffix>text_fields</mat-icon> {{item.type}}
         </div>
-        <div *ngIf="item.type === 'Button'">
-          <mat-icon matSuffix>add_box</mat-icon> {{item.type}}
+        <div *ngIf="item.type === 'Button'" matTooltip="add button">
+          <mat-icon class="iconsize-18" matSuffix>add_box</mat-icon> {{item.type}}
         </div>
-        <div *ngIf="item.type === 'Divider'">
-          <mat-icon matSuffix>line_style</mat-icon> {{item.type}}
+        <div *ngIf="item.type === 'Divider'" matTooltip="blank divider">
+          <mat-icon class="iconsize-18" matSuffix>line_style</mat-icon> {{item.type}}
         </div>
-        <div *ngIf="item.type === 'Accordion'">
-          <mat-icon matSuffix>view_day</mat-icon> {{item.type}}
+        <div *ngIf="item.type === 'Accordion'" matTooltip="text Accordion">
+          <mat-icon class="iconsize-18" matSuffix>view_day</mat-icon> {{item.type}}
         </div>
-        <div *ngIf="item.type === 'Carousel'">
-          <mat-icon matSuffix>view_carousel</mat-icon> {{item.type}}
+        <div *ngIf="item.type === 'Carousel'" matTooltip="image carousel">
+          <mat-icon class="iconsize-18" matSuffix>view_carousel</mat-icon> {{item.type}}
         </div>
-        <div *ngIf="item.type === 'Social'">
-          <mat-icon matSuffix>thumb_up_alt</mat-icon> {{item.type}}
+        <div *ngIf="item.type === 'Social'" matTooltip="share buttons">
+          <mat-icon class="iconsize-18" matSuffix>thumb_up_alt</mat-icon> {{item.type}}
         </div>
-        <div *ngIf="item.type === 'Footer'">
-          <mat-icon matSuffix>fingerprint</mat-icon> {{item.type}}
+        <div *ngIf="item.type === 'Footer'" matTooltip="add Footer">
+          <mat-icon class="iconsize-18" matSuffix>fingerprint</mat-icon> {{item.type}}
         </div>
       </div>
       <br>
+      <mat-accordion>
+          <mat-expansion-panel>
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                Standard Components
+              </mat-panel-title>
+            </mat-expansion-panel-header>
+            <div *ngFor="let components of option.standardcomponents; let i1 = index;" fxLayout="row">
+              <div *ngFor="let items of components">
+                  <div style="border: lightgray; border-style: solid; border-width: 1px;" *ngFor="let parts of items">
+                    <label style="font-size: 0.2vw"> {{parts.type}}</label>
+                </div>
+            </div>
+            <mat-icon matTooltip="add to mail" (click)="onAddStandardSectionPart(i1)" class="sectionlabelbuttons iconsize-10" matSuffix>add</mat-icon>
+            <mat-icon matTooltip="delete from profile" (click)="onDeleteStandardSectionPart(i1)" class="sectionlabelbuttons iconsize-10" matSuffix>delete</mat-icon>
+            </div>
+            <button (click)="deleteAllStandardComp()" mat-button>Delete All</button>
+          </mat-expansion-panel>
+        </mat-accordion>
+
       <mat-accordion>
         <mat-expansion-panel>
           <mat-expansion-panel-header>
@@ -66,7 +87,7 @@
           </div>
         </mat-expansion-panel>
       </mat-accordion>
-      <br>
+  
       <mat-accordion>
         <mat-expansion-panel>
           <mat-expansion-panel-header>
@@ -103,6 +124,16 @@
       </mat-accordion>
     </div>
   </div>
+
+
+  <div *ngIf='showprogressbar' class="showprogressbardiv">
+    <div style="width: 50%; margin: 0 auto; justify-content: center; align-items: center;">
+        <mat-spinner style="width: 50%; margin: 0 auto;" mode="indeterminate"></mat-spinner>
+        <br>
+        <h1>Creating your awesome mail template one moment please... </h1>
+    </div>
+  </div>
+  
 
   <div fxFlex="70%" class="template" >
     <table>
@@ -147,17 +178,18 @@
     [ngStyle]="sectionStyleArray[i1].style" [fxLayout]=sectionStyleArray[i1].boxalignment 
     [class.fullwidthsection]="sectionStyleArray[i1].style['full-width'] === 'full-width'">
     <div *ngIf="sectionStyleArray[i1].imgblur" [class.imgblursection]="sectionStyleArray[i1].imgblur" [style.background-image]= "sectionStyleArray[i1].style['background-image']" 
-    style="background-size: 100%; background-repeat: no-repeat;" [ngStyle]="sectionStyleArray[i1].style" ></div>
+    style="background-size: 100%; background-repeat: no-repeat;" [ngStyle]="sectionStyleArray[i1].style" style="margin-right: 15px;"></div>
       <!-- cdkDropList #listSection="cdkDropList" (cdkDropListDropped)="drop($event, i1, i2)" [cdkDropListData]="mailtemplateArray" -->
       <label class="sectionlabel">Section 
-        <mat-icon (click)="onSelectSectionPart(i1)" class="iconsize-10 sectionlabelbuttons" matSuffix>mode_edit</mat-icon>
-        <mat-icon (click)="moveSectionUp(i1)" class="iconsize-10 sectionlabelbuttons" matSuffix>arrow_drop_up</mat-icon>
-        <mat-icon (click)="moveSectionDown(i1)" class="iconsize-10 sectionlabelbuttons" matSuffix>arrow_drop_down</mat-icon>
-      <mat-icon (click)="onDeleteSectionPart(i1)" class="sectionlabelbuttons iconsize-10" matSuffix>delete</mat-icon>
+        <mat-icon matTooltip="save to profile" (click)="onSaveSectionPart(i1)" class="iconsize-10 sectionlabelbuttons" matSuffix>save</mat-icon>
+        <mat-icon matTooltip="edit section" (click)="onSelectSectionPart(i1)" class="iconsize-10 sectionlabelbuttons" matSuffix>mode_edit</mat-icon>
+        <mat-icon matTooltip="up" (click)="moveSectionUp(i1)" class="iconsize-10 sectionlabelbuttons" matSuffix>arrow_drop_up</mat-icon>
+        <mat-icon matTooltip="down" (click)="moveSectionDown(i1)" class="iconsize-10 sectionlabelbuttons" matSuffix>arrow_drop_down</mat-icon>
+        <mat-icon matTooltip="delete" (click)="onDeleteSectionPart(i1)" class="sectionlabelbuttons iconsize-10" matSuffix>delete</mat-icon>
     </label>
       <div class="section-box full-width-item" *ngFor="let column of section; let i2 = index"
-        fxLayout="column" >
-          <div [ngStyle]="columnStyleArray[i1][i2].style" class="column-box" fxLayout="row" cdkDropList
+        fxLayout="column">
+          <div [ngStyle]="columnStyleArray[i1][i2].style" class="column-box" cdkDropList
             #mailtemplateList="cdkDropList" [cdkDropListData]="mailtemplateArray[i1][i2]"
             (cdkDropListDropped)="drop($event, i1, i2)">
             <label class="columnlabel">Column 
@@ -308,13 +340,23 @@
                 <table matTooltip="click to set color">
                   <tr>
                     <td>Primairy color</td>
-                    <td>Secondairy color</td>
+                    <td (click)="maileditorColumn.style['background-color'] = company.companyprimairycolor">
+                        {{company.companyprimairycolor}}</td>
                   </tr>
                   <tr>
-                    <td (click)="maileditorColumn.style['background-color'] = company.companyprimairycolor">
-                      {{company.companyprimairycolor}}</td>
+                      <td>Secondairy color</td>
                     <td (click)="maileditorColumn.style['background-color'] = company.companysecondarycolor">
                       {{company.companysecondarycolor}}</td>
+                  </tr>
+                  <tr>
+                      <td>Relation primairy color</td>
+                    <td (click)="maileditorColumn.style['background-color'] = option.companyprimairycolor">
+                      {{option.companyprimairycolor}}</td>
+                  </tr>
+                  <tr>
+                      <td>Relation secondairy color</td>
+                    <td (click)="maileditorColumn.style['background-color'] = option.companysecondarycolor">
+                      {{option.companysecondarycolor}}</td>
                   </tr>
                 </table>
               </mat-expansion-panel>
@@ -437,13 +479,23 @@
                 <table matTooltip="click to set color">
                   <tr>
                     <td>Primairy color</td>
-                    <td>Secondairy color</td>
+                    <td (click)="maileditorSection.style['background-color'] = company.companyprimairycolor">
+                        {{company.companyprimairycolor}}</td>
                   </tr>
                   <tr>
-                    <td (click)="maileditorSection.style['background-color'] = company.companyprimairycolor">
-                      {{company.companyprimairycolor}}</td>
+                      <td>Secondairy color</td>
                     <td (click)="maileditorSection.style['background-color'] = company.companysecondarycolor">
                       {{company.companysecondarycolor}}</td>
+                  </tr>
+                  <tr>
+                      <td>Relation primairy color</td>
+                    <td (click)="maileditorSection.style['background-color'] = option.companyprimairycolor">
+                      {{option.companyprimairycolor}}</td>
+                  </tr>
+                  <tr>
+                      <td>Relation secondairy color</td>
+                    <td (click)="maileditorSection.style['background-color'] = option.companysecondarycolor">
+                      {{option.companysecondarycolor}}</td>
                   </tr>
                 </table>
               </mat-expansion-panel>
@@ -834,11 +886,11 @@
                 <table matTooltip="click to set color">
                   <tr>
                     <td>Primairy color</td>
-                    <td>Secondairy color</td>
+                    <td (click)="maileditorButton.style['background-color'] = company.companyprimairycolor">
+                        {{company.companyprimairycolor}}</td>
                   </tr>
                   <tr>
-                    <td (click)="maileditorButton.style['background-color'] = company.companyprimairycolor">
-                      {{company.companyprimairycolor}}</td>
+                    <td>Secondairy color</td>
                     <td (click)="maileditorButton.style['background-color'] = company.companysecondarycolor">
                       {{company.companysecondarycolor}}</td>
                   </tr>
@@ -862,11 +914,11 @@
                 <table matTooltip="click to set color">
                   <tr>
                     <td>Primairy color</td>
-                    <td>Secondairy color</td>
+                    <td (click)="maileditorButton.style.color = company.companyprimairycolor">
+                        {{company.companyprimairycolor}}</td>
                   </tr>
                   <tr>
-                    <td (click)="maileditorButton.style.color = company.companyprimairycolor">
-                      {{company.companyprimairycolor}}</td>
+                      <td>Secondairy color</td>
                     <td (click)="maileditorButton.style.color = company.companysecondarycolor">
                       {{company.companysecondarycolor}}</td>
                   </tr>

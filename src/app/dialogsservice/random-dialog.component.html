@@ -28,30 +28,33 @@
                     <td>
                         <button mat-button (click)="deselectAllMail()">Deselect All</button>
                     </td>
+                </tr>
+                <tr>
                     <td>
-     
-
                           <mat-form-field>
                             <mat-label>Select category</mat-label>
-                            <mat-select [disabled]="disableSelect.value">
-                                <mat-option *ngFor="let category of Category" [value]="category.value">
-                                    {{category.viewValue}}
+                            <mat-select (selectionChange)="setCatFilter($event.value)">
+                                <mat-option *ngFor="let category of Category" [value]="category">
+                                    {{category}}
                                   </mat-option>
                             </mat-select>
                           </mat-form-field>
                     </td>
+                    <td>
+                        <button mat-raised-button (click)="resetfilter()">reset</button>
+                    </td>
                 </tr>
             </table>
 
-            <div *ngFor="let mailingList of data.mailingLists; let i1 = index ">
+            <div *ngFor="let mailingList of mailinglistselection; let i1 = index ">
                 <table>
                     <tr>
                         <td>
                             <mat-checkbox [(ngModel)]="checkboxlistmail[i1]" (click)="onAddMailinglist(i1)">
                             </mat-checkbox>
                         </td>
-                        <td><span class="box">{{mailingList.listname}}</span></td>
-                    </tr>
+                        <td><span class="box">{{mailingList.listname}} </span><span class="box" style="font-style: italic"> {{mailingList.total}}</span></td>
+                        </tr>
                 </table>
             </div>
         </div>

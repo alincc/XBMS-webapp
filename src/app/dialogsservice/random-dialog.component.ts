@@ -1,4 +1,4 @@
-import { MatDialogRef } from '@angular/material';
+import { MatDialogRef, MatCardTitleGroup } from '@angular/material';
 import { Component, Inject } from '@angular/core';
 import { Randomizer } from './randomize';
 import { MatDialog, MAT_DIALOG_DATA } from '@angular/material';
@@ -15,11 +15,6 @@ export interface FollowupDay {
 }
 
 export interface Hour {
-    value: string;
-    viewValue: string;
-}
-
-export interface Category {
     value: string;
     viewValue: string;
 }
@@ -88,15 +83,14 @@ export class RandomDialog {
         { value: '24', viewValue: '12PM' }
     ];
 
-    public Category: Category[] = [
-        { value: '', viewValue: 'none' }
-    ]
-
+    public Category = []
     public timezones = timezones;
+    public mailinglistselection;
 
     constructor(
         public dialogRef: MatDialogRef<Randomizer>,
         @Inject(MAT_DIALOG_DATA) public data: Randomizer) {
+        this.mailinglistselection = this.data.mailingLists;
         this.data.Selmailinglists = [];
         this.data.Selcampaignlists = [];
         this.createCheckboxMail(false); // create checkbox for every value
@@ -105,7 +99,29 @@ export class RandomDialog {
     }
 
     addAllCat(): void {
-        console.log(this.data.Selmailinglists);
+        let catlisttemp = [];
+        this.mailinglistselection.forEach(element => {
+            if (element.categorie !== undefined) {
+                catlisttemp.push(element.categorie);
+            }
+        });
+        catlisttemp = catlisttemp.filter((x, i, a) => a.indexOf(x) == i);
+        this.Category = catlisttemp;
+        // console.log(this.Category);
+    }
+
+    setCatFilter(value) {
+        this.mailinglistselection =   this.mailinglistselection.filter(function(element) {
+            return element.categorie == value;
+        });
+        this.createCheckboxMail(false); // create checkbox for every value
+        this.createCheckboxCamp(false); // create checkbox for every value
+    }
+
+    resetfilter() {
+        this.mailinglistselection = this.data.mailingLists;
+        this.createCheckboxMail(false); // create checkbox for every value
+        this.createCheckboxCamp(false); // create checkbox for every value
     }
 
     toggleaddtomailing(booleanval): void {
@@ -114,14 +130,14 @@ export class RandomDialog {
 
     createCheckboxMail(valueboolean): void {
         this.checkboxlistmail = [];
-        this.data.mailingLists.forEach(element => {
+        this.mailinglistselection.forEach(element => {
             this.checkboxlistmail.push(valueboolean);
         });
     }
 
     createCheckboxCamp(valueboolean): void {
         this.checkboxlistcamp = [];
-        this.data.mailingLists.forEach(element => {
+        this.mailinglistselection.forEach(element => {
             this.checkboxlistcamp.push(valueboolean);
         });
     }
@@ -157,7 +173,7 @@ export class RandomDialog {
         // iterate for
         this.data.Selmailinglists = [];
         let i2 = 0;
-        this.data.mailingLists.forEach(element => {
+        this.mailinglistselection.forEach(element => {
             this.data.Selmailinglists.push(i2); ++i2;
         });
         console.log(this.data.Selmailinglists);

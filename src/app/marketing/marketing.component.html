@@ -487,6 +487,10 @@
                           Copy
                           <mat-icon>copy</mat-icon>
                         </button>
+                        <button *ngIf="!selectedMailing.templatearray" a mat-raised-button (click)="addTextMailing()">
+                            Add text mailing
+                            <mat-icon>edit</mat-icon>
+                          </button>
                         <button a mat-raised-button (click)="randomizeMailing()">
                           Randomize Mailing/Add to Campaign
                           <mat-icon>merge_type</mat-icon>
@@ -528,20 +532,6 @@
                             </mat-option>
                           </mat-autocomplete>
                         </mat-chip-list>
-
-                        <!-- <div *ngIf="selectedMailing.mailinglist"> {{ selectedMailing.mailinglist.listname }}</div> -->
-                        <!-- <mat-form-field>
-                          <input type="text" matTooltip="Input email or select list" placeholder="Select Mailing"
-                            [(ngModel)]=mailingaddress matInput [formControl]="myAddressListControl"
-                            [matAutocomplete]="mailinglist">
-                          <mat-autocomplete #mailinglist="matAutocomplete" [displayWith]="displayFnMailing">
-                            <mat-option *ngFor="let mailingaddress of filteredmailinglist | async"
-                              [value]="mailingaddress.listname">
-                              {{ mailingaddress }}
-                            </mat-option>
-                          </mat-autocomplete>
-                        </mat-form-field> -->
-                        <!-- <mat-icon (click)="addMailingList()">save</mat-icon> -->
                       </td>
                       <td>
                         <mat-form-field class="form-full-width">
@@ -552,8 +542,10 @@
                     </tr>
                   </table>
 
-                  <br />
-
+                  <br/>
+                  <a href="https://www.mail-tester.com" target="_blank">Check spam rating</a>
+                  <br/>
+                  
                   <mat-expansion-panel class="max-expansion-panel">
                     <mat-expansion-panel-header>
                       <mat-panel-title class="mat-expansion-panel-header-title">

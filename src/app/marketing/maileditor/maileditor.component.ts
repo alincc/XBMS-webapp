@@ -355,8 +355,8 @@ export class MaileditorComponent implements OnInit {
     if (type === 'Footer') {
       const newfooter: MaileditorText = new MaileditorText();
       newfooter.type = 'Footer';
-      const footercontent = this.company.companyname + ', ' + this.company.address + ', ' +
-        this.company.zipcode + ', ' + this.company.country +
+      const footercontent = this.option.relationname + ', ' + this.option.address1 + ', ' +
+        this.option.zipcode + ', ' + this.option.country + ', ' + '<a href=' + this.option.website + '>' + this.option.website + '</a> ' +
         ', feel free to <a href="%unsubscribe_url%">unsubscribe</a> if you do not like to receive our emails';
       newfooter.content = footercontent; // this.sanitizer.bypassSecurityTrustHtml(footercontent);
       newfooter.typeformat = 'p';
@@ -685,7 +685,7 @@ export class MaileditorComponent implements OnInit {
       const previewhtml = [];
       previewhtml.push(this.sanitizer.bypassSecurityTrustHtml(previewstring));
       this.dialogsService
-        .confirm('Preview', 'Add to Templates?', previewhtml[0])
+        .confirm('Preview', 'Add to templates?', previewhtml[0])
         .subscribe((res) => {
           if (res) {
             if (Object.keys(this.updateMailingObj).length > 0) {
@@ -917,8 +917,7 @@ export class MaileditorComponent implements OnInit {
 
   private setimgurl(url: string, i1, i2, i3) {
     // url direct
-    //console.log(url, i1, i2, i3);
-
+    // console.log(url, i1, i2, i3);
     // this.setbackgroundImageSection(url);
     setTimeout(() => {
       this.mailtemplateArray[i1][i2][i3].url = url;
@@ -937,7 +936,7 @@ export class MaileditorComponent implements OnInit {
         this.maileditorSection.style['background-image'] =
           'linear-gradient(black, black), url(' + url + ')';
         this.maileditorSection.style['background-blend-mode'] = 'saturation';
-        //this.maileditorSection.style['filter'] = "blur(4px)";
+        // this.maileditorSection.style['filter'] = "blur(4px)";
       }
       else if (blur) {
         //this.maileditorSection.style['filter'] = "blur(4px)";
@@ -1255,4 +1254,44 @@ export class MaileditorComponent implements OnInit {
     this.columnStyleArray[i1 + 1] = tmpcolstyle;
     }
   }
+
+  onSaveSectionPart(i1) {
+    if (this.option.standardcomponents === undefined) {this.option.standardcomponents = []}
+    if (this.option.standardcomponentsstyle === undefined) {this.option.standardcomponentsstyle = []}
+    if (this.option.standardcomponentscolumnstyle === undefined) {this.option.standardcomponentscolumnstyle = []}
+    const stcomp = this.mailtemplateArray[i1];
+    const stcompst = this.sectionStyleArray[i1];
+    const stcompstcol = this.columnStyleArray[i1];
+    this.option.standardcomponents.push(stcomp);
+    this.option.standardcomponentsstyle.push(stcompst);
+    this.option.standardcomponentscolumnstyle.push(stcompstcol);
+    console.log(this.option);
+    this.RelationsApi.updateAttributes(this.option.id, this.option).subscribe();
+  }
+
+  onAddStandardSectionPart(i1) {
+    const stcomp = this.option.standardcomponents[i1];
+    const stcompst = this.option.standardcomponentsstyle[i1];
+    const stcompstcol = this.option.standardcomponentscolumnstyle[i1];
+    this.mailtemplateArray.push(stcomp);
+    this.sectionStyleArray.push(stcompst);
+    this.columnStyleArray.push(stcompstcol);
+  }
+
+  onDeleteStandardSectionPart(i1) {
+    this.option.standardcomponents.splice(i1, 1);
+    this.option.standardcomponentsstyle.splice(i1, 1);
+    this.option.standardcomponentscolumnstyle.splice(i1, 1);
+    this.RelationsApi.updateAttributes(this.option.id, this.option).subscribe();
+  }
+
+
+  deleteAllStandardComp() {
+    this.option.standardcomponents = [];
+    this.option.standardcomponentsstyle = [];
+    this.option.standardcomponentscolumnstyle = [];
+    this.RelationsApi.updateAttributes(this.option.id, this.option).subscribe();
+  }
+
+
 }
