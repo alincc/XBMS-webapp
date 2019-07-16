@@ -195,7 +195,9 @@ export class FileuploadComponent implements OnInit {
 
 }
 
-import { Icons } from './filelist'
+import { Icons } from './filelist';
+import { IconsIso } from './filelistiso';
+
 
 @Component({
   selector: 'dialog-gallery',
@@ -207,6 +209,8 @@ export class dialoggallerycomponent implements OnInit {
   public fileIcons = Icons;
   public existingIcons = [];
   public icons = Icons;
+  public isoIcons = IconsIso;
+  public existingIsoIcons = [];
 
   constructor(
     public dialogRef: MatDialogRef<dialoggallerycomponent>,
@@ -214,9 +218,13 @@ export class dialoggallerycomponent implements OnInit {
 
   ngOnInit() {
     this.icons.forEach(element => {
-      let iconurl = BASE_URL + element;
+      const iconurl = BASE_URL + element;
       this.existingIcons.push(iconurl);
     });
+    this.isoIcons.forEach(iso => {
+      const isourl = BASE_URL + iso;
+      this.existingIsoIcons.push(isourl);
+    })
   }
 
   onNoClick(): void {

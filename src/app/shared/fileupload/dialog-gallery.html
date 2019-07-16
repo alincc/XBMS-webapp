@@ -6,6 +6,9 @@
     <mat-button-toggle matTooltip="Standard icons" style="width: 50%"  value="includedimages">
       <mat-icon>insert_emoticon</mat-icon>
     </mat-button-toggle>
+    <mat-button-toggle matTooltip="Iso icons" style="width: 50%"  value="isoicon">
+      <mat-icon>iso</mat-icon>
+    </mat-button-toggle>
   </mat-button-toggle-group>
 
   <div *ngIf="group.value == 'includedimages'" class="gallery" fxFlex="80%" fxLayout="row wrap">
@@ -21,6 +24,13 @@
     <div *ngFor="let image of data.img; let i = index" fxFlex>
       <img src="{{ image.modal.img }}" class="image" (click)="selectedimage(image.modal.img)"
         [class.selected]="image.modal.img === data.selected" />
+    </div>
+  </div>
+
+  <div *ngIf="group.value == 'isoicon'" class="gallery" fxFlex="80%" fxLayout="row wrap">
+    <div *ngFor="let isoicon of existingIsoIcons; let i = index" fxFlex>
+      <img src="{{ isoicon }}" class="image" (click)="selectedimage(isoicon)"
+        [class.selected]="isoicon === data.selected" />
     </div>
   </div>
 

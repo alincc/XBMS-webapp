@@ -388,9 +388,9 @@ export class MaileditorComponent implements OnInit {
       newImage.type = 'Image';
       newImage.url = '';
       newImage.style = {
-        'align': "center",
-        'alt': '"xbms-image',
-        'border': "",
+        'align': 'center',
+        'alt': 'xbms-image',
+        'border': '',
         'border-radius': '',
         'container-background-color': '',
         'fluid-on-mobile': false,
@@ -404,7 +404,7 @@ export class MaileditorComponent implements OnInit {
         'rel': '',
         'src': '',
         'srcset': '',
-        'target': "_blank",
+        'target': '_blank',
         'title': '',
         'width': 'auto'
       }
