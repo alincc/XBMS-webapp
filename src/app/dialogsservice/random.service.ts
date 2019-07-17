@@ -22,12 +22,12 @@ export class RandomService {
     public RelationsApi: RelationsApi,
     public dialog: MatDialog) { }
 
-    public openSnackBar(message: string) {
-      this.snackBar.open(message, undefined, {
-        duration: 2000,
-        panelClass: 'snackbar-class'
-      });
-    }
+  public openSnackBar(message: string) {
+    this.snackBar.open(message, undefined, {
+      duration: 2000,
+      panelClass: 'snackbar-class'
+    });
+  }
 
   openDialog(accountid, companyid, template, mailinglist, campaignlist, Mailing) {
     // console.log(mailinglist)
@@ -40,30 +40,41 @@ export class RandomService {
     dialogRef.afterClosed().subscribe(result => {
       this.randomizer = result;
 
-      this.randomizer.mailingLists = [];
-      this.randomizer.Selmailinglists.forEach(indx => {
-        this.randomizer.mailingLists.push(mailinglist[indx].id)
-      });
+      // this.randomizer.mailingLists = [];
+      // this.randomizer.Selmailinglists.forEach(indx => {
+      //   this.randomizer.mailingLists.push(mailinglist[indx].id)
+      // });
 
-      this.randomizer.campaignLists = [];
-      this.randomizer.Selcampaignlists.forEach(indx => {
-        this.randomizer.campaignLists.push(campaignlist[indx].id)
-      });
+      // this.randomizer.campaignLists = [];
+      // this.randomizer.Selcampaignlists.forEach(indx => {
+      //   this.randomizer.campaignLists.push(campaignlist[indx].id)
+      // });
       console.log('The dialog was closed', this.randomizer);
-      
-      if (!this.randomizer.randomize){
-      this.randomizer.date = this.timeconv.convertTime( this.randomizer.date,  this.randomizer.time, this.randomizer.timezone);
-      this.RelationsApi.addmailingtocampaign(
-        accountid,
-        companyid,
-        this.randomizer.templatemailing.id,
-        this.randomizer.date,
-        this.randomizer.time,
-        this.randomizer.campaignLists,
-        this.randomizer.timezone
-        ).subscribe(res => {console.log(res), this.openSnackBar('Added To Campaign')})
+
+      let lenghtcamlist = this.randomizer.Selcampaignlists.length;
+      lenghtcamlist = +lenghtcamlist;
+      console.log(lenghtcamlist, this.randomizer.Selcampaignlists, this.randomizer.Selmailinglists);
+      if (!this.randomizer.randomize) {
+        // this.randomizer.date = this.timeconv.convertTime( this.randomizer.date,  this.randomizer.time, this.randomizer.timezone);
+        let list;
+        if (lenghtcamlist < 1) { 
+          list = this.randomizer.Selmailinglists } else {
+          list = this.randomizer.Selcampaignlists;
+        }
+        console.log(this.randomizer.Selmailinglists, list);
+        if (list.length > 0) {
+          this.RelationsApi.addmailingtocampaign(
+            accountid,
+            companyid,
+            this.randomizer.templatemailing.id,
+            this.randomizer.date,
+            this.randomizer.time,
+            list,
+            this.randomizer.timezone
+          ).subscribe(res => { console.log(res), this.openSnackBar('Added To Campaigns') })
+        } else { this.openSnackBar('no list or campaign selected') }
       } else {
-        if (this.randomizer.followupdays === undefined){this.randomizer.followupdays = 0}
+        if (this.randomizer.followupdays === undefined) { this.randomizer.followupdays = 0 }
         this.RelationsApi.randomizemailing(
           accountid,
           companyid,
@@ -73,15 +84,15 @@ export class RandomService {
           this.randomizer.dayoftheweek,
           this.randomizer.starthour,
           this.randomizer.endhour,
-          this.randomizer.mailingLists,
-          this.randomizer.campaignLists,
+          this.randomizer.Selmailinglists,
+          this.randomizer.Selcampaignlists,
           this.randomizer.timezone,
           this.randomizer.addtomailing,
           this.randomizer.followupmailing,
           this.randomizer.followupdays,
           this.randomizer.openclickedorall
-          ).subscribe(res => {console.log(res), this.openSnackBar('Added To Campaign')})
-        }
+        ).subscribe(res => { console.log(res), this.openSnackBar('Created Campaigns') })
+      }
       this.ready = true;
     });
   }

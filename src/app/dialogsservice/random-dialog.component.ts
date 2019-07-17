@@ -4,6 +4,7 @@ import { Randomizer } from './randomize';
 import { MatDialog, MAT_DIALOG_DATA } from '@angular/material';
 import { FormControl } from '@angular/forms';
 import { timezones } from '../shared/';
+import { timeconv } from '../shared/timeconv';
 
 export interface Day {
     value: string;
@@ -86,16 +87,20 @@ export class RandomDialog {
     public Category = []
     public timezones = timezones;
     public mailinglistselection;
+    public campaignlistselection;
 
     constructor(
+        public timeconv: timeconv,
         public dialogRef: MatDialogRef<Randomizer>,
         @Inject(MAT_DIALOG_DATA) public data: Randomizer) {
         this.mailinglistselection = this.data.mailingLists;
+        this.campaignlistselection = this.data.campaignLists;
         this.data.Selmailinglists = [];
         this.data.Selcampaignlists = [];
         this.createCheckboxMail(false); // create checkbox for every value
         this.createCheckboxCamp(false); // create checkbox for every value
         this.addAllCat();
+        // this.data.dayoftheweek = [1, 2, 3, 4, 5, 6, 7];
     }
 
     addAllCat(): void {
@@ -110,7 +115,12 @@ export class RandomDialog {
         // console.log(this.Category);
     }
 
+    changeDate() {
+        this.data.date = this.timeconv.convertTime( this.data.date,  this.data.time, this.data.timezone);
+    }
+
     setCatFilter(value) {
+        this.resetfilter();
         this.mailinglistselection =   this.mailinglistselection.filter(function(element) {
             return element.categorie == value;
         });
@@ -122,6 +132,8 @@ export class RandomDialog {
         this.mailinglistselection = this.data.mailingLists;
         this.createCheckboxMail(false); // create checkbox for every value
         this.createCheckboxCamp(false); // create checkbox for every value
+        this.deselectAllMail();
+        this.deselectAllCamp();
     }
 
     toggleaddtomailing(booleanval): void {
@@ -144,28 +156,29 @@ export class RandomDialog {
 
     onAddCampaignlist(i): void {
         // add on index number of selection
+        const campaign2a = this.campaignlistselection[i]
         const listtochk1 = this.data.Selcampaignlists;
-        const alreadySelected2 = listtochk1.indexOf(i);
-        // console.log(i, alreadySelected2)
+        const alreadySelected2 = listtochk1.indexOf(campaign2a.id);
+        console.log(i, alreadySelected2)
         if (alreadySelected2 > -1) {
             this.data.Selcampaignlists.splice(alreadySelected2, 1);
-            // this.checkboxlist[i] = false;
-        } else { this.data.Selcampaignlists.push(i) }
-        // this.checkboxlist[i] = true;
+        } else {
+            this.data.Selcampaignlists.push(campaign2a)
+         }
     }
 
     onAddMailinglist(i): void {
         // add on index number of selection
-        const listtochk2 = this.data.Selmailinglists;
-        const alreadySelected2 = listtochk2.indexOf(i);
-        // console.log(i, alreadySelected2)
+        const list2a =  this.mailinglistselection[i];
+        const listtochk2 =  this.data.Selmailinglists;
+        const alreadySelected2 = listtochk2.indexOf(list2a.id);
+        console.log(list2a, alreadySelected2)
         if (alreadySelected2 > -1) {
             this.data.Selmailinglists.splice(alreadySelected2, 1);
-            // this.checkboxlist[i] = false;
         } else {
-            this.data.Selmailinglists.push(i);
-            // this.checkboxlist[i] = true;
+            this.data.Selmailinglists.push(list2a.id); 
         }
+        console.log( this.data.Selmailinglists);
     }
 
 
@@ -174,9 +187,9 @@ export class RandomDialog {
         this.data.Selmailinglists = [];
         let i2 = 0;
         this.mailinglistselection.forEach(element => {
-            this.data.Selmailinglists.push(i2); ++i2;
+            this.data.Selmailinglists.push(element.id); ++i2;
         });
-        console.log(this.data.Selmailinglists);
+        console.log(this.data.mailingLists);
         this.createCheckboxMail(true);
     }
 
@@ -187,10 +200,9 @@ export class RandomDialog {
 
     selectAllCamp(): void {
         // iterate for
-        this.data.Selcampaignlists = [];
         let i2 = 0;
-        this.data.campaignLists.forEach(element => {
-            this.data.Selcampaignlists.push(i2); ++i2;
+        this.campaignlistselection.forEach(element => {
+            this.data.Selcampaignlists.push(element.id); ++i2;
         });
         console.log(this.data.Selcampaignlists);
         this.createCheckboxCamp(true);

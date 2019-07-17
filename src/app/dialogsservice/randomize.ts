@@ -6,7 +6,7 @@ export interface Randomizer {
     date: string;
     startdate: Date;
     enddate: Date;
-    dayoftheweek: string;
+    dayoftheweek;
     starthour: string;
     endhour: string;
     campaignLists;

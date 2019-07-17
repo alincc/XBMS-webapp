@@ -262,6 +262,9 @@ export class MarketingComponent implements OnInit {
   public showconfirmation = false;
   public updateMailingObj: Mailing = new Mailing;
 
+  public searchboxMailinglist;
+  public searchboxCampaign;
+
   constructor(
     public dialog: MatDialog,
     public dialogWordpress: MatDialog,
@@ -628,6 +631,7 @@ export class MarketingComponent implements OnInit {
 
   onSelectMailingList(mailinglist: Mailinglist): void {
     // this.uploaderContent.subscription.unsubscribe();
+    if (this.selectedMailingList) {this.saveMailingList();}
     this.maillist1 = [];
     this.maillist = [];
     this.mailinglistdetails = [];
@@ -1192,6 +1196,7 @@ export class MarketingComponent implements OnInit {
       .subscribe((mailing: Mailing[]) => this.Mailing = mailing);
   }
 
+
   // get all the all the lists and get total count and total number of leads in it.
   getMailinglist(): void {
     this.mailinglistcount = 0;
@@ -1224,7 +1229,7 @@ export class MarketingComponent implements OnInit {
 
   public saveMailingList(): void {
     this.RelationsApi.updateByIdMailinglist(this.option.id, this.selectedMailingList.id, this.selectedMailingList)
-      .subscribe(res => this.getMailinglist());
+      .subscribe(); //res => this.getMailinglist()
   }
 
 
@@ -1248,9 +1253,21 @@ export class MarketingComponent implements OnInit {
   }
 
   // search mailing subject only
-  public searchGoMailingList(searchentry): void {
-    this.RelationsApi.getMailing(this.option.id, { where: { subject: searchentry } })
-      .subscribe((Mailing: Mailing[]) => this.Mailing = Mailing);
+  public searchGoMailingList(): void {
+    
+    this.RelationsApi.getMailinglist(this.option.id, 
+      {
+        where:
+        {
+          or: [{ "listname":  {"regexp": this.searchboxMailinglist + '/i'} },
+          { "categorie": {"regexp": this.searchboxMailinglist + '/i'} },
+          { "location": {"regexp": this.searchboxMailinglist + '/i'} }
+          ]
+        },
+        order: 'relationname ASC',
+        limit: 20
+      })
+      .subscribe((mailinglist: Mailinglist[]) => this.Mailinglist = mailinglist);
   }
 
   // convert files
@@ -1676,7 +1693,25 @@ export class MarketingComponent implements OnInit {
       {
         include: {
           relation: 'mailinglist', // include the owner object
-        }
+        },
+        order: 'id DESC',
+      })
+      .subscribe((marketingplannerevents: Marketingplannerevents[]) => { this.Marketingplannerevents = marketingplannerevents }
+      )
+  }
+
+
+  public searchGoCampaign(): void {
+
+    this.RelationsApi.getMarketingplannerevents(this.option.id,
+      {
+        include: {
+          relation: 'mailinglist', // include the owner object
+        },
+        where:
+         { "name":  {"regexp": this.searchboxCampaign + '/i'} },
+        order: 'title ASC',
+        limit: 20
       })
       .subscribe((marketingplannerevents: Marketingplannerevents[]) => { this.Marketingplannerevents = marketingplannerevents }
       )

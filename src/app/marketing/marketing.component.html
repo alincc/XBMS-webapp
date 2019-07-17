@@ -752,7 +752,10 @@
             </div>
 
             <div fxFlex="25%" class="Relations" fxLayout="column">
-              <button a mat-raised-button color="primary" (click)="searchGoMailingCampaign(searchTerm.value)">
+                <mat-form-field>
+                    <input matInput [(ngModel)]="searchboxCampaign" (keyup.enter)="searchGoCampaign()" placeholder="Name" />
+                  </mat-form-field>
+              <button a mat-raised-button color="primary" (click)="searchGoCampaign()">
                 <mat-icon>search</mat-icon>Search
               </button>
 
@@ -1278,8 +1281,13 @@ Text Version</textarea>
                 </button>
               </div>
 
-              <button a mat-raised-button color="primary" (click)="searchGoMailingList(searchTerm.value)">
-                <mat-icon>searcj</mat-icon>Search Result
+              
+              <mat-form-field>
+                  <input matInput [(ngModel)]="searchboxMailinglist" (keyup.enter)="searchGoMailingList()" placeholder="Name/Category" />
+                </mat-form-field>
+
+              <button a mat-raised-button color="primary" (click)="searchGoMailingList()">
+                <mat-icon>search</mat-icon>Search Result
               </button>
 
               <button a mat-raised-button (click)="getMailinglist()">

@@ -100,7 +100,7 @@
                     <td>
                         <mat-datepicker #picker2 class="form-half-width"></mat-datepicker>
                         <input [min]="minDate" [max]="maxDate" [matDatepicker]="date"
-                            [(ngModel)]=data.date placeholder="Send Date">
+                            [(ngModel)]=data.date placeholder="Send Date" (change)="changeDate()">
                         <mat-datepicker-toggle matSuffix [for]="date"></mat-datepicker-toggle>
                         <mat-datepicker #date></mat-datepicker>
                     </td>
@@ -109,7 +109,7 @@
                     <td>
                         <mat-form-field>
                           <input matInput [(ngModel)]=data.time placeholder="Time" class="InputField"
-                            type="time">
+                            type="time" (change)="changeDate()">
                         </mat-form-field>
                       </td>
                 </tr>
@@ -117,7 +117,7 @@
                     <td><label>Timezone</label></td>
                     <td>
                         <mat-form-field>
-                            <mat-select placeholder="Timezone" [(ngModel)]="data.timezone">
+                            <mat-select placeholder="Timezone" [(ngModel)]="data.timezone" (selectionChange)="changeDate()">
                                 <mat-option *ngFor="let timezone of timezones" [value]="timezone.value">
                                     {{ timezone.value }}
                                 </mat-option>

@@ -159,7 +159,7 @@ export class DashboardComponent implements OnInit {
           .subscribe((relations: Relations[]) => {
             this.Relations = relations,
               this.getrelationsEntry();
-            this.getAdsMailing();
+              this.getAdsMailing();
             if (this.Account.standardrelation !== undefined) {
               this.RelationsApi.findById(this.Account.standardrelation)
                 .subscribe(rel => {
