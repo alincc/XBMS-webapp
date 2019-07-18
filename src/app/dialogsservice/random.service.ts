@@ -39,27 +39,16 @@ export class RandomService {
 
     dialogRef.afterClosed().subscribe(result => {
       this.randomizer = result;
-
-      // this.randomizer.mailingLists = [];
-      // this.randomizer.Selmailinglists.forEach(indx => {
-      //   this.randomizer.mailingLists.push(mailinglist[indx].id)
-      // });
-
-      // this.randomizer.campaignLists = [];
-      // this.randomizer.Selcampaignlists.forEach(indx => {
-      //   this.randomizer.campaignLists.push(campaignlist[indx].id)
-      // });
-      console.log('The dialog was closed', this.randomizer);
+      // if no campaigns selected send selecte lists this will automatically create a campaign based on the list
 
       let lenghtcamlist = this.randomizer.Selcampaignlists.length;
       lenghtcamlist = +lenghtcamlist;
-      console.log(lenghtcamlist, this.randomizer.Selcampaignlists, this.randomizer.Selmailinglists);
       if (!this.randomizer.randomize) {
-        // this.randomizer.date = this.timeconv.convertTime( this.randomizer.date,  this.randomizer.time, this.randomizer.timezone);
         let list;
+        let createnewcampaign = false;
         if (lenghtcamlist < 1) { 
           list = this.randomizer.Selmailinglists } else {
-          list = this.randomizer.Selcampaignlists;
+          list = this.randomizer.Selcampaignlists, createnewcampaign = true;
         }
         console.log(this.randomizer.Selmailinglists, list);
         if (list.length > 0) {
@@ -70,7 +59,7 @@ export class RandomService {
             this.randomizer.date,
             this.randomizer.time,
             list,
-            this.randomizer.timezone
+            this.randomizer.timezone,
           ).subscribe(res => { console.log(res), this.openSnackBar('Added To Campaigns') })
         } else { this.openSnackBar('no list or campaign selected') }
       } else {

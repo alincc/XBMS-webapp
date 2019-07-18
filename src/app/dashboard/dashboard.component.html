@@ -58,14 +58,53 @@
     </div>
 
     <div fxFlex="30%" fxLayout.lt-md="column" fxLayout="row" fxLayoutWrap="wrap" fxLayoutAlign="space-around">
-        <div fxFlex="40%" class="innerfollowup">
-          <label class="mat-h4">Messages</label>
+        <div fxFlex="50%" class="innerfollowup">
+            <a mat-mini-fab color="primary" style="float: right;" (click)="getLogs()">
+                <mat-icon>refresh</mat-icon>
+              </a>
+          <label class="mat-h4">Logs</label>
           <mat-divider></mat-divider>
-          <div>
-            <mat-list class="followuptable">
-  
-            </mat-list>
-          </div>
+          <table class="websitedata">
+            <tr fxLayout="column" fxLayoutWrap="wrap" fxLayoutAlign="space-around">
+              <mat-list-item>
+                  <th fxFlex="20%" class="thwebsitetr">
+                      <label class="followuplist">User</label>
+                    </th>
+                <th fxFlex="20%" class="thwebsitetr">
+                  <label class="followuplist">Subject</label>
+                </th>
+                <th fxFlex="30%" class="thwebsitetr">
+                  <label class="followuplist">code</label>
+                </th>
+                <th fxFlex="20%" class="thwebsitetr">
+                  <label class="followuplist">Date</label>
+                </th>
+                <th fxFlex="20%" class="thwebsitetr">
+                    </th>
+              </mat-list-item>
+            </tr>
+            <tr fxLayout="column" fxLayoutWrap="wrap" fxLayoutAlign="space-around" *ngFor="let logs of logger; let i = index ">
+              <mat-list-item>
+                  <td fxFlex="20%" class="tdwebsitetr">
+                      <label class="followuplist">{{ logs.user}}</label>
+                    </td>
+                <td fxFlex="20%" class="tdwebsitetr">
+                  <label class="followuplist">{{ logs.relationsId}}</label>
+                </td>
+                <td fxFlex="20%" class="tdwebsitetr">
+                  <label class="followuplist">{{ logs.code | slice:0:50 }}</label>
+                </td>
+                <td fxFlex="20%" class="tdwebsitetr">
+                  <label class="followuplist">{{ logs.date | date:'medium'}}</label>
+                </td>
+                <td fxFlex="20%" class="tdwebsitetr">
+                    <label (click)="deleteLog(i)" class="followuplist">Delete</label>
+                  </td>
+              </mat-list-item>
+              <mat-divider></mat-divider>
+            </tr>
+          </table>
+        
         </div>
   
         <div fxFlex="50%" class="innerfollowup">

@@ -1,5 +1,7 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import {
+  LoggerApi,
+  Logger,
   Account,
   AccountApi,
   CallsApi,
@@ -49,6 +51,7 @@ export class DashboardComponent implements OnInit {
   public analyticsresult: any;
   public Account: Account = new Account();
   public Relations: Relations[];
+  public logger: Logger[];
   public Mailing = [];
   public mailstatsspinner = false;
   public Googleanalyticsnumbers = [];
@@ -106,6 +109,7 @@ export class DashboardComponent implements OnInit {
   public Marketingplannerevents: Marketingplannerevents[];
 
   constructor(
+    public loggerApi: LoggerApi,
     public TwitterApi: TwitterApi,
     public MarketingplannereventsApi: MarketingplannereventsApi,
     public WebsitetrackerApi: WebsitetrackerApi,
@@ -164,7 +168,8 @@ export class DashboardComponent implements OnInit {
               this.RelationsApi.findById(this.Account.standardrelation)
                 .subscribe(rel => {
                   this.onSelectRelation(rel, null)
-                  this.getWebsiteTracker()
+                  this.getWebsiteTracker();
+                  this.getLogs();
                 })
             }
             if (this.Account.standardGa) {
@@ -182,6 +187,17 @@ export class DashboardComponent implements OnInit {
   onSelectRelation(option, i): void {
     this.option = option;
     this.AccountApi.addStdRelation(this.Account.id, option.id).subscribe()
+  }
+
+  getLogs(): void {
+    this.CompanyApi.getLogger(this.Account.companyId).subscribe((logger: Logger[]) => {
+      this.logger = logger;
+    })
+  }
+
+  deleteLog(i): void {
+    this.CompanyApi.destroyByIdLogger(this.Account.companyId, this.logger[i].id)
+    .subscribe(res => {this.getLogs(); });
   }
 
   getAdsMailing(): void {
@@ -210,7 +226,7 @@ export class DashboardComponent implements OnInit {
               this.Mailing.push(itemMailing)
             })
           })
-        console.log(this.Mailing);
+        // console.log(this.Mailing);
         //  objects are being sorted
         this.Mailing = this.Mailing.sort((n1, n2) => {
           return this.naturalCompare(n1.date, n2.date)
