@@ -3501,6 +3501,8 @@ export class RelationsApi extends BaseLoopBackApi {
    *
    * @param {string} timezone 
    *
+   * @param {boolean} createnewcampaign 
+   *
    * @param {object} data Request data.
    *
    * This method does not accept any data. Supply an empty object.
@@ -3514,7 +3516,7 @@ export class RelationsApi extends BaseLoopBackApi {
    * This usually means the response is a `Relations` object.)
    * </em>
    */
-  public addmailingtocampaign(id: any = {}, companyid: any = {}, templatemailingid: any = {}, date: any = {}, time: any = {}, campaignLists: any = {}, timezone: any = {}, customHeaders?: Function): Observable<any> {
+  public addmailingtocampaign(id: any = {}, companyid: any = {}, templatemailingid: any = {}, date: any = {}, time: any = {}, campaignLists: any = {}, timezone: any = {}, createnewcampaign: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "POST";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
     "/relations/addmailingtocampaign/:id";
@@ -3529,6 +3531,7 @@ export class RelationsApi extends BaseLoopBackApi {
     if (typeof time !== 'undefined' && time !== null) _urlParams.time = time;
     if (typeof campaignLists !== 'undefined' && campaignLists !== null) _urlParams.campaignLists = campaignLists;
     if (typeof timezone !== 'undefined' && timezone !== null) _urlParams.timezone = timezone;
+    if (typeof createnewcampaign !== 'undefined' && createnewcampaign !== null) _urlParams.createnewcampaign = createnewcampaign;
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
     return result;
   }

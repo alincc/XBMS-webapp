@@ -713,7 +713,8 @@ export class MaileditorComponent implements OnInit {
                 sectionStyle: sectionStyle,
                 columnStyle: columnStyle,
                 preview: this.preview,
-                font: this.font
+                font: this.font,
+                companyId: this.option.companyId
               })
                 .subscribe(res => {
                   this.snackBar.open("Template Created", undefined, {

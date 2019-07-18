@@ -41,6 +41,7 @@ export interface MailingInterface {
   "selectedlists"?: any;
   "toopened"?: boolean;
   "toclicked"?: boolean;
+  "companyId"?: string;
   "id"?: any;
   "relationsId"?: any;
   "marketingplannereventsId"?: any;
@@ -86,6 +87,7 @@ export class Mailing implements MailingInterface {
   "selectedlists": any;
   "toopened": boolean;
   "toclicked": boolean;
+  "companyId": string;
   "id": any;
   "relationsId": any;
   "marketingplannereventsId": any;
@@ -271,6 +273,10 @@ export class Mailing implements MailingInterface {
         "toclicked": {
           name: 'toclicked',
           type: 'boolean'
+        },
+        "companyId": {
+          name: 'companyId',
+          type: 'string'
         },
         "id": {
           name: 'id',

@@ -927,7 +927,8 @@ export class MarketingComponent implements OnInit {
   }
 
   createMailing(): void {
-    this.RelationsApi.createMailing(this.option.id, { subject: 'new', relationname: this.option.relationname })
+    this.RelationsApi.createMailing(this.option.id,
+      { subject: 'new', relationname: this.option.relationname, companyId: this.option.companyId })
       .subscribe(res => {  this.onSelectMailing(res), this.getMailing(); });
   }
 
@@ -941,6 +942,9 @@ export class MarketingComponent implements OnInit {
     this.selectedMailing.sectionStyle = this.copyfrommailing.sectionStyle;
     this.selectedMailing.templatearray = this.copyfrommailing.templatearray;
     this.selectedMailing.columnStyle = this.copyfrommailing.columnStyle;
+    this.selectedMailing.relationname = this.copyfrommailing.relationname,
+    this.selectedMailing.preview = this.copyfrommailing.preview,
+    this.selectedMailing.companyId = this.copyfrommailing.companyId
   }
 
   sendMailing(): void {
@@ -1752,6 +1756,12 @@ export class MarketingComponent implements OnInit {
     this.CampaignMailing[i].to = this.copyfrommailing.to;
     this.CampaignMailing[i].from = this.copyfrommailing.from;
     this.CampaignMailing[i].title = this.copyfrommailing.title;
+    // this.CampaignMailing[i].sectionStyle = this.copyfrommailing.sectionStyle;
+    // this.CampaignMailing[i].templatearray = this.copyfrommailing.templatearray;
+    // this.CampaignMailing[i].columnStyle = this.copyfrommailing.columnStyle;
+    this.CampaignMailing[i].relationname = this.copyfrommailing.relationname,
+    this.CampaignMailing[i].preview = this.copyfrommailing.preview,
+    this.CampaignMailing[i].companyId = this.copyfrommailing.companyId
   }
 
   public showTemplatePreview(): void {
@@ -1890,10 +1900,12 @@ export class MarketingComponent implements OnInit {
   // todo change 
   onAddItems(event: MatAutocompleteSelectedEvent) {
     const t: Mailinglist = event.option.value;
+    console.log(t);
     // if array is empty then push the elements
     if (this.selectedItems.length === 0) {
       this.selectedItems.push(t.listname);
       this.selectedMarketingplannerevents.mailinglistId.push(t.id);
+      this.selectedMarketingplannerevents.mailinglist.push(t);
       // this.selectedMarketingplannerevents.mailinglist.push(t);
     } else {
       // if items already present then items will not be added to the array
@@ -1902,6 +1914,7 @@ export class MarketingComponent implements OnInit {
       if (selectMailingStr.indexOf(t.listname) === -1) {
         this.selectedItems.push(t.listname);
         this.selectedMarketingplannerevents.mailinglistId.push(t.id);
+        this.selectedMarketingplannerevents.mailinglist.push(t);
         // this.selectedMarketingplannerevents.mailinglist.push(t);
       }
     };
@@ -1919,6 +1932,7 @@ export class MarketingComponent implements OnInit {
       this.selectedMailing.selectedlists = [];
     }
     const t = event.option.value;
+    console.log(t);
     // if array is empty then push the elements
     // if (this.selectedItems.length === 0) {
     //   const listn = t.listname;
@@ -1945,6 +1959,7 @@ export class MarketingComponent implements OnInit {
 
 
   onAddItemManual($event){
+    console.log($event)
     if (this.selectedMailing.mailinglist === undefined) {
       this.selectedMailing.mailinglist = [];
     }
@@ -2085,8 +2100,7 @@ export class MarketingComponent implements OnInit {
   public updatecampaigns(): string {
     let message
     this.selectedMarketingplannerevents.scheduled = true;
-    if (this.selectedMarketingplannerevents.mailinglist.length < 1) { message = 'Mailinglist missing' }
-
+    if (this.selectedMarketingplannerevents.mailinglistId.length < 1) { message = 'Mailinglist missing' }
     if (message !== undefined) { return message }
 
     const mailtolist = [];
@@ -2133,7 +2147,6 @@ export class MarketingComponent implements OnInit {
             tolist = mailtolist.join(', ')
           } else { tolist = 'clicked' + tolist }
         }
-
 
         mailingElement.to = tolist;
         mailingElement.scheduled = true;
