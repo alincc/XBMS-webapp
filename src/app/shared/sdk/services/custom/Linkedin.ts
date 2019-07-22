@@ -307,7 +307,7 @@ export class LinkedinApi extends BaseLoopBackApi {
    *
    * @param {string} token 
    *
-   * @param {string} id 
+   * @param {string} sendaccountid 
    *
    * @param {string} comment 
    *
@@ -328,7 +328,7 @@ export class LinkedinApi extends BaseLoopBackApi {
    * This usually means the response is a `Linkedin` object.)
    * </em>
    */
-  public linkedinsharecompanyupdate(token: any = {}, id: any = {}, comment: any = {}, title: any = {}, description: any = {}, submittedurl: any = {}, submittedimageurl: any = {}, customHeaders?: Function): Observable<any> {
+  public linkedinsharecompanyupdate(token: any = {}, sendaccountid: any = {}, comment: any = {}, title: any = {}, description: any = {}, submittedurl: any = {}, submittedimageurl: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
     "/linkedins/linkedinsharecompanyupdate";
@@ -336,11 +336,145 @@ export class LinkedinApi extends BaseLoopBackApi {
     let _postBody: any = {};
     let _urlParams: any = {};
     if (typeof token !== 'undefined' && token !== null) _urlParams.token = token;
+    if (typeof sendaccountid !== 'undefined' && sendaccountid !== null) _urlParams.sendaccountid = sendaccountid;
     if (typeof comment !== 'undefined' && comment !== null) _urlParams.comment = comment;
     if (typeof title !== 'undefined' && title !== null) _urlParams.title = title;
     if (typeof description !== 'undefined' && description !== null) _urlParams.description = description;
     if (typeof submittedurl !== 'undefined' && submittedurl !== null) _urlParams.submittedurl = submittedurl;
     if (typeof submittedimageurl !== 'undefined' && submittedimageurl !== null) _urlParams.submittedimageurl = submittedimageurl;
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
+   * <em>
+         * (The remote method definition does not provide any description.)
+         * </em>
+   *
+   * @param {string} token 
+   *
+   * @param {string} url 
+   *
+   * @param {string} content 
+   *
+   * @returns {object} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * <em>
+   * (The remote method definition does not provide any description.
+   * This usually means the response is a `Linkedin` object.)
+   * </em>
+   */
+  public linkedinreq (token: any = {}, url: any = {}, content: any = {}, customHeaders?: Function): Observable<any> {
+    let _method: string = "GET";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/linkedins/linkedinreq";
+    let _routeParams: any = {};
+    let _postBody: any = {};
+    let _urlParams: any = {};
+    if (typeof token !== 'undefined' && token !== null) _urlParams.token = token;
+    if (typeof url !== 'undefined' && url !== null) _urlParams.url = url;
+    if (typeof content !== 'undefined' && content !== null) _urlParams.content = content;
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
+   * <em>
+         * (The remote method definition does not provide any description.)
+         * </em>
+   *
+   * @param {string} token 
+   *
+   * @param {string} url 
+   *
+   * @param {string} content 
+   *
+   * @returns {object} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * <em>
+   * (The remote method definition does not provide any description.
+   * This usually means the response is a `Linkedin` object.)
+   * </em>
+   */
+  public linkedinpost (token: any = {}, url: any = {}, content: any = {}, customHeaders?: Function): Observable<any> {
+    let _method: string = "GET";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/linkedins/linkedinpost";
+    let _routeParams: any = {};
+    let _postBody: any = {};
+    let _urlParams: any = {};
+    if (typeof token !== 'undefined' && token !== null) _urlParams.token = token;
+    if (typeof url !== 'undefined' && url !== null) _urlParams.url = url;
+    if (typeof content !== 'undefined' && content !== null) _urlParams.content = content;
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
+   * <em>
+         * (The remote method definition does not provide any description.)
+         * </em>
+   *
+   * @param {string} token 
+   *
+   * @param {string} shareid 
+   *
+   * @returns {object} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * <em>
+   * (The remote method definition does not provide any description.
+   * This usually means the response is a `Linkedin` object.)
+   * </em>
+   */
+  public deleteshare (token: any = {}, shareid: any = {}, customHeaders?: Function): Observable<any> {
+    let _method: string = "GET";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/linkedins/deleteshare";
+    let _routeParams: any = {};
+    let _postBody: any = {};
+    let _urlParams: any = {};
+    if (typeof token !== 'undefined' && token !== null) _urlParams.token = token;
+    if (typeof shareid !== 'undefined' && shareid !== null) _urlParams.shareid = shareid;
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
+   * <em>
+         * (The remote method definition does not provide any description.)
+         * </em>
+   *
+   * @param {string} token 
+   *
+   * @param {string} shareid 
+   *
+   * @param {string} comment 
+   *
+   * @returns {object} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * <em>
+   * (The remote method definition does not provide any description.
+   * This usually means the response is a `Linkedin` object.)
+   * </em>
+   */
+  public updateshare (token: any = {}, shareid: any = {}, comment: any = {}, customHeaders?: Function): Observable<any> {
+    let _method: string = "GET";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/linkedins/updateshare";
+    let _routeParams: any = {};
+    let _postBody: any = {};
+    let _urlParams: any = {};
+    if (typeof token !== 'undefined' && token !== null) _urlParams.token = token;
+    if (typeof shareid !== 'undefined' && shareid !== null) _urlParams.shareid = shareid;
+    if (typeof comment !== 'undefined' && comment !== null) _urlParams.comment = comment;
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
     return result;
   }

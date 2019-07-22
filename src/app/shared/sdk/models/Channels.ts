@@ -32,6 +32,8 @@ export interface ChannelsInterface {
   "send"?: boolean;
   "scheduled"?: boolean;
   "primairychannel"?: boolean;
+  "shareurl"?: string;
+  "userid"?: string;
   "id"?: any;
   "publicationsId"?: any;
   relations?: Relations;
@@ -65,6 +67,8 @@ export class Channels implements ChannelsInterface {
   "send": boolean;
   "scheduled": boolean;
   "primairychannel": boolean;
+  "shareurl": string;
+  "userid": string;
   "id": any;
   "publicationsId": any;
   relations: Relations;
@@ -212,6 +216,14 @@ export class Channels implements ChannelsInterface {
           name: 'primairychannel',
           type: 'boolean',
           default: false
+        },
+        "shareurl": {
+          name: 'shareurl',
+          type: 'string'
+        },
+        "userid": {
+          name: 'userid',
+          type: 'string'
         },
         "id": {
           name: 'id',
