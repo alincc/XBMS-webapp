@@ -555,7 +555,14 @@ export class SettingsComponent implements OnInit {
       window.open(url);
 
     }
-
     );
   }
+
+
+  getlinkedinconnections(): void {
+    this.LinkedinApi.linkedinconnections(this.selectedLinkedin.accesstoken).subscribe(res => {
+      console.log(res);
+    })
+  }
+
 }

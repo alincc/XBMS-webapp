@@ -276,7 +276,6 @@ export class MarketingchannelsComponent implements OnInit {
   }
 
   getLinkedinCompany(): void {
-    setTimeout(() => {
       if (this.linkedinoption.accesstoken) {
         this.LinkedinApi.linkedinadmincompanypage(this.linkedinoption.accesstoken)
           .subscribe(res => {
@@ -287,7 +286,6 @@ export class MarketingchannelsComponent implements OnInit {
             }
           });
       }
-    }, 500);
   }
 
   getLinkedinAccount(): void {

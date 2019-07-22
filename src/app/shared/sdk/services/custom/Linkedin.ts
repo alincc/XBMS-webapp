@@ -355,8 +355,6 @@ export class LinkedinApi extends BaseLoopBackApi {
    *
    * @param {string} url 
    *
-   * @param {string} content 
-   *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
    *   from the server.
@@ -366,7 +364,7 @@ export class LinkedinApi extends BaseLoopBackApi {
    * This usually means the response is a `Linkedin` object.)
    * </em>
    */
-  public linkedinreq (token: any = {}, url: any = {}, content: any = {}, customHeaders?: Function): Observable<any> {
+  public linkedinreq (token: any = {}, url: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
     "/linkedins/linkedinreq";
@@ -375,7 +373,6 @@ export class LinkedinApi extends BaseLoopBackApi {
     let _urlParams: any = {};
     if (typeof token !== 'undefined' && token !== null) _urlParams.token = token;
     if (typeof url !== 'undefined' && url !== null) _urlParams.url = url;
-    if (typeof content !== 'undefined' && content !== null) _urlParams.content = content;
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
     return result;
   }
