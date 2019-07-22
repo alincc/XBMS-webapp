@@ -78,6 +78,7 @@
 }
 
 .boxmailing {
+  font-size: 8pt;
   background: linear-gradient(
     to bottom,
     white 0%,
@@ -98,7 +99,6 @@
   transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
   margin: 5px;
   padding: 5px;
-  font-size: 13px;
 }
 
 .boxmailing::after {
@@ -223,7 +223,7 @@ mat-form-field {
 }
 
 .selectionboxmailing {
-  width: 8%;
+  width: 6%;
 }
 
 .selectionboxmailing80 {
@@ -565,3 +565,12 @@ mat-form-field {
   position: fixed;
   z-index: 99;
 }
+
+.mailingform{
+  width: 100%;
+}
+
+.mailingform td {
+  width: 50%;
+}
+

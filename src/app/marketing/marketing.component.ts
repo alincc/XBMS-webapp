@@ -1688,7 +1688,6 @@ export class MarketingComponent implements OnInit {
           this.pageview = this.Googleanalyticsreturn[2];
         } else { this.avgTimeOnPage = 'No Data to show' }
       }), this.openSnackBar('No website statistics found, try back later'); // error => { console.log(error),
-
   }
 
 
@@ -1704,9 +1703,7 @@ export class MarketingComponent implements OnInit {
       )
   }
 
-
   public searchGoCampaign(): void {
-
     this.RelationsApi.getMarketingplannerevents(this.option.id,
       {
         include: {
@@ -2174,7 +2171,19 @@ export class MarketingComponent implements OnInit {
   publishAdwordsCampaign(): void { }
 
 
-
+  copyMessage(val: string) {
+    let selBox = document.createElement('textarea');
+    selBox.style.position = 'fixed';
+    selBox.style.left = '0';
+    selBox.style.top = '0';
+    selBox.style.opacity = '0';
+    selBox.value = val;
+    document.body.appendChild(selBox);
+    selBox.focus();
+    selBox.select();
+    document.execCommand('copy');
+    document.body.removeChild(selBox);
+  }
 
 };
 

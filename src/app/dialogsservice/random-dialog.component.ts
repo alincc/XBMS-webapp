@@ -163,8 +163,9 @@ export class RandomDialog {
         if (alreadySelected2 > -1) {
             this.data.Selcampaignlists.splice(alreadySelected2, 1);
         } else {
-            this.data.Selcampaignlists.push(campaign2a)
+            this.data.Selcampaignlists.push(campaign2a.id)
          }
+         console.log (this.data.Selcampaignlists);
     }
 
     onAddMailinglist(i): void {

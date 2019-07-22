@@ -49,6 +49,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { OnDestroy } from '@angular/core';
 import { SpeechRecognitionService } from '../shared/speechservice/speechservice';
 import { fontoptions } from './../settings/google-fonts-list';
+import { DomSanitizer } from '@angular/platform-browser';
 const EMAIL_REGEX = /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
 
 import { FileUploader } from 'ng2-file-upload';
@@ -200,6 +201,7 @@ export class RelationComponent implements OnInit {
   public togglesearch = false;
 
   constructor(
+    private sanitizer: DomSanitizer,
     private speechRecognitionService: SpeechRecognitionService,
     private _formBuilder: FormBuilder,
     public snackBar: MatSnackBar,
@@ -717,14 +719,15 @@ export class RelationComponent implements OnInit {
     this.RelationsApi.createLinkedin(this.selectedRelation.id, this.newLinkedin)
       .subscribe(res => {
         this.newLinkedin = res,
-          this.redirectLinkedin(this.newLinkedin.id)
+      this.redirectLinkedin(this.newLinkedin.id)
       })
   };
 
   redirectLinkedin(id): void {
     var redirect;
     var domain = window.location.protocol + window.location.hostname; // + ":3000"; //set domain + protocol + 3000 for test purpose only
-    this.LinkedinApi.linkedinauth(id, domain).subscribe(res => { redirect = res, window.location.href = redirect; });
+    this.LinkedinApi.linkedinauth(id, domain).subscribe(res => {
+      redirect = res, window.location.href = redirect.request.uri.href; });
   };
 
   deleteLinkedin(i): void {

@@ -72,9 +72,10 @@ export class MarketingchannelsComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-
+    if (this.option.id) {
+      this.getChannels();
+    }
   }
-  
 
 
   public openSnackBar(message: string) {
@@ -135,7 +136,10 @@ export class MarketingchannelsComponent implements OnInit {
   }
 
   getChannels(): void {
-    this.RelationsApi.getChannels(this.option.id)
+    this.RelationsApi.getChannels(this.option.id,
+      {
+        order: 'id ASC',
+      })
       .subscribe((Channels: Channels[]) => this.Channels = Channels);
     this.getTwitter();
     this.getLinkedin();
@@ -193,15 +197,15 @@ export class MarketingchannelsComponent implements OnInit {
   }
 
 
-  public openDialogDeleteChannel(i) {
+  public openDialogDeleteChannel() {
     this.dialogsService
       .confirm('Delete scheduled Post', 'Are you sure you want to do this?')
       .subscribe(res => {
-        this.selectedOption = res, this.deleteChannel(this.selectedOption, i);
+        this.selectedOption = res, this.deleteChannel(this.selectedOption);
       });
   }
 
-  public deleteChannel(selectedOption, i): void {
+  public deleteChannel(selectedOption): void {
     //delete all tweets  
     if (selectedOption == true) {
       //
@@ -216,7 +220,7 @@ export class MarketingchannelsComponent implements OnInit {
       this.twittertoggle = false;
       this.instagramtoggle = false;
       this.selectedChannel = null,
-        this.Channels.splice(i, 1), //delete only use new gethcannels? 
+        //this.Channels.splice(i, 1), //delete only use new gethcannels? 
         this.getChannels();
     }
   }
@@ -264,9 +268,28 @@ export class MarketingchannelsComponent implements OnInit {
     setTimeout(() => {
       if (this.linkedinoption.accesstoken) {
         this.LinkedinApi.linkedinadmincompanypage(this.linkedinoption.accesstoken)
-          .subscribe(res => { this.companypage = Array.from(res.values) });
+          .subscribe(res => { 
+            if(res.errorCode !== undefined){
+              this.openSnackBar(res.message + ' please renew account');
+            } else {
+              this.companypage = Array.from(res.values);
+            }
+          });
       }
     }, 500);
+  }
+
+  getLinkedinAccount(): void {
+      if (this.linkedinoption.accesstoken) {
+        this.LinkedinApi.linkedinme(this.linkedinoption.accesstoken)
+          .subscribe(res => { 
+            if(res.errorCode !== undefined){
+              this.openSnackBar(res.message + ' please renew account');
+            } else {
+              console.log(res);
+            }
+          });
+      } else {console.log('token missing')}
   }
 
   //share to company linkedin page

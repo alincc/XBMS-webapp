@@ -75,8 +75,8 @@ export class ReturnpageComponent implements OnInit, OnDestroy {
         this.state = params['state'];
       });
 
-      //facebook returns string instead of parameter so convert this here:
-      if (typeof this.state == 'string'){
+      //facebook returns string instead of parameter so convert this here:  typeof this.state === 'string'
+      if (typeof this.state === 'object'){
         var myobj = JSON.parse(this.state);
         console.log(myobj);
 
@@ -101,7 +101,7 @@ export class ReturnpageComponent implements OnInit, OnDestroy {
 
     else if (this.source === 'linkedin') {
       this.LinkedinApi.linkedinaccesstoken(this.id, this.code, this.state)
-        .subscribe(res => this.response = res);
+        .subscribe(res => this.response = 'linkedin account atted');
     }
 
     else this.response = "Source undefined"

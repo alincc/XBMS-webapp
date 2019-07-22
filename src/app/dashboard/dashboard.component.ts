@@ -207,7 +207,7 @@ export class DashboardComponent implements OnInit {
     //  used include to get the related mailings and then run foreach on the events and a foreach for all the mailings
 
     this.Mailing = [];
-    this.RelationsApi.getMarketingplannerevents(this.option.id,
+    this.RelationsApi.getMarketingplannerevents(this.Account.standardrelation,
       {
         where: { scheduled: true },
         include: {

@@ -47,8 +47,8 @@ export class RandomService {
         let list;
         let createnewcampaign = false;
         if (lenghtcamlist < 1) { 
-          list = this.randomizer.Selmailinglists } else {
-          list = this.randomizer.Selcampaignlists, createnewcampaign = true;
+          list = this.randomizer.Selmailinglists, createnewcampaign = true; } else {
+          list = this.randomizer.Selcampaignlists
         }
         console.log(this.randomizer.Selmailinglists, list);
         if (list.length > 0) {
@@ -60,6 +60,7 @@ export class RandomService {
             this.randomizer.time,
             list,
             this.randomizer.timezone,
+            createnewcampaign
           ).subscribe(res => { console.log(res), this.openSnackBar('Added To Campaigns') })
         } else { this.openSnackBar('no list or campaign selected') }
       } else {
