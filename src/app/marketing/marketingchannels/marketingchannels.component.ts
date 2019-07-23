@@ -48,7 +48,7 @@ export class MarketingchannelsComponent implements OnInit {
   public errorMessage;
 
   public twitteroption: Twitter = new Twitter();
-  public linkedinoption: Linkedin = new Linkedin();
+  public linkedinoption;
   public facebookoption: Facebook = new Facebook();
 
   public Twitter: Twitter[];
@@ -119,13 +119,23 @@ export class MarketingchannelsComponent implements OnInit {
     this.linkedintoggle = false;
     this.twittertoggle = false;
     this.instagramtoggle = false;
-    if (this.selectedChannel.type === "linkedin") { this.linkedintoggle = true }
+    if (this.selectedChannel.type === "linkedin") { 
+      this.linkedintoggle = true;
+      if (this.selectedChannel.companypage){this.selectcompanypage}
+      if (this.selectedChannel.userid){
+        this.linkedinoption =  this.filterItems(this.selectedChannel.userid)}
+    }
     if (this.selectedChannel.type === "twitter") {
       this.twittertoggle = true,
         this.twitteroption = this.findTwitter(this.Twitter, this.selectedChannel.channelsendaccountid)
     }
     if (this.selectedChannel.type === "instagram") { this.instagramtoggle = true }
     if (this.selectedChannel.type === "facebook") { this.facebooktoggle = true }
+  }
+
+  filterItems(idcheck: string) {
+    return this.Linkedin.filter(item =>
+      item.id.toLowerCase().indexOf(idcheck) === 0);
   }
 
   findTwitter(Twitter, id) {
@@ -156,7 +166,8 @@ export class MarketingchannelsComponent implements OnInit {
 
 
   saveChannel(): void {
-
+    this.selectedChannel.companypage = this.selectcompanypage.$URN;
+    this.selectedChannel.userid = this.linkedinoption.id;
     if (this.selectedChannel.date == null) {
       this.date = moment().format();
       this.selectedChannel.date = this.date
@@ -308,7 +319,7 @@ export class MarketingchannelsComponent implements OnInit {
     this.saveChannel();
     this.LinkedinApi.linkedinsharecompanyupdate(
       this.linkedinoption.accesstoken,
-      this.selectedChannel.channelsendaccountid,
+      this.selectedChannel.channelsendaccountid, //account used to send message
       this.selectedChannel.text,
       this.selectedChannel.title,
       this.selectedChannel.title,
@@ -318,16 +329,12 @@ export class MarketingchannelsComponent implements OnInit {
       console.log(res);
       this.selectedChannel.send = true;
       this.selectedChannel.channelsendid = res.activity;
-      this.selectedChannel.companypage = this.linkedinoption.name;
-      this.selectedChannel.userid = this.linkedinoption.id;
       this.saveChannel();
     });
   }
 
-  scheduleLinkedinMessage(): void {
+  scheduleLinkedinCompanyMessage(): void {
     this.selectedChannel.scheduled = true;
-    this.selectedChannel.companypage = this.linkedinoption.name;
-    this.selectedChannel.userid = this.linkedinoption.id;
     this.saveChannel();
   }
 
