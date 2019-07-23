@@ -119,11 +119,14 @@ export class MarketingchannelsComponent implements OnInit {
     this.linkedintoggle = false;
     this.twittertoggle = false;
     this.instagramtoggle = false;
-    if (this.selectedChannel.type === "linkedin") { 
+    if (this.selectedChannel.type === "linkedin") {
       this.linkedintoggle = true;
-      if (this.selectedChannel.companypage){this.selectcompanypage}
-      if (this.selectedChannel.userid){
-        this.linkedinoption =  this.filterItems(this.selectedChannel.userid)}
+      if (this.selectedChannel.userid) {
+        this.linkedinoption = this.findLinkedin(this.Linkedin, this.selectedChannel.userid);
+      } else {this.linkedinoption = '';}
+      if (this.selectedChannel.companypage) {
+        this.getLinkedinCompany();
+      } else {this.selectcompanypage = '';}
     }
     if (this.selectedChannel.type === "twitter") {
       this.twittertoggle = true,
@@ -133,13 +136,23 @@ export class MarketingchannelsComponent implements OnInit {
     if (this.selectedChannel.type === "facebook") { this.facebooktoggle = true }
   }
 
-  filterItems(idcheck: string) {
-    return this.Linkedin.filter(item =>
-      item.id.toLowerCase().indexOf(idcheck) === 0);
+  findLinkedinComp(companypages, id) {
+    for (const item of companypages) {
+      if (item.$URN === id) {
+        return item
+      }
+    }
+  }
+
+  findLinkedin(Linkedin, id) {
+    for (const item of Linkedin) {
+      if (item.id === id) {
+        return item
+      }
+    }
   }
 
   findTwitter(Twitter, id) {
-    // return Twitter.id === this.selectedChannel.channelsendaccountid;
     for (const item of Twitter) {
       if (item.id === id) {
         return item
@@ -150,7 +163,7 @@ export class MarketingchannelsComponent implements OnInit {
   getChannels(): void {
     this.RelationsApi.getChannels(this.option.id,
       {
-        order: 'id ASC',
+        order: 'id DESC',
       })
       .subscribe((Channels: Channels[]) => this.Channels = Channels);
     this.getTwitter();
@@ -166,8 +179,12 @@ export class MarketingchannelsComponent implements OnInit {
 
 
   saveChannel(): void {
-    this.selectedChannel.companypage = this.selectcompanypage.$URN;
+    if (this.selectcompanypage.$URN){
+      this.selectedChannel.companypage = this.selectcompanypage.$URN;
+    };
+  
     this.selectedChannel.userid = this.linkedinoption.id;
+
     if (this.selectedChannel.date == null) {
       this.date = moment().format();
       this.selectedChannel.date = this.date
@@ -184,8 +201,6 @@ export class MarketingchannelsComponent implements OnInit {
     }
 
     this.selectedChannel.date = this.timeconv.convertTime(this.selectedChannel.date, this.selectedChannel.timeinterval, this.selectedChannel.timezone);
-
-
     // this.date = moment().format();
     // set ID to sendaccountid for reference auth token
     if (this.selectedChannel.type === 'twitter') { this.selectedChannel.channelsendaccountid = this.twitteroption.id }
@@ -287,16 +302,19 @@ export class MarketingchannelsComponent implements OnInit {
   }
 
   getLinkedinCompany(): void {
-      if (this.linkedinoption.accesstoken) {
-        this.LinkedinApi.linkedinadmincompanypage(this.linkedinoption.accesstoken)
-          .subscribe(res => {
-            if (res.errorCode !== undefined) {
-              this.openSnackBar(res.message + ' please renew account');
-            } else {
-              this.companypage = res;
+    if (this.linkedinoption.accesstoken) {
+      this.LinkedinApi.linkedinadmincompanypage(this.linkedinoption.accesstoken)
+        .subscribe(res => {
+          if (res.errorCode !== undefined) {
+            this.openSnackBar(res.message + ' please renew account');
+          } else {
+            this.companypage = res;
+            if (this.selectedChannel.companypage){
+              this.selectcompanypage = this.findLinkedinComp(this.companypage, this.selectedChannel.companypage);
             }
-          });
-      }
+          }
+        });
+    }
   }
 
   getLinkedinAccount(): void {
@@ -314,12 +332,12 @@ export class MarketingchannelsComponent implements OnInit {
 
   // share to company linkedin page
   postToLinkedinCompanyPage(): void {
-    // this.selectedChannel.channelsendaccountid = this.selectcompanypage.$URN;
+    this.selectedChannel.channelsendaccountid = this.selectcompanypage.$URN;
     // console.log(this.selectedChannel.channelsendaccountid);
     this.saveChannel();
     this.LinkedinApi.linkedinsharecompanyupdate(
       this.linkedinoption.accesstoken,
-      this.selectedChannel.channelsendaccountid, //account used to send message
+      this.selectedChannel.channelsendaccountid, // account used to send message
       this.selectedChannel.text,
       this.selectedChannel.title,
       this.selectedChannel.title,
@@ -333,9 +351,24 @@ export class MarketingchannelsComponent implements OnInit {
     });
   }
 
-  scheduleLinkedinCompanyMessage(): void {
-    this.selectedChannel.scheduled = true;
-    this.saveChannel();
+  updateChannel(): void {
+    if (this.selectedChannel.type === 'linkedin'){
+      this.updateLinkedinMessage();
+    }
+    if (this.selectedChannel.type === 'twitter'){
+      this.updateTwitterMessage();
+    }
+    if (this.selectedChannel.type === 'facebook'){
+      this.updateFacebookMessage();
+    }
+  }
+
+  updateTwitterMessage(): void {
+
+  }
+
+  updateFacebookMessage(): void {
+
   }
 
   updateLinkedinMessage(): void {
@@ -351,28 +384,28 @@ export class MarketingchannelsComponent implements OnInit {
   };
 
 
-postToLinkedinProfile(): void {
+  postToLinkedinProfile(): void {
 
-}
-
-
-
-getFacebook(): void {
-  this.RelationsApi.getFacebook(this.option.id)
-    .subscribe((Facebook: Facebook[]) => this.Facebook = Facebook);
-}
-
-getInstagram(): void {
-}
+  }
 
 
-searchChannels(name): void {
-  name = name.charAt(0).toUpperCase() + name.slice(1);
-  name = name.trim();
-  this.RelationsApi.getChannels({ where: { or: [{ newstitle: name }, { newstext: name }] } })
-    .subscribe((Channels: Channels[]) => this.Channels = Channels,
-      error => this.errorMessage = <any>error);
-}
+
+  getFacebook(): void {
+    this.RelationsApi.getFacebook(this.option.id)
+      .subscribe((Facebook: Facebook[]) => this.Facebook = Facebook);
+  }
+
+  getInstagram(): void {
+  }
+
+
+  searchChannels(name): void {
+    name = name.charAt(0).toUpperCase() + name.slice(1);
+    name = name.trim();
+    this.RelationsApi.getChannels({ where: { or: [{ newstitle: name }, { newstext: name }] } })
+      .subscribe((Channels: Channels[]) => this.Channels = Channels,
+        error => this.errorMessage = <any>error);
+  }
 
 
 

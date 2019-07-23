@@ -8,6 +8,7 @@ export interface TwitterInterface {
   "name"?: string;
   "AccessToken"?: string;
   "AccessTokenSecret"?: string;
+  "screenname"?: string;
   "id"?: any;
   "relationsId"?: any;
   relations?: Relations;
@@ -17,6 +18,7 @@ export class Twitter implements TwitterInterface {
   "name": string;
   "AccessToken": string;
   "AccessTokenSecret": string;
+  "screenname": string;
   "id": any;
   "relationsId": any;
   relations: Relations;
@@ -63,6 +65,10 @@ export class Twitter implements TwitterInterface {
         },
         "AccessTokenSecret": {
           name: 'AccessTokenSecret',
+          type: 'string'
+        },
+        "screenname": {
+          name: 'screenname',
           type: 'string'
         },
         "id": {

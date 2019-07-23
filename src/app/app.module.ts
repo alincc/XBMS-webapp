@@ -2,7 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
 import { Routes, RouterModule } from '@angular/router';
-
+import { NgxTwitterTimelineModule } from 'ngx-twitter-timeline';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatMenuModule, MatButtonModule, MatCheckboxModule,
   MatSidenavModule, MatDialogModule, MatDatepickerModule } from '@angular/material';
@@ -107,6 +107,7 @@ import { SafeHtml } from './pipe/safehtmlpipe.component';
   ],
 
   imports: [
+    NgxTwitterTimelineModule,
        PickerModule,
     ColorPickerModule,
     NgxChartsModule,
