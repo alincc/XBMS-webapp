@@ -275,7 +275,7 @@
             <tr>
               <td>
                 <mat-form-field class="form-full-width">
-                  <input matInput [(ngModel)]=selectedChannel.title placeholder="Title" class="InputField">
+                  <input matInput [disabled]="selectedChannel.send" [(ngModel)]=selectedChannel.title placeholder="Title" class="InputField">
                 </mat-form-field>
               </td>
             </tr>
@@ -409,14 +409,14 @@
               <td>
                 <mat-form-field class="form-full-width">
                   <!-- dropdown nl/de/en etc.  -->
-                  <input matInput [(ngModel)]=selectedChannel.language placeholder="Target Language" class="InputField">
+                  <input matInput [disabled]="selectedChannel.send" [(ngModel)]=selectedChannel.language placeholder="Target Language" class="InputField">
                 </mat-form-field>
               </td>
             </tr>
             <tr rowspan="5">
               <td>
                 <mat-form-field style="width:100%;">
-                  <textarea style="width:100%; min-height: 100px;" matInput #channeltext
+                  <textarea [disabled]="selectedChannel.send" style="width:100%; min-height: 100px;" matInput #channeltext
                     [(ngModel)]=selectedChannel.text placeholder="content">Text Version</textarea>
                   <mat-hint align="end">{{channeltext.value.length}}</mat-hint>
                 </mat-form-field>
@@ -433,11 +433,16 @@
             </tr>
             <tr>
               <td>
-                <button a mat-raised-button (click)="saveChannel()">Save/Schedule</button>
-                <button a mat-raised-button (click)="scheduleChannel()">Schedule</button>
-                <button a mat-raised-button (click)="postToTwitter()">Tweet</button>
+                <button a mat-raised-button *ngIf="!selectedChannel.send" (click)="saveChannel()">Save/Schedule</button>
+                <button a mat-raised-button *ngIf="!selectedChannel.send" (click)="scheduleChannel()">Schedule</button>
+                <button a mat-raised-button *ngIf="!selectedChannel.send" (click)="postToTwitter()">Tweet</button>
                 <button a mat-raised-button (click)="openDialogDeleteChannel(i)">Delete Post</button>
               </td>
+            </tr>
+            <tr *ngIf="selectedChannel.send">
+              Favorites 
+              Retweets
+              Seen
             </tr>
             <tr>
               <td>

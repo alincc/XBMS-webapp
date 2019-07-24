@@ -364,7 +364,7 @@ export class LinkedinApi extends BaseLoopBackApi {
    * This usually means the response is a `Linkedin` object.)
    * </em>
    */
-  public linkedinreq (token: any = {}, url: any = {}, customHeaders?: Function): Observable<any> {
+  public linkedinreq(token: any = {}, url: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
     "/linkedins/linkedinreq";
@@ -429,7 +429,7 @@ export class LinkedinApi extends BaseLoopBackApi {
    * This usually means the response is a `Linkedin` object.)
    * </em>
    */
-  public deleteshare (token: any = {}, shareid: any = {}, customHeaders?: Function): Observable<any> {
+  public deleteshare(token: any = {}, shareid: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
     "/linkedins/deleteshare";
@@ -462,7 +462,7 @@ export class LinkedinApi extends BaseLoopBackApi {
    * This usually means the response is a `Linkedin` object.)
    * </em>
    */
-  public updateshare (token: any = {}, shareid: any = {}, comment: any = {}, customHeaders?: Function): Observable<any> {
+  public updateshare(token: any = {}, shareid: any = {}, comment: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
     "/linkedins/updateshare";

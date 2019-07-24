@@ -48,7 +48,7 @@ export class MarketingchannelsComponent implements OnInit {
   public errorMessage;
 
   public twitteroption: Twitter = new Twitter();
-  public linkedinoption;
+  public linkedinoption: Linkedin = new Linkedin();
   public facebookoption: Facebook = new Facebook();
 
   public Twitter: Twitter[];
@@ -119,19 +119,34 @@ export class MarketingchannelsComponent implements OnInit {
     this.linkedintoggle = false;
     this.twittertoggle = false;
     this.instagramtoggle = false;
+
     if (this.selectedChannel.type === "linkedin") {
       this.linkedintoggle = true;
       if (this.selectedChannel.userid) {
         this.linkedinoption = this.findLinkedin(this.Linkedin, this.selectedChannel.userid);
-      } else {this.linkedinoption = '';}
+      } else {this.linkedinoption = new Linkedin();
+        ;}
       if (this.selectedChannel.companypage) {
         this.getLinkedinCompany();
       } else {this.selectcompanypage = '';}
     }
+
     if (this.selectedChannel.type === "twitter") {
-      this.twittertoggle = true,
-        this.twitteroption = this.findTwitter(this.Twitter, this.selectedChannel.channelsendaccountid)
+      this.twittertoggle = true;
+      if (this.selectedChannel.userid) {
+        this.twitteroption = this.findTwitter(this.Twitter, this.selectedChannel.userid);
+        console.log(this.twitteroption);
+      } else {this.twitteroption = new Twitter();}
+      if (this.selectedChannel.send){
+        this.TwitterApi.gettweetinfo(
+          this.twitteroption.AccessToken, this.twitteroption.AccessTokenSecret, 
+          this.selectedChannel.channelsendid).subscribe(res => {
+            console.log(res);
+            //this.selectedChannel.views = res.
+          })
+      }
     }
+
     if (this.selectedChannel.type === "instagram") { this.instagramtoggle = true }
     if (this.selectedChannel.type === "facebook") { this.facebooktoggle = true }
   }
@@ -179,11 +194,6 @@ export class MarketingchannelsComponent implements OnInit {
 
 
   saveChannel(): void {
-    if (this.selectcompanypage.$URN){
-      this.selectedChannel.companypage = this.selectcompanypage.$URN;
-    };
-  
-    this.selectedChannel.userid = this.linkedinoption.id;
 
     if (this.selectedChannel.date == null) {
       this.date = moment().format();
@@ -203,9 +213,9 @@ export class MarketingchannelsComponent implements OnInit {
     this.selectedChannel.date = this.timeconv.convertTime(this.selectedChannel.date, this.selectedChannel.timeinterval, this.selectedChannel.timezone);
     // this.date = moment().format();
     // set ID to sendaccountid for reference auth token
-    if (this.selectedChannel.type === 'twitter') { this.selectedChannel.channelsendaccountid = this.twitteroption.id }
-    if (this.selectedChannel.type === 'facebook') { this.selectedChannel.channelsendaccountid = this.facebookoption.id }
-    if (this.selectedChannel.type === 'linkedin') { this.selectedChannel.channelsendaccountid = this.selectedChannel.channelsendaccountid } //set to companyId.. 
+    // if (this.selectedChannel.type === 'twitter') { this.selectedChannel.channelsendaccountid = this.twitteroption.id }
+    // if (this.selectedChannel.type === 'facebook') { this.selectedChannel.channelsendaccountid = this.facebookoption.id }
+    // if (this.selectedChannel.type === 'linkedin') { this.selectedChannel.channelsendaccountid = this.selectedChannel.channelsendaccountid } //set to companyId.. 
     // if (this.selectedChannel.type === 'instagram') {this.selectedChannel.channelsendaccountid = this.instagramoption.id}
     if (this.selectedChannel.recurrence === true) {
       //  if (this.selectedChannel.date === undefined) { this.selectedChannel.date = this.date; }
@@ -244,16 +254,14 @@ export class MarketingchannelsComponent implements OnInit {
           this.deleteChannelInstance(element.id);
         });
       }
-      this.deleteChannelInstance(this.selectedChannel.id)
-      this.twitteroption = null;
+      this.deleteChannelInstance(this.selectedChannel.id);
+      // this.twitteroption = null;
       this.linkedintoggle = false;
       this.twittertoggle = false;
       this.instagramtoggle = false;
       this.selectedChannel = null,
         // this.Channels.splice(i, 1), // delete only use new gethcannels? 
-        this.getChannels();
-
-
+      this.getChannels();
     }
   }
 
@@ -263,7 +271,9 @@ export class MarketingchannelsComponent implements OnInit {
       console.log(ChannelInst)
       if (ChannelInst.type === "twitter" && ChannelInst.send === true) {
         this.TwitterApi.deletetweet(this.twitteroption.AccessToken,
-          this.twitteroption.AccessTokenSecret, ChannelInst.channelsendid).subscribe();
+          this.twitteroption.AccessTokenSecret, ChannelInst.channelsendid).subscribe(
+            res => {console.log(res);}
+          );
       }
       if (ChannelInst.type === "linkedin" && ChannelInst.send === true) {
         this.LinkedinApi.deleteshare(this.linkedinoption.accesstoken,
@@ -289,10 +299,11 @@ export class MarketingchannelsComponent implements OnInit {
       this.twitteroption.AccessTokenSecret,
       this.selectedChannel.text
     ).subscribe(res => {
-      this.selectedChannel.channelsendid = res,
+      console.log(res);
+      this.selectedChannel.userid = this.twitteroption.id;
+      this.selectedChannel.channelsendid = res.id_str,
         this.selectedChannel.send = true;
-      this.RelationsApi.updateByIdChannels(this.SelectedRelation.id, this.SelectedRelation)
-        .subscribe();
+      this.saveChannel();
     });
   }
 
@@ -345,8 +356,12 @@ export class MarketingchannelsComponent implements OnInit {
       this.selectedChannel.pictureurl
     ).subscribe(res => {
       console.log(res);
+      if (this.selectcompanypage){
+        this.selectedChannel.companypage = this.selectcompanypage.$URN;
+        this.selectedChannel.userid = this.linkedinoption.id;
+      };
       this.selectedChannel.send = true;
-      this.selectedChannel.channelsendid = res.activity;
+      this.selectedChannel.channelsendid = res.id;
       this.saveChannel();
     });
   }
