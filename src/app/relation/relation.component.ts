@@ -733,7 +733,7 @@ export class RelationComponent implements OnInit {
   deleteLinkedin(i): void {
     this.RelationsApi.destroyByIdLinkedin(this.selectedRelation.id, this.Linkedin[i].id)
       .subscribe(res => this.getLinkedin());
-  }
+  }y
 
 
   getFacebook(): void {
@@ -745,21 +745,21 @@ export class RelationComponent implements OnInit {
   linkFacebookAccount(): void {
     this.RelationsApi.createFacebook(this.selectedRelation.id, this.newFacebook)
       .subscribe(res => {
-        this.newFacebook = res,
-          this.redirectFacebook(this.newFacebook.id)
+          this.redirectFacebook(res.id)
           this.openSnackBar("You will be redirected to Facebook.com")
       })
   };
 
-  redirectFacebook(id): void {
+  redirectFacebook(ids): void {
+    console.log(ids);
     var redirect;
     var domain = window.location.protocol + '//' + window.location.hostname //+ ":3000"; //set domain + protocol + 3000 for test purpose only
-    //this.FacebookApi.sessionsconnect(id, domain).subscribe(res => { redirect = res, window.location.href = redirect; });
+    this.FacebookApi.sessionsconnect(ids, domain).subscribe(res => { redirect = res, window.location.href = redirect; });
   };
 
   showFacebook(i): void {
     this.FacebookApi.me(this.Facebook[i].AccessToken)
-      .subscribe(res => this.openSnackBar(res)); //"Accountname: " + res.name
+      .subscribe(res => this.openSnackBar(res)); // "Accountname: " + res.name
   }
 
   deleteFacebook(i): void {

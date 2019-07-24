@@ -76,12 +76,13 @@ export class ReturnpageComponent implements OnInit, OnDestroy {
       });
 
       //facebook returns string instead of parameter so convert this here:  typeof this.state === 'string'
-      if (typeof this.state === 'object'){
-        var myobj = JSON.parse(this.state);
-        console.log(myobj);
+      console.log(this.state);
+      let stateT = JSON.parse(this.state);
+      if (typeof stateT === 'object'){
+        console.log(stateT);
 
-        this.source = myobj.source;
-        this.id = myobj.id;
+        this.source = stateT.source;
+        this.id = stateT.id;
       }
 
       console.log(this.code, this.id, this.source);
@@ -94,9 +95,9 @@ export class ReturnpageComponent implements OnInit, OnDestroy {
     }
 
     else if (this.source === 'facebook') {
-      //this.FacebookApi
-        //.sessioncallback(this.id, this.code)
-        //.subscribe(res => this.response = res);
+      this.FacebookApi
+        .sessioncallback(this.id, this.code)
+        .subscribe(res => this.response = res);
     }
 
     else if (this.source === 'linkedin') {

@@ -106,6 +106,12 @@ export class MarketingchannelsComponent implements OnInit {
       .subscribe(res => { this.selectedChannel = res, this.twittertoggle = true })
   }
 
+  newfacebook(): void {
+    this.toggleback();
+    this.RelationsApi.createChannels(this.option.id, { type: "facebook" })
+      .subscribe(res => { this.selectedChannel = res, this.facebooktoggle = true })
+  }
+
   newinstagram(): void {
     this.toggleback();
     this.RelationsApi.createChannels(this.option.id, { type: "instagram" })
@@ -142,7 +148,8 @@ export class MarketingchannelsComponent implements OnInit {
           this.twitteroption.AccessToken, this.twitteroption.AccessTokenSecret, 
           this.selectedChannel.channelsendid).subscribe(res => {
             console.log(res);
-            //this.selectedChannel.views = res.
+            this.selectedChannel.shared = res[0].retweet_count;
+            this.selectedChannel.likes = res[0].favorite_count;
           })
       }
     }
@@ -184,7 +191,7 @@ export class MarketingchannelsComponent implements OnInit {
     this.getTwitter();
     this.getLinkedin();
     this.getFacebook();
-    this.getInstagram();
+    // this.getInstagram(); use facebook graph
   }
 
   scheduleChannel(): void {
@@ -410,7 +417,11 @@ export class MarketingchannelsComponent implements OnInit {
       .subscribe((Facebook: Facebook[]) => this.Facebook = Facebook);
   }
 
-  getInstagram(): void {
+ 
+  getFBAccountInfo(): void {
+    this.FacebookApi.me(this.facebookoption.AccessToken).subscribe(
+      res => {console.log(res)}
+    )
   }
 
 

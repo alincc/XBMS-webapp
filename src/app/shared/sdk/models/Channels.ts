@@ -14,6 +14,8 @@ export interface ChannelsInterface {
   "pictureurl"?: string;
   "channelId"?: string;
   "views"?: number;
+  "likes"?: number;
+  "shared"?: number;
   "socialactions"?: number;
   "marketingplannereventsIds"?: string;
   "relationsId"?: any;
@@ -49,6 +51,8 @@ export class Channels implements ChannelsInterface {
   "pictureurl": string;
   "channelId": string;
   "views": number;
+  "likes": number;
+  "shared": number;
   "socialactions": number;
   "marketingplannereventsIds": string;
   "relationsId": any;
@@ -139,11 +143,23 @@ export class Channels implements ChannelsInterface {
         },
         "views": {
           name: 'views',
-          type: 'number'
+          type: 'number',
+          default: 0
+        },
+        "likes": {
+          name: 'likes',
+          type: 'number',
+          default: 0
+        },
+        "shared": {
+          name: 'shared',
+          type: 'number',
+          default: 0
         },
         "socialactions": {
           name: 'socialactions',
-          type: 'number'
+          type: 'number',
+          default: 0
         },
         "marketingplannereventsIds": {
           name: 'marketingplannereventsIds',
