@@ -13,6 +13,7 @@ import { Marketingplanner } from '../../models/Marketingplanner';
 import { Marketingplannerevents } from '../../models/Marketingplannerevents';
 import { Translation } from '../../models/Translation';
 import { Twitter } from '../../models/Twitter';
+import { Pinterest } from '../../models/Pinterest';
 import { Googleanalytics } from '../../models/Googleanalytics';
 import { Email } from '../../models/Email';
 import { Company } from '../../models/Company';
@@ -55,6 +56,7 @@ export class SDKModels {
     Marketingplannerevents: Marketingplannerevents,
     Translation: Translation,
     Twitter: Twitter,
+    Pinterest: Pinterest,
     Googleanalytics: Googleanalytics,
     Email: Email,
     Company: Company,

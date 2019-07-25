@@ -20,7 +20,8 @@ import {
   Marketingplannerevents,
   TwitterApi,
   FacebookApi,
-  LinkedinApi
+  LinkedinApi,
+  PinterestApi
 } from '../shared/';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 
@@ -44,6 +45,7 @@ export class ReturnpageComponent implements OnInit, OnDestroy {
   constructor(
     private route: ActivatedRoute,
     public TwitterApi: TwitterApi,
+    public PinterestApi: PinterestApi,
     public FacebookApi: FacebookApi,
     public LinkedinApi: LinkedinApi,
     public MarketingplannereventsApi: MarketingplannereventsApi,
@@ -103,6 +105,12 @@ export class ReturnpageComponent implements OnInit, OnDestroy {
     else if (this.source === 'linkedin') {
       this.LinkedinApi.linkedinaccesstoken(this.id, this.code, this.state)
         .subscribe(res => this.response = 'linkedin account atted');
+    }
+
+    else if (this.source === 'pinterest') {
+      this.PinterestApi
+        .sessioncallback(this.id, this.code, this.state)
+        .subscribe(res => this.response = res);
     }
 
     else this.response = "Source undefined"

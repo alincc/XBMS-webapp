@@ -1045,6 +1045,9 @@
                 <mat-button-toggle value="Facebook" (click)="getFacebook()">
                   <mat-icon  svgIcon="xbms_facebook"></mat-icon>  Facebook
                 </mat-button-toggle>
+                <mat-button-toggle value="Pinterest" (click)="getPinterest()">
+                    <mat-icon svgIcon="xbms_pinterest"></mat-icon>  Pinterest
+                  </mat-button-toggle>
                 <mat-button-toggle value="Adwords" (click)="getAdwords()">
                   <mat-icon>details</mat-icon>  Adwords
                 </mat-button-toggle>
@@ -1134,6 +1137,43 @@
           </mat-card-actions>
         </mat-card>
 
+        <mat-card *ngIf="group.value == 'Pinterest'" class="account-card">
+          <mat-card-header>
+            <mat-card-title>Pinterest</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <tr>
+              <td>
+                <div *ngFor="let Pinterest of Pinterest; let i = index">
+                  <span> {{ Pinterest.name }}</span>
+                  <a mat-mini-fab color="primary" (click)="deletePinterest(i)">
+                    <mat-icon>delete</mat-icon>
+                  </a>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <mat-form-field>
+                  <input matInput [(ngModel)]=newPinterest.name placeholder="ID" class="InputField">
+                </mat-form-field>
+              </td>
+              <td>
+                <button mat-button (click)="linkPinterestAccount()">link Account</button>
+              </td>
+            </tr>
+          </mat-card-content>
+          <mat-card-actions>
+            <a mat-mini-fab color="primary" (click)="createPinterest()">
+              <mat-icon>add</mat-icon>
+            </a>
+            <button mat-button>Save</button>
+          </mat-card-actions>
+        </mat-card>
 
         <!-- linkLinkedinAccount() -->
         <mat-card *ngIf="group.value == 'Linkedin'" class="account-card">

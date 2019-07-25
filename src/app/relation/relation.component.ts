@@ -21,6 +21,8 @@ import {
   LinkedinApi,
   Facebook,
   FacebookApi,
+  Pinterest,
+  PinterestApi,
   Container,
   ContainerApi,
   Files,
@@ -72,18 +74,6 @@ class Attendee {
   selector: 'app-relation',
   templateUrl: './relation.component.html',
   styleUrls: ['./relation.component.scss']
-  // animations: [
-  //   trigger('flyInOut', [
-  //     state('in', style({ transform: 'translateX(0)' })),
-  //     transition('void => *', [
-  //       style({ transform: 'translateX(-100%)' }),
-  //       animate(100)
-  //     ]),
-  //     transition('* => void', [
-  //       animate(100, style({ transform: 'translateX(100%)' }))
-  //     ])
-  //   ])
-  // ]
 })
 export class RelationComponent implements OnInit {
   
@@ -98,6 +88,7 @@ export class RelationComponent implements OnInit {
   public Twitter: Twitter[];
   public Linkedin: Linkedin[];
   public Facebook: Facebook[];
+  public Pinterest: Pinterest[];
   public Calls: Calls[];
   public Company: Company = new Company();
   public Account: Account = new Account();
@@ -150,6 +141,7 @@ export class RelationComponent implements OnInit {
   public newLinkedin: Linkedin = new Linkedin();
   public newFacebook: Facebook = new Facebook();
   public newAdwords: Adwords = new Adwords();
+  public newPinterest: Pinterest = new Pinterest();
 
   public newURL: string;
   public urldownload;
@@ -222,6 +214,7 @@ export class RelationComponent implements OnInit {
     public LinkedinService: LinkedinService,
     public dialogsService: DialogsService,
     public RelationsApi: RelationsApi,
+    public PinterestApi: PinterestApi,
     public ContactpersonsApi: ContactpersonsApi,
     public CallsApi: CallsApi
   ) {
@@ -686,9 +679,19 @@ export class RelationComponent implements OnInit {
       .subscribe((Twitter: Twitter[]) => this.Twitter = Twitter)
   }
 
+  getPinterest(): void {
+    this.RelationsApi.getPinterest(this.selectedRelation.id)
+      .subscribe((Pinterest: Pinterest[]) => this.Pinterest = Pinterest)
+  }
+
   deleteTwitter(i): void {
     this.RelationsApi.destroyByIdTwitter(this.selectedRelation.id, this.Twitter[i].id)
       .subscribe(res => this.getTwitter());
+  }
+
+  deletePinterest(i): void {
+    this.RelationsApi.destroyByIdPinterest(this.selectedRelation.id, this.Pinterest[i].id)
+      .subscribe(res => this.getPinterest());
   }
 
 
@@ -712,6 +715,23 @@ export class RelationComponent implements OnInit {
     this.TwitterApi.sessionsconnect(id, domain).subscribe(res => { redirect = res, 
       console.log(res),
       window.location.href = redirect; });
+  }
+
+  linkPinterestAccount(): void {
+    this.RelationsApi.createPinterest(this.selectedRelation.id, this.newPinterest)
+      .subscribe(res => {
+        console.log(res.id);
+        this.redirectPinterest(res.id)
+        this.openSnackBar("You will be redirected to Pinterest.com")
+      })
+  };
+
+  redirectPinterest(ids): void {
+    let idup = ids;
+    var redirect;
+    var domain = window.location.protocol + window.location.hostname + ":3000"; //set domain + protocol + 3000 for test purpose only
+    this.PinterestApi.sessionsconnect(idup, domain).subscribe(res => {  
+      redirect = res, window.location.href = redirect.request.uri.href; });
   }
 
 

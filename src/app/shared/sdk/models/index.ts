@@ -12,6 +12,7 @@ export * from './Marketingplanner';
 export * from './Marketingplannerevents';
 export * from './Translation';
 export * from './Twitter';
+export * from './Pinterest';
 export * from './Googleanalytics';
 export * from './Email';
 export * from './Company';

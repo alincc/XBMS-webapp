@@ -1,4 +1,21 @@
-<div class="tabcontainer">
+<div class="tabcontainer" fxLayout="column">
+    <mat-button-toggle-group style="width: 300px; margin-top: 10px;" fxFlex="3 3 40px" fxFlexAlign="start"
+    #group="matButtonToggleGroup" [vertical]="false" fxflex>
+    <mat-button-toggle style="width: 25%" matTooltip="Adwords" value="adwords" >
+      <mat-icon svgIcon="xbms_adwords"></mat-icon>
+    </mat-button-toggle>
+    <mat-button-toggle style="width: 25%" matTooltip="LinkedIn Ads" value="linkedinads" (click)="getLinkedin()">
+      <mat-icon svgIcon="xbms_linkedin"></mat-icon>
+    </mat-button-toggle>
+    <mat-button-toggle style="width: 25%" matTooltip="Facebook Ads" value="facebookads" (click)="getFacebook()">
+      <mat-icon svgIcon="xbms_facebook"></mat-icon>
+    </mat-button-toggle>
+    <mat-button-toggle style="width: 25%" matTooltip="Twitter Ads" value="twitterads" (click)="getTwitter()">
+      <mat-icon svgIcon="xbms_twitter"></mat-icon>
+    </mat-button-toggle>
+  </mat-button-toggle-group>
+
+<div *ngIf="group.value == 'adwords'" fxLayout="column" style="width: 100%;" fxFlex>
     <mat-card>
       <mat-card-content>
         <label>Adwords Account</label>
@@ -134,3 +151,20 @@
       </mat-card-content>
     </mat-card>
   </div>
+
+
+  <div *ngIf="group.value == 'linkedinads'" fxLayout="column" style="width: 100%;" fxFlex>
+
+  </div>
+
+
+  <div *ngIf="group.value == 'facebookads'" fxLayout="column" style="width: 100%;" fxFlex>
+
+  </div>
+  
+
+<div *ngIf="group.value == 'twitterads'" fxLayout="column" style="width: 100%;" fxFlex>
+
+</div>
+
+</div>

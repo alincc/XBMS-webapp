@@ -9,16 +9,16 @@ import { LoopBackFilter,  } from '../../models/BaseModels';
 import { ErrorHandler } from '../core/error.service';
 import { Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { Facebook } from '../../models/Facebook';
+import { Pinterest } from '../../models/Pinterest';
 import { SocketConnection } from '../../sockets/socket.connections';
 import { Relations } from '../../models/Relations';
 
 
 /**
- * Api services for the `Facebook` model.
+ * Api services for the `Pinterest` model.
  */
 @Injectable()
-export class FacebookApi extends BaseLoopBackApi {
+export class PinterestApi extends BaseLoopBackApi {
 
   constructor(
     @Inject(HttpClient) protected http: HttpClient,
@@ -33,7 +33,7 @@ export class FacebookApi extends BaseLoopBackApi {
   /**
    * Fetches belongsTo relation relations.
    *
-   * @param {any} id facebook id
+   * @param {any} id pinterest id
    *
    * @param {boolean} refresh 
    *
@@ -43,13 +43,13 @@ export class FacebookApi extends BaseLoopBackApi {
    *
    * <em>
    * (The remote method definition does not provide any description.
-   * This usually means the response is a `Facebook` object.)
+   * This usually means the response is a `Pinterest` object.)
    * </em>
    */
   public getRelations(id: any, refresh: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/facebooks/:id/relations";
+    "/pinterests/:id/relations";
     let _routeParams: any = {
       id: id
     };
@@ -73,13 +73,13 @@ export class FacebookApi extends BaseLoopBackApi {
    *
    * <em>
    * (The remote method definition does not provide any description.
-   * This usually means the response is a `Facebook` object.)
+   * This usually means the response is a `Pinterest` object.)
    * </em>
    */
   public patchOrCreate(data: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "PATCH";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/facebooks";
+    "/pinterests";
     let _routeParams: any = {};
     let _postBody: any = {
       data: data
@@ -92,7 +92,7 @@ export class FacebookApi extends BaseLoopBackApi {
   /**
    * Patch attributes for a model instance and persist it into the data source.
    *
-   * @param {any} id facebook id
+   * @param {any} id pinterest id
    *
    * @param {object} data Request data.
    *
@@ -104,13 +104,13 @@ export class FacebookApi extends BaseLoopBackApi {
    *
    * <em>
    * (The remote method definition does not provide any description.
-   * This usually means the response is a `Facebook` object.)
+   * This usually means the response is a `Pinterest` object.)
    * </em>
    */
   public patchAttributes(id: any, data: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "PATCH";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/facebooks/:id";
+    "/pinterests/:id";
     let _routeParams: any = {
       id: id
     };
@@ -129,21 +129,54 @@ export class FacebookApi extends BaseLoopBackApi {
    *
    * @param {string} id 
    *
+   * @param {string} oauth_token 
+   *
+   * @param {string} oauth_verifier 
+   *
+   * @returns {object} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * Data properties:
+   *
+   *  - `res` – `{object}` - 
+   */
+  public sessioncallback(id: any = {}, oauth_token: any = {}, oauth_verifier: any = {}, customHeaders?: Function): Observable<any> {
+    let _method: string = "GET";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/pinterests/sessioncallback";
+    let _routeParams: any = {
+      id: id
+    };
+    let _postBody: any = {};
+    let _urlParams: any = {};
+    if (typeof oauth_token !== 'undefined' && oauth_token !== null) _urlParams.oauth_token = oauth_token;
+    if (typeof oauth_verifier !== 'undefined' && oauth_verifier !== null) _urlParams.oauth_verifier = oauth_verifier;
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
+   * <em>
+         * (The remote method definition does not provide any description.)
+         * </em>
+   *
+   * @param {string} id 
+   *
    * @param {string} domain 
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
    *   from the server.
    *
-   * <em>
-   * (The remote method definition does not provide any description.
-   * This usually means the response is a `Facebook` object.)
-   * </em>
+   * Data properties:
+   *
+   *  - `res` – `{object}` - 
    */
   public sessionsconnect(id: any = {}, domain: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/facebooks/sessionsconnect/:id";
+    "/pinterests/sessionsconnect";
     let _routeParams: any = {
       id: id
     };
@@ -159,28 +192,30 @@ export class FacebookApi extends BaseLoopBackApi {
          * (The remote method definition does not provide any description.)
          * </em>
    *
-   * @param {string} id1 
+   * @param {string} oauthAccessToken 
    *
-   * @param {string} code1 
+   * @param {string} name 
+   *
+   * @param {string} description 
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
    *   from the server.
    *
-   * <em>
-   * (The remote method definition does not provide any description.
-   * This usually means the response is a `Facebook` object.)
-   * </em>
+   * Data properties:
+   *
+   *  - `res` – `{object}` - 
    */
-  public sessioncallback(id1: any = {}, code1: any = {}, customHeaders?: Function): Observable<any> {
+  public createboards(oauthAccessToken: any = {}, name: any = {}, description: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/facebooks/sessioncallback";
+    "/pinterests/createboards";
     let _routeParams: any = {};
     let _postBody: any = {};
     let _urlParams: any = {};
-    if (typeof id1 !== 'undefined' && id1 !== null) _urlParams.id1 = id1;
-    if (typeof code1 !== 'undefined' && code1 !== null) _urlParams.code1 = code1;
+    if (typeof oauthAccessToken !== 'undefined' && oauthAccessToken !== null) _urlParams.oauthAccessToken = oauthAccessToken;
+    if (typeof name !== 'undefined' && name !== null) _urlParams.name = name;
+    if (typeof description !== 'undefined' && description !== null) _urlParams.description = description;
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
     return result;
   }
@@ -190,27 +225,24 @@ export class FacebookApi extends BaseLoopBackApi {
          * (The remote method definition does not provide any description.)
          * </em>
    *
-   * @param {string} accesstoken 
-   *
-   * @param {object} req 
+   * @param {string} oauthAccessToken 
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
    *   from the server.
    *
-   * <em>
-   * (The remote method definition does not provide any description.
-   * This usually means the response is a `Facebook` object.)
-   * </em>
+   * Data properties:
+   *
+   *  - `res` – `{object}` - 
    */
-  public me(accesstoken: any = {}, req: any = {}, customHeaders?: Function): Observable<any> {
+  public getboards(oauthAccessToken: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/facebooks/me";
+    "/pinterests/getboards";
     let _routeParams: any = {};
     let _postBody: any = {};
     let _urlParams: any = {};
-    if (typeof accesstoken !== 'undefined' && accesstoken !== null) _urlParams.accesstoken = accesstoken;
+    if (typeof oauthAccessToken !== 'undefined' && oauthAccessToken !== null) _urlParams.oauthAccessToken = oauthAccessToken;
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
     return result;
   }
@@ -220,28 +252,36 @@ export class FacebookApi extends BaseLoopBackApi {
          * (The remote method definition does not provide any description.)
          * </em>
    *
-   * @param {string} accesstoken 
+   * @param {string} oauthAccessToken 
    *
-   * @param {object} body 
+   * @param {string} username 
+   *
+   * @param {string} board_name 
+   *
+   * @param {string} name 
+   *
+   * @param {string} description 
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
    *   from the server.
    *
-   * <em>
-   * (The remote method definition does not provide any description.
-   * This usually means the response is a `Facebook` object.)
-   * </em>
+   * Data properties:
+   *
+   *  - `res` – `{object}` - 
    */
-  public post(accesstoken: any = {}, body: any = {}, customHeaders?: Function): Observable<any> {
+  public updateboards(oauthAccessToken: any = {}, username: any = {}, board_name: any = {}, name: any = {}, description: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/facebooks/post";
+    "/pinterests/updateboards";
     let _routeParams: any = {};
     let _postBody: any = {};
     let _urlParams: any = {};
-    if (typeof accesstoken !== 'undefined' && accesstoken !== null) _urlParams.accesstoken = accesstoken;
-    if (typeof body !== 'undefined' && body !== null) _urlParams.body = body;
+    if (typeof oauthAccessToken !== 'undefined' && oauthAccessToken !== null) _urlParams.oauthAccessToken = oauthAccessToken;
+    if (typeof username !== 'undefined' && username !== null) _urlParams.username = username;
+    if (typeof board_name !== 'undefined' && board_name !== null) _urlParams.board_name = board_name;
+    if (typeof name !== 'undefined' && name !== null) _urlParams.name = name;
+    if (typeof description !== 'undefined' && description !== null) _urlParams.description = description;
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
     return result;
   }
@@ -251,28 +291,30 @@ export class FacebookApi extends BaseLoopBackApi {
          * (The remote method definition does not provide any description.)
          * </em>
    *
-   * @param {string} accesstoken 
+   * @param {string} oauthAccessToken 
    *
-   * @param {string} postid 
+   * @param {string} username 
+   *
+   * @param {string} board_name 
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
    *   from the server.
    *
-   * <em>
-   * (The remote method definition does not provide any description.
-   * This usually means the response is a `Facebook` object.)
-   * </em>
+   * Data properties:
+   *
+   *  - `res` – `{object}` - 
    */
-  public delete(accesstoken: any = {}, postid: any = {}, customHeaders?: Function): Observable<any> {
+  public deleteboards(oauthAccessToken: any = {}, username: any = {}, board_name: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/facebooks/delete";
+    "/pinterests/deleteboards";
     let _routeParams: any = {};
     let _postBody: any = {};
     let _urlParams: any = {};
-    if (typeof accesstoken !== 'undefined' && accesstoken !== null) _urlParams.accesstoken = accesstoken;
-    if (typeof postid !== 'undefined' && postid !== null) _urlParams.postid = postid;
+    if (typeof oauthAccessToken !== 'undefined' && oauthAccessToken !== null) _urlParams.oauthAccessToken = oauthAccessToken;
+    if (typeof username !== 'undefined' && username !== null) _urlParams.username = username;
+    if (typeof board_name !== 'undefined' && board_name !== null) _urlParams.board_name = board_name;
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
     return result;
   }
@@ -282,37 +324,84 @@ export class FacebookApi extends BaseLoopBackApi {
          * (The remote method definition does not provide any description.)
          * </em>
    *
-   * @param {string} token 
+   * @param {string} oauthAccessToken 
    *
-   * @param {string} shareid 
+   * @param {string} username 
+   *
+   * @param {string} board_name 
+   *
+   * @param {string} comment 
+   *
+   * @param {string} description 
+   *
+   * @param {string} submittedurl 
+   *
+   * @param {string} multipartimage 
+   *
+   * @param {string} submittedimageurl 
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
    *   from the server.
    *
-   * <em>
-   * (The remote method definition does not provide any description.
-   * This usually means the response is a `Facebook` object.)
-   * </em>
+   * Data properties:
+   *
+   *  - `res` – `{object}` - 
    */
-  public adssdk(token: any = {}, shareid: any = {}, customHeaders?: Function): Observable<any> {
+  public pin(oauthAccessToken: any = {}, username: any = {}, board_name: any = {}, comment: any = {}, description: any = {}, submittedurl: any = {}, multipartimage: any = {}, submittedimageurl: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/facebooks/adssdk";
+    "/pinterests/pin";
     let _routeParams: any = {};
     let _postBody: any = {};
     let _urlParams: any = {};
-    if (typeof token !== 'undefined' && token !== null) _urlParams.token = token;
-    if (typeof shareid !== 'undefined' && shareid !== null) _urlParams.shareid = shareid;
+    if (typeof oauthAccessToken !== 'undefined' && oauthAccessToken !== null) _urlParams.oauthAccessToken = oauthAccessToken;
+    if (typeof username !== 'undefined' && username !== null) _urlParams.username = username;
+    if (typeof board_name !== 'undefined' && board_name !== null) _urlParams.board_name = board_name;
+    if (typeof comment !== 'undefined' && comment !== null) _urlParams.comment = comment;
+    if (typeof description !== 'undefined' && description !== null) _urlParams.description = description;
+    if (typeof submittedurl !== 'undefined' && submittedurl !== null) _urlParams.submittedurl = submittedurl;
+    if (typeof multipartimage !== 'undefined' && multipartimage !== null) _urlParams.multipartimage = multipartimage;
+    if (typeof submittedimageurl !== 'undefined' && submittedimageurl !== null) _urlParams.submittedimageurl = submittedimageurl;
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
+   * <em>
+         * (The remote method definition does not provide any description.)
+         * </em>
+   *
+   * @param {string} oauthAccessToken 
+   *
+   * @param {string} pin 
+   *
+   * @returns {object} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * Data properties:
+   *
+   *  - `res` – `{object}` - 
+   */
+  public deletepin(oauthAccessToken: any = {}, pin: any = {}, customHeaders?: Function): Observable<any> {
+    let _method: string = "GET";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/pinterests/deletepin";
+    let _routeParams: any = {};
+    let _postBody: any = {};
+    let _urlParams: any = {};
+    if (typeof oauthAccessToken !== 'undefined' && oauthAccessToken !== null) _urlParams.oauthAccessToken = oauthAccessToken;
+    if (typeof pin !== 'undefined' && pin !== null) _urlParams.pin = pin;
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
     return result;
   }
 
   /**
    * The name of the model represented by this $resource,
-   * i.e. `Facebook`.
+   * i.e. `Pinterest`.
    */
   public getModelName() {
-    return "Facebook";
+    return "Pinterest";
   }
 }

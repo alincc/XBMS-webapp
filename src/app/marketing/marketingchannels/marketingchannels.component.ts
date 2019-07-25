@@ -11,6 +11,8 @@ import {
   LinkedinApi,
   Facebook,
   FacebookApi,
+  Pinterest,
+  PinterestApi,
   timezones,
 } from '../../shared/';
 import { MatSnackBar, MatSnackBarConfig, MatInput, MatAutocompleteSelectedEvent } from '@angular/material';
@@ -18,7 +20,7 @@ import * as moment from 'moment-timezone';
 import { DialogsService } from './../../dialogsservice/dialogs.service';
 import { timeconv } from '../../shared/timeconv';
 // import { MarketingComponent } from '../marketing.component'
-//  '../../shared/speed-dial-fab/speed-dial-fab.component';
+'../../shared/speed-dial-fab/speed-dial-fab.component';
 
 @Component({
   selector: 'app-marketingchannels',
@@ -39,21 +41,25 @@ export class MarketingchannelsComponent implements OnInit {
   selectedOption = false;
   public companypage = [];
   public selectcompanypage;
+  public selectpinterestboard;
 
   public linkedintoggle = false;
   public twittertoggle = false;
   public instagramtoggle = false;
   public facebooktoggle = false;
+  public pinteresttoggle = false;
 
   public errorMessage;
 
   public twitteroption: Twitter = new Twitter();
   public linkedinoption: Linkedin = new Linkedin();
   public facebookoption: Facebook = new Facebook();
+  public pinterestoption: Pinterest = new Pinterest();
 
   public Twitter: Twitter[];
   public Linkedin: Linkedin[];
   public Facebook: Facebook[];
+  public Pinterest: Pinterest[];
 
   public convertdate;
   public date;
@@ -71,12 +77,13 @@ export class MarketingchannelsComponent implements OnInit {
     public TwitterApi: TwitterApi,
     public LinkedinApi: LinkedinApi,
     public FacebookApi: FacebookApi,
+    public PinterestApi: PinterestApi
   ) { }
 
   ngOnInit() {
-    if (this.option.id) {
-      this.getChannels();
-    }
+    // if (this.option.id) {
+    //   this.getChannels();
+    // }
   }
 
 
@@ -92,6 +99,7 @@ export class MarketingchannelsComponent implements OnInit {
     this.linkedintoggle = false;
     this.twittertoggle = false;
     this.instagramtoggle = false;
+    this.pinteresttoggle = false;
   }
 
   newlinkedin(): void {
@@ -118,6 +126,13 @@ export class MarketingchannelsComponent implements OnInit {
       .subscribe(res => { this.selectedChannel = res, this.instagramtoggle = true })
   }
 
+  
+  newpinterest(): void {
+    this.toggleback();
+    this.RelationsApi.createChannels(this.option.id, { type: "pinterest" })
+      .subscribe(res => { this.selectedChannel = res, this.pinteresttoggle = true })
+  }
+
   // toggle different media forms
   onSelectChannels(Channels: Channels): void {
     this.selectedChannel = Channels;
@@ -125,6 +140,7 @@ export class MarketingchannelsComponent implements OnInit {
     this.linkedintoggle = false;
     this.twittertoggle = false;
     this.instagramtoggle = false;
+    this.pinteresttoggle = false;
 
     if (this.selectedChannel.type === "linkedin") {
       this.linkedintoggle = true;
@@ -147,15 +163,19 @@ export class MarketingchannelsComponent implements OnInit {
         this.TwitterApi.gettweetinfo(
           this.twitteroption.AccessToken, this.twitteroption.AccessTokenSecret, 
           this.selectedChannel.channelsendid).subscribe(res => {
-            console.log(res);
-            this.selectedChannel.shared = res[0].retweet_count;
-            this.selectedChannel.likes = res[0].favorite_count;
+            if (res.errors){
+              console.log(res.errors)
+            } else {
+              this.selectedChannel.shared = res[0].retweet_count;
+              this.selectedChannel.likes = res[0].favorite_count;
+            }
           })
       }
     }
 
     if (this.selectedChannel.type === "instagram") { this.instagramtoggle = true }
     if (this.selectedChannel.type === "facebook") { this.facebooktoggle = true }
+    if (this.selectedChannel.type === "pinterest") { this.pinteresttoggle = true }
   }
 
   findLinkedinComp(companypages, id) {
@@ -191,6 +211,7 @@ export class MarketingchannelsComponent implements OnInit {
     this.getTwitter();
     this.getLinkedin();
     this.getFacebook();
+    this.getPinterest();
     // this.getInstagram(); use facebook graph
   }
 
@@ -314,6 +335,30 @@ export class MarketingchannelsComponent implements OnInit {
     });
   }
 
+  getPinterest(): void {
+    this.RelationsApi.getPinterest(this.option.id)
+      .subscribe((Pinterest: Pinterest[]) => this.Pinterest = Pinterest);
+  }
+
+  getPinterestBoard(): void {
+    console.log(this.pinterestoption);
+    this.PinterestApi.getboards(this.pinterestoption.AccessToken)
+      .subscribe(res => {console.log(res)})
+  }
+
+  getPinterstPins(): void {
+
+  }
+
+  posttoPinterestBoard(): void {
+
+    this.PinterestApi.pin(this.pinterestoption.AccessToken, 
+      this.selectpinterestboard.username, this.selectpinterestboard.board_name, this.selectedChannel.text, this.selectedChannel.title, 
+      null, null, this.selectedChannel.pictureurl).subscribe(
+        res => { console.log(res)}
+      )
+  }
+
   getLinkedin(): void {
     this.RelationsApi.getLinkedin(this.option.id)
       .subscribe((Linkedin: Linkedin[]) => this.Linkedin = Linkedin);
@@ -393,6 +438,10 @@ export class MarketingchannelsComponent implements OnInit {
 
   }
 
+  updatePinterestMessage(): void {
+
+  }
+
   updateLinkedinMessage(): void {
     this.LinkedinApi.findById(this.selectedChannel.userid).subscribe((linkedin: Linkedin) => {
       this.linkedinoption = linkedin;
@@ -433,6 +482,68 @@ export class MarketingchannelsComponent implements OnInit {
         error => this.errorMessage = <any>error);
   }
 
+  private speedDialFabButtons = [
+    {
+      svgIcon: 'xbms_facebook',
+      tooltip: 'facebook'
+    },
+    {
+      svgIcon: 'xbms_twitter',
+      tooltip: 'twitter'
+    },
+    {
+      svgIcon: 'xbms_linkedin',
+      tooltip: 'linkedin'
+    },
+    {
+      svgIcon: 'xbms_instagram',
+      tooltip: 'instagram'
+    },
+    {
+      svgIcon: 'xbms_pinterest',
+      tooltip: 'pinterest'
+    },
+    // {
+    //   svgIcon: 'xbms_xing',
+    //   tooltip: 'xing'
+    // },
+    // {
+    //   svgIcon: 'xbms_youtube',
+    //   tooltip: 'youtube'
+    // },
+    // {
+    //   svgIcon: 'xbms_web',
+    //   tooltip: 'web'
+    // },
+    // {
+    //   svgIcon: 'xbms_snapchat',
+    //   tooltip: 'snapchat'
+    // },
+    // {
+    //   svgIcon: 'xbms_vimeo',
+    //   tooltip: 'vimeo'
+    // },
+    // {
+    //   svgIcon: 'xbms_github',
+    //   tooltip: 'github'
+    // }
+
+  ];
+
+  onSpeedDialFabClicked(btn) {
+    console.log(btn.tooltip);
+    if (btn.tooltip === 'linkedin'){this.newlinkedin()}
+    if (btn.tooltip === 'pinterest'){this.newpinterest()}
+    if (btn.tooltip === 'twitter'){this.newtwitter()}
+    if (btn.tooltip === 'facebook'){this.newfacebook()}
+    if (btn.tooltip === 'instagram'){this.newinstagram()}
+
+  }
+
+  setImage(event) {
+    console.log(event);
+    this.selectedChannel.pictureurl = event; 
+  }
 
 
 }

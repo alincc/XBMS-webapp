@@ -8,6 +8,7 @@ import {
   Marketingplannerevents,
   Translation,
   Twitter,
+  Pinterest,
   Googleanalytics,
   Company,
   Channels,
@@ -53,6 +54,7 @@ export interface RelationsInterface {
   marketingplannerevents?: Marketingplannerevents[];
   translation?: Translation[];
   twitter?: Twitter[];
+  pinterest?: Pinterest[];
   googleanalytics?: Googleanalytics[];
   company?: Company;
   channels?: Channels[];
@@ -97,6 +99,7 @@ export class Relations implements RelationsInterface {
   marketingplannerevents: Marketingplannerevents[];
   translation: Translation[];
   twitter: Twitter[];
+  pinterest: Pinterest[];
   googleanalytics: Googleanalytics[];
   company: Company;
   channels: Channels[];
@@ -298,6 +301,14 @@ export class Relations implements RelationsInterface {
           name: 'twitter',
           type: 'Twitter[]',
           model: 'Twitter',
+          relationType: 'hasMany',
+                  keyFrom: 'id',
+          keyTo: 'relationsId'
+        },
+        pinterest: {
+          name: 'pinterest',
+          type: 'Pinterest[]',
+          model: 'Pinterest',
           relationType: 'hasMany',
                   keyFrom: 'id',
           keyTo: 'relationsId'

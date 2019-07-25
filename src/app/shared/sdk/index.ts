@@ -61,6 +61,7 @@ import { MarketingplannerApi } from './services/custom/Marketingplanner';
 import { MarketingplannereventsApi } from './services/custom/Marketingplannerevents';
 import { TranslationApi } from './services/custom/Translation';
 import { TwitterApi } from './services/custom/Twitter';
+import { PinterestApi } from './services/custom/Pinterest';
 import { GoogleanalyticsApi } from './services/custom/Googleanalytics';
 import { EmailApi } from './services/custom/Email';
 import { CompanyApi } from './services/custom/Company';
@@ -126,6 +127,7 @@ export class SDKBrowserModule {
         MarketingplannereventsApi,
         TranslationApi,
         TwitterApi,
+        PinterestApi,
         GoogleanalyticsApi,
         EmailApi,
         CompanyApi,

@@ -114,6 +114,10 @@ export class AppComponent implements AfterViewInit {
       'xbms_github',
       this.sanitizer.bypassSecurityTrustResourceUrl('assets/icons/github.svg'));
 
+      this.iconRegistry.addSvgIcon(
+        'xbms_adwords',
+        this.sanitizer.bypassSecurityTrustResourceUrl('assets/icons/adwords.svg'));
+
     LoopBackConfig.setBaseURL(BASE_URL);
     LoopBackConfig.setApiVersion(API_VERSION);
   }
