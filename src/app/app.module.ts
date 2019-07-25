@@ -71,6 +71,7 @@ import { ColorPickerModule } from 'ngx-color-picker';
 import { FileuploadComponent, dialoggallerycomponent } from './shared/fileupload/fileupload.component';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { SafeHtml } from './pipe/safehtmlpipe.component';
+import { MarketingpromotionsComponent } from './marketing/marketingpromotions/marketingpromotions.component';
 
 @NgModule({
   declarations: [
@@ -95,7 +96,8 @@ import { SafeHtml } from './pipe/safehtmlpipe.component';
     dialoggallerycomponent,
     TextEditorDialog,
     WordpressUploadDialogComponent,
-    SafeHtml
+    SafeHtml,
+    MarketingpromotionsComponent
   ],
 
    entryComponents: [
