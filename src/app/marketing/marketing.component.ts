@@ -497,13 +497,6 @@ export class MarketingComponent implements OnInit {
     }
   }
 
-  // onSelectImage(SelectedImage): void {
-  //   console.log(this.selectedPublications, "onselect")
-  //   // this.selectedPublications.picturename = SelectedImage.name,
-  //     this.selectedPublications.pictureurl = encodeURI(SelectedImage);
-  //     console.log(this.selectedPublications, "onselect");
-  // }
-
   onClickImage(e): void {
     console.log(e);
   }

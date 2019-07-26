@@ -84,6 +84,13 @@ export class MarketingpublicationsComponent implements OnInit {
       .subscribe((publications: Publications[]) => this.Publications = publications);
   }
 
+    onSelectImage(SelectedImage): void {
+    console.log(this.selectedPublications, "onselect")
+    // this.selectedPublications.picturename = SelectedImage.name,
+      this.selectedPublications.pictureurl = encodeURI(SelectedImage);
+      console.log(this.selectedPublications, "onselect");
+  }
+
   // select and set parameters Publications
   onSelect(publications: Publications): void {
     this.selectedPublications = publications;
