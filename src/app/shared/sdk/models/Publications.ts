@@ -27,6 +27,7 @@ export interface PublicationsInterface {
   "picturename"?: string;
   "pictureurl"?: string;
   "date"?: Date;
+  "enddate"?: Date;
   "description"?: string;
   "url"?: string;
   "linkedinId"?: string;
@@ -34,6 +35,12 @@ export interface PublicationsInterface {
   "relationsId"?: any;
   "companyId": any;
   "companyname"?: string;
+  "recurrence"?: boolean;
+  "interval"?: string;
+  "dayinterval"?: string;
+  "timezone"?: string;
+  "timeinterval"?: string;
+  "monthinterval"?: string;
   "id"?: any;
   "marketingplannerId"?: any;
   relations?: Relations;
@@ -62,6 +69,7 @@ export class Publications implements PublicationsInterface {
   "picturename": string;
   "pictureurl": string;
   "date": Date;
+  "enddate": Date;
   "description": string;
   "url": string;
   "linkedinId": string;
@@ -69,6 +77,12 @@ export class Publications implements PublicationsInterface {
   "relationsId": any;
   "companyId": any;
   "companyname": string;
+  "recurrence": boolean;
+  "interval": string;
+  "dayinterval": string;
+  "timezone": string;
+  "timeinterval": string;
+  "monthinterval": string;
   "id": any;
   "marketingplannerId": any;
   relations: Relations;
@@ -172,6 +186,10 @@ export class Publications implements PublicationsInterface {
           name: 'date',
           type: 'Date'
         },
+        "enddate": {
+          name: 'enddate',
+          type: 'Date'
+        },
         "description": {
           name: 'description',
           type: 'string'
@@ -198,6 +216,30 @@ export class Publications implements PublicationsInterface {
         },
         "companyname": {
           name: 'companyname',
+          type: 'string'
+        },
+        "recurrence": {
+          name: 'recurrence',
+          type: 'boolean'
+        },
+        "interval": {
+          name: 'interval',
+          type: 'string'
+        },
+        "dayinterval": {
+          name: 'dayinterval',
+          type: 'string'
+        },
+        "timezone": {
+          name: 'timezone',
+          type: 'string'
+        },
+        "timeinterval": {
+          name: 'timeinterval',
+          type: 'string'
+        },
+        "monthinterval": {
+          name: 'monthinterval',
           type: 'string'
         },
         "id": {

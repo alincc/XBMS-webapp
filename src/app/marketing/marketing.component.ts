@@ -396,7 +396,6 @@ export class MarketingComponent implements OnInit {
   // select relation --> get info for all tabs
   onSelectRelation(option, i): void {
     this.option = option;
-    this.getPublications();
     this.getMailing();
     this.getMailinglist();
     this.getMailingCampaign();
@@ -494,28 +493,27 @@ export class MarketingComponent implements OnInit {
       // You must think in a functional way! So, re-assign the array instead of modifying it.
       // this.images = this.images.filter((val: Image) => event.image && val.id !== event.image.id);
       console.log(event.image);
-      this.onSelectImage(event.image);
+      // this.onSelectImage(event.image);
     }
   }
 
-  onSelectImage(SelectedImage): void {
-    console.log(this.selectedPublications, "onselect")
-    // this.selectedPublications.picturename = SelectedImage.name,
-      this.selectedPublications.pictureurl = encodeURI(SelectedImage);
-      this.savePublication();
-      console.log(this.selectedPublications, "onselect");
-  }
+  // onSelectImage(SelectedImage): void {
+  //   console.log(this.selectedPublications, "onselect")
+  //   // this.selectedPublications.picturename = SelectedImage.name,
+  //     this.selectedPublications.pictureurl = encodeURI(SelectedImage);
+  //     console.log(this.selectedPublications, "onselect");
+  // }
 
   onClickImage(e): void {
     console.log(e);
   }
 
-  uploadFile(): void {
-    this.savePublication(),
-      this.uploader.uploadAll(),
-      this.PublicationsApi.createFiles(this.selectedPublications.id, this.newFiles)
-        .subscribe(res => this.getFiles());
-  }
+  // uploadFile(): void {
+  //   this.savePublication(),
+  //     this.uploader.uploadAll(),
+  //     this.PublicationsApi.createFiles(this.selectedPublications.id, this.newFiles)
+  //       .subscribe(res => this.getFiles());
+  // }
 
   getFiles(): void {
     this.ContainerApi.getFiles(this.selectedPublications.id)
@@ -542,12 +540,7 @@ export class MarketingComponent implements OnInit {
         });
   }
 
-  getPublications(): void {
-    this.RelationsApi.getPublications(this.option.id, {
-      limit: this.limitresult,
-      order: 'title DESC'
-    }).subscribe((publications: Publications[]) => this.Publications = publications);
-  }
+
 
   getTranslations(): void {
     const languages = []
@@ -597,37 +590,7 @@ export class MarketingComponent implements OnInit {
     return roundnumber;
   }
 
-  // test selection criteria
-  getPublicationsList(): void {
-    this.RelationsApi.findById(this.option.id, {
-      where: {
-        date: {
-          gt: Date.now() - this.onemonth,
-          limit: 20,
-          order: 'date'
-        }
-      }
-    })
-      .subscribe((publications: Publications[]) => this.Publications = publications);
-  }
 
-  // search
-  searchGo(name: string): void {
-    name = name.charAt(0).toUpperCase() + name.slice(1);
-    name = name.trim();
-    this.PublicationsApi.find({ where: { or: [{ newstitle: name }, { newstext: name }] } })
-      .subscribe((publications: Publications[]) => this.Publications = publications,
-        error => this.errorMessage = <any>error);
-  }
-
-  // select and set parameters Publications
-  onSelect(publications: Publications): void {
-    this.uploader.clearQueue();
-    this.selectedPublications = publications;
-    this.newURL = undefined;
-    this.newURL = BASE_URL + '/api/Containers/' + this.selectedPublications.id + '/upload'
-    this.uploader.setOptions({ url: this.newURL });
-  }
 
   onSelectMailingList(mailinglist: Mailinglist): void {
     // this.uploaderContent.subscription.unsubscribe();
@@ -692,11 +655,7 @@ export class MarketingComponent implements OnInit {
     this.selectedTranslationjob = translationjob;
   }
 
-  // save entry
-  savePublication(): void {
-    this.RelationsApi.updateByIdPublications(this.option.id, this.selectedPublications.id, this.selectedPublications)
-      .subscribe();
-  }
+
 
   public saveTranslationJob(Translationjob: Translationjob): void {
     this.selectedTranslationjob = Translationjob;
@@ -710,14 +669,7 @@ export class MarketingComponent implements OnInit {
       });
   };
 
-  // dialog delete on yes activates deletePublications
-  public openDialogDelete() {
-    this.dialogsService
-      .confirm('Delete Relation', 'Are you sure you want to do this?')
-      .subscribe(res => {
-        this.selectedOption = res, this.deletePublications(this.selectedOption);
-      });
-  }
+
 
   openDialogDeleteTranslation() {
     this.dialogsService
@@ -765,16 +717,7 @@ export class MarketingComponent implements OnInit {
     .subscribe(res => {console.log(res)})
   }
 
-  // publish to apps part
-  public newpublication(i): void {
-    const publication = this.Translationjob[i];
-    const publicationdata: Publications = new Publications();
-    publicationdata.text = publication.translation
-    this.RelationsApi.createPublications(this.option, publicationdata)
-    .subscribe(res => {console.log(res),
-    this.selectedPublications = res});
-    this.selectedIndex = 0;
-  }
+
 
   public newwebsite(i): void {
     const newwebsid = this.Translationjob[i].id;
@@ -810,18 +753,6 @@ export class MarketingComponent implements OnInit {
     const newsocialmedia = this.translationJob[i];
   }
 
-  // delete Publications -> check container?
-  deletePublications(selectedOption): void {
-    if (selectedOption === true) {
-      this.containerApi.destroyContainer(this.selectedPublications.id).subscribe(),
-        this.PublicationsApi.deleteById(this.selectedPublications.id).subscribe(res => {
-          this.error = res,
-            this.selectedPublications = null
-          this.getPublications();
-        })
-    }
-  }
-
   deleteTranslation(selectedOption): void {
     if (selectedOption === true) {
       this.RelationsApi.destroyByIdTranslation(this.option.id, this.selectedTranslation.id)
@@ -842,12 +773,6 @@ export class MarketingComponent implements OnInit {
       this.TranslationApi.destroyByIdTranslationjob(this.selectedTranslation.id, this.selectedTranslationjob.id)
         .subscribe(res => this.getTransationsjobs());
     }
-  }
-
-  public postToWordPress(): void {
-    this.WordpressService.publishWP(this.selectedPublications.title, this.selectedPublications.text);
-    // this.POSTwordpressApi.create(this.selectedPublications).subscribe(res => {
-    //  this.error = res});
   }
 
 

@@ -71,6 +71,7 @@ import { FileuploadComponent, dialoggallerycomponent } from './shared/fileupload
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { SafeHtml } from './pipe/safehtmlpipe.component';
 import { MarketingpromotionsComponent } from './marketing/marketingpromotions/marketingpromotions.component';
+import { MarketingpublicationsComponent } from './marketing/marketingpublications/marketingpublications.component';
 
 @NgModule({
   declarations: [
@@ -96,7 +97,8 @@ import { MarketingpromotionsComponent } from './marketing/marketingpromotions/ma
     TextEditorDialog,
     WordpressUploadDialogComponent,
     SafeHtml,
-    MarketingpromotionsComponent
+    MarketingpromotionsComponent,
+    MarketingpublicationsComponent
   ],
 
    entryComponents: [

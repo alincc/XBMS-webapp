@@ -1,0 +1,277 @@
+<div class="addtobutton">
+    <button mat-fab color="primary" matTooltip="Create new Publication" (click)="newItem()">
+        <mat-icon>add</mat-icon>
+    </button>
+</div>
+
+
+<div fxLayout fxLayout="row" fxLayoutWrap="wrap" fxFlexAlign="start" class="tabcontainer">
+    <div fxFlex="20%" class="listcontainer" fxLayout="column">
+
+        <h4>Search</h4>
+        <p>
+            <mat-form-field>
+                <input matInput #searchTerm id="seach-box" (keyup.enter)="searchGo(searchTerm.value)"
+                    placeholder="Name/Address" />
+            </mat-form-field>
+        </p>
+        <p>{{ this.errorMessage }}</p>
+
+        <div fxFlex class="listview" fxLayout="column">
+            <button a mat-raised-button color="primary" (click)="searchGo(searchTerm.value)">
+                <mat-icon>search</mat-icon>Search Result
+            </button>
+            <button a mat-raised-button (click)="getPublications()">
+                Show All
+            </button>
+            <div *ngFor="let Publications of Publications" (click)="onSelect(Publications)"
+                [class.selected]="Publications === selectedPublication">
+                <span class="box">{{ Publications.title }}</span>
+            </div>
+        </div>
+
+        <mat-select placeholder="Max number of results" [(ngModel)]="limitresult" name="limitresult">
+            <mat-option *ngFor="let number of numbers" [value]="number.value">
+                {{ number.viewValue }}
+            </mat-option>
+        </mat-select>
+    </div>
+
+    <div fxFlex="80%">
+        <!-- class="relationcontainer" -->
+        <mat-card *ngIf="selectedPublications">
+            <mat-card-content on-focusout="savePublication()" fxLayout="column">
+                <mat-toolbar color="primary">
+                    <h2>
+                        {{
+                        selectedPublications.title | uppercase | slice: 0:30
+                      }}
+                    </h2>
+                    <button mat-icon-button [matMenuTriggerFor]="menumarketing" class="menu">
+                        <mat-icon>more_vert</mat-icon>
+                    </button>
+                    <mat-menu #menumarketing="matMenu">
+                        <button mat-menu-item (click)="openDialogDelete()">
+                            <mat-icon>delete</mat-icon>
+                            <span>Delete</span>
+                        </button>
+                        <button mat-menu-item (click)="newItem()">
+                            <mat-icon>note_add</mat-icon>
+                            <span>New</span>
+                        </button>
+                    </mat-menu>
+                </mat-toolbar>
+                <div fxLayout="row">
+                    <table class="form-full-width">
+                        <tr>
+                            <mat-form-field class="form-full-width">
+                                <input matInput [(ngModel)]="selectedPublications.title" placeholder="Item Title"
+                                    class="InputField" />
+                            </mat-form-field>
+                        </tr>
+                        <tr>
+                            <mat-form-field class="form-full-width">
+                                <input matInput [(ngModel)]="selectedPublications.description" placeholder="Description"
+                                    class="InputField" />
+                            </mat-form-field>
+                        </tr>
+                        <tr>
+                            <mat-accordion>
+                                <mat-expansion-panel>
+                                    <mat-expansion-panel-header>
+                                        <mat-panel-title>
+                                         <mat-icon>text_fields</mat-icon>   Static Content
+                                        </mat-panel-title>
+                                    </mat-expansion-panel-header>
+                                    <mat-form-field class="form-full-width">
+                                        <textarea matInput class="content-form" #content
+                                            [(ngModel)]="selectedPublications.content"
+                                            placeholder="content">Content</textarea>
+                                        <mat-hint align="end">{{
+                                  content.value.length
+                                }}</mat-hint>
+                                    </mat-form-field>
+                                </mat-expansion-panel>
+                                <br>
+                                <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
+                                    <mat-expansion-panel-header>
+                                        <mat-panel-title>
+                                         <mat-icon>forum</mat-icon>   Dynamic Content
+                                        </mat-panel-title>
+                                    </mat-expansion-panel-header>
+                                    set parameters for content creation
+                                </mat-expansion-panel>
+                                <br>
+                                <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
+                                    <mat-expansion-panel-header>
+                                        <mat-panel-title>
+                                          <mat-icon>insert_photo</mat-icon>  Add media
+                                        </mat-panel-title>
+                                    </mat-expansion-panel-header>
+
+
+                                    <div *ngIf="selectedPublications.pictureurl">
+                                        <img src="{{ selectedPublications.pictureurl }}" class="picture" />
+                                        <button class="deletepicture" mat-mini-fab color="primary"
+                                            (click)="deletePicture()">
+                                            <mat-icon>delete</mat-icon>
+                                        </button>
+                                    </div>
+                                    <app-fileupload *ngIf="!selectedPublications.pictureurl" [account]="Account"
+                                        [option]="option" (imgurl)="onSelectImage($event)">
+                                    </app-fileupload>
+
+                                </mat-expansion-panel>
+                                <br>
+                                <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
+                                    <mat-expansion-panel-header>
+                                        <mat-panel-title>
+                                           <mat-icon>share</mat-icon> Share on
+                                        </mat-panel-title>
+                                    </mat-expansion-panel-header>
+                                    Add Channels
+                                </mat-expansion-panel>
+                            </mat-accordion>
+                            <br>
+                            <mat-accordion>
+                                    <mat-expansion-panel>
+                                      <mat-expansion-panel-header>
+                                        <mat-panel-title>
+                                          <mat-icon>date_range</mat-icon>Set Date
+                                        </mat-panel-title>
+                                      </mat-expansion-panel-header>
+                                      <table style="width: 100%">
+                                        <tr>
+                                          <td>
+                                            <label>Date/Start Date</label>
+                                          </td>
+                                          <td *ngIf="selectedPublications.recurrence">
+                                            <label matTooltip="End date of recurrent event">End date</label>
+                                          </td>
+                                        </tr>
+                                        <tr>
+                                          <td>
+                                            <mat-datepicker matTooltip="Send day or the day a recurrent event should start" #picker5
+                                              class="form-half-width"></mat-datepicker>
+                                            <input [matDatepicker]="myDatepicker5" [(ngModel)]=selectedPublications.date
+                                              placeholder="(start/send) date">
+                                            <mat-datepicker-toggle matSuffix [for]="myDatepicker5"></mat-datepicker-toggle>
+                                            <mat-datepicker #myDatepicker5></mat-datepicker>
+                                          </td>
+                                          <td *ngIf="selectedPublications.recurrence">
+                                            <mat-datepicker #picker6 class="form-half-width"></mat-datepicker>
+                                            <input [matDatepicker]="myDatepicker6" [(ngModel)]=selectedPublications.enddate>
+                                            <mat-datepicker-toggle matSuffix [for]="myDatepicker6"></mat-datepicker-toggle>
+                                            <mat-datepicker #myDatepicker6></mat-datepicker>
+                                          </td>
+                                        </tr>
+                                        <tr>
+                                          <td>
+                                            <mat-checkbox matInput [(ngModel)]=selectedPublications.recurrence>
+                                              Recurrence
+                                            </mat-checkbox>
+                                          </td>
+                                          <td *ngIf="selectedPublications.recurrence">
+                                            <mat-form-field class="form-full-width">
+                                              <!-- dropdown nl/de/en etc.  -->
+                                              <mat-select matInput [(ngModel)]=selectedPublications.interval placeholder="Interval"
+                                                class="InputField">
+                                                <mat-option matInput value="month">Every Month</mat-option>
+                                                <mat-option matInput value="week">Every Week</mat-option>
+                                                <mat-option matInput value="day">Every Day</mat-option>
+                                                <mat-option matInput value="year">Every Year</mat-option>
+                                              </mat-select>
+                                            </mat-form-field>
+                                          </td>
+                                        </tr>
+                                        <tr *ngIf="selectedPublications.recurrence">
+                                          <td>
+                                            <label>Send Every</label>
+                                          </td>
+                                          <td>
+                                            <mat-form-field class="form-full-width">
+                                              <!-- dropdown nl/de/en etc.  -->
+                                              <mat-select matInput [(ngModel)]=selectedPublications.dayinterval placeholder="Day of the Week"
+                                                class="InputField"
+                                                [disabled]="selectedPublications.recurrence && selectedPublications.interval !== 'week'">
+                                                <mat-option matInput value=1>Monday</mat-option>
+                                                <mat-option matInput value=2>Tuesday</mat-option>
+                                                <mat-option matInput value=3>Wednesday</mat-option>
+                                                <mat-option matInput value=4>Thursday</mat-option>
+                                                <mat-option matInput value=5>Friday</mat-option>
+                                                <mat-option matInput value=6>Saturday</mat-option>
+                                                <mat-option matInput value=7>Sunday</mat-option>
+                                              </mat-select>
+                                            </mat-form-field>
+                                          </td>
+                                        </tr>
+                                        <tr>
+                                          <td>
+                                            <label>Timezone</label>
+                                          </td>
+                                          <td>
+                                            <label>Time</label>
+                                          </td>
+                                        </tr>
+                                        <tr>
+                                          <td>
+                                            <mat-form-field>
+                                              <mat-select placeholder="Timezone" [(ngModel)]="selectedPublications.timezone">
+                                                <mat-option *ngFor="let timezone of timezones" [value]="timezone.value">
+                                                  {{ timezone.value }}
+                                                </mat-option>
+                                              </mat-select>
+                                            </mat-form-field>
+                                          </td>
+                                          <td>
+                                            <mat-form-field>
+                                              <input matInput [(ngModel)]=selectedPublications.timeinterval placeholder="Time" class="InputField"
+                                                type="time">
+                                            </mat-form-field>
+                                          </td>
+                                        </tr>
+                                        <tr *ngIf="selectedPublications.recurrence">
+                                          <td><label>Month</label></td>
+                                          <td>
+                                            <mat-form-field class="form-full-width">
+                                              <!-- dropdown nl/de/en etc.  -->
+                                              <mat-select matInput [(ngModel)]=selectedPublications.monthinterval placeholder="Month"
+                                                class="InputField"
+                                                [disabled]="selectedPublications.recurrence && selectedPublications.interval !== 'year'">
+                                                <mat-option matInput value=1>1</mat-option>
+                                                <mat-option matInput value=2>2</mat-option>
+                                                <mat-option matInput value=3>3</mat-option>
+                                                <mat-option matInput value=4>4</mat-option>
+                                                <mat-option matInput value=5>5</mat-option>
+                                                <mat-option matInput value=6>6</mat-option>
+                                                <mat-option matInput value=7>7</mat-option>
+                                                <mat-option matInput value=8>8</mat-option>
+                                                <mat-option matInput value=9>9</mat-option>
+                                                <mat-option matInput value=10>10</mat-option>
+                                                <mat-option matInput value=11>11</mat-option>
+                                                <mat-option matInput value=12>12</mat-option>
+                                              </mat-select>
+                                            </mat-form-field>
+                                          </td>
+                                        </tr>
+                                      </table>
+                                    </mat-expansion-panel>
+                                  </mat-accordion>
+                        </tr>
+                        <tr>
+                            <button a mat-raised-button (click)="savePublication()">
+                                Save
+                            </button>
+                            <button a mat-raised-button (click)="postToWordPress()">
+                                Publish
+                            </button>
+                            <button a mat-raised-button (click)="postToWordPress()">
+                                Schedule
+                            </button>
+                        </tr>
+                    </table>
+                </div>
+            </mat-card-content>
+        </mat-card>
+    </div>
+</div>

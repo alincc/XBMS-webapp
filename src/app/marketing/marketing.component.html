@@ -22,134 +22,16 @@
 
   <mat-tab-group fxLayout="column" fxLayoutWrap="wrap" fxFlexAlign="start" class="relations"
     [selectedIndex]="selectedIndex">
-    <mat-tab fxFlex="100%" label="New Publications" on-focusout="savePublication()" class="relations">
+    <mat-tab fxFlex="100%" label="New Publications"  class="relations">
       <ng-template mat-tab-label class="mat-tab-labels">
         <mat-icon>text_format</mat-icon>
         <div fxShow.xs="false">Publications</div>
       </ng-template>
 
-      <div class="addtobutton">
-        <button mat-fab color="primary" matTooltip="Create new Publication" (click)="newItem()">
-          <mat-icon>add</mat-icon>
-        </button>
-      </div>
+      <app-marketingpublications [Account]="Account" [SelectedRelation]="SelectedRelation" [option]="option">
+        </app-marketingpublications>
 
 
-      <div fxLayout fxLayout="row" fxLayoutWrap="wrap" fxFlexAlign="start" class="tabcontainer">
-        <div fxFlex="20%" class="listcontainer" fxLayout="column">
-
-          <h4>Search</h4>
-          <p>
-            <mat-form-field>
-              <input matInput #searchTerm id="seach-box" (keyup.enter)="searchGo(searchTerm.value)"
-                placeholder="Name/Address" />
-            </mat-form-field>
-          </p>
-          <p>{{ this.errorMessage }}</p>
-
-          <div fxFlex class="listview" fxLayout="column">
-            <button a mat-raised-button color="primary" (click)="searchGo(searchTerm.value)">
-              <mat-icon>search</mat-icon>Search Result
-            </button>
-            <button a mat-raised-button (click)="getPublications()">
-              Show All
-            </button>
-            <div *ngFor="let Publications of Publications" (click)="onSelect(Publications)"
-              [class.selected]="Publications === selectedPublication">
-              <span class="box">{{ Publications.title }}</span>
-            </div>
-          </div>
-
-          <mat-select placeholder="Max number of results" [(ngModel)]="limitresult" name="limitresult">
-            <mat-option *ngFor="let number of numbers" [value]="number.value">
-              {{ number.viewValue }}
-            </mat-option>
-          </mat-select>
-        </div>
-
-        <div fxFlex="80%">
-          <!-- class="relationcontainer" -->
-          <mat-card *ngIf="selectedPublications">
-            <mat-card-content on-focusout="savePublication()" fxLayout="column">
-              <mat-toolbar color="primary">
-                <h2>
-                  {{
-                        selectedPublications.title | uppercase | slice: 0:30
-                      }}
-                </h2>
-                <button mat-icon-button [matMenuTriggerFor]="menumarketing" class="menu">
-                  <mat-icon>more_vert</mat-icon>
-                </button>
-                <mat-menu #menumarketing="matMenu">
-                  <button mat-menu-item (click)="openDialogDelete()">
-                    <mat-icon>delete</mat-icon>
-                    <span>Delete</span>
-                  </button>
-                  <button mat-menu-item (click)="newItem()">
-                    <mat-icon>note_add</mat-icon>
-                    <span>New</span>
-                  </button>
-                </mat-menu>
-              </mat-toolbar>
-              <div fxLayout="row">
-                <div fxFlex="50%">
-                  <table class="form-full-width">
-                    <tr>
-                      <td>
-                        <mat-form-field class="form-full-width">
-                          <input matInput [(ngModel)]="selectedPublications.title" placeholder="Item Title"
-                            class="InputField" />
-                        </mat-form-field>
-                      </td>
-                    </tr>
-                    <tr rowspan="10">
-                      <td>
-                        <mat-form-field class="form-full-width">
-                          <textarea matInput class="content-form" #content [(ngModel)]="selectedPublications.content"
-                            placeholder="content">Content</textarea>
-                          <mat-hint align="end">{{
-                          content.value.length
-                        }}</mat-hint>
-                        </mat-form-field>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <mat-form-field class="form-full-width">
-                          <input matInput [(ngModel)]="selectedPublications.description" placeholder="Description"
-                            class="InputField" />
-                        </mat-form-field>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <button a mat-raised-button (click)="savePublication()">
-                          Save
-                        </button>
-                        <button a mat-raised-button (click)="postToWordPress()">
-                          Publish to Wordpress
-                        </button>
-                      </td>
-                    </tr>
-                  </table>
-                </div>
-
-                <div fxFlex="50%">
-                  <div *ngIf="selectedPublications.pictureurl">
-                    <img src="{{ selectedPublications.pictureurl }}" class="picture" />
-                    <button class="deletepicture" mat-mini-fab color="primary" (click)="deletePicture()">
-                      <mat-icon>delete</mat-icon>
-                    </button>
-                  </div>
-                  <app-fileupload *ngIf="!selectedPublications.pictureurl" [account]="Account" [option]="option"
-                    (imgurl)="onSelectImage($event)">
-                  </app-fileupload>
-                </div>
-              </div>
-            </mat-card-content>
-          </mat-card>
-        </div>
-      </div>
     </mat-tab>
 
     <!-- TRANSLATIONS________________________________________ -->
