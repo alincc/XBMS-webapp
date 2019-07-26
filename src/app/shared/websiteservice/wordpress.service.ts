@@ -1,6 +1,4 @@
 import { Injectable, Inject, Optional } from '@angular/core';
-import { Http, Headers, Request, RequestOptions } from '@angular/http';
-import { NgModule, ModuleWithProviders } from '@angular/core';
 import api from 'wordpress-rest-api-oauth-1';
 import oAuthVerifier from 'wordpress-rest-api-oauth-1';
 

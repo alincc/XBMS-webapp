@@ -31,7 +31,7 @@ export class LoggerApi extends BaseLoopBackApi {
   }
 
   /**
-   * Fetches belongsTo relation company.
+   * Fetches belongsTo relation companyRel.
    *
    * @param {any} id logger id
    *
@@ -46,10 +46,10 @@ export class LoggerApi extends BaseLoopBackApi {
    * This usually means the response is a `Logger` object.)
    * </em>
    */
-  public getCompany(id: any, refresh: any = {}, customHeaders?: Function): Observable<any> {
+  public getCompanyRel(id: any, refresh: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/loggers/:id/company";
+    "/loggers/:id/companyRel";
     let _routeParams: any = {
       id: id
     };

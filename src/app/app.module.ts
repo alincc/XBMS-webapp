@@ -59,7 +59,6 @@ import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
 import { MaileditorText } from './marketing/maileditor/maileditormodel/maileditormodels'
 import {FlexLayoutModule} from '@angular/flex-layout';
-import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { GooglePlacesDirective } from './google-places.directive';
 import { ReturnpageComponent } from './returnpage/returnpage.component';
 import { MarketingchannelsComponent } from './marketing/marketingchannels/marketingchannels.component';
@@ -112,7 +111,6 @@ import { MarketingpromotionsComponent } from './marketing/marketingpromotions/ma
     NgxTwitterTimelineModule,
        PickerModule,
     ColorPickerModule,
-    NgxChartsModule,
     FlexLayoutModule,
     CKEditorModule,
     FileUploadModule,

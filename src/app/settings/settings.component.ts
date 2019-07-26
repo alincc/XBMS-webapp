@@ -1,8 +1,6 @@
 import { Component, OnInit, NgZone } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Http } from '@angular/http';
 import { Observable, BehaviorSubject } from 'rxjs';
-import { SDKBrowserModule } from '../shared/';
 import {
   LoopBackConfig,
   CompanyApi,
@@ -37,12 +35,9 @@ import { LinkedinService } from '../shared/socialservice';
 import { DialogsService } from './../dialogsservice/dialogs.service';
 import {map, startWith} from "rxjs/operators";
 import { Options } from 'selenium-webdriver/ie';
-
 import { ChangeDetectionStrategy, Output, EventEmitter, OnDestroy } from '@angular/core';
-
 import { FormControl, FormGroupDirective, NgForm, Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { ErrorStateMatcher } from '@angular/material/core';
-import { forEach } from '@angular/router/src/utils/collection';
 import { MatSnackBar, MatSnackBarConfig, MatInput, MatAutocompleteSelectedEvent } from '@angular/material';
 import { fontoptions } from './google-fonts-list';
 

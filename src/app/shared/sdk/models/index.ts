@@ -29,7 +29,6 @@ export * from './Emailhandler';
 export * from './Translationjob';
 export * from './Facebook';
 export * from './Adwords';
-export * from './Mailverifier';
 export * from './Websitetracker';
 export * from './Ipcheckermodel';
 export * from './Ipcheckermodelarin';

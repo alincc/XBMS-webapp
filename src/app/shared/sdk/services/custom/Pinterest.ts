@@ -398,6 +398,39 @@ export class PinterestApi extends BaseLoopBackApi {
   }
 
   /**
+   * <em>
+         * (The remote method definition does not provide any description.)
+         * </em>
+   *
+   * @param {string} AccessToken 
+   *
+   * @param {string} username 
+   *
+   * @param {string} board_name 
+   *
+   * @returns {object} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * Data properties:
+   *
+   *  - `res` – `{object}` - 
+   */
+  public getpins(AccessToken: any = {}, username: any = {}, board_name: any = {}, customHeaders?: Function): Observable<any> {
+    let _method: string = "GET";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/pinterests/getpins";
+    let _routeParams: any = {};
+    let _postBody: any = {};
+    let _urlParams: any = {};
+    if (typeof AccessToken !== 'undefined' && AccessToken !== null) _urlParams.AccessToken = AccessToken;
+    if (typeof username !== 'undefined' && username !== null) _urlParams.username = username;
+    if (typeof board_name !== 'undefined' && board_name !== null) _urlParams.board_name = board_name;
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
    * The name of the model represented by this $resource,
    * i.e. `Pinterest`.
    */

@@ -30,7 +30,6 @@ import { Emailhandler } from '../../models/Emailhandler';
 import { Translationjob } from '../../models/Translationjob';
 import { Facebook } from '../../models/Facebook';
 import { Adwords } from '../../models/Adwords';
-import { Mailverifier } from '../../models/Mailverifier';
 import { Websitetracker } from '../../models/Websitetracker';
 import { Ipcheckermodel } from '../../models/Ipcheckermodel';
 import { Ipcheckermodelarin } from '../../models/Ipcheckermodelarin';
@@ -73,7 +72,6 @@ export class SDKModels {
     Translationjob: Translationjob,
     Facebook: Facebook,
     Adwords: Adwords,
-    Mailverifier: Mailverifier,
     Websitetracker: Websitetracker,
     Ipcheckermodel: Ipcheckermodel,
     Ipcheckermodelarin: Ipcheckermodelarin,

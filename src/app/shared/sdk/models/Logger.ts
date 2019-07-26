@@ -11,8 +11,9 @@ export interface LoggerInterface {
   "relation"?: string;
   "code"?: string;
   "id"?: any;
+  "companyRelId"?: any;
   "companyId"?: any;
-  company?: Company;
+  companyRel?: Company;
 }
 
 export class Logger implements LoggerInterface {
@@ -22,8 +23,9 @@ export class Logger implements LoggerInterface {
   "relation": string;
   "code": string;
   "id": any;
+  "companyRelId": any;
   "companyId": any;
-  company: Company;
+  companyRel: Company;
   constructor(data?: LoggerInterface) {
     Object.assign(this, data);
   }
@@ -81,18 +83,22 @@ export class Logger implements LoggerInterface {
           name: 'id',
           type: 'any'
         },
+        "companyRelId": {
+          name: 'companyRelId',
+          type: 'any'
+        },
         "companyId": {
           name: 'companyId',
           type: 'any'
         },
       },
       relations: {
-        company: {
-          name: 'company',
+        companyRel: {
+          name: 'companyRel',
           type: 'Company',
           model: 'Company',
           relationType: 'belongsTo',
-                  keyFrom: 'companyId',
+                  keyFrom: 'companyRelId',
           keyTo: 'id'
         },
       }

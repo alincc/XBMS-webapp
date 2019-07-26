@@ -42,6 +42,7 @@ export class MarketingchannelsComponent implements OnInit {
   public companypage = [];
   public selectcompanypage;
   public selectpinterestboard;
+  public pinterestboard = [];
 
   public linkedintoggle = false;
   public twittertoggle = false;
@@ -136,11 +137,12 @@ export class MarketingchannelsComponent implements OnInit {
   // toggle different media forms
   onSelectChannels(Channels: Channels): void {
     this.selectedChannel = Channels;
-    this.twitteroption = null;
+    // this.twitteroption = null;
     this.linkedintoggle = false;
     this.twittertoggle = false;
     this.instagramtoggle = false;
     this.pinteresttoggle = false;
+    this.facebooktoggle = false;
 
     if (this.selectedChannel.type === "linkedin") {
       this.linkedintoggle = true;
@@ -150,6 +152,17 @@ export class MarketingchannelsComponent implements OnInit {
         ;}
       if (this.selectedChannel.companypage) {
         this.getLinkedinCompany();
+      } else {this.selectcompanypage = '';}
+    }
+
+    if (this.selectedChannel.type === "pinterest") {
+      this.pinteresttoggle = true;
+      if (this.selectedChannel.userid) {
+        this.pinterestoption = this.findPinterest(this.Pinterest, this.selectedChannel.userid);
+      } else {this.pinterestoption = new Pinterest();
+        ;}
+      if (this.selectedChannel.companypage) {
+        this.getPinterestBoard();
       } else {this.selectcompanypage = '';}
     }
 
@@ -175,7 +188,6 @@ export class MarketingchannelsComponent implements OnInit {
 
     if (this.selectedChannel.type === "instagram") { this.instagramtoggle = true }
     if (this.selectedChannel.type === "facebook") { this.facebooktoggle = true }
-    if (this.selectedChannel.type === "pinterest") { this.pinteresttoggle = true }
   }
 
   findLinkedinComp(companypages, id) {
@@ -188,6 +200,14 @@ export class MarketingchannelsComponent implements OnInit {
 
   findLinkedin(Linkedin, id) {
     for (const item of Linkedin) {
+      if (item.id === id) {
+        return item
+      }
+    }
+  }
+
+  findPinterest(Pinterest, id) {
+    for (const item of Pinterest) {
       if (item.id === id) {
         return item
       }
@@ -343,17 +363,23 @@ export class MarketingchannelsComponent implements OnInit {
   getPinterestBoard(): void {
     console.log(this.pinterestoption);
     this.PinterestApi.getboards(this.pinterestoption.AccessToken)
-      .subscribe(res => {console.log(res)})
+      .subscribe(res => {console.log(res)
+      this.pinterestboard = res.res;
+    });
   }
 
   getPinterstPins(): void {
-
+    let url = this.selectpinterestboard.url;
+    url = url.replace('https://www.pinterest.com/', '');
+    let name = url.substring(0, url.indexOf("/")); 
+    this.PinterestApi.getpins(this.pinterestoption.AccessToken, name, this.selectpinterestboard.name).subscribe(
+      res => {console.log(res)}
+    );
   }
 
   posttoPinterestBoard(): void {
-
     this.PinterestApi.pin(this.pinterestoption.AccessToken, 
-      this.selectpinterestboard.username, this.selectpinterestboard.board_name, this.selectedChannel.text, this.selectedChannel.title, 
+      this.selectpinterestboard.username, this.selectpinterestboard.name, this.selectedChannel.text, this.selectedChannel.title, 
       null, null, this.selectedChannel.pictureurl).subscribe(
         res => { console.log(res)}
       )

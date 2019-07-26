@@ -423,7 +423,7 @@ displayFn(relation ?: Relations): string | undefined {
 }
 
 
-@ViewChild('baseChartBar') chartBar: BaseChartDirective;
+@ViewChild('baseChartBar', {static: false}) chartBar: BaseChartDirective;
 
   public getNumbers(): void {
   const data1 = this.TotalNumber.slice(0);
@@ -509,7 +509,7 @@ displayFn(relation ?: Relations): string | undefined {
 }
 
 
-@ViewChild('baseChartBar2') baseChartBar2: BaseChartDirective;
+@ViewChild('baseChartBar2', {static: false}) baseChartBar2: BaseChartDirective;
 
   public get1Numbers(): void {
   this.barChart2Labels = [];
@@ -603,7 +603,7 @@ this.barChart2Data = clone;
 }
 
 
-@ViewChild('baseChartLine') chartLine: BaseChartDirective;
+@ViewChild('baseChartLine', {static: false}) chartLine: BaseChartDirective;
 
   public get2Numbers(): void {
 
@@ -674,7 +674,7 @@ this.lineChartData = clone;
   console.log(e);
 }
 
-@ViewChild('baseChartDoughnut') chartDoughnut: BaseChartDirective;
+@ViewChild('baseChartDoughnut', {static: false}) chartDoughnut: BaseChartDirective;
 
   public getDoughnutNumbers() {
   this.doughnutChartLabels = [];
@@ -810,7 +810,7 @@ this.MailingApi.getstats(data).subscribe(res => {
   console.log(e);
 }
 
-@ViewChild('baseMailChart') MailchartLine: BaseChartDirective;
+@ViewChild('baseMailChart', {static: false}) MailchartLine: BaseChartDirective;
 
   public getMailChart(): void {
 

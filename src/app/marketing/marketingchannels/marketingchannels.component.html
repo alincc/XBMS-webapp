@@ -228,6 +228,16 @@
               </td>
             </tr>
             <tr>
+                <div *ngIf="selectedChannel.pictureurl">
+                    <img [src]="selectedChannel.pictureurl" class="carouselimages">
+                    <mat-icon (click)="selectedChannel.pictureurl = ''" class="icon-label" class="iconsize-12">
+                      delete</mat-icon>
+                  </div>
+                  <app-fileupload *ngIf="!selectedChannel.pictureurl" [account]="account" [option]="option"
+                    (imgurl)="setImage($event)">
+                  </app-fileupload>
+            </tr>
+            <tr>
               <td>
                 <mat-select placeholder="Select Linkedin Account" [(value)]="linkedinoption">
                   <mat-option *ngFor="let Linkedin of Linkedin" [value]="Linkedin"
@@ -425,6 +435,16 @@
               </td>
             </tr>
             <tr>
+                <div *ngIf="selectedChannel.pictureurl">
+                    <img [src]="selectedChannel.pictureurl" class="carouselimages">
+                    <mat-icon (click)="selectedChannel.pictureurl = ''" class="icon-label" class="iconsize-12">
+                      delete</mat-icon>
+                  </div>
+                  <app-fileupload *ngIf="!selectedChannel.pictureurl" [account]="account" [option]="option"
+                    (imgurl)="setImage($event)">
+                  </app-fileupload>
+            </tr>
+            <tr>
               <td>
                 <mat-select placeholder="Select Twitter Account" [(value)]="twitteroption">
                   <mat-option [disabled]="selectedChannel.send" *ngFor="let Twitter of Twitter" [value]="Twitter">
@@ -618,6 +638,16 @@
               </td>
             </tr>
             <tr>
+                <div *ngIf="selectedChannel.pictureurl">
+                    <img [src]="selectedChannel.pictureurl" class="carouselimages">
+                    <mat-icon (click)="selectedChannel.pictureurl = ''" class="icon-label" class="iconsize-12">
+                      delete</mat-icon>
+                  </div>
+                  <app-fileupload *ngIf="!selectedChannel.pictureurl" [account]="account" [option]="option"
+                    (imgurl)="setImage($event)">
+                  </app-fileupload>
+            </tr>
+            <tr>
               <td>
                 <mat-select placeholder="Select Facebook Account" [(value)]="facebookoption">
                   <mat-option [disabled]="selectedChannel.send" *ngFor="let Facebook of Facebook" [value]="Facebook">
@@ -650,6 +680,16 @@
       <mat-card *ngIf="instagramtoggle">
         <mat-card-content on-focusout="saveChannel()">
           <table>
+              <tr>
+                  <div *ngIf="selectedChannel.pictureurl">
+                      <img [src]="selectedChannel.pictureurl" class="carouselimages">
+                      <mat-icon (click)="selectedChannel.pictureurl = ''" class="icon-label" class="iconsize-12">
+                        delete</mat-icon>
+                    </div>
+                    <app-fileupload *ngIf="!selectedChannel.pictureurl" [account]="account" [option]="option"
+                      (imgurl)="setImage($event)">
+                    </app-fileupload>
+              </tr>
             <tr>
               <ul>
                 <li>
@@ -830,22 +870,28 @@
             </tr>
             <tr>
               <td>
+                <!-- (onSelectionChange)="getPinterestBoard(Pinterest)" -->
                 <mat-select placeholder="Select Pinterest Board" [(value)]="pinterestoption">
-                  <mat-option [disabled]="selectedChannel.send" *ngFor="let pinterest of Pinterest" [value]="Pinterest"
-                  (onSelectionChange)="getPinterestBoard()">
-                    {{ pinterest.name }}
+                  <mat-option *ngFor="let Pinterest of Pinterest" [value]="Pinterest"
+                   [disabled]="selectedChannel.send">
+                    {{ Pinterest.name }}
                   </mat-option>
                 </mat-select>
+                <button a mat-raised-button (click)="getPinterestBoard()">get boards</button>
+                
               </td>
             </tr>
             <tr>
               <td>
               <mat-select placeholder="Select pinterest board" [(value)]="selectpinterestboard">
-                <mat-option *ngFor="let pinterestboard of pinterestboard" [value]="board">
+                <mat-option *ngFor="let pinterestboard of pinterestboard" [value]="pinterestboard">
                   {{ pinterestboard.name }}
                 </mat-option>
               </mat-select>
               </td>
+            </tr>
+            <tr>
+                <button a mat-raised-button (click)="getPinterstPins()">get pins</button>
             </tr>
             <tr>
               <td>

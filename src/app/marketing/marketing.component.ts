@@ -1827,7 +1827,7 @@ export class MarketingComponent implements OnInit {
 
 
   // chipinput for mailings
-  @ViewChild('chipInput') chipInput: MatInput;
+  @ViewChild('chipInput', {static: false}) chipInput: MatInput;
   selectedItems: string[] = [];
   filteredItems: Observable<any[]>;
   addItems: FormControl;
