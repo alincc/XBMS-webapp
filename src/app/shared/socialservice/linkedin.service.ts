@@ -1,7 +1,7 @@
 
 import { Inject, Injectable, OnInit } from '@angular/core';
 import { NgModule, ModuleWithProviders } from '@angular/core';
-import { DOCUMENT } from '@angular/platform-browser'
+import { DOCUMENT } from "@angular/common";
 import {
 	LoopBackConfig,
 //	LoopBackAuth,
