@@ -1,7 +1,6 @@
 <div class="topview">
 
-    <button *ngIf="Pwa.promptEvent" mat-stroked-button color="primary" (click)="installPwa()">
-            <mat-icon>install</mat-icon>Install</button>
+
 
     <div *ngIf="router.url !== '/login' && router.url.indexOf('filemanager') === -1" >
         <button mat-stroked-button color="primary" (click)="sidenav.open()" 
@@ -48,6 +47,8 @@
                 </mat-list-item>
             </mat-nav-list>
             <br>
+            <button *ngIf="Pwa.promptEvent" mat-stroked-button color="primary" (click)="installPwa()">
+                    <mat-icon>install</mat-icon>Install</button>
 
             <img  src="assets/xbms.png" class="menulogo">
         </mat-sidenav>

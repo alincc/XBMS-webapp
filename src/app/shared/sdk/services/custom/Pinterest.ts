@@ -144,7 +144,7 @@ export class PinterestApi extends BaseLoopBackApi {
   public sessioncallback(id: any = {}, oauth_token: any = {}, oauth_verifier: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/pinterests/sessioncallback";
+    "/pinterests/sessioncallback/:id";
     let _routeParams: any = {
       id: id
     };
@@ -176,7 +176,7 @@ export class PinterestApi extends BaseLoopBackApi {
   public sessionsconnect(id: any = {}, domain: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/pinterests/sessionsconnect";
+    "/pinterests/sessionsconnect/:id";
     let _routeParams: any = {
       id: id
     };

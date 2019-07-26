@@ -726,12 +726,13 @@ export class RelationComponent implements OnInit {
       })
   };
 
-  redirectPinterest(ids): void {
-    let idup = ids;
-    var redirect;
-    var domain = window.location.protocol + window.location.hostname + ":3000"; //set domain + protocol + 3000 for test purpose only
-    this.PinterestApi.sessionsconnect(idup, domain).subscribe(res => {  
-      redirect = res, window.location.href = redirect.request.uri.href; });
+  redirectPinterest(id): void {
+    let redirect;
+    const domain = window.location.protocol + window.location.hostname + ":3000"; //set domain + protocol + 3000 for test purpose only
+    this.PinterestApi.sessionsconnect(id, domain).subscribe(res => {
+      console.log(res),
+      redirect = res, 
+      window.location.href = redirect.res.request.uri.href; });
   }
 
 

@@ -110,7 +110,7 @@ export class ReturnpageComponent implements OnInit, OnDestroy {
     else if (this.source === 'pinterest') {
       this.PinterestApi
         .sessioncallback(this.id, this.code, this.state)
-        .subscribe(res => this.response = res);
+        .subscribe(res => this.response = res.res);
     }
 
     else this.response = "Source undefined"

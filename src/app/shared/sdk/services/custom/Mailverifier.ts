@@ -113,7 +113,7 @@ export class MailverifierApi extends BaseLoopBackApi {
    * This usually means the response is a `Mailverifier` object.)
    * </em>
    */
-  public findmailaddresses(list: any = {}, listname: any = {}, id: any = {}, customHeaders?: Function): Observable<any[]> {
+  public findmailaddresses(list: any = {}, listname: any = {}, id: any = {}, customHeaders?: Function): Observable<mailverifier[]> {
     let _method: string = "POST";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
     "/mailverifiers/findmailaddresses";
