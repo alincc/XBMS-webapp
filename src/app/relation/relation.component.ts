@@ -715,6 +715,7 @@ export class RelationComponent implements OnInit {
     this.TwitterApi.sessionsconnect(id, domain).subscribe(res => { redirect = res, 
       console.log(res),
       window.location.href = redirect; });
+      this.openSnackBar("You will be redirected to Twitter.com")
   }
 
   linkPinterestAccount(): void {
@@ -740,7 +741,8 @@ export class RelationComponent implements OnInit {
     this.RelationsApi.createLinkedin(this.selectedRelation.id, this.newLinkedin)
       .subscribe(res => {
         this.newLinkedin = res,
-      this.redirectLinkedin(this.newLinkedin.id)
+      this.redirectLinkedin(this.newLinkedin.id);
+      this.openSnackBar("You will be redirected to Linkedin.com")
       })
   };
 

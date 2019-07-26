@@ -7,8 +7,8 @@ declare var Object: any;
 export interface PinterestInterface {
   "name"?: string;
   "AccessToken"?: string;
-  "AccessTokenSecret"?: string;
   "screenname"?: string;
+  "standardboard"?: string;
   "id"?: any;
   "relationsId"?: any;
   relations?: Relations;
@@ -17,8 +17,8 @@ export interface PinterestInterface {
 export class Pinterest implements PinterestInterface {
   "name": string;
   "AccessToken": string;
-  "AccessTokenSecret": string;
   "screenname": string;
+  "standardboard": string;
   "id": any;
   "relationsId": any;
   relations: Relations;
@@ -63,12 +63,12 @@ export class Pinterest implements PinterestInterface {
           name: 'AccessToken',
           type: 'string'
         },
-        "AccessTokenSecret": {
-          name: 'AccessTokenSecret',
-          type: 'string'
-        },
         "screenname": {
           name: 'screenname',
+          type: 'string'
+        },
+        "standardboard": {
+          name: 'standardboard',
           type: 'string'
         },
         "id": {

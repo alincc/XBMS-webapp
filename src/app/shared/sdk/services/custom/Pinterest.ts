@@ -192,7 +192,7 @@ export class PinterestApi extends BaseLoopBackApi {
          * (The remote method definition does not provide any description.)
          * </em>
    *
-   * @param {string} oauthAccessToken 
+   * @param {string} AccessToken 
    *
    * @param {string} name 
    *
@@ -206,14 +206,14 @@ export class PinterestApi extends BaseLoopBackApi {
    *
    *  - `res` – `{object}` - 
    */
-  public createboards(oauthAccessToken: any = {}, name: any = {}, description: any = {}, customHeaders?: Function): Observable<any> {
+  public createboards(AccessToken: any = {}, name: any = {}, description: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
     "/pinterests/createboards";
     let _routeParams: any = {};
     let _postBody: any = {};
     let _urlParams: any = {};
-    if (typeof oauthAccessToken !== 'undefined' && oauthAccessToken !== null) _urlParams.oauthAccessToken = oauthAccessToken;
+    if (typeof AccessToken !== 'undefined' && AccessToken !== null) _urlParams.AccessToken = AccessToken;
     if (typeof name !== 'undefined' && name !== null) _urlParams.name = name;
     if (typeof description !== 'undefined' && description !== null) _urlParams.description = description;
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
@@ -225,7 +225,7 @@ export class PinterestApi extends BaseLoopBackApi {
          * (The remote method definition does not provide any description.)
          * </em>
    *
-   * @param {string} oauthAccessToken 
+   * @param {string} AccessToken 
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -235,14 +235,14 @@ export class PinterestApi extends BaseLoopBackApi {
    *
    *  - `res` – `{object}` - 
    */
-  public getboards(oauthAccessToken: any = {}, customHeaders?: Function): Observable<any> {
+  public getboards(AccessToken: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
     "/pinterests/getboards";
     let _routeParams: any = {};
     let _postBody: any = {};
     let _urlParams: any = {};
-    if (typeof oauthAccessToken !== 'undefined' && oauthAccessToken !== null) _urlParams.oauthAccessToken = oauthAccessToken;
+    if (typeof AccessToken !== 'undefined' && AccessToken !== null) _urlParams.AccessToken = AccessToken;
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
     return result;
   }
@@ -252,7 +252,7 @@ export class PinterestApi extends BaseLoopBackApi {
          * (The remote method definition does not provide any description.)
          * </em>
    *
-   * @param {string} oauthAccessToken 
+   * @param {string} AccessToken 
    *
    * @param {string} username 
    *
@@ -270,14 +270,14 @@ export class PinterestApi extends BaseLoopBackApi {
    *
    *  - `res` – `{object}` - 
    */
-  public updateboards(oauthAccessToken: any = {}, username: any = {}, board_name: any = {}, name: any = {}, description: any = {}, customHeaders?: Function): Observable<any> {
+  public updateboards(AccessToken: any = {}, username: any = {}, board_name: any = {}, name: any = {}, description: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
     "/pinterests/updateboards";
     let _routeParams: any = {};
     let _postBody: any = {};
     let _urlParams: any = {};
-    if (typeof oauthAccessToken !== 'undefined' && oauthAccessToken !== null) _urlParams.oauthAccessToken = oauthAccessToken;
+    if (typeof AccessToken !== 'undefined' && AccessToken !== null) _urlParams.AccessToken = AccessToken;
     if (typeof username !== 'undefined' && username !== null) _urlParams.username = username;
     if (typeof board_name !== 'undefined' && board_name !== null) _urlParams.board_name = board_name;
     if (typeof name !== 'undefined' && name !== null) _urlParams.name = name;
@@ -291,7 +291,7 @@ export class PinterestApi extends BaseLoopBackApi {
          * (The remote method definition does not provide any description.)
          * </em>
    *
-   * @param {string} oauthAccessToken 
+   * @param {string} AccessToken 
    *
    * @param {string} username 
    *
@@ -305,14 +305,14 @@ export class PinterestApi extends BaseLoopBackApi {
    *
    *  - `res` – `{object}` - 
    */
-  public deleteboards(oauthAccessToken: any = {}, username: any = {}, board_name: any = {}, customHeaders?: Function): Observable<any> {
+  public deleteboards(AccessToken: any = {}, username: any = {}, board_name: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
     "/pinterests/deleteboards";
     let _routeParams: any = {};
     let _postBody: any = {};
     let _urlParams: any = {};
-    if (typeof oauthAccessToken !== 'undefined' && oauthAccessToken !== null) _urlParams.oauthAccessToken = oauthAccessToken;
+    if (typeof AccessToken !== 'undefined' && AccessToken !== null) _urlParams.AccessToken = AccessToken;
     if (typeof username !== 'undefined' && username !== null) _urlParams.username = username;
     if (typeof board_name !== 'undefined' && board_name !== null) _urlParams.board_name = board_name;
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
@@ -324,7 +324,7 @@ export class PinterestApi extends BaseLoopBackApi {
          * (The remote method definition does not provide any description.)
          * </em>
    *
-   * @param {string} oauthAccessToken 
+   * @param {string} AccessToken 
    *
    * @param {string} username 
    *
@@ -348,14 +348,14 @@ export class PinterestApi extends BaseLoopBackApi {
    *
    *  - `res` – `{object}` - 
    */
-  public pin(oauthAccessToken: any = {}, username: any = {}, board_name: any = {}, comment: any = {}, description: any = {}, submittedurl: any = {}, multipartimage: any = {}, submittedimageurl: any = {}, customHeaders?: Function): Observable<any> {
+  public pin(AccessToken: any = {}, username: any = {}, board_name: any = {}, comment: any = {}, description: any = {}, submittedurl: any = {}, multipartimage: any = {}, submittedimageurl: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
     "/pinterests/pin";
     let _routeParams: any = {};
     let _postBody: any = {};
     let _urlParams: any = {};
-    if (typeof oauthAccessToken !== 'undefined' && oauthAccessToken !== null) _urlParams.oauthAccessToken = oauthAccessToken;
+    if (typeof AccessToken !== 'undefined' && AccessToken !== null) _urlParams.AccessToken = AccessToken;
     if (typeof username !== 'undefined' && username !== null) _urlParams.username = username;
     if (typeof board_name !== 'undefined' && board_name !== null) _urlParams.board_name = board_name;
     if (typeof comment !== 'undefined' && comment !== null) _urlParams.comment = comment;
@@ -372,7 +372,7 @@ export class PinterestApi extends BaseLoopBackApi {
          * (The remote method definition does not provide any description.)
          * </em>
    *
-   * @param {string} oauthAccessToken 
+   * @param {string} AccessToken 
    *
    * @param {string} pin 
    *
@@ -384,14 +384,14 @@ export class PinterestApi extends BaseLoopBackApi {
    *
    *  - `res` – `{object}` - 
    */
-  public deletepin(oauthAccessToken: any = {}, pin: any = {}, customHeaders?: Function): Observable<any> {
+  public deletepin(AccessToken: any = {}, pin: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
     "/pinterests/deletepin";
     let _routeParams: any = {};
     let _postBody: any = {};
     let _urlParams: any = {};
-    if (typeof oauthAccessToken !== 'undefined' && oauthAccessToken !== null) _urlParams.oauthAccessToken = oauthAccessToken;
+    if (typeof AccessToken !== 'undefined' && AccessToken !== null) _urlParams.AccessToken = AccessToken;
     if (typeof pin !== 'undefined' && pin !== null) _urlParams.pin = pin;
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
     return result;
