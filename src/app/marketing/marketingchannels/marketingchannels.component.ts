@@ -390,6 +390,11 @@ export class MarketingchannelsComponent implements OnInit {
       .subscribe((Linkedin: Linkedin[]) => this.Linkedin = Linkedin);
   }
 
+  getAdssdk(): void {
+    this.FacebookApi.adssdk(this.linkedinoption.accesstoken, null)
+    .subscribe(res => {console.log(res)});
+  }
+
   getLinkedinCompany(): void {
     if (this.linkedinoption.accesstoken) {
       this.LinkedinApi.linkedinadmincompanypage(this.linkedinoption.accesstoken)
@@ -483,6 +488,13 @@ export class MarketingchannelsComponent implements OnInit {
 
   postToLinkedinProfile(): void {
 
+  }
+
+  postToFacebook(): void {
+    this.FacebookApi.post(this.facebookoption.AccessToken, this.selectedChannel.text)
+    .subscribe(
+      res => {console.log(res);}
+    );
   }
 
 

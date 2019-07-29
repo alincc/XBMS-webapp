@@ -222,7 +222,7 @@ export class FacebookApi extends BaseLoopBackApi {
    *
    * @param {string} accesstoken 
    *
-   * @param {object} body 
+   * @param {string} body 
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -304,6 +304,100 @@ export class FacebookApi extends BaseLoopBackApi {
     let _urlParams: any = {};
     if (typeof token !== 'undefined' && token !== null) _urlParams.token = token;
     if (typeof shareid !== 'undefined' && shareid !== null) _urlParams.shareid = shareid;
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
+   * <em>
+         * (The remote method definition does not provide any description.)
+         * </em>
+   *
+   * @param {string} token 
+   *
+   * @param {string} user_id 
+   *
+   * @param {string} image_url 
+   *
+   * @param {string} caption 
+   *
+   * @param {string} location_id 
+   *
+   * @param {string} user_tags 
+   *
+   * @param {object} data Request data.
+   *
+   * This method does not accept any data. Supply an empty object.
+   *
+   * @returns {object} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * <em>
+   * (The remote method definition does not provide any description.
+   * This usually means the response is a `Facebook` object.)
+   * </em>
+   */
+  public posttoinstagram(token: any = {}, user_id: any = {}, image_url: any = {}, caption: any = {}, location_id: any = {}, user_tags: any = {}, customHeaders?: Function): Observable<any> {
+    let _method: string = "POST";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/facebooks/posttoinstagram";
+    let _routeParams: any = {};
+    let _postBody: any = {};
+    let _urlParams: any = {};
+    if (typeof token !== 'undefined' && token !== null) _urlParams.token = token;
+    if (typeof user_id !== 'undefined' && user_id !== null) _urlParams.user_id = user_id;
+    if (typeof image_url !== 'undefined' && image_url !== null) _urlParams.image_url = image_url;
+    if (typeof caption !== 'undefined' && caption !== null) _urlParams.caption = caption;
+    if (typeof location_id !== 'undefined' && location_id !== null) _urlParams.location_id = location_id;
+    if (typeof user_tags !== 'undefined' && user_tags !== null) _urlParams.user_tags = user_tags;
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
+   * <em>
+         * (The remote method definition does not provide any description.)
+         * </em>
+   *
+   * @param {string} token 
+   *
+   * @param {string} user_id 
+   *
+   * @param {string} image_url 
+   *
+   * @param {string} caption 
+   *
+   * @param {string} location_id 
+   *
+   * @param {string} user_tags 
+   *
+   * @param {object} data Request data.
+   *
+   * This method does not accept any data. Supply an empty object.
+   *
+   * @returns {object} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * <em>
+   * (The remote method definition does not provide any description.
+   * This usually means the response is a `Facebook` object.)
+   * </em>
+   */
+  public postvideoinstagram(token: any = {}, user_id: any = {}, image_url: any = {}, caption: any = {}, location_id: any = {}, user_tags: any = {}, customHeaders?: Function): Observable<any> {
+    let _method: string = "POST";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/facebooks/postvideoinstagram";
+    let _routeParams: any = {};
+    let _postBody: any = {};
+    let _urlParams: any = {};
+    if (typeof token !== 'undefined' && token !== null) _urlParams.token = token;
+    if (typeof user_id !== 'undefined' && user_id !== null) _urlParams.user_id = user_id;
+    if (typeof image_url !== 'undefined' && image_url !== null) _urlParams.image_url = image_url;
+    if (typeof caption !== 'undefined' && caption !== null) _urlParams.caption = caption;
+    if (typeof location_id !== 'undefined' && location_id !== null) _urlParams.location_id = location_id;
+    if (typeof user_tags !== 'undefined' && user_tags !== null) _urlParams.user_tags = user_tags;
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
     return result;
   }

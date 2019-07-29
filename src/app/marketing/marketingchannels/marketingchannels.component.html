@@ -455,7 +455,7 @@
             </tr>
             <tr>
               <td>
-                <button a mat-raised-button *ngIf="!selectedChannel.send" (click)="saveChannel()">Save/Schedule</button>
+                <button a mat-raised-button *ngIf="!selectedChannel.send" (click)="saveChannel()">Save</button>
                 <button a mat-raised-button *ngIf="!selectedChannel.send" (click)="scheduleChannel()">Schedule</button>
                 <button a mat-raised-button *ngIf="!selectedChannel.send" (click)="postToTwitter()">Tweet</button>
                 <button a mat-raised-button (click)="openDialogDeleteChannel(i)">Delete Post</button>
@@ -659,10 +659,11 @@
             <tr>
               <td>
                 <button a mat-raised-button *ngIf="!selectedChannel.send" (click)="getFBAccountInfo()">Get Accounts</button>
-                <button a mat-raised-button *ngIf="!selectedChannel.send" (click)="saveChannel()">Save/Schedule</button>
+                <button a mat-raised-button *ngIf="!selectedChannel.send" (click)="saveChannel()">Save</button>
                 <button a mat-raised-button *ngIf="!selectedChannel.send" (click)="scheduleChannel()">Schedule</button>
                 <button a mat-raised-button *ngIf="!selectedChannel.send" (click)="postToFacebook()">Post</button>
                 <button a mat-raised-button (click)="openDialogDeleteChannel(i)">Delete Post</button>
+                <button a mat-raised-button (click)="getAdssdk()">Check ads</button>
               </td>
             </tr>
             <br>
@@ -895,7 +896,7 @@
             </tr>
             <tr>
               <td>
-                <button a mat-raised-button *ngIf="!selectedChannel.send" (click)="saveChannel()">Save/Schedule</button>
+                <button a mat-raised-button *ngIf="!selectedChannel.send" (click)="saveChannel()">Save</button>
                 <button a mat-raised-button *ngIf="!selectedChannel.send" (click)="scheduleChannel()">Schedule</button>
                 <button a mat-raised-button *ngIf="!selectedChannel.send" (click)="posttoPinterestBoard()">Pin</button>
                 <button a mat-raised-button (click)="openDialogDeleteChannel(i)">Delete Post</button>

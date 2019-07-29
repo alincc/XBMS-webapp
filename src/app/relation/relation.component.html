@@ -72,8 +72,8 @@
                   <mat-icon (click)="getRelationsnextpage()">navigate_next</mat-icon>
                 </td>
               </tr>
-              <tr>            
-                  <label>{{skip}} / {{limit}}</label>
+              <tr>
+                <label>{{skip}} / {{limit}}</label>
               </tr>
               <tr>
                 <td><label>Total</label></td>
@@ -200,49 +200,49 @@
                 </tr>
                 <tr>
                   <td>
-                      <mat-accordion>
-                          <mat-expansion-panel>
-                            <mat-expansion-panel-header>
-                              <mat-panel-title>
-                                Secondary Color
-                              </mat-panel-title>
-                            </mat-expansion-panel-header>
-                            <br>
-                    <span [style.background]="selectedRelation.companyprimairycolor" [cpToggle]="true"
-                    [cpDialogDisplay]="'inline'" [cpCancelButton]="true"
-                    [(colorPicker)]="selectedRelation.companyprimairycolor"></span>
-                  </mat-expansion-panel>
-                </mat-accordion>
+                    <mat-accordion>
+                      <mat-expansion-panel>
+                        <mat-expansion-panel-header>
+                          <mat-panel-title>
+                            Secondary Color
+                          </mat-panel-title>
+                        </mat-expansion-panel-header>
+                        <br>
+                        <span [style.background]="selectedRelation.companyprimairycolor" [cpToggle]="true"
+                          [cpDialogDisplay]="'inline'" [cpCancelButton]="true"
+                          [(colorPicker)]="selectedRelation.companyprimairycolor"></span>
+                      </mat-expansion-panel>
+                    </mat-accordion>
                   </td>
                   <td>
-                      <mat-accordion>
-                          <mat-expansion-panel>
-                            <mat-expansion-panel-header>
-                              <mat-panel-title>
-                                Secondary Color
-                              </mat-panel-title>
-                            </mat-expansion-panel-header>
-                            <br>
-                    <span [style.background]="selectedRelation.companysecondarycolor" [cpToggle]="true"
-                    [cpDialogDisplay]="'inline'" [cpCancelButton]="true"
-                    [(colorPicker)]="selectedRelation.companysecondarycolor"></span>
-                  </mat-expansion-panel>
-                </mat-accordion>
+                    <mat-accordion>
+                      <mat-expansion-panel>
+                        <mat-expansion-panel-header>
+                          <mat-panel-title>
+                            Secondary Color
+                          </mat-panel-title>
+                        </mat-expansion-panel-header>
+                        <br>
+                        <span [style.background]="selectedRelation.companysecondarycolor" [cpToggle]="true"
+                          [cpDialogDisplay]="'inline'" [cpCancelButton]="true"
+                          [(colorPicker)]="selectedRelation.companysecondarycolor"></span>
+                      </mat-expansion-panel>
+                    </mat-accordion>
                   </td>
                 </tr>
                 <tr>
                   <td>
-                      <form>
+                    <form>
                       <mat-form-field class="example-full-width">
-                          <input [(ngModel)]=selectedRelation.companyfont type="text" placeholder="Pick one" aria-label="Number" matInput
-                            [formControl]="myControlfont" [matAutocomplete]="auto">
-                          <mat-autocomplete #auto="matAutocomplete">
-                            <mat-option *ngFor="let font of filteredfonts | async" [value]="font">
-                              {{font}}
-                            </mat-option>
-                          </mat-autocomplete>
-                        </mat-form-field>
-                      </form>
+                        <input [(ngModel)]=selectedRelation.companyfont type="text" placeholder="Pick one"
+                          aria-label="Number" matInput [formControl]="myControlfont" [matAutocomplete]="auto">
+                        <mat-autocomplete #auto="matAutocomplete">
+                          <mat-option *ngFor="let font of filteredfonts | async" [value]="font">
+                            {{font}}
+                          </mat-option>
+                        </mat-autocomplete>
+                      </mat-form-field>
+                    </form>
                   </td>
                 </tr>
               </table>
@@ -263,6 +263,13 @@
       <div class="addtobutton">
         <button mat-fab color="primary" matTooltip="Create new Call" (click)="openDialogNewCall()">
           <mat-icon>add</mat-icon>
+        </button>
+        <button mat-mini-fab *ngIf="!readytosend" color="primary" matTooltip="send Message"
+          (click)="createNewMessage()">
+          <mat-icon>message</mat-icon>
+        </button>
+        <button mat-mini-fab *ngIf="readytosend" color="primary" matTooltip="send Message" (click)="sendNewMessage()">
+          <mat-icon>send</mat-icon>
         </button>
       </div>
       <div class="tabcontainer" fxLayout="row">
@@ -286,7 +293,7 @@
 
           </div>
         </div>
-        <div class="relationcontainer" *ngIf="selectedCall" fxFlex="80%" on-focusout="saveCall()">
+        <div class="relationcontainer" *ngIf="selectedCall && !readytosend" fxFlex="80%" on-focusout="saveCall()">
           <mat-card>
             <mat-card-content fxLayout="column">
 
@@ -339,15 +346,13 @@
                       </mat-autocomplete>
                     </mat-form-field>
                   </td>
-                  <td>
-                    <ul *ngFor="let attendeelist of attendeelist">
-                  <td>{{attendeelist.attendent}}</td>
-                  <td>
+                  <td *ngIf="attendeelist.lenght > 0">
+                    <div *ngFor="let attendee of attendeelist">
+                 {{attendee.attendent}}
                     <a mat-mini-fab color="primary">
                       <mat-icon>delete</mat-icon>
                     </a>
-                  </td>
-                  </ul>
+                  </div>
                   </td>
                 </tr>
                 <br>
@@ -369,7 +374,8 @@
                 <br>
                 <tr>
                   <td>
-                    <a mat-mini-fab matTooltip="Speech to Text recording" color="primary" (click)="activateSpeech()" [class.speechbutton]="recordactive">
+                    <a mat-mini-fab matTooltip="Speech to Text recording" color="primary" (click)="activateSpeech()"
+                      [class.speechbutton]="recordactive">
                       <mat-icon>record_voice_over</mat-icon>
                     </a>
                   </td>
@@ -455,6 +461,128 @@
               </table>
               <div>
                 <button a mat-raised-button (click)="saveCall()">Save</button>
+              </div>
+
+            </mat-card-content>
+          </mat-card>
+        </div>
+
+        <div class="relationcontainer" *ngIf="selectedCall && readytosend" fxFlex="80%" on-focusout="saveCall()">
+          <mat-card>
+            <mat-card-content fxLayout="column">
+
+              <table fxFlex class="callstable">
+
+                <tr>
+                  <th colspan="2">
+                    <mat-toolbar color="primary" class="titlebox">
+                      <h2>{{selectedCall.title | uppercase | slice:0:30 }}</h2>
+
+                      <button mat-icon-button [matMenuTriggerFor]="menucall" class="menu">
+                        <mat-icon>more_vert</mat-icon>
+                      </button>
+                      <mat-menu #menucall="matMenu">
+                        <button mat-menu-item (click)="openDialogDeleteCall()">
+                          <mat-icon>delete</mat-icon>
+                          <span>Delete</span>
+                        </button>
+                        <button mat-menu-item (click)="openDialogNewCall()">
+                          <mat-icon>note_add</mat-icon>
+                          <span>New</span>
+                        </button>
+                        <button mat-menu-item (click)="sendMailTo()">
+                          <mat-icon>send</mat-icon>
+                          <span>Reply</span>
+                        </button>
+                      </mat-menu>
+                    </mat-toolbar>
+                  </th>
+                </tr>
+                <tr>
+                  <td colspan="2">
+                    <mat-form-field>
+                      <input matInput [(ngModel)]=selectedCall.title placeholder="Subject" class="InputField">
+                    </mat-form-field>
+                  </td>
+                </tr>
+                <tr>
+                  <td>From: {{Account.email}}</td>
+                </tr>
+                <tr>
+                  <td>
+                      <mat-form-field>
+                          <mat-label>To</mat-label>
+                          <mat-select [(ngModel)]=emailtosendto>
+                            <mat-option *ngFor="let contactperson of Contactpersons" [value]="contactperson">
+                              {{contactperson.email}}
+                            </mat-option>
+                          </mat-select>
+                        </mat-form-field>
+                  </td>
+              
+                  <!-- <td>{{emailtosendto.firstname}} {{emailtosendto.lastname}</td> -->
+   
+                </tr>
+                <tr>
+                  <td>
+                      <mat-form-field>
+                          <input matInput [(ngModel)]=bcc placeholder="CC" class="InputField">
+                        </mat-form-field>
+                  </td>
+                  <td>
+                      <mat-form-field>
+                          <input matInput [(ngModel)]=bcc placeholder="BCC" class="InputField">
+                        </mat-form-field>
+                  </td>
+                </tr>
+                <br>
+                <tr>
+                  <td>
+                    <a mat-mini-fab matTooltip="Speech to Text recording" color="primary" (click)="activateSpeech()"
+                      [class.speechbutton]="recordactive">
+                      <mat-icon>record_voice_over</mat-icon>
+                    </a>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td>
+                    <mat-checkbox [(ngModel)]=selectedCall.followup>
+                      Follow Up
+                    </mat-checkbox>
+                  </td>
+                  <td>
+                    <mat-datepicker #picker></mat-datepicker>
+                    <input [matDatepicker]="myDatepicker" [(ngModel)]=selectedCall.callbackdate
+                      placeholder="Callback Date">
+                    <mat-datepicker-toggle matSuffix [for]="myDatepicker"></mat-datepicker-toggle>
+                    <mat-datepicker #myDatepicker></mat-datepicker>
+                  </td>
+                </tr>
+
+                <tr *ngIf="!selectedCall.html" rowspan="10">
+                  <td colspan="2">
+                    <div style="border-style: solid; border-width: 1px; border-color: lightgray; padding: 5px;">
+                      <mat-form-field class="content-form">
+                        <textarea matInput class="content-form" #content [(ngModel)]=selectedCall.content
+                          placeholder="content">Call Report</textarea>
+                        <mat-hint align="end">{{content.value.length}}</mat-hint>
+                      </mat-form-field>
+                    </div>
+                  </td>
+                </tr>
+                <tr rowspan="10" *ngIf="selectedCall.html">
+                  <td colspan="2">
+                    <div style="border-style: solid; border-width: 1px; border-color: lightgray; padding: 5px;"
+                      [innerHTML]="selectedCall.html"></div>
+                  </td>
+                </tr>
+                <tr>
+                  <button a mat-raised-button (click)="SendMessageDialog()">Edit</button>
+                </tr>
+              </table>
+              <div>
+                <button a mat-raised-button (click)="sendNewMessage()">Send</button>
               </div>
 
             </mat-card-content>
@@ -855,7 +983,7 @@
               <mat-icon>add</mat-icon>
             </a>
           </div>
-<!-- 
+          <!-- 
           <div fxFlex="78%" fxLayout="column" *ngIf="selectedCrawler" class="standarddivclass">
             <mat-card class="standarddivclass">
               <mat-card-content>
@@ -1034,22 +1162,22 @@
 
               <mat-button-toggle-group #group="matButtonToggleGroup" [vertical]="true">
                 <mat-button-toggle value="Analytics">
-                  <mat-icon>details</mat-icon>  Analytics
+                  <mat-icon>details</mat-icon> Analytics
                 </mat-button-toggle>
                 <mat-button-toggle value="Twitter" (click)="getTwitter()">
-                    <mat-icon  svgIcon="xbms_twitter"></mat-icon>  Twitter
+                  <mat-icon svgIcon="xbms_twitter"></mat-icon> Twitter
                 </mat-button-toggle>
                 <mat-button-toggle value="Linkedin" (click)="getLinkedin()">
-                    <mat-icon  svgIcon="xbms_linkedin"></mat-icon>  Linkedin
+                  <mat-icon svgIcon="xbms_linkedin"></mat-icon> Linkedin
                 </mat-button-toggle>
                 <mat-button-toggle value="Facebook" (click)="getFacebook()">
-                  <mat-icon  svgIcon="xbms_facebook"></mat-icon>  Facebook
+                  <mat-icon svgIcon="xbms_facebook"></mat-icon> Facebook
                 </mat-button-toggle>
                 <mat-button-toggle value="Pinterest" (click)="getPinterest()">
-                    <mat-icon svgIcon="xbms_pinterest"></mat-icon>  Pinterest
-                  </mat-button-toggle>
+                  <mat-icon svgIcon="xbms_pinterest"></mat-icon> Pinterest
+                </mat-button-toggle>
                 <mat-button-toggle value="Adwords" (click)="getAdwords()">
-                  <mat-icon>details</mat-icon>  Adwords
+                  <mat-icon>details</mat-icon> Adwords
                 </mat-button-toggle>
               </mat-button-toggle-group>
 

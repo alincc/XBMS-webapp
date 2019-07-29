@@ -40,6 +40,7 @@ import { FormControl, FormGroupDirective, NgForm, Validators, FormBuilder, FormG
 import { ErrorStateMatcher } from '@angular/material/core';
 import { MatSnackBar, MatSnackBarConfig, MatInput, MatAutocompleteSelectedEvent } from '@angular/material';
 import { fontoptions } from './google-fonts-list';
+import { TextEditorDialog } from '../marketing/maileditor/texteditordialog.component';
 
 
 // export class MyErrorStateMatcher implements ErrorStateMatcher {
@@ -128,6 +129,7 @@ export class SettingsComponent implements OnInit {
   public fontlist: string[] = fontoptions;
 
   constructor(
+    public dialog: MatDialog,
     public zone: NgZone,
     public snackBar: MatSnackBar,
     public AccountApi: AccountApi,
@@ -558,6 +560,22 @@ export class SettingsComponent implements OnInit {
     this.LinkedinApi.linkedinconnections(this.selectedLinkedin.accesstoken).subscribe(res => {
       console.log(res);
     })
+  }
+
+  openeditorsignature(): void {
+    const dialogRef = this.dialog.open(TextEditorDialog, {
+      width: '800px',
+      data: this.Account.signature // changingThisBreaksApplicationSecurity,
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result !== undefined) {
+        if (result.length > 0) {
+          this.Account.signature = result;
+          this.saveAccount();
+        };  // this.sanitizer.bypassSecurityTrustHtml(result);
+      }
+    });
   }
 
 }

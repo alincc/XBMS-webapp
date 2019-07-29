@@ -28,12 +28,14 @@ import {
   Files,
   FilesApi,
   Adwords,
-  AdwordsApi
+  AdwordsApi,
+  MailingApi
 } from '../shared/';
 import { DialogsService } from './../dialogsservice/dialogs.service';
 import { MatSnackBar, MatDatepickerModule } from '@angular/material';
 import { DatePipe } from '@angular/common';
 import { LinkedinService } from '../shared/socialservice';
+import { MatDialog, MatDialogRef } from '@angular/material';
 // import {
 //   trigger,
 //   state,
@@ -53,7 +55,7 @@ import { SpeechRecognitionService } from '../shared/speechservice/speechservice'
 import { fontoptions } from './../settings/google-fonts-list';
 import { DomSanitizer } from '@angular/platform-browser';
 const EMAIL_REGEX = /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
-
+import { TextEditorDialog } from '../marketing/maileditor/texteditordialog.component';
 import { FileUploader } from 'ng2-file-upload';
 const URL = "https://xbmsapi.eu-gb.mybluemix.net/api/Containers/images/upload";
 
@@ -76,7 +78,7 @@ class Attendee {
   styleUrls: ['./relation.component.scss']
 })
 export class RelationComponent implements OnInit {
-  
+
   public fontlist: string[] = fontoptions;
   showSearchButton: boolean;
   speechData: string;
@@ -133,7 +135,7 @@ export class RelationComponent implements OnInit {
   public option: Contactpersons = new Contactpersons();
   public relationsOptions = [];
   public relationsOption: Relations = new Relations();
-
+  public readytosend = false;
 
   public attendeelist = [];
   public newGoogleAnalytics: Googleanalytics = new Googleanalytics();
@@ -155,6 +157,9 @@ export class RelationComponent implements OnInit {
   public totalrelationcount
   public selectstatus;
   public mailtolink;
+  public emailtosendto;
+  public cc;
+  public bcc; 
 
   public recordactive = false
 
@@ -193,6 +198,7 @@ export class RelationComponent implements OnInit {
   public togglesearch = false;
 
   constructor(
+    public dialog: MatDialog,
     private sanitizer: DomSanitizer,
     private speechRecognitionService: SpeechRecognitionService,
     private _formBuilder: FormBuilder,
@@ -216,7 +222,8 @@ export class RelationComponent implements OnInit {
     public RelationsApi: RelationsApi,
     public PinterestApi: PinterestApi,
     public ContactpersonsApi: ContactpersonsApi,
-    public CallsApi: CallsApi
+    public CallsApi: CallsApi,
+    public MailingApi: MailingApi
   ) {
     this.showSearchButton = true;
     this.speechData = "";
@@ -236,19 +243,19 @@ export class RelationComponent implements OnInit {
     this.setFilter();
     this.getCurrentUserInfo();
     this.uploader.clearQueue();
-    //filter contactperson
-    // this.filteredOptions = this.myControl.valueChanges
-    //   .pipe(
-    //     startWith(''),
-    //     //map(options => options && typeof options === 'object' ? options.relationname : options),
-    //     map(lastname => lastname ? this.filter(lastname) : this.options.slice())
-    //   );
+    // filter contactperson
+    this.filteredOptions = this.myControl.valueChanges
+      .pipe(
+        startWith(''),
+        //map(options => options && typeof options === 'object' ? options.relationname : options),
+        map(lastname => lastname ? this.filter(lastname) : this.options.slice())
+      );
 
     this.filteredfonts = this.myControlfont.valueChanges.pipe(
       startWith(''),
       map(value => this._filterfont(value))
     );
-  
+
 
     this.crawl1FormGroup = this._formBuilder.group({
       firstCtrl: ['', Validators.required]
@@ -427,9 +434,9 @@ export class RelationComponent implements OnInit {
       {
         where:
         {
-          or: [{ "relationname":  {"regexp": this.searchterm + '/i'} },
-          { "address1": {"regexp": this.searchterm + '/i'} },
-          { "city": {"regexp": this.searchterm + '/i'} }
+          or: [{ "relationname": { "regexp": this.searchterm + '/i' } },
+          { "address1": { "regexp": this.searchterm + '/i' } },
+          { "city": { "regexp": this.searchterm + '/i' } }
           ]
         },
         order: 'relationname ASC',
@@ -609,6 +616,7 @@ export class RelationComponent implements OnInit {
   }
 
   onSelectCall(Calls: Calls, i): void {
+    this.readytosend = false;
     this.attendeelist = [];
     this.option = undefined;
     this.tasklist = [];
@@ -712,10 +720,12 @@ export class RelationComponent implements OnInit {
   redirectTwitter(id): void {
     var redirect;
     var domain = window.location.protocol + window.location.hostname + ":3000"; //set domain + protocol + 3000 for test purpose only
-    this.TwitterApi.sessionsconnect(id, domain).subscribe(res => { redirect = res, 
-      console.log(res),
-      window.location.href = redirect; });
-      this.openSnackBar("You will be redirected to Twitter.com")
+    this.TwitterApi.sessionsconnect(id, domain).subscribe(res => {
+      redirect = res,
+        console.log(res),
+        window.location.href = redirect;
+    });
+    this.openSnackBar("You will be redirected to Twitter.com")
   }
 
   linkPinterestAccount(): void {
@@ -732,8 +742,9 @@ export class RelationComponent implements OnInit {
     const domain = window.location.protocol + window.location.hostname + ":3000"; //set domain + protocol + 3000 for test purpose only
     this.PinterestApi.sessionsconnect(id, domain).subscribe(res => {
       console.log(res),
-      redirect = res, 
-      window.location.href = redirect.res.request.uri.href; });
+        redirect = res,
+        window.location.href = redirect.res.request.uri.href;
+    });
   }
 
 
@@ -741,8 +752,8 @@ export class RelationComponent implements OnInit {
     this.RelationsApi.createLinkedin(this.selectedRelation.id, this.newLinkedin)
       .subscribe(res => {
         this.newLinkedin = res,
-      this.redirectLinkedin(this.newLinkedin.id);
-      this.openSnackBar("You will be redirected to Linkedin.com")
+          this.redirectLinkedin(this.newLinkedin.id);
+        this.openSnackBar("You will be redirected to Linkedin.com")
       })
   };
 
@@ -750,13 +761,14 @@ export class RelationComponent implements OnInit {
     var redirect;
     var domain = window.location.protocol + window.location.hostname; // + ":3000"; //set domain + protocol + 3000 for test purpose only
     this.LinkedinApi.linkedinauth(id, domain).subscribe(res => {
-      redirect = res, window.location.href = redirect.request.uri.href; });
+      redirect = res, window.location.href = redirect.request.uri.href;
+    });
   };
 
   deleteLinkedin(i): void {
     this.RelationsApi.destroyByIdLinkedin(this.selectedRelation.id, this.Linkedin[i].id)
       .subscribe(res => this.getLinkedin());
-  }y
+  } y
 
 
   getFacebook(): void {
@@ -768,8 +780,8 @@ export class RelationComponent implements OnInit {
   linkFacebookAccount(): void {
     this.RelationsApi.createFacebook(this.selectedRelation.id, this.newFacebook)
       .subscribe(res => {
-          this.redirectFacebook(res.id)
-          this.openSnackBar("You will be redirected to Facebook.com")
+        this.redirectFacebook(res.id)
+        this.openSnackBar("You will be redirected to Facebook.com")
       })
   };
 
@@ -787,8 +799,10 @@ export class RelationComponent implements OnInit {
 
   deleteFacebook(i): void {
     this.RelationsApi.destroyByIdFacebook(this.selectedRelation.id, this.Facebook[i].id)
-      .subscribe(res => {this.getFacebook(),
-      this.openSnackBar("Facebook Deleted")}
+      .subscribe(res => {
+        this.getFacebook(),
+          this.openSnackBar("Facebook Deleted")
+      }
       );
   }
 
@@ -865,7 +879,7 @@ export class RelationComponent implements OnInit {
     if (selectedOption == true) {
       this.ContainerApi.removeFile(this.selectedRelation.id, Files.name).subscribe(res => this.getFiles());
       this.RelationsApi.destroyByIdFiles(Files.relationsId, Files.id).subscribe(
-        res =>  this.getFiles() );
+        res => this.getFiles());
 
     }
   }
@@ -884,12 +898,12 @@ export class RelationComponent implements OnInit {
       this.newFiles.type = "general",
       this.newFiles.companyId = this.Account.companyId,
       this.uploadFile();
-      //check if container exists and create
-      // this.ContainerApi.findById(this.selectedRelation.id)
-      //   .subscribe(res => this.uploadFile(),
-      //     error =>
-      //       this.ContainerApi.createContainer({ name: this.selectedRelation.id })
-      //         .subscribe(res => this.uploadFile()));
+    //check if container exists and create
+    // this.ContainerApi.findById(this.selectedRelation.id)
+    //   .subscribe(res => this.uploadFile(),
+    //     error =>
+    //       this.ContainerApi.createContainer({ name: this.selectedRelation.id })
+    //         .subscribe(res => this.uploadFile()));
   }
 
   uploadFile(): void {
@@ -919,7 +933,7 @@ export class RelationComponent implements OnInit {
 
   //run crawler once delete?
   crawlUrl(): void {
- //   this.CrawlerApi.crawlurl(this.selectedRelation.id, this.selectedRelation.website).subscribe(res => res = res);
+    //   this.CrawlerApi.crawlurl(this.selectedRelation.id, this.selectedRelation.website).subscribe(res => res = res);
   }
 
   scheduleCrawler(): void {
@@ -968,10 +982,10 @@ export class RelationComponent implements OnInit {
   //   this.selectedCrawler = Crawler;
   // }
 
-   deleteCrawler(): void {
-  //   this.RelationsApi.destroyByIdCrawler(this.selectedRelation.id, this.selectedCrawler.id)
-  //     .subscribe(res => { this.getCrawlers(), this.selectedCrawler = undefined, this.getCrawlers(), this.openSnackBar("Crawler Deleted"); });
-   }
+  deleteCrawler(): void {
+    //   this.RelationsApi.destroyByIdCrawler(this.selectedRelation.id, this.selectedCrawler.id)
+    //     .subscribe(res => { this.getCrawlers(), this.selectedCrawler = undefined, this.getCrawlers(), this.openSnackBar("Crawler Deleted"); });
+  }
 
   deleteCrawl(i): void {
     // this.selectedCrawler.response.splice(i, 1), this.updateCrawler()
@@ -1017,10 +1031,10 @@ export class RelationComponent implements OnInit {
 
 
   activateSpeech(): void {
- //load in service speech service
- // connected class to recordactive
- //
- //see manual --> https://hassantariqblog.wordpress.com/2016/12/04/angular2-web-speech-api-speech-recognition-in-angular2/
+    //load in service speech service
+    // connected class to recordactive
+    //
+    //see manual --> https://hassantariqblog.wordpress.com/2016/12/04/angular2-web-speech-api-speech-recognition-in-angular2/
     if (this.recordactive === false) {
       this.recordactive = true;
       this.speechRecognitionService.record()
@@ -1029,15 +1043,15 @@ export class RelationComponent implements OnInit {
           (value) => {
             this.speechData = value;
             console.log(value);
-            if (this.selectedCall.content !== undefined){
-            this.selectedCall.content = this.selectedCall.content + ". " + value
-          }
-          else this.selectedCall.content = value
+            if (this.selectedCall.content !== undefined) {
+              this.selectedCall.content = this.selectedCall.content + ". " + value
+            }
+            else this.selectedCall.content = value
           },
           //errror
           (err) => {
-              console.log(err.error, "--restarting service--");
-              this.activateSpeech();
+            console.log(err.error, "--restarting service--");
+            this.activateSpeech();
           },
           //completion
           () => {
@@ -1050,6 +1064,62 @@ export class RelationComponent implements OnInit {
       this.recordactive = false;
     }
 
+  }
+
+
+  createNewMessage(): void {
+    this.RelationsApi.createCalls(this.selectedRelation.id, {
+      "html": '<p>&nbsp;</p>' + this.Account.signature,
+      "title": "New",
+      "accountId": this.Account.id, "companyId": this.Account.companyId
+    }) //add companyId for statistics
+      .subscribe(res => {
+        this.data = res,
+          this.callindex = this.Calls.push(this.data) - 1,
+          this.onSelectCall(this.data, this.callindex);
+        this.SendMessageDialog();
+      });
+  }
+
+  SendMessageDialog(): void {
+
+    const dialogRef = this.dialog.open(TextEditorDialog, {
+      width: '800px',
+      data: this.selectedCall.html // changingThisBreaksApplicationSecurity,
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result !== undefined) {
+        if (result.length > 0) {
+          this.selectedCall.html = result;
+          this.saveCall();
+          this.readytosend = true;
+        };  // this.sanitizer.bypassSecurityTrustHtml(result);
+      }
+    });
+  }
+
+  sendNewMessage(): void {
+    let message = {
+      from: this.Account.email,
+      to: this.emailtosendto.email,
+      subject: this.selectedCall.title,
+      html: this.selectedCall.html,
+      bcc: this.bcc,
+      cc: this.cc
+    };
+    this.MailingApi.sendmail(message).subscribe(res => {
+      console.log(res);
+      let attendent = this.emailtosendto.firstname + ' ' + this.emailtosendto.lastname;
+      let attenobj = {"attendent": attendent};
+      this.selectedCall.attendee = [];
+      this.selectedCall.attendee.push(attenobj);
+      this.readytosend = false; 
+      this.saveCall();
+      this.getCalls(); 
+      this.snackBar.open(res.message); 
+      
+    });
   }
 
 

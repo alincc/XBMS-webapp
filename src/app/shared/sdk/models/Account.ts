@@ -17,6 +17,7 @@ export interface AccountInterface {
   "standardrelation"?: string;
   "standardGa"?: string;
   "lastlogin"?: Date;
+  "signature"?: string;
   "realm"?: string;
   "username"?: string;
   "email": string;
@@ -40,6 +41,7 @@ export class Account implements AccountInterface {
   "standardrelation": string;
   "standardGa": string;
   "lastlogin": Date;
+  "signature": string;
   "realm": string;
   "username": string;
   "email": string;
@@ -124,6 +126,10 @@ export class Account implements AccountInterface {
         "lastlogin": {
           name: 'lastlogin',
           type: 'Date'
+        },
+        "signature": {
+          name: 'signature',
+          type: 'string'
         },
         "realm": {
           name: 'realm',

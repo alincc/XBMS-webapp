@@ -105,6 +105,14 @@
             </td>
           </tr>
           <tr>
+            <div [innerHTML]="Account.signature | safeHtml"></div>
+          </tr>
+          <tr>
+            <button a mat-raised-button color="primary" (click)="openeditorsignature()">
+              Edit Signature
+            </button> 
+          </tr>
+          <tr>
             <td>
               <button (click)="saveCompany()" a mat-raised-button class="button">Save Changes</button>
             </td>
