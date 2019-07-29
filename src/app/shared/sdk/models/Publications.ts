@@ -14,14 +14,6 @@ declare var Object: any;
 export interface PublicationsInterface {
   "generalmail"?: string;
   "adwords"?: string;
-  "socialmediaaddress1"?: string;
-  "socialmediatype1"?: string;
-  "socialmediaaddress2"?: string;
-  "socialmediatype2"?: string;
-  "socialmediaaddress3"?: string;
-  "socialmediatype3"?: string;
-  "socialmediaaddress4"?: string;
-  "socialmediatype4"?: string;
   "text"?: string;
   "title"?: string;
   "picturename"?: string;
@@ -30,7 +22,6 @@ export interface PublicationsInterface {
   "enddate"?: Date;
   "description"?: string;
   "url"?: string;
-  "linkedinId"?: string;
   "marketingEventId"?: string;
   "relationsId"?: any;
   "companyId": any;
@@ -41,6 +32,9 @@ export interface PublicationsInterface {
   "timezone"?: string;
   "timeinterval"?: string;
   "monthinterval"?: string;
+  "futuredimages"?: any;
+  "keywords"?: string;
+  "futuredsocialmedia"?: any;
   "id"?: any;
   "marketingplannerId"?: any;
   relations?: Relations;
@@ -56,14 +50,6 @@ export interface PublicationsInterface {
 export class Publications implements PublicationsInterface {
   "generalmail": string;
   "adwords": string;
-  "socialmediaaddress1": string;
-  "socialmediatype1": string;
-  "socialmediaaddress2": string;
-  "socialmediatype2": string;
-  "socialmediaaddress3": string;
-  "socialmediatype3": string;
-  "socialmediaaddress4": string;
-  "socialmediatype4": string;
   "text": string;
   "title": string;
   "picturename": string;
@@ -72,7 +58,6 @@ export class Publications implements PublicationsInterface {
   "enddate": Date;
   "description": string;
   "url": string;
-  "linkedinId": string;
   "marketingEventId": string;
   "relationsId": any;
   "companyId": any;
@@ -83,6 +68,9 @@ export class Publications implements PublicationsInterface {
   "timezone": string;
   "timeinterval": string;
   "monthinterval": string;
+  "futuredimages": any;
+  "keywords": string;
+  "futuredsocialmedia": any;
   "id": any;
   "marketingplannerId": any;
   relations: Relations;
@@ -134,38 +122,6 @@ export class Publications implements PublicationsInterface {
           name: 'adwords',
           type: 'string'
         },
-        "socialmediaaddress1": {
-          name: 'socialmediaaddress1',
-          type: 'string'
-        },
-        "socialmediatype1": {
-          name: 'socialmediatype1',
-          type: 'string'
-        },
-        "socialmediaaddress2": {
-          name: 'socialmediaaddress2',
-          type: 'string'
-        },
-        "socialmediatype2": {
-          name: 'socialmediatype2',
-          type: 'string'
-        },
-        "socialmediaaddress3": {
-          name: 'socialmediaaddress3',
-          type: 'string'
-        },
-        "socialmediatype3": {
-          name: 'socialmediatype3',
-          type: 'string'
-        },
-        "socialmediaaddress4": {
-          name: 'socialmediaaddress4',
-          type: 'string'
-        },
-        "socialmediatype4": {
-          name: 'socialmediatype4',
-          type: 'string'
-        },
         "text": {
           name: 'text',
           type: 'string'
@@ -196,10 +152,6 @@ export class Publications implements PublicationsInterface {
         },
         "url": {
           name: 'url',
-          type: 'string'
-        },
-        "linkedinId": {
-          name: 'linkedinId',
           type: 'string'
         },
         "marketingEventId": {
@@ -241,6 +193,18 @@ export class Publications implements PublicationsInterface {
         "monthinterval": {
           name: 'monthinterval',
           type: 'string'
+        },
+        "futuredimages": {
+          name: 'futuredimages',
+          type: 'any'
+        },
+        "keywords": {
+          name: 'keywords',
+          type: 'string'
+        },
+        "futuredsocialmedia": {
+          name: 'futuredsocialmedia',
+          type: 'any'
         },
         "id": {
           name: 'id',
