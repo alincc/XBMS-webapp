@@ -104,12 +104,15 @@
     position: relative;
     height: auto;
     min-height: 60px;
-    width: auto;
+    width: 100%;
+    // width: auto;
     // overflow:hidden;
     z-index: 2;
   }
 
-
+  .color-picker{
+    z-index: 10;
+  }
   
   .column-box {
     border: solid 1px #ccc;
@@ -334,9 +337,9 @@
   display: inline-block;
 }
 
-.horizontalSocial {
+// .horizontalSocial {
   
-}
+// }
 
 .full-width-item {
   width: 100%;
