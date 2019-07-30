@@ -513,13 +513,7 @@ export class MarketingComponent implements OnInit {
       .subscribe((files: Files[]) => this.Files = files)
   }
 
-  newItem(): void {
-    this.RelationsApi.createPublications(this.option.id, { 'companyId': this.Account.companyId, 'title': 'New Item' })
-      .subscribe(result => {
-        this.createItem = result,
-          this.selectedPublications = this.createItem
-      });
-  }
+
 
   newTranslationItem(): void {
     this.newTranslation.companyId = this.Account.companyId,

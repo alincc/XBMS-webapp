@@ -19,6 +19,7 @@ import { MatSnackBar, MatSnackBarConfig, MatInput, MatAutocompleteSelectedEvent 
 import * as moment from 'moment-timezone';
 import { DialogsService } from './../../dialogsservice/dialogs.service';
 import { timeconv } from '../../shared/timeconv';
+import { timeInterval } from 'rxjs/operators';
 // import { MarketingComponent } from '../marketing.component'
 '../../shared/speed-dial-fab/speed-dial-fab.component';
 
@@ -67,6 +68,7 @@ export class MarketingchannelsComponent implements OnInit {
   public time;
   public localdate;
   public toggletextview = false;
+  public waitingforfbpages = false;
 
 
   constructor(
@@ -345,6 +347,10 @@ export class MarketingchannelsComponent implements OnInit {
         this.LinkedinApi.deleteshare(this.linkedinoption.accesstoken,
           ChannelInst.channelsendid).subscribe();
       }
+      if (ChannelInst.type === "facebook" && ChannelInst.send === true) {
+        this.FacebookApi.delete(this.facebookoption.AccessToken,
+          ChannelInst.channelsendid).subscribe();
+      }
       this.RelationsApi.destroyByIdChannels(this.option.id, ChannelInst.id)
         .subscribe(res => {
           this.getChannels();
@@ -379,11 +385,16 @@ export class MarketingchannelsComponent implements OnInit {
   }
 
   getPinterestBoard(): void {
-    console.log(this.pinterestoption);
-    this.PinterestApi.getboards(this.pinterestoption.AccessToken)
-      .subscribe(res => {console.log(res)
-      this.pinterestboard = res.res;
-    });
+    this.waitingforfbpages = true;
+    setTimeout(() => {
+      console.log(this.pinterestoption);
+      this.PinterestApi.getboards(this.pinterestoption.AccessToken)
+        .subscribe(res => {console.log(res)
+        this.pinterestboard = res.res;
+        this.waitingforfbpages = false;
+      });
+    }, 500);
+
   }
 
   getPinterstPins(): void {
@@ -396,8 +407,12 @@ export class MarketingchannelsComponent implements OnInit {
   }
 
   posttoPinterestBoard(): void {
+    let url = this.selectpinterestboard.url;
+    url = url.replace('https://www.pinterest.com/', '');
+    let name = url.substring(0, url.indexOf("/")); 
+    console.log(this.selectpinterestboard, name);
     this.PinterestApi.pin(this.pinterestoption.AccessToken, 
-      this.selectpinterestboard.username, this.selectpinterestboard.name, this.selectedChannel.text, this.selectedChannel.title, 
+      name, this.selectpinterestboard.name, this.selectedChannel.text, this.selectedChannel.title, 
       null, null, this.selectedChannel.pictureurl).subscribe(
         res => { console.log(res)}
       )
@@ -509,12 +524,24 @@ export class MarketingchannelsComponent implements OnInit {
   }
 
   postToFacebook(): void {
-    this.FacebookApi.postpage(this.selectcompanypage.access_token, this.selectcompanypage.id, this.selectedChannel.text)
+    this.FacebookApi.post(this.facebookoption.AccessToken, this.selectedChannel.text)
     .subscribe(
       res => {console.log(res);}
     );
   }
 
+  postToFacebookPage(): void {
+    this.FacebookApi.postpage(this.selectcompanypage.access_token, this.selectcompanypage.id, this.selectedChannel.text)
+    .subscribe(
+      res => {
+        console.log(res.id);
+        this.selectedChannel.companypage = res.id;
+        this.selectedChannel.userid = this.facebookoption.id;
+        this.selectedChannel.send = true;
+        this.saveChannel();
+      }
+    );
+  }
 
 
   getFacebook(): void {
@@ -524,12 +551,52 @@ export class MarketingchannelsComponent implements OnInit {
 
  
   getFBAccountInfo(): void {
-    this.FacebookApi.me(this.facebookoption.AccessToken).subscribe(
-      res => {console.log(res.data),
-      this.companypage = res.data}
-    )
+    this.waitingforfbpages = true;
+    setTimeout(() => {
+      this.FacebookApi.me(this.facebookoption.AccessToken).subscribe(
+        res => {console.log(res.data),
+        this.companypage = res.data
+        this.waitingforfbpages = false;}
+      ) 
+    }, 500);
   }
 
+  
+  postToInstagram(): void {
+    this.FacebookApi.posttoinstagram(
+      this.selectcompanypage.access_token, 
+      this.selectcompanypage.id,
+      this.selectedChannel.pictureurl, 
+      this.selectedChannel.text,
+      this.selectedChannel.usertags)
+    .subscribe(
+      res => {
+        console.log(res.id);
+        this.selectedChannel.companypage = res.id;
+        this.selectedChannel.userid = this.facebookoption.id;
+        this.selectedChannel.send = true;
+        this.saveChannel();
+      }
+    );
+  }
+
+  postVideoToInstragram(): void {
+    this.FacebookApi.postvideoinstagram(
+      this.selectcompanypage.access_token, 
+      this.selectcompanypage.id, 
+      this.selectedChannel.videourl,
+      this.selectedChannel.text,
+      null,
+      null
+      ).subscribe(res => {console.log(res)})
+  }
+
+  getInstagramMedia(): void {
+    this.FacebookApi.getinstagrammedia(this.selectcompanypage.access_token, this.selectcompanypage.id)
+    .subscribe(res => {
+      console.log(res);
+    })
+  }
 
   searchChannels(name): void {
     name = name.charAt(0).toUpperCase() + name.slice(1);
@@ -539,7 +606,7 @@ export class MarketingchannelsComponent implements OnInit {
         error => this.errorMessage = <any>error);
   }
 
-  private speedDialFabButtons = [
+  public speedDialFabButtons = [
     {
       svgIcon: 'xbms_facebook',
       tooltip: 'facebook'

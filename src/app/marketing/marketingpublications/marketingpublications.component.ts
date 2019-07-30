@@ -48,7 +48,12 @@ export class MarketingpublicationsComponent implements OnInit {
   @Input() option: Relations = new Relations();
   public Publications: Publications[];
   public selectedPublications: Publications;
-  
+  public limitresult: 10;
+  public numbers = [
+    { value: '1', viewValue: '1' },
+    { value: '20', viewValue: '20' },
+    { value: '30', viewValue: '30' }
+  ];
 
 
   constructor(
@@ -120,6 +125,13 @@ export class MarketingpublicationsComponent implements OnInit {
       .subscribe(res => {console.log(res),
       this.selectedPublications = res});
       // this.selectedIndex = 0;
+    }
+
+    newItem(): void {
+      this.RelationsApi.createPublications(this.option.id, { 'companyId': this.Account.companyId, 'title': 'New Item' })
+        .subscribe(result => {
+            this.selectedPublications = result
+        });
     }
 
     

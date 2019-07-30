@@ -50,13 +50,15 @@
           <h4>Search</h4>
           <p>
             <mat-form-field>
-              <input matInput #searchTerm id="seach-box" (keyup.enter)="searchGo(searchTerm.value)"
+              <!-- (keyup.enter)="searchGo(searchTerm.value)" -->
+              <input matInput #searchTerm id="seach-box" 
                 placeholder="Name/Address" />
             </mat-form-field>
           </p>
           <p>{{ this.errorMessage }}</p>
 
-          <button a mat-raised-button color="primary" (click)="searchGo(searchTerm.value)">
+          <!-- (click)="searchGo(searchTerm.value)" -->
+          <button a mat-raised-button color="primary" >
             <mat-icon>search</mat-icon>Search
           </button>
 
@@ -242,8 +244,7 @@
 
     <!-- Mailing tab _____________________________ -->
 
-    <mat-tab class="tabmenu" label="Mailing" fxFlex="100%" fxFlexAlign="start" label="New Publications"
-      on-focusout="savePublication()">
+    <mat-tab class="tabmenu" label="Mailing" fxFlex="100%" fxFlexAlign="start" label="New Publications">
       <ng-template mat-tab-label class="mat-tab-labels">
         <mat-icon>email</mat-icon>
         <div fxShow.xs="false">Mailing/Newsletters</div>

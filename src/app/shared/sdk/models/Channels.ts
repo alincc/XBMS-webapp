@@ -12,6 +12,8 @@ export interface ChannelsInterface {
   "title"?: string;
   "picturename"?: string;
   "pictureurl"?: string;
+  "videoname"?: string;
+  "videourl"?: string;
   "channelId"?: string;
   "views"?: number;
   "likes"?: number;
@@ -36,6 +38,8 @@ export interface ChannelsInterface {
   "primairychannel"?: boolean;
   "shareurl"?: string;
   "userid"?: string;
+  "usertags"?: string;
+  "hashtags"?: any;
   "id"?: any;
   "publicationsId"?: any;
   relations?: Relations;
@@ -49,6 +53,8 @@ export class Channels implements ChannelsInterface {
   "title": string;
   "picturename": string;
   "pictureurl": string;
+  "videoname": string;
+  "videourl": string;
   "channelId": string;
   "views": number;
   "likes": number;
@@ -73,6 +79,8 @@ export class Channels implements ChannelsInterface {
   "primairychannel": boolean;
   "shareurl": string;
   "userid": string;
+  "usertags": string;
+  "hashtags": any;
   "id": any;
   "publicationsId": any;
   relations: Relations;
@@ -135,6 +143,14 @@ export class Channels implements ChannelsInterface {
         },
         "pictureurl": {
           name: 'pictureurl',
+          type: 'string'
+        },
+        "videoname": {
+          name: 'videoname',
+          type: 'string'
+        },
+        "videourl": {
+          name: 'videourl',
           type: 'string'
         },
         "channelId": {
@@ -240,6 +256,14 @@ export class Channels implements ChannelsInterface {
         "userid": {
           name: 'userid',
           type: 'string'
+        },
+        "usertags": {
+          name: 'usertags',
+          type: 'string'
+        },
+        "hashtags": {
+          name: 'hashtags',
+          type: 'any'
         },
         "id": {
           name: 'id',
