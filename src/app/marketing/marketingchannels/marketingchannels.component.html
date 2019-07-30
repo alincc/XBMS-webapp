@@ -654,6 +654,11 @@
                     {{ Facebook.name }}
                   </mat-option>
                 </mat-select>
+                <mat-select placeholder="Select companypage Account" [(value)]="selectcompanypage">
+                    <mat-option *ngFor="let companypage of companypage" [value]="companypage">
+                      {{ companypage.name }}
+                    </mat-option>
+                  </mat-select>
               </td>
             </tr>
             <tr>

@@ -1069,7 +1069,7 @@ export class RelationComponent implements OnInit {
 
   createNewMessage(): void {
     this.RelationsApi.createCalls(this.selectedRelation.id, {
-      "html": '<p>&nbsp;</p>' + this.Account.signature,
+      "html": '<p><span style="font-family:Tahoma, Geneva, sans-serif"></span></p>' + this.Account.signature,
       "title": "New",
       "accountId": this.Account.id, "companyId": this.Account.companyId
     }) //add companyId for statistics
@@ -1117,8 +1117,7 @@ export class RelationComponent implements OnInit {
       this.readytosend = false; 
       this.saveCall();
       this.getCalls(); 
-      this.snackBar.open(res.message); 
-      
+      this.openSnackBar(res.message);       
     });
   }
 

@@ -253,6 +253,40 @@ export class FacebookApi extends BaseLoopBackApi {
    *
    * @param {string} accesstoken 
    *
+   * @param {string} feedid 
+   *
+   * @param {string} body 
+   *
+   * @returns {object} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * <em>
+   * (The remote method definition does not provide any description.
+   * This usually means the response is a `Facebook` object.)
+   * </em>
+   */
+  public postpage(accesstoken: any = {}, feedid: any = {}, body: any = {}, customHeaders?: Function): Observable<any> {
+    let _method: string = "GET";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/facebooks/postpage";
+    let _routeParams: any = {};
+    let _postBody: any = {};
+    let _urlParams: any = {};
+    if (typeof accesstoken !== 'undefined' && accesstoken !== null) _urlParams.accesstoken = accesstoken;
+    if (typeof feedid !== 'undefined' && feedid !== null) _urlParams.feedid = feedid;
+    if (typeof body !== 'undefined' && body !== null) _urlParams.body = body;
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
+   * <em>
+         * (The remote method definition does not provide any description.)
+         * </em>
+   *
+   * @param {string} accesstoken 
+   *
    * @param {string} postid 
    *
    * @returns {object} An empty reference that will be

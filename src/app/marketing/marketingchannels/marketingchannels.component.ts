@@ -166,6 +166,17 @@ export class MarketingchannelsComponent implements OnInit {
       } else {this.selectcompanypage = '';}
     }
 
+    if (this.selectedChannel.type === "facebook") {
+      this.facebooktoggle = true;
+      if (this.selectedChannel.userid) {
+        this.facebookoption = this.findFacebook(this.Facebook, this.selectedChannel.userid);
+      } else {this.facebookoption = new Facebook();
+        ;}
+      if (this.selectedChannel.companypage) {
+        this.getFBAccountInfo();
+      } else {this.selectcompanypage = '';}
+    }
+
     if (this.selectedChannel.type === "twitter") {
       this.twittertoggle = true;
       if (this.selectedChannel.userid) {
@@ -187,7 +198,6 @@ export class MarketingchannelsComponent implements OnInit {
     }
 
     if (this.selectedChannel.type === "instagram") { this.instagramtoggle = true }
-    if (this.selectedChannel.type === "facebook") { this.facebooktoggle = true }
   }
 
   findLinkedinComp(companypages, id) {
@@ -200,6 +210,14 @@ export class MarketingchannelsComponent implements OnInit {
 
   findLinkedin(Linkedin, id) {
     for (const item of Linkedin) {
+      if (item.id === id) {
+        return item
+      }
+    }
+  }
+
+  findFacebook(Facebook, id) {
+    for (const item of Facebook) {
       if (item.id === id) {
         return item
       }
@@ -491,7 +509,7 @@ export class MarketingchannelsComponent implements OnInit {
   }
 
   postToFacebook(): void {
-    this.FacebookApi.post(this.facebookoption.AccessToken, this.selectedChannel.text)
+    this.FacebookApi.postpage(this.selectcompanypage.access_token, this.selectcompanypage.id, this.selectedChannel.text)
     .subscribe(
       res => {console.log(res);}
     );
@@ -507,7 +525,8 @@ export class MarketingchannelsComponent implements OnInit {
  
   getFBAccountInfo(): void {
     this.FacebookApi.me(this.facebookoption.AccessToken).subscribe(
-      res => {console.log(res)}
+      res => {console.log(res.data),
+      this.companypage = res.data}
     )
   }
 
