@@ -307,8 +307,8 @@ export class MaileditorComponent implements OnInit {
     if (event.previousContainer === event.container) {
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
       // if eventcontainer is new column create new eventcontainer
-    } else if (event.previousContainer.element.nativeElement.className === 'tools-list cdk-drop-list') {
-      // } else if (event.previousContainer.id === 'cdk-drop-list-0') {
+    } else if (event.previousContainer.id === 'cdk-drop-list-0') {
+      // } else if (event.previousContainer.element.nativeElement.className === 'tools-list cdk-drop-list') {
       const arrayItem = [];
       event.previousContainer.data.forEach((element) => {
         arrayItem.push(element)
@@ -1241,7 +1241,7 @@ export class MaileditorComponent implements OnInit {
   }
 
   moveSectionDown(i1): void {
-    if (i1 !== this.mailtemplateArray.length ) {
+    if (i1 !== this.mailtemplateArray.length -1 ) {
     const tmp =  this.mailtemplateArray[i1];
     this.mailtemplateArray[i1] = this.mailtemplateArray[i1 + 1];
     this.mailtemplateArray[i1 + 1] = tmp;
