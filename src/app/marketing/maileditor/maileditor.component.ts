@@ -4,7 +4,7 @@
  * Add image resize support
  * */
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, OnChanges, ChangeDetectorRef, ViewEncapsulation, ChangeDetectionStrategy } from '@angular/core';
 import { CdkDragDrop, moveItemInArray, transferArrayItem, copyArrayItem } from '@angular/cdk/drag-drop';
 import {
   Maileditormodels, MaileditorSection, MaileditorColumn,
@@ -28,10 +28,11 @@ import { FormControl, FormGroupDirective, NgForm, Validators, FormBuilder, FormG
 @Component({
   selector: 'app-maileditor',
   templateUrl: './maileditor.component.html',
-  styleUrls: ['./maileditor.component.scss']
+  styleUrls: ['./maileditor.component.scss'],
+  encapsulation: ViewEncapsulation.None,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class MaileditorComponent implements OnInit {
-
+export class MaileditorComponent implements OnInit, OnChanges  {
 
   @Input('option') option: Relations;
   @Input('account') account: Account;
@@ -182,6 +183,7 @@ export class MaileditorComponent implements OnInit {
 
 
   constructor(
+    private changeDetection: ChangeDetectorRef,
     public snackBar: MatSnackBar,
     public RelationsApi: RelationsApi,
     public CompanyApi: CompanyApi,
@@ -190,6 +192,24 @@ export class MaileditorComponent implements OnInit {
     public dialog: MatDialog,
     private sanitizer: DomSanitizer
   ) { }
+
+  ngOnChanges(){
+    console.log("change")
+    this.mailtemplateArray = this.mailtemplateArray;
+    this.sectionStyleArray = this.sectionStyleArray;
+    this.columnStyleArray = this.columnStyleArray; 
+  }
+
+  //test delete after
+  detectchange(): void {
+    console.log("change2")
+    let mailtemplateArray = this.mailtemplateArray;
+    let sectionStyleArray = this.sectionStyleArray;
+    let columnStyleArray = this.columnStyleArray; 
+    this.mailtemplateArray = mailtemplateArray;
+    this.sectionStyleArray = sectionStyleArray;
+    this.columnStyleArray = columnStyleArray; 
+  }
 
   ngOnInit() {
     this.toolboxfooter = this.createNewItem('Footer');
