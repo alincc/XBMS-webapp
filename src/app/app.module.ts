@@ -44,7 +44,7 @@ import { ChartsModule } from 'ng2-charts';
 import { AgmCoreModule } from '@agm/core';
 import { WordpressService } from './shared/websiteservice/'; 
 import { LinkedinService } from './shared/socialservice/';
-import { DragulaModule } from 'ng2-dragula';
+
 import { MarketingplannerComponent } from './marketingplanner/marketingplanner.component';
 import { MatStepperModule } from '@angular/material/stepper';
 import { XlsxFileUploadComponent } from './marketing/xlsx-file-upload/xlsx-file-upload.component';
@@ -116,7 +116,7 @@ import { MarketingpublicationsComponent } from './marketing/marketingpublication
     FlexLayoutModule,
     CKEditorModule,
     FileUploadModule,
-    DragulaModule,
+
     ChartsModule,
     BrowserModule,
     BrowserAnimationsModule,

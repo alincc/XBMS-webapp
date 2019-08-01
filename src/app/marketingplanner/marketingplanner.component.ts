@@ -1,5 +1,4 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { DragulaService } from 'ng2-dragula/ng2-dragula';
 import {
   PublicationsApi,
   Publications,
@@ -55,7 +54,6 @@ export class MarketingplannerComponent implements OnInit {
   constructor(
     public router: Router,
     public ChannelsApi: ChannelsApi,
-    public dragulaService: DragulaService,
     public CompanyApi: CompanyApi,
     public AccountApi: AccountApi,
     public RelationsApi: RelationsApi,
@@ -63,48 +61,10 @@ export class MarketingplannerComponent implements OnInit {
     public PublicationsApi: PublicationsApi,
     public MarketingplannerApi: MarketingplannerApi
   ) {
-     dragulaService.setOptions('first-bag', {
-       removeOnSpill: true,
-       copy: true
-     });
-    dragulaService.drag.subscribe((value) => {
-      console.log(`drag: ${value[0]}`);
-      this.onDrag(value.slice(1));
-    });
-    dragulaService.drop.subscribe((value) => {
-      console.log(`drop: ${value[0]}`);
-      this.onDrop(value.slice(1));
-    });
-    dragulaService.over.subscribe((value) => {
-      console.log(`over: ${value[0]}`);
-      this.onOver(value.slice(1));
-    });
-    dragulaService.out.subscribe((value) => {
-      console.log(`out: ${value[0]}`);
-      this.onOut(value.slice(1));
-    });
+
     this.getCurrentUserInfo();
   }
-  
-  public onDrag(args) {
-    let [e, el] = args;
-    // do something
-  }
-  
-  public onDrop(args) {
-    let [e, el] = args;
-    // do something
-  }
-  
-  public onOver(args) {
-    let [e, el, container] = args;
-    // do something
-  }
-  
-  public onOut(args) {
-    let [e, el, container] = args;
-    // do something
-  }
+
 
   filteredOptions: Observable<string[]>;
 
@@ -200,9 +160,7 @@ export class MarketingplannerComponent implements OnInit {
       .subscribe((Publications: Publications[]) => this.Publications = Publications);
   }
   
-  ngOnDestroy(){
-    this.dragulaService.destroy('first-bag');
-  }
+
 
 
 }

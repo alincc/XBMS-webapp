@@ -1730,7 +1730,7 @@ Text Version</textarea>
           </div>
 
           <div style="width: 100%;" *ngIf="group.value == 'maileditor'">
-            <app-maileditor style="width: 100%;" [account]="Account" [option]="option"
+            <app-maileditor #maileditor style="width: 100%;" [account]="Account" [option]="option"
               [updateMailingObj]="updateMailingObj" [company]="company">
             </app-maileditor>
           </div>

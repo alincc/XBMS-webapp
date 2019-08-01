@@ -173,7 +173,8 @@
       </tr>
     </table>
 
-   
+  
+
     <div class="template-container" *ngFor="let section of mailtemplateArray; let i1 = index" 
     [ngStyle]="sectionStyleArray[i1].style" [fxLayout]=sectionStyleArray[i1].boxalignment 
     [class.fullwidthsection]="sectionStyleArray[i1].style['full-width'] === 'full-width'">
@@ -270,7 +271,7 @@
   </div>
 
   <mat-card fxFlex="10%" class="edit">
-    <button (click)="detectchange()"></button>
+
     <div *ngIf="Column">Edit Column
       <table>
         <tr>

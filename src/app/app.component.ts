@@ -123,6 +123,9 @@ export class AppComponent implements AfterViewInit {
   }
 
 
+  public teststyle = {
+    "background-color": "red"
+  }
 
   public logout(): void {
     if (this.Account.id == undefined) { this.router.navigate(['/login']) }

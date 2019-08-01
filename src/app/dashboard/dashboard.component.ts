@@ -123,8 +123,6 @@ export class DashboardComponent implements OnInit {
     public GoogleanalyticsApi: GoogleanalyticsApi,
     public router: Router,
   ) {
-    LoopBackConfig.setBaseURL(BASE_URL);
-    LoopBackConfig.setApiVersion(API_VERSION);
     this.analytics_ids = 'ga:154403562'; // add user to analytics account 
     this.analytics_startdate = '30daysAgo';
     this.analytics_enddate = 'today';
@@ -430,7 +428,8 @@ displayFn(relation ?: Relations): string | undefined {
   const data2 = this.TotalNumber.slice(1);
   const data3 = this.TotalNumber.slice(2);
   const data4 = this.TotalNumber.slice(3);
-  const clone = JSON.parse(JSON.stringify(this.barChartData));
+  //const clone = JSON.parse(JSON.stringify(this.barChartData));
+  const clone = this.barChartData;
   clone[0].data = data1;
   clone[1].data = data2;
   clone[2].data = data3;

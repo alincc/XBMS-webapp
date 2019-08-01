@@ -861,6 +861,7 @@ export class MarketingComponent implements OnInit {
 
   sendMailing(): void {
     // this.selectedMailing.to = '';
+    this.saveMailing();
     const mailtolist = [];
     let tolist = '';
 
@@ -951,7 +952,9 @@ export class MarketingComponent implements OnInit {
   };
 
   addTextMailing(): void {
-
+      if (this.selectedMailing.html === undefined){
+        this.selectedMailing.html = this.Account.signature; 
+      }
       console.log(this.selectedMailing.html);
       const dialogRef = this.dialog.open(TextEditorDialog, {
         width: '800px',
@@ -1740,6 +1743,10 @@ export class MarketingComponent implements OnInit {
 
   // chipinput for mailings
   @ViewChild('chipInput', {static: false}) chipInput: MatInput;
+  @ViewChild("maileditor", {static: false}) maileditor;
+
+  
+
   selectedItems: string[] = [];
   filteredItems: Observable<any[]>;
   addItems: FormControl;

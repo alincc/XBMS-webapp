@@ -4,9 +4,9 @@
  * Add image resize support
  * */
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { Component, OnInit, Input, OnChanges, 
-  ChangeDetectorRef, ChangeDetectionStrategy, 
-  ViewEncapsulation, ComponentRef } from '@angular/core';
+import { Component, OnInit, Input, DoCheck, OnChanges, NgZone,
+  ChangeDetectorRef, ChangeDetectionStrategy, ApplicationRef,
+  ViewEncapsulation, ComponentRef, OnDestroy } from '@angular/core';
 import { CdkDragDrop, moveItemInArray, transferArrayItem, copyArrayItem } from '@angular/cdk/drag-drop';
 import {
   Maileditormodels, MaileditorSection, MaileditorColumn,
@@ -26,12 +26,12 @@ import { fontoptions } from '../../settings/google-fonts-list';
 '../../shared/speed-dial-fab/speed-dial-fab.component';
 
 import { FormControl, FormGroupDirective, NgForm, Validators, FormBuilder, FormGroup } from '@angular/forms';
+import { red } from 'ansi-colors';
 
 @Component({
   selector: 'app-maileditor',
   templateUrl: './maileditor.component.html',
-  styleUrls: ['./maileditor.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: ['./maileditor.component.scss']
 })
 export class MaileditorComponent implements OnInit {
 
@@ -39,6 +39,8 @@ export class MaileditorComponent implements OnInit {
   @Input('account') account: Account;
   @Input('updateMailingObj') updateMailingObj: Mailing;
   @Input('company') company: Company;
+
+  editColumn = new FormControl();
 
   public slideIndex = 1;
   public showprogressbar = false;
@@ -57,6 +59,7 @@ export class MaileditorComponent implements OnInit {
   public fullwidth = false;
   public columnverticalalign = false;
   public sectionpartselect: number;
+  public columnpartselect: number;
   public backgroundrepeat = false;
   public selectedborder = {
     width: '0px',
@@ -167,6 +170,7 @@ export class MaileditorComponent implements OnInit {
   public fontlist: string[] = fontoptions;
   public generalfont = ""
 
+
   toolset = [
     this.toolboximage,
     this.toolboxtext,
@@ -182,6 +186,8 @@ export class MaileditorComponent implements OnInit {
 
 
   constructor(
+    private zone:NgZone,
+    private ApplicationRef: ApplicationRef,
     private changeDetection: ChangeDetectorRef,
     public snackBar: MatSnackBar,
     public RelationsApi: RelationsApi,
@@ -192,14 +198,38 @@ export class MaileditorComponent implements OnInit {
     private sanitizer: DomSanitizer
   ) { }
 
-  ngOnChanges(){
-    console.log("change")
-  }
+  // ngOnChanges(){
+  //   console.log("change");
+  // }
+
+  // ngDoCheck(){
+  //   console.log("check");
+  // }
 
   //test delete after
   detectchange(): void {
-    console.log("change2");
-    this.changeDetection.detectChanges();
+    // console.log("change2");
+    // const clone = JSON.parse(JSON.stringify(this.columnStyleArray));
+    // this.columnStyleArray = [];
+    // this.columnStyleArray = clone; 
+    // let templ = this.mailtemplateArray;
+    // let sect = this.sectionStyleArray;
+    // let colu = this.columnStyleArray;
+
+    // console.log(templ, sect, colu);
+  
+    // this.mailtemplateArray = null;
+    // this.sectionStyleArray =  null;
+    // this.columnStyleArray =  null;
+    this.changeDetection.markForCheck();
+
+    // this.mailtemplateArray = templ;
+    // this.sectionStyleArray = sect;
+    // this.columnStyleArray = colu;
+    // this.changeDetection.detectChanges();
+
+    // this.sectionStyleArray[this.sectionpartselect] = this.maileditorSection;
+    //this.columnStyleArray[this.sectionpartselect][this.columnpartselect] = this.maileditorColumn
   }
 
   ngOnInit() {
@@ -761,6 +791,7 @@ export class MaileditorComponent implements OnInit {
 
   private onSelectColumnPart(i1, i2): void {
     this.sectionpartselect = i1;
+    this.columnpartselect = i2;
     this.resetEdit()
     this.Column = true;
     this.maileditorColumn = this.columnStyleArray[i1][i2]
@@ -796,7 +827,7 @@ export class MaileditorComponent implements OnInit {
     borderarray.push(this.selectedborder.color);
     const borderstring = borderarray.join(' ');
     maileditorPart.style.border = borderstring;
-    // console.log(maileditorPart.style.border)
+    this.detectchange();
   }
 
 
@@ -814,7 +845,7 @@ export class MaileditorComponent implements OnInit {
     if (maileditorPart.style['padding-left'] !== undefined) {
       this.selectedPadding['padding-left'] = maileditorPart.style['padding-left']
     } else { this.selectedPadding['padding-left'] = 0 }
-
+    this.detectchange();
     // if (maileditorPart.style['padding-top'] === undefined || maileditorPart.style['padding-right'] === undefined || maileditorPart.style['padding-bottom'] === undefined || maileditorPart.style['padding-left'] === undefined) {
     //   this.selectedPadding = {
     //     'padding-top': 0,
@@ -835,6 +866,7 @@ export class MaileditorComponent implements OnInit {
     maileditorPart.style.padding = maileditorPart.style['padding-top'] + 'px ' + maileditorPart.style['padding-right'] + 'px ' + maileditorPart.style['padding-bottom'] + 'px ' + maileditorPart.style['padding-left'] + 'px';
     maileditorPart.style.padding = maileditorPart.style.padding.replace(';', '')
     // console.log(maileditorPart);
+    this.detectchange();
   }
 
   private resetEdit(): void {
@@ -958,6 +990,7 @@ export class MaileditorComponent implements OnInit {
           'linear-gradient(black, black), url(' + url + ')';
         this.maileditorSection.style['background-blend-mode'] = 'saturation';
       }
+      this.detectchange();
     },
       800);
   }
@@ -967,12 +1000,14 @@ export class MaileditorComponent implements OnInit {
   setbackgroundImageDivider(url: string) {
     this.maileditorDivider.style['background-image'] = 'url(' + url + ')';
     console.log(this.maileditorDivider);
+    this.detectchange();
   }
 
   setCarouselImage(url: string, i) {
     this.maileditorCarousel.images[i].style.src = url;
     console.log(this.maileditorSection);
     if (this.maileditorCarouselImage.style.src) { this.showSlides(this.slideIndex); }
+    this.detectchange();
   }
 
   openDialog(): void {
