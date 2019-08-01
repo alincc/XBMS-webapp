@@ -474,9 +474,10 @@
                   </mat-panel-title>
                 </mat-expansion-panel-header>
                 <br>
-                <span [style.background]="maileditorSection.style['background-color']" [cpToggle]="true"
+                <!-- <span ((ngModelChange)="detectchange()" [style.background]="maileditorSection.style['background-color']" [cpToggle]="true"
                   [cpDialogDisplay]="'inline'" [cpCancelButton]="true"
-                  [(colorPicker)]="maileditorSection.style['background-color']"></span>
+                  [(colorPicker)]="maileditorSection.style['background-color']"></span> -->
+                  <input (colorPickerChange)="detectchange()" [(colorPicker)]="maileditorSection.style['background-color']" [style.background]="color"/>
                 <table matTooltip="click to set color">
                   <tr>
                     <td>Primairy color</td>

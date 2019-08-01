@@ -4,7 +4,9 @@
  * Add image resize support
  * */
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { Component, OnInit, Input, OnChanges, ChangeDetectorRef, ViewEncapsulation, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, Input, OnChanges, 
+  ChangeDetectorRef, ChangeDetectionStrategy, 
+  ViewEncapsulation, ComponentRef } from '@angular/core';
 import { CdkDragDrop, moveItemInArray, transferArrayItem, copyArrayItem } from '@angular/cdk/drag-drop';
 import {
   Maileditormodels, MaileditorSection, MaileditorColumn,
@@ -29,10 +31,9 @@ import { FormControl, FormGroupDirective, NgForm, Validators, FormBuilder, FormG
   selector: 'app-maileditor',
   templateUrl: './maileditor.component.html',
   styleUrls: ['./maileditor.component.scss'],
-  encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class MaileditorComponent implements OnInit, OnChanges  {
+export class MaileditorComponent implements OnInit {
 
   @Input('option') option: Relations;
   @Input('account') account: Account;
@@ -41,7 +42,6 @@ export class MaileditorComponent implements OnInit, OnChanges  {
 
   public slideIndex = 1;
   public showprogressbar = false;
-
   public Section = false;
   public Column = false;
   public Image = false;
@@ -58,7 +58,6 @@ export class MaileditorComponent implements OnInit, OnChanges  {
   public columnverticalalign = false;
   public sectionpartselect: number;
   public backgroundrepeat = false;
-
   public selectedborder = {
     width: '0px',
     style: 'solid',
@@ -195,20 +194,12 @@ export class MaileditorComponent implements OnInit, OnChanges  {
 
   ngOnChanges(){
     console.log("change")
-    this.mailtemplateArray = this.mailtemplateArray;
-    this.sectionStyleArray = this.sectionStyleArray;
-    this.columnStyleArray = this.columnStyleArray; 
   }
 
   //test delete after
   detectchange(): void {
-    console.log("change2")
-    let mailtemplateArray = this.mailtemplateArray;
-    let sectionStyleArray = this.sectionStyleArray;
-    let columnStyleArray = this.columnStyleArray; 
-    this.mailtemplateArray = mailtemplateArray;
-    this.sectionStyleArray = sectionStyleArray;
-    this.columnStyleArray = columnStyleArray; 
+    console.log("change2");
+    this.changeDetection.detectChanges();
   }
 
   ngOnInit() {
@@ -257,10 +248,10 @@ export class MaileditorComponent implements OnInit, OnChanges  {
 
   addToMailTemplateArray(): void {
     // add section to mailtemplate and to style array
-    const section = [];
+    let section = [];
     this.mailtemplateArray.push(section);
 
-    const sectionstyleIns: MaileditorSection = new MaileditorSection();
+    let sectionstyleIns: MaileditorSection = new MaileditorSection();
     sectionstyleIns.imggrey = false;
     sectionstyleIns.imgblur = false;
     sectionstyleIns.boxalignment = 'row';
@@ -294,9 +285,9 @@ export class MaileditorComponent implements OnInit, OnChanges  {
 
   addToSectionArray(i1): void {
     // add column to section array and to style array
-    const column = [[]];
+    let column = [[]];
     this.mailtemplateArray[i1].push([]);
-    const columnstyleIns: MaileditorColumn = new MaileditorColumn();
+    let columnstyleIns: MaileditorColumn = new MaileditorColumn();
     columnstyleIns.setflexalign = 'space-around center';
     columnstyleIns.style = {
       'background-color': 'none',
@@ -346,7 +337,7 @@ export class MaileditorComponent implements OnInit, OnChanges  {
 
   private createNewItem(type: string) {
     if (type === 'Text') {
-      const newtext: MaileditorText = new MaileditorText();
+      let newtext: MaileditorText = new MaileditorText();
       newtext.type = 'Text';
       newtext.content = 'start writing'; // this.sanitizer.bypassSecurityTrustHtml('start writing');
       newtext.typeformat = 'p';
@@ -373,9 +364,9 @@ export class MaileditorComponent implements OnInit, OnChanges  {
       return newtext
     }
     if (type === 'Footer') {
-      const newfooter: MaileditorText = new MaileditorText();
+      let newfooter: MaileditorText = new MaileditorText();
       newfooter.type = 'Footer';
-      const footercontent = this.option.relationname + ', ' + this.option.address1 + ', ' +
+      let footercontent = this.option.relationname + ', ' + this.option.address1 + ', ' +
         this.option.zipcode + ', ' + this.option.country + ', ' + '<a href=' + this.option.website + '>' + this.option.website + '</a> ' +
         ', feel free to <a href="%unsubscribe_url%">unsubscribe</a> if you do not like to receive our emails';
       newfooter.content = footercontent; // this.sanitizer.bypassSecurityTrustHtml(footercontent);
@@ -403,7 +394,7 @@ export class MaileditorComponent implements OnInit, OnChanges  {
       return newfooter
     }
     if (type === 'Image') {
-      const newImage: MaileditorImage = new MaileditorImage();
+      let newImage: MaileditorImage = new MaileditorImage();
       newImage.imggrey = false;
       newImage.type = 'Image';
       newImage.url = '';
@@ -431,7 +422,7 @@ export class MaileditorComponent implements OnInit, OnChanges  {
       return newImage
     }
     if (type === 'Button') {
-      const newButton: MaileditorButton = new MaileditorButton();
+      let newButton: MaileditorButton = new MaileditorButton();
       newButton.type = 'Button';
       newButton.buttontext = 'Button Text'
       newButton.buttonurl = 'www.xbms.io';
@@ -459,7 +450,7 @@ export class MaileditorComponent implements OnInit, OnChanges  {
       return newButton
     }
     if (type === 'Divider') {
-      const newDivider: MaileditorDivider = new MaileditorDivider();
+      let newDivider: MaileditorDivider = new MaileditorDivider();
       newDivider.type = 'Divider';
       newDivider.style = {
         'border-color': 'black',
@@ -476,8 +467,8 @@ export class MaileditorComponent implements OnInit, OnChanges  {
       return newDivider
     }
     if (type === 'Carousel') {
-      const newImage = this.NewCarouselImage();
-      const newCarousel: MaileditorCarousel = new MaileditorCarousel();
+      let newImage = this.NewCarouselImage();
+      let newCarousel: MaileditorCarousel = new MaileditorCarousel();
       newCarousel.type = 'Carousel';
       newCarousel.images = [];
       newCarousel.images.push(newImage)
@@ -498,9 +489,9 @@ export class MaileditorComponent implements OnInit, OnChanges  {
       return newCarousel
     }
     if (type === 'Accordion') {
-      const newAccordion: MaileditorAccordion = new MaileditorAccordion();
+      let newAccordion: MaileditorAccordion = new MaileditorAccordion();
       newAccordion.type = 'Accordion';
-      const newElement = this.newAccordionElement();
+      let newElement = this.newAccordionElement();
       newAccordion.elements = [];
       newAccordion.elements.push(newElement);
       newAccordion.style = {
@@ -524,9 +515,9 @@ export class MaileditorComponent implements OnInit, OnChanges  {
       return newAccordion;
     }
     if (type === 'Social') {
-      const newSocial: MaileditorSocial = new MaileditorSocial();
+      let newSocial: MaileditorSocial = new MaileditorSocial();
       newSocial.type = 'Social';
-      const newSocialElement = this.newSocialElement();
+      let newSocialElement = this.newSocialElement();
       newSocial.elements = [];
       newSocial.elements.push(newSocialElement);
       newSocial.style = {
@@ -568,7 +559,7 @@ export class MaileditorComponent implements OnInit, OnChanges  {
 
 
   private NewCarouselImage() {
-    const newCarouselImage: MaileditorCarouselImage = new MaileditorCarouselImage();
+    let newCarouselImage: MaileditorCarouselImage = new MaileditorCarouselImage();
     newCarouselImage.type = 'Carouselimage';
     newCarouselImage.style = {
       'alt': 'xbms',
@@ -583,7 +574,7 @@ export class MaileditorComponent implements OnInit, OnChanges  {
   }
 
   private newAccordionElement() {
-    const newAccordionElement: MaileditorAccordionElement = new MaileditorAccordionElement();
+    let newAccordionElement: MaileditorAccordionElement = new MaileditorAccordionElement();
     newAccordionElement.type = 'Accordionelement';
     newAccordionElement.title = this.newAccordionTitle();
     newAccordionElement.text = this.newAccordionText();
@@ -608,7 +599,7 @@ export class MaileditorComponent implements OnInit, OnChanges  {
   }
 
   private newAccordionTitle() {
-    const newAccordionTitle: MaileditorAccordionTitle = new MaileditorAccordionTitle();
+    let newAccordionTitle: MaileditorAccordionTitle = new MaileditorAccordionTitle();
     newAccordionTitle.type = 'Accordiontitle';
     newAccordionTitle.content = 'Title';
     newAccordionTitle.style = {
@@ -627,7 +618,7 @@ export class MaileditorComponent implements OnInit, OnChanges  {
   }
 
   private newAccordionText() {
-    const newAccordionText: MaileditorAccordionText = new MaileditorAccordionText();
+    let newAccordionText: MaileditorAccordionText = new MaileditorAccordionText();
     newAccordionText.type = 'Accordiontext';
     newAccordionText.content = 'write here';
     newAccordionText.style = {
@@ -646,7 +637,7 @@ export class MaileditorComponent implements OnInit, OnChanges  {
   }
 
   private newSocialElement() {
-    const newSocialElement: MaileditorSocialElement = new MaileditorSocialElement();
+    let newSocialElement: MaileditorSocialElement = new MaileditorSocialElement();
     newSocialElement.type = 'Socialelement';
     newSocialElement.content = 'facebook';
     newSocialElement.iconlocation = BASE_URL + '/assets/icons/facebook.png';
