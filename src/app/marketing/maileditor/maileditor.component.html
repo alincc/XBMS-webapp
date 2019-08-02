@@ -190,7 +190,7 @@
     </label>
       <div class="section-box full-width-item" *ngFor="let column of section; let i2 = index"
         fxLayout="column">
-          <div [ngStyle]="columnStyleArray[i1][i2].style" class="column-box" cdkDropList
+          <div [ngStyle]="columnStyleArray[i1][i2]" class="column-box" cdkDropList
             #mailtemplateList="cdkDropList" [cdkDropListData]="mailtemplateArray[i1][i2]"
             (cdkDropListDropped)="drop($event, i1, i2)">
             <label class="columnlabel">Column 
@@ -277,7 +277,7 @@
         <tr>
           <td>
             <mat-form-field>
-              <input [(ngModel)]=maileditorColumn.style.width type="text" matInput placeholder="width">
+              <input [(ngModel)]=maileditorColumn.width type="text" matInput placeholder="width">
               <mat-icon matSuffix>mode_edit</mat-icon>
               <mat-hint>%/px</mat-hint>
             </mat-form-field>
@@ -314,7 +314,7 @@
         <tr>
           <td>
             <mat-form-field>
-              <mat-select [(value)]="maileditorColumn.style['vertical-align']" placeholder="Vertical align"
+              <mat-select [(value)]="maileditorColumn['vertical-align']" placeholder="Vertical align"
                 (selectionChange)="changeverticalalign($event)">
                 <mat-option value="middle">middle</mat-option>
                 <mat-option value="top">top</mat-option>
@@ -336,28 +336,28 @@
                   </mat-panel-title>
                 </mat-expansion-panel-header>
                 <br>
-                <span [style.background]="maileditorColumn.style['background-color']" [cpToggle]="true"
+                <span [style.background]="maileditorColumn['background-color']" [cpToggle]="true"
                   [cpDialogDisplay]="'inline'" [cpCancelButton]="true"
-                  [(colorPicker)]="maileditorColumn.style['background-color']"></span>
+                  [(colorPicker)]="maileditorColumn['background-color']"></span>
                 <table matTooltip="click to set color">
                   <tr>
                     <td>Primairy color</td>
-                    <td (click)="maileditorColumn.style['background-color'] = company.companyprimairycolor">
+                    <td (click)="maileditorColumn['background-color'] = company.companyprimairycolor">
                         {{company.companyprimairycolor}}</td>
                   </tr>
                   <tr>
                       <td>Secondairy color</td>
-                    <td (click)="maileditorColumn.style['background-color'] = company.companysecondarycolor">
+                    <td (click)="maileditorColumn['background-color'] = company.companysecondarycolor">
                       {{company.companysecondarycolor}}</td>
                   </tr>
                   <tr>
                       <td>Relation primairy color</td>
-                    <td (click)="maileditorColumn.style['background-color'] = option.companyprimairycolor">
+                    <td (click)="maileditorColumn['background-color'] = option.companyprimairycolor">
                       {{option.companyprimairycolor}}</td>
                   </tr>
                   <tr>
                       <td>Relation secondairy color</td>
-                    <td (click)="maileditorColumn.style['background-color'] = option.companysecondarycolor">
+                    <td (click)="maileditorColumn['background-color'] = option.companysecondarycolor">
                       {{option.companysecondarycolor}}</td>
                   </tr>
                 </table>
@@ -377,7 +377,7 @@
         <tr>
           <td>
             <mat-form-field>
-              <input [(ngModel)]=maileditorColumn.style.margin type="text" matInput placeholder="margin">
+              <input [(ngModel)]=maileditorColumn.margin type="text" matInput placeholder="margin">
               <mat-icon matSuffix>mode_edit</mat-icon>
               <mat-hint>%/px</mat-hint>
             </mat-form-field>

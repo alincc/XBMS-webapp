@@ -6,7 +6,7 @@
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { Component, OnInit, Input, DoCheck, OnChanges, NgZone,
   ChangeDetectorRef, ChangeDetectionStrategy, ApplicationRef,
-  ViewEncapsulation, ComponentRef, OnDestroy } from '@angular/core';
+  ViewEncapsulation, ComponentRef, OnDestroy, Renderer2 } from '@angular/core';
 import { CdkDragDrop, moveItemInArray, transferArrayItem, copyArrayItem } from '@angular/cdk/drag-drop';
 import {
   Maileditormodels, MaileditorSection, MaileditorColumn,
@@ -186,6 +186,7 @@ export class MaileditorComponent implements OnInit {
 
 
   constructor(
+    private renderer: Renderer2,
     private zone:NgZone,
     private ApplicationRef: ApplicationRef,
     private changeDetection: ChangeDetectorRef,
@@ -221,7 +222,7 @@ export class MaileditorComponent implements OnInit {
     // this.mailtemplateArray = null;
     // this.sectionStyleArray =  null;
     // this.columnStyleArray =  null;
-    this.changeDetection.markForCheck();
+    // this.changeDetection.markForCheck();
 
     // this.mailtemplateArray = templ;
     // this.sectionStyleArray = sect;
@@ -318,8 +319,9 @@ export class MaileditorComponent implements OnInit {
     let column = [[]];
     this.mailtemplateArray[i1].push([]);
     let columnstyleIns: MaileditorColumn = new MaileditorColumn();
-    columnstyleIns.setflexalign = 'space-around center';
-    columnstyleIns.style = {
+    //columnstyleIns.setflexalign = 'space-around center';
+    columnstyleIns = {
+      'setflexalign':'space-around center',
       'background-color': 'none',
       'border': '',
       'border-bottom': '',
@@ -801,7 +803,6 @@ export class MaileditorComponent implements OnInit {
   }
 
   private onSelectBorder(maileditorPart): void {
-    // console.log(maileditorPart);
     if (maileditorPart.style.border.length > 0) {
       const borderarray = maileditorPart.style.border.split(' ');
       this.selectedborder.width = borderarray[0];
@@ -818,16 +819,18 @@ export class MaileditorComponent implements OnInit {
   }
 
   private onChangeBorder(maileditorPart): void {
-    // console.log(maileditorPart);
+    console.log('border', maileditorPart);
+    let stylesetter = maileditorPart;
     const borderarray = [];
     borderarray.push(this.selectedborder.width + 'px');
-    borderarray.push(this.selectedborder.style);
+    borderarray.push(this.selectedborder);
     const indexChar = this.selectedborder.color.indexOf(';')
     if (indexChar !== -1) { this.selectedborder.color = this.selectedborder.color + ';' }
     borderarray.push(this.selectedborder.color);
     const borderstring = borderarray.join(' ');
-    maileditorPart.style.border = borderstring;
-    this.detectchange();
+
+    stylesetter.border = borderstring;
+    maileditorPart = stylesetter;
   }
 
 
@@ -1192,9 +1195,9 @@ export class MaileditorComponent implements OnInit {
 
   changeverticalalign() {
     // flex-start  flex-end space-around center
-    if (this.maileditorColumn.style['vertical-align'] === 'top') { this.maileditorColumn.setflexalign = 'start' }
-    if (this.maileditorColumn.style['vertical-align'] === 'middle') { this.maileditorColumn.setflexalign = 'space-around center' }
-    if (this.maileditorColumn.style['vertical-align'] === 'bottom') { this.maileditorColumn.setflexalign = 'end' }
+    if (this.maileditorColumn['vertical-align'] === 'top') { this.maileditorColumn.setflexalign = 'start' }
+    if (this.maileditorColumn['vertical-align'] === 'middle') { this.maileditorColumn.setflexalign = 'space-around center' }
+    if (this.maileditorColumn['vertical-align'] === 'bottom') { this.maileditorColumn.setflexalign = 'end' }
     console.log(this.maileditorColumn);
   }
 
