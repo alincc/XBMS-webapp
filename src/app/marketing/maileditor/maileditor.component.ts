@@ -4,9 +4,10 @@
  * Add image resize support
  * */
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { Component, OnInit, Input, DoCheck, OnChanges, NgZone,
-  ChangeDetectorRef, ChangeDetectionStrategy, ApplicationRef,
-  ViewEncapsulation, ComponentRef, OnDestroy, Renderer2 } from '@angular/core';
+import {
+  Component, OnInit, Input, Output, NgZone, IterableDiffers,
+  ChangeDetectorRef, ApplicationRef, Renderer2,  EventEmitter
+} from '@angular/core';
 import { CdkDragDrop, moveItemInArray, transferArrayItem, copyArrayItem } from '@angular/cdk/drag-drop';
 import {
   Maileditormodels, MaileditorSection, MaileditorColumn,
@@ -25,8 +26,7 @@ import { Observable, BehaviorSubject } from 'rxjs';
 import { fontoptions } from '../../settings/google-fonts-list';
 '../../shared/speed-dial-fab/speed-dial-fab.component';
 
-import { FormControl, FormGroupDirective, NgForm, Validators, FormBuilder, FormGroup } from '@angular/forms';
-import { red } from 'ansi-colors';
+import { FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-maileditor',
@@ -39,6 +39,7 @@ export class MaileditorComponent implements OnInit {
   @Input('account') account: Account;
   @Input('updateMailingObj') updateMailingObj: Mailing;
   @Input('company') company: Company;
+
 
   editColumn = new FormControl();
 
@@ -183,13 +184,10 @@ export class MaileditorComponent implements OnInit {
 
   myControlfont: FormControl = new FormControl();
   filteredfonts: Observable<string[]>;
-
-
+  public changenow = true;
+ 
   constructor(
-    private renderer: Renderer2,
-    private zone:NgZone,
-    private ApplicationRef: ApplicationRef,
-    private changeDetection: ChangeDetectorRef,
+    private zone: NgZone, 
     public snackBar: MatSnackBar,
     public RelationsApi: RelationsApi,
     public CompanyApi: CompanyApi,
@@ -197,40 +195,32 @@ export class MaileditorComponent implements OnInit {
     public mailingApi: MailingApi,
     public dialog: MatDialog,
     private sanitizer: DomSanitizer
-  ) { }
+  ) {
+    
+  }
 
-  // ngOnChanges(){
-  //   console.log("change");
-  // }
-
-  // ngDoCheck(){
-  //   console.log("check");
-  // }
 
   //test delete after
   detectchange(): void {
-    // console.log("change2");
-    // const clone = JSON.parse(JSON.stringify(this.columnStyleArray));
-    // this.columnStyleArray = [];
-    // this.columnStyleArray = clone; 
-    // let templ = this.mailtemplateArray;
-    // let sect = this.sectionStyleArray;
-    // let colu = this.columnStyleArray;
+    // console.log('run check');
+     this.changenow = false;
+     setTimeout(() => this.changenow = true);
+  }
 
-    // console.log(templ, sect, colu);
-  
-    // this.mailtemplateArray = null;
-    // this.sectionStyleArray =  null;
-    // this.columnStyleArray =  null;
-    // this.changeDetection.markForCheck();
 
-    // this.mailtemplateArray = templ;
-    // this.sectionStyleArray = sect;
-    // this.columnStyleArray = colu;
-    // this.changeDetection.detectChanges();
 
-    // this.sectionStyleArray[this.sectionpartselect] = this.maileditorSection;
-    //this.columnStyleArray[this.sectionpartselect][this.columnpartselect] = this.maileditorColumn
+  ngOnChanges() {
+    console.log("change1");
+
+  }
+
+  ngDoCheck() {
+  //  let a = this.sectionStyleArray;
+  //  let b = this.columnStyleArray;
+  //  this.sectionStyleArray.set = true;
+  //  this.columnStyleArray.set = true;
+  //  this.sectionStyleArray.set = true;
+  //  this.columnStyleArray.set = true;
   }
 
   ngOnInit() {
@@ -291,7 +281,7 @@ export class MaileditorComponent implements OnInit {
       'background-repeat': 'no-repeat',
       'background-size': '100%',
       'background-url': '',
-      'border': '',
+      'border': '0px solid black',
       'border-bottom': '',
       'border-left': '',
       'border-radius': '',
@@ -320,23 +310,23 @@ export class MaileditorComponent implements OnInit {
     this.mailtemplateArray[i1].push([]);
     let columnstyleIns: MaileditorColumn = new MaileditorColumn();
     //columnstyleIns.setflexalign = 'space-around center';
-    columnstyleIns = {
-      'setflexalign':'space-around center',
-      'background-color': 'none',
-      'border': '',
-      'border-bottom': '',
-      'border-left': '',
-      'border-right': '',
-      'border-top': '',
-      'border-radius': '',
-      'width': '',
-      'vertical-align': '',
-      'padding': '0px, 0px, 0px, 0px',
-      'padding-top': '0',
-      'padding-bottom': '0',
-      'padding-left': '0',
-      'padding-right': '0',
-    }
+    columnstyleIns.setflexalign = 'space-around center',
+      columnstyleIns.style = {
+        'background-color': 'none',
+        'border': '0px solid black',
+        'border-bottom': '',
+        'border-left': '',
+        'border-right': '',
+        'border-top': '',
+        'border-radius': '',
+        'width': '',
+        'vertical-align': '',
+        'padding': '0px, 0px, 0px, 0px',
+        'padding-top': '0',
+        'padding-bottom': '0',
+        'padding-left': '0',
+        'padding-right': '0',
+      }
     // console.log(i1, this.columnStyleArray)
     this.columnStyleArray[i1].push(columnstyleIns);
     this.sectionpartselect = i1;
@@ -456,7 +446,7 @@ export class MaileditorComponent implements OnInit {
     if (type === 'Button') {
       let newButton: MaileditorButton = new MaileditorButton();
       newButton.type = 'Button';
-      newButton.buttontext = 'Button Text'
+      newButton.buttontext = 'Button Text';
       newButton.buttonurl = 'www.xbms.io';
       newButton.style = {
         'color': 'black',
@@ -774,6 +764,7 @@ export class MaileditorComponent implements OnInit {
   }
 
   private onSelectSectionPart(i1): void {
+    this.detectchange()
     this.sectionpartselect = i1;
     this.resetEdit()
     this.Section = true;
@@ -783,8 +774,9 @@ export class MaileditorComponent implements OnInit {
       this.columnverticalalign = false;
     } else { this.columnverticalalign = true };
 
-    if ( this.maileditorSection.style['background-repeat'] === 'no-repeat' ) {
-      this.backgroundrepeat = false } else {this.backgroundrepeat = true}
+    if (this.maileditorSection.style['background-repeat'] === 'no-repeat') {
+      this.backgroundrepeat = false
+    } else { this.backgroundrepeat = true }
 
     this.onSelectBorder(this.maileditorSection);
     this.onSelectPadding(this.maileditorSection);
@@ -803,8 +795,10 @@ export class MaileditorComponent implements OnInit {
   }
 
   private onSelectBorder(maileditorPart): void {
+    console.log(maileditorPart.style)
     if (maileditorPart.style.border.length > 0) {
       const borderarray = maileditorPart.style.border.split(' ');
+      console.log(borderarray);
       this.selectedborder.width = borderarray[0];
       this.selectedborder.width = this.selectedborder.width.replace('px', '')
       this.selectedborder.style = borderarray[1];
@@ -819,18 +813,16 @@ export class MaileditorComponent implements OnInit {
   }
 
   private onChangeBorder(maileditorPart): void {
-    console.log('border', maileditorPart);
-    let stylesetter = maileditorPart;
     const borderarray = [];
     borderarray.push(this.selectedborder.width + 'px');
-    borderarray.push(this.selectedborder);
+    borderarray.push(this.selectedborder.style);
     const indexChar = this.selectedborder.color.indexOf(';')
     if (indexChar !== -1) { this.selectedborder.color = this.selectedborder.color + ';' }
     borderarray.push(this.selectedborder.color);
     const borderstring = borderarray.join(' ');
-
-    stylesetter.border = borderstring;
-    maileditorPart = stylesetter;
+    maileditorPart.style.border = borderstring;
+    console.log( maileditorPart.style.border, this.selectedborder, this.sectionStyleArray);
+    this.detectchange()
   }
 
 
@@ -848,7 +840,6 @@ export class MaileditorComponent implements OnInit {
     if (maileditorPart.style['padding-left'] !== undefined) {
       this.selectedPadding['padding-left'] = maileditorPart.style['padding-left']
     } else { this.selectedPadding['padding-left'] = 0 }
-    this.detectchange();
     // if (maileditorPart.style['padding-top'] === undefined || maileditorPart.style['padding-right'] === undefined || maileditorPart.style['padding-bottom'] === undefined || maileditorPart.style['padding-left'] === undefined) {
     //   this.selectedPadding = {
     //     'padding-top': 0,
@@ -869,7 +860,7 @@ export class MaileditorComponent implements OnInit {
     maileditorPart.style.padding = maileditorPart.style['padding-top'] + 'px ' + maileditorPart.style['padding-right'] + 'px ' + maileditorPart.style['padding-bottom'] + 'px ' + maileditorPart.style['padding-left'] + 'px';
     maileditorPart.style.padding = maileditorPart.style.padding.replace(';', '')
     // console.log(maileditorPart);
-    this.detectchange();
+    this.detectchange()
   }
 
   private resetEdit(): void {
@@ -992,8 +983,9 @@ export class MaileditorComponent implements OnInit {
         this.maileditorSection.style['background-image'] =
           'linear-gradient(black, black), url(' + url + ')';
         this.maileditorSection.style['background-blend-mode'] = 'saturation';
+
       }
-      this.detectchange();
+      this.detectchange()
     },
       800);
   }
@@ -1003,14 +995,14 @@ export class MaileditorComponent implements OnInit {
   setbackgroundImageDivider(url: string) {
     this.maileditorDivider.style['background-image'] = 'url(' + url + ')';
     console.log(this.maileditorDivider);
-    this.detectchange();
+    this.detectchange()
   }
 
   setCarouselImage(url: string, i) {
     this.maileditorCarousel.images[i].style.src = url;
     console.log(this.maileditorSection);
     if (this.maileditorCarouselImage.style.src) { this.showSlides(this.slideIndex); }
-    this.detectchange();
+    this.detectchange()
   }
 
   openDialog(): void {
@@ -1275,40 +1267,40 @@ export class MaileditorComponent implements OnInit {
 
   moveSectionUp(i1): void {
     if (i1 !== 0) {
-    const tmp =  this.mailtemplateArray[i1];
-    this.mailtemplateArray[i1] = this.mailtemplateArray[i1 - 1];
-    this.mailtemplateArray[i1 - 1] = tmp;
+      const tmp = this.mailtemplateArray[i1];
+      this.mailtemplateArray[i1] = this.mailtemplateArray[i1 - 1];
+      this.mailtemplateArray[i1 - 1] = tmp;
 
-    const tmpsectstyle =  this.sectionStyleArray[i1];
-    this.sectionStyleArray[i1] = this.sectionStyleArray[i1 - 1];
-    this.sectionStyleArray[i1 - 1] = tmpsectstyle;
+      const tmpsectstyle = this.sectionStyleArray[i1];
+      this.sectionStyleArray[i1] = this.sectionStyleArray[i1 - 1];
+      this.sectionStyleArray[i1 - 1] = tmpsectstyle;
 
-    const tmpcolstyle =  this.columnStyleArray[i1];
-    this.columnStyleArray[i1] = this.columnStyleArray[i1 - 1];
-    this.columnStyleArray[i1 - 1] = tmpcolstyle;
-  }
+      const tmpcolstyle = this.columnStyleArray[i1];
+      this.columnStyleArray[i1] = this.columnStyleArray[i1 - 1];
+      this.columnStyleArray[i1 - 1] = tmpcolstyle;
+    }
   }
 
   moveSectionDown(i1): void {
-    if (i1 !== this.mailtemplateArray.length -1 ) {
-    const tmp =  this.mailtemplateArray[i1];
-    this.mailtemplateArray[i1] = this.mailtemplateArray[i1 + 1];
-    this.mailtemplateArray[i1 + 1] = tmp;
+    if (i1 !== this.mailtemplateArray.length - 1) {
+      const tmp = this.mailtemplateArray[i1];
+      this.mailtemplateArray[i1] = this.mailtemplateArray[i1 + 1];
+      this.mailtemplateArray[i1 + 1] = tmp;
 
-    const tmpsectstyle =  this.sectionStyleArray[i1];
-    this.sectionStyleArray[i1] = this.sectionStyleArray[i1 + 1];
-    this.sectionStyleArray[i1 + 1] = tmpsectstyle;
+      const tmpsectstyle = this.sectionStyleArray[i1];
+      this.sectionStyleArray[i1] = this.sectionStyleArray[i1 + 1];
+      this.sectionStyleArray[i1 + 1] = tmpsectstyle;
 
-    const tmpcolstyle =  this.columnStyleArray[i1];
-    this.columnStyleArray[i1] = this.columnStyleArray[i1 + 1];
-    this.columnStyleArray[i1 + 1] = tmpcolstyle;
+      const tmpcolstyle = this.columnStyleArray[i1];
+      this.columnStyleArray[i1] = this.columnStyleArray[i1 + 1];
+      this.columnStyleArray[i1 + 1] = tmpcolstyle;
     }
   }
 
   onSaveSectionPart(i1) {
-    if (this.option.standardcomponents === undefined) {this.option.standardcomponents = []}
-    if (this.option.standardcomponentsstyle === undefined) {this.option.standardcomponentsstyle = []}
-    if (this.option.standardcomponentscolumnstyle === undefined) {this.option.standardcomponentscolumnstyle = []}
+    if (this.option.standardcomponents === undefined) { this.option.standardcomponents = [] }
+    if (this.option.standardcomponentsstyle === undefined) { this.option.standardcomponentsstyle = [] }
+    if (this.option.standardcomponentscolumnstyle === undefined) { this.option.standardcomponentscolumnstyle = [] }
     const stcomp = this.mailtemplateArray[i1];
     const stcompst = this.sectionStyleArray[i1];
     const stcompstcol = this.columnStyleArray[i1];

@@ -435,7 +435,10 @@
                     Done
                   </mat-checkbox>
                 </tr>
-
+                <tr>
+                  <button a mat-raised-button *ngIf="readytosend" (click)="SendMessageDialog()">Edit</button>
+                </tr>
+               
 
                 <tr *ngIf="!selectedCall.html" rowspan="10">
                   <td colspan="2">
@@ -450,7 +453,7 @@
                 </tr>
                 <tr rowspan="10" *ngIf="selectedCall.html">
                   <td colspan="2">
-                    <div style="border-style: solid; border-width: 1px; border-color: lightgray; padding: 5px;"
+                    <div class="content-form" style="border-style: solid; border-width: 1px; border-color: lightgray; padding: 5px;"
                       [innerHTML]="selectedCall.html"></div>
                   </td>
                 </tr>
@@ -461,6 +464,7 @@
               </table>
               <div>
                 <button a mat-raised-button (click)="saveCall()">Save</button>
+                <button a mat-raised-button (click)="replyNewMessage()">Reply</button>
               </div>
 
             </mat-card-content>
@@ -526,7 +530,7 @@
                 <tr>
                   <td>
                       <mat-form-field>
-                          <input matInput [(ngModel)]=bcc placeholder="CC" class="InputField">
+                          <input matInput [(ngModel)]=cc placeholder="CC" class="InputField">
                         </mat-form-field>
                   </td>
                   <td>
@@ -573,7 +577,7 @@
                 </tr>
                 <tr rowspan="10" *ngIf="selectedCall.html">
                   <td colspan="2">
-                    <div style="border-style: solid; border-width: 1px; border-color: lightgray; padding: 5px;"
+                    <div class="content-form" style="border-style: solid; border-width: 1px; border-color: lightgray; padding: 5px;"
                       [innerHTML]="selectedCall.html"></div>
                   </td>
                 </tr>

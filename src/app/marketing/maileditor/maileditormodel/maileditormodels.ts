@@ -34,19 +34,19 @@ export interface MaileditorSectionInterface {
 export interface MaileditorColumnInterface {
   setflexalign: string;
   style: {
-    'background-color': string,
-    'border': string,
-    'border-bottom': string,
-    'border-left': string,
-    'border-right': string,
-    'border-top': string,
-    'border-radius': string,
-    'width': string,
-    'vertical-align': string,
-    'padding': string,
-    'padding-top': string,
-    'padding-bottom': string,
-    'padding-left': string,
+    'background-color': string;
+    'border': string;
+    'border-bottom': string;
+    'border-left': string;
+    'border-right': string;
+    'border-top': string;
+    'border-radius': string;
+    'width': string;
+    'vertical-align': string;
+    'padding': string;
+    'padding-top': string;
+    'padding-bottom': string;
+    'padding-left': string;
     'padding-right': string
   }
 }
@@ -412,20 +412,23 @@ export class MaileditorImage implements MaileditorImageInterface {
 
 export class MaileditorColumn implements MaileditorColumnInterface {
   setflexalign: string;
-    'background-color': string;
-    'border': string;
-    'border-bottom': string;
-    'border-left': string;
-    'border-right': string;
-    'border-top': string;
-    'border-radius': string;
-    'width': string;
-    'vertical-align': string;
-    'padding': string;
-    'padding-top': string;
-    'padding-bottom': string;
-    'padding-left': string;
-    'padding-right': string;
+  style: {
+    'background-color': string,
+    'border': string,
+    'border-bottom': string,
+    'border-left': string,
+    'border-right': string,
+    'border-top': string,
+    'border-radius': string,
+    'width': string,
+    'vertical-align': string,
+    'padding': string,
+    'padding-top': string,
+    'padding-bottom': string,
+    'padding-left': string,
+    'padding-right': string,
+  }
+
 
   public static factory(data: MaileditorColumnInterface): MaileditorColumn {
     return new MaileditorColumn(data);

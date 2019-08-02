@@ -323,7 +323,12 @@ export class SettingsComponent implements OnInit {
     this.newRelation.status = undefined;
     this.option = undefined;
     this.selectedCall = undefined;
-    this.accountApi.getUnsortedcalls(this.Account.id)
+    this.accountApi.getUnsortedcalls(
+      this.Account.id,
+      {
+        order: 'id DESC'
+      }
+      )
       .subscribe((unsortedcalls: Unsortedcalls[]) => this.Unsortedcalls = unsortedcalls);
   }
 

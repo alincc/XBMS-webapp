@@ -422,7 +422,8 @@ export class RelationComponent implements OnInit {
   }
 
   getCalls(): void {
-    this.RelationsApi.getCalls(this.selectedRelation.id)
+    this.RelationsApi.getCalls(this.selectedRelation.id,
+      {order: 'id DESC'})
       .subscribe((Calls: Calls[]) => this.Calls = Calls);
   }
 
@@ -925,6 +926,7 @@ export class RelationComponent implements OnInit {
 
     window.open(this.mailtolink, "_self");
   }
+  
 
   sendMailToContact(): void {
     this.mailtolink = "mailto:" + this.selectedContactperson.email
@@ -1066,11 +1068,44 @@ export class RelationComponent implements OnInit {
 
   }
 
+  replyNewMessage(): void {
+    let title = this.selectedCall.title;
+    let html = this.selectedCall.html; 
+    this.RelationsApi.createCalls(this.selectedRelation.id, {
+      "title": this.selectedCall.title,
+      "accountId": this.Account.id, 
+      "companyId": this.Account.companyId,
+      "html": html
+    }) //add companyId for statistics
+      .subscribe(res => {
+        this.data = res,
+          this.callindex = this.Calls.push(this.data) - 1,
+          this.onSelectCall(this.data, this.callindex),
+          this.replyMessage(title, html);
+      });
+  }
+
+
 
   createNewMessage(): void {
     this.RelationsApi.createCalls(this.selectedRelation.id, {
       "html": '<p><span style="font-family:Tahoma, Geneva, sans-serif"></span></p>' + this.Account.signature,
       "title": "New",
+      "accountId": this.Account.id, "companyId": this.Account.companyId
+    }) //add companyId for statistics
+      .subscribe(res => {
+        this.data = res,
+          this.callindex = this.Calls.push(this.data) - 1,
+          this.onSelectCall(this.data, this.callindex);
+        this.SendMessageDialog();
+      });
+  }
+
+  replyMessage(title, html): void {
+    this.RelationsApi.createCalls(this.selectedRelation.id, {
+      "html": '<p><span style="font-family:Tahoma, Geneva, sans-serif"></span></p>' + this.Account.signature +
+      '<br><hr><blockquote>&nbsp;</blockquote>' + html,
+      "title": title,
       "accountId": this.Account.id, "companyId": this.Account.companyId
     }) //add companyId for statistics
       .subscribe(res => {

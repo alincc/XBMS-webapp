@@ -1,8 +1,4 @@
 
-<div style="width: 100px; height: 100px;" [ngStyle]="teststyle"></div>
-<input [(ngModel)]="teststyle['background-color']">
-
-
 <div class="topview">
     <div *ngIf="router.url !== '/login' && router.url.indexOf('filemanager') === -1" >
         <button mat-stroked-button color="primary" (click)="sidenav.open()" 

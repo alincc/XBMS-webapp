@@ -126,6 +126,8 @@
   </div>
 
 
+
+
   <div *ngIf='showprogressbar' class="showprogressbardiv">
     <div style="width: 50%; margin: 0 auto; justify-content: center; align-items: center;">
         <mat-spinner style="width: 50%; margin: 0 auto;" mode="indeterminate"></mat-spinner>
@@ -174,7 +176,7 @@
     </table>
 
   
-
+    <div *ngIf="changenow">
     <div class="template-container" *ngFor="let section of mailtemplateArray; let i1 = index" 
     [ngStyle]="sectionStyleArray[i1].style" [fxLayout]=sectionStyleArray[i1].boxalignment 
     [class.fullwidthsection]="sectionStyleArray[i1].style['full-width'] === 'full-width'">
@@ -190,7 +192,7 @@
     </label>
       <div class="section-box full-width-item" *ngFor="let column of section; let i2 = index"
         fxLayout="column">
-          <div [ngStyle]="columnStyleArray[i1][i2]" class="column-box" cdkDropList
+          <div [ngStyle]="columnStyleArray[i1][i2].style" class="column-box" cdkDropList
             #mailtemplateList="cdkDropList" [cdkDropListData]="mailtemplateArray[i1][i2]"
             (cdkDropListDropped)="drop($event, i1, i2)">
             <label class="columnlabel">Column 
@@ -266,6 +268,7 @@
       <mat-icon matTooltip="Add column" style="float: right;" (click)="addToSectionArray(i1)">add</mat-icon>
     </div>
     </div>
+  </div>
     <mat-icon matTooltip="Add sections" (click)="addToMailTemplateArray()">add</mat-icon>
   
   </div>
@@ -277,7 +280,7 @@
         <tr>
           <td>
             <mat-form-field>
-              <input [(ngModel)]=maileditorColumn.width type="text" matInput placeholder="width">
+              <input [(ngModel)]=maileditorColumn.style.width type="text" matInput placeholder="width" (change)="detectchange()" >
               <mat-icon matSuffix>mode_edit</mat-icon>
               <mat-hint>%/px</mat-hint>
             </mat-form-field>
@@ -314,7 +317,7 @@
         <tr>
           <td>
             <mat-form-field>
-              <mat-select [(value)]="maileditorColumn['vertical-align']" placeholder="Vertical align"
+              <mat-select [(value)]="maileditorColumn.style['vertical-align']" placeholder="Vertical align"
                 (selectionChange)="changeverticalalign($event)">
                 <mat-option value="middle">middle</mat-option>
                 <mat-option value="top">top</mat-option>
@@ -336,28 +339,28 @@
                   </mat-panel-title>
                 </mat-expansion-panel-header>
                 <br>
-                <span [style.background]="maileditorColumn['background-color']" [cpToggle]="true"
-                  [cpDialogDisplay]="'inline'" [cpCancelButton]="true"
-                  [(colorPicker)]="maileditorColumn['background-color']"></span>
+                <span [style.background]="maileditorColumn.style['background-color']" [cpToggle]="true"
+                  [cpDialogDisplay]="'inline'" [cpCancelButton]="true" (colorPickerChange)="detectchange()"
+                  [(colorPicker)]="maileditorColumn.style['background-color']"></span>
                 <table matTooltip="click to set color">
                   <tr>
                     <td>Primairy color</td>
-                    <td (click)="maileditorColumn['background-color'] = company.companyprimairycolor">
+                    <td (click)="maileditorColumn.style['background-color'] = company.companyprimairycolor" (click)="detectchange()">
                         {{company.companyprimairycolor}}</td>
                   </tr>
                   <tr>
                       <td>Secondairy color</td>
-                    <td (click)="maileditorColumn['background-color'] = company.companysecondarycolor">
+                    <td (click)="maileditorColumn.style['background-color'] = company.companysecondarycolor" (click)="detectchange()">
                       {{company.companysecondarycolor}}</td>
                   </tr>
                   <tr>
                       <td>Relation primairy color</td>
-                    <td (click)="maileditorColumn['background-color'] = option.companyprimairycolor">
+                    <td (click)="maileditorColumn.style['background-color'] = option.companyprimairycolor" (click)="detectchange()">
                       {{option.companyprimairycolor}}</td>
                   </tr>
                   <tr>
                       <td>Relation secondairy color</td>
-                    <td (click)="maileditorColumn['background-color'] = option.companysecondarycolor">
+                    <td (click)="maileditorColumn.style['background-color'] =  option.companysecondarycolor" (click)="detectchange()">
                       {{option.companysecondarycolor}}</td>
                   </tr>
                 </table>
@@ -377,7 +380,7 @@
         <tr>
           <td>
             <mat-form-field>
-              <input [(ngModel)]=maileditorColumn.margin type="text" matInput placeholder="margin">
+              <input [(ngModel)]=maileditorColumn.style.margin type="text" matInput placeholder="margin"  (change)="detectchange()">
               <mat-icon matSuffix>mode_edit</mat-icon>
               <mat-hint>%/px</mat-hint>
             </mat-form-field>
@@ -422,17 +425,17 @@
                 </mat-expansion-panel-header>
                 <br>
                 <span [style.background]="selectedborder.color" [cpToggle]="true" [cpDialogDisplay]="'inline'"
-                  [cpCancelButton]="true" [(colorPicker)]="selectedborder.color"></span>
+                  [cpCancelButton]="true" [(colorPicker)]="selectedborder.color" (colorPickerChange)="detectchange()"></span>
                 <button mat-button (click)="onChangeBorder(maileditorColumn)">confirm</button>
                 <table matTooltip="click to set color">
                   <tr>
                     <td>Primairy color</td>
                     <td>Secondairy color</td>
-                  </tr>
+                  </tr> 
                   <tr>
-                    <td (click)="selectedborder.color = company.companyprimairycolor">{{company.companyprimairycolor}}
+                    <td (click)="selectedborder.color = company.companyprimairycolor" (click)="detectchange()" (click)="detectchange()">{{company.companyprimairycolor}}
                     </td>
-                    <td (click)="selectedborder.color = company.companysecondarycolor">{{company.companysecondarycolor}}
+                    <td (click)="selectedborder.color = company.companysecondarycolor" (click)="detectchange()">{{company.companysecondarycolor}}
                     </td>
                   </tr>
                 </table>
@@ -448,7 +451,7 @@
         <tr>
           <td>
             <mat-form-field>
-              <input [(ngModel)]=maileditorSection.style.padding type="text" matInput placeholder="padding">
+              <input [(ngModel)]=maileditorSection.style.padding type="text" matInput placeholder="padding"  (change)="detectchange()" >
               <mat-icon matSuffix>mode_edit</mat-icon>
               <mat-hint>%/px</mat-hint>
             </mat-form-field>
@@ -475,29 +478,29 @@
                   </mat-panel-title>
                 </mat-expansion-panel-header>
                 <br>
-                <!-- <span ((ngModelChange)="detectchange()" [style.background]="maileditorSection.style['background-color']" [cpToggle]="true"
+                <span ((ngModelChange)="detectchange()" [style.background]="maileditorSection.style['background-color']" [cpToggle]="true"
                   [cpDialogDisplay]="'inline'" [cpCancelButton]="true"
-                  [(colorPicker)]="maileditorSection.style['background-color']"></span> -->
-                  <input (colorPickerChange)="detectchange()" [(colorPicker)]="maileditorSection.style['background-color']" [style.background]="color"/>
+                  [(colorPicker)]="maileditorSection.style['background-color']" (colorPickerChange)="detectchange()"></span>
+
                 <table matTooltip="click to set color">
                   <tr>
                     <td>Primairy color</td>
-                    <td (click)="maileditorSection.style['background-color'] = company.companyprimairycolor">
+                    <td (click)="maileditorSection.style['background-color'] = company.companyprimairycolor" (click)="detectchange()">
                         {{company.companyprimairycolor}}</td>
                   </tr>
                   <tr>
                       <td>Secondairy color</td>
-                    <td (click)="maileditorSection.style['background-color'] = company.companysecondarycolor">
+                    <td (click)="maileditorSection.style['background-color'] = company.companysecondarycolor" (click)="detectchange()">
                       {{company.companysecondarycolor}}</td>
                   </tr>
                   <tr>
                       <td>Relation primairy color</td>
-                    <td (click)="maileditorSection.style['background-color'] = option.companyprimairycolor">
+                    <td (click)="maileditorSection.style['background-color'] = option.companyprimairycolor" (click)="detectchange()">
                       {{option.companyprimairycolor}}</td>
                   </tr>
                   <tr>
                       <td>Relation secondairy color</td>
-                    <td (click)="maileditorSection.style['background-color'] = option.companysecondarycolor">
+                    <td (click)="maileditorSection.style['background-color'] =  option.companysecondarycolor" (click)="detectchange()">
                       {{option.companysecondarycolor}}</td>
                   </tr>
                 </table>
@@ -526,7 +529,7 @@
        
             <mat-form-field>
               <input [(ngModel)]="maileditorSection.style['background-url']" type="text" matInput
-                placeholder="Image url">
+                placeholder="Image url"  (change)="detectchange()" >
               <mat-icon matSuffix>mode_edit</mat-icon>
             </mat-form-field>
        
@@ -536,7 +539,7 @@
         
             <mat-form-field>
               <input [(ngModel)]="maileditorSection.style['background-size']" type="text" matInput
-                placeholder="Background size">
+                placeholder="Background size"  (change)="detectchange()" >
               <mat-icon matSuffix>mode_edit</mat-icon>
               <mat-hint>%/px</mat-hint>
             </mat-form-field>
@@ -585,16 +588,16 @@
                 </mat-expansion-panel-header>
                 <br>
                 <span [style.background]="selectedborder.color" [cpToggle]="true" [cpDialogDisplay]="'inline'"
-                  [cpCancelButton]="true" [(colorPicker)]="selectedborder.color"></span>
+                  [cpCancelButton]="true" [(colorPicker)]="selectedborder.color" (colorPickerChange)="detectchange()"></span>
                 <table matTooltip="click to set color">
                   <tr>
                     <td>Primairy color</td>
                     <td>Secondairy color</td>
                   </tr>
                   <tr>
-                    <td (click)="selectedborder.color = company.companyprimairycolor">{{company.companyprimairycolor}}
+                    <td (click)="selectedborder.color = company.companyprimairycolor" (click)="detectchange()">{{company.companyprimairycolor}}
                     </td>
-                    <td (click)="selectedborder.color = company.companysecondarycolor">{{company.companysecondarycolor}}
+                    <td (click)="selectedborder.color = company.companysecondarycolor" (click)="detectchange()">{{company.companysecondarycolor}}
                     </td>
                   </tr>
                 </table>
@@ -606,7 +609,7 @@
         <tr>
           <td>
             <mat-form-field>
-              <mat-select [(value)]="maileditorSection.style['text-align']" placeholder="Vertical align">
+              <mat-select [(value)]="maileditorSection.style['text-align']" placeholder="Vertical align" (selectionChange)="detectchange()">
                 <mat-option value="left">left</mat-option>
                 <mat-option value="center">center</mat-option>
                 <mat-option value="right">right</mat-option>
@@ -624,7 +627,7 @@
         <tr>
           <td>
             <mat-form-field>
-              <input [(ngModel)]="maileditorImage.style.width" type="text" matInput placeholder="width">
+              <input [(ngModel)]="maileditorImage.style.width" type="text" matInput placeholder="width"  (change)="detectchange()" >
               <label matSuffix>px/%</label>
             </mat-form-field>
           </td>
@@ -637,7 +640,7 @@
         <tr>
           <td>
             <mat-form-field>
-              <input [(ngModel)]="maileditorImage.style.height" type="text" matInput placeholder="height">
+              <input [(ngModel)]="maileditorImage.style.height" type="text" matInput placeholder="height"  (change)="detectchange()" >
               <label matSuffix>px/%</label>
             </mat-form-field>
           </td>
@@ -650,7 +653,7 @@
         <tr>
           <td>
             <mat-form-field>
-              <input [(ngModel)]="maileditorImage.style.href" type="text" matInput placeholder="link to website">
+              <input [(ngModel)]="maileditorImage.style.href" type="text" matInput placeholder="link to website"  (change)="detectchange()" >
             </mat-form-field>
           </td>
         </tr>
@@ -706,7 +709,7 @@
           <td>
             <mat-form-field>
               <input [(ngModel)]="maileditorDivider.style['border-width']" type="text" matInput
-                placeholder="Border Width">
+                placeholder="Border Width"  (change)="detectchange()" >
               <mat-icon matSuffix>mode_edit</mat-icon>
               <mat-hint>%/px</mat-hint>
             </mat-form-field>
@@ -716,7 +719,7 @@
         <tr>
           <td>
             <mat-form-field>
-              <input [(ngModel)]="maileditorDivider.style.width" type="text" matInput placeholder="height">
+              <input [(ngModel)]="maileditorDivider.style.width" type="text" matInput placeholder="height"  (change)="detectchange()" >
               <mat-icon matSuffix>mode_edit</mat-icon>
               <mat-hint>%/px</mat-hint>
             </mat-form-field>
@@ -733,15 +736,15 @@
                 </mat-expansion-panel-header>
                 <br>
                 <span [style.background]="maileditorDivider.style['border-color']" [cpToggle]="true" [cpDialogDisplay]="'inline'"
-                  [cpCancelButton]="true" [(colorPicker)]="maileditorDivider.style['border-color']"></span>
+                  [cpCancelButton]="true" [(colorPicker)]="maileditorDivider.style['border-color']" (colorPickerChange)="detectchange()"></span>
                 <table matTooltip="click to set color">
                   <tr>
                     <td>Secondairy color</td>
                   </tr>
                   <tr>
-                    <td (click)="maileditorDivider.style['border-color'] = company.companyprimairycolor">{{company.companyprimairycolor}}
+                    <td (click)="maileditorDivider.style['border-color'] = company.companyprimairycolor" (click)="detectchange()">{{company.companyprimairycolor}}
                     </td>
-                    <td (click)="maileditorDivider.style['border-color'] = company.companysecondarycolor">{{company.companysecondarycolor}}
+                    <td (click)="maileditorDivider.style['border-color'] = company.companysecondarycolor" (click)="detectchange()">{{company.companysecondarycolor}}
                     </td>
                   </tr>
                 </table>
@@ -783,7 +786,7 @@
         <tr>
           <td>
             <mat-form-field>
-              <mat-select [(value)]="maileditorDivider.style['border-style']" placeholder="style">
+              <mat-select [(value)]="maileditorDivider.style['border-style']" placeholder="style" (selectionChange)="detectchange()">
                 <mat-option value="none">None</mat-option>
                 <mat-option value="solid">Solid</mat-option>
                 <mat-option value="dotted">Dotted</mat-option>
@@ -806,7 +809,7 @@
         <tr>
           <td>
             <mat-form-field>
-              <input [(ngModel)]="maileditorButton.buttontext" type="text" matInput placeholder="Button Text">
+              <input [(ngModel)]="maileditorButton.buttontext" type="text" matInput placeholder="Button Text"  (change)="detectchange()" >
               <mat-icon matTooltip="select Emoji" (click)="onshowemojiButton()" matSuffix>insert_emoticon</mat-icon>
             </mat-form-field>
           </td>
@@ -826,7 +829,7 @@
         <tr>
             <td>
               <mat-form-field>
-                <input [(ngModel)]="maileditorButton.style.height" type="text" matInput placeholder="Height">
+                <input [(ngModel)]="maileditorButton.style.height" type="text" matInput placeholder="Height"  (change)="detectchange()" > 
                 <mat-icon matSuffix>mode_edit</mat-icon>
               </mat-form-field>
             </td>
@@ -834,7 +837,7 @@
           <tr>
             <td>
               <mat-form-field>
-                <input [(ngModel)]="maileditorButton.style.width" type="text" matInput placeholder="Width">
+                <input [(ngModel)]="maileditorButton.style.width" type="text" matInput placeholder="Width"  (change)="detectchange()" >
                 <mat-icon matSuffix>mode_edit</mat-icon>
               </mat-form-field>
             </td>
@@ -843,7 +846,7 @@
           <td>
             <mat-form-field>
               <mat-label>Select font</mat-label>
-              <mat-select [(value)]="maileditorButton.style['font-family']">
+              <mat-select [(value)]="maileditorButton.style['font-family']" (selectionChange)="detectchange()">
                 <mat-option>None</mat-option>
                 <mat-option value="Arial, Helvetica, sans-serif">Arial</mat-option>
                 <mat-option value="'Arial Black', Gadget, sans-serif">Arial Black</mat-option>
@@ -868,7 +871,7 @@
         <tr>
           <td>
             <mat-form-field>
-              <input [(ngModel)]="maileditorButton.url" type="text" matInput placeholder="Button URL">
+              <input [(ngModel)]="maileditorButton.url" type="text" matInput placeholder="Button URL"  (change)="detectchange()" >
               <mat-icon matSuffix>mode_edit</mat-icon>
             </mat-form-field>
           </td>
@@ -885,16 +888,16 @@
                 <br>
                 <span [style.background]="maileditorButton.style['background-color']" [cpToggle]="true"
                   [cpDialogDisplay]="'inline'" [cpCancelButton]="true"
-                  [(colorPicker)]="maileditorButton.style['background-color']"></span>
+                  [(colorPicker)]="maileditorButton.style['background-color']" (colorPickerChange)="detectchange()"></span>
                 <table matTooltip="click to set color">
                   <tr>
                     <td>Primairy color</td>
-                    <td (click)="maileditorButton.style['background-color'] = company.companyprimairycolor">
+                    <td (click)="maileditorButton.style['background-color'] = company.companyprimairycolor" (click)="detectchange()">
                         {{company.companyprimairycolor}}</td>
                   </tr>
                   <tr>
                     <td>Secondairy color</td>
-                    <td (click)="maileditorButton.style['background-color'] = company.companysecondarycolor">
+                    <td (click)="maileditorButton.style['background-color'] = company.companysecondarycolor" (click)="detectchange()">
                       {{company.companysecondarycolor}}</td>
                   </tr>
                 </table>
@@ -913,16 +916,16 @@
                 </mat-expansion-panel-header>
                 <br>
                 <span [style.background]="maileditorButton.style.color" [cpToggle]="true" [cpDialogDisplay]="'inline'"
-                  [cpCancelButton]="true" [(colorPicker)]="maileditorButton.style.color"></span>
+                  [cpCancelButton]="true" [(colorPicker)]="maileditorButton.style.color" (colorPickerChange)="detectchange()"></span>
                 <table matTooltip="click to set color">
                   <tr>
                     <td>Primairy color</td>
-                    <td (click)="maileditorButton.style.color = company.companyprimairycolor">
+                    <td (click)="maileditorButton.style.color = company.companyprimairycolor" (click)="detectchange()">
                         {{company.companyprimairycolor}}</td>
                   </tr>
                   <tr>
                       <td>Secondairy color</td>
-                    <td (click)="maileditorButton.style.color = company.companysecondarycolor">
+                    <td (click)="maileditorButton.style.color = company.companysecondarycolor" (click)="detectchange()">
                       {{company.companysecondarycolor}}</td>
                   </tr>
                 </table>
@@ -934,7 +937,7 @@
           <td>
             <mat-form-field>
               <input [(ngModel)]="maileditorButton.style['border-radius']" type="text" matInput
-                placeholder="Border Radius">
+                placeholder="Border Radius" (change)="detectchange()" >
               <mat-icon matSuffix>mode_edit</mat-icon>
             </mat-form-field>
           </td>
@@ -978,16 +981,16 @@
                 </mat-expansion-panel-header>
                 <br>
                 <span [style.background]="selectedborder.color" [cpToggle]="true" [cpDialogDisplay]="'inline'"
-                  [cpCancelButton]="true" [(colorPicker)]="selectedborder.color"></span>
+                  [cpCancelButton]="true" [(colorPicker)]="selectedborder.color" (colorPickerChange)="detectchange()"></span>
                 <table matTooltip="click to set color">
                   <tr>
                     <td>Primairy color</td>
                     <td>Secondairy color</td>
                   </tr>
                   <tr>
-                    <td (click)="selectedborder.color = company.companyprimairycolor">{{company.companyprimairycolor}}
+                    <td (click)="selectedborder.color = company.companyprimairycolor" (click)="detectchange()">{{company.companyprimairycolor}}
                     </td>
-                    <td (click)="selectedborder.color = company.companysecondarycolor">{{company.companysecondarycolor}}
+                    <td (click)="selectedborder.color = company.companysecondarycolor" (click)="detectchange()">{{company.companysecondarycolor}}
                     </td>
                   </tr>
                 </table>
@@ -999,7 +1002,7 @@
         <tr>
             <td>
               <mat-form-field>
-                <mat-select [(value)]="maileditorButton.style['text-align']" placeholder="Text align">
+                <mat-select [(value)]="maileditorButton.style['text-align']" placeholder="Text align" (selectionChange)="detectchange()">
                   <mat-option value="left">left</mat-option>
                   <mat-option value="center">center</mat-option>
                   <mat-option value="right">right</mat-option>
@@ -1029,7 +1032,7 @@
         <tr>
           <td>
             <mat-form-field>
-              <input [(ngModel)]="maileditorCarousel.style.width" type="text" matInput placeholder="width">
+              <input [(ngModel)]="maileditorCarousel.style.width" type="text" matInput placeholder="width"  (change)="detectchange()" >
               <label matSuffix>px/%</label>
             </mat-form-field>
           </td>
@@ -1037,7 +1040,7 @@
         <tr>
           <td>
             <mat-form-field>
-              <input [(ngModel)]="maileditorCarousel.style.height" type="text" matInput placeholder="height">
+              <input [(ngModel)]="maileditorCarousel.style.height" type="text" matInput placeholder="height"  (change)="detectchange()" >
               <label matSuffix>px/%</label>
             </mat-form-field>
           </td>
@@ -1068,7 +1071,7 @@
         <tr>
           <td>
             <mat-form-field>
-              <input [(ngModel)]="maileditorAccordion.style.width" type="text" matInput placeholder="width">
+              <input [(ngModel)]="maileditorAccordion.style.width" type="text" matInput placeholder="width"  (change)="detectchange()" >
               <label matSuffix>px/%</label>
             </mat-form-field>
           </td>
@@ -1076,7 +1079,7 @@
         <tr>
           <td>
             <mat-form-field>
-              <input [(ngModel)]="maileditorAccordion.style.height" type="text" matInput placeholder="height">
+              <input [(ngModel)]="maileditorAccordion.style.height" type="text" matInput placeholder="height"  (change)="detectchange()" >
               <label matSuffix>px/%</label>
             </mat-form-field>
           </td>
@@ -1085,10 +1088,10 @@
           <td>
             <div *ngFor="let elementAcc of maileditorAccordion.elements">
               <mat-form-field>
-                <input [(ngModel)]="elementAcc.title.content" type="text" matInput placeholder="Title">
+                <input [(ngModel)]="elementAcc.title.content" type="text" matInput placeholder="Title" (change)="detectchange()" >
               </mat-form-field>
               <mat-form-field>
-                <input [(ngModel)]="elementAcc.text.content" type="text" matInput placeholder="Text">
+                <input [(ngModel)]="elementAcc.text.content" type="text" matInput placeholder="Text" (change)="detectchange()" >
               </mat-form-field>
             </div>
           </td>
@@ -1106,7 +1109,7 @@
       </speed-dial-fab>
        
             <mat-form-field>
-              <mat-select [(value)]="maileditorSocial.style.mode" placeholder="Direction Icons">
+              <mat-select [(value)]="maileditorSocial.style.mode" placeholder="Direction Icons" (selectionChange)="detectchange()">
                 <mat-option value="horizontal">horizontal</mat-option>
                 <mat-option value="vertical">vertical</mat-option>
               </mat-select>
@@ -1143,12 +1146,12 @@
                   <table>
                   <tr>
                   <mat-form-field style="max-width: 200px;">
-                    <input [(ngModel)]="socialelement.content" type="text" matInput placeholder="Title">
+                    <input [(ngModel)]="socialelement.content" type="text" matInput placeholder="Title"  (change)="detectchange()" >
                   </mat-form-field>
                 </tr>
                 <tr>
                   <mat-form-field style="max-width: 200px;">
-                    <input [(ngModel)]="socialelement.style.href" type="text" matInput placeholder="Link to company page ">
+                    <input [(ngModel)]="socialelement.style.href" type="text" matInput placeholder="Link to company page "  (change)="detectchange()" >
                   </mat-form-field>
                 </tr>
                 <!-- <tr>
@@ -1200,16 +1203,16 @@
                               <br>
                               <span [style.background]="socialelement.style.color" [cpToggle]="true"
                                 [cpDialogDisplay]="'inline'" [cpCancelButton]="true"
-                                [(colorPicker)]="socialelement.style.color"></span>
+                                [(colorPicker)]="socialelement.style.color" (colorPickerChange)="detectchange()"></span>
                               <table matTooltip="click to set color">
                                 <tr>
                                   <td>Primairy color</td>
                                   <td>Secondairy color</td>
                                 </tr>
                                 <tr>
-                                  <td (click)="socialelement.style.color = company.companyprimairycolor">
+                                  <td (click)="socialelement.style.color = company.companyprimairycolor" (click)="detectchange()">
                                     {{company.companyprimairycolor}}</td>
-                                  <td (click)="socialelement.style.color = company.companysecondarycolor">
+                                  <td (click)="socialelement.style.color = company.companysecondarycolor" (click)="detectchange()">
                                     {{company.companysecondarycolor}}</td>
                                 </tr>
                               </table>
@@ -1222,7 +1225,7 @@
                   <mat-form-field style="max-width: 200px;">
                     <input [(ngModel)]="socialelement.style['icon-size']" type="text"
                       (change)="socialelement.style['icon-height'] = socialelement.style['icon-size']" matInput
-                      placeholder="Icon Height">
+                      placeholder="Icon Height" (change)="detectchange()" >
                     <mat-icon matSuffix>mode_edit</mat-icon>
                     <mat-hint>%/px</mat-hint>
                   </mat-form-field>
@@ -1259,12 +1262,12 @@
             </div>
           </mat-accordion>
             <mat-form-field>
-              <input [(ngModel)]="maileditorSocial.style.width" type="text" matInput placeholder="width">
+              <input [(ngModel)]="maileditorSocial.style.width" type="text" matInput placeholder="width" (change)="detectchange()" >
               <mat-icon matSuffix>mode_edit</mat-icon>
               <mat-hint>%/px</mat-hint>
             </mat-form-field>
             <mat-form-field>
-              <input [(ngModel)]="maileditorSocial.style.height" type="text" matInput placeholder="height">
+              <input [(ngModel)]="maileditorSocial.style.height" type="text" matInput placeholder="height" (change)="detectchange()" >
               <mat-icon matSuffix>mode_edit</mat-icon>
               <mat-hint>%/px</mat-hint>
             </mat-form-field>
@@ -1276,7 +1279,7 @@
         <tr>
           <td>
             <mat-form-field style="width: 90%;">
-              <textarea style="width: 90%;" [(ngModel)]="maileditorFooter.content" [matTextareaAutosize] type="text"
+              <textarea style="width: 90%;" [(ngModel)]="maileditorFooter.content" [matTextareaAutosize] type="text" 
                 matInput placeholder="Footer Text"></textarea>
             </mat-form-field>
           </td>
@@ -1284,7 +1287,7 @@
         <tr>
           <td>
             <mat-form-field>
-              <input [(ngModel)]="maileditorFooter.style['font-size']" type="text" matInput placeholder="font size">
+              <input [(ngModel)]="maileditorFooter.style['font-size']" type="text" matInput placeholder="font size"  (change)="detectchange()" >
             </mat-form-field>
           </td>
         </tr>
@@ -1300,16 +1303,16 @@
                 <br>
                 <span [style.background]="maileditorFooter.style['color']" [cpToggle]="true"
                   [cpDialogDisplay]="'inline'" [cpCancelButton]="true"
-                  [(colorPicker)]="maileditorFooter.style['color']"></span>
+                  [(colorPicker)]="maileditorFooter.style['color']" (colorPickerChange)="detectchange()"></span>
                 <table matTooltip="click to set color">
                   <tr>
                     <td>Primairy color</td>
                     <td>Secondairy color</td>
                   </tr>
                   <tr>
-                    <td (click)="maileditorFooter.style['color'] = company.companyprimairycolor">
+                    <td (click)="maileditorFooter.style['color'] = company.companyprimairycolor" (click)="detectchange()">
                       {{company.companyprimairycolor}}</td>
-                    <td (click)="maileditorFooter.style['color'] = company.companysecondarycolor">
+                    <td (click)="maileditorFooter.style['color'] = company.companysecondarycolor" (click)="detectchange()">
                       {{company.companysecondarycolor}}</td>
                   </tr>
                 </table>
@@ -1321,7 +1324,7 @@
           <td>
             <mat-form-field>
               <mat-label>Select font</mat-label>
-              <mat-select [(value)]="maileditorFooter.style['font-family']">
+              <mat-select [(value)]="maileditorFooter.style['font-family']"  (change)="detectchange()" >
                 <mat-option>None</mat-option>
                 <mat-option value="Arial, Helvetica, sans-serif">Arial</mat-option>
                 <mat-option value="'Arial Black', Gadget, sans-serif">Arial Black</mat-option>
