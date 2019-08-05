@@ -14,6 +14,7 @@ export interface FilesInterface {
   "companyId": any;
   "publicationsId"?: any;
   "createdate"?: Date;
+  "template"?: any;
   "id"?: any;
   "filesId"?: any;
   publications?: Publications;
@@ -29,6 +30,7 @@ export class Files implements FilesInterface {
   "companyId": any;
   "publicationsId": any;
   "createdate": Date;
+  "template": any;
   "id": any;
   "filesId": any;
   publications: Publications;
@@ -94,6 +96,10 @@ export class Files implements FilesInterface {
         "createdate": {
           name: 'createdate',
           type: 'Date'
+        },
+        "template": {
+          name: 'template',
+          type: 'any'
         },
         "id": {
           name: 'id',

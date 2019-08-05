@@ -1,3 +1,8 @@
+
+  <div class="savetobutton">
+    <button mat-fab color="primary" matTooltip="Convert to image"  (click)="OnSaveImage()"><mat-icon>save</mat-icon></button>
+  </div>
+
 <div fxLayout="row" cdkDropListGroup style="width: 100%;">
 
     <div fxFlex="20%" class="edit_table">Edit
@@ -99,7 +104,7 @@
 
                                 <mat-form-field>
                                     <mat-label>Select font</mat-label>
-                                    <mat-select [(value)]="image.style['font-family']" (change)="detectchange()">
+                                    <mat-select [(value)]="image.style['font-family']" (selectionChange)="detectchange()">
                                         <mat-option>None</mat-option>
                                         <mat-option value="Arial, Helvetica, sans-serif">Arial</mat-option>
                                         <mat-option value="'Arial Black', Gadget, sans-serif">Arial Black
@@ -132,24 +137,33 @@
                 (mouseup)="mouseupevent($event)"  
                 (dragend)="dragendevent($event, i)"
                 (mousedown)="mousedownevent($event)"
-                (drag)="dragevent($event)" -->
+                (drag)="dragevent($event)" src={{image.src}}
+            style="width: 100px; height: 100px;"-->
 
     <div fxFlex="80%">
         <label>Image Editor</label>
         <div *ngIf="images.length > 0 && changenow" [ngStyle]="canvas" #myBounds>
             <div *ngFor="let image of images; let i = index;"
                 [ngClass]="{ 'top-b': !edge?.top, 'bottom-b': !edge?.bottom, 'left-b': !edge?.left, 'right-b': !edge?.right }">
-                <img *ngIf="image.type === 'image'" ngDraggable [bounds]="myBounds" [inBounds]="inBounds"
-                    style="width: 100px; height: 100px;" (started)="onStart($event)" (stopped)="onStop($event, i)"
-                    (movingOffset)="onMoving($event, i)" [preventDefaultEvent]="true" (endOffset)="onMoveEnd($event, i)"
-                    src={{image.src}} [ngStyle]="image.style" [position]="image.setpos" ngResizable  (rzStart)="onResizeStart($event)"
-                    class="resizable-widget"
-                    #block="ngResizable"
-                    rzHandles="all">
-                <label *ngIf="image.type === 'text'" ngDraggable [bounds]="myBounds" [inBounds]="inBounds"
-                    style="width: 100px; height: 100px;" (started)="onStart($event)" (stopped)="onStop($event, i)"
-                    (movingOffset)="onMoving($event, i)" [preventDefaultEvent]="true" (endOffset)="onMoveEnd($event, i)"
-                    [position]="image.setpos" [ngStyle]="image.style">{{image.content}}</label>
+
+                <div  *ngIf="image.type === 'image'" ngDraggable 
+                    [bounds]="myBounds" [inBounds]="inBounds" 
+                    [ngStyle]="image.style"
+                    [style.width]="image.style.width"
+                    [style.height]="image.style.width"
+                    (started)="onStart($event)" (stopped)="onStop($event, i)" (movingOffset)="onMoving($event, i)"
+                    [preventDefaultEvent]="true" (endOffset)="onMoveEnd($event, i)"
+                     [position]="image.setpos"
+                     (rzResizing)="onResizing($event, i)"
+                     ngResizable>
+                    <img style="width: 100%; height: 100%;" src={{image.src}}>
+                </div>
+                <label ngResizable *ngIf="image.type === 'text'" ngDraggable
+                    [bounds]="myBounds" [inBounds]="inBounds" style="width: 100px; height: 100px;"
+                    (started)="onStart($event)" (stopped)="onStop($event, i)" (movingOffset)="onMoving($event, i)"
+                    [preventDefaultEvent]="true" (endOffset)="onMoveEnd($event, i)" [position]="image.setpos"
+                    (rzResizing)="onResizing($event, i)"
+                    [ngStyle]="image.style">{{image.content}}</label>
             </div>
         </div>
     </div>

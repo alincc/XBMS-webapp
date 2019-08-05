@@ -185,6 +185,48 @@ export class FilesApi extends BaseLoopBackApi {
   }
 
   /**
+   * <em>
+         * (The remote method definition does not provide any description.)
+         * </em>
+   *
+   * @param {string} id 
+   *
+   * @param {string} companyid 
+   *
+   * @param {string} canvas 
+   *
+   * @param {string} images 
+   *
+   * @param {object} data Request data.
+   *
+   * This method does not accept any data. Supply an empty object.
+   *
+   * @returns {object} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * <em>
+   * (The remote method definition does not provide any description.
+   * This usually means the response is a `Files` object.)
+   * </em>
+   */
+  public createimage(id: any = {}, companyid: any = {}, canvas: any = {}, images: any = {}, customHeaders?: Function): Observable<any> {
+    let _method: string = "POST";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/files/createimage/:id";
+    let _routeParams: any = {
+      id: id
+    };
+    let _postBody: any = {};
+    let _urlParams: any = {};
+    if (typeof companyid !== 'undefined' && companyid !== null) _urlParams.companyid = companyid;
+    if (typeof canvas !== 'undefined' && canvas !== null) _urlParams.canvas = canvas;
+    if (typeof images !== 'undefined' && images !== null) _urlParams.images = images;
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
    * The name of the model represented by this $resource,
    * i.e. `Files`.
    */

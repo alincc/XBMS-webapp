@@ -27,6 +27,8 @@ export class text {
     width: string;
     height: string;
     position: 'absolute';
+    'font-size': string;
+    'font-style': string;
 
   }
   posx: number;
@@ -63,7 +65,7 @@ export class ImagecreatorComponent implements OnInit {
   public canvas = {
     width: '600px',
     height: '1000px',
-    'background-color': 'white',
+    'background-color': '#ffffff',
     position: 'relative'
   }
   public moveitem = false;
@@ -78,7 +80,9 @@ export class ImagecreatorComponent implements OnInit {
   };
 
 
-  constructor() { }
+  constructor(
+    private filesApi: FilesApi
+  ) { }
 
   ngOnInit() {
   }
@@ -121,6 +125,8 @@ export class ImagecreatorComponent implements OnInit {
         width: "auto",
         height: "auto",
         position: 'absolute',
+        'font-size': '20px',
+        'font-style': 'open-sans'
         //transform : 'translate(10px, 10px)'
       },
       content: 'write here',
@@ -154,8 +160,22 @@ export class ImagecreatorComponent implements OnInit {
 
   }
 
-  onResizeStart(e){
+  onResizeStart(e, i){
     console.log(e)
+  }
+
+  onResizing(e, i){
+    this.images[i].style.width = e.size.width + 'px';
+    this.images[i].style.height = e.size.height + 'px'; 
+  }
+
+  OnSaveImage(){
+    //let canvas = Object.assign({}, this.canvas);
+    //let images = Object.assign({}, this.images);
+    this.filesApi.createimage(this.option.id, this.Account.companyId, this.canvas, this.images)
+    .subscribe(res => {
+      console.log(res)
+    })
   }
 
 
