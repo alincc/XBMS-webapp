@@ -1,0 +1,157 @@
+<div fxLayout="row" cdkDropListGroup style="width: 100%;">
+
+    <div fxFlex="20%" class="edit_table">Edit
+        <table style="vertical-align: top;">
+            <tr>
+
+                <mat-form-field>
+                    <input [(ngModel)]="canvas.width" type="text" matInput placeholder="width">
+                    <label matSuffix>px/%</label>
+                </mat-form-field>
+
+            </tr>
+            <tr>
+
+                <mat-form-field>
+                    <input [(ngModel)]="canvas.height" type="text" matInput placeholder="height">
+                    <label matSuffix>px/%</label>
+                </mat-form-field>
+
+            </tr>
+            <tr>
+                <mat-accordion>
+                    <mat-expansion-panel>
+                        <mat-expansion-panel-header>
+                            <mat-panel-title>
+                                Background Color
+                            </mat-panel-title>
+                        </mat-expansion-panel-header>
+                        <br>
+                        <span [style.background]="canvas['background-color']" [cpToggle]="true"
+                            [cpDialogDisplay]="'inline'" [cpCancelButton]="true"
+                            [(colorPicker)]="canvas['background-color']" (colorPickerChange)="detectchange()"></span>
+                    </mat-expansion-panel>
+                </mat-accordion>
+            </tr>
+            <tr>
+                <div *ngFor="let image of images; let i = index">
+                    <div *ngIf="image.type === 'image'">
+                        <div *ngIf="image.style">
+                            <img src={{image.src}} class="imagesedit">
+                            <mat-icon (click)="image.src = ''" class="icon-label" class="iconsize-12">delete
+                            </mat-icon>
+                        </div>
+                        <app-fileupload *ngIf="!image.src" [account]="account" [option]="option"
+                            (imgurl)="setImage($event, i)">
+                        </app-fileupload>
+                    </div>
+                    <div *ngIf="image.type === 'text'">
+                        <table style="width: 100%;">
+                            <tr>
+
+                                <mat-form-field style="width: 90%;">
+                                    <textarea style="width: 90%;" [(ngModel)]="image.content" [matTextareaAutosize]
+                                        type="text" matInput placeholder="Footer Text"></textarea>
+                                </mat-form-field>
+
+                            </tr>
+                            <tr>
+
+                                <mat-form-field>
+                                    <input [(ngModel)]="image.style['font-size']" type="text" matInput
+                                        placeholder="font size" (change)="detectchange()">
+                                </mat-form-field>
+
+                            </tr>
+                            <tr>
+
+                                <mat-accordion>
+                                    <mat-expansion-panel>
+                                        <mat-expansion-panel-header>
+                                            <mat-panel-title>
+                                                Text Color
+                                            </mat-panel-title>
+                                        </mat-expansion-panel-header>
+                                        <br>
+                                        <span [style.background]="image.style['color']" [cpToggle]="true"
+                                            [cpDialogDisplay]="'inline'" [cpCancelButton]="true"
+                                            [(colorPicker)]="image.style['color']"
+                                            (colorPickerChange)="detectchange()"></span>
+                                        <table matTooltip="click to set color">
+                                            <tr>
+                                                Primairy color
+                                                Secondairy color
+                                            </tr>
+                                            <tr>
+                                                <td (click)="image.style['color'] = company.companyprimairycolor"
+                                                    (click)="detectchange()">
+                                                    {{company.companyprimairycolor}}
+                                                <td (click)="image.style['color'] = company.companysecondarycolor"
+                                                    (click)="detectchange()">
+                                                    {{company.companysecondarycolor}}
+                                            </tr>
+                                        </table>
+                                    </mat-expansion-panel>
+                                </mat-accordion>
+
+                            </tr>
+                            <tr>
+
+                                <mat-form-field>
+                                    <mat-label>Select font</mat-label>
+                                    <mat-select [(value)]="image.style['font-family']" (change)="detectchange()">
+                                        <mat-option>None</mat-option>
+                                        <mat-option value="Arial, Helvetica, sans-serif">Arial</mat-option>
+                                        <mat-option value="'Arial Black', Gadget, sans-serif">Arial Black
+                                        </mat-option>
+                                        <mat-option value="Tahoma, Geneva, sans-serif">Tahoma</mat-option>
+                                        <mat-option value="'Times New Roman', Times, serif">Times New Roman
+                                        </mat-option>
+                                        <mat-option value="Roboto">Roboto</mat-option>
+                                        <mat-option value="Open Sans">Open Sans</mat-option>
+                                        <mat-option value="Baloo Bhai">Baloo Bhai</mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+
+                            </tr>
+                        </table>
+
+                    </div>
+                </div>
+
+            </tr>
+            <tr>
+
+                <mat-icon (click)="addNewImage()">image</mat-icon>
+                <mat-icon (click)="addNewText()">text_format</mat-icon>
+
+            </tr>
+        </table>
+    </div>
+    <!-- (mousedown)="mousedownevent($event)" 
+                (mouseup)="mouseupevent($event)"  
+                (dragend)="dragendevent($event, i)"
+                (mousedown)="mousedownevent($event)"
+                (drag)="dragevent($event)" -->
+
+    <div fxFlex="80%">
+        <label>Image Editor</label>
+        <div *ngIf="images.length > 0 && changenow" [ngStyle]="canvas" #myBounds>
+            <div *ngFor="let image of images; let i = index;"
+                [ngClass]="{ 'top-b': !edge?.top, 'bottom-b': !edge?.bottom, 'left-b': !edge?.left, 'right-b': !edge?.right }">
+                <img *ngIf="image.type === 'image'" ngDraggable [bounds]="myBounds" [inBounds]="inBounds"
+                    style="width: 100px; height: 100px;" (started)="onStart($event)" (stopped)="onStop($event, i)"
+                    (movingOffset)="onMoving($event, i)" [preventDefaultEvent]="true" (endOffset)="onMoveEnd($event, i)"
+                    src={{image.src}} [ngStyle]="image.style" [position]="image.setpos" ngResizable  (rzStart)="onResizeStart($event)"
+                    class="resizable-widget"
+                    #block="ngResizable"
+                    rzHandles="all">
+                <label *ngIf="image.type === 'text'" ngDraggable [bounds]="myBounds" [inBounds]="inBounds"
+                    style="width: 100px; height: 100px;" (started)="onStart($event)" (stopped)="onStop($event, i)"
+                    (movingOffset)="onMoving($event, i)" [preventDefaultEvent]="true" (endOffset)="onMoveEnd($event, i)"
+                    [position]="image.setpos" [ngStyle]="image.style">{{image.content}}</label>
+            </div>
+        </div>
+    </div>
+
+</div>

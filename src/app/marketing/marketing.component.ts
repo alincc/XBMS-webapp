@@ -73,6 +73,7 @@ declare const CKEDITOR: any;
 const URL = 'http://localhost:3000/api/containers/tmp/upload';
 
 import { MarketingchannelsComponent } from './marketingchannels/marketingchannels.component';
+import { ImagecreatorComponent } from './imagecreator/imagecreator.component';
 import { MaileditorComponent } from './maileditor/maileditor.component';
 import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material';
 import { TextEditorDialog } from './maileditor/texteditordialog.component';

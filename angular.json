@@ -22,7 +22,8 @@
               "src/manifest.json"
             ],
             "styles": [
-              "src/styles.scss"
+              "src/styles.scss",
+              "node_modules/angular2-draggable/css/resizable.min.css"
             ],
             "scripts": []
           },

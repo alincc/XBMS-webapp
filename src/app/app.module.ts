@@ -72,6 +72,8 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { SafeHtml } from './pipe/safehtmlpipe.component';
 import { MarketingpromotionsComponent } from './marketing/marketingpromotions/marketingpromotions.component';
 import { MarketingpublicationsComponent } from './marketing/marketingpublications/marketingpublications.component';
+import { ImagecreatorComponent } from './marketing/imagecreator/imagecreator.component';
+import { AngularDraggableModule } from 'angular2-draggable';
 
 @NgModule({
   declarations: [
@@ -98,7 +100,8 @@ import { MarketingpublicationsComponent } from './marketing/marketingpublication
     WordpressUploadDialogComponent,
     SafeHtml,
     MarketingpromotionsComponent,
-    MarketingpublicationsComponent
+    MarketingpublicationsComponent,
+    ImagecreatorComponent
   ],
 
    entryComponents: [
@@ -116,7 +119,7 @@ import { MarketingpublicationsComponent } from './marketing/marketingpublication
     FlexLayoutModule,
     CKEditorModule,
     FileUploadModule,
-
+    AngularDraggableModule,
     ChartsModule,
     BrowserModule,
     BrowserAnimationsModule,

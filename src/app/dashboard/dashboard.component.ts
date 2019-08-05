@@ -29,7 +29,6 @@ import { FormControl } from '@angular/forms';
 import { BaseChartDirective } from 'ng2-charts';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 
-
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
@@ -108,6 +107,7 @@ export class DashboardComponent implements OnInit {
   ];
 
   public Marketingplannerevents: Marketingplannerevents[];
+  public facebookfeed;
 
   constructor(
     public loggerApi: LoggerApi,
@@ -123,6 +123,7 @@ export class DashboardComponent implements OnInit {
     public GoogleanalyticsApi: GoogleanalyticsApi,
     public router: Router,
   ) {
+   
     this.analytics_ids = 'ga:154403562'; // add user to analytics account 
     this.analytics_startdate = '30daysAgo';
     this.analytics_enddate = 'today';
@@ -207,7 +208,8 @@ onSelectRelation(option, i): void {
 }
 
 getLogs(): void {
-  this.CompanyApi.getLogger(this.Account.companyId).subscribe((logger: Logger[]) => {
+  this.CompanyApi.getLogger(this.Account.companyId,
+    {order: 'id DESC'}).subscribe((logger: Logger[]) => {
     this.logger = logger;
   })
 }

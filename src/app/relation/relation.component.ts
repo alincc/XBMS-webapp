@@ -159,7 +159,7 @@ export class RelationComponent implements OnInit {
   public mailtolink;
   public emailtosendto;
   public cc;
-  public bcc; 
+  public bcc;
 
   public recordactive = false
 
@@ -263,6 +263,13 @@ export class RelationComponent implements OnInit {
     this.crawl2FormGroup = this._formBuilder.group({
       secondCtrl: ['', Validators.required]
     });
+
+    //import to clear spaces azure does not handle these well
+    this.uploader.onAfterAddingAll = (files) => {
+      files.forEach(fileItem => {
+        fileItem.file.name = fileItem.file.name.replace(/ /g, '-');
+      });
+    };
   }
 
   public openSnackBar(message: string) {
@@ -354,10 +361,8 @@ export class RelationComponent implements OnInit {
     this.getContactpersons();
     this.getGoogleAnalytics();
     this.getFiles();
-    this.newURL = BASE_URL + "/api/Containers/" + this.selectedRelation.id + "/upload"
-    this.uploader.setOptions({ url: this.newURL });
-    this.getCrawlers()
-
+    this.setFileParameter();
+    //this.getCrawlers();
     //create search string google maps
     this.address =
       this.selectedRelation.address1 + ', ' +
@@ -366,6 +371,19 @@ export class RelationComponent implements OnInit {
       this.selectedRelation.country;
     //get geo location
     this.getAddress();
+  }
+
+  setFileParameter(): void {
+    this.ContainerApi.findById(this.selectedRelation.id)
+    .subscribe(res => console.log(res),
+      error =>
+        this.ContainerApi.createContainer({ name: this.selectedRelation.id })
+          .subscribe(res2 => console.log(res2)));
+
+          
+    this.newURL = BASE_URL + "/api/Containers/" + this.selectedRelation.id + "/upload"
+    this.uploader.setOptions({ url: this.newURL });
+    this.uploader.clearQueue();
   }
 
   //check url and open in new window/tab
@@ -423,7 +441,7 @@ export class RelationComponent implements OnInit {
 
   getCalls(): void {
     this.RelationsApi.getCalls(this.selectedRelation.id,
-      {order: 'id DESC'})
+      { order: 'id DESC' })
       .subscribe((Calls: Calls[]) => this.Calls = Calls);
   }
 
@@ -926,7 +944,7 @@ export class RelationComponent implements OnInit {
 
     window.open(this.mailtolink, "_self");
   }
-  
+
 
   sendMailToContact(): void {
     this.mailtolink = "mailto:" + this.selectedContactperson.email
@@ -1070,10 +1088,10 @@ export class RelationComponent implements OnInit {
 
   replyNewMessage(): void {
     let title = this.selectedCall.title;
-    let html = this.selectedCall.html; 
+    let html = this.selectedCall.html;
     this.RelationsApi.createCalls(this.selectedRelation.id, {
       "title": this.selectedCall.title,
-      "accountId": this.Account.id, 
+      "accountId": this.Account.id,
       "companyId": this.Account.companyId,
       "html": html
     }) //add companyId for statistics
@@ -1104,7 +1122,7 @@ export class RelationComponent implements OnInit {
   replyMessage(title, html): void {
     this.RelationsApi.createCalls(this.selectedRelation.id, {
       "html": '<p><span style="font-family:Tahoma, Geneva, sans-serif"></span></p>' + this.Account.signature +
-      '<br><hr><blockquote>&nbsp;</blockquote>' + html,
+        '<br><hr><blockquote>&nbsp;</blockquote>' + html,
       "title": title,
       "accountId": this.Account.id, "companyId": this.Account.companyId
     }) //add companyId for statistics
@@ -1146,13 +1164,13 @@ export class RelationComponent implements OnInit {
     this.MailingApi.sendmail(message).subscribe(res => {
       console.log(res);
       let attendent = this.emailtosendto.firstname + ' ' + this.emailtosendto.lastname;
-      let attenobj = {"attendent": attendent};
+      let attenobj = { "attendent": attendent };
       this.selectedCall.attendee = [];
       this.selectedCall.attendee.push(attenobj);
-      this.readytosend = false; 
+      this.readytosend = false;
       this.saveCall();
-      this.getCalls(); 
-      this.openSnackBar(res.message);       
+      this.getCalls();
+      this.openSnackBar(res.message);
     });
   }
 
