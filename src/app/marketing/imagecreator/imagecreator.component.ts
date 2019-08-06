@@ -11,21 +11,21 @@ import { MatSnackBar, MatSnackBarConfig, MatInput, MatAutocompleteSelectedEvent 
 export class image {
   type: 'image';
   style: {
-    z: number,
+    'z-index': number,
     width: string;
     height: string;
     position: 'absolute';
   };
   src: string;
   posx: number;
-  poxy: number;
+  posy: number;
   setpos: object;
 }
 
 export class shape {
   type: 'shape';
   style: {
-    z: number,
+    'z-index': number,
     width: string;
     height: string;
     position: 'absolute';
@@ -33,7 +33,7 @@ export class shape {
   };
   src: string;
   posx: number;
-  poxy: number;
+  posy: number;
   setpos: object;
 }
 
@@ -41,7 +41,7 @@ export class text {
   content: string;
   type: 'text';
   style: {
-    z: number,
+    'z-index': number,
     width: string;
     height: string;
     position: 'absolute';
@@ -49,7 +49,7 @@ export class text {
     'font-style': string;
   }
   posx: number;
-  poxy: number;
+  posy: number;
   setpos: object;
 }
 
@@ -88,6 +88,7 @@ export class ImagecreatorComponent implements OnInit {
   }
   public moveitem = false;
   public selectedImage: image;
+  public showemoji = false;
 
   inBounds = true;
   edge = {
@@ -129,7 +130,7 @@ export class ImagecreatorComponent implements OnInit {
     let img: image = {
       type: 'image',
       style: {
-        z: newz,
+        'z-index': newz,
         width: "auto",
         height: "auto",
         position: 'absolute',
@@ -137,7 +138,7 @@ export class ImagecreatorComponent implements OnInit {
       },
       src: '',
       posx: 50,
-      poxy: 50,
+      posy: 50,
       setpos: {'x':50, 'y':50}
     }
     this.images.push(img);
@@ -151,16 +152,16 @@ export class ImagecreatorComponent implements OnInit {
     let img: shape = {
       type: 'shape',
       style: {
-        z: newz,
+        'z-index': newz,
         width: "200px",
         height: "200px",
         position: 'absolute',
         'background-color': '#000000'
-        //transform : 'translate(10px, 10px)'
+
       },
       src: '',
       posx: 50,
-      poxy: 50,
+      posy: 50,
       setpos: {'x':50, 'y':50}
     }
     this.images.push(img);
@@ -174,7 +175,7 @@ export class ImagecreatorComponent implements OnInit {
     let txt: text = {
       type: 'text',
       style: {
-        z: newz,
+        'z-index': newz,
         width: "auto",
         height: "auto",
         position: 'absolute',
@@ -184,37 +185,22 @@ export class ImagecreatorComponent implements OnInit {
       },
       content: 'write here',
       posx: 20,
-      poxy: 50,
+      posy: 50,
       setpos: {'x':20, 'y':50}
     }
     this.images.push(txt);
   }
 
   setImage(event, i): void {
-    this.images[i].src = event;
-    //this.images.length
-  }
-
-
-  onStart(event) {
-    //console.log('started output:', event);
-  }
-
-  onStop(event, i) {
-    //console.log('stopped output:', event);
+    setTimeout(() => {
+      this.images[i].src = event;
+    //else new file not uploaded yet  
+    }, 500);
   }
 
   onMoving(event, i) {
     this.images[i].posy = event.y;
     this.images[i].posx = event.x;
-  }
-
-  onMoveEnd(event, i) {
-
-  }
-
-  onResizeStart(e, i){
-    //console.log(e)
   }
 
   onResizing(e, i){
@@ -238,51 +224,34 @@ export class ImagecreatorComponent implements OnInit {
   }
 
   drop(e){
-    //console.log(e.currentIndex, e.previousIndex);
+    console.log(e);
+    this.swapElement(this.images, e.currentIndex, e.previousIndex);
     this.images[e.currentIndex].style.z = this.images.length - e.currentIndex;
     console.log(this.images[e.currentIndex].style.z);
     this.detectchange()
   }
 
+  swapElement(array, indexA, indexB) {
+    var tmp = array[indexA];
+    array[indexA] = array[indexB];
+    array[indexB] = tmp;
+  }
+
+
+  setemoji(event, i) {
+    // console.log(event);
+    const bufStr = String.fromCodePoint(parseInt(event.emoji.unified, 16));
+    // console.log(bufStr);
+    this.images[i].content = this.images[i].content + bufStr;
+    this.onshowemoji(i)
+    
+  }
+
+  onshowemoji(i) {
+    if (this.showemoji) { this.showemoji = false } else {
+      this.showemoji = true;
+    }
+  }
+
 
 }
-
-
-
-  // mousedownevent(e): void {
-  //   this.shiftX = e.clientX;
-  //   this.shiftY = e.clientY;
-  //   console.log(e);
-  //   this.moveitem = true;
-
-  // }
-
-  // mouseupevent(e): void {
-  //   console.log(e);
-    
-  // }
-
-  // selectImage(image: image): void {
-  //   console.log(image);
-  //   this.selectedImage = image;
-  // }
-
-  // dragevent(image: image): void {
-  //   //console.log(e);
-  //   this.selectedImage = image;
-
-  // }
-
-  // dragendevent(e, i): void {
-  //   let x = e.clientX - this.shiftX;
-  //   let y = e.clientY - this.shiftY;
-  //   let y2 = this.images[i].style.top;
-  //   let x2 = this.images[i].style.left;
-  //   x2 = x2.replace('px', '');
-  //   y2 = y2.replace('px', '');
-  //   x =  x + +x2;
-  //   y =  y + +y2;
-  //   this.images[i].style.top = y + 'px';
-  //   this.images[i].style.left = x + 'px';
-  //   this.detectchange()
-  // }
