@@ -78,7 +78,7 @@ export class ImagecreatorComponent implements OnInit {
   public shiftX = 0;
   public shiftY = 0;
   public aspectRatio = true;
-  public imagename: string;
+  public imagename= 'New Image';
 
   public canvas = {
     width: '600px',
@@ -89,6 +89,7 @@ export class ImagecreatorComponent implements OnInit {
   public moveitem = false;
   public selectedImage: image;
   public showemoji = false;
+  public newz= 1;
 
   inBounds = true;
   edge = {
@@ -122,15 +123,11 @@ export class ImagecreatorComponent implements OnInit {
   }
 
   addNewImage(): void {
-    let newz =1
-    if (this.images.length > 0){
-      let newz = this.images.length;
-    } 
-    
+    this.newz= this.newz +1;  
     let img: image = {
       type: 'image',
       style: {
-        'z-index': newz,
+        'z-index': this.newz,
         width: "auto",
         height: "auto",
         position: 'absolute',
@@ -145,14 +142,11 @@ export class ImagecreatorComponent implements OnInit {
   }
 
   addNewShape(): void {
-    let newz =1
-    if (this.images.length > 0){
-      let newz = this.images.length;
-    } 
+    this.newz= this.newz +1;  
     let img: shape = {
       type: 'shape',
       style: {
-        'z-index': newz,
+        'z-index': this.newz,
         width: "200px",
         height: "200px",
         position: 'absolute',
@@ -168,14 +162,11 @@ export class ImagecreatorComponent implements OnInit {
   }
 
   addNewText(): void {
-    let newz = 1
-    if (this.images.length > 0){
-      let newz = this.images.length;
-    } 
+    this.newz= this.newz +1;  
     let txt: text = {
       type: 'text',
       style: {
-        'z-index': newz,
+        'z-index': this.newz,
         width: "auto",
         height: "auto",
         position: 'absolute',
@@ -225,9 +216,12 @@ export class ImagecreatorComponent implements OnInit {
 
   drop(e){
     console.log(e);
+
     this.swapElement(this.images, e.currentIndex, e.previousIndex);
-    this.images[e.currentIndex].style.z = this.images.length - e.currentIndex;
-    console.log(this.images[e.currentIndex].style.z);
+    this.images.forEach((img, i) => {
+      img.style['z-index'] = i + 1;
+    })
+
     this.detectchange()
   }
 

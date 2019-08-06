@@ -4,7 +4,7 @@
     </button>
 </div>
 
-<div fxLayout="row" cdkDropListGroup style="width: 100%; height: 900px;">
+<div fxLayout="row" cdkDropListGroup style="width: 100%; height: 1200px;">
 
     <div fxFlex="20%" class="edit_table">Edit
         <table style="vertical-align: top;">
@@ -23,8 +23,22 @@
                         </mat-expansion-panel-header>
                         <br>
                         <span [style.background]="canvas['background-color']" [cpToggle]="true"
-                            [cpDialogDisplay]="'inline'" [cpCancelButton]="true" [cpOutputFormat]="'hex'"
+                            [cpDialogDisplay]="'inline'" [cpOutputFormat]="'hex'"
                             [(colorPicker)]="canvas['background-color']" (colorPickerChange)="detectchange()"></span>
+                        <table matTooltip="click to set color">
+                            <tr>
+                                <td>Primairy color</td>
+                                <td>Secondairy color</td>
+                            </tr>
+                            <tr>
+                                <td (click)="canvas['background-color'] = company.companyprimairycolor"
+                                    (click)="detectchange()">
+                                    {{company.companyprimairycolor}}
+                                <td (click)="canvas['background-color'] = company.companysecondarycolor"
+                                    (click)="detectchange()">
+                                    {{company.companysecondarycolor}}
+                            </tr>
+                        </table>
                     </mat-expansion-panel>
                 </mat-accordion>
             </tr>
@@ -119,12 +133,11 @@
                                                     </mat-panel-title>
                                                 </mat-expansion-panel-header>
                                                 <br>
-                                                <span style="width: 230px;" [style.background]="image.style['color']"
-                                                    [cpToggle]="true" [cpDialogDisplay]="'inline'"
-                                                    [cpOutputFormat]="'hex'" [cpCancelButton]="true"
+                                                <input style="width: 230px;" [style.background]="image.style['color']"
+                                                    [cpToggle]="true" [cpOutputFormat]="'hex'"
                                                     [(colorPicker)]="image.style['color']"
                                                     (colorPickerChange)="detectchange()">
-                                                </span>
+
                                                 <table matTooltip="click to set color">
                                                     <tr>
                                                         <td>Primairy color</td>
@@ -168,18 +181,18 @@
                             <mat-expansion-panel style="width: 270px;">
                                 <mat-expansion-panel-header>
                                     <mat-panel-title>
-                                        <div style="height: 30px;" [ngStyle]="image.style"
+                                        <div style="height: 30px; width: 30px"
                                             [style.background-color]="image.style['background-color']"></div>
                                         <mat-icon (click)="deleteitem(i)" class="iconsize-12">delete</mat-icon>
                                     </mat-panel-title>
                                 </mat-expansion-panel-header>
                                 <table>
                                     <tr>
-                                        <span style="width: 230px;" [style.background]="image.style['background-color']"
-                                            [cpToggle]="true" [cpDialogDisplay]="'inline'" [cpCancelButton]="true"
+                                        <input style="width: 230px;"
+                                            [style.background]="image.style['background-color']" [cpToggle]="true"
                                             [(colorPicker)]="image.style['background-color']"
                                             (colorPickerChange)="detectchange()" [cpOutputFormat]="'hex'">
-                                        </span>
+
                                         <table matTooltip="click to set color">
                                             <tr>
                                                 <td>Primairy color</td>
@@ -222,20 +235,22 @@
             <div *ngFor="let image of images; let i = index;"
                 [ngClass]="{ 'top-b': !edge?.top, 'bottom-b': !edge?.bottom, 'left-b': !edge?.left, 'right-b': !edge?.right }">
 
-                <div *ngIf="image.type === 'image'" style="overflow: hidden;" ngDraggable [bounds]="myBounds" [inBounds]="inBounds"
-                    [ngStyle]="image.style" [style.width]="image.style.width" [style.height]="image.style.height"
-                    (movingOffset)="onMoving($event, i)" [preventDefaultEvent]="true" [position]="image.setpos"
-                    (rzResizing)="onResizing($event, i)" ngResizable>
+                <div *ngIf="image.type === 'image'" style="overflow: hidden;" ngDraggable [bounds]="myBounds"
+                    [inBounds]="inBounds" [ngStyle]="image.style" [style.width]="image.style.width"
+                    [style.height]="image.style.height" (movingOffset)="onMoving($event, i)"
+                    [preventDefaultEvent]="true" [position]="image.setpos" (rzResizing)="onResizing($event, i)"
+                    ngResizable>
                     <img *ngIf="image.src" style="width: 100%; height: 100%;" src={{image.src}}>
                 </div>
                 <label ngResizable *ngIf="image.type === 'text'" ngDraggable [bounds]="myBounds" [inBounds]="inBounds"
                     style="width: 100px; height: 100px; overflow: hidden;" (movingOffset)="onMoving($event, i)"
                     [preventDefaultEvent]="true" [position]="image.setpos" (rzResizing)="onResizing($event, i)"
                     [ngStyle]="image.style">{{image.content}}</label>
-                <div *ngIf="image.type === 'shape'" style="overflow: hidden;" ngDraggable [bounds]="myBounds" [inBounds]="inBounds"
-                    [ngStyle]="image.style" [style.width]="image.style.width" [style.height]="image.style.height"
-                    (movingOffset)="onMoving($event, i)" [preventDefaultEvent]="true" [position]="image.setpos"
-                    (rzResizing)="onResizing($event, i)" ngResizable>
+                <div *ngIf="image.type === 'shape'" style="overflow: hidden;" ngDraggable [bounds]="myBounds"
+                    [inBounds]="inBounds" [ngStyle]="image.style" [style.width]="image.style.width"
+                    [style.height]="image.style.height" (movingOffset)="onMoving($event, i)"
+                    [preventDefaultEvent]="true" [position]="image.setpos" (rzResizing)="onResizing($event, i)"
+                    ngResizable>
                 </div>
             </div>
         </div>
