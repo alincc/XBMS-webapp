@@ -9,18 +9,16 @@ import { LoopBackFilter,  } from '../../models/BaseModels';
 import { ErrorHandler } from '../core/error.service';
 import { Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { Files } from '../../models/Files';
+import { Websitetracker } from '../../models/Websitetracker';
 import { SocketConnection } from '../../sockets/socket.connections';
-import { Publications } from '../../models/Publications';
 import { Relations } from '../../models/Relations';
-import { Company } from '../../models/Company';
 
 
 /**
- * Api services for the `Files` model.
+ * Api services for the `Websitetracker` model.
  */
 @Injectable()
-export class FilesApi extends BaseLoopBackApi {
+export class WebsitetrackerApi extends BaseLoopBackApi {
 
   constructor(
     @Inject(HttpClient) protected http: HttpClient,
@@ -33,39 +31,9 @@ export class FilesApi extends BaseLoopBackApi {
   }
 
   /**
-   * Fetches belongsTo relation publications.
-   *
-   * @param {any} id files id
-   *
-   * @param {boolean} refresh 
-   *
-   * @returns {object} An empty reference that will be
-   *   populated with the actual data once the response is returned
-   *   from the server.
-   *
-   * <em>
-   * (The remote method definition does not provide any description.
-   * This usually means the response is a `Files` object.)
-   * </em>
-   */
-  public getPublications(id: any, refresh: any = {}, customHeaders?: Function): Observable<any> {
-    let _method: string = "GET";
-    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/files/:id/publications";
-    let _routeParams: any = {
-      id: id
-    };
-    let _postBody: any = {};
-    let _urlParams: any = {};
-    if (typeof refresh !== 'undefined' && refresh !== null) _urlParams.refresh = refresh;
-    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-    return result;
-  }
-
-  /**
    * Fetches belongsTo relation relations.
    *
-   * @param {any} id files id
+   * @param {any} id websitetracker id
    *
    * @param {boolean} refresh 
    *
@@ -75,43 +43,13 @@ export class FilesApi extends BaseLoopBackApi {
    *
    * <em>
    * (The remote method definition does not provide any description.
-   * This usually means the response is a `Files` object.)
+   * This usually means the response is a `Websitetracker` object.)
    * </em>
    */
   public getRelations(id: any, refresh: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/files/:id/relations";
-    let _routeParams: any = {
-      id: id
-    };
-    let _postBody: any = {};
-    let _urlParams: any = {};
-    if (typeof refresh !== 'undefined' && refresh !== null) _urlParams.refresh = refresh;
-    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-    return result;
-  }
-
-  /**
-   * Fetches belongsTo relation files.
-   *
-   * @param {any} id files id
-   *
-   * @param {boolean} refresh 
-   *
-   * @returns {object} An empty reference that will be
-   *   populated with the actual data once the response is returned
-   *   from the server.
-   *
-   * <em>
-   * (The remote method definition does not provide any description.
-   * This usually means the response is a `Files` object.)
-   * </em>
-   */
-  public getFiles(id: any, refresh: any = {}, customHeaders?: Function): Observable<any> {
-    let _method: string = "GET";
-    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/files/:id/files";
+    "/websitetrackers/:id/relations";
     let _routeParams: any = {
       id: id
     };
@@ -135,13 +73,13 @@ export class FilesApi extends BaseLoopBackApi {
    *
    * <em>
    * (The remote method definition does not provide any description.
-   * This usually means the response is a `Files` object.)
+   * This usually means the response is a `Websitetracker` object.)
    * </em>
    */
   public patchOrCreate(data: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "PATCH";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/files";
+    "/websitetrackers";
     let _routeParams: any = {};
     let _postBody: any = {
       data: data
@@ -154,7 +92,7 @@ export class FilesApi extends BaseLoopBackApi {
   /**
    * Patch attributes for a model instance and persist it into the data source.
    *
-   * @param {any} id files id
+   * @param {any} id websitetracker id
    *
    * @param {object} data Request data.
    *
@@ -166,13 +104,13 @@ export class FilesApi extends BaseLoopBackApi {
    *
    * <em>
    * (The remote method definition does not provide any description.
-   * This usually means the response is a `Files` object.)
+   * This usually means the response is a `Websitetracker` object.)
    * </em>
    */
   public patchAttributes(id: any, data: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "PATCH";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/files/:id";
+    "/websitetrackers/:id";
     let _routeParams: any = {
       id: id
     };
@@ -189,19 +127,9 @@ export class FilesApi extends BaseLoopBackApi {
          * (The remote method definition does not provide any description.)
          * </em>
    *
-   * @param {string} id 
-   *
-   * @param {string} companyid 
-   *
-   * @param {string} name 
-   *
-   * @param {string} canvas 
-   *
-   * @param {string} images 
-   *
    * @param {object} data Request data.
    *
-   * This method does not accept any data. Supply an empty object.
+   * This method expects a subset of model properties as request parameters.
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -209,31 +137,91 @@ export class FilesApi extends BaseLoopBackApi {
    *
    * <em>
    * (The remote method definition does not provide any description.
-   * This usually means the response is a `Files` object.)
+   * This usually means the response is a `Websitetracker` object.)
    * </em>
    */
-  public createimage(id: any = {}, companyid: any = {}, name: any = {}, canvas: any = {}, images: any = {}, customHeaders?: Function): Observable<any> {
+  public registervisit(req: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "POST";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/files/createimage/:id";
-    let _routeParams: any = {
-      id: id
+    "/websitetrackers/registervisit";
+    let _routeParams: any = {};
+    let _postBody: any = {
+      req: req
     };
-    let _postBody: any = {};
     let _urlParams: any = {};
-    if (typeof companyid !== 'undefined' && companyid !== null) _urlParams.companyid = companyid;
-    if (typeof name !== 'undefined' && name !== null) _urlParams.name = name;
-    if (typeof canvas !== 'undefined' && canvas !== null) _urlParams.canvas = canvas;
-    if (typeof images !== 'undefined' && images !== null) _urlParams.images = images;
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
+   * <em>
+         * (The remote method definition does not provide any description.)
+         * </em>
+   *
+   * @param {object} data Request data.
+   *
+   * This method expects a subset of model properties as request parameters.
+   *
+   * @returns {object} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * <em>
+   * (The remote method definition does not provide any description.
+   * This usually means the response is a `Websitetracker` object.)
+   * </em>
+   */
+  public findip(req: any = {}, customHeaders?: Function): Observable<websitetracker[]> {
+    let _method: string = "POST";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/websitetrackers/findip";
+    let _routeParams: any = {};
+    let _postBody: any = {
+      req: req
+    };
+    let _urlParams: any = {};
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result.pipe(map((instances: Array<Websitetracker>) =>
+        instances.map((instance: Websitetracker) => new Websitetracker(instance))
+    ));
+  }
+
+  /**
+   * <em>
+         * (The remote method definition does not provide any description.)
+         * </em>
+   *
+   * @param {object} data Request data.
+   *
+   * This method expects a subset of model properties as request parameters.
+   *
+   * @returns {object} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * <em>
+   * (The remote method definition does not provide any description.
+   * This usually means the response is a `Websitetracker` object.)
+   * </em>
+   */
+  public getGoogleMapsLocation(geocode: any = {}, customHeaders?: Function): Observable<any> {
+    let _method: string = "POST";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/websitetrackers/getGoogleMapsLocation";
+    let _routeParams: any = {};
+    let _postBody: any = {
+      geocode: geocode
+    };
+    let _urlParams: any = {};
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
     return result;
   }
 
   /**
    * The name of the model represented by this $resource,
-   * i.e. `Files`.
+   * i.e. `Websitetracker`.
    */
   public getModelName() {
-    return "Files";
+    return "Websitetracker";
   }
 }

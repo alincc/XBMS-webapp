@@ -193,8 +193,6 @@ export class FilesApi extends BaseLoopBackApi {
    *
    * @param {string} companyid 
    *
-   * @param {string} name 
-   *
    * @param {string} canvas 
    *
    * @param {string} images 
@@ -212,7 +210,7 @@ export class FilesApi extends BaseLoopBackApi {
    * This usually means the response is a `Files` object.)
    * </em>
    */
-  public createimage(id: any = {}, companyid: any = {}, name: any = {}, canvas: any = {}, images: any = {}, customHeaders?: Function): Observable<any> {
+  public createimage(id: any = {}, companyid: any = {}, canvas: any = {}, images: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "POST";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
     "/files/createimage/:id";
@@ -222,7 +220,6 @@ export class FilesApi extends BaseLoopBackApi {
     let _postBody: any = {};
     let _urlParams: any = {};
     if (typeof companyid !== 'undefined' && companyid !== null) _urlParams.companyid = companyid;
-    if (typeof name !== 'undefined' && name !== null) _urlParams.name = name;
     if (typeof canvas !== 'undefined' && canvas !== null) _urlParams.canvas = canvas;
     if (typeof images !== 'undefined' && images !== null) _urlParams.images = images;
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);

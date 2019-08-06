@@ -4,15 +4,32 @@ import {
   Relations, RelationsApi, BASE_URL, CompanyApi, Company, Account,
   Files, FilesApi
 } from '../../shared';
-import { NgModule, HostListener } from '@angular/core'
+import { NgModule, HostListener } from '@angular/core';
+import { MatSnackBar, MatSnackBarConfig, MatInput, MatAutocompleteSelectedEvent } from '@angular/material';
 
 
 export class image {
   type: 'image';
   style: {
+    z: number,
     width: string;
     height: string;
     position: 'absolute';
+  };
+  src: string;
+  posx: number;
+  poxy: number;
+  setpos: object;
+}
+
+export class shape {
+  type: 'shape';
+  style: {
+    z: number,
+    width: string;
+    height: string;
+    position: 'absolute';
+    'background-color': string;
   };
   src: string;
   posx: number;
@@ -24,12 +41,12 @@ export class text {
   content: string;
   type: 'text';
   style: {
+    z: number,
     width: string;
     height: string;
     position: 'absolute';
     'font-size': string;
     'font-style': string;
-
   }
   posx: number;
   poxy: number;
@@ -61,6 +78,7 @@ export class ImagecreatorComponent implements OnInit {
   public shiftX = 0;
   public shiftY = 0;
   public aspectRatio = true;
+  public imagename: string;
 
   public canvas = {
     width: '600px',
@@ -81,7 +99,8 @@ export class ImagecreatorComponent implements OnInit {
 
 
   constructor(
-    private filesApi: FilesApi
+    private filesApi: FilesApi,
+    public snackBar: MatSnackBar,
   ) { }
 
   ngOnInit() {
@@ -102,26 +121,60 @@ export class ImagecreatorComponent implements OnInit {
   }
 
   addNewImage(): void {
+    let newz =1
+    if (this.images.length > 0){
+      let newz = this.images.length;
+    } 
+    
     let img: image = {
       type: 'image',
       style: {
+        z: newz,
         width: "auto",
         height: "auto",
         position: 'absolute',
         //transform : 'translate(10px, 10px)'
       },
       src: '',
-      posx: 0,
-      poxy: 0,
-      setpos: {'x':0, 'y':0}
+      posx: 50,
+      poxy: 50,
+      setpos: {'x':50, 'y':50}
+    }
+    this.images.push(img);
+  }
+
+  addNewShape(): void {
+    let newz =1
+    if (this.images.length > 0){
+      let newz = this.images.length;
+    } 
+    let img: shape = {
+      type: 'shape',
+      style: {
+        z: newz,
+        width: "200px",
+        height: "200px",
+        position: 'absolute',
+        'background-color': '#000000'
+        //transform : 'translate(10px, 10px)'
+      },
+      src: '',
+      posx: 50,
+      poxy: 50,
+      setpos: {'x':50, 'y':50}
     }
     this.images.push(img);
   }
 
   addNewText(): void {
+    let newz = 1
+    if (this.images.length > 0){
+      let newz = this.images.length;
+    } 
     let txt: text = {
       type: 'text',
       style: {
+        z: newz,
         width: "auto",
         height: "auto",
         position: 'absolute',
@@ -130,9 +183,9 @@ export class ImagecreatorComponent implements OnInit {
         //transform : 'translate(10px, 10px)'
       },
       content: 'write here',
-      posx: 0,
-      poxy: 0,
-      setpos: {'x':0, 'y':0}
+      posx: 20,
+      poxy: 50,
+      setpos: {'x':20, 'y':50}
     }
     this.images.push(txt);
   }
@@ -144,11 +197,11 @@ export class ImagecreatorComponent implements OnInit {
 
 
   onStart(event) {
-    console.log('started output:', event);
+    //console.log('started output:', event);
   }
 
   onStop(event, i) {
-    console.log('stopped output:', event);
+    //console.log('stopped output:', event);
   }
 
   onMoving(event, i) {
@@ -161,7 +214,7 @@ export class ImagecreatorComponent implements OnInit {
   }
 
   onResizeStart(e, i){
-    console.log(e)
+    //console.log(e)
   }
 
   onResizing(e, i){
@@ -170,12 +223,25 @@ export class ImagecreatorComponent implements OnInit {
   }
 
   OnSaveImage(){
-    //let canvas = Object.assign({}, this.canvas);
-    //let images = Object.assign({}, this.images);
-    this.filesApi.createimage(this.option.id, this.Account.companyId, this.canvas, this.images)
+    this.filesApi.createimage(this.option.id, this.Account.companyId, this.imagename, this.canvas, this.images)
     .subscribe(res => {
-      console.log(res)
+      console.log(res);
+      this.snackBar.open(res, undefined, {
+        duration: 2000,
+        panelClass: 'snackbar-class'
+      });
     })
+  }
+
+  deleteitem(i){
+    this.images.splice(i, 1);
+  }
+
+  drop(e){
+    //console.log(e.currentIndex, e.previousIndex);
+    this.images[e.currentIndex].style.z = this.images.length - e.currentIndex;
+    console.log(this.images[e.currentIndex].style.z);
+    this.detectchange()
   }
 
 

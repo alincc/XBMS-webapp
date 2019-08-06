@@ -1,27 +1,17 @@
+<div class="savetobutton">
+    <button mat-fab color="primary" matTooltip="Convert to image" (click)="OnSaveImage()">
+        <mat-icon>save</mat-icon>
+    </button>
+</div>
 
-  <div class="savetobutton">
-    <button mat-fab color="primary" matTooltip="Convert to image"  (click)="OnSaveImage()"><mat-icon>save</mat-icon></button>
-  </div>
-
-<div fxLayout="row" cdkDropListGroup style="width: 100%;">
+<div fxLayout="row" cdkDropListGroup style="width: 100%; height: 900px;">
 
     <div fxFlex="20%" class="edit_table">Edit
         <table style="vertical-align: top;">
             <tr>
-
                 <mat-form-field>
-                    <input [(ngModel)]="canvas.width" type="text" matInput placeholder="width">
-                    <label matSuffix>px/%</label>
+                    <input [(ngModel)]="imagename" type="text" matInput placeholder="Image Name">
                 </mat-form-field>
-
-            </tr>
-            <tr>
-
-                <mat-form-field>
-                    <input [(ngModel)]="canvas.height" type="text" matInput placeholder="height">
-                    <label matSuffix>px/%</label>
-                </mat-form-field>
-
             </tr>
             <tr>
                 <mat-accordion>
@@ -39,131 +29,201 @@
                 </mat-accordion>
             </tr>
             <tr>
-                <div *ngFor="let image of images; let i = index">
-                    <div *ngIf="image.type === 'image'">
-                        <div *ngIf="image.style">
-                            <img src={{image.src}} class="imagesedit">
-                            <mat-icon (click)="image.src = ''" class="icon-label" class="iconsize-12">delete
-                            </mat-icon>
-                        </div>
-                        <app-fileupload *ngIf="!image.src" [account]="account" [option]="option"
-                            (imgurl)="setImage($event, i)">
-                        </app-fileupload>
-                    </div>
-                    <div *ngIf="image.type === 'text'">
-                        <table style="width: 100%;">
-                            <tr>
-
-                                <mat-form-field style="width: 90%;">
-                                    <textarea style="width: 90%;" [(ngModel)]="image.content" [matTextareaAutosize]
-                                        type="text" matInput placeholder="Footer Text"></textarea>
-                                </mat-form-field>
-
-                            </tr>
-                            <tr>
-
-                                <mat-form-field>
-                                    <input [(ngModel)]="image.style['font-size']" type="text" matInput
-                                        placeholder="font size" (change)="detectchange()">
-                                </mat-form-field>
-
-                            </tr>
-                            <tr>
-
-                                <mat-accordion>
-                                    <mat-expansion-panel>
-                                        <mat-expansion-panel-header>
-                                            <mat-panel-title>
-                                                Text Color
-                                            </mat-panel-title>
-                                        </mat-expansion-panel-header>
-                                        <br>
-                                        <span [style.background]="image.style['color']" [cpToggle]="true"
-                                            [cpDialogDisplay]="'inline'" [cpCancelButton]="true"
-                                            [(colorPicker)]="image.style['color']"
-                                            (colorPickerChange)="detectchange()"></span>
-                                        <table matTooltip="click to set color">
-                                            <tr>
-                                                Primairy color
-                                                Secondairy color
-                                            </tr>
-                                            <tr>
-                                                <td (click)="image.style['color'] = company.companyprimairycolor"
-                                                    (click)="detectchange()">
-                                                    {{company.companyprimairycolor}}
-                                                <td (click)="image.style['color'] = company.companysecondarycolor"
-                                                    (click)="detectchange()">
-                                                    {{company.companysecondarycolor}}
-                                            </tr>
-                                        </table>
-                                    </mat-expansion-panel>
-                                </mat-accordion>
-
-                            </tr>
-                            <tr>
-
-                                <mat-form-field>
-                                    <mat-label>Select font</mat-label>
-                                    <mat-select [(value)]="image.style['font-family']" (selectionChange)="detectchange()">
-                                        <mat-option>None</mat-option>
-                                        <mat-option value="Arial, Helvetica, sans-serif">Arial</mat-option>
-                                        <mat-option value="'Arial Black', Gadget, sans-serif">Arial Black
-                                        </mat-option>
-                                        <mat-option value="Tahoma, Geneva, sans-serif">Tahoma</mat-option>
-                                        <mat-option value="'Times New Roman', Times, serif">Times New Roman
-                                        </mat-option>
-                                        <mat-option value="Roboto">Roboto</mat-option>
-                                        <mat-option value="Open Sans">Open Sans</mat-option>
-                                        <mat-option value="Baloo Bhai">Baloo Bhai</mat-option>
-                                    </mat-select>
-                                </mat-form-field>
-
-                            </tr>
-                        </table>
-
-                    </div>
-                </div>
-
+                <mat-form-field>
+                    <input [(ngModel)]="canvas.width" type="text" matInput placeholder="width">
+                    <label matSuffix>px/%</label>
+                </mat-form-field>
             </tr>
             <tr>
+                <mat-form-field>
+                    <input [(ngModel)]="canvas.height" type="text" matInput placeholder="height">
+                    <label matSuffix>px/%</label>
+                </mat-form-field>
+            </tr>
 
-                <mat-icon (click)="addNewImage()">image</mat-icon>
-                <mat-icon (click)="addNewText()">text_format</mat-icon>
+            <tr>
+                <div *ngFor="let image of images; let i = index" cdkDropList (cdkDropListDropped)="drop($event)">
+                    <div *ngIf="image.type === 'image'" cdkDrag>
+                        <mat-accordion>
+                            <mat-expansion-panel style="width: 270px;">
+                                <mat-expansion-panel-header>
+                                    <mat-panel-title cdkDragHandle>
+                                        <img *ngIf="image.src" src={{image.src}} class="imagesedit"
+                                            style="height: 30px; width: auto;">
+                                        <mat-icon (click)="deleteitem(i)" class="iconsize-12">delete</mat-icon>
+                                    </mat-panel-title>
+                                </mat-expansion-panel-header>
+                                <div *ngIf="image.style">
+                                    <img src={{image.src}} class="imagesedit">
+                                    <mat-icon (click)="image.src = ''" class="icon-label" class="iconsize-12">delete
+                                    </mat-icon>
+                                </div>
+                                <app-fileupload *ngIf="!image.src" [account]="account" [option]="option"
+                                    (imgurl)="setImage($event, i)">
+                                </app-fileupload>
+                            </mat-expansion-panel>
+                        </mat-accordion>
+                    </div>
+                    <div *ngIf="image.type === 'text'" cdkDrag>
+                        <mat-accordion>
+                            <mat-expansion-panel style="width: 270px;">
+                                <mat-expansion-panel-header>
+                                    <mat-panel-title cdkDragHandle>
+                                        <label>{{image.content}}</label>
+                                        <mat-icon (click)="deleteitem(i)" class="iconsize-12">delete</mat-icon>
+                                    </mat-panel-title>
+                                </mat-expansion-panel-header>
+                                <table>
+                                    <tr>
+                                        <mat-form-field style="width: 90%;">
+                                            <textarea style="width: 90%;" [(ngModel)]="image.content"
+                                                [matTextareaAutosize] type="text" matInput
+                                                placeholder="Footer Text"></textarea>
+                                        </mat-form-field>
+                                    </tr>
+                                    <tr>
+                                        <mat-form-field>
+                                            <input [(ngModel)]="image.style['font-size']" type="text" matInput
+                                                placeholder="font size" (change)="detectchange()">
+                                        </mat-form-field>
+                                    </tr>
+                                    <tr>
+                                        <mat-accordion>
+                                            <mat-expansion-panel style="width: 240px;">
+                                                <mat-expansion-panel-header>
+                                                    <mat-panel-title>
+                                                        Text Color
+                                                    </mat-panel-title>
+                                                </mat-expansion-panel-header>
+                                                <br>
+                                                <span style="width: 230px;" [style.background]="image.style['color']"
+                                                    [cpToggle]="true" [cpDialogDisplay]="'inline'"
+                                                    [cpCancelButton]="true" [(colorPicker)]="image.style['color']"
+                                                    (colorPickerChange)="detectchange()">
+                                                </span>
+                                                <table matTooltip="click to set color">
+                                                    <tr>
+                                                            <td>Primairy color</td>
+                                                            <td>Secondairy color</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td (click)="image.style['color'] = company.companyprimairycolor"
+                                                            (click)="detectchange()">
+                                                            {{company.companyprimairycolor}}
+                                                        <td (click)="image.style['color'] = company.companysecondarycolor"
+                                                            (click)="detectchange()">
+                                                            {{company.companysecondarycolor}}
+                                                    </tr>
+                                                </table>
+                                            </mat-expansion-panel>
+                                        </mat-accordion>
+                                    </tr>
+                                    <tr>
+                                        <mat-form-field>
+                                            <mat-label>Select font</mat-label>
+                                            <mat-select [(value)]="image.style['font-family']"
+                                                (selectionChange)="detectchange()">
+                                                <mat-option value="Arial, Helvetica, sans-serif">Arial</mat-option>
+                                                <mat-option value="'Arial Black', Gadget, sans-serif">Arial Black
+                                                </mat-option>
+                                                <mat-option value="Tahoma, Geneva, sans-serif">Tahoma</mat-option>
+                                                <mat-option value="'Times New Roman', Times, serif">Times New Roman
+                                                </mat-option>
+                                                <mat-option value="Roboto">Roboto</mat-option>
+                                                <mat-option value="Open Sans">Open Sans</mat-option>
+                                                <mat-option value="Baloo Bhai">Baloo Bhai</mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                    </tr>
+                                </table>
+                            </mat-expansion-panel>
+                        </mat-accordion>
+                    </div>
+                    <div *ngIf="image.type === 'shape'" cdkDrag>
+                            <mat-accordion>
+                                <mat-expansion-panel style="width: 270px;">
+                                    <mat-expansion-panel-header>
+                                        <mat-panel-title cdkDragHandle>
+                                            <div style="width: 30px; height: 30px;" [style.background-image]="image.style['background-color']"></div>
+                                            <mat-icon (click)="deleteitem(i)" class="iconsize-12">delete</mat-icon>
+                                        </mat-panel-title>
+                                    </mat-expansion-panel-header>
+                                    <table>
+                                        <tr>
+                                            <mat-accordion>
+                                                <mat-expansion-panel style="width: 240px;">
+                                                    <mat-expansion-panel-header>
+                                                        <mat-panel-title>
+                                                            Shape Color
+                                                        </mat-panel-title>
+                                                    </mat-expansion-panel-header>
+                                                    <br>
+                                                    <span style="width: 230px;" [style.background]="image.style['background-color']"
+                                                        [cpToggle]="true" [cpDialogDisplay]="'inline'"
+                                                        [cpCancelButton]="true" [(colorPicker)]="image.style['background-color']"
+                                                        (colorPickerChange)="detectchange()">
+                                                    </span>
+                                                    <table matTooltip="click to set color">
+                                                        <tr>
+                                                            <td>Primairy color</td>
+                                                            <td>Secondairy color</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td (click)="image.style['background-color'] = company.companyprimairycolor"
+                                                                (click)="detectchange()">
+                                                                {{company.companyprimairycolor}}
+                                                            <td (click)="image.style['background-color'] = company.companysecondarycolor"
+                                                                (click)="detectchange()">
+                                                                {{company.companysecondarycolor}}
+                                                        </tr>
+                                                    </table>
+                                                </mat-expansion-panel>
+                                            </mat-accordion>
+                                        </tr>
 
+                                    </table>
+                                </mat-expansion-panel>
+                            </mat-accordion>
+                        </div>
+                </div>
+            </tr>
+            <tr>
+                <button mat-mini-fab matTooltip="Add image" (click)="addNewImage()" color="primary">
+                    <mat-icon>image</mat-icon>
+                </button>
+                <button mat-mini-fab matTooltip="Add text" (click)="addNewText()" color="primary">
+                    <mat-icon>text_format</mat-icon>
+                </button>
+                <button mat-mini-fab matTooltip="Add image" (click)="addNewShape()" color="primary">
+                    <mat-icon>format_shapes</mat-icon>
+                </button>
             </tr>
         </table>
     </div>
-    <!-- (mousedown)="mousedownevent($event)" 
-                (mouseup)="mouseupevent($event)"  
-                (dragend)="dragendevent($event, i)"
-                (mousedown)="mousedownevent($event)"
-                (drag)="dragevent($event)" src={{image.src}}
-            style="width: 100px; height: 100px;"-->
 
     <div fxFlex="80%">
-        <label>Image Editor</label>
         <div *ngIf="images.length > 0 && changenow" [ngStyle]="canvas" #myBounds>
             <div *ngFor="let image of images; let i = index;"
                 [ngClass]="{ 'top-b': !edge?.top, 'bottom-b': !edge?.bottom, 'left-b': !edge?.left, 'right-b': !edge?.right }">
 
-                <div  *ngIf="image.type === 'image'" ngDraggable 
-                    [bounds]="myBounds" [inBounds]="inBounds" 
-                    [ngStyle]="image.style"
-                    [style.width]="image.style.width"
-                    [style.height]="image.style.width"
-                    (started)="onStart($event)" (stopped)="onStop($event, i)" (movingOffset)="onMoving($event, i)"
-                    [preventDefaultEvent]="true" (endOffset)="onMoveEnd($event, i)"
-                     [position]="image.setpos"
-                     (rzResizing)="onResizing($event, i)"
-                     ngResizable>
-                    <img style="width: 100%; height: 100%;" src={{image.src}}>
-                </div>
-                <label ngResizable *ngIf="image.type === 'text'" ngDraggable
-                    [bounds]="myBounds" [inBounds]="inBounds" style="width: 100px; height: 100px;"
+                <div *ngIf="image.type === 'image'" ngDraggable [bounds]="myBounds" [inBounds]="inBounds"
+                    [ngStyle]="image.style" [style.width]="image.style.width" [style.height]="image.style.width"
                     (started)="onStart($event)" (stopped)="onStop($event, i)" (movingOffset)="onMoving($event, i)"
                     [preventDefaultEvent]="true" (endOffset)="onMoveEnd($event, i)" [position]="image.setpos"
-                    (rzResizing)="onResizing($event, i)"
+                    (rzResizing)="onResizing($event, i)" ngResizable>
+                    <img *ngIf="image.src" style="width: 100%; height: 100%;" src={{image.src}}>
+                </div>
+                <label ngResizable *ngIf="image.type === 'text'" ngDraggable [bounds]="myBounds" [inBounds]="inBounds"
+                    style="width: 100px; height: 100px;" (started)="onStart($event)" (stopped)="onStop($event, i)"
+                    (movingOffset)="onMoving($event, i)" [preventDefaultEvent]="true" (endOffset)="onMoveEnd($event, i)"
+                    [position]="image.setpos" (rzResizing)="onResizing($event, i)"
                     [ngStyle]="image.style">{{image.content}}</label>
+                <div *ngIf="image.type === 'shape'" ngDraggable [bounds]="myBounds" [inBounds]="inBounds"
+                    [ngStyle]="image.style" [style.width]="image.style.width" [style.height]="image.style.width"
+                    (started)="onStart($event)" (stopped)="onStop($event, i)" (movingOffset)="onMoving($event, i)"
+                    [preventDefaultEvent]="true" (endOffset)="onMoveEnd($event, i)" [position]="image.setpos"
+                    (rzResizing)="onResizing($event, i)" ngResizable>
+                </div>
             </div>
         </div>
     </div>

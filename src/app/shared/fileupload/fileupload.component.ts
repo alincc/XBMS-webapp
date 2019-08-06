@@ -83,7 +83,7 @@ export class FileuploadComponent implements OnInit {
         this.Files.forEach((file, index) => {
           // console.log(file, index);
           let ext = file.name.split('.').pop(); 
-          if (ext === 'gif' || ext === "jpeg" || ext === "jpg" || ext === "bmp" ){
+          if (ext === 'gif' || ext === "jpeg" || ext === "jpg" || ext === "bmp" || ext === "png"  ){
             const modalImage = { img: BASE_URL + '/api/Containers/' + this.option.id + '/download/' + file.name };
             const modal = new Image(index, modalImage, null)
             this.imagesNew.push(modal)
