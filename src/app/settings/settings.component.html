@@ -5,369 +5,397 @@
     </ng-template>
 
     <div class="account">
-      <div *ngIf="toggleedituser" class="accountinfo">
-        <table>
-          <tr>
-            <td>
-              <h2>Account info</h2>
-            </td>
-          </tr>
-          <tr>
-            <mat-form-field class="form-full-width">
-              <input matInput [(ngModel)]=Account.email placeholder="Email" class="InputField">
-            </mat-form-field>
-          </tr>
-          <tr>
-            <td>
-              <mat-form-field class="form-full-width">
-                <input matInput [(ngModel)]=Account.username placeholder="Username" class="InputField">
-              </mat-form-field>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <mat-form-field class="form-full-width">
-                <input matInput placeholder="Enter your password" name="password" [(ngModel)]="Account.password"
-                  [type]="!hide ? 'password' : 'text'">
-                <mat-icon matSuffix (click)="!hide = hide">{{hide ? 'visibility' : 'visibility_off'}}</mat-icon>
-              </mat-form-field>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <mat-form-field class="form-full-width">
-                <input matInput [(ngModel)]=Account.companyname placeholder="Company Name" class="InputField">
-              </mat-form-field>
-            </td>
-            <td>
-              <button (click)="saveAccount()" a mat-raised-button class="button">Save Changes</button>
-            </td>
-          </tr>
-        </table>
-        <button mat-mini-fab color="primary" (click)="toggleEditUser()">
-          <mat-icon>edit</mat-icon>
-        </button>
-      </div>
-
-      <div class="accountinfo">
-        <table>
-          <tr>
-            <td>
-              <label>Set Standard Font and Colors</label>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <form>
-              <mat-form-field class="example-full-width">
-                <input [(ngModel)]=Company.companyfont type="text" placeholder="Pick one" aria-label="Number" matInput
-                  [formControl]="myControlfont" [matAutocomplete]="auto">
-                <mat-autocomplete #auto="matAutocomplete">
-                  <mat-option *ngFor="let font of filteredfonts | async" [value]="font">
-                    {{font}}
-                  </mat-option>
-                </mat-autocomplete>
-              </mat-form-field>
-            </form>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <mat-accordion>
-                <mat-expansion-panel>
-                  <mat-expansion-panel-header>
-                    <mat-panel-title>
-                      Primairy Color
-                    </mat-panel-title>
-                  </mat-expansion-panel-header>
-                  <br>
-                  <span [style.background]="Company.companyprimairycolor" [cpToggle]="true" [cpDialogDisplay]="'inline'"
-                    [cpCancelButton]="true" [(colorPicker)]="Company.companyprimairycolor"></span>
-                </mat-expansion-panel>
-              </mat-accordion>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <mat-accordion>
-                <mat-expansion-panel>
-                  <mat-expansion-panel-header>
-                    <mat-panel-title>
-                      Secondary Color
-                    </mat-panel-title>
-                  </mat-expansion-panel-header>
-                  <br>
-                  <span [style.background]="Company.companysecondarycolor" [cpToggle]="true"
-                    [cpDialogDisplay]="'inline'" [cpCancelButton]="true"
-                    [(colorPicker)]="Company.companysecondarycolor"></span>
-                </mat-expansion-panel>
-              </mat-accordion>
-            </td>
-          </tr>
-          <tr>
-            <div [innerHTML]="Account.signature | safeHtml"></div>
-          </tr>
-          <tr>
-            <button a mat-raised-button color="primary" (click)="openeditorsignature()">
-              Edit Signature
-            </button> 
-          </tr>
-          <tr>
-            <td>
-              <button (click)="saveCompany()" a mat-raised-button class="button">Save Changes</button>
-            </td>
-          </tr>
-        </table>
-
-      </div>
-
-      <div *ngIf="!toggleedituser" class="accountinfo">
-        <table>
-          <tr>
-            <td>
-              <h2>Account info</h2>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <h4>{{Account.email}}</h4>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <h4>{{Account.username}}</h4>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <h4>{{Account.companyname}}</h4>
-            </td>
-          </tr>
-        </table>
-        <button mat-mini-fab color="primary" (click)="toggleEditUser()">
-          <mat-icon>edit</mat-icon>
-        </button>
-      </div>
-
-      <div fxLayout='column' class="companyinfo">
-        <table>
-          <tr>
-            <td>
-              <h2>Company information</h2>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <mat-form-field fxFlex="90" class="form-full-width">
-                <input matInput [(ngModel)]=Company.companyname placeholder="Company Name" class="InputField">
-              </mat-form-field>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <mat-form-field fxFlex="90" class="form-full-width">
-                <input matInput [(ngModel)]=Company.address placeholder="Address" class="InputField">
-              </mat-form-field>
-            </td>
-          </tr>
-        </table>
-        <table>
-          <tr>
-            <td>
-              <mat-form-field fxFlex="30" class="form-full-width">
-                <input matInput [(ngModel)]=Company.city placeholder="City" class="InputField">
-              </mat-form-field>
-            </td>
-            <td>
-              <mat-form-field fxFlex="30" class="form-full-width">
-                <input matInput [(ngModel)]=Company.zipcode placeholder="Zipcode" class="InputField">
-              </mat-form-field>
-            </td>
-            <td>
-              <mat-form-field fxFlex="30" class="form-full-width">
-                <input matInput [(ngModel)]=Company.stateprov placeholder="State/Province" class="InputField">
-              </mat-form-field>
-            </td>
-          </tr>
-        </table>
-        <table>
-          <tr>
-            <td>
-              <mat-form-field fxFlex="90" class="form-full-width">
-                <input matInput [(ngModel)]=Company.country placeholder="Country" class="InputField">
-              </mat-form-field>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <button fxFlex="90" (click)="billingCompanyCopy()" a mat-raised-button class="button">Billing address is
-                the same</button>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <mat-form-field fxFlex="90" class="form-full-width">
-                <input matInput [(ngModel)]=Company.billingaddress placeholder="Billing Address" class="InputField">
-              </mat-form-field>
-            </td>
-          </tr>
-          <tr>
-        </table>
-        <table>
-          <td>
-            <mat-form-field fxFlex="30" class="form-full-width">
-              <input matInput [(ngModel)]=Company.billingcity placeholder="Billing City" class="InputField">
-            </mat-form-field>
-          </td>
-          <td>
-            <mat-form-field fxFlex="30" class="form-full-width">
-              <input matInput [(ngModel)]=Company.billingzipcode placeholder="Billing zipcode" class="InputField">
-            </mat-form-field>
-          </td>
-          <td>
-            <mat-form-field fxFlex="30" class="form-full-width">
-              <input matInput [(ngModel)]=Company.billingstateprov placeholder="Billing State/Province"
-                class="InputField">
-            </mat-form-field>
-          </td>
-        </table>
-        <table>
-          <tr>
-            <td>
-              <mat-form-field fxFlex="90" class="form-full-width">
-                <input matInput [(ngModel)]=Company.billingcountry placeholder="Billing Country" class="InputField">
-              </mat-form-field>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <mat-form-field fxFlex="90" class="form-full-width">
-                <input matInput [(ngModel)]=Company.billingcontact placeholder="Billing Contact" class="InputField">
-              </mat-form-field>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <mat-form-field fxFlex="90" class="form-full-width">
-                <input matInput [(ngModel)]=Company.billingemail placeholder="Billing Email" class="InputField">
-              </mat-form-field>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <mat-form-field fxFlex="90" class="form-full-width">
-                <input matInput [(ngModel)]=Company.phonenumber placeholder="Phonenumber" class="InputField">
-              </mat-form-field>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <button (click)="saveCompany()" a mat-raised-button class="button">Save Changes</button>
-            </td>
-          </tr>
-        </table>
-      </div>
-
-      <div class="accountaction">
-        <form>
+      <div fxLayout="row wrap">
+        <div class="companyinfo" *ngIf="toggleedituser" fxFlex="40%">
           <table>
             <tr>
               <td>
-                Change Password
+                <h2>Account info</h2>
+              </td>
+            </tr>
+            <tr>
+              <mat-form-field class="form-full-width">
+                <input matInput [(ngModel)]=Account.email placeholder="Email" class="InputField">
+              </mat-form-field>
+            </tr>
+            <tr>
+              <td>
+                <mat-form-field class="form-full-width">
+                  <input matInput [(ngModel)]=Account.username placeholder="Username" class="InputField">
+                </mat-form-field>
               </td>
             </tr>
             <tr>
               <td>
-                <mat-form-field class="example-full-width">
-                  <input matInput name="password" type="password" [(ngModel)]="oldpassword" placeholder="Old Password"
-                    [formControl]="passwordFormControl">
+                <mat-form-field class="form-full-width">
+                  <input matInput placeholder="Enter your password" name="password" [(ngModel)]="Account.password"
+                    [type]="!hide ? 'password' : 'text'">
+                  <mat-icon matSuffix (click)="!hide = hide">{{hide ? 'visibility' : 'visibility_off'}}</mat-icon>
+                </mat-form-field>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <mat-form-field class="form-full-width">
+                  <input matInput [(ngModel)]=Account.companyname placeholder="Company Name" class="InputField">
                 </mat-form-field>
               </td>
               <td>
-                <button (click)="openDialogDeleteAccount()" a mat-raised-button class="button">Delete My
-                  Account</button>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <mat-form-field class="example-full-width">
-                  <input matInput name="password" placeholder="New Password" type="password"
-                    [formControl]="passwordFormControl" [(ngModel)]="newpassword">
-                  <!-- <mat-hint>Errors appear instantly!</mat-hint> -->
-                  <mat-error *ngIf="passwordFormControl.hasError('email') && !passwordFormControl.hasError('required')">
-                    Please enter a Password
-                  </mat-error>
-                  <mat-error *ngIf="passwordFormControl.hasError('required')">
-                    Password is
-                    <strong>required</strong>
-                  </mat-error>
-                </mat-form-field>
-              </td>
-              <td>
-                <button (click)="logout()" a mat-raised-button class="button">Logout</button>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <button (click)="changePassword()" a mat-raised-button class="button">Change Password</button>
-              </td>
-              <td>
-                <div *ngIf="passwordsuccess">
-                  <i class="material-icons">check_circle</i>
-                </div>
+                <button (click)="saveAccount()" a mat-raised-button class="button">Save Changes</button>
               </td>
             </tr>
           </table>
-        </form>
-      </div>
-    </div>
-
-
-    <div *ngIf="Account.companyadmin" class="team">
-      <div class="teammembers">
-        Teammembers {{Account.companyname}}
-        <div *ngFor="let Team of Team; let i = index">
-          <table class="team" cellspacing="0">
-            <tr style="width: 100%;">
+          <button mat-mini-fab color="primary" (click)="toggleEditUser()">
+            <mat-icon>edit</mat-icon>
+          </button>
+        </div>
+        <div class="companyinfo" fxFlex="40%">
+          <table>
+            <tr>
               <td>
-                <label>{{ Team.username }}</label>
+                <h2>Set Standard Font and Colors</h2>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <form>
+                  <mat-form-field class="example-full-width">
+                    <input [(ngModel)]=Company.companyfont type="text" placeholder="Pick one" aria-label="Number"
+                      matInput [formControl]="myControlfont" [matAutocomplete]="auto">
+                    <mat-autocomplete #auto="matAutocomplete">
+                      <mat-option *ngFor="let font of filteredfonts | async" [value]="font">
+                        {{font}}
+                      </mat-option>
+                    </mat-autocomplete>
+                  </mat-form-field>
+                </form>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <mat-accordion>
+                  <mat-expansion-panel>
+                    <mat-expansion-panel-header>
+                      <mat-panel-title>
+                        Primairy Color
+                      </mat-panel-title>
+                    </mat-expansion-panel-header>
+                    <br>
+                    <span [style.background]="Company.companyprimairycolor" [cpToggle]="true"
+                      [cpDialogDisplay]="'inline'" [cpCancelButton]="true"
+                      [(colorPicker)]="Company.companyprimairycolor"></span>
+                  </mat-expansion-panel>
+                </mat-accordion>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <mat-accordion>
+                  <mat-expansion-panel>
+                    <mat-expansion-panel-header>
+                      <mat-panel-title>
+                        Secondary Color
+                      </mat-panel-title>
+                    </mat-expansion-panel-header>
+                    <br>
+                    <span [style.background]="Company.companysecondarycolor" [cpToggle]="true"
+                      [cpDialogDisplay]="'inline'" [cpCancelButton]="true"
+                      [(colorPicker)]="Company.companysecondarycolor"></span>
+                  </mat-expansion-panel>
+                </mat-accordion>
+              </td>
+            </tr>
+            <tr>
+              <div [innerHTML]="Account.signature | safeHtml"></div>
+            </tr>
+            <tr>
+              <button a mat-raised-button color="primary" (click)="openeditorsignature()">
+                Edit Signature
+              </button>
+            </tr>
+            <tr>
+              <td>
+                <button (click)="saveCompany()" a mat-raised-button class="button">Save Changes</button>
+              </td>
+            </tr>
+          </table>
+
+        </div>
+        <div class="companyinfo" *ngIf="!toggleedituser" fxFlex="40%">
+          <table>
+            <tr>
+              <td>
+                <h2>Account info</h2>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <h4>{{Account.email}}</h4>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <h4>{{Account.username}}</h4>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <h4>{{Account.companyname}}</h4>
+              </td>
+            </tr>
+          </table>
+          <button mat-mini-fab color="primary" (click)="toggleEditUser()">
+            <mat-icon>edit</mat-icon>
+          </button>
+        </div>
+        <div class="companyinfo" fxFlex="40%">
+          <table>
+            <tr>
+              <td>
+                <h2>Company information</h2>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <mat-form-field fxFlex="90" class="form-full-width">
+                  <input matInput [(ngModel)]=Company.companyname placeholder="Company Name" class="InputField">
+                </mat-form-field>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <mat-form-field fxFlex="90" class="form-full-width">
+                  <input matInput [(ngModel)]=Company.address placeholder="Address" class="InputField">
+                </mat-form-field>
+              </td>
+            </tr>
+          </table>
+          <table>
+            <tr>
+              <td>
+                <mat-form-field fxFlex="30" class="form-full-width">
+                  <input matInput [(ngModel)]=Company.city placeholder="City" class="InputField">
+                </mat-form-field>
               </td>
               <td>
-                <label>{{ Team.teamName }}</label>
+                <mat-form-field fxFlex="30" class="form-full-width">
+                  <input matInput [(ngModel)]=Company.zipcode placeholder="Zipcode" class="InputField">
+                </mat-form-field>
               </td>
               <td>
-                <a mat-mini-fab color="primary" (click)="deleteTeamMember(Team, i)">
-                  <mat-icon>delete</mat-icon>
-                </a>
+                <mat-form-field fxFlex="30" class="form-full-width">
+                  <input matInput [(ngModel)]=Company.stateprov placeholder="State/Province" class="InputField">
+                </mat-form-field>
+              </td>
+            </tr>
+          </table>
+          <table>
+            <tr>
+              <td>
+                <mat-form-field fxFlex="90" class="form-full-width">
+                  <input matInput [(ngModel)]=Company.country placeholder="Country" class="InputField">
+                </mat-form-field>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <button fxFlex="90" (click)="billingCompanyCopy()" a mat-raised-button class="button">Billing address is
+                  the same</button>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <mat-form-field fxFlex="90" class="form-full-width">
+                  <input matInput [(ngModel)]=Company.billingaddress placeholder="Billing Address" class="InputField">
+                </mat-form-field>
+              </td>
+            </tr>
+            <tr>
+          </table>
+          <table>
+            <td>
+              <mat-form-field fxFlex="30" class="form-full-width">
+                <input matInput [(ngModel)]=Company.billingcity placeholder="Billing City" class="InputField">
+              </mat-form-field>
+            </td>
+            <td>
+              <mat-form-field fxFlex="30" class="form-full-width">
+                <input matInput [(ngModel)]=Company.billingzipcode placeholder="Billing zipcode" class="InputField">
+              </mat-form-field>
+            </td>
+            <td>
+              <mat-form-field fxFlex="30" class="form-full-width">
+                <input matInput [(ngModel)]=Company.billingstateprov placeholder="Billing State/Province"
+                  class="InputField">
+              </mat-form-field>
+            </td>
+          </table>
+          <table>
+            <tr>
+              <td>
+                <mat-form-field fxFlex="90" class="form-full-width">
+                  <input matInput [(ngModel)]=Company.billingcountry placeholder="Billing Country" class="InputField">
+                </mat-form-field>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <mat-form-field fxFlex="90" class="form-full-width">
+                  <input matInput [(ngModel)]=Company.billingcontact placeholder="Billing Contact" class="InputField">
+                </mat-form-field>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <mat-form-field fxFlex="90" class="form-full-width">
+                  <input matInput [(ngModel)]=Company.billingemail placeholder="Billing Email" class="InputField">
+                </mat-form-field>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <mat-form-field fxFlex="90" class="form-full-width">
+                  <input matInput [(ngModel)]=Company.phonenumber placeholder="Phonenumber" class="InputField">
+                </mat-form-field>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <button (click)="saveCompany()" a mat-raised-button class="button">Save Changes</button>
               </td>
             </tr>
           </table>
         </div>
-      </div>
+        <div class="companyinfo" fxFlex="40%">
+          <form>
+            <table>
+              <tr>
+                <td>
+                  <h2>Password</h2>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <mat-form-field class="example-full-width">
+                    <input matInput name="password" type="password" [(ngModel)]="oldpassword" placeholder="Old Password"
+                      [formControl]="passwordFormControl">
+                  </mat-form-field>
+                </td>
+                <td>
+                  <button (click)="openDialogDeleteAccount()" a mat-raised-button class="button">Delete My
+                    Account</button>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <mat-form-field class="example-full-width">
+                    <input matInput name="password" placeholder="New Password" type="password"
+                      [formControl]="passwordFormControl" [(ngModel)]="newpassword">
+                    <!-- <mat-hint>Errors appear instantly!</mat-hint> -->
+                    <mat-error
+                      *ngIf="passwordFormControl.hasError('email') && !passwordFormControl.hasError('required')">
+                      Please enter a Password
+                    </mat-error>
+                    <mat-error *ngIf="passwordFormControl.hasError('required')">
+                      Password is
+                      <strong>required</strong>
+                    </mat-error>
+                  </mat-form-field>
+                </td>
+                <td>
+                  <button (click)="logout()" a mat-raised-button class="button">Logout</button>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <button (click)="changePassword()" a mat-raised-button class="button">Change Password</button>
+                </td>
+                <td>
+                  <div *ngIf="passwordsuccess">
+                    <i class="material-icons">check_circle</i>
+                  </div>
+                </td>
+              </tr>
+            </table>
+          </form>
+        </div>
+        <div class="companyinfo" fxFlex="40%" *ngIf="Account.companyadmin" class="team">
+          <div class="teammembers">
+            Teammembers {{Account.companyname}}
+            <div *ngFor="let Team of Team; let i = index">
+              <table class="team" cellspacing="0">
+                <tr style="width: 100%;">
+                  <td>
+                    <label>{{ Team.username }}</label>
+                  </td>
+                  <td>
+                    <label>{{ Team.teamName }}</label>
+                  </td>
+                  <td>
+                    <a mat-mini-fab color="primary" (click)="deleteTeamMember(Team, i)">
+                      <mat-icon>delete</mat-icon>
+                    </a>
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </div>
 
-      <div *ngIf="Account.companyadmin" class="createteam">
-        Create Teammember (send invite) {{Account.companyname}}
-        <form>
+          <div *ngIf="Account.companyadmin" class="createteam">
+            Create Teammember (send invite) {{Account.companyname}}
+            <form>
+              <table class="form-login" cellspacing="0">
+                <tr>
+                  <td>
+                    <mat-form-field class="form-full-width">
+                      <input matInput name="email" type="email" [(ngModel)]="newAccount.email" placeholder="email" />
+                    </mat-form-field>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <mat-form-field class="form-full-width">
+                      <input matInput name="password" type="password" [(ngModel)]="newAccount.password"
+                        placeholder="password" />
+                    </mat-form-field>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <mat-form-field class="form-full-width">
+                      <input matInput name="username" type="username" [(ngModel)]="newAccount.username"
+                        placeholder="username" />
+                    </mat-form-field>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <mat-form-field class="form-full-width">
+                      <input matInput name="Team name" type="Team name" [(ngModel)]="newAccount.teamname"
+                        placeholder="Team name" />
+                    </mat-form-field>
+                  </td>
+                </tr>
+                <tr>
+                  <button (click)="createTeamMember()" a mat-raised-button class="button">Create Member</button>
+                </tr>
+              </table>
+            </form>
+          </div>
+
+
+        </div>
+        <div class="companyinfo" fxFlex="40%">
           <table class="form-login" cellspacing="0">
             <tr>
               <td>
-                <mat-form-field class="form-full-width">
-                  <input matInput name="email" type="email" [(ngModel)]="newAccount.email" placeholder="email" />
-                </mat-form-field>
+                <h2>Email Info</h2>
               </td>
             </tr>
             <tr>
               <td>
                 <mat-form-field class="form-full-width">
-                  <input matInput name="password" type="password" [(ngModel)]="newAccount.password"
-                    placeholder="password" />
-                </mat-form-field>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <mat-form-field class="form-full-width">
-                  <input matInput name="username" type="username" [(ngModel)]="newAccount.username"
+                  <input matInput name="emailusername" type="email" [(ngModel)]="Emailhandler.username"
                     placeholder="username" />
                 </mat-form-field>
               </td>
@@ -375,98 +403,69 @@
             <tr>
               <td>
                 <mat-form-field class="form-full-width">
-                  <input matInput name="Team name" type="Team name" [(ngModel)]="newAccount.teamname"
-                    placeholder="Team name" />
+                  <input matInput name="emailpassword" type="password" [(ngModel)]="Emailhandler.password"
+                    placeholder="password" />
                 </mat-form-field>
               </td>
             </tr>
             <tr>
-              <button (click)="createTeamMember()" a mat-raised-button class="button">Create Member</button>
+              <td>
+                <mat-form-field class="form-full-width">
+                  <input matInput name="Team name" type="Team name" [(ngModel)]="Emailhandler.host"
+                    placeholder="Mail Server" />
+                </mat-form-field>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <mat-form-field class="form-full-width">
+                  <input matInput name="Team name" type="value" [(ngModel)]="Emailhandler.port" placeholder="port" />
+                </mat-form-field>
+              </td>
+              <td>
+                <mat-checkbox [(ngModel)]="Emailhandler.tls">TLS</mat-checkbox>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <mat-form-field class="form-full-width">
+                  <input matInput name="Team name" type="value" [(ngModel)]="Emailhandler.mailbox"
+                    placeholder="mailbox" />
+                </mat-form-field>
+              </td>
+              <td>
+                <mat-form-field>
+                  <mat-select [(ngModel)]="Emailhandler.searchfilter">
+                    <mat-option value="FLAGGED">FLAGGED</mat-option>
+                    <mat-option value="UNSEEN">UNSEEN</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <mat-checkbox [(ngModel)]="Emailhandler.markseen">Mark Seen</mat-checkbox>
+              </td>
+              <td>
+                <mat-checkbox [(ngModel)]="Emailhandler.attachments">Save Attachments</mat-checkbox>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <button (click)="createEmailHandler()" a mat-raised-button class="button">Save</button>
+              </td>
+              <td>
+                <button (click)="deleteEmailhandler()" a mat-raised-button class="button">Delete</button>
+              </td>
             </tr>
           </table>
-        </form>
-      </div>
 
-
-    </div>
-
-    <div class="emailhandler">
-      <div class="accountinfo">
-        <table class="form-login" cellspacing="0">
-          <tr>
-            <td>
-              <h2>Email Info</h2>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <mat-form-field class="form-full-width">
-                <input matInput name="emailusername" type="email" [(ngModel)]="Emailhandler.username"
-                  placeholder="username" />
-              </mat-form-field>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <mat-form-field class="form-full-width">
-                <input matInput name="emailpassword" type="password" [(ngModel)]="Emailhandler.password"
-                  placeholder="password" />
-              </mat-form-field>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <mat-form-field class="form-full-width">
-                <input matInput name="Team name" type="Team name" [(ngModel)]="Emailhandler.host"
-                  placeholder="Mail Server" />
-              </mat-form-field>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <mat-form-field class="form-full-width">
-                <input matInput name="Team name" type="value" [(ngModel)]="Emailhandler.port" placeholder="port" />
-              </mat-form-field>
-            </td>
-            <td>
-              <mat-checkbox [(ngModel)]="Emailhandler.tls">TLS</mat-checkbox>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <mat-form-field class="form-full-width">
-                <input matInput name="Team name" type="value" [(ngModel)]="Emailhandler.mailbox"
-                  placeholder="mailbox" />
-              </mat-form-field>
-            </td>
-            <td>
-              <mat-form-field>
-                <mat-select [(ngModel)]="Emailhandler.searchfilter">
-                  <mat-option value="FLAGGED">FLAGGED</mat-option>
-                  <mat-option value="UNSEEN">UNSEEN</mat-option>
-                </mat-select>
-              </mat-form-field>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <mat-checkbox [(ngModel)]="Emailhandler.markseen">Mark Seen</mat-checkbox>
-            </td>
-            <td>
-              <mat-checkbox [(ngModel)]="Emailhandler.attachments">Save Attachments</mat-checkbox>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <button (click)="createEmailHandler()" a mat-raised-button class="button">Save</button>
-            </td>
-            <td>
-              <button (click)="deleteEmailhandler()" a mat-raised-button class="button">Delete</button>
-            </td>
-          </tr>
-        </table>
+        </div>
       </div>
     </div>
+
+
+
   </mat-tab>
 
   <mat-tab label="Invoices" (click)="getInvoices()">
@@ -513,23 +512,23 @@
     </ng-template>
     <button a mat-raised-button (click)="openDialogDeleteAllCall()">Delete All</button>
     <div class="tabcontainer" fxLayout="row">
-      <div class="listcontainer" fxFlex="20%">    
-          <h4>Search</h4>   
-            <mat-form-field>
-              <input matInput #searchTerm id="seach-box" (keyup.enter)="searchCallGo(searchTerm.value)"
-                placeholder="Call title/content" />
-            </mat-form-field>
-          
-          
-              <button a mat-raised-button (click)="searchCallGo(searchTerm.value)">Search</button>
-         
-              <button a mat-raised-button (click)="getUnCalls()">Show All</button>
-      
-       
+      <div class="listcontainer" fxFlex="20%">
+        <h4>Search</h4>
+        <mat-form-field>
+          <input matInput #searchTerm id="seach-box" (keyup.enter)="searchCallGo(searchTerm.value)"
+            placeholder="Call title/content" />
+        </mat-form-field>
+
+
+        <button a mat-raised-button (click)="searchCallGo(searchTerm.value)">Search</button>
+
+        <button a mat-raised-button (click)="getUnCalls()">Show All</button>
+
+
 
         <div class="listview" fxLayout="column">
-          <div fxFlex *ngFor="let Unsortedcalls of Unsortedcalls; let i = index" (click)="onSelectCall(Unsortedcalls, i)"
-            [class.selected]="Unsortedcalls === selectedCall">
+          <div fxFlex *ngFor="let Unsortedcalls of Unsortedcalls; let i = index"
+            (click)="onSelectCall(Unsortedcalls, i)" [class.selected]="Unsortedcalls === selectedCall">
             <span class="box">{{Unsortedcalls.title | slice:0:20 }} | {{Unsortedcalls.date | date}}</span>
           </div>
         </div>
@@ -538,128 +537,128 @@
       <div fxFlex="80%" *ngIf="selectedCall">
         <mat-card>
           <mat-card-content style="padding: 30px;" fxLayout="row">
-              <table class="unsortedcalls" fxFlex>
-                <tr>
-                  <td>
-                    <mat-form-field class="example-full-width">
-                      <input type="text" placeholder="Select Relation" aria-label="relation" [(ngModel)]=option matInput
-                        [formControl]="myControl" [matAutocomplete]="auto">
-                      <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
-                        <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
-                          {{ option.relationname }}
-                        </mat-option>
-                      </mat-autocomplete>
-                    </mat-form-field>
-                  </td>
-                  <td>
-                    <button a mat-raised-button (click)="assignCall()">Assign To</button>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <mat-form-field>
-                      <input matInput google-place (onSelect)="setAddress($event)" [(ngModel)]=newRelation.relationname
-                        placeholder="New Relation Name" class="InputField" [ngModelOptions]="{standalone: true}">
-                    </mat-form-field>
-
-                    <mat-select [(ngModel)]=newRelation.status placeholder="Status" class="InputField">
-                      <mat-option *ngFor="let statustype of statustype" [value]="statustype.value">
-                        {{ statustype.viewValue }}
+            <table class="unsortedcalls" fxFlex>
+              <tr>
+                <td>
+                  <mat-form-field class="example-full-width">
+                    <input type="text" placeholder="Select Relation" aria-label="relation" [(ngModel)]=option matInput
+                      [formControl]="myControl" [matAutocomplete]="auto">
+                    <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+                      <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
+                        {{ option.relationname }}
                       </mat-option>
-                    </mat-select>
+                    </mat-autocomplete>
+                  </mat-form-field>
+                </td>
+                <td>
+                  <button a mat-raised-button (click)="assignCall()">Assign To</button>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <mat-form-field>
+                    <input matInput google-place (onSelect)="setAddress($event)" [(ngModel)]=newRelation.relationname
+                      placeholder="New Relation Name" class="InputField" [ngModelOptions]="{standalone: true}">
+                  </mat-form-field>
 
-                  </td>
-                  <td>
-                    <button a mat-raised-button (click)="createNewAssign()">Assign and Create New</button>
-                  </td>
-                </tr>
-                <br>
-                <tr>
-                  <td colspan="2">
-                    <mat-toolbar color="primary" class="titlebox">
-                      <h2>{{selectedCall.title | uppercase | slice:0:30 }}</h2>
-                      <button mat-icon-button [matMenuTriggerFor]="menucall" class="menu">
-                        <mat-icon>more_vert</mat-icon>
+                  <mat-select [(ngModel)]=newRelation.status placeholder="Status" class="InputField">
+                    <mat-option *ngFor="let statustype of statustype" [value]="statustype.value">
+                      {{ statustype.viewValue }}
+                    </mat-option>
+                  </mat-select>
+
+                </td>
+                <td>
+                  <button a mat-raised-button (click)="createNewAssign()">Assign and Create New</button>
+                </td>
+              </tr>
+              <br>
+              <tr>
+                <td colspan="2">
+                  <mat-toolbar color="primary" class="titlebox">
+                    <h2>{{selectedCall.title | uppercase | slice:0:30 }}</h2>
+                    <button mat-icon-button [matMenuTriggerFor]="menucall" class="menu">
+                      <mat-icon>more_vert</mat-icon>
+                    </button>
+                    <mat-menu #menucall="matMenu">
+                      <button mat-menu-item (click)="openDialogDeleteCall()">
+                        <mat-icon>delete</mat-icon>
+                        <span>Delete</span>
                       </button>
-                      <mat-menu #menucall="matMenu">
-                        <button mat-menu-item (click)="openDialogDeleteCall()">
-                          <mat-icon>delete</mat-icon>
-                          <span>Delete</span>
-                        </button>
-                      </mat-menu>
-                    </mat-toolbar>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <mat-form-field>
-                      <input matInput [(ngModel)]=selectedCall.title placeholder="Title" class="InputField">
-                    </mat-form-field>
-                  </td>
-                  <td>
-                    <mat-select [(ngModel)]=selectedCall.calltype placeholder="calltype" class="InputField">
-                      <mat-option *ngFor="let calltype of calltype" [value]="calltype.value">
-                        {{ calltype.viewValue }}
-                      </mat-option>
-                    </mat-select>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    {{selectedCall.email}}
-                  </td>
-                </tr>
-                <tr>
-                  <td colspan="2">
-                    <mat-datepicker #picker1></mat-datepicker>
-                    <input [matDatepicker]="myDatepicker1" [(ngModel)]=selectedCall.date placeholder="Call Date">
-                    <mat-datepicker-toggle matSuffix [for]="myDatepicker1"></mat-datepicker-toggle>
-                    <mat-datepicker #myDatepicker1></mat-datepicker>
-                  </td>
-                </tr>
-                <br>
-                <tr *ngIf="!selectedCall.html" rowspan="10">
-                  <td colspan="2">
-                    <div> {{selectedCall.content}} </div>
-                  </td>
-                </tr>
-                <tr *ngIf="selectedCall.html">
-                  <td colspan="2">
-                    <div [innerHTML]="selectedCall.html"></div>
-                  </td>
-                </tr>
-                <br>
-                <tr>
-                  <td colspan="2">
-                    <mat-accordion>
-                      <mat-expansion-panel>
-                        <mat-expansion-panel-header>
-                          <mat-panel-title>
-                            Follow Up
-                          </mat-panel-title>
-                        </mat-expansion-panel-header>
-                        <table>
-                          <tr>
-                            <td class="tg-yw4l">
-                              <mat-checkbox [(ngModel)]=selectedCall.followup [(indeterminate)]="indeterminate"
-                                [disabled]="disabled">
-                                Follow Up
-                              </mat-checkbox>
-                            </td>
-                            <td class="tg-yw4l">
-                              <mat-datepicker #picker></mat-datepicker>
-                              <input [matDatepicker]="myDatepicker" [(ngModel)]=selectedCall.callbackdate
-                                placeholder="Callback Date">
-                              <mat-datepicker-toggle matSuffix [for]="myDatepicker"></mat-datepicker-toggle>
-                              <mat-datepicker #myDatepicker></mat-datepicker>
-                            </td>
-                          </tr>
-                        </table>
-                      </mat-expansion-panel>
-                    </mat-accordion>
-                  </td>
-                </tr>
-              </table>
+                    </mat-menu>
+                  </mat-toolbar>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <mat-form-field>
+                    <input matInput [(ngModel)]=selectedCall.title placeholder="Title" class="InputField">
+                  </mat-form-field>
+                </td>
+                <td>
+                  <mat-select [(ngModel)]=selectedCall.calltype placeholder="calltype" class="InputField">
+                    <mat-option *ngFor="let calltype of calltype" [value]="calltype.value">
+                      {{ calltype.viewValue }}
+                    </mat-option>
+                  </mat-select>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  {{selectedCall.email}}
+                </td>
+              </tr>
+              <tr>
+                <td colspan="2">
+                  <mat-datepicker #picker1></mat-datepicker>
+                  <input [matDatepicker]="myDatepicker1" [(ngModel)]=selectedCall.date placeholder="Call Date">
+                  <mat-datepicker-toggle matSuffix [for]="myDatepicker1"></mat-datepicker-toggle>
+                  <mat-datepicker #myDatepicker1></mat-datepicker>
+                </td>
+              </tr>
+              <br>
+              <tr *ngIf="!selectedCall.html" rowspan="10">
+                <td colspan="2">
+                  <div> {{selectedCall.content}} </div>
+                </td>
+              </tr>
+              <tr *ngIf="selectedCall.html">
+                <td colspan="2">
+                  <div [innerHTML]="selectedCall.html"></div>
+                </td>
+              </tr>
+              <br>
+              <tr>
+                <td colspan="2">
+                  <mat-accordion>
+                    <mat-expansion-panel>
+                      <mat-expansion-panel-header>
+                        <mat-panel-title>
+                          Follow Up
+                        </mat-panel-title>
+                      </mat-expansion-panel-header>
+                      <table>
+                        <tr>
+                          <td class="tg-yw4l">
+                            <mat-checkbox [(ngModel)]=selectedCall.followup [(indeterminate)]="indeterminate"
+                              [disabled]="disabled">
+                              Follow Up
+                            </mat-checkbox>
+                          </td>
+                          <td class="tg-yw4l">
+                            <mat-datepicker #picker></mat-datepicker>
+                            <input [matDatepicker]="myDatepicker" [(ngModel)]=selectedCall.callbackdate
+                              placeholder="Callback Date">
+                            <mat-datepicker-toggle matSuffix [for]="myDatepicker"></mat-datepicker-toggle>
+                            <mat-datepicker #myDatepicker></mat-datepicker>
+                          </td>
+                        </tr>
+                      </table>
+                    </mat-expansion-panel>
+                  </mat-accordion>
+                </td>
+              </tr>
+            </table>
           </mat-card-content>
         </mat-card>
       </div>
