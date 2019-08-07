@@ -28,6 +28,9 @@ import { map, startWith } from 'rxjs/operators';
 import { FormControl } from '@angular/forms';
 import { BaseChartDirective } from 'ng2-charts';
 import { Router, ActivatedRoute, Params } from '@angular/router';
+import { SingleDataSet, Label } from 'ng2-charts';
+import { ChartType } from 'chart.js';
+
 
 @Component({
   selector: 'app-dashboard',
@@ -40,6 +43,10 @@ export class DashboardComponent implements OnInit {
   colorScheme = {
     domain: ['#e1f5fe', '#b3e5fc', '#81d4fa', '#4fc3f7', '#29b6f6', '#03a9f4', '#039be5', '#0288d1', '#0277bd', '#01579b']
   };
+
+  public polarAreaChartType: ChartType = 'polarArea';
+  public polarAreaLegend = true;
+
 
   public RelationsNum: any;
   public CallsNum: any;
@@ -549,7 +556,8 @@ this.barChart2Data = clone;
       // this.get1Numbers();
       this.getDoughnutNumbers(); // Doughnut
       // import to update for ngx charts
-      this.googleanalyticsreturn = [...this.googleanalyticsreturn]
+      this.googleanalyticsreturn = [...this.googleanalyticsreturn];
+      
     }, error => console.log('Could not load Analytics'));
 }
 
@@ -689,10 +697,11 @@ this.lineChartData = clone;
     this.chartDoughnut.chart = this.chartDoughnut.getChartBuilder(this.chartDoughnut.ctx);
   }
 
-  const data = this.Googleanalyticsnumbers;//  update to new
-  const clone = JSON.parse(JSON.stringify(this.doughnutChartData));
-  clone[0].data = data;
-  this.doughnutChartData = clone;
+  // const data = this.Googleanalyticsnumbers;//  update to new
+  // const clone = JSON.parse(JSON.stringify(this.doughnutChartData));
+  // clone[0].data = data;
+  this.doughnutChartData = this.Googleanalyticsnumbers;
+  // console.log(this.doughnutChartData);
 }
 
 

@@ -1,7 +1,10 @@
 import { Renderer2, ElementRef, AfterViewInit, HostBinding, Component, ViewChild, OnInit, OnDestroy, HostListener } from '@angular/core';
 import {
   AccountApi,
-  Account
+  Account,
+  Logger,
+  LoggerApi,
+  CompanyApi
 } from './shared/';
 import { DomSanitizer } from '@angular/platform-browser';
 import { MatIconRegistry } from '@angular/material';
@@ -10,6 +13,7 @@ import { map, distinctUntilChanged, share, filter, throttleTime, pairwise } from
 import { fromEvent, Observable } from 'rxjs';
 import { PwaService } from './pwa.service';
 import { SwUpdate } from '@angular/service-worker';
+import {MatBottomSheet, MatBottomSheetRef} from '@angular/material/bottom-sheet';
 
 import {
   BASE_URL,
@@ -42,6 +46,9 @@ export class AppComponent implements AfterViewInit {
   public Account: Account = new Account();
   public position = false;
   public elementRef: ElementRef;
+  public showmessages = false;
+  public messagecount: number;
+  public logger: Logger[];
 
   // listenFunc will hold the function returned by "renderer.listen"
   listenFunc: Function;
@@ -50,6 +57,8 @@ export class AppComponent implements AfterViewInit {
   globalListenFunc: Function;
 
   constructor(
+    private _bottomSheet: MatBottomSheet,
+    private CompanyApi: CompanyApi,
     public Pwa: PwaService,
     elementRef: ElementRef,
     private renderer: Renderer2,
@@ -120,11 +129,30 @@ export class AppComponent implements AfterViewInit {
 
     LoopBackConfig.setBaseURL(BASE_URL);
     LoopBackConfig.setApiVersion(API_VERSION);
+    this.getLogs()
   }
 
+  openBottomSheet(): void {
+    this._bottomSheet.open(BottomSheetLogOverview, {
+      data: { logger: this.logger, account: this.Account },
+      panelClass: 'bottom-sheet'
+    });
+  }
 
   public teststyle = {
     "background-color": "red"
+  }
+
+  getLogs(): void {
+    this.accountApi.getCurrent().subscribe((account: Account) => {
+      this.Account = account,
+    this.CompanyApi.getLogger(this.Account.companyId,
+      {order: 'id DESC'}).subscribe((logger: Logger[]) => {
+      this.logger = logger;
+      this.messagecount = this.logger.length;
+      console.log(this.messagecount, this.logger);
+      });
+    });
   }
 
   public logout(): void {
@@ -148,6 +176,7 @@ export class AppComponent implements AfterViewInit {
       map(([y1, y2]): Direction => (y2 < y1 ? Direction.Up : Direction.Down)),
       distinctUntilChanged(),
       share()
+      
     );
 
     const goingUp$ = scroll$.pipe(
@@ -167,4 +196,38 @@ export class AppComponent implements AfterViewInit {
   }
 
 
+}
+
+import { Inject} from '@angular/core';
+import {MAT_BOTTOM_SHEET_DATA} from '@angular/material/bottom-sheet';
+
+@Component({
+  selector: 'bottom-sheet-Log-Overview',
+  templateUrl: 'bottom-sheet-logoverview.html',
+})
+export class BottomSheetLogOverview  {
+  
+  public logger: Logger[];
+  public Account: Account;
+
+  constructor(
+    @Inject(MAT_BOTTOM_SHEET_DATA) public data: any,
+    private CompanyApi: CompanyApi,
+    private _bottomSheetRef: MatBottomSheetRef<BottomSheetLogOverview>) {}
+
+  openLink(event: MouseEvent): void {
+    this._bottomSheetRef.dismiss();
+    event.preventDefault();
+  }
+
+  ngOnInit(){
+    this.logger = this.data.logger;
+    this.Account = this.data.account;
+    console.log('logs', this.logger)
+  }
+
+  deleteLog(i): void {
+    this.CompanyApi.destroyByIdLogger(this.Account.companyId, this.logger[i].id)
+      .subscribe(res => { this.logger.splice(i, 1) });
+  }
 }

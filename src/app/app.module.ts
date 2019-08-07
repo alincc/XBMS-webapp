@@ -9,7 +9,7 @@ import { MatMenuModule, MatButtonModule, MatCheckboxModule,
 import { MatSelectModule, MatNativeDateModule, MatTableModule,
   MatProgressSpinnerModule, MatTabsModule, MatTooltipModule } from '@angular/material';
 import { MatInputModule, MatCardModule, MatToolbarModule, MatAutocompleteModule } from '@angular/material';
-import { MatIconModule, MatExpansionModule, MatListModule, MatSlideToggleModule } from '@angular/material';
+import { MatIconModule, MatExpansionModule, MatListModule, MatSlideToggleModule} from '@angular/material';
 import {MatBadgeModule} from '@angular/material/badge';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import {MatGridListModule} from '@angular/material/grid-list';
@@ -17,7 +17,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatChipsModule } from '@angular/material/chips';
 
 import { HttpClientModule } from '@angular/common/http';
-import { AppComponent } from './app.component';
+import { AppComponent, BottomSheetLogOverview  } from './app.component';
 import { RelationComponent } from './relation/relation.component';
 import { MarketingComponent } from './marketing/marketing.component';
 import { SettingsComponent } from './settings/settings.component';
@@ -68,22 +68,24 @@ import { TextEditorDialog } from './marketing/maileditor/texteditordialog.compon
 import {DragDropModule} from '@angular/cdk/drag-drop';
 import { ColorPickerModule } from 'ngx-color-picker';
 import { FileuploadComponent, dialoggallerycomponent } from './shared/fileupload/fileupload.component';
+import { VideouploadComponent, dialogvideogallerycomponent } from './shared/videoupload/videoupload.component';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { SafeHtml } from './pipe/safehtmlpipe.component';
 import { MarketingpromotionsComponent } from './marketing/marketingpromotions/marketingpromotions.component';
 import { MarketingpublicationsComponent } from './marketing/marketingpublications/marketingpublications.component';
 import { ImagecreatorComponent } from './marketing/imagecreator/imagecreator.component';
 import { AngularDraggableModule } from 'angular2-draggable';
-import { VideouploadComponent } from './shared/videoupload/videoupload.component';
 import { VgCoreModule } from 'videogular2/compiled/core';
 import { VgControlsModule } from 'videogular2/compiled/controls';
-import { VgOverlayPlayModule } from 'videogular2/compiled//overlay-play';
-import { VgBufferingModule } from 'videogular2/compiled//buffering';
+import { VgOverlayPlayModule } from 'videogular2/compiled/overlay-play';
+import { VgBufferingModule } from 'videogular2/compiled/buffering';
+import {MatBottomSheetModule} from '@angular/material/bottom-sheet';
 
 @NgModule({
   declarations: [
     SpeedDialFabComponent,
     XlsxFileUploadComponent,
+    BottomSheetLogOverview,
     AppComponent,
     RelationComponent,
     MarketingComponent,
@@ -101,6 +103,7 @@ import { VgBufferingModule } from 'videogular2/compiled//buffering';
     MaileditorComponent,
     FileuploadComponent,
     dialoggallerycomponent,
+    dialogvideogallerycomponent,
     TextEditorDialog,
     WordpressUploadDialogComponent,
     SafeHtml,
@@ -111,7 +114,9 @@ import { VgBufferingModule } from 'videogular2/compiled//buffering';
   ],
 
    entryComponents: [
+    BottomSheetLogOverview,
     dialoggallerycomponent,
+    dialogvideogallerycomponent,
     ConfirmDialog,
     TextEditorDialog,
     RandomDialog,
@@ -119,6 +124,7 @@ import { VgBufferingModule } from 'videogular2/compiled//buffering';
   ],
 
   imports: [
+    MatBottomSheetModule,
     VgCoreModule,
     VgControlsModule,
     VgOverlayPlayModule,

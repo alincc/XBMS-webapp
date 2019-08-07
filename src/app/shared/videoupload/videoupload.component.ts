@@ -28,23 +28,24 @@ export class VideouploadComponent implements OnInit {
 
   uploader: FileUploader;
   errorMessage: string;
-  allowedMimeType = ['image/png', 'image/jpg', 'image/jpeg', 'image/gif'];
-  maxFileSize = 10 * 1024 * 1024;
+  allowedMimeType = ['video/mp4', 'video/mpeg4', 'video/mov', 'video/avi', 'video/wmv'];
+  maxFileSize = 100 * 1024 * 1024;
   public hasBaseDropZoneOver = false;
   public hasAnotherDropZoneOver = false;
   public PlainGalleryConfig: PlainGalleryConfig;
   public customButtonsConfig: ButtonsConfig;
   public ButtonEvent: ButtonEvent;
   public PreviewConfig: PreviewConfig;
-  public ImageModalEvent: ImageModalEvent
+  //public ImageModalEvent: ImageModalEvent
   // public buttonsConfigFull: ButtonsConfig;
-  public images: Image[] = [];
-  public imagesNew: Image[] = [];
+  // public images: Image[] = [];
+  // public imagesNew: Image[] = [];
   public Files: Files[];
   public newFiles: Files = new Files();
   public showdropbox = true;
   public showgallery = false;
   public selectedimage;
+  public videos = [];
 
 
   @Input('option') option: Relations; //get id for image gallery
@@ -68,19 +69,12 @@ export class VideouploadComponent implements OnInit {
     });
     this.uploader.onWhenAddingFileFailed = (item, filter, options) => this.onWhenAddingFileFailed(item, filter, options);
     this.uploader.clearQueue();
-    this.relationsApi.getFiles(this.option.id).subscribe((files: Files[]) => {
-      this.Files = files,
-        this.Files.forEach((file, index) => {
-          // console.log(file, index);
-          let ext = file.name.split('.').pop();
-          if (ext === 'gif' || ext === "jpeg" || ext === "jpg" || ext === "bmp" || ext === "png") {
-            const modalImage = { img: BASE_URL + '/api/Containers/' + this.option.id + '/download/' + file.name };
-            const modal = new Image(index, modalImage, null)
-            this.imagesNew.push(modal)
-          }
-        }),
-        this.images = this.imagesNew;
-    });
+    this.relationsApi.getFiles(this.option.id,
+      {
+        where: { type: 'video' }
+      }).subscribe((files: Files[]) => {
+        this.videos = files
+      });
 
     this.uploader.onAfterAddingAll = (files) => {
       files.forEach(fileItem => {
@@ -121,9 +115,9 @@ export class VideouploadComponent implements OnInit {
     }
 
     // console.log(this.imagesNew)
-    const dialogRef = this.dialog.open(dialoggallerycomponent, {
+    const dialogRef = this.dialog.open(dialogvideogallerycomponent, {
       width: '600px',
-      data: { img: this.images, selected: this.selectedimage }
+      data: { img: this.videos, selected: this.selectedimage }
     });
     dialogRef.afterClosed().subscribe(result => {
       console.log('The dialog was closed', result);
@@ -158,7 +152,7 @@ export class VideouploadComponent implements OnInit {
       this.newFiles.name = name,
       this.newFiles.url = imgurl,
       this.newFiles.createdate = new Date(),
-      this.newFiles.type = 'marketing',
+      this.newFiles.type = 'video',
       this.newFiles.companyId = this.account.companyId,
       // check if container exists and create
       this.ContainerApi.findById(this.option.id)
@@ -190,14 +184,14 @@ export class VideouploadComponent implements OnInit {
   styleUrls: ['./videoupload.component.scss']
 })
 
-export class dialoggallerycomponent implements OnInit {
+export class dialogvideogallerycomponent implements OnInit {
 
   public existingIcons = [];
   public video = [];
   public existingIsoIcons = [];
 
   constructor(
-    public dialogRef: MatDialogRef<dialoggallerycomponent>,
+    public dialogRef: MatDialogRef<dialogvideogallerycomponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData) { }
 
   ngOnInit() {

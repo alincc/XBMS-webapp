@@ -157,6 +157,13 @@ html,body {
   color: white;
 }
 
+.messagebutton {
+  bottom: 5px;
+  right: 5px;
+  position:absolute;
+  z-index: 12;
+}
+
 
 .logobox{
   border-bottom-left-radius: 130px * 10;
@@ -296,5 +303,16 @@ p {
 
 p:hover {
   background-color: whitesmoke;
+}
+
+.websitedata{
+  margin-top: 1px;
+  vertical-align: top;
+  table-layout: fixed;
+  width: 100%;
+}
+
+.bottom-sheet {
+  height: 200px;
 }
 

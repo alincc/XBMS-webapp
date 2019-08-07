@@ -1,11 +1,4 @@
-
-
-<div
-  fxLayout="column"
-  fxLayoutWrap="wrap"
-  fxLayoutAlign="space-around"
-  class="home-wrapper"
->
+<div fxLayout="column" fxLayoutWrap="wrap" fxLayoutAlign="space-around" class="home-wrapper">
 
   <div fxFlex="100%" fxLayout="column">
     <mat-card>
@@ -18,7 +11,9 @@
             </td>
           </tr>
           <tr>
-            <td><mat-icon>work</mat-icon> {{ Account.companyname }}</td>
+            <td>
+              <mat-icon>work</mat-icon> {{ Account.companyname }}
+            </td>
           </tr>
           <tr>
             <td>
@@ -28,32 +23,19 @@
           </tr>
         </div>
 
-    
+
 
         <div fxFlex class="selectrelation">
           <tr>
             <td>
               <mat-form-field class="selectboxheader">
-                <input
-                  type="text"
-                  placeholder="Select Relation"
-                  aria-label="relation"
-                  matInput
-                  [formControl]="myControl"
-                  [matAutocomplete]="auto"
-                />
-                <mat-autocomplete
-                  #auto="matAutocomplete"
-                  [displayWith]="displayFn"
-                >
-                  <mat-option
-                    *ngFor="
+                <input type="text" placeholder="Select Relation" aria-label="relation" matInput
+                  [formControl]="myControl" [matAutocomplete]="auto" />
+                <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+                  <mat-option *ngFor="
                       let option of filteredOptions | async;
                       let i = index
-                    "
-                    [value]="option"
-                    (blur)="getAnalyticsAccounts(option, i)"
-                  >
+                    " [value]="option" (blur)="getAnalyticsAccounts(option, i)">
                     {{ option.relationname }}
                   </mat-option>
                 </mat-autocomplete>
@@ -63,16 +45,9 @@
           <tr>
             <td>
               <mat-form-field class="selectboxheader">
-                <mat-select
-                  [(ngModel)]="selectedanalytics.name"
-                  placeholder="GA Account"
-                  class="InputField"
-                  (blur)="buildDashboard()"
-                >
-                  <mat-option
-                    *ngFor="let selectedanalytics of GoogleanalyticsModel"
-                    [value]="selectedanalytics"
-                  >
+                <mat-select [(ngModel)]="selectedanalytics.name" placeholder="GA Account" class="InputField"
+                  (blur)="buildDashboard()">
+                  <mat-option *ngFor="let selectedanalytics of GoogleanalyticsModel" [value]="selectedanalytics">
                     {{ selectedanalytics.name }}
                   </mat-option>
                 </mat-select>
@@ -84,26 +59,16 @@
     </mat-card>
   </div>
 
-  <div
-    fxLayout
-    fxLayout="column"
-    fxLayoutWrap="wrap"
-    fxLayoutAlign="space-around"
-  >
+  <div fxLayout fxLayout="column" fxLayoutWrap="wrap" fxLayoutAlign="space-around">
     <div fxFlex="5%">
       <td>
         <h3 class="mat-h3">Selected Account: {{ option.relationname }}</h3>
       </td>
     </div>
 
-    <div
-      fxFlex="30%"
-      fxLayout.lt-md="column"
-      fxLayout="row"
-      fxLayoutWrap="wrap"
-      fxLayoutAlign="space-around"
-    >
-      <div fxFlex="40%" class="innerfollowup">
+    <div fxFlex="30%" fxLayout.lt-md="column" fxLayout="row" fxLayoutWrap="wrap" fxLayoutAlign="space-around">
+        <div fxFlex="40%" class="innerfollowup"></div>
+      <!-- <div fxFlex="40%" class="innerfollowup">
         <a
           mat-mini-fab
           color="primary"
@@ -168,25 +133,16 @@
             <mat-divider></mat-divider>
           </tr>
         </table>
-      </div>
+      </div> -->
 
       <div fxFlex="50%" class="innerfollowup">
-        <a
-          mat-mini-fab
-          color="primary"
-          style="float: right;"
-          (click)="getAdsMailing()"
-        >
+        <a mat-mini-fab color="primary" style="float: right;" (click)="getAdsMailing()">
           <mat-icon>refresh</mat-icon>
         </a>
         <label class="mat-h4">Scheduled Mailings, Ads and Articles</label>
         <mat-divider></mat-divider>
         <table class="websitedata">
-          <tr
-            fxLayout="column"
-            fxLayoutWrap="wrap"
-            fxLayoutAlign="space-around"
-          >
+          <tr fxLayout="column" fxLayoutWrap="wrap" fxLayoutAlign="space-around">
             <mat-list-item>
               <th fxFlex="20%" class="thwebsitetr">
                 <label class="followuplist">Campaign</label>
@@ -205,12 +161,8 @@
               </th>
             </mat-list-item>
           </tr>
-          <tr
-            fxLayout="column"
-            fxLayoutWrap="wrap"
-            fxLayoutAlign="space-around"
-            *ngFor="let Mailing of Mailing; let i = index"
-          >
+          <tr fxLayout="column" fxLayoutWrap="wrap" fxLayoutAlign="space-around"
+            *ngFor="let Mailing of Mailing; let i = index">
             <mat-list-item>
               <td fxFlex="20%" class="tdwebsitetr">
                 <label class="followuplist">{{
@@ -240,13 +192,8 @@
       </div>
     </div>
 
-    <div
-      fxFlex="30%"
-      fxLayout.lt-md="column"
-      fxLayout="row"
-      fxLayoutWrap="wrap"
-      fxLayoutAlign="space-around"
-    >
+    <!-- fxLayout.lt-md="column" -->
+    <div fxFlex="30%" fxLayout="row" fxLayoutWrap="wrap" fxLayoutAlign="space-around">
       <div fxFlex="40%" class="innerfollowup">
         <label class="mat-h4">Follow Up</label>
         <mat-divider></mat-divider>
@@ -271,11 +218,8 @@
                     }}</label>
                   </td>
                   <td class="td4">
-                    <mat-checkbox
-                      class="followuplist"
-                      (click)="changeFollowUp(i)"
-                      [(ngModel)]="Calls.followupdone"
-                    ></mat-checkbox>
+                    <mat-checkbox class="followuplist" (click)="changeFollowUp(i)" [(ngModel)]="Calls.followupdone">
+                    </mat-checkbox>
                   </td>
                 </mat-list-item>
                 <mat-divider></mat-divider>
@@ -286,22 +230,13 @@
       </div>
 
       <div fxFlex="50%" class="innerfollowup">
-        <a
-          mat-mini-fab
-          color="primary"
-          style="float: right;"
-          (click)="getWebsiteTracker()"
-        >
+        <a mat-mini-fab color="primary" style="float: right;" (click)="getWebsiteTracker()">
           <mat-icon>refresh</mat-icon>
         </a>
         <label class="mat-h4">Website Visitors</label>
         <mat-divider></mat-divider>
         <table class="websitedata">
-          <tr
-            fxLayout="column"
-            fxLayoutWrap="wrap"
-            fxLayoutAlign="space-around"
-          >
+          <tr fxLayout="column" fxLayoutWrap="wrap" fxLayoutAlign="space-around">
             <mat-list-item>
               <th fxFlex="25%" class="thwebsitetr">
                 <label class="followuplist">Source</label>
@@ -320,12 +255,8 @@
               </th>
             </mat-list-item>
           </tr>
-          <tr
-            fxLayout="column"
-            fxLayoutWrap="wrap"
-            fxLayoutAlign="space-around"
-            *ngFor="let Websitetracker of Websitetracker; let i = index"
-          >
+          <tr fxLayout="column" fxLayoutWrap="wrap" fxLayoutAlign="space-around"
+            *ngFor="let Websitetracker of Websitetracker; let i = index">
             <mat-list-item>
               <td fxFlex="23%" class="tdwebsitetr">
                 <label class="followuplist">{{
@@ -346,9 +277,7 @@
                 }}</label>
               </td>
               <td fxFlex="8%">
-                <label (click)="markisp(i)" style="font-size: 6pt"
-                  >Mark isp</label
-                >
+                <label (click)="markisp(i)" style="font-size: 6pt">Mark isp</label>
               </td>
             </mat-list-item>
             <mat-divider></mat-divider>
@@ -357,28 +286,14 @@
       </div>
     </div>
 
-    <div
-      fxFlex="30%"
-      fxLayout.lt-md="column"
-      fxLayout="row"
-      fxLayoutWrap="wrap"
-      fxLayoutAlign="space-around"
-    >
+    <div fxFlex="30%" fxLayout.lt-md="column" fxLayout="row" fxLayoutWrap="wrap" fxLayoutAlign="space-around">
       <div fxFlex="40%" class="doubleflex">
         <label class="mat-h4">Total Activities</label>
         <mat-divider></mat-divider>
         <div>
-          <canvas
-            baseChart
-            #baseChartBar="base-chart"
-            [datasets]="barChartData"
-            [labels]="barChartLabels"
-            [options]="barChartOptions"
-            [legend]="barChartLegend"
-            [chartType]="barChartType"
-            (chartHover)="chartHovered($event)"
-            (chartClick)="chartClicked($event)"
-          ></canvas>
+          <canvas baseChart #baseChartBar="base-chart" [datasets]="barChartData" [labels]="barChartLabels"
+            [options]="barChartOptions" [legend]="barChartLegend" [chartType]="barChartType"
+            (chartHover)="chartHovered($event)" (chartClick)="chartClicked($event)"></canvas>
         </div>
       </div>
 
@@ -391,27 +306,12 @@
         <label class="mat-h4">Email Activities</label>
         <mat-divider></mat-divider>
         <div style="display: block">
-          <canvas
-            baseChart
-            #baseMailChart="base-chart"
-            [datasets]="MailChartData"
-            [labels]="MailChartLabels"
-            [options]="MailChartOptions"
-            [legend]="MailChartLegend"
-            [chartType]="MailChartType"
-            (chartHover)="MailChartHovered($event)"
-            (chartClick)="MailChartClicked($event)"
-          ></canvas>
-          <mat-select
-            style="width: 200px; height: 50px;"
-            placeholder="Select timeframe"
-            [(value)]="mailStatsTimeSelected"
-          >
-            <mat-option
-              *ngFor="let mailStatsTime of mailStatsTime"
-              [value]="mailStatsTime"
-              (blur)="getMailStats()"
-            >
+          <canvas baseChart #baseMailChart="base-chart" [datasets]="MailChartData" [labels]="MailChartLabels"
+            [options]="MailChartOptions" [legend]="MailChartLegend" [chartType]="MailChartType"
+            (chartHover)="MailChartHovered($event)" (chartClick)="MailChartClicked($event)"></canvas>
+          <mat-select style="width: 200px; height: 50px;" placeholder="Select timeframe"
+            [(value)]="mailStatsTimeSelected">
+            <mat-option *ngFor="let mailStatsTime of mailStatsTime" [value]="mailStatsTime" (blur)="getMailStats()">
               {{ mailStatsTime.viewValue }}
             </mat-option>
           </mat-select>
@@ -419,26 +319,14 @@
       </div>
     </div>
 
-    <div
-      fxFlex="30%"
-      fxLayout.lt-md="column"
-      fxLayout="row"
-      fxLayoutWrap="wrap"
-      fxLayoutAlign="space-around"
-    >
+    <div fxFlex="30%" fxLayout.lt-md="column" fxLayout="row" fxLayoutWrap="wrap" fxLayoutAlign="space-around">
       <div fxFlex="40%" class="doubleflex">
         <label class="mat-h4">Website Source</label>
         <mat-divider></mat-divider>
         <div>
-          <canvas
-            baseChart
-            #baseChartDoughnut="base-chart"
-            [data]="doughnutChartData"
-            [labels]="doughnutChartLabels"
-            [chartType]="doughnutChartType"
-            (chartHover)="chartHovered2($event)"
-            (chartClick)="chartClicked2($event)"
-          ></canvas>
+          <canvas baseChart #baseChartDoughnut="base-chart" [data]="doughnutChartData" [labels]="doughnutChartLabels"
+            [chartType]="doughnutChartType" (chartHover)="chartHovered2($event)"
+            (chartClick)="chartClicked2($event)"></canvas>
         </div>
       </div>
 
@@ -447,6 +335,12 @@
         <mat-divider></mat-divider>
         <!-- <ngx-charts-tree-map [view]="view" [scheme]="colorScheme" [results]="googleanalyticsreturn">
         </ngx-charts-tree-map> -->
+                <canvas baseChart
+                  [data]="doughnutChartData"
+                  [labels]="doughnutChartLabels"
+                  [legend]="polarAreaLegend"
+                  [chartType]="polarAreaChartType">
+                </canvas>
       </div>
     </div>
 
@@ -454,18 +348,9 @@
       <label class="mat-h4">Website Visitors by Day</label>
       <mat-divider></mat-divider>
       <div class="singleflex">
-        <canvas
-          baseChart
-          #baseChartLine="base-chart"
-          [datasets]="lineChartData"
-          [labels]="lineChartLabels"
-          [options]="lineChartOptions"
-          [colors]="lineChartColors"
-          [legend]="lineChartLegend"
-          [chartType]="lineChartType"
-          (chartHover)="chartHovered($event)"
-          (chartClick)="chartClicked($event)"
-        ></canvas>
+        <canvas baseChart #baseChartLine="base-chart" [datasets]="lineChartData" [labels]="lineChartLabels"
+          [options]="lineChartOptions" [colors]="lineChartColors" [legend]="lineChartLegend" [chartType]="lineChartType"
+          (chartHover)="chartHovered($event)" (chartClick)="chartClicked($event)"></canvas>
       </div>
     </div>
 
@@ -473,42 +358,32 @@
       <label class="mat-h4">Website Visitors by Region</label>
       <mat-divider></mat-divider>
       <div class="singleflex">
-        <canvas
-          baseChart
-          #baseChartBar2="base-chart"
-          [datasets]="barChart2Data"
-          [labels]="barChart2Labels"
-          [options]="barChart2Options"
-          [legend]="barChart2Legend"
-          [chartType]="barChart2Type"
-          (chartHover)="chart2Hovered($event)"
-          [colors]="barChart2Colors"
-          (chartClick)="chart2Clicked($event)"
-        ></canvas>
+        <canvas baseChart #baseChartBar2="base-chart" [datasets]="barChart2Data" [labels]="barChart2Labels"
+          [options]="barChart2Options" [legend]="barChart2Legend" [chartType]="barChart2Type"
+          (chartHover)="chart2Hovered($event)" [colors]="barChart2Colors" (chartClick)="chart2Clicked($event)"></canvas>
       </div>
     </div>
 
-    <div
-    fxFlex="30%"
-       fxLayout="row"
-    fxLayoutWrap="wrap"
-    fxLayoutAlign="space-around">
+    <div fxFlex="30%" fxLayout="row" fxLayoutWrap="wrap" fxLayoutAlign="space-around">
 
-    <div fxFlex="40%" class="doubleflex">
-      <label class="mat-h4">Twitter Accounts</label>
-      <mat-divider></mat-divider>
-      <ngx-twitter-timeline 
-      [data]=twitterselected
-      [opts]="{tweetLimit: 5}"></ngx-twitter-timeline>
-    </div>
+      <div fxFlex="40%" class="doubleflex">
+        <label class="mat-h4">Twitter Accounts</label>
+        <mat-divider></mat-divider>
+        <ngx-twitter-timeline [data]=twitterselected [opts]="{tweetLimit: 5}"></ngx-twitter-timeline>
+      </div>
 
-    <div fxFlex="40%" class="doubleflex">
+      <div fxFlex="40%" class="doubleflex">
         <label class="mat-h4">Facebook Accounts</label>
         <mat-divider></mat-divider>
-        <div class="fb-page" data-href="https://www.facebook.com/XBmarketingServices/" data-tabs="timeline" data-width="400" data-height="800" data-small-header="false" data-adapt-container-width="true" data-hide-cover="false" data-show-facepile="true"><blockquote cite="https://www.facebook.com/XBmarketingServices/" class="fb-xfbml-parse-ignore"><a href="https://www.facebook.com/XBmarketingServices/">XBMS</a></blockquote></div>
+        <div class="fb-page" data-href="https://www.facebook.com/XBmarketingServices/" data-tabs="timeline"
+          data-width="400" data-height="800" data-small-header="false" data-adapt-container-width="true"
+          data-hide-cover="false" data-show-facepile="true">
+          <blockquote cite="https://www.facebook.com/XBmarketingServices/" class="fb-xfbml-parse-ignore"><a
+              href="https://www.facebook.com/XBmarketingServices/">XBMS</a></blockquote>
+        </div>
+      </div>
+
+
+
     </div>
-
-
-
   </div>
-</div>

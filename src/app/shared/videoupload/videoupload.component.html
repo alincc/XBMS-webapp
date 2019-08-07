@@ -2,7 +2,7 @@
     <div *ngIf="showdropbox">
         <div ng2FileDrop [ngClass]="{'drop-zone-over': hasBaseDropZoneOver}" (fileOver)="fileOverBase($event)"
             [uploader]="uploader" class="drop-zone">
-            Drop Image Here
+            Drop video here
         </div>
         <input type="file" ng2FileSelect [uploader]="uploader" />
         <div *ngIf="errorMessage">{{errorMessage}}</div>
@@ -47,6 +47,6 @@
 
     </div>
     <button matTooltip="Open gallery" class="deletepicture" mat-mini-fab color="primary" (click)="onOpenGallery()">
-        <mat-icon> add_photo_alternate</mat-icon>
+        <mat-icon>ondemand_video</mat-icon>
     </button>
 </div>

@@ -2,8 +2,8 @@
 
 
 
-  <speed-dial-fab matTooltip="Add new message" class="speed-dial-container"
-    [reverse-column-direction]="true" (fabClick)="onSpeedDialFabClicked($event)" [buttons]="speedDialFabButtons">
+  <speed-dial-fab matTooltip="Add new message" class="speed-dial-container" [reverse-column-direction]="true"
+    (fabClick)="onSpeedDialFabClicked($event)" [buttons]="speedDialFabButtons">
   </speed-dial-fab>
 
   <div fxLayout="row">
@@ -226,14 +226,49 @@
               </td>
             </tr>
             <tr>
-              <div *ngIf="selectedChannel.pictureurl">
-                <img [src]="selectedChannel.pictureurl" class="carouselimages">
-                <mat-icon (click)="selectedChannel.pictureurl = ''" class="icon-label" class="iconsize-12">
-                  delete</mat-icon>
-              </div>
-              <app-fileupload *ngIf="!selectedChannel.pictureurl" [account]="account" [option]="option"
-                (imgurl)="setImage($event)">
-              </app-fileupload>
+                <mat-accordion>
+                    <mat-expansion-panel>
+                      <mat-expansion-panel-header>
+                        <mat-panel-title>
+                          <div>
+                              <mat-icon>videocam</mat-icon>
+                              <mat-icon>crop_original</mat-icon>
+                              Add media
+                          </div>
+                        </mat-panel-title>
+                      </mat-expansion-panel-header>
+                      <table>
+                        <tr>
+                          <td>
+                            <div *ngIf="selectedChannel.pictureurl && !selectedChannel.videourl">
+                              <img [src]="selectedChannel.pictureurl" class="carouselimages">
+                              <mat-icon (click)="selectedChannel.pictureurl = ''" class="icon-label" class="iconsize-12">
+                                delete</mat-icon>
+                            </div>
+                            <app-fileupload *ngIf="!selectedChannel.pictureurl && !selectedChannel.videourl"
+                              [account]="Account" [option]="option" (imgurl)="setImage($event)">
+                            </app-fileupload>
+                          </td>
+                          <td>
+                            <div *ngIf="selectedChannel.videourl && !selectedChannel.pictureurl"
+                              style="max-width: 600px;">
+                              <vg-player style="max-width: 600px;">
+                                <video [vgMedia]="media" #media id="singleVideo" preload="auto" controls
+                                  style="max-width: 600px;">
+                                  <source [src]="selectedChannel.videourl" type="video/mp4">
+                                </video>
+                              </vg-player>
+                              <mat-icon (click)="selectedChannel.videourl = ''" class="icon-label" class="iconsize-12">
+                                delete</mat-icon>
+                            </div>
+                            <app-videoupload *ngIf="!selectedChannel.videourl && !selectedChannel.pictureurl"
+                              [account]="Account" [option]="option" (imgurl)="setVideo($event)">
+                            </app-videoupload>
+                          </td>
+                        </tr>
+                      </table>
+                    </mat-expansion-panel>
+                  </mat-accordion>
             </tr>
             <tr>
               <td>
@@ -439,14 +474,49 @@
               </td>
             </tr>
             <tr>
-              <div *ngIf="selectedChannel.pictureurl">
-                <img [src]="selectedChannel.pictureurl" class="carouselimages">
-                <mat-icon (click)="selectedChannel.pictureurl = ''" class="icon-label" class="iconsize-12">
-                  delete</mat-icon>
-              </div>
-              <app-fileupload *ngIf="!selectedChannel.pictureurl" [account]="account" [option]="option"
-                (imgurl)="setImage($event)">
-              </app-fileupload>
+                <mat-accordion>
+                    <mat-expansion-panel>
+                      <mat-expansion-panel-header>
+                        <mat-panel-title>
+                          <div>
+                              <mat-icon>videocam</mat-icon>
+                              <mat-icon>crop_original</mat-icon>
+                              Add media
+                          </div>
+                        </mat-panel-title>
+                      </mat-expansion-panel-header>
+                      <table>
+                        <tr>
+                          <td>
+                            <div *ngIf="selectedChannel.pictureurl && !selectedChannel.videourl">
+                              <img [src]="selectedChannel.pictureurl" class="carouselimages">
+                              <mat-icon (click)="selectedChannel.pictureurl = ''" class="icon-label" class="iconsize-12">
+                                delete</mat-icon>
+                            </div>
+                            <app-fileupload *ngIf="!selectedChannel.pictureurl && !selectedChannel.videourl"
+                              [account]="Account" [option]="option" (imgurl)="setImage($event)">
+                            </app-fileupload>
+                          </td>
+                          <td>
+                            <div *ngIf="selectedChannel.videourl && !selectedChannel.pictureurl"
+                              style="max-width: 600px;">
+                              <vg-player style="max-width: 600px;">
+                                <video [vgMedia]="media" #media id="singleVideo" preload="auto" controls
+                                  style="max-width: 600px;">
+                                  <source [src]="selectedChannel.videourl" type="video/mp4">
+                                </video>
+                              </vg-player>
+                              <mat-icon (click)="selectedChannel.videourl = ''" class="icon-label" class="iconsize-12">
+                                delete</mat-icon>
+                            </div>
+                            <app-videoupload *ngIf="!selectedChannel.videourl && !selectedChannel.pictureurl"
+                              [account]="Account" [option]="option" (imgurl)="setVideo($event)">
+                            </app-videoupload>
+                          </td>
+                        </tr>
+                      </table>
+                    </mat-expansion-panel>
+                  </mat-accordion>
             </tr>
             <tr>
               <td>
@@ -644,14 +714,49 @@
               </td>
             </tr>
             <tr>
-              <div *ngIf="selectedChannel.pictureurl">
-                <img [src]="selectedChannel.pictureurl" class="carouselimages">
-                <mat-icon (click)="selectedChannel.pictureurl = ''" class="icon-label" class="iconsize-12">
-                  delete</mat-icon>
-              </div>
-              <app-fileupload *ngIf="!selectedChannel.pictureurl" [account]="account" [option]="option"
-                (imgurl)="setImage($event)">
-              </app-fileupload>
+                <mat-accordion>
+                    <mat-expansion-panel>
+                      <mat-expansion-panel-header>
+                        <mat-panel-title>
+                          <div>
+                              <mat-icon>videocam</mat-icon>
+                              <mat-icon>crop_original</mat-icon>
+                              Add media
+                          </div>
+                        </mat-panel-title>
+                      </mat-expansion-panel-header>
+                      <table>
+                        <tr>
+                          <td>
+                            <div *ngIf="selectedChannel.pictureurl && !selectedChannel.videourl">
+                              <img [src]="selectedChannel.pictureurl" class="carouselimages">
+                              <mat-icon (click)="selectedChannel.pictureurl = ''" class="icon-label" class="iconsize-12">
+                                delete</mat-icon>
+                            </div>
+                            <app-fileupload *ngIf="!selectedChannel.pictureurl && !selectedChannel.videourl"
+                              [account]="Account" [option]="option" (imgurl)="setImage($event)">
+                            </app-fileupload>
+                          </td>
+                          <td>
+                            <div *ngIf="selectedChannel.videourl && !selectedChannel.pictureurl"
+                              style="max-width: 600px;">
+                              <vg-player style="max-width: 600px;">
+                                <video [vgMedia]="media" #media id="singleVideo" preload="auto" controls
+                                  style="max-width: 600px;">
+                                  <source [src]="selectedChannel.videourl" type="video/mp4">
+                                </video>
+                              </vg-player>
+                              <mat-icon (click)="selectedChannel.videourl = ''" class="icon-label" class="iconsize-12">
+                                delete</mat-icon>
+                            </div>
+                            <app-videoupload *ngIf="!selectedChannel.videourl && !selectedChannel.pictureurl"
+                              [account]="Account" [option]="option" (imgurl)="setVideo($event)">
+                            </app-videoupload>
+                          </td>
+                        </tr>
+                      </table>
+                    </mat-expansion-panel>
+                  </mat-accordion>
             </tr>
             <tr>
               <td fxflex>
@@ -693,18 +798,18 @@
 
 
       <!-- Form Instagram_______________________________ -->
-      <mat-card *ngIf="instagramtoggle"> 
+      <mat-card *ngIf="instagramtoggle">
         <!-- on-focusout="saveChannel()" -->
         <mat-card-content>
           <table style="width: 100%">
-              <tr>
-                  <td>
-                    <mat-form-field class="form-full-width">
-                      <input matInput [disabled]="selectedChannel.send" [(ngModel)]=selectedChannel.title
-                        placeholder="Title" class="InputField">
-                    </mat-form-field>
-                  </td>
-                </tr>
+            <tr>
+              <td>
+                <mat-form-field class="form-full-width">
+                  <input matInput [disabled]="selectedChannel.send" [(ngModel)]=selectedChannel.title
+                    placeholder="Title" class="InputField">
+                </mat-form-field>
+              </td>
+            </tr>
             <tr *ngIf="!selectedChannel.send">
               <mat-accordion>
                 <mat-expansion-panel>
@@ -851,29 +956,51 @@
             </tr>
             <tr>
               <td>
-                  <div *ngIf="selectedChannel.pictureurl">
-                      <img [src]="selectedChannel.pictureurl" class="carouselimages">
-                      <mat-icon (click)="selectedChannel.pictureurl = ''" class="icon-label" class="iconsize-12">
-                        delete</mat-icon>
-                    </div>
-                    <app-fileupload *ngIf="!selectedChannel.pictureurl" [account]="account" [option]="option"
-                      (imgurl)="setImage($event)">
-                    </app-fileupload>
-           
-                  <div *ngIf="selectedChannel.videourl">
-                    <vg-player>
-                      <video [vgMedia]="media" #media id="singleVideo" preload="auto" controls>
-                          <source src="selectedChannel.videourl" type="video/mp4">
-                      </video>
-                  </vg-player>
-                      <mat-icon (click)="selectedChannel.videourl = ''" class="icon-label" class="iconsize-12">
-                        delete</mat-icon>
-                    </div>
-                    <app-videoupload *ngIf="!selectedChannel.videourl" [account]="account" [option]="option"
-                      (imgurl)="setVideo($event)">
-                    </app-videoupload>
+                <mat-accordion>
+                  <mat-expansion-panel>
+                    <mat-expansion-panel-header>
+                      <mat-panel-title>
+                        <div>
+                            <mat-icon>videocam</mat-icon>
+                            <mat-icon>crop_original</mat-icon>
+                            Add media
+                        </div>
+                      </mat-panel-title>
+                    </mat-expansion-panel-header>
+                    <table>
+                      <tr>
+                        <td>
+                          <div *ngIf="selectedChannel.pictureurl && !selectedChannel.videourl">
+                            <img [src]="selectedChannel.pictureurl" class="carouselimages">
+                            <mat-icon (click)="selectedChannel.pictureurl = ''" class="icon-label" class="iconsize-12">
+                              delete</mat-icon>
+                          </div>
+                          <app-fileupload *ngIf="!selectedChannel.pictureurl && !selectedChannel.videourl"
+                            [account]="Account" [option]="option" (imgurl)="setImage($event)">
+                          </app-fileupload>
+                        </td>
+                        <td>
+                          <div *ngIf="selectedChannel.videourl && !selectedChannel.pictureurl"
+                            style="max-width: 600px;">
+                            <vg-player style="max-width: 600px;">
+                              <video [vgMedia]="media" #media id="singleVideo" preload="auto" controls
+                                style="max-width: 600px;">
+                                <source [src]="selectedChannel.videourl" type="video/mp4">
+                              </video>
+                            </vg-player>
+                            <mat-icon (click)="selectedChannel.videourl = ''" class="icon-label" class="iconsize-12">
+                              delete</mat-icon>
+                          </div>
+                          <app-videoupload *ngIf="!selectedChannel.videourl && !selectedChannel.pictureurl"
+                            [account]="Account" [option]="option" (imgurl)="setVideo($event)">
+                          </app-videoupload>
+                        </td>
+                      </tr>
+                    </table>
+                  </mat-expansion-panel>
+                </mat-accordion>
               </td>
- 
+
             </tr>
             <tr>
               <ul>
@@ -903,11 +1030,12 @@
               </td>
             </tr>
             <tr>
-                <button a mat-raised-button *ngIf="!selectedChannel.send" (click)="saveChannel()">Save</button>
-                <button a mat-raised-button *ngIf="!selectedChannel.send" (click)="scheduleChannel()">Schedule</button>
-                <button a mat-raised-button *ngIf="!selectedChannel.send" (click)="postToInstagram()">Post</button>
-                <button a mat-raised-button *ngIf="!selectedChannel.send" (click)="postVideoToInstragram()">Post Video</button>
-                <button a mat-raised-button (click)="openDialogDeleteChannel(i)">Delete Post</button>
+              <button a mat-raised-button *ngIf="!selectedChannel.send" (click)="saveChannel()">Save</button>
+              <button a mat-raised-button *ngIf="!selectedChannel.send" (click)="scheduleChannel()">Schedule</button>
+              <button a mat-raised-button *ngIf="!selectedChannel.send" (click)="postToInstagram()">Post</button>
+              <button a mat-raised-button *ngIf="!selectedChannel.send" (click)="postVideoToInstragram()">Post
+                Video</button>
+              <button a mat-raised-button (click)="openDialogDeleteChannel(i)">Delete Post</button>
             </tr>
           </table>
         </mat-card-content>
@@ -1080,17 +1208,19 @@
               </app-fileupload>
             </tr>
             <tr>
-                <mat-select placeholder="Select Pinterest Board" [(value)]="pinterestoption">
-                  <mat-option (onSelectionChange)="getPinterestBoard()" *ngFor="let Pinterest of Pinterest" [value]="Pinterest" [disabled]="selectedChannel.send">
-                    {{ Pinterest.name }}
-                  </mat-option>
-                </mat-select>
-                <mat-progress-spinner *ngIf="waitingforfbpages" [diameter]="20" [mode]="indeterminate"></mat-progress-spinner>
-                <mat-select placeholder="Select pinterest board" [(value)]="selectpinterestboard">
-                  <mat-option *ngFor="let pinterestboard of pinterestboard" [value]="pinterestboard">
-                    {{ pinterestboard.name }}
-                  </mat-option>
-                </mat-select>
+              <mat-select placeholder="Select Pinterest Board" [(value)]="pinterestoption">
+                <mat-option (onSelectionChange)="getPinterestBoard()" *ngFor="let Pinterest of Pinterest"
+                  [value]="Pinterest" [disabled]="selectedChannel.send">
+                  {{ Pinterest.name }}
+                </mat-option>
+              </mat-select>
+              <mat-progress-spinner *ngIf="waitingforfbpages" [diameter]="20" [mode]="indeterminate">
+              </mat-progress-spinner>
+              <mat-select placeholder="Select pinterest board" [(value)]="selectpinterestboard">
+                <mat-option *ngFor="let pinterestboard of pinterestboard" [value]="pinterestboard">
+                  {{ pinterestboard.name }}
+                </mat-option>
+              </mat-select>
             </tr>
             <tr>
               <button a mat-raised-button (click)="getPinterstPins()">get pins</button>
