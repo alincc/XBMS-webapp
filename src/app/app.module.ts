@@ -75,10 +75,10 @@ import { MarketingpublicationsComponent } from './marketing/marketingpublication
 import { ImagecreatorComponent } from './marketing/imagecreator/imagecreator.component';
 import { AngularDraggableModule } from 'angular2-draggable';
 import { VideouploadComponent } from './shared/videoupload/videoupload.component';
-import { VgCoreModule } from 'videogular2/core';
-import { VgControlsModule } from 'videogular2/controls';
-import { VgOverlayPlayModule } from 'videogular2/overlay-play';
-import { VgBufferingModule } from 'videogular2/buffering';
+import { VgCoreModule } from 'videogular2/compiled/core';
+import { VgControlsModule } from 'videogular2/compiled/controls';
+import { VgOverlayPlayModule } from 'videogular2/compiled//overlay-play';
+import { VgBufferingModule } from 'videogular2/compiled//buffering';
 
 @NgModule({
   declarations: [

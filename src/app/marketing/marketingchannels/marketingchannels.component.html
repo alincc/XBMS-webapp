@@ -861,7 +861,11 @@
                     </app-fileupload>
            
                   <div *ngIf="selectedChannel.videourl">
-                      <img [src]="selectedChannel.videourl" class="carouselimages">
+                    <vg-player>
+                      <video [vgMedia]="media" #media id="singleVideo" preload="auto" controls>
+                          <source src="selectedChannel.videourl" type="video/mp4">
+                      </video>
+                  </vg-player>
                       <mat-icon (click)="selectedChannel.videourl = ''" class="icon-label" class="iconsize-12">
                         delete</mat-icon>
                     </div>
