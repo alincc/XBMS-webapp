@@ -23,7 +23,8 @@
             ],
             "styles": [
               "src/styles.scss",
-              "./node_modules/angular2-draggable/css/resizable.min.css"
+              "./node_modules/angular2-draggable/css/resizable.min.css",
+              "../node_modules/videogular2/fonts/videogular.css",
             ],
             "scripts": []
           },

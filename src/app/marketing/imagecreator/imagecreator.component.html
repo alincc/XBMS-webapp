@@ -231,7 +231,7 @@
     </div>
 
     <div fxFlex="80%">
-        <div *ngIf="images.length > 0 && changenow" [ngStyle]="canvas" #myBounds>
+        <div *ngIf="images.length > 0 && changenow" [ngStyle]="canvas" #myBounds id="myBounds">
             <div *ngFor="let image of images; let i = index;"
                 [ngClass]="{ 'top-b': !edge?.top, 'bottom-b': !edge?.bottom, 'left-b': !edge?.left, 'right-b': !edge?.right }">
 
@@ -239,18 +239,18 @@
                     [inBounds]="inBounds" [ngStyle]="image.style" [style.width]="image.style.width"
                     [style.height]="image.style.height" (movingOffset)="onMoving($event, i)"
                     [preventDefaultEvent]="true" [position]="image.setpos" (rzResizing)="onResizing($event, i)"
-                    ngResizable>
+                    ngResizable rzContainment="#myBounds" [rzAspectRatio]="true">
                     <img *ngIf="image.src" style="width: 100%; height: 100%;" src={{image.src}}>
                 </div>
                 <label ngResizable *ngIf="image.type === 'text'" ngDraggable [bounds]="myBounds" [inBounds]="inBounds"
                     style="width: 100px; height: 100px; overflow: hidden;" (movingOffset)="onMoving($event, i)"
                     [preventDefaultEvent]="true" [position]="image.setpos" (rzResizing)="onResizing($event, i)"
-                    [ngStyle]="image.style">{{image.content}}</label>
+                    [ngStyle]="image.style" rzContainment="#myBounds" [rzAspectRatio]="true">{{image.content}}</label>
                 <div *ngIf="image.type === 'shape'" style="overflow: hidden;" ngDraggable [bounds]="myBounds"
                     [inBounds]="inBounds" [ngStyle]="image.style" [style.width]="image.style.width"
                     [style.height]="image.style.height" (movingOffset)="onMoving($event, i)"
                     [preventDefaultEvent]="true" [position]="image.setpos" (rzResizing)="onResizing($event, i)"
-                    ngResizable>
+                    ngResizable rzContainment="#myBounds" [rzAspectRatio]="true">
                 </div>
             </div>
         </div>

@@ -1,0 +1,52 @@
+<div class="picture-container">
+    <div *ngIf="showdropbox">
+        <div ng2FileDrop [ngClass]="{'drop-zone-over': hasBaseDropZoneOver}" (fileOver)="fileOverBase($event)"
+            [uploader]="uploader" class="drop-zone">
+            Drop Image Here
+        </div>
+        <input type="file" ng2FileSelect [uploader]="uploader" />
+        <div *ngIf="errorMessage">{{errorMessage}}</div>
+
+        <div *ngFor="let item of uploader.queue" style="min-width: 50px;">
+            <table>
+                <tr>
+                    {{ item?.file?.name}}
+                </tr>
+                <tr>
+                    <mat-progress-bar [mode]="determinate" [value]="item.progress">
+                        upload </mat-progress-bar>
+                </tr>
+                <tr>
+                    <td class="text-center">
+                        <span *ngIf="item.isSuccess">
+                            <mat-icon aria-hidden="false" class="iconsize-10">done</mat-icon>
+                        </span>
+                        <span *ngIf="item.isCancel">
+                            <mat-icon aria-hidden="false" class="iconsize-10">cancel</mat-icon>
+                        </span>
+                        <span *ngIf="item.isError">
+                            <mat-icon aria-hidden="false" class="iconsize-10">error</mat-icon>
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td nowrap>
+                        <button mat-button (click)="setupload(item?.file?.name)"
+                            [disabled]="item.isReady || item.isUploading || item.isSuccess">
+                            <mat-icon aria-hidden="false" class="iconsize-10">cloud_upload</mat-icon>Upload
+                        </button>
+                        <button mat-button (click)="item.cancel()" [disabled]="!item.isUploading">
+                            <mat-icon aria-hidden="false" class="iconsize-10">cancel</mat-icon> Cancel
+                        </button>
+                    </td>
+                </tr>
+            </table>
+
+        </div>
+
+
+    </div>
+    <button matTooltip="Open gallery" class="deletepicture" mat-mini-fab color="primary" (click)="onOpenGallery()">
+        <mat-icon> add_photo_alternate</mat-icon>
+    </button>
+</div>

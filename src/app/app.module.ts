@@ -74,6 +74,11 @@ import { MarketingpromotionsComponent } from './marketing/marketingpromotions/ma
 import { MarketingpublicationsComponent } from './marketing/marketingpublications/marketingpublications.component';
 import { ImagecreatorComponent } from './marketing/imagecreator/imagecreator.component';
 import { AngularDraggableModule } from 'angular2-draggable';
+import { VideouploadComponent } from './shared/videoupload/videoupload.component';
+import { VgCoreModule } from 'videogular2/core';
+import { VgControlsModule } from 'videogular2/controls';
+import { VgOverlayPlayModule } from 'videogular2/overlay-play';
+import { VgBufferingModule } from 'videogular2/buffering';
 
 @NgModule({
   declarations: [
@@ -101,7 +106,8 @@ import { AngularDraggableModule } from 'angular2-draggable';
     SafeHtml,
     MarketingpromotionsComponent,
     MarketingpublicationsComponent,
-    ImagecreatorComponent
+    ImagecreatorComponent,
+    VideouploadComponent
   ],
 
    entryComponents: [
@@ -113,6 +119,10 @@ import { AngularDraggableModule } from 'angular2-draggable';
   ],
 
   imports: [
+    VgCoreModule,
+    VgControlsModule,
+    VgOverlayPlayModule,
+    VgBufferingModule,
     NgxTwitterTimelineModule,
        PickerModule,
     ColorPickerModule,

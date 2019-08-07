@@ -850,14 +850,26 @@
               </td>
             </tr>
             <tr>
-              <div *ngIf="selectedChannel.pictureurl">
-                <img [src]="selectedChannel.pictureurl" class="carouselimages">
-                <mat-icon (click)="selectedChannel.pictureurl = ''" class="icon-label" class="iconsize-12">
-                  delete</mat-icon>
-              </div>
-              <app-fileupload *ngIf="!selectedChannel.pictureurl" [account]="account" [option]="option"
-                (imgurl)="setImage($event)">
-              </app-fileupload>
+              <td>
+                  <div *ngIf="selectedChannel.pictureurl">
+                      <img [src]="selectedChannel.pictureurl" class="carouselimages">
+                      <mat-icon (click)="selectedChannel.pictureurl = ''" class="icon-label" class="iconsize-12">
+                        delete</mat-icon>
+                    </div>
+                    <app-fileupload *ngIf="!selectedChannel.pictureurl" [account]="account" [option]="option"
+                      (imgurl)="setImage($event)">
+                    </app-fileupload>
+           
+                  <div *ngIf="selectedChannel.videourl">
+                      <img [src]="selectedChannel.videourl" class="carouselimages">
+                      <mat-icon (click)="selectedChannel.videourl = ''" class="icon-label" class="iconsize-12">
+                        delete</mat-icon>
+                    </div>
+                    <app-videoupload *ngIf="!selectedChannel.videourl" [account]="account" [option]="option"
+                      (imgurl)="setVideo($event)">
+                    </app-videoupload>
+              </td>
+ 
             </tr>
             <tr>
               <ul>
