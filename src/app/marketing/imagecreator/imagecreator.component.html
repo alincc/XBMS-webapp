@@ -245,12 +245,12 @@
                 <label ngResizable *ngIf="image.type === 'text'" ngDraggable [bounds]="myBounds" [inBounds]="inBounds"
                     style="width: 100px; height: 100px; overflow: hidden;" (movingOffset)="onMoving($event, i)"
                     [preventDefaultEvent]="true" [position]="image.setpos" (rzResizing)="onResizing($event, i)"
-                    [ngStyle]="image.style" rzContainment="#myBounds" [rzAspectRatio]="true">{{image.content}}</label>
+                    [ngStyle]="image.style" rzContainment="#myBounds" [rzAspectRatio]="false">{{image.content}}</label>
                 <div *ngIf="image.type === 'shape'" style="overflow: hidden;" ngDraggable [bounds]="myBounds"
                     [inBounds]="inBounds" [ngStyle]="image.style" [style.width]="image.style.width"
                     [style.height]="image.style.height" (movingOffset)="onMoving($event, i)"
                     [preventDefaultEvent]="true" [position]="image.setpos" (rzResizing)="onResizing($event, i)"
-                    ngResizable rzContainment="#myBounds" [rzAspectRatio]="true">
+                    ngResizable rzContainment="#myBounds" [rzAspectRatio]="false">
                 </div>
             </div>
         </div>
