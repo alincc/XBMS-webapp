@@ -196,6 +196,7 @@ export class RelationComponent implements OnInit {
   crawl2FormGroup: FormGroup;
   public editCrawler = false;
   public togglesearch = false;
+  public listviewxsshow = false;
 
   constructor(
     public dialog: MatDialog,
@@ -229,6 +230,17 @@ export class RelationComponent implements OnInit {
     this.speechData = "";
     LoopBackConfig.setBaseURL(BASE_URL);
     LoopBackConfig.setApiVersion(API_VERSION);
+  }
+
+
+  swiperight(e) {
+    console.log(e);
+    this.listviewxsshow = true;
+  }
+
+  swipeleft(e) {
+    console.log(e);
+    this.listviewxsshow = false;
   }
 
   myControl: FormControl = new FormControl();
@@ -375,12 +387,12 @@ export class RelationComponent implements OnInit {
 
   setFileParameter(): void {
     this.ContainerApi.findById(this.selectedRelation.id)
-    .subscribe(res => console.log(res),
-      error =>
-        this.ContainerApi.createContainer({ name: this.selectedRelation.id })
-          .subscribe(res2 => console.log(res2)));
+      .subscribe(res => console.log(res),
+        error =>
+          this.ContainerApi.createContainer({ name: this.selectedRelation.id })
+            .subscribe(res2 => console.log(res2)));
 
-          
+
     this.newURL = BASE_URL + "/api/Containers/" + this.selectedRelation.id + "/upload"
     this.uploader.setOptions({ url: this.newURL });
     this.uploader.clearQueue();

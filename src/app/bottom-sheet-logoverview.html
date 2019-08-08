@@ -1,49 +1,46 @@
 <mat-nav-list>
-<!-- 
+    <!-- 
     <a mat-mini-fab color="primary" style="float: right;" (click)="getLogs()">
         <mat-icon>refresh</mat-icon>
     </a> -->
-    <label class="mat-h4">Logs</label>
+    <label class="mat-h4">Messages</label>
     <mat-divider></mat-divider>
     <table class="websitedata">
-        <tr fxLayout="column" fxLayoutWrap="wrap" fxLayoutAlign="space-around">
-            <mat-list-item>
+        <tr fxLayout="column" fxLayoutWrap="wrap" fxLayoutAlign="space-around" style="width: 100%">
+            <mat-list-item fxFlex>
                 <!-- <th fxFlex="20%" class="thwebsitetr">
                     <label class="followuplist">User</label>
                 </th>
                 <th fxFlex="20%" class="thwebsitetr">
                     <label class="followuplist">Subject</label>
                 </th> -->
-                <th fxFlex="35%" class="thwebsitetr">
-                    <label class="followuplist">code</label>
+                <th fxFlex="45%" class="thwebsitetr">
+                    <label class="followuplist">Code</label>
                 </th>
-                <th fxFlex="35%" class="thwebsitetr">
+                <th fxFlex="45%" class="thwebsitetr">
                     <label class="followuplist">Date</label>
                 </th>
-                <th fxFlex="30%" class="thwebsitetr">action</th>
+                <th fxFlex="10%" class="thwebsitetr">Action</th>
             </mat-list-item>
         </tr>
-        <tr fxLayout="column" fxLayoutWrap="wrap" fxLayoutAlign="space-around" *ngFor="let logs of logger; let i = index">
-            <mat-list-item>
+        <tr fxLayout="column" fxLayoutWrap="wrap" fxLayoutAlign="space-around" style="width: 100%"
+            *ngFor="let logs of logger; let i = index">
+            <mat-list-item fxFlex>
                 <!-- <td fxFlex="20%" class="tdwebsitetr">
                     <label class="followuplist">{{ logs.user }}</label>
                 </td>
                 <td fxFlex="20%" class="tdwebsitetr">
                     <label class="followuplist">{{ logs.relation }}</label>
                 </td> -->
-                <td fxFlex="35%" class="tdwebsitetr">
-                    <label class="followuplist">{{
-                          logs.code | slice: 0:50
-                        }}</label>
+                <td fxFlex="45%" class="tdwebsitetr">
+                    <label class="followuplist">{{logs.code | slice: 0:50}}</label>
                 </td>
-                <td fxFlex="35%" class="tdwebsitetr">
-                    <label class="followuplist">{{
-                          logs.date | date: "medium"
-                        }}</label>
+                <td fxFlex="45%" class="tdwebsitetr">
+                    <label class="followuplist">{{logs.date | date: "medium"}}</label>
                 </td>
-                <td fxFlex="30%" class="tdwebsitetr">
-                    <label (click)="deleteLog(i)" class="followuplist">Delete</label>
-                    <label (click)="markRead(i)" class="followuplist">Read</label>
+                <td fxFlex="10%" class="tdwebsitetr" fxLayoutAlign="space-around">
+                    <label (click)="deleteLog(i)" class="followuplist" matTooltip="Delete message"><mat-icon>delete</mat-icon></label>
+                    <label (click)="markRead(i)" class="followuplist" matTooltip="Mark seen"><mat-icon>done</mat-icon></label>
                 </td>
             </mat-list-item>
             <mat-divider></mat-divider>

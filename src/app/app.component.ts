@@ -80,7 +80,7 @@ export class AppComponent implements AfterViewInit {
 
     this.realTime.onReady().subscribe(() => console.log('ready'))
     this.realTime.IO.emit('hello', 'world');
-    this.realTime.IO.on('new image')
+    this.realTime.IO.on('new log')
       .subscribe((msg: any) => { console.log('incoming', msg), this.getLogs(); });
   }
 
@@ -208,8 +208,9 @@ export class AppComponent implements AfterViewInit {
 
 }
 
-import { Inject } from '@angular/core';
+import { Inject, Output, EventEmitter } from '@angular/core';
 import { MAT_BOTTOM_SHEET_DATA } from '@angular/material/bottom-sheet';
+
 
 @Component({
   selector: 'bottom-sheet-Log-Overview',

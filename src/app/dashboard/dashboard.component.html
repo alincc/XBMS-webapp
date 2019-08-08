@@ -1,7 +1,7 @@
 <div fxLayout="column" fxLayoutWrap="wrap" fxLayoutAlign="space-around" class="home-wrapper">
 
   <div fxFlex="100%" fxLayout="column">
-    <mat-card>
+    <mat-card style="min-height: 100px">
       <mat-card-content>
         <div style="margin-left: 100px" fxFlex fxShow.xs="false">
 
@@ -23,51 +23,37 @@
           </tr>
         </div>
 
-
-
-        <div fxFlex class="selectrelation">
-          <tr>
-            <td>
-              <mat-form-field class="selectboxheader">
-                <input type="text" placeholder="Select Relation" aria-label="relation" matInput
-                  [formControl]="myControl" [matAutocomplete]="auto" />
-                <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
-                  <mat-option *ngFor="
+    <div fxFlex class="selectrelation">
+            <mat-form-field class="selectboxheader">
+              <input type="text" placeholder="Select Relation" aria-label="relation" matInput [formControl]="myControl"
+                [matAutocomplete]="auto" />
+              <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+                <mat-option *ngFor="
                       let option of filteredOptions | async;
                       let i = index
                     " [value]="option" (blur)="getAnalyticsAccounts(option, i)">
-                    {{ option.relationname }}
-                  </mat-option>
-                </mat-autocomplete>
-              </mat-form-field>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <mat-form-field class="selectboxheader">
-                <mat-select [(ngModel)]="selectedanalytics.name" placeholder="GA Account" class="InputField"
-                  (blur)="buildDashboard()">
-                  <mat-option *ngFor="let selectedanalytics of GoogleanalyticsModel" [value]="selectedanalytics">
-                    {{ selectedanalytics.name }}
-                  </mat-option>
-                </mat-select>
-              </mat-form-field>
-            </td>
-          </tr>
+                  {{ option.relationname }}
+                </mat-option>
+              </mat-autocomplete>
+            </mat-form-field>
+            <mat-form-field class="selectboxheader">
+              <mat-select [(ngModel)]="selectedanalytics.name" placeholder="GA Account" class="InputField"
+                (blur)="buildDashboard()">
+                <mat-option *ngFor="let selectedanalytics of GoogleanalyticsModel" [value]="selectedanalytics">
+                  {{ selectedanalytics.name }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
         </div>
       </mat-card-content>
     </mat-card>
   </div>
 
   <div fxLayout fxLayout="column" fxLayoutWrap="wrap" fxLayoutAlign="space-around">
-    <div fxFlex="5%">
-      <td>
-        <h3 class="mat-h3">Selected Account: {{ option.relationname }}</h3>
-      </td>
-    </div>
+
 
     <div fxFlex="30%" fxLayout.lt-md="column" fxLayout="row" fxLayoutWrap="wrap" fxLayoutAlign="space-around">
-        <div fxFlex="40%" class="innerfollowup"></div>
+      <div fxFlex="40%" class="innerfollowup"></div>
       <!-- <div fxFlex="40%" class="innerfollowup">
         <a
           mat-mini-fab
@@ -134,6 +120,12 @@
           </tr>
         </table>
       </div> -->
+
+      <div fxFlex="5%">
+        <td>
+          <h3 class="mat-h3">Selected Account: {{ option.relationname }}</h3>
+        </td>
+      </div>
 
       <div fxFlex="50%" class="innerfollowup">
         <a mat-mini-fab color="primary" style="float: right;" (click)="getAdsMailing()">
@@ -335,12 +327,9 @@
         <mat-divider></mat-divider>
         <!-- <ngx-charts-tree-map [view]="view" [scheme]="colorScheme" [results]="googleanalyticsreturn">
         </ngx-charts-tree-map> -->
-                <canvas baseChart
-                  [data]="doughnutChartData"
-                  [labels]="doughnutChartLabels"
-                  [legend]="polarAreaLegend"
-                  [chartType]="polarAreaChartType">
-                </canvas>
+        <canvas baseChart [data]="doughnutChartData" [labels]="doughnutChartLabels" [legend]="polarAreaLegend"
+          [chartType]="polarAreaChartType">
+        </canvas>
       </div>
     </div>
 

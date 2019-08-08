@@ -112,10 +112,9 @@ export class ImagecreatorComponent implements OnInit {
 
 
   getEditFile() {
-    this.relationsApi.getFiles(this.option.id,
-      {where:{template: true}})
-      .subscribe((files: Files[]) => {this.editableimages = files,
-        console.log('received files', this.editableimages)
+    this.relationsApi.getFiles(this.option.id, {where:{template: true}})
+      .subscribe((files: Files[]) => {this.editableimages = files;
+        console.log('received files', this.editableimages);
       });
   }
 
