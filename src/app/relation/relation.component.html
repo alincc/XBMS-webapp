@@ -33,10 +33,11 @@
       </div>
 
       
-      <div class="tabcontainer" fxLayout="row" (swipeleft)="swipeleft($event)"
-      (swiperight)="swiperight($event)">
+      <div class="tabcontainer" fxLayout="row">
         <div fxFlex="20%" ngClass.xs="listview-xs-minimal" 
-        [className]="listviewxsshow ? 'listview-xs-minimal-show' : 'listview-xs-minimal'">
+        [className]="listviewxsshow ? 'listview-xs-minimal-show' : 'listview-xs-minimal'"
+        (swipeleft)="swipeleft($event)"
+      (swiperight)="swiperight($event)">
           <div fxLayout="column" class="search-component">
             <h4>Search</h4>
             <mat-form-field>
