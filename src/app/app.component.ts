@@ -13,9 +13,9 @@ import { map, distinctUntilChanged, share, filter, throttleTime, pairwise } from
 import { fromEvent, Observable } from 'rxjs';
 import { PwaService } from './pwa.service';
 import { SwUpdate } from '@angular/service-worker';
-import {MatBottomSheet, MatBottomSheetRef} from '@angular/material/bottom-sheet';
-
+import { MatBottomSheet, MatBottomSheetRef } from '@angular/material/bottom-sheet';
 import {
+  RealTime,
   BASE_URL,
   API_VERSION,
   LoopBackConfig
@@ -57,6 +57,7 @@ export class AppComponent implements AfterViewInit {
   globalListenFunc: Function;
 
   constructor(
+    private realTime: RealTime,
     private _bottomSheet: MatBottomSheet,
     private CompanyApi: CompanyApi,
     public Pwa: PwaService,
@@ -67,11 +68,89 @@ export class AppComponent implements AfterViewInit {
     private iconRegistry: MatIconRegistry,
     private sanitizer: DomSanitizer,
     private swUpdate: SwUpdate) {
-      // swUpdate.available.subscribe(event => {
-      //   if (askUserToUpdate()) {
-      //     window.location.reload();
-      //   }
-      // });
+    // swUpdate.available.subscribe(event => {
+    //   if (askUserToUpdate()) {
+    //     window.location.reload();
+    //   }
+    // });
+    this.addIcons();
+    LoopBackConfig.setBaseURL(BASE_URL);
+    LoopBackConfig.setApiVersion(API_VERSION);
+    this.getLogs();
+
+    this.realTime.onReady().subscribe(() => console.log('ready'))
+    this.realTime.IO.emit('hello', 'world');
+    this.realTime.IO.on('new image')
+      .subscribe((msg: any) => { console.log('incoming', msg), this.getLogs(); });
+  }
+
+  openBottomSheet(): void {
+    this._bottomSheet.open(BottomSheetLogOverview, {
+      data: { logger: this.logger, account: this.Account },
+      panelClass: 'bottom-sheet'
+    });
+  }
+
+  public teststyle = {
+    "background-color": "red"
+  }
+
+  getLogs(): void {
+    this.accountApi.getCurrent().subscribe((account: Account) => {
+      this.Account = account,
+        this.CompanyApi.getLogger(this.Account.companyId,
+          {
+            order: 'id DESC',
+            where: { read: false }
+          }).subscribe((logger: Logger[]) => {
+            { this.logger = logger };
+            this.messagecount = this.logger.length;
+            console.log(this.messagecount, this.logger);
+          });
+    });
+  }
+
+  public logout(): void {
+    if (this.Account.id == undefined) { this.router.navigate(['/login']) }
+    else {
+      this.accountApi.getCurrent().subscribe((Account: Account) => {
+        this.Account = Account
+        this.accountApi.logout().subscribe(res =>
+          this.router.navigate(['/login']));
+      });
+    }
+  }
+
+  private isVisible = false;
+
+  ngAfterViewInit() {
+    const scroll$ = fromEvent(window, 'scroll').pipe(
+      throttleTime(10),
+      map(() => window.pageYOffset),
+      pairwise(),
+      map(([y1, y2]): Direction => (y2 < y1 ? Direction.Up : Direction.Down)),
+      distinctUntilChanged(),
+      share()
+
+    );
+
+    const goingUp$ = scroll$.pipe(
+      filter(direction => direction === Direction.Up)
+    );
+
+    const goingDown$ = scroll$.pipe(
+      filter(direction => direction === Direction.Down)
+    );
+
+    goingUp$.subscribe(() => (this.isVisible = false));
+    goingDown$.subscribe(() => (this.isVisible = true));
+  }
+
+  installPwa(): void {
+    this.Pwa.promptEvent.prompt();
+  }
+
+  addIcons() {
     this.iconRegistry.addSvgIcon(
       'xbms_linkedin',
       this.sanitizer.bypassSecurityTrustResourceUrl('assets/icons/linkedin.svg'));
@@ -104,16 +183,13 @@ export class AppComponent implements AfterViewInit {
       'xbms_xing',
       this.sanitizer.bypassSecurityTrustResourceUrl('assets/icons/xing.svg'));
 
-
     this.iconRegistry.addSvgIcon(
       'xbms_snapchat',
       this.sanitizer.bypassSecurityTrustResourceUrl('assets/icons/snapchat.svg'));
 
-
     this.iconRegistry.addSvgIcon(
       'xbms_youtube',
       this.sanitizer.bypassSecurityTrustResourceUrl('assets/icons/youtube.svg'));
-
 
     this.iconRegistry.addSvgIcon(
       'xbms_vimeo',
@@ -123,104 +199,38 @@ export class AppComponent implements AfterViewInit {
       'xbms_github',
       this.sanitizer.bypassSecurityTrustResourceUrl('assets/icons/github.svg'));
 
-      this.iconRegistry.addSvgIcon(
-        'xbms_adwords',
-        this.sanitizer.bypassSecurityTrustResourceUrl('assets/icons/adwords.svg'));
+    this.iconRegistry.addSvgIcon(
+      'xbms_adwords',
+      this.sanitizer.bypassSecurityTrustResourceUrl('assets/icons/adwords.svg'));
 
-    LoopBackConfig.setBaseURL(BASE_URL);
-    LoopBackConfig.setApiVersion(API_VERSION);
-    this.getLogs()
-  }
-
-  openBottomSheet(): void {
-    this._bottomSheet.open(BottomSheetLogOverview, {
-      data: { logger: this.logger, account: this.Account },
-      panelClass: 'bottom-sheet'
-    });
-  }
-
-  public teststyle = {
-    "background-color": "red"
-  }
-
-  getLogs(): void {
-    this.accountApi.getCurrent().subscribe((account: Account) => {
-      this.Account = account,
-    this.CompanyApi.getLogger(this.Account.companyId,
-      {order: 'id DESC'}).subscribe((logger: Logger[]) => {
-      this.logger = logger;
-      this.messagecount = this.logger.length;
-      console.log(this.messagecount, this.logger);
-      });
-    });
-  }
-
-  public logout(): void {
-    if (this.Account.id == undefined) { this.router.navigate(['/login']) }
-    else {
-      this.accountApi.getCurrent().subscribe((Account: Account) => {
-        this.Account = Account
-        this.accountApi.logout().subscribe(res =>
-          this.router.navigate(['/login']));
-      });
-    }
-  }
-
-  private isVisible = false;
-
-  ngAfterViewInit() {
-    const scroll$ = fromEvent(window, 'scroll').pipe(
-      throttleTime(10),
-      map(() => window.pageYOffset),
-      pairwise(),
-      map(([y1, y2]): Direction => (y2 < y1 ? Direction.Up : Direction.Down)),
-      distinctUntilChanged(),
-      share()
-      
-    );
-
-    const goingUp$ = scroll$.pipe(
-      filter(direction => direction === Direction.Up)
-    );
-
-    const goingDown$ = scroll$.pipe(
-      filter(direction => direction === Direction.Down)
-    );
-
-    goingUp$.subscribe(() => (this.isVisible = false));
-    goingDown$.subscribe(() => (this.isVisible = true));
-  }
-
-  installPwa(): void {
-    this.Pwa.promptEvent.prompt();
   }
 
 
 }
 
-import { Inject} from '@angular/core';
-import {MAT_BOTTOM_SHEET_DATA} from '@angular/material/bottom-sheet';
+import { Inject } from '@angular/core';
+import { MAT_BOTTOM_SHEET_DATA } from '@angular/material/bottom-sheet';
 
 @Component({
   selector: 'bottom-sheet-Log-Overview',
   templateUrl: 'bottom-sheet-logoverview.html',
 })
-export class BottomSheetLogOverview  {
-  
+export class BottomSheetLogOverview {
+
   public logger: Logger[];
   public Account: Account;
 
   constructor(
     @Inject(MAT_BOTTOM_SHEET_DATA) public data: any,
     private CompanyApi: CompanyApi,
-    private _bottomSheetRef: MatBottomSheetRef<BottomSheetLogOverview>) {}
+    private _bottomSheetRef: MatBottomSheetRef<BottomSheetLogOverview>) { }
 
   openLink(event: MouseEvent): void {
     this._bottomSheetRef.dismiss();
     event.preventDefault();
   }
 
-  ngOnInit(){
+  ngOnInit() {
     this.logger = this.data.logger;
     this.Account = this.data.account;
     console.log('logs', this.logger)
@@ -230,4 +240,13 @@ export class BottomSheetLogOverview  {
     this.CompanyApi.destroyByIdLogger(this.Account.companyId, this.logger[i].id)
       .subscribe(res => { this.logger.splice(i, 1) });
   }
+
+  markRead(i): void {
+    this.logger[i].read = true;
+    this.CompanyApi.updateByIdLogger(this.Account.companyId, this.logger[i].id, 
+      this.logger[i])
+      .subscribe(res => { this.logger.splice(i, 1) });
+  }
+
+
 }

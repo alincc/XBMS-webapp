@@ -79,6 +79,8 @@ export class ImagecreatorComponent implements OnInit {
   public shiftY = 0;
   public aspectRatio = true;
   public imagename= 'New Image';
+  public editableimage: Files;
+  public editableimages: Files[];
 
   public canvas = {
     width: '600px',
@@ -101,11 +103,19 @@ export class ImagecreatorComponent implements OnInit {
 
 
   constructor(
+    private relationsApi: RelationsApi,
     private filesApi: FilesApi,
     public snackBar: MatSnackBar,
   ) { }
 
-  ngOnInit() {
+  ngOnInit(){}
+
+  getEditFile() {
+    this.relationsApi.getFiles(this.option.id,
+      {where:{template: true}})
+      .subscribe((files: Files[]) => {this.editableimages = files,
+        console.log('received files', this.editableimages)
+      });
   }
 
   detectchange(): void {
@@ -245,6 +255,12 @@ export class ImagecreatorComponent implements OnInit {
     if (this.showemoji) { this.showemoji = false } else {
       this.showemoji = true;
     }
+  }
+
+  loadEditableImage(){
+    this.images = this.editableimage.template;
+    this.canvas = this.editableimage.canvas;
+    this.detectchange();
   }
 
 

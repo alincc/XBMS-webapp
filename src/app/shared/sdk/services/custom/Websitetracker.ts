@@ -171,7 +171,7 @@ export class WebsitetrackerApi extends BaseLoopBackApi {
    * This usually means the response is a `Websitetracker` object.)
    * </em>
    */
-  public findip(req: any = {}, customHeaders?: Function): Observable<any[]> {
+  public findip(req: any = {}, customHeaders?: Function): Observable<websitetracker[]> {
     let _method: string = "POST";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
     "/websitetrackers/findip";

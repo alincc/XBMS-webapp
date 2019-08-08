@@ -228,6 +228,16 @@
                 </button>
             </tr>
         </table>
+
+        <mat-form-field>
+            <mat-label>Edit existing image</mat-label>
+            <mat-select [(value)]="editableimage">
+              <mat-option *ngFor="let editimage of editableimages" [value]="animal">
+                {{editimage.name}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        <button mat-button click="loadEditableImage()">Start edit</button>
     </div>
 
     <div fxFlex="80%">
