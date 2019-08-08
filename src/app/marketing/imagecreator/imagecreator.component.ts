@@ -110,6 +110,7 @@ export class ImagecreatorComponent implements OnInit {
 
   ngOnInit(){}
 
+
   getEditFile() {
     this.relationsApi.getFiles(this.option.id,
       {where:{template: true}})
