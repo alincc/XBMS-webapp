@@ -9,6 +9,7 @@ export interface FacebookInterface {
   "AccessToken"?: string;
   "AccessTokenSecret"?: string;
   "AccessTokenexpires"?: string;
+  "AdsAccountId"?: string;
   "id"?: any;
   "relationsId"?: any;
   relations?: Relations;
@@ -19,6 +20,7 @@ export class Facebook implements FacebookInterface {
   "AccessToken": string;
   "AccessTokenSecret": string;
   "AccessTokenexpires": string;
+  "AdsAccountId": string;
   "id": any;
   "relationsId": any;
   relations: Relations;
@@ -69,6 +71,10 @@ export class Facebook implements FacebookInterface {
         },
         "AccessTokenexpires": {
           name: 'AccessTokenexpires',
+          type: 'string'
+        },
+        "AdsAccountId": {
+          name: 'AdsAccountId',
           type: 'string'
         },
         "id": {

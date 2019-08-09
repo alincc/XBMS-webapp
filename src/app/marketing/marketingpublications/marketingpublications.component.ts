@@ -54,6 +54,7 @@ export class MarketingpublicationsComponent implements OnInit {
     { value: '20', viewValue: '20' },
     { value: '30', viewValue: '30' }
   ];
+  public listviewxsshow = false;
 
 
   constructor(
@@ -64,6 +65,17 @@ export class MarketingpublicationsComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+  }
+
+  
+  swiperight(e) {
+    console.log(e);
+    this.listviewxsshow = true;
+  }
+
+  swipeleft(e) {
+    console.log(e);
+    this.listviewxsshow = false;
   }
 
     // test selection criteria

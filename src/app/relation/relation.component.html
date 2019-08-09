@@ -32,62 +32,53 @@
         <!-- <button mat-mini-fab color="primary" matTooltip="New Template" (click)="CreateNewMail()"><mat-icon>add</mat-icon></button> -->
       </div>
 
-      
-      <div class="tabcontainer" fxLayout="row" (swipeleft)="swipeleft($event)"
-      (swiperight)="swiperight($event)">
-        <div fxFlex="20%" 
-        ngClass.xs="listview-xs-minimal"
-        [ngClass.sm]="listview-xs-minimal-show"
-        [className]="listviewxsshow ? 'listview-xs-minimal-show' : 'listview-xs-minimal'">
-          <div fxLayout="column" class="search-component">
-            <h4>Search</h4>
-            <mat-form-field>
-              <input matInput [(ngModel)]=searchterm (keyup.enter)="searchGo()" placeholder="Name/Address" />
-            </mat-form-field>
-            <br>
-            <mat-select [(ngModel)]=selectstatus placeholder="Status">
-              <mat-option *ngFor="let statustype of statustype" [value]="statustype.value">
-                {{ statustype.viewValue }}
-              </mat-option>
-            </mat-select>
-            <br>
 
-          </div>
+      <div class="tabcontainer" fxLayout="row" (swipeleft)="swipeleft($event)" (swiperight)="swiperight($event)">
+        <div fxLayout="column" ngClass.gt-xs="listview-normal" ngClass.lt-sm="listview-noshow"
+          [class.listview-xs-show]="listviewxsshow">
+          <h4>Search</h4>
+          <mat-form-field>
+            <input matInput [(ngModel)]=searchterm (keyup.enter)="searchGo()" placeholder="Name/Address" />
+          </mat-form-field>
+          <br>
+          <mat-select [(ngModel)]=selectstatus placeholder="Status">
+            <mat-option *ngFor="let statustype of statustype" [value]="statustype.value">
+              {{ statustype.viewValue }}
+            </mat-option>
+          </mat-select>
+          <br>
+          <button a mat-raised-button color="primary" (click)="searchGo()">
+            <mat-icon>search</mat-icon> Search
+          </button>
+          <button a mat-raised-button (click)="getRelations()">Show All</button>
 
-          <div fxLayout="column" class="search-component">
-
-            <button a mat-raised-button color="primary" (click)="searchGo()">
-              <mat-icon>search</mat-icon> Search
-            </button>
-            <button a mat-raised-button (click)="getRelations()">Show All</button>
-
-            <div class="listview">
-              <div *ngFor="let Relations of Relations; let i = index" (click)="onSelect(Relations, i)">
-                <span [class.selected]="Relations === selectedRelation" class="box">{{Relations.relationname |
+          <div class="listview">
+            <div *ngFor="let Relations of Relations; let i = index" (click)="onSelect(Relations, i)">
+              <span [class.selected]="Relations === selectedRelation" class="box">{{Relations.relationname |
                   slice:0:25}}</span>
-              </div>
-            </div>
-            <div fxLayout="column" style="width: 100%">
-              <div fxLayout="row" fxLayout.xs="column"style="width: 100%">
-                <div fxFlexstyle="width: 50%">
-                  <mat-icon (click)="getRelationsbackpage()">navigate_before</mat-icon>
-                </div>
-                <div fxFlexstyle="width: 50%">
-                  <mat-icon (click)="getRelationsnextpage()">navigate_next</mat-icon>
-                </div>
-              </div>
-              <div fxLayout="row" fxLayout.xs="column">
-                <label>{{skip}} / {{limit}}</label>
-              </div>
-              <div fxLayout="row" fxLayout.xs="column">
-                <div fxFlex><label>Total</label></div>
-                <div fxFlex><label>{{totalrelationcount}}</label></div>
-              </div>
             </div>
           </div>
-        </div>
+          <div fxLayout="column" style="width: 100%">
+            <div fxLayout="row" fxLayout.xs="column" style="width: 100%">
+              <div fxFlexstyle="width: 50%">
+                <mat-icon (click)="getRelationsbackpage()">navigate_before</mat-icon>
+              </div>
+              <div fxFlexstyle="width: 50%">
+                <mat-icon (click)="getRelationsnextpage()">navigate_next</mat-icon>
+              </div>
+            </div>
+            <div fxLayout="row" fxLayout.xs="column">
+              <label>{{skip}} / {{limit}}</label>
+            </div>
+            <div fxLayout="row" fxLayout.xs="column">
+              <div fxFlex><label>Total</label></div>
+              <div fxFlex><label>{{totalrelationcount}}</label></div>
+            </div>
+          </div>
 
-        <div fxFlex="79%" *ngIf="selectedRelation" on-focusout="saveRelation()">
+        </div>
+        <div ngClass.gt-xs="container-normal" ngClass.lt-sm="container-noshow"
+          [class.container-xs-show]="listviewxsshow" *ngIf="selectedRelation" on-focusout="saveRelation()">
           <mat-card class="standarddivclass">
             <mat-card-content>
               <div fxLayout="column">
@@ -218,7 +209,7 @@
                       </mat-expansion-panel>
                     </mat-accordion>
                   </div>
-                  <div fxLayout="row" fxLayout.xs="column" class="table" ngClass.xs="table-mobile">
+                  <div>
                     <mat-accordion>
                       <mat-expansion-panel>
                         <mat-expansion-panel-header>
@@ -275,26 +266,26 @@
           <mat-icon>send</mat-icon>
         </button>
       </div>
-      <div class="tabcontainer" fxLayout="row">
-        <div fxFlex="20%">
-          <div class="search-component" fxLayout="column">
-            <h4>Search</h4>
-            <mat-form-field>
-              <input matInput #searchTerm id="seach-box" (keyup.enter)="searchGo()" placeholder="Call title/content" />
-            </mat-form-field>
-            <p>{{this.errorMessage}}</p>
-            <button a mat-raised-button color="primary" (click)="searchCallGo(searchTerm.value)">
-              <mat-icon>search</mat-icon>Search
-            </button>
-            <button a mat-raised-button (click)="getCalls()">Show All Calls</button>
-            <div *ngFor="let Calls of Calls; let i = index" (click)="onSelectCall(Calls, i)"
-              [class.selected]="Calls === selectedCall">
-              <span class="box">{{Calls.title | slice:0:20}} | {{Calls.date | date}}</span>
-            </div>
-
+      <div class="tabcontainer" fxLayout="row" (swipeleft)="swipeleft($event)" (swiperight)="swiperight($event)">
+        <div fxLayout="column" ngClass.gt-xs="listview-normal" ngClass.lt-sm="listview-noshow"
+          [class.listview-xs-show]="listviewxsshow">
+          <h4>Search</h4>
+          <mat-form-field>
+            <input matInput #searchTerm id="seach-box" (keyup.enter)="searchGo()" placeholder="Call title/content" />
+          </mat-form-field>
+          <p>{{this.errorMessage}}</p>
+          <button a mat-raised-button color="primary" (click)="searchCallGo(searchTerm.value)">
+            <mat-icon>search</mat-icon>Search
+          </button>
+          <button a mat-raised-button (click)="getCalls()">Show All Calls</button>
+          <div *ngFor="let Calls of Calls; let i = index" (click)="onSelectCall(Calls, i)"
+            [class.selected]="Calls === selectedCall">
+            <span class="box">{{Calls.title | slice:0:20}} | {{Calls.date | date}}</span>
           </div>
         </div>
-        <div class="relationcontainer" *ngIf="selectedCall && !readytosend" fxFlex="80%" on-focusout="saveCall()">
+        <!-- [class.container-xs-show]="listviewxsshow === true || selectedCall === false" -->
+        <div *ngIf="selectedCall && !readytosend" on-focusout="saveCall()" ngClass.gt-xs="container-normal"
+          ngClass.lt-sm="container-noshow" [class.container-xs-show]="listviewxsshow">
           <mat-card>
             <mat-card-content>
               <div fxLayout="column" fxFlex>
@@ -348,11 +339,11 @@
                   </div>
                   <div fxFlex *ngIf="attendeelist.lenght > 0">
                     <div *ngFor="let attendee of attendeelist">
-                 {{attendee.attendent}}
-                    <a mat-mini-fab color="primary">
-                      <mat-icon>delete</mat-icon>
-                    </a>
-                  </div>
+                      {{attendee.attendent}}
+                      <a mat-mini-fab color="primary">
+                        <mat-icon>delete</mat-icon>
+                      </a>
+                    </div>
                   </div>
                 </div>
                 <br>
@@ -394,26 +385,26 @@
                       <input matInput [(ngModel)]=task placeholder="task" class="InputField" (keyup.enter)="addTask()">
                     </mat-form-field>
                     <ul *ngFor="let tasklist of tasklist; let i = index">
-                  <div fxFlex>{{tasklist.task}}</div>
-                  <div fxFlex>
-                    <a mat-mini-fab color="primary" (click)="deleteTask(i)">
-                      <mat-icon>delete</mat-icon>
-                    </a>
-                  </div>
-                  </ul>
+                      <div fxFlex>{{tasklist.task}}</div>
+                      <div fxFlex>
+                        <a mat-mini-fab color="primary" (click)="deleteTask(i)">
+                          <mat-icon>delete</mat-icon>
+                        </a>
+                      </div>
+                    </ul>
                   </div>
                   <div fxFlex>
                     <mat-form-field>
                       <input matInput [(ngModel)]=note placeholder="note" class="InputField" (keyup.enter)="addNote()">
                     </mat-form-field>
                     <ul *ngFor="let notes of notes; let i = index">
-                  <div fxFlex>{{notes.note}}</div>
-                  <div fxFlex>
-                    <a mat-mini-fab color="primary" (click)="deleteNote(i)">
-                      <mat-icon>delete</mat-icon>
-                    </a>
-                  </div>
-                  </ul>
+                      <div fxFlex>{{notes.note}}</div>
+                      <div fxFlex>
+                        <a mat-mini-fab color="primary" (click)="deleteNote(i)">
+                          <mat-icon>delete</mat-icon>
+                        </a>
+                      </div>
+                    </ul>
                   </div>
                 </div>
                 <div fxLayout="row" fxLayout.xs="column">
@@ -438,29 +429,24 @@
                 <div fxLayout="row" fxLayout.xs="column">
                   <button a mat-raised-button *ngIf="readytosend" (click)="SendMessageDialog()">Edit</button>
                 </div>
-               
 
-                <div fxLayout="row" fxLayout.xs="column" *ngIf="!selectedCall.html" rowspan="10">
-                  <div fxFlex colspan="2">
-                    <div style="border-style: solid; border-width: 1px; border-color: lightgray; padding: 5px;">
-                      <mat-form-field class="content-form">
-                        <textarea matInput class="content-form" #content [(ngModel)]=selectedCall.content
-                          placeholder="content">Call Report</textarea>
-                        <mat-hint align="end">{{content.value.length}}</mat-hint>
-                      </mat-form-field>
-                    </div>
-                  </div>
-                </div>
+                <mat-form-field  *ngIf="!selectedCall.html">
+                  <textarea matInput #content [(ngModel)]=selectedCall.content style="min-height: 300px;"
+                    placeholder="content">Call Report</textarea>
+                  <mat-hint align="end">{{content.value.length}}</mat-hint>
+                </mat-form-field>
+
                 <div fxLayout="row" fxLayout.xs="column" rowspan="10" *ngIf="selectedCall.html">
                   <div fxFlex colspan="2">
-                    <div class="content-form" style="border-style: solid; border-width: 1px; border-color: lightgray; padding: 5px;"
+                    <div class="content-form"
+                      style="border-style: solid; border-width: 1px; border-color: lightgray; padding: 5px;"
                       [innerHTML]="selectedCall.html"></div>
                   </div>
                 </div>
                 <div fxLayout="row" fxLayout.xs="column">
-                    <button a mat-raised-button (click)="saveCall()">Save</button>
-                    <button a mat-raised-button (click)="replyNewMessage()">Reply</button>
-                  </div>
+                  <button a mat-raised-button (click)="saveCall()">Save</button>
+                  <button a mat-raised-button (click)="replyNewMessage()">Reply</button>
+                </div>
 
               </div>
 
@@ -469,7 +455,8 @@
           </mat-card>
         </div>
 
-        <div class="relationcontainer" *ngIf="selectedCall && readytosend" fxFlex="80%" on-focusout="saveCall()">
+        <div class="relationcontainer" *ngIf="selectedCall && readytosend" on-focusout="saveCall()"
+          ngClass.gt-xs="container-normal" ngClass.lt-sm="container-noshow" [class.container-xs-show]="listviewxsshow">
           <mat-card>
             <mat-card-content fxLayout="column">
 
@@ -512,29 +499,29 @@
                 </div>
                 <div fxLayout="row" fxLayout.xs="column">
                   <div fxFlex>
-                      <mat-form-field>
-                          <mat-label>To</mat-label>
-                          <mat-select [(ngModel)]=emailtosendto>
-                            <mat-option *ngFor="let contactperson of Contactpersons" [value]="contactperson">
-                              {{contactperson.email}}
-                            </mat-option>
-                          </mat-select>
-                        </mat-form-field>
+                    <mat-form-field>
+                      <mat-label>To</mat-label>
+                      <mat-select [(ngModel)]=emailtosendto>
+                        <mat-option *ngFor="let contactperson of Contactpersons" [value]="contactperson">
+                          {{contactperson.email}}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
                   </div>
-              
+
                   <!-- <div fxFlex>{{emailtosendto.firstname}} {{emailtosendto.lastname}</div> -->
-   
+
                 </div>
                 <div fxLayout="row" fxLayout.xs="column">
                   <div fxFlex>
-                      <mat-form-field>
-                          <input matInput [(ngModel)]=cc placeholder="CC" class="InputField">
-                        </mat-form-field>
+                    <mat-form-field>
+                      <input matInput [(ngModel)]=cc placeholder="CC" class="InputField">
+                    </mat-form-field>
                   </div>
                   <div fxFlex>
-                      <mat-form-field>
-                          <input matInput [(ngModel)]=bcc placeholder="BCC" class="InputField">
-                        </mat-form-field>
+                    <mat-form-field>
+                      <input matInput [(ngModel)]=bcc placeholder="BCC" class="InputField">
+                    </mat-form-field>
                   </div>
                 </div>
                 <br>
@@ -562,7 +549,7 @@
                   </div>
                 </div>
 
-                <div fxLayout="row" fxLayout.xs="column"*ngIf="!selectedCall.html" rowspan="10">
+                <div fxLayout="row" fxLayout.xs="column" *ngIf="!selectedCall.html" rowspan="10">
                   <div fxFlex colspan="2">
                     <div style="border-style: solid; border-width: 1px; border-color: lightgray; padding: 5px;">
                       <mat-form-field class="content-form">
@@ -575,7 +562,8 @@
                 </div>
                 <div fxLayout="row" fxLayout.xs="column" rowspan="10" *ngIf="selectedCall.html">
                   <div fxFlex colspan="2">
-                    <div class="content-form" style="border-style: solid; border-width: 1px; border-color: lightgray; padding: 5px;"
+                    <div class="content-form"
+                      style="border-style: solid; border-width: 1px; border-color: lightgray; padding: 5px;"
                       [innerHTML]="selectedCall.html"></div>
                   </div>
                 </div>
@@ -606,22 +594,22 @@
         </button>
         <!-- <button mat-mini-fab color="primary" matTooltip="New Template" (click)="CreateNewMail()"><mat-icon>add</mat-icon></button> -->
       </div>
-      <div class="tabcontainer" fxLayout="row">
-        <div fxFlex="20%" fxLayout="column">
-          <div class="search-component">
-          </div>
-
+      <div class="tabcontainer" fxLayout="row" (swipeleft)="swipeleft($event)" (swiperight)="swiperight($event)">
+        <div fxLayout="column" ngClass.gt-xs="listview-normal" ngClass.lt-sm="listview-noshow"
+          [class.listview-xs-show]="listviewxsshow">
+          <mat-form-field>
+            <input matInput [(ngModel)]=searchterm (keyup.enter)="searchGo()" placeholder="Name/Email" />
+          </mat-form-field>
           <button a mat-raised-button (click)="getAllContactpersons()">All Contactpersons</button>
 
-          <ul class="Relations">
-            <div *ngFor="let Contactpersons of Contactpersons; let i = index"
-              (click)="onSelectContactperson(Contactpersons, i)"
-              [class.selected]="Contactpersons === selectedContactperson">
-              <span class="box">{{Contactpersons.firstname}} {{Contactpersons.lastname}}</span>
-            </div>
-          </ul>
+          <div *ngFor="let Contactpersons of Contactpersons; let i = index"
+            (click)="onSelectContactperson(Contactpersons, i)"
+            [class.selected]="Contactpersons === selectedContactperson">
+            <span class="box">{{Contactpersons.firstname}} {{Contactpersons.lastname}}</span>
+          </div>
         </div>
-        <div fxFlex="80%" class="relationcontainer" *ngIf="selectedContactperson" on-focusout="saveContactperson()">
+        <div *ngIf="selectedContactperson" on-focusout="saveContactperson()" ngClass.gt-xs="container-normal"
+          ngClass.lt-sm="container-noshow" [class.container-xs-show]="listviewxsshow">
           <mat-card class="standarddivclass">
             <mat-card-content>
               <div>
@@ -725,132 +713,178 @@
         <mat-icon>insert_drive_file</mat-icon>
         <div fxShow.xs="false">Files</div>
       </ng-template>
-      <div class="tabcontainer">
+      <div fxLayout="row" (swipeleft)="swipeleft($event)" (swiperight)="swiperight($event)">
 
+        <div fxLayout="column" ngClass.gt-xs="listview-normal" ngClass.lt-sm="listview-noshow"
+          [class.listview-xs-show]="listviewxsshow">
+          <mat-accordion>
+            <mat-expansion-panel>
+              <mat-expansion-panel-header>
+                <mat-panel-title>
+                  Image Files
+                </mat-panel-title>
+              </mat-expansion-panel-header>
 
-        <style>
-          .my-drop-zone {
-            border: dotted 3px lightgray;
-          }
+              <div class="filelist">
+                <div *ngFor="let Filesimg of imagelist; let i = index" (click)="onDownload(Files)" class="files"
+                  (click)="onselectfile(Filesimg)">
+                  <a href="{{ Filesimg.url }}" style="font-size: 8pt">
+                    {{ Filesimg.name }}
+                  </a>
+                  <mat-icon (click)="dialogDeleteFile(Filesimg)" color="primary" class="iconsize-12">delete</mat-icon>
+                </div>
+              </div>
+            </mat-expansion-panel>
+          </mat-accordion>
+          <mat-accordion>
+            <mat-expansion-panel>
+              <mat-expansion-panel-header>
+                <mat-panel-title>
+                  Video Files
+                </mat-panel-title>
+              </mat-expansion-panel-header>
+              <div class="filelist">
+                <div *ngFor="let Filesvid of videolist; let i = index" (click)="onDownload(Files)" class="files"
+                  (click)="onselectfile(Filesvid)">
+                  <a href="{{ Files.url }}" style="font-size: 8pt">
+                    {{ Filesvid.name }}
+                  </a>
+                  <mat-icon (click)="dialogDeleteFile(Filesvid)" color="primary" class="iconsize-12">delete</mat-icon>
+                </div>
+              </div>
+            </mat-expansion-panel>
+          </mat-accordion>
+          <mat-accordion>
+            <mat-expansion-panel>
+              <mat-expansion-panel-header>
+                <mat-panel-title>
+                  Files
+                </mat-panel-title>
+              </mat-expansion-panel-header>
+              <div class="filelist">
+                <div *ngFor="let Files of misclist; let i = index" (click)="onDownload(Files)" class="files"
+                  (click)="onselectfile(Files)">
+                  <a href="{{ Files.url }}" style="font-size: 8pt">
+                    {{ Files.name }}
+                  </a>
+                  <mat-icon (click)="dialogDeleteFile(Files)" color="primary" class="iconsize-12">delete</mat-icon>
+                </div>
+              </div>
+            </mat-expansion-panel>
+          </mat-accordion>
 
-          .nv-file-over {
-            border: dotted 3px red;
-          }
+        </div>
 
-          /* Default class applied to drop zones on over */
-
-          .another-file-over-class {
-            border: dotted 3px green;
-          }
-
-          html,
-          body {
-            height: 100%;
-          }
-        </style>
-
-        <div class="container">
-
-          <div *ngFor="let Files of Files; let i = index" (click)="onDownload(Files)" class="files">
-            <a href="{{ Files.url }}">
-              {{ Files.name }} {{ Files.createdate | date }}
-            </a>
-            <a mat-mini-fab color="primary" (click)="dialogDeleteFile(Files)">
-              <mat-icon>delete</mat-icon>
-            </a>
-          </div>
-
-          <div>
-
-            <div class="left-upload-block">
-
-              <h3>Select files</h3>
-
-              <!-- <div ng2FileDrop (fileOver)="fileOverBase($event)" [uploader]="uploader"
+        <div fxFlex fxLayout="column" ngClass.gt-xs="container-normal" ngClass.lt-sm="container-noshow"
+          [class.container-xs-show]="listviewxsshow">
+          <mat-card>
+            <mat-card-content *ngIf="selectedfile" fxLayout="column" fxLayoutGap="20px">
+              <label>File Details</label>
+              <div fxLayout="row" fxLayoutGap="20px">
+                <label>Name: </label>
+                <label>{{selectedfile.name}}</label>
+              </div>
+              <div fxLayout="row" fxLayoutGap="20px">
+                <label>Creation Date: </label>
+                <label>{{selectedfile.createdate | date }}</label>
+              </div>
+              <div fxLayout="row" fxLayoutGap="20px">
+                <label>Type: </label>
+                <label>{{selectedfile.type}}</label>
+              </div>
+              <div fxLayout="row" fxLayoutGap="20px">
+                <label>Url: </label>
+                <label>{{selectedfile.url}}</label>
+              </div>
+            </mat-card-content>
+          </mat-card>
+          <div class="left-upload-block">
+            <h3>Select files</h3>
+            <!-- <div ng2FileDrop (fileOver)="fileOverBase($event)" [uploader]="uploader"
               class="drop-zone">
               Base drop zone
             </div> -->
 
-              <div ng2FileDrop [ngClass]="{'drop-zone-over': hasBaseDropZoneOver}" (fileOver)="fileOverAnother($event)"
-                [uploader]="uploader" class="drop-zone">
-                Drop Zone
-              </div>
-
-              <input type="file" ng2FileSelect [uploader]="uploader" />
+            <div ng2FileDrop [ngClass]="{'drop-zone-over': hasBaseDropZoneOver}" (fileOver)="fileOverAnother($event)"
+              [uploader]="uploader" class="drop-zone">
+              Drop Zone
             </div>
 
-            <div class="righ-upload-block">
+            <input type="file" ng2FileSelect [uploader]="uploader" />
+          </div>
 
-              <h3>Upload queue</h3>
-              <p>Queue length: {{ uploader?.queue?.length }}</p>
+          <div class="righ-upload-block">
 
-              <div fxLayout="column">
-                <thead>
-                  <div fxLayout="row" fxLayout.xs="column">
-                    <div fxLayout="row" fxLayout.xs="column"width="50%">Name</div>
-                    <div>Size</div>
-                    <div>Progress</div>
-                    <div>Status</div>
-                    <div>Actions</div>
+            <h3>Upload queue</h3>
+            <p>Queue length: {{ uploader?.queue?.length }}</p>
+
+            <div fxLayout="column">
+              <thead>
+                <div fxLayout="row" fxLayout.xs="column">
+                  <div fxLayout="row" fxLayout.xs="column" width="50%">Name</div>
+                  <div>Size</div>
+                  <div>Progress</div>
+                  <div>Status</div>
+                  <div>Actions</div>
+                </div>
+              </thead>
+              <tbody>
+                <div fxLayout="row" fxLayout.xs="column" *ngFor="let item of uploader.queue">
+                  <div fxFlex>
+                    <strong>{{ item?.file?.name }}</strong>
                   </div>
-                </thead>
-                <tbody>
-                  <div fxLayout="row" fxLayout.xs="column"*ngFor="let item of uploader.queue">
-                    <div fxFlex>
-                      <strong>{{ item?.file?.name }}</strong>
-                    </div>
-                    <div fxFlex *ngIf="uploader.isHTML5" nowrap>{{ item?.file?.size/1024/1024 | number:'.2' }} MB</div>
-                    <div fxFlex *ngIf="uploader.isHTML5">
-                      <div style="margin-bottom: 0;">
-                        <mat-progress-bar [color]="primary" [mode]="determinate" [value]="item.progress">
-                        </mat-progress-bar>
-                      </div>
-                    </div>
-
-                    <div fxFlex>
-                      <span *ngIf="item.isSuccess">
-                        <mat-icon>done</mat-icon>
-                      </span>
-                      <span *ngIf="item.isCancel">
-                        <mat-icon>cancel</mat-icon>
-                      </span>
-                      <span *ngIf="item.isError">
-                        <mat-icon>remove_circle</mat-icon>
-                      </span>
-                    </div>
-                    <div fxFlexnowrap>
-                      <button mat-button (click)="setupload(item?.file?.name)"
-                        [disabled]="item.isReady || item.isUploading || item.isSuccess">
-                        <mat-icon>file_upload</mat-icon>Upload
-                      </button>
-                      <button mat-button (click)="item.cancel()" [disabled]="!item.isUploading">
-                        <mat-icon>cancel</mat-icon> Cancel
-                      </button>
-                      <button mat-button (click)="item.remove()">
-                        <mat-icon>remove_circle</mat-icon> Remove
-                      </button>
-                    </div>
-                  </div>
-                </tbody>
-              </div>
-
-              <div>
-                <div>
-                  Queue progress:
-                  <div class="progress">
-                    <div>
-                      <mat-progress-bar color="primary" mode="determinate" [value]="uploader.progress">
+                  <div fxFlex *ngIf="uploader.isHTML5" nowrap>{{ item?.file?.size/1024/1024 | number:'.2' }} MB</div>
+                  <div fxFlex *ngIf="uploader.isHTML5">
+                    <div style="margin-bottom: 0;">
+                      <mat-progress-bar [color]="primary" [mode]="determinate" [value]="item.progress">
                       </mat-progress-bar>
                     </div>
                   </div>
+
+                  <div fxFlex>
+                    <span *ngIf="item.isSuccess">
+                      <mat-icon>done</mat-icon>
+                    </span>
+                    <span *ngIf="item.isCancel">
+                      <mat-icon>cancel</mat-icon>
+                    </span>
+                    <span *ngIf="item.isError">
+                      <mat-icon>remove_circle</mat-icon>
+                    </span>
+                  </div>
+                  <div fxFlexnowrap>
+                    <button mat-button (click)="setupload(item?.file?.name)"
+                      [disabled]="item.isReady || item.isUploading || item.isSuccess">
+                      <mat-icon>file_upload</mat-icon>Upload
+                    </button>
+                    <button mat-button (click)="item.cancel()" [disabled]="!item.isUploading">
+                      <mat-icon>cancel</mat-icon> Cancel
+                    </button>
+                    <button mat-button (click)="item.remove()">
+                      <mat-icon>remove_circle</mat-icon> Remove
+                    </button>
+                  </div>
+                </div>
+              </tbody>
+            </div>
+
+            <div>
+              <div>
+                Queue progress:
+                <div class="progress">
+                  <div>
+                    <mat-progress-bar color="primary" mode="determinate" [value]="uploader.progress">
+                    </mat-progress-bar>
+                  </div>
                 </div>
               </div>
-
             </div>
 
           </div>
 
         </div>
+
+
 
       </div>
     </mat-tab>
@@ -971,8 +1005,9 @@
             </mat-card-content>
           </mat-card>
         </div>
-        <div fxFlex fxLayout="row">
-          <div fxFlex="20%" class="standarddivclass">
+        <div fxFlex fxLayout="row" (swipeleft)="swipeleft($event)" (swiperight)="swiperight($event)">
+          <div fxFlex="20%" class="standarddivclass" ngClass.lt-sm="listview-xs-minimal"
+            ngClass.gt-xs="listview-xs-minimal-show" [class.listview-xs-minimal-show]="listviewxsshow">
 
             <!-- <div *ngFor="let Crawler of Crawler; let i = index" (click)="onSelectCrawler(Crawler, i)"
               [class.selected]="Crawler === selectedCall">
@@ -1355,6 +1390,7 @@
               <div fxFlex>
                 <div *ngFor="let Facebook of Facebook; let i = index">
                   <span>{{ Facebook.name }}</span>
+                  <span>{{ Facebook.AdsAccountId }}</span>
                   <a mat-mini-fab color="primary" (click)="deleteFacebook(i)">
                     <mat-icon>delete</mat-icon>
                   </a>
@@ -1369,14 +1405,12 @@
               </div>
             </div>
             <div fxLayout="row" fxLayout.xs="column">
-              <!-- <div fxFlex>
-              <mat-form-field>
-                <input matInput [(ngModel)]=newFacebook.id placeholder="ID" class="InputField">
-              </mat-form-field>
-            </div> -->
               <div fxFlex>
                 <mat-form-field>
                   <input matInput [(ngModel)]=newFacebook.name placeholder="Name" class="InputField">
+                </mat-form-field>
+                <mat-form-field>
+                  <input matInput [(ngModel)]=newFacebook.AdsAccountId placeholder="Name" class="InputField">
                 </mat-form-field>
               </div>
             </div>

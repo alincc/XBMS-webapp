@@ -5,46 +5,48 @@
     </a> -->
     <label class="mat-h4">Messages</label>
     <mat-divider></mat-divider>
-    <table class="websitedata">
-        <tr fxLayout="column" fxLayoutWrap="wrap" fxLayoutAlign="space-around" style="width: 100%">
+    <div fxLayout="column" class="websitedata">
+        <div fxLayout="row" fxLayout.xs="column" fxLayoutWrap="wrap" fxLayoutAlign="space-around" style="width: 80%">
             <mat-list-item fxFlex>
-                <!-- <th fxFlex="20%" class="thwebsitetr">
-                    <label class="followuplist">User</label>
-                </th>
-                <th fxFlex="20%" class="thwebsitetr">
-                    <label class="followuplist">Subject</label>
-                </th> -->
-                <th fxFlex="45%" class="thwebsitetr">
-                    <label class="followuplist">Code</label>
-                </th>
-                <th fxFlex="45%" class="thwebsitetr">
-                    <label class="followuplist">Date</label>
-                </th>
-                <th fxFlex="10%" class="thwebsitetr">Action</th>
+                <!-- <div fxFlex="20%">
+                    <label style="font-size: 8pt">User</label>
+                </div>
+                <div fxFlex="20%">
+                    <label style="font-size: 8pt">Subject</label>
+                </div> -->
+                <div fxFlex="45%">
+                    <label style="font-size: 8pt">Code</label>
+                </div>
+                <div fxFlex="45%">
+                    <label style="font-size: 8pt">Date</label>
+                </div>
+                <div fxFlex="8%">
+                    <label style="font-size: 8pt">Action</label>
+                </div>
             </mat-list-item>
-        </tr>
-        <tr fxLayout="column" fxLayoutWrap="wrap" fxLayoutAlign="space-around" style="width: 100%"
+        </div>
+        <div fxLayout="row" fxLayout.xs="column" fxLayoutWrap="wrap" fxLayoutAlign="space-around" style="width: 80%"
             *ngFor="let logs of logger; let i = index">
             <mat-list-item fxFlex>
-                <!-- <td fxFlex="20%" class="tdwebsitetr">
-                    <label class="followuplist">{{ logs.user }}</label>
-                </td>
-                <td fxFlex="20%" class="tdwebsitetr">
-                    <label class="followuplist">{{ logs.relation }}</label>
-                </td> -->
-                <td fxFlex="45%" class="tdwebsitetr">
-                    <label class="followuplist">{{logs.code | slice: 0:50}}</label>
-                </td>
-                <td fxFlex="45%" class="tdwebsitetr">
-                    <label class="followuplist">{{logs.date | date: "medium"}}</label>
-                </td>
-                <td fxFlex="10%" class="tdwebsitetr" fxLayoutAlign="space-around">
-                    <label (click)="deleteLog(i)" class="followuplist" matTooltip="Delete message"><mat-icon>delete</mat-icon></label>
-                    <label (click)="markRead(i)" class="followuplist" matTooltip="Mark seen"><mat-icon>done</mat-icon></label>
-                </td>
+                <!-- <div fxFlex="20%">
+                    <label style="font-size: 8pt">{{ logs.user }}</label>
+                </div>
+                <div fxFlex="20%">
+                    <label style="font-size: 8pt">{{ logs.relation }}</label>
+                </div> -->
+                <div fxFlex="45%">
+                    <label style="font-size: 8pt">{{logs.code | slice: 0:50}}</label>
+                </div>
+                <div fxFlex="45%">
+                    <label style="font-size: 8pt">{{logs.date | date: "medium"}}</label>
+                </div>
+                <div fxFlex="8%"  fxLayoutAlign="space-around">
+                    <mat-icon (click)="deleteLog(i)" matTooltip="Delete message">delete</mat-icon>
+                    <mat-icon (click)="markRead(i)" matTooltip="Mark seen">done</mat-icon>
+                </div>
             </mat-list-item>
             <mat-divider></mat-divider>
-        </tr>
-    </table>
+        </div>
+    </div>
 
 </mat-nav-list>

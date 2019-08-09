@@ -168,3 +168,58 @@
 }
 
 
+.listview-noshow{
+  min-height: 600px;
+  width: 0%;
+  overflow: hidden;
+  -webkit-transition: 0.70s;
+  -moz-transition: 0.70s;
+  -ms-transition: 0.70s;
+  -o-transition: 0.70s;
+  }
+
+.listview-xs-show {
+  min-height: 600px;
+  width: 50%;
+  overflow: hidden;
+  -webkit-transition: 0.70s;
+  -moz-transition: 0.70s;
+  -ms-transition: 0.70s;
+  -o-transition: 0.70s;
+}
+
+.listview-normal {
+  min-height: 600px;
+  width: 20%;
+  display: flex;
+  -webkit-transition: 0.70s;
+  -moz-transition: 0.70s;
+  -ms-transition: 0.70s;
+  -o-transition: 0.70s;
+}
+
+.container-noshow{
+  width: 100%;
+  -webkit-transition: 0.70s;
+  -moz-transition: 0.70s;
+  -ms-transition: 0.70s;
+  -o-transition: 0.70s;
+  }
+
+.container-xs-show {
+  width: 50%;
+  -webkit-transition: 0.70s;
+  -moz-transition: 0.70s;
+  -ms-transition: 0.70s;
+  -o-transition: 0.70s;
+}
+
+.container-normal {
+  width: 80%;
+  -webkit-transition: 0.70s;
+  -moz-transition: 0.70s;
+  -ms-transition: 0.70s;
+  -o-transition: 0.70s;
+}
+
+

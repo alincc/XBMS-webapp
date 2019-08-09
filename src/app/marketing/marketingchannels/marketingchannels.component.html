@@ -6,8 +6,10 @@
     (fabClick)="onSpeedDialFabClicked($event)" [buttons]="speedDialFabButtons">
   </speed-dial-fab>
 
-  <div fxLayout="row">
-    <div fxLayout="column" fxFlex="20%">
+  <div fxLayout="row" (swipeleft)="swipeleft($event)" (swiperight)="swiperight($event)">
+    <div fxLayout="column" ngClass.gt-xs="listview-normal" ngClass.lt-sm="listview-noshow"
+      [class.listview-xs-show]="listviewxsshow">
+
       <h4>Search</h4>
       <p>
         <mat-form-field>
@@ -23,32 +25,30 @@
       <button a mat-raised-button (click)="getChannels()">Show All</button>
 
 
-      <div class="listcontainer">
-        <div class="box" *ngFor="let Channels of Channels; let i = index" (click)="onSelectChannels(Channels)"
-          [class.selected]="Channels === selectedChannel">
-          <table style="width: 100%;">
-            <tr>
-              <mat-icon *ngIf="Channels.type === 'facebook'" svgIcon="xbms_facebook"></mat-icon>
-              <mat-icon *ngIf="Channels.type === 'twitter'" svgIcon="xbms_twitter"></mat-icon>
-              <mat-icon *ngIf="Channels.type === 'linkedin'" svgIcon="xbms_linkedin"></mat-icon>
-              <mat-icon *ngIf="Channels.type === 'instagram'" svgIcon="xbms_instagram"></mat-icon>
-              <mat-icon *ngIf="Channels.type === 'pinterest'" svgIcon="xbms_pinterest"></mat-icon>
-              <span style="margin-left: 5px">{{Channels.title}}</span>
-            </tr>
-            <tr style="text-align: right;">
-              <mat-icon *ngIf="Channels.primarychannel" class="iconsize-14">bookmark</mat-icon>
-              <mat-icon *ngIf="Channels.recurrence" class="iconsize-14">autorenew</mat-icon>
-              <mat-icon *ngIf="Channels.scheduled" class="iconsize-14">calendar_today</mat-icon>
-              <mat-icon *ngIf="Channels.send" class="iconsize-14">done</mat-icon>
-            </tr>
-          </table>
+      <div class="box" *ngFor="let Channels of Channels; let i = index" (click)="onSelectChannels(Channels)"
+        [class.selected]="Channels === selectedChannel">
+        <div fxLayout="column">
+          <div fxLayout="row" fxLayout.xs="column">
+            <mat-icon *ngIf="Channels.type === 'facebook'" svgIcon="xbms_facebook"></mat-icon>
+            <mat-icon *ngIf="Channels.type === 'twitter'" svgIcon="xbms_twitter"></mat-icon>
+            <mat-icon *ngIf="Channels.type === 'linkedin'" svgIcon="xbms_linkedin"></mat-icon>
+            <mat-icon *ngIf="Channels.type === 'instagram'" svgIcon="xbms_instagram"></mat-icon>
+            <mat-icon *ngIf="Channels.type === 'pinterest'" svgIcon="xbms_pinterest"></mat-icon>
+            <span style="margin-left: 5px">{{Channels.title}}</span>
+          </div>
+          <div fxLayout="row" fxLayout.xs="column" style="text-align: right;">
+            <mat-icon *ngIf="Channels.primarychannel" class="iconsize-14">bookmark</mat-icon>
+            <mat-icon *ngIf="Channels.recurrence" class="iconsize-14">autorenew</mat-icon>
+            <mat-icon *ngIf="Channels.scheduled" class="iconsize-14">calendar_today</mat-icon>
+            <mat-icon *ngIf="Channels.send" class="iconsize-14">done</mat-icon>
+          </div>
         </div>
       </div>
+
     </div>
 
-
-
-    <div class="relationcontainer" fxFlex="80%" *ngIf="selectedChannel" onblur="saveChannel()">
+    <div class="relationcontainer" *ngIf="selectedChannel" ngClass.gt-xs="container-normal"
+      ngClass.lt-sm="container-noshow" [class.container-xs-show]="listviewxsshow" onblur="saveChannel()">
       <mat-toolbar color="primary" class="titlebox">
         <div>
           <h2>{{selectedChannel.title | uppercase}}</h2>
@@ -73,16 +73,16 @@
 
       <mat-card *ngIf="linkedintoggle">
         <mat-card-content>
-          <table style="width: 100%">
-            <tr>
-              <td>
+          <div fxLayout="column" style="width: 100%">
+            <div fxLayout="row" fxLayout.xs="column">
+              <div>
                 <mat-form-field class="form-full-width">
                   <input matInput [(ngModel)]=selectedChannel.title [disabled]="selectedChannel.scheduled"
                     placeholder="Title" class="InputField">
                 </mat-form-field>
-              </td>
-            </tr>
-            <tr>
+              </div>
+            </div>
+            <div fxLayout="row" fxLayout.xs="column">
               <mat-accordion>
                 <mat-expansion-panel>
                   <mat-expansion-panel-header>
@@ -90,38 +90,38 @@
                       Set Date
                     </mat-panel-title>
                   </mat-expansion-panel-header>
-                  <table style="width: 100%">
-                    <tr>
-                      <td>
+                  <div fxLayout="column" style="width: 100%">
+                    <div fxLayout="row" fxLayout.xs="column">
+                      <div>
                         <label>Date/Start Date</label>
-                      </td>
-                      <td *ngIf="selectedChannel.recurrence">
+                      </div>
+                      <div fxFlex *ngIf="selectedChannel.recurrence">
                         <label matTooltip="End date of recurrent event">End date</label>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
+                      </div>
+                    </div>
+                    <div fxLayout="row" fxLayout.xs="column">
+                      <div>
                         <mat-datepicker matTooltip="Send day or the day a recurrent event should start" #picker5
                           class="form-half-width"></mat-datepicker>
                         <input [matDatepicker]="myDatepicker5" [(ngModel)]=selectedChannel.date
                           placeholder="(start/send) date">
                         <mat-datepicker-toggle matSuffix [for]="myDatepicker5"></mat-datepicker-toggle>
                         <mat-datepicker #myDatepicker5></mat-datepicker>
-                      </td>
-                      <td *ngIf="selectedChannel.recurrence">
+                      </div>
+                      <div fxflex *ngIf="selectedChannel.recurrence">
                         <mat-datepicker #picker6 class="form-half-width"></mat-datepicker>
                         <input [matDatepicker]="myDatepicker6" [(ngModel)]=selectedChannel.enddate>
                         <mat-datepicker-toggle matSuffix [for]="myDatepicker6"></mat-datepicker-toggle>
                         <mat-datepicker #myDatepicker6></mat-datepicker>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
+                      </div>
+                    </div>
+                    <div fxLayout="row" fxLayout.xs="column">
+                      <div>
                         <mat-checkbox matInput [(ngModel)]=selectedChannel.recurrence>
                           Recurrence
                         </mat-checkbox>
-                      </td>
-                      <td *ngIf="selectedChannel.recurrence">
+                      </div>
+                      <div fxflex *ngIf="selectedChannel.recurrence">
                         <mat-form-field class="form-full-width">
                           <!-- dropdown nl/de/en etc.  -->
                           <mat-select matInput [(ngModel)]=selectedChannel.interval placeholder="Interval"
@@ -132,13 +132,13 @@
                             <mat-option matInput value="year">Every Year</mat-option>
                           </mat-select>
                         </mat-form-field>
-                      </td>
-                    </tr>
-                    <tr *ngIf="selectedChannel.recurrence">
-                      <td>
+                      </div>
+                    </div>
+                    <div fxLayout="row" fxLayout.xs="column" *ngIf="selectedChannel.recurrence">
+                      <div>
                         <label>Send Every</label>
-                      </td>
-                      <td>
+                      </div>
+                      <div>
                         <mat-form-field class="form-full-width">
                           <!-- dropdown nl/de/en etc.  -->
                           <mat-select matInput [(ngModel)]=selectedChannel.dayinterval placeholder="Day of the Week"
@@ -153,18 +153,18 @@
                             <mat-option matInput value=7>Sunday</mat-option>
                           </mat-select>
                         </mat-form-field>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
+                      </div>
+                    </div>
+                    <div fxLayout="row" fxLayout.xs="column">
+                      <div>
                         <label>Timezone</label>
-                      </td>
-                      <td>
+                      </div>
+                      <div>
                         <label>Time</label>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
+                      </div>
+                    </div>
+                    <div fxLayout="row" fxLayout.xs="column">
+                      <div>
                         <mat-form-field>
                           <mat-select placeholder="Timezone" [(ngModel)]="selectedChannel.timezone">
                             <mat-option *ngFor="let timezone of timezones" [value]="timezone.value">
@@ -172,17 +172,17 @@
                             </mat-option>
                           </mat-select>
                         </mat-form-field>
-                      </td>
-                      <td>
+                      </div>
+                      <div>
                         <mat-form-field>
                           <input matInput [(ngModel)]=selectedChannel.timeinterval placeholder="Time" class="InputField"
                             type="time">
                         </mat-form-field>
-                      </td>
-                    </tr>
-                    <tr *ngIf="selectedChannel.recurrence">
-                      <td><label>Month</label></td>
-                      <td>
+                      </div>
+                    </div>
+                    <div fxLayout="row" fxLayout.xs="column" *ngIf="selectedChannel.recurrence">
+                      <div><label>Month</label></div>
+                      <div>
                         <mat-form-field class="form-full-width">
                           <!-- dropdown nl/de/en etc.  -->
                           <mat-select matInput [(ngModel)]=selectedChannel.monthinterval placeholder="Month"
@@ -202,76 +202,75 @@
                             <mat-option matInput value=12>12</mat-option>
                           </mat-select>
                         </mat-form-field>
-                      </td>
-                    </tr>
-                  </table>
+                      </div>
+                    </div>
+                  </div>
                 </mat-expansion-panel>
               </mat-accordion>
-            </tr>
-            <tr>
-              <td>
+            </div>
+            <div fxLayout="row" fxLayout.xs="column">
+              <div>
                 <mat-form-field class="form-full-width">
                   <!-- dropdown nl/de/en etc.  -->
                   <input matInput [(ngModel)]=selectedChannel.language placeholder="Target Language" class="InputField">
                 </mat-form-field>
-              </td>
-            </tr>
-            <tr rowspan="10">
-              <td>
+              </div>
+            </div>
+            <div fxLayout="row" fxLayout.xs="column" rowspan="10">
+              <div>
                 <mat-form-field style="width:100%;">
                   <textarea style="width:100%; min-height: 100px;" matInput #channeltext
                     [(ngModel)]=selectedChannel.text placeholder="content">Text Version</textarea>
                   <mat-hint align="end">{{channeltext.value.length}}</mat-hint>
                 </mat-form-field>
-              </td>
-            </tr>
-            <tr>
-                <mat-accordion>
-                    <mat-expansion-panel>
-                      <mat-expansion-panel-header>
-                        <mat-panel-title>
-                          <div>
-                              <mat-icon>videocam</mat-icon>
-                              <mat-icon>crop_original</mat-icon>
-                              Add media
-                          </div>
-                        </mat-panel-title>
-                      </mat-expansion-panel-header>
-                      <table>
-                        <tr>
-                          <td>
-                            <div *ngIf="selectedChannel.pictureurl && !selectedChannel.videourl">
-                              <img [src]="selectedChannel.pictureurl" class="carouselimages">
-                              <mat-icon (click)="selectedChannel.pictureurl = ''" class="icon-label" class="iconsize-12">
-                                delete</mat-icon>
-                            </div>
-                            <app-fileupload *ngIf="!selectedChannel.pictureurl && !selectedChannel.videourl"
-                              [account]="Account" [option]="option" (imgurl)="setImage($event)">
-                            </app-fileupload>
-                          </td>
-                          <td>
-                            <div *ngIf="selectedChannel.videourl && !selectedChannel.pictureurl"
+              </div>
+            </div>
+            <div fxLayout="row" fxLayout.xs="column">
+              <mat-accordion>
+                <mat-expansion-panel>
+                  <mat-expansion-panel-header>
+                    <mat-panel-title>
+                      <div>
+                        <mat-icon>videocam</mat-icon>
+                        <mat-icon>crop_original</mat-icon>
+                        Add media
+                      </div>
+                    </mat-panel-title>
+                  </mat-expansion-panel-header>
+                  <div fxLayout="column">
+                    <div fxLayout="row" fxLayout.xs="column">
+                      <div>
+                        <div *ngIf="selectedChannel.pictureurl && !selectedChannel.videourl">
+                          <img [src]="selectedChannel.pictureurl" class="carouselimages">
+                          <mat-icon (click)="selectedChannel.pictureurl = ''" class="icon-label" class="iconsize-12">
+                            delete</mat-icon>
+                        </div>
+                        <app-fileupload *ngIf="!selectedChannel.pictureurl && !selectedChannel.videourl"
+                          [account]="Account" [option]="option" (imgurl)="setImage($event)">
+                        </app-fileupload>
+                      </div>
+                      <div>
+                        <div *ngIf="selectedChannel.videourl && !selectedChannel.pictureurl" style="max-width: 600px;">
+                          <vg-player style="max-width: 600px;">
+                            <video [vgMedia]="media" #media id="singleVideo" preload="auto" controls
                               style="max-width: 600px;">
-                              <vg-player style="max-width: 600px;">
-                                <video [vgMedia]="media" #media id="singleVideo" preload="auto" controls
-                                  style="max-width: 600px;">
-                                  <source [src]="selectedChannel.videourl" type="video/mp4">
-                                </video>
-                              </vg-player>
-                              <mat-icon (click)="selectedChannel.videourl = ''" class="icon-label" class="iconsize-12">
-                                delete</mat-icon>
-                            </div>
-                            <app-videoupload *ngIf="!selectedChannel.videourl && !selectedChannel.pictureurl"
-                              [account]="Account" [option]="option" (imgurl)="setVideo($event)">
-                            </app-videoupload>
-                          </td>
-                        </tr>
-                      </table>
-                    </mat-expansion-panel>
-                  </mat-accordion>
-            </tr>
-            <tr>
-              <td>
+                              <source [src]="selectedChannel.videourl" type="video/mp4">
+                            </video>
+                          </vg-player>
+                          <mat-icon (click)="selectedChannel.videourl = ''" class="icon-label" class="iconsize-12">
+                            delete</mat-icon>
+                        </div>
+                        <app-videoupload *ngIf="!selectedChannel.videourl && !selectedChannel.pictureurl"
+                          [account]="Account" [option]="option" (imgurl)="setVideo($event)">
+                        </app-videoupload>
+                      </div>
+                    </div>
+                  </div>
+                </mat-expansion-panel>
+              </mat-accordion>
+            </div>
+            <div fxLayout="row" fxLayout.xs="column">
+              <div>
                 <mat-select placeholder="Select Linkedin Account" [(value)]="linkedinoption">
                   <mat-option *ngFor="let Linkedin of Linkedin" [value]="Linkedin"
                     (onSelectionChange)="getLinkedinCompany()">
@@ -283,10 +282,10 @@
                     {{ companypage.vanityName }}
                   </mat-option>
                 </mat-select>
-              </td>
-            </tr>
-            <tr>
-              <td>
+              </div>
+            </div>
+            <div fxLayout="row" fxLayout.xs="column">
+              <div>
                 <button a mat-raised-button *ngIf="!selectedChannel.send" [disabled]="selectedChannel.scheduled"
                   (click)="scheduleChannel()">Schedule</button>
                 <button a mat-raised-button (click)="getLinkedinAccount()">Check account</button>
@@ -297,10 +296,10 @@
                 <button a mat-raised-button *ngIf="!selectedChannel.send" [disabled]="selectedChannel.scheduled"
                   (click)="postToLinkedinCompanyPage()">Publish to Company Page</button>
                 <button a mat-raised-button (click)="openDialogDeleteChannel()">Delete Post</button>
-              </td>
-            </tr>
-            <tr>
-              <td>
+              </div>
+            </div>
+            <div fxLayout="row" fxLayout.xs="column">
+              <div>
                 <ul>
                   <li>
                     <b>LinkedIn ad specs:</b>
@@ -309,9 +308,9 @@
                   <li>Company logo: The recommended minimum logo size is 100 x 100 pixels</li>
                   <li>Primary CTA (below images): Maximum 50 characters including spaces</li>
                 </ul>
-              </td>
-            </tr>
-          </table>
+              </div>
+            </div>
+          </div>
 
         </mat-card-content>
       </mat-card>
@@ -320,16 +319,16 @@
 
       <mat-card *ngIf="twittertoggle">
         <mat-card-content>
-          <table style="width: 100%">
-            <tr>
-              <td>
+          <div fxLayout="column" style="width: 100%">
+            <div fxLayout="row" fxLayout.xs="column">
+              <div>
                 <mat-form-field class="form-full-width">
                   <input matInput [disabled]="selectedChannel.send" [(ngModel)]=selectedChannel.title
                     placeholder="Title" class="InputField">
                 </mat-form-field>
-              </td>
-            </tr>
-            <tr *ngIf="!selectedChannel.send">
+              </div>
+            </div>
+            <div fxLayout="row" fxLayout.xs="column" *ngIf="!selectedChannel.send">
               <mat-accordion>
                 <mat-expansion-panel>
                   <mat-expansion-panel-header>
@@ -337,38 +336,38 @@
                       Set Date
                     </mat-panel-title>
                   </mat-expansion-panel-header>
-                  <table style="width: 100%">
-                    <tr>
-                      <td>
+                  <div fxLayout="column" style="width: 100%">
+                    <div fxLayout="row" fxLayout.xs="column">
+                      <div>
                         <label>Date/Start Date</label>
-                      </td>
-                      <td *ngIf="selectedChannel.recurrence">
+                      </div>
+                      <div fxflex *ngIf="selectedChannel.recurrence">
                         <label matTooltip="End date of recurrent event">End date</label>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
+                      </div>
+                    </div>
+                    <div fxLayout="row" fxLayout.xs="column">
+                      <div>
                         <mat-datepicker matTooltip="Send day or the day a recurrent event should start" #picker5
                           class="form-half-width"></mat-datepicker>
                         <input [matDatepicker]="myDatepicker5" [(ngModel)]=selectedChannel.date
                           placeholder="(start/send) date">
                         <mat-datepicker-toggle matSuffix [for]="myDatepicker5"></mat-datepicker-toggle>
                         <mat-datepicker #myDatepicker5></mat-datepicker>
-                      </td>
-                      <td *ngIf="selectedChannel.recurrence">
+                      </div>
+                      <div fxflex *ngIf="selectedChannel.recurrence">
                         <mat-datepicker #picker6 class="form-half-width"></mat-datepicker>
                         <input [matDatepicker]="myDatepicker6" [(ngModel)]=selectedChannel.enddate>
                         <mat-datepicker-toggle matSuffix [for]="myDatepicker6"></mat-datepicker-toggle>
                         <mat-datepicker #myDatepicker6></mat-datepicker>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
+                      </div>
+                    </div>
+                    <div fxLayout="row" fxLayout.xs="column">
+                      <div>
                         <mat-checkbox matInput [(ngModel)]=selectedChannel.recurrence>
                           Recurrence
                         </mat-checkbox>
-                      </td>
-                      <td *ngIf="selectedChannel.recurrence">
+                      </div>
+                      <div fxflex *ngIf="selectedChannel.recurrence">
                         <mat-form-field class="form-full-width">
                           <!-- dropdown nl/de/en etc.  -->
                           <mat-select matInput [(ngModel)]=selectedChannel.interval placeholder="Interval"
@@ -379,13 +378,13 @@
                             <mat-option matInput value="year">Every Year</mat-option>
                           </mat-select>
                         </mat-form-field>
-                      </td>
-                    </tr>
-                    <tr *ngIf="selectedChannel.recurrence">
-                      <td>
+                      </div>
+                    </div>
+                    <div fxLayout="row" fxLayout.xs="column" *ngIf="selectedChannel.recurrence">
+                      <div>
                         <label>Send Every</label>
-                      </td>
-                      <td>
+                      </div>
+                      <div>
                         <mat-form-field class="form-full-width">
                           <!-- dropdown nl/de/en etc.  -->
                           <mat-select matInput [(ngModel)]=selectedChannel.dayinterval placeholder="Day of the Week"
@@ -400,18 +399,18 @@
                             <mat-option matInput value=7>Sunday</mat-option>
                           </mat-select>
                         </mat-form-field>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
+                      </div>
+                    </div>
+                    <div fxLayout="row" fxLayout.xs="column">
+                      <div>
                         <label>Timezone</label>
-                      </td>
-                      <td>
+                      </div>
+                      <div>
                         <label>Time</label>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
+                      </div>
+                    </div>
+                    <div fxLayout="row" fxLayout.xs="column">
+                      <div>
                         <mat-form-field>
                           <mat-select placeholder="Timezone" [(ngModel)]="selectedChannel.timezone">
                             <mat-option *ngFor="let timezone of timezones" [value]="timezone.value">
@@ -419,17 +418,17 @@
                             </mat-option>
                           </mat-select>
                         </mat-form-field>
-                      </td>
-                      <td>
+                      </div>
+                      <div>
                         <mat-form-field>
                           <input matInput [(ngModel)]=selectedChannel.timeinterval placeholder="Time" class="InputField"
                             type="time">
                         </mat-form-field>
-                      </td>
-                    </tr>
-                    <tr *ngIf="selectedChannel.recurrence">
-                      <td><label>Month</label></td>
-                      <td>
+                      </div>
+                    </div>
+                    <div fxLayout="row" fxLayout.xs="column" *ngIf="selectedChannel.recurrence">
+                      <div><label>Month</label></div>
+                      <div>
                         <mat-form-field class="form-full-width">
                           <!-- dropdown nl/de/en etc.  -->
                           <mat-select matInput [(ngModel)]=selectedChannel.monthinterval placeholder="Month"
@@ -449,99 +448,98 @@
                             <mat-option matInput value=12>12</mat-option>
                           </mat-select>
                         </mat-form-field>
-                      </td>
-                    </tr>
-                  </table>
+                      </div>
+                    </div>
+                  </div>
                 </mat-expansion-panel>
               </mat-accordion>
-            </tr>
-            <tr>
-              <td>
+            </div>
+            <div fxLayout="row" fxLayout.xs="column">
+              <div>
                 <mat-form-field class="form-full-width">
                   <!-- dropdown nl/de/en etc.  -->
                   <input matInput [disabled]="selectedChannel.send" [(ngModel)]=selectedChannel.language
                     placeholder="Target Language" class="InputField">
                 </mat-form-field>
-              </td>
-            </tr>
-            <tr rowspan="5">
-              <td>
+              </div>
+            </div>
+            <div fxLayout="row" fxLayout.xs="column" rowspan="5">
+              <div>
                 <mat-form-field style="width:100%;">
                   <textarea [disabled]="selectedChannel.send" style="width:100%; min-height: 100px;" matInput
                     #channeltext [(ngModel)]=selectedChannel.text placeholder="content">Text Version</textarea>
                   <mat-hint align="end">{{channeltext.value.length}}</mat-hint>
                 </mat-form-field>
-              </td>
-            </tr>
-            <tr>
-                <mat-accordion>
-                    <mat-expansion-panel>
-                      <mat-expansion-panel-header>
-                        <mat-panel-title>
-                          <div>
-                              <mat-icon>videocam</mat-icon>
-                              <mat-icon>crop_original</mat-icon>
-                              Add media
-                          </div>
-                        </mat-panel-title>
-                      </mat-expansion-panel-header>
-                      <table>
-                        <tr>
-                          <td>
-                            <div *ngIf="selectedChannel.pictureurl && !selectedChannel.videourl">
-                              <img [src]="selectedChannel.pictureurl" class="carouselimages">
-                              <mat-icon (click)="selectedChannel.pictureurl = ''" class="icon-label" class="iconsize-12">
-                                delete</mat-icon>
-                            </div>
-                            <app-fileupload *ngIf="!selectedChannel.pictureurl && !selectedChannel.videourl"
-                              [account]="Account" [option]="option" (imgurl)="setImage($event)">
-                            </app-fileupload>
-                          </td>
-                          <td>
-                            <div *ngIf="selectedChannel.videourl && !selectedChannel.pictureurl"
+              </div>
+            </div>
+            <div fxLayout="row" fxLayout.xs="column">
+              <mat-accordion>
+                <mat-expansion-panel>
+                  <mat-expansion-panel-header>
+                    <mat-panel-title>
+                      <div>
+                        <mat-icon>videocam</mat-icon>
+                        <mat-icon>crop_original</mat-icon>
+                        Add media
+                      </div>
+                    </mat-panel-title>
+                  </mat-expansion-panel-header>
+                  <div fxLayout="column">
+                    <div fxLayout="row" fxLayout.xs="column">
+                      <div>
+                        <div *ngIf="selectedChannel.pictureurl && !selectedChannel.videourl">
+                          <img [src]="selectedChannel.pictureurl" class="carouselimages">
+                          <mat-icon (click)="selectedChannel.pictureurl = ''" class="icon-label" class="iconsize-12">
+                            delete</mat-icon>
+                        </div>
+                        <app-fileupload *ngIf="!selectedChannel.pictureurl && !selectedChannel.videourl"
+                          [account]="Account" [option]="option" (imgurl)="setImage($event)">
+                        </app-fileupload>
+                      </div>
+                      <div>
+                        <div *ngIf="selectedChannel.videourl && !selectedChannel.pictureurl" style="max-width: 600px;">
+                          <vg-player style="max-width: 600px;">
+                            <video [vgMedia]="media" #media id="singleVideo" preload="auto" controls
                               style="max-width: 600px;">
-                              <vg-player style="max-width: 600px;">
-                                <video [vgMedia]="media" #media id="singleVideo" preload="auto" controls
-                                  style="max-width: 600px;">
-                                  <source [src]="selectedChannel.videourl" type="video/mp4">
-                                </video>
-                              </vg-player>
-                              <mat-icon (click)="selectedChannel.videourl = ''" class="icon-label" class="iconsize-12">
-                                delete</mat-icon>
-                            </div>
-                            <app-videoupload *ngIf="!selectedChannel.videourl && !selectedChannel.pictureurl"
-                              [account]="Account" [option]="option" (imgurl)="setVideo($event)">
-                            </app-videoupload>
-                          </td>
-                        </tr>
-                      </table>
-                    </mat-expansion-panel>
-                  </mat-accordion>
-            </tr>
-            <tr>
-              <td>
+                              <source [src]="selectedChannel.videourl" type="video/mp4">
+                            </video>
+                          </vg-player>
+                          <mat-icon (click)="selectedChannel.videourl = ''" class="icon-label" class="iconsize-12">
+                            delete</mat-icon>
+                        </div>
+                        <app-videoupload *ngIf="!selectedChannel.videourl && !selectedChannel.pictureurl"
+                          [account]="Account" [option]="option" (imgurl)="setVideo($event)">
+                        </app-videoupload>
+                      </div>
+                    </div>
+                  </div>
+                </mat-expansion-panel>
+              </mat-accordion>
+            </div>
+            <div fxLayout="row" fxLayout.xs="column">
+              <div>
                 <mat-select placeholder="Select Twitter Account" [(value)]="twitteroption">
                   <mat-option [disabled]="selectedChannel.send" *ngFor="let Twitter of Twitter" [value]="Twitter">
                     {{ Twitter.name }}
                   </mat-option>
                 </mat-select>
-              </td>
-            </tr>
-            <tr>
-              <td>
+              </div>
+            </div>
+            <div fxLayout="row" fxLayout.xs="column">
+              <div>
                 <button a mat-raised-button *ngIf="!selectedChannel.send" (click)="saveChannel()">Save</button>
                 <button a mat-raised-button *ngIf="!selectedChannel.send" (click)="scheduleChannel()">Schedule</button>
                 <button a mat-raised-button *ngIf="!selectedChannel.send" (click)="postToTwitter()">Tweet</button>
                 <button a mat-raised-button (click)="openDialogDeleteChannel(i)">Delete Post</button>
-              </td>
-            </tr>
+              </div>
+            </div>
             <br>
-            <tr *ngIf="selectedChannel.send">
+            <div fxLayout="row" fxLayout.xs="column" *ngIf="selectedChannel.send">
               <mat-icon matBadge="{{selectedChannel.likes}}">sentiment_satisfied_alt</mat-icon>Favorites
               <mat-icon matBadge="{{selectedChannel.shared}}">cached</mat-icon>Retweets
-            </tr>
-            <tr>
-              <td>
+            </div>
+            <div fxLayout="row" fxLayout.xs="column">
+              <div>
                 <ul>
                   <li>
                     <b>Twitter ad specs:</b>
@@ -550,9 +548,9 @@
                   <li>Hashtag: 21 characters</li>
                   <li>Headline: 23 characters</li>
                 </ul>
-              </td>
-            </tr>
-          </table>
+              </div>
+            </div>
+          </div>
         </mat-card-content>
       </mat-card>
 
@@ -560,16 +558,16 @@
       <!-- Form Facebook_______________________________ -->
       <mat-card *ngIf="facebooktoggle">
         <mat-card-content>
-          <table style="width: 100%">
-            <tr>
-              <td>
+          <div fxLayout="column" style="width: 100%">
+            <div fxLayout="row" fxLayout.xs="column">
+              <div>
                 <mat-form-field class="form-full-width">
                   <input matInput [disabled]="selectedChannel.send" [(ngModel)]=selectedChannel.title
                     placeholder="Title" class="InputField">
                 </mat-form-field>
-              </td>
-            </tr>
-            <tr *ngIf="!selectedChannel.send">
+              </div>
+            </div>
+            <div fxLayout="row" fxLayout.xs="column" *ngIf="!selectedChannel.send">
               <mat-accordion>
                 <mat-expansion-panel>
                   <mat-expansion-panel-header>
@@ -577,38 +575,38 @@
                       Set Date
                     </mat-panel-title>
                   </mat-expansion-panel-header>
-                  <table style="width: 100%">
-                    <tr>
-                      <td>
+                  <div fxLayout="column" style="width: 100%">
+                    <div fxLayout="row" fxLayout.xs="column">
+                      <div>
                         <label>Date/Start Date</label>
-                      </td>
-                      <td *ngIf="selectedChannel.recurrence">
+                      </div>
+                      <div fxflex *ngIf="selectedChannel.recurrence">
                         <label matTooltip="End date of recurrent event">End date</label>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
+                      </div>
+                    </div>
+                    <div fxLayout="row" fxLayout.xs="column">
+                      <div>
                         <mat-datepicker matTooltip="Send day or the day a recurrent event should start" #picker5
                           class="form-half-width"></mat-datepicker>
                         <input [matDatepicker]="myDatepicker5" [(ngModel)]=selectedChannel.date
                           placeholder="(start/send) date">
                         <mat-datepicker-toggle matSuffix [for]="myDatepicker5"></mat-datepicker-toggle>
                         <mat-datepicker #myDatepicker5></mat-datepicker>
-                      </td>
-                      <td *ngIf="selectedChannel.recurrence">
+                      </div>
+                      <div fxflex *ngIf="selectedChannel.recurrence">
                         <mat-datepicker #picker6 class="form-half-width"></mat-datepicker>
                         <input [matDatepicker]="myDatepicker6" [(ngModel)]=selectedChannel.enddate>
                         <mat-datepicker-toggle matSuffix [for]="myDatepicker6"></mat-datepicker-toggle>
                         <mat-datepicker #myDatepicker6></mat-datepicker>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
+                      </div>
+                    </div>
+                    <div fxLayout="row" fxLayout.xs="column">
+                      <div>
                         <mat-checkbox matInput [(ngModel)]=selectedChannel.recurrence>
                           Recurrence
                         </mat-checkbox>
-                      </td>
-                      <td *ngIf="selectedChannel.recurrence">
+                      </div>
+                      <div fxflex *ngIf="selectedChannel.recurrence">
                         <mat-form-field class="form-full-width">
                           <!-- dropdown nl/de/en etc.  -->
                           <mat-select matInput [(ngModel)]=selectedChannel.interval placeholder="Interval"
@@ -619,13 +617,13 @@
                             <mat-option matInput value="year">Every Year</mat-option>
                           </mat-select>
                         </mat-form-field>
-                      </td>
-                    </tr>
-                    <tr *ngIf="selectedChannel.recurrence">
-                      <td>
+                      </div>
+                    </div>
+                    <div fxLayout="row" fxLayout.xs="column" *ngIf="selectedChannel.recurrence">
+                      <div>
                         <label>Send Every</label>
-                      </td>
-                      <td>
+                      </div>
+                      <div>
                         <mat-form-field class="form-full-width">
                           <!-- dropdown nl/de/en etc.  -->
                           <mat-select matInput [(ngModel)]=selectedChannel.dayinterval placeholder="Day of the Week"
@@ -640,18 +638,18 @@
                             <mat-option matInput value=7>Sunday</mat-option>
                           </mat-select>
                         </mat-form-field>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
+                      </div>
+                    </div>
+                    <div fxLayout="row" fxLayout.xs="column">
+                      <div>
                         <label>Timezone</label>
-                      </td>
-                      <td>
+                      </div>
+                      <div>
                         <label>Time</label>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
+                      </div>
+                    </div>
+                    <div fxLayout="row" fxLayout.xs="column">
+                      <div>
                         <mat-form-field>
                           <mat-select placeholder="Timezone" [(ngModel)]="selectedChannel.timezone">
                             <mat-option *ngFor="let timezone of timezones" [value]="timezone.value">
@@ -659,17 +657,17 @@
                             </mat-option>
                           </mat-select>
                         </mat-form-field>
-                      </td>
-                      <td>
+                      </div>
+                      <div>
                         <mat-form-field>
                           <input matInput [(ngModel)]=selectedChannel.timeinterval placeholder="Time" class="InputField"
                             type="time">
                         </mat-form-field>
-                      </td>
-                    </tr>
-                    <tr *ngIf="selectedChannel.recurrence">
-                      <td><label>Month</label></td>
-                      <td>
+                      </div>
+                    </div>
+                    <div fxLayout="row" fxLayout.xs="column" *ngIf="selectedChannel.recurrence">
+                      <div><label>Month</label></div>
+                      <div>
                         <mat-form-field class="form-full-width">
                           <!-- dropdown nl/de/en etc.  -->
                           <mat-select matInput [(ngModel)]=selectedChannel.monthinterval placeholder="Month"
@@ -689,77 +687,76 @@
                             <mat-option matInput value=12>12</mat-option>
                           </mat-select>
                         </mat-form-field>
-                      </td>
-                    </tr>
-                  </table>
+                      </div>
+                    </div>
+                  </div>
                 </mat-expansion-panel>
               </mat-accordion>
-            </tr>
-            <tr>
-              <td>
+            </div>
+            <div fxLayout="row" fxLayout.xs="column">
+              <div>
                 <mat-form-field class="form-full-width">
                   <!-- dropdown nl/de/en etc.  -->
                   <input matInput [disabled]="selectedChannel.send" [(ngModel)]=selectedChannel.language
                     placeholder="Target Language" class="InputField">
                 </mat-form-field>
-              </td>
-            </tr>
-            <tr rowspan="5">
-              <td>
+              </div>
+            </div>
+            <div fxLayout="row" fxLayout.xs="column" rowspan="5">
+              <div>
                 <mat-form-field style="width:100%;">
                   <textarea [disabled]="selectedChannel.send" style="width:100%; min-height: 100px;" matInput
                     #channeltext [(ngModel)]=selectedChannel.text placeholder="content">Text Version</textarea>
                   <mat-hint align="end">{{channeltext.value.length}}</mat-hint>
                 </mat-form-field>
-              </td>
-            </tr>
-            <tr>
-                <mat-accordion>
-                    <mat-expansion-panel>
-                      <mat-expansion-panel-header>
-                        <mat-panel-title>
-                          <div>
-                              <mat-icon>videocam</mat-icon>
-                              <mat-icon>crop_original</mat-icon>
-                              Add media
-                          </div>
-                        </mat-panel-title>
-                      </mat-expansion-panel-header>
-                      <table>
-                        <tr>
-                          <td>
-                            <div *ngIf="selectedChannel.pictureurl && !selectedChannel.videourl">
-                              <img [src]="selectedChannel.pictureurl" class="carouselimages">
-                              <mat-icon (click)="selectedChannel.pictureurl = ''" class="icon-label" class="iconsize-12">
-                                delete</mat-icon>
-                            </div>
-                            <app-fileupload *ngIf="!selectedChannel.pictureurl && !selectedChannel.videourl"
-                              [account]="Account" [option]="option" (imgurl)="setImage($event)">
-                            </app-fileupload>
-                          </td>
-                          <td>
-                            <div *ngIf="selectedChannel.videourl && !selectedChannel.pictureurl"
+              </div>
+            </div>
+            <div fxLayout="row" fxLayout.xs="column">
+              <mat-accordion>
+                <mat-expansion-panel>
+                  <mat-expansion-panel-header>
+                    <mat-panel-title>
+                      <div>
+                        <mat-icon>videocam</mat-icon>
+                        <mat-icon>crop_original</mat-icon>
+                        Add media
+                      </div>
+                    </mat-panel-title>
+                  </mat-expansion-panel-header>
+                  <div fxLayout="column">
+                    <div fxLayout="row" fxLayout.xs="column">
+                      <div>
+                        <div *ngIf="selectedChannel.pictureurl && !selectedChannel.videourl">
+                          <img [src]="selectedChannel.pictureurl" class="carouselimages">
+                          <mat-icon (click)="selectedChannel.pictureurl = ''" class="icon-label" class="iconsize-12">
+                            delete</mat-icon>
+                        </div>
+                        <app-fileupload *ngIf="!selectedChannel.pictureurl && !selectedChannel.videourl"
+                          [account]="Account" [option]="option" (imgurl)="setImage($event)">
+                        </app-fileupload>
+                      </div>
+                      <div>
+                        <div *ngIf="selectedChannel.videourl && !selectedChannel.pictureurl" style="max-width: 600px;">
+                          <vg-player style="max-width: 600px;">
+                            <video [vgMedia]="media" #media id="singleVideo" preload="auto" controls
                               style="max-width: 600px;">
-                              <vg-player style="max-width: 600px;">
-                                <video [vgMedia]="media" #media id="singleVideo" preload="auto" controls
-                                  style="max-width: 600px;">
-                                  <source [src]="selectedChannel.videourl" type="video/mp4">
-                                </video>
-                              </vg-player>
-                              <mat-icon (click)="selectedChannel.videourl = ''" class="icon-label" class="iconsize-12">
-                                delete</mat-icon>
-                            </div>
-                            <app-videoupload *ngIf="!selectedChannel.videourl && !selectedChannel.pictureurl"
-                              [account]="Account" [option]="option" (imgurl)="setVideo($event)">
-                            </app-videoupload>
-                          </td>
-                        </tr>
-                      </table>
-                    </mat-expansion-panel>
-                  </mat-accordion>
-            </tr>
-            <tr>
-              <td fxflex>
+                              <source [src]="selectedChannel.videourl" type="video/mp4">
+                            </video>
+                          </vg-player>
+                          <mat-icon (click)="selectedChannel.videourl = ''" class="icon-label" class="iconsize-12">
+                            delete</mat-icon>
+                        </div>
+                        <app-videoupload *ngIf="!selectedChannel.videourl && !selectedChannel.pictureurl"
+                          [account]="Account" [option]="option" (imgurl)="setVideo($event)">
+                        </app-videoupload>
+                      </div>
+                    </div>
+                  </div>
+                </mat-expansion-panel>
+              </mat-accordion>
+            </div>
+            <div fxLayout="row" fxLayout.xs="column">
+              <div fxFlexfxflex>
                 <mat-select placeholder="Select Facebook Account" [(value)]="facebookoption">
                   <mat-option (onSelectionChange)="getFBAccountInfo()" [disabled]="selectedChannel.send"
                     *ngFor="let Facebook of Facebook" [value]="Facebook">
@@ -773,10 +770,10 @@
                     {{ companypage.name }}
                   </mat-option>
                 </mat-select>
-              </td>
-            </tr>
-            <tr>
-              <td>
+              </div>
+            </div>
+            <div fxLayout="row" fxLayout.xs="column">
+              <div>
                 <!-- <button a mat-raised-button *ngIf="!selectedChannel.send" (click)="getFBAccountInfo()">Get Accounts</button> -->
                 <button a mat-raised-button *ngIf="!selectedChannel.send" (click)="saveChannel()">Save</button>
                 <button a mat-raised-button *ngIf="!selectedChannel.send" (click)="scheduleChannel()">Schedule</button>
@@ -784,15 +781,15 @@
                 <button a mat-raised-button *ngIf="!selectedChannel.send" (click)="postToFacebookPage()">Post to
                   page</button>
                 <button a mat-raised-button (click)="openDialogDeleteChannel(i)">Delete Post</button>
-              </td>
-            </tr>
+              </div>
+            </div>
             <br>
-            <tr *ngIf="selectedChannel.send">
+            <div fxLayout="row" fxLayout.xs="column" *ngIf="selectedChannel.send">
               <mat-icon matBadge="{{selectedChannel.likes}}">sentiment_satisfied_alt</mat-icon>Favorites
               <mat-icon matBadge="{{selectedChannel.shared}}">cached</mat-icon>Retweets
-            </tr>
+            </div>
 
-          </table>
+          </div>
         </mat-card-content>
       </mat-card>
 
@@ -801,16 +798,16 @@
       <mat-card *ngIf="instagramtoggle">
         <!-- on-focusout="saveChannel()" -->
         <mat-card-content>
-          <table style="width: 100%">
-            <tr>
-              <td>
+          <div fxLayout="column" style="width: 100%">
+            <div fxLayout="row" fxLayout.xs="column">
+              <div>
                 <mat-form-field class="form-full-width">
                   <input matInput [disabled]="selectedChannel.send" [(ngModel)]=selectedChannel.title
                     placeholder="Title" class="InputField">
                 </mat-form-field>
-              </td>
-            </tr>
-            <tr *ngIf="!selectedChannel.send">
+              </div>
+            </div>
+            <div fxLayout="row" fxLayout.xs="column" *ngIf="!selectedChannel.send">
               <mat-accordion>
                 <mat-expansion-panel>
                   <mat-expansion-panel-header>
@@ -818,38 +815,38 @@
                       Set Date
                     </mat-panel-title>
                   </mat-expansion-panel-header>
-                  <table style="width: 100%">
-                    <tr>
-                      <td>
+                  <div fxLayout="column" style="width: 100%">
+                    <div fxLayout="row" fxLayout.xs="column">
+                      <div>
                         <label>Date/Start Date</label>
-                      </td>
-                      <td *ngIf="selectedChannel.recurrence">
+                      </div>
+                      <div fxflex *ngIf="selectedChannel.recurrence">
                         <label matTooltip="End date of recurrent event">End date</label>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
+                      </div>
+                    </div>
+                    <div fxLayout="row" fxLayout.xs="column">
+                      <div>
                         <mat-datepicker matTooltip="Send day or the day a recurrent event should start" #picker5
                           class="form-half-width"></mat-datepicker>
                         <input [matDatepicker]="myDatepicker5" [(ngModel)]=selectedChannel.date
                           placeholder="(start/send) date">
                         <mat-datepicker-toggle matSuffix [for]="myDatepicker5"></mat-datepicker-toggle>
                         <mat-datepicker #myDatepicker5></mat-datepicker>
-                      </td>
-                      <td *ngIf="selectedChannel.recurrence">
+                      </div>
+                      <div fxflex *ngIf="selectedChannel.recurrence">
                         <mat-datepicker #picker6 class="form-half-width"></mat-datepicker>
                         <input [matDatepicker]="myDatepicker6" [(ngModel)]=selectedChannel.enddate>
                         <mat-datepicker-toggle matSuffix [for]="myDatepicker6"></mat-datepicker-toggle>
                         <mat-datepicker #myDatepicker6></mat-datepicker>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
+                      </div>
+                    </div>
+                    <div fxLayout="row" fxLayout.xs="column">
+                      <div>
                         <mat-checkbox matInput [(ngModel)]=selectedChannel.recurrence>
                           Recurrence
                         </mat-checkbox>
-                      </td>
-                      <td *ngIf="selectedChannel.recurrence">
+                      </div>
+                      <div fxflex *ngIf="selectedChannel.recurrence">
                         <mat-form-field class="form-full-width">
                           <!-- dropdown nl/de/en etc.  -->
                           <mat-select matInput [(ngModel)]=selectedChannel.interval placeholder="Interval"
@@ -860,13 +857,13 @@
                             <mat-option matInput value="year">Every Year</mat-option>
                           </mat-select>
                         </mat-form-field>
-                      </td>
-                    </tr>
-                    <tr *ngIf="selectedChannel.recurrence">
-                      <td>
+                      </div>
+                    </div>
+                    <div fxLayout="row" fxLayout.xs="column" *ngIf="selectedChannel.recurrence">
+                      <div>
                         <label>Send Every</label>
-                      </td>
-                      <td>
+                      </div>
+                      <div>
                         <mat-form-field class="form-full-width">
                           <!-- dropdown nl/de/en etc.  -->
                           <mat-select matInput [(ngModel)]=selectedChannel.dayinterval placeholder="Day of the Week"
@@ -881,18 +878,18 @@
                             <mat-option matInput value=7>Sunday</mat-option>
                           </mat-select>
                         </mat-form-field>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
+                      </div>
+                    </div>
+                    <div fxLayout="row" fxLayout.xs="column">
+                      <div>
                         <label>Timezone</label>
-                      </td>
-                      <td>
+                      </div>
+                      <div>
                         <label>Time</label>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
+                      </div>
+                    </div>
+                    <div fxLayout="row" fxLayout.xs="column">
+                      <div>
                         <mat-form-field>
                           <mat-select placeholder="Timezone" [(ngModel)]="selectedChannel.timezone">
                             <mat-option *ngFor="let timezone of timezones" [value]="timezone.value">
@@ -900,17 +897,17 @@
                             </mat-option>
                           </mat-select>
                         </mat-form-field>
-                      </td>
-                      <td>
+                      </div>
+                      <div>
                         <mat-form-field>
                           <input matInput [(ngModel)]=selectedChannel.timeinterval placeholder="Time" class="InputField"
                             type="time">
                         </mat-form-field>
-                      </td>
-                    </tr>
-                    <tr *ngIf="selectedChannel.recurrence">
-                      <td><label>Month</label></td>
-                      <td>
+                      </div>
+                    </div>
+                    <div fxLayout="row" fxLayout.xs="column" *ngIf="selectedChannel.recurrence">
+                      <div><label>Month</label></div>
+                      <div>
                         <mat-form-field class="form-full-width">
                           <!-- dropdown nl/de/en etc.  -->
                           <mat-select matInput [(ngModel)]=selectedChannel.monthinterval placeholder="Month"
@@ -930,46 +927,46 @@
                             <mat-option matInput value=12>12</mat-option>
                           </mat-select>
                         </mat-form-field>
-                      </td>
-                    </tr>
-                  </table>
+                      </div>
+                    </div>
+                  </div>
                 </mat-expansion-panel>
               </mat-accordion>
-            </tr>
-            <tr>
-              <td>
+            </div>
+            <div fxLayout="row" fxLayout.xs="column">
+              <div>
                 <mat-form-field class="form-full-width">
                   <!-- dropdown nl/de/en etc.  -->
                   <input matInput [disabled]="selectedChannel.send" [(ngModel)]=selectedChannel.language
                     placeholder="Target Language" class="InputField">
                 </mat-form-field>
-              </td>
-            </tr>
-            <tr rowspan="5">
-              <td>
+              </div>
+            </div>
+            <div fxLayout="row" fxLayout.xs="column" rowspan="5">
+              <div>
                 <mat-form-field style="width:100%;">
                   <textarea [disabled]="selectedChannel.send" style="width:100%; min-height: 100px;" matInput
                     #channeltext [(ngModel)]=selectedChannel.text placeholder="content">Text Version</textarea>
                   <mat-hint align="end">{{channeltext.value.length}}</mat-hint>
                 </mat-form-field>
-              </td>
-            </tr>
-            <tr>
-              <td>
+              </div>
+            </div>
+            <div fxLayout="row" fxLayout.xs="column">
+              <div>
                 <mat-accordion>
                   <mat-expansion-panel>
                     <mat-expansion-panel-header>
                       <mat-panel-title>
                         <div>
-                            <mat-icon>videocam</mat-icon>
-                            <mat-icon>crop_original</mat-icon>
-                            Add media
+                          <mat-icon>videocam</mat-icon>
+                          <mat-icon>crop_original</mat-icon>
+                          Add media
                         </div>
                       </mat-panel-title>
                     </mat-expansion-panel-header>
-                    <table>
-                      <tr>
-                        <td>
+                    <div fxLayout="column">
+                      <div fxLayout="row" fxLayout.xs="column">
+                        <div>
                           <div *ngIf="selectedChannel.pictureurl && !selectedChannel.videourl">
                             <img [src]="selectedChannel.pictureurl" class="carouselimages">
                             <mat-icon (click)="selectedChannel.pictureurl = ''" class="icon-label" class="iconsize-12">
@@ -978,8 +975,8 @@
                           <app-fileupload *ngIf="!selectedChannel.pictureurl && !selectedChannel.videourl"
                             [account]="Account" [option]="option" (imgurl)="setImage($event)">
                           </app-fileupload>
-                        </td>
-                        <td>
+                        </div>
+                        <div>
                           <div *ngIf="selectedChannel.videourl && !selectedChannel.pictureurl"
                             style="max-width: 600px;">
                             <vg-player style="max-width: 600px;">
@@ -994,15 +991,15 @@
                           <app-videoupload *ngIf="!selectedChannel.videourl && !selectedChannel.pictureurl"
                             [account]="Account" [option]="option" (imgurl)="setVideo($event)">
                           </app-videoupload>
-                        </td>
-                      </tr>
-                    </table>
+                        </div>
+                      </div>
+                    </div>
                   </mat-expansion-panel>
                 </mat-accordion>
-              </td>
+              </div>
 
-            </tr>
-            <tr>
+            </div>
+            <div fxLayout="row" fxLayout.xs="column">
               <ul>
                 <li>
                   <b>Instagram ad specs:</b>
@@ -1011,9 +1008,9 @@
                 <li>Image size: 1080 x 1080 pixels</li>
                 <li>Limited support for landscape format</li>
               </ul>
-            </tr>
-            <tr>
-              <td fxflex>
+            </div>
+            <div fxLayout="row" fxLayout.xs="column">
+              <div fxFlexfxflex>
                 <mat-select placeholder="Select Facebook Account" [(value)]="facebookoption">
                   <mat-option (onSelectionChange)="getFBAccountInfo()" [disabled]="selectedChannel.send"
                     *ngFor="let Facebook of Facebook" [value]="Facebook">
@@ -1027,33 +1024,33 @@
                     {{ companypage.name }}
                   </mat-option>
                 </mat-select>
-              </td>
-            </tr>
-            <tr>
+              </div>
+            </div>
+            <div fxLayout="row" fxLayout.xs="column">
               <button a mat-raised-button *ngIf="!selectedChannel.send" (click)="saveChannel()">Save</button>
               <button a mat-raised-button *ngIf="!selectedChannel.send" (click)="scheduleChannel()">Schedule</button>
               <button a mat-raised-button *ngIf="!selectedChannel.send" (click)="postToInstagram()">Post</button>
               <button a mat-raised-button *ngIf="!selectedChannel.send" (click)="postVideoToInstragram()">Post
                 Video</button>
               <button a mat-raised-button (click)="openDialogDeleteChannel(i)">Delete Post</button>
-            </tr>
-          </table>
+            </div>
+          </div>
         </mat-card-content>
       </mat-card>
 
       <!-- Form Pinterest_______________________________ -->
       <mat-card *ngIf="pinteresttoggle">
         <mat-card-content>
-          <table style="width: 100%">
-            <tr>
-              <td>
+          <div fxLayout="column" style="width: 100%">
+            <div fxLayout="row" fxLayout.xs="column">
+              <div>
                 <mat-form-field class="form-full-width">
                   <input matInput [disabled]="selectedChannel.send" [(ngModel)]=selectedChannel.title
                     placeholder="Title" class="InputField">
                 </mat-form-field>
-              </td>
-            </tr>
-            <tr *ngIf="!selectedChannel.send">
+              </div>
+            </div>
+            <div fxLayout="row" fxLayout.xs="column" *ngIf="!selectedChannel.send">
               <mat-accordion>
                 <mat-expansion-panel>
                   <mat-expansion-panel-header>
@@ -1061,38 +1058,38 @@
                       Set Date
                     </mat-panel-title>
                   </mat-expansion-panel-header>
-                  <table style="width: 100%">
-                    <tr>
-                      <td>
+                  <div fxLayout="column" style="width: 100%">
+                    <div fxLayout="row" fxLayout.xs="column">
+                      <div>
                         <label>Date/Start Date</label>
-                      </td>
-                      <td *ngIf="selectedChannel.recurrence">
+                      </div>
+                      <div fxflex *ngIf="selectedChannel.recurrence">
                         <label matTooltip="End date of recurrent event">End date</label>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
+                      </div>
+                    </div>
+                    <div fxLayout="row" fxLayout.xs="column">
+                      <div>
                         <mat-datepicker matTooltip="Send day or the day a recurrent event should start" #picker5
                           class="form-half-width"></mat-datepicker>
                         <input [matDatepicker]="myDatepicker5" [(ngModel)]=selectedChannel.date
                           placeholder="(start/send) date">
                         <mat-datepicker-toggle matSuffix [for]="myDatepicker5"></mat-datepicker-toggle>
                         <mat-datepicker #myDatepicker5></mat-datepicker>
-                      </td>
-                      <td *ngIf="selectedChannel.recurrence">
+                      </div>
+                      <div fxflex *ngIf="selectedChannel.recurrence">
                         <mat-datepicker #picker6 class="form-half-width"></mat-datepicker>
                         <input [matDatepicker]="myDatepicker6" [(ngModel)]=selectedChannel.enddate>
                         <mat-datepicker-toggle matSuffix [for]="myDatepicker6"></mat-datepicker-toggle>
                         <mat-datepicker #myDatepicker6></mat-datepicker>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
+                      </div>
+                    </div>
+                    <div fxLayout="row" fxLayout.xs="column">
+                      <div>
                         <mat-checkbox matInput [(ngModel)]=selectedChannel.recurrence>
                           Recurrence
                         </mat-checkbox>
-                      </td>
-                      <td *ngIf="selectedChannel.recurrence">
+                      </div>
+                      <div fxflex *ngIf="selectedChannel.recurrence">
                         <mat-form-field class="form-full-width">
                           <!-- dropdown nl/de/en etc.  -->
                           <mat-select matInput [(ngModel)]=selectedChannel.interval placeholder="Interval"
@@ -1103,13 +1100,13 @@
                             <mat-option matInput value="year">Every Year</mat-option>
                           </mat-select>
                         </mat-form-field>
-                      </td>
-                    </tr>
-                    <tr *ngIf="selectedChannel.recurrence">
-                      <td>
+                      </div>
+                    </div>
+                    <div fxLayout="row" fxLayout.xs="column" *ngIf="selectedChannel.recurrence">
+                      <div>
                         <label>Send Every</label>
-                      </td>
-                      <td>
+                      </div>
+                      <div>
                         <mat-form-field class="form-full-width">
                           <!-- dropdown nl/de/en etc.  -->
                           <mat-select matInput [(ngModel)]=selectedChannel.dayinterval placeholder="Day of the Week"
@@ -1124,18 +1121,18 @@
                             <mat-option matInput value=7>Sunday</mat-option>
                           </mat-select>
                         </mat-form-field>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
+                      </div>
+                    </div>
+                    <div fxLayout="row" fxLayout.xs="column">
+                      <div>
                         <label>Timezone</label>
-                      </td>
-                      <td>
+                      </div>
+                      <div>
                         <label>Time</label>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
+                      </div>
+                    </div>
+                    <div fxLayout="row" fxLayout.xs="column">
+                      <div>
                         <mat-form-field>
                           <mat-select placeholder="Timezone" [(ngModel)]="selectedChannel.timezone">
                             <mat-option *ngFor="let timezone of timezones" [value]="timezone.value">
@@ -1143,17 +1140,17 @@
                             </mat-option>
                           </mat-select>
                         </mat-form-field>
-                      </td>
-                      <td>
+                      </div>
+                      <div>
                         <mat-form-field>
                           <input matInput [(ngModel)]=selectedChannel.timeinterval placeholder="Time" class="InputField"
                             type="time">
                         </mat-form-field>
-                      </td>
-                    </tr>
-                    <tr *ngIf="selectedChannel.recurrence">
-                      <td><label>Month</label></td>
-                      <td>
+                      </div>
+                    </div>
+                    <div fxLayout="row" fxLayout.xs="column" *ngIf="selectedChannel.recurrence">
+                      <div><label>Month</label></div>
+                      <div>
                         <mat-form-field class="form-full-width">
                           <!-- dropdown nl/de/en etc.  -->
                           <mat-select matInput [(ngModel)]=selectedChannel.monthinterval placeholder="Month"
@@ -1173,31 +1170,31 @@
                             <mat-option matInput value=12>12</mat-option>
                           </mat-select>
                         </mat-form-field>
-                      </td>
-                    </tr>
-                  </table>
+                      </div>
+                    </div>
+                  </div>
                 </mat-expansion-panel>
               </mat-accordion>
-            </tr>
-            <tr>
-              <td>
+            </div>
+            <div fxLayout="row" fxLayout.xs="column">
+              <div>
                 <mat-form-field class="form-full-width">
                   <!-- dropdown nl/de/en etc.  -->
                   <input matInput [disabled]="selectedChannel.send" [(ngModel)]=selectedChannel.language
                     placeholder="Target Language" class="InputField">
                 </mat-form-field>
-              </td>
-            </tr>
-            <tr rowspan="5">
-              <td>
+              </div>
+            </div>
+            <div fxLayout="row" fxLayout.xs="column" rowspan="5">
+              <div>
                 <mat-form-field style="width:100%;">
                   <textarea [disabled]="selectedChannel.send" style="width:100%; min-height: 100px;" matInput
                     #channeltext [(ngModel)]=selectedChannel.text placeholder="content">Text Version</textarea>
                   <mat-hint align="end">{{channeltext.value.length}}</mat-hint>
                 </mat-form-field>
-              </td>
-            </tr>
-            <tr>
+              </div>
+            </div>
+            <div fxLayout="row" fxLayout.xs="column">
               <div *ngIf="selectedChannel.pictureurl">
                 <img [src]="selectedChannel.pictureurl" class="carouselimages">
                 <mat-icon (click)="selectedChannel.pictureurl = ''" class="icon-label" class="iconsize-12">
@@ -1206,8 +1203,8 @@
               <app-fileupload *ngIf="!selectedChannel.pictureurl" [account]="account" [option]="option"
                 (imgurl)="setImage($event)">
               </app-fileupload>
-            </tr>
-            <tr>
+            </div>
+            <div fxFlex>
               <mat-select placeholder="Select Pinterest Board" [(value)]="pinterestoption">
                 <mat-option (onSelectionChange)="getPinterestBoard()" *ngFor="let Pinterest of Pinterest"
                   [value]="Pinterest" [disabled]="selectedChannel.send">
@@ -1221,25 +1218,25 @@
                   {{ pinterestboard.name }}
                 </mat-option>
               </mat-select>
-            </tr>
-            <tr>
+            </div>
+            <div fxLayout="row" fxLayout.xs="column">
               <button a mat-raised-button (click)="getPinterstPins()">get pins</button>
-            </tr>
-            <tr>
-              <td>
+            </div>
+            <div fxLayout="row" fxLayout.xs="column">
+              <div>
                 <button a mat-raised-button *ngIf="!selectedChannel.send" (click)="saveChannel()">Save</button>
                 <button a mat-raised-button *ngIf="!selectedChannel.send" (click)="scheduleChannel()">Schedule</button>
                 <button a mat-raised-button *ngIf="!selectedChannel.send" (click)="posttoPinterestBoard()">Pin</button>
                 <button a mat-raised-button (click)="openDialogDeleteChannel(i)">Delete Post</button>
-              </td>
-            </tr>
+              </div>
+            </div>
             <br>
-            <tr *ngIf="selectedChannel.send">
+            <div fxLayout="row" fxLayout.xs="column" *ngIf="selectedChannel.send">
               <!-- <mat-icon matBadge="{{selectedChannel.likes}}">sentiment_satisfied_alt</mat-icon>Favorites
               <mat-icon matBadge="{{selectedChannel.shared}}">cached</mat-icon>Retweets -->
-            </tr>
-            <tr>
-              <td>
+            </div>
+            <div fxLayout="row" fxLayout.xs="column">
+              <div>
                 <ul>
                   <li>
                     <b>Twitter ad specs:</b>
@@ -1248,9 +1245,9 @@
                   <li>Hashtag: 21 characters</li>
                   <li>Headline: 23 characters</li>
                 </ul>
-              </td>
-            </tr>
-          </table>
+              </div>
+            </div>
+          </div>
         </mat-card-content>
       </mat-card>
 

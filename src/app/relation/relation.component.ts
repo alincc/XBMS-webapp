@@ -161,7 +161,11 @@ export class RelationComponent implements OnInit {
   public cc;
   public bcc;
 
-  public recordactive = false
+  public recordactive = false;
+  public videolist = [];
+  public imagelist = [];
+  public misclist = [];
+  public selectedfile: Files = new Files();
 
   calltype = [
     { value: 'PhoneCall', viewValue: 'Phone Call' },
@@ -234,12 +238,10 @@ export class RelationComponent implements OnInit {
 
 
   swiperight(e) {
-    console.log(e);
     this.listviewxsshow = true;
   }
 
   swipeleft(e) {
-    console.log(e);
     this.listviewxsshow = false;
   }
 
@@ -894,7 +896,27 @@ export class RelationComponent implements OnInit {
 
   getFiles(): void {
     this.RelationsApi.getFiles(this.selectedRelation.id)
-      .subscribe((Files: Files[]) => this.Files = Files)
+      .subscribe((Files: Files[]) => {this.Files = Files,
+
+      this.Files.forEach((file, index) => {
+        // console.log(file, index);
+        let ext = file.name.split('.').pop(); 
+        console.log(ext, file);
+        if (ext === "gif" || ext === "jpeg" || ext === "jpg" || ext === "bmp" || ext === "png"  ){
+          this.imagelist.push(file);
+        }
+        else if(ext === "mp4" || ext === "mpeg4" || ext === "mov" || ext === "avi" || ext === "wmv"  ){
+          this.videolist.push(file);
+                 }
+        else {
+          this.misclist.push(file)
+        }     
+      });
+    });
+  }
+
+  onselectfile(file): void {
+    this.selectedfile = file;
   }
 
   dialogDeleteFile(Files: Files): void {

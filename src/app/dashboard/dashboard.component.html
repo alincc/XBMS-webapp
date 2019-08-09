@@ -23,108 +23,47 @@
           </tr>
         </div>
 
-    <div fxFlex class="selectrelation">
-            <mat-form-field class="selectboxheader">
-              <input type="text" placeholder="Select Relation" aria-label="relation" matInput [formControl]="myControl"
-                [matAutocomplete]="auto" />
-              <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
-                <mat-option *ngFor="
+        <div fxFlex class="selectrelation">
+          <mat-form-field class="selectboxheader">
+            <input type="text" placeholder="Select Relation" aria-label="relation" matInput [formControl]="myControl"
+              [matAutocomplete]="auto" />
+            <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+              <mat-option *ngFor="
                       let option of filteredOptions | async;
                       let i = index
                     " [value]="option" (blur)="getAnalyticsAccounts(option, i)">
-                  {{ option.relationname }}
-                </mat-option>
-              </mat-autocomplete>
-            </mat-form-field>
-            <mat-form-field class="selectboxheader">
-              <mat-select [(ngModel)]="selectedanalytics.name" placeholder="GA Account" class="InputField"
-                (blur)="buildDashboard()">
-                <mat-option *ngFor="let selectedanalytics of GoogleanalyticsModel" [value]="selectedanalytics">
-                  {{ selectedanalytics.name }}
-                </mat-option>
-              </mat-select>
-            </mat-form-field>
+                {{ option.relationname }}
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
+          <mat-form-field class="selectboxheader">
+            <mat-select [(ngModel)]="selectedanalytics.name" placeholder="GA Account" class="InputField"
+              (blur)="buildDashboard()">
+              <mat-option *ngFor="let selectedanalytics of GoogleanalyticsModel" [value]="selectedanalytics">
+                {{ selectedanalytics.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
         </div>
       </mat-card-content>
     </mat-card>
   </div>
 
-  <div fxLayout fxLayout="column" fxLayoutWrap="wrap" fxLayoutAlign="space-around">
-
+  <div fxLayout fxLayout="column" fxLayoutAlign="space-around">
+    <div fxFlex="5%">
+      <h3 class="mat-h3">Selected Account: {{ option.relationname }}</h3>
+    </div>
 
     <div fxFlex="30%" fxLayout.lt-md="column" fxLayout="row" fxLayoutWrap="wrap" fxLayoutAlign="space-around">
-      <div fxFlex="40%" class="innerfollowup"></div>
-      <!-- <div fxFlex="40%" class="innerfollowup">
-        <a
-          mat-mini-fab
-          color="primary"
-          style="float: right;"
-          (click)="getLogs()"
-        >
-          <mat-icon>refresh</mat-icon>
-        </a>
-        <label class="mat-h4">Logs</label>
-        <mat-divider></mat-divider>
-        <table class="websitedata">
-          <tr
-            fxLayout="column"
-            fxLayoutWrap="wrap"
-            fxLayoutAlign="space-around"
-          >
-            <mat-list-item>
-              <th fxFlex="20%" class="thwebsitetr">
-                <label class="followuplist">User</label>
-              </th>
-              <th fxFlex="20%" class="thwebsitetr">
-                <label class="followuplist">Subject</label>
-              </th>
-              <th fxFlex="20%" class="thwebsitetr">
-                <label class="followuplist">code</label>
-              </th>
-              <th fxFlex="20%" class="thwebsitetr">
-                <label class="followuplist">Date</label>
-              </th>
-              <th fxFlex="20%" class="thwebsitetr"></th>
-            </mat-list-item>
-          </tr>
-          <tr
-            fxLayout="column"
-            fxLayoutWrap="wrap"
-            fxLayoutAlign="space-around"
-            *ngFor="let logs of logger; let i = index"
-          >
-            <mat-list-item>
-              <td fxFlex="20%" class="tdwebsitetr">
-                <label class="followuplist">{{ logs.user }}</label>
-              </td>
-              <td fxFlex="20%" class="tdwebsitetr">
-                <label class="followuplist">{{ logs.relation }}</label>
-              </td>
-              <td fxFlex="20%" class="tdwebsitetr">
-                <label class="followuplist">{{
-                  logs.code | slice: 0:50
-                }}</label>
-              </td>
-              <td fxFlex="20%" class="tdwebsitetr">
-                <label class="followuplist">{{
-                  logs.date | date: "medium"
-                }}</label>
-              </td>
-              <td fxFlex="20%" class="tdwebsitetr">
-                <label (click)="deleteLog(i)" class="followuplist"
-                  >Delete</label
-                >
-              </td>
-            </mat-list-item>
-            <mat-divider></mat-divider>
-          </tr>
-        </table>
-      </div> -->
 
-      <div fxFlex="5%">
-        <td>
-          <h3 class="mat-h3">Selected Account: {{ option.relationname }}</h3>
-        </td>
+      <div fxFlex="40%" class="doubleflex">
+        <label class="mat-h4">Total Activities</label>
+        <mat-divider></mat-divider>
+        <div>
+          <canvas baseChart #baseChartBar="base-chart" [datasets]="barChartData" [labels]="barChartLabels"
+            [options]="barChartOptions" [legend]="barChartLegend" [chartType]="barChartType"
+            (chartHover)="chartHovered($event)" (chartClick)="chartClicked($event)"></canvas>
+        </div>
       </div>
 
       <div fxFlex="50%" class="innerfollowup">
@@ -278,16 +217,7 @@
       </div>
     </div>
 
-    <div fxFlex="30%" fxLayout.lt-md="column" fxLayout="row" fxLayoutWrap="wrap" fxLayoutAlign="space-around">
-      <div fxFlex="40%" class="doubleflex">
-        <label class="mat-h4">Total Activities</label>
-        <mat-divider></mat-divider>
-        <div>
-          <canvas baseChart #baseChartBar="base-chart" [datasets]="barChartData" [labels]="barChartLabels"
-            [options]="barChartOptions" [legend]="barChartLegend" [chartType]="barChartType"
-            (chartHover)="chartHovered($event)" (chartClick)="chartClicked($event)"></canvas>
-        </div>
-      </div>
+    <div fxFlex="30%" fxLayout="row" fxLayoutWrap="wrap" fxLayoutAlign="space-around">
 
       <div fxFlex="50%" class="doubleflex" *ngIf="mailstatsspinner">
         <label class="mat-h4">Email Activities</label>
@@ -297,11 +227,11 @@
       <div fxFlex="50%" class="doubleflex" *ngIf="mailstatsspinner === false">
         <label class="mat-h4">Email Activities</label>
         <mat-divider></mat-divider>
-        <div style="display: block; min-height: 300px">
-          <canvas baseChart #baseMailChart="base-chart" height="400px" [datasets]="MailChartData"
-           [labels]="MailChartLabels"
-            [options]="MailChartOptions" [legend]="MailChartLegend" [chartType]="MailChartType"
-            (chartHover)="MailChartHovered($event)" (chartClick)="MailChartClicked($event)"></canvas>
+        <div >
+          <canvas baseChart #baseMailChart="base-chart"  [datasets]="MailChartData"
+            [labels]="MailChartLabels" [options]="MailChartOptions" [legend]="MailChartLegend"
+            [chartType]="MailChartType" (chartHover)="MailChartHovered($event)"
+            (chartClick)="MailChartClicked($event)"></canvas>
           <mat-select style="width: 200px; height: 50px;" placeholder="Select timeframe"
             [(value)]="mailStatsTimeSelected">
             <mat-option *ngFor="let mailStatsTime of mailStatsTime" [value]="mailStatsTime" (blur)="getMailStats()">
@@ -312,8 +242,8 @@
       </div>
     </div>
 
-    <div fxFlex="30%" fxLayout.lt-md="column" fxLayout="row" fxLayoutWrap="wrap" fxLayoutAlign="space-around">
-      <div fxFlex="40%" class="doubleflex">
+    <div fxFlex="30%" fxLayout="row" fxLayoutWrap="wrap" fxLayoutAlign="space-around">
+      <div fxFlex="45%" class="doubleflex">
         <label class="mat-h4">Website Source</label>
         <mat-divider></mat-divider>
         <div>
@@ -323,7 +253,7 @@
         </div>
       </div>
 
-      <div fxFlex="50%" class="doubleflex">
+      <div fxFlex="45%" class="doubleflex">
         <label class="mat-h4">Website Source</label>
         <mat-divider></mat-divider>
         <!-- <ngx-charts-tree-map [view]="view" [scheme]="colorScheme" [results]="googleanalyticsreturn">

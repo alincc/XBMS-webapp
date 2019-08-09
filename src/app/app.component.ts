@@ -238,15 +238,19 @@ export class BottomSheetLogOverview {
   }
 
   deleteLog(i): void {
-    this.CompanyApi.destroyByIdLogger(this.Account.companyId, this.logger[i].id)
-      .subscribe(res => { this.logger.splice(i, 1) });
+    let deletedone = this.logger[i];
+    this.logger.splice(i, 1);
+    this.CompanyApi.destroyByIdLogger(this.Account.companyId, deletedone.id)
+      .subscribe(res => {  });
   }
 
   markRead(i): void {
-    this.logger[i].read = true;
-    this.CompanyApi.updateByIdLogger(this.Account.companyId, this.logger[i].id, 
-      this.logger[i])
-      .subscribe(res => { this.logger.splice(i, 1) });
+    let readdone = this.logger[i];
+    this.logger.splice(i, 1)
+    readdone.read = true;
+    this.CompanyApi.updateByIdLogger(this.Account.companyId, readdone.id, 
+      readdone)
+      .subscribe(res => {  });
   }
 
 

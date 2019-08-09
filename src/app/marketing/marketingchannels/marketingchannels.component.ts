@@ -69,6 +69,7 @@ export class MarketingchannelsComponent implements OnInit {
   public localdate;
   public toggletextview = false;
   public waitingforfbpages = false;
+  public listviewxsshow = false;
 
 
   constructor(
@@ -87,6 +88,14 @@ export class MarketingchannelsComponent implements OnInit {
     // if (this.option.id) {
     //   this.getChannels();
     // }
+  }
+
+  swiperight(e) {
+    this.listviewxsshow = true;
+  }
+
+  swipeleft(e) {
+    this.listviewxsshow = false;
   }
 
 

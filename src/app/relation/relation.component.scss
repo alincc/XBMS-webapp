@@ -57,7 +57,7 @@
 
  .selected {
   font-weight: 600;
-  z-index: 2;
+ // z-index: 2;
   background: whitesmoke;
   -webkit-transform: scale(1.05, 1.05);
   transform: scale(1.05, 1.05);
@@ -111,6 +111,11 @@ agm-map {
   float: right;
 }
 
+.filelist{
+  max-height: 400px;
+  overflow-x: scroll
+}
+
 .files{
   border-radius: 5px;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
@@ -161,22 +166,20 @@ mat-form-field {
     display: table-cell;
   }
 
-.listview-xs-minimal{
-  margin-left: -20%;
-  -webkit-transition: 0.70s;
-  -moz-transition: 0.70s;
-  -ms-transition: 0.70s;
-  -o-transition: 0.70s;
+  .my-drop-zone {
+    border: dotted 3px lightgray;
   }
 
-.listview-xs-minimal-show {
-  margin-left: 0%;
-  min-width: 200px;
-  -webkit-transition: 0.70s;
-  -moz-transition: 0.70s;
-  -ms-transition: 0.70s;
-  -o-transition: 0.70s;
-}
+  .nv-file-over {
+    border: dotted 3px red;
+  }
+
+  /* Default class applied to drop zones on over */
+
+  .another-file-over-class {
+    border: dotted 3px green;
+  }
+
 
 // add xs to listview
 // add whipe function left right
