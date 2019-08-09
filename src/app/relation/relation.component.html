@@ -33,11 +33,12 @@
       </div>
 
       
-      <div class="tabcontainer" fxLayout="row">
-        <div fxFlex="20%" ngClass.xs="listview-xs-minimal" 
-        [className]="listviewxsshow ? 'listview-xs-minimal-show' : 'listview-xs-minimal'"
-        (swipeleft)="swipeleft($event)"
+      <div class="tabcontainer" fxLayout="row" (swipeleft)="swipeleft($event)"
       (swiperight)="swiperight($event)">
+        <div fxFlex="20%" 
+        ngClass.xs="listview-xs-minimal"
+        [ngClass.sm]="listview-xs-minimal-show"
+        [className]="listviewxsshow ? 'listview-xs-minimal-show' : 'listview-xs-minimal'">
           <div fxLayout="column" class="search-component">
             <h4>Search</h4>
             <mat-form-field>
@@ -66,23 +67,23 @@
                   slice:0:25}}</span>
               </div>
             </div>
-            <table style="width: 100%">
-              <tr style="width: 100%">
-                <td style="width: 50%">
+            <div fxLayout="column" style="width: 100%">
+              <div fxLayout="row" fxLayout.xs="column"style="width: 100%">
+                <div fxFlexstyle="width: 50%">
                   <mat-icon (click)="getRelationsbackpage()">navigate_before</mat-icon>
-                </td>
-                <td style="width: 50%">
+                </div>
+                <div fxFlexstyle="width: 50%">
                   <mat-icon (click)="getRelationsnextpage()">navigate_next</mat-icon>
-                </td>
-              </tr>
-              <tr>
+                </div>
+              </div>
+              <div fxLayout="row" fxLayout.xs="column">
                 <label>{{skip}} / {{limit}}</label>
-              </tr>
-              <tr>
-                <td><label>Total</label></td>
-                <td><label>{{totalrelationcount}}</label></td>
-              </tr>
-            </table>
+              </div>
+              <div fxLayout="row" fxLayout.xs="column">
+                <div fxFlex><label>Total</label></div>
+                <div fxFlex><label>{{totalrelationcount}}</label></div>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -282,8 +283,6 @@
               <input matInput #searchTerm id="seach-box" (keyup.enter)="searchGo()" placeholder="Call title/content" />
             </mat-form-field>
             <p>{{this.errorMessage}}</p>
-
-
             <button a mat-raised-button color="primary" (click)="searchCallGo(searchTerm.value)">
               <mat-icon>search</mat-icon>Search
             </button>
@@ -297,11 +296,10 @@
         </div>
         <div class="relationcontainer" *ngIf="selectedCall && !readytosend" fxFlex="80%" on-focusout="saveCall()">
           <mat-card>
-            <mat-card-content fxLayout="column">
-
-              <table fxFlex class="callstable">
-                <tr>
-                  <th colspan="2">
+            <mat-card-content>
+              <div fxLayout="column" fxFlex>
+                <div fxFlex="row" fxLayout.xs="column">
+                  <div fxLayout>
                     <mat-toolbar color="primary" class="titlebox">
                       <h2>{{selectedCall.title | uppercase | slice:0:30 }}</h2>
 
@@ -323,17 +321,17 @@
                         </button>
                       </mat-menu>
                     </mat-toolbar>
-                  </th>
-                </tr>
-                <tr>
-                  <td colspan="2">
+                  </div>
+                </div>
+                <div fxLayout="row" fxLayout.xs="column">
+                  <div fxFlex colspan="2">
                     <mat-form-field>
                       <input matInput [(ngModel)]=selectedCall.title placeholder="Title" class="InputField">
                     </mat-form-field>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
+                  </div>
+                </div>
+                <div fxLayout="row" fxLayout.xs="column">
+                  <div fxFlex>
                     <mat-form-field>
                       <input type="text" #attendeeInput (keyup.enter)="addAttendent(attendeeInput.value)"
                         placeholder="Select Attendee" [(ngModel)]=option matInput [formControl]="myControl"
@@ -347,103 +345,103 @@
                         </div>
                       </mat-autocomplete>
                     </mat-form-field>
-                  </td>
-                  <td *ngIf="attendeelist.lenght > 0">
+                  </div>
+                  <div fxFlex *ngIf="attendeelist.lenght > 0">
                     <div *ngFor="let attendee of attendeelist">
                  {{attendee.attendent}}
                     <a mat-mini-fab color="primary">
                       <mat-icon>delete</mat-icon>
                     </a>
                   </div>
-                  </td>
-                </tr>
+                  </div>
+                </div>
                 <br>
-                <tr>
-                  <td>
+                <div fxLayout="row" fxLayout.xs="column">
+                  <div fxFlex>
                     <mat-select [(ngModel)]=selectedCall.calltype placeholder="calltype" class="InputField">
                       <mat-option *ngFor="let calltype of calltype" [value]="calltype.value">
                         {{ calltype.viewValue }}
                       </mat-option>
                     </mat-select>
-                  </td>
-                  <td>
+                  </div>
+                  <div fxFlex>
                     <mat-datepicker #picker1 class="InputField"></mat-datepicker>
                     <input [matDatepicker]="myDatepicker1" [(ngModel)]=selectedCall.date placeholder="Call Date">
                     <mat-datepicker-toggle matSuffix [for]="myDatepicker1"></mat-datepicker-toggle>
                     <mat-datepicker #myDatepicker1></mat-datepicker>
-                  </td>
-                </tr>
+                  </div>
+                </div>
                 <br>
-                <tr>
-                  <td>
+                <div fxLayout="row" fxLayout.xs="column">
+                  <div fxFlex>
                     <a mat-mini-fab matTooltip="Speech to Text recording" color="primary" (click)="activateSpeech()"
                       [class.speechbutton]="recordactive">
                       <mat-icon>record_voice_over</mat-icon>
                     </a>
-                  </td>
-                </tr>
-                <!-- <tr rowspan="10">
-                  <td colspan="2">
+                  </div>
+                </div>
+                <!-- <div fxLayout="row" fxLayout.xs="column" rowspan="10">
+                  <div fxFlex colspan="2">
                     <mat-form-field class="content-form">
                       <textarea matInput class="content-form" #content [(ngModel)]=selectedCall.content placeholder="content">Call Report</textarea>
                       <mat-hint align="end">{{content.value.length}}</mat-hint>
                     </mat-form-field>
-                  </td>
-                </tr> -->
-                <tr>
-                  <td>
+                  </div>
+                </div> -->
+                <div fxLayout="row" fxLayout.xs="column">
+                  <div fxFlex>
                     <mat-form-field>
                       <input matInput [(ngModel)]=task placeholder="task" class="InputField" (keyup.enter)="addTask()">
                     </mat-form-field>
                     <ul *ngFor="let tasklist of tasklist; let i = index">
-                  <td>{{tasklist.task}}</td>
-                  <td>
+                  <div fxFlex>{{tasklist.task}}</div>
+                  <div fxFlex>
                     <a mat-mini-fab color="primary" (click)="deleteTask(i)">
                       <mat-icon>delete</mat-icon>
                     </a>
-                  </td>
+                  </div>
                   </ul>
-                  </td>
-                  <td>
+                  </div>
+                  <div fxFlex>
                     <mat-form-field>
                       <input matInput [(ngModel)]=note placeholder="note" class="InputField" (keyup.enter)="addNote()">
                     </mat-form-field>
                     <ul *ngFor="let notes of notes; let i = index">
-                  <td>{{notes.note}}</td>
-                  <td>
+                  <div fxFlex>{{notes.note}}</div>
+                  <div fxFlex>
                     <a mat-mini-fab color="primary" (click)="deleteNote(i)">
                       <mat-icon>delete</mat-icon>
                     </a>
-                  </td>
+                  </div>
                   </ul>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
+                  </div>
+                </div>
+                <div fxLayout="row" fxLayout.xs="column">
+                  <div fxFlex>
                     <mat-checkbox [(ngModel)]=selectedCall.followup>
                       Follow Up
                     </mat-checkbox>
-                  </td>
-                  <td>
+                  </div>
+                  <div fxFlex>
                     <mat-datepicker #picker></mat-datepicker>
                     <input [matDatepicker]="myDatepicker" [(ngModel)]=selectedCall.callbackdate
                       placeholder="Callback Date">
                     <mat-datepicker-toggle matSuffix [for]="myDatepicker"></mat-datepicker-toggle>
                     <mat-datepicker #myDatepicker></mat-datepicker>
-                  </td>
-                </tr>
-                <tr>
+                  </div>
+                </div>
+                <div fxLayout="row" fxLayout.xs="column">
                   <mat-checkbox [(ngModel)]=selectedCall.followupdone>
                     Done
                   </mat-checkbox>
-                </tr>
-                <tr>
+                </div>
+                <div fxLayout="row" fxLayout.xs="column">
                   <button a mat-raised-button *ngIf="readytosend" (click)="SendMessageDialog()">Edit</button>
-                </tr>
+                </div>
                
 
-                <tr *ngIf="!selectedCall.html" rowspan="10">
-                  <td colspan="2">
+                <div fxLayout="row" fxLayout.xs="column" *ngIf="!selectedCall.html" rowspan="10">
+                  <div fxFlex colspan="2">
                     <div style="border-style: solid; border-width: 1px; border-color: lightgray; padding: 5px;">
                       <mat-form-field class="content-form">
                         <textarea matInput class="content-form" #content [(ngModel)]=selectedCall.content
@@ -451,23 +449,21 @@
                         <mat-hint align="end">{{content.value.length}}</mat-hint>
                       </mat-form-field>
                     </div>
-                  </td>
-                </tr>
-                <tr rowspan="10" *ngIf="selectedCall.html">
-                  <td colspan="2">
+                  </div>
+                </div>
+                <div fxLayout="row" fxLayout.xs="column" rowspan="10" *ngIf="selectedCall.html">
+                  <div fxFlex colspan="2">
                     <div class="content-form" style="border-style: solid; border-width: 1px; border-color: lightgray; padding: 5px;"
                       [innerHTML]="selectedCall.html"></div>
-                  </td>
-                </tr>
+                  </div>
+                </div>
+                <div fxLayout="row" fxLayout.xs="column">
+                    <button a mat-raised-button (click)="saveCall()">Save</button>
+                    <button a mat-raised-button (click)="replyNewMessage()">Reply</button>
+                  </div>
 
-
-
-
-              </table>
-              <div>
-                <button a mat-raised-button (click)="saveCall()">Save</button>
-                <button a mat-raised-button (click)="replyNewMessage()">Reply</button>
               </div>
+
 
             </mat-card-content>
           </mat-card>
@@ -477,11 +473,11 @@
           <mat-card>
             <mat-card-content fxLayout="column">
 
-              <table fxFlex class="callstable">
+              <div fxLayout="column" fxFlex class="callstable">
 
-                <tr>
-                  <th colspan="2">
-                    <mat-toolbar color="primary" class="titlebox">
+                <div fxLayout="row" fxLayout.xs="column">
+                  <div fxFlex>
+                    <mat-toolbar color="primary">
                       <h2>{{selectedCall.title | uppercase | slice:0:30 }}</h2>
 
                       <button mat-icon-button [matMenuTriggerFor]="menucall" class="menu">
@@ -502,20 +498,20 @@
                         </button>
                       </mat-menu>
                     </mat-toolbar>
-                  </th>
-                </tr>
-                <tr>
-                  <td colspan="2">
+                  </div>
+                </div>
+                <div fxLayout="row" fxLayout.xs="column">
+                  <div fxFlex>
                     <mat-form-field>
                       <input matInput [(ngModel)]=selectedCall.title placeholder="Subject" class="InputField">
                     </mat-form-field>
-                  </td>
-                </tr>
-                <tr>
-                  <td>From: {{Account.email}}</td>
-                </tr>
-                <tr>
-                  <td>
+                  </div>
+                </div>
+                <div fxLayout="row" fxLayout.xs="column">
+                  <div fxFlex>From: {{Account.email}}</div>
+                </div>
+                <div fxLayout="row" fxLayout.xs="column">
+                  <div fxFlex>
                       <mat-form-field>
                           <mat-label>To</mat-label>
                           <mat-select [(ngModel)]=emailtosendto>
@@ -524,50 +520,50 @@
                             </mat-option>
                           </mat-select>
                         </mat-form-field>
-                  </td>
+                  </div>
               
-                  <!-- <td>{{emailtosendto.firstname}} {{emailtosendto.lastname}</td> -->
+                  <!-- <div fxFlex>{{emailtosendto.firstname}} {{emailtosendto.lastname}</div> -->
    
-                </tr>
-                <tr>
-                  <td>
+                </div>
+                <div fxLayout="row" fxLayout.xs="column">
+                  <div fxFlex>
                       <mat-form-field>
                           <input matInput [(ngModel)]=cc placeholder="CC" class="InputField">
                         </mat-form-field>
-                  </td>
-                  <td>
+                  </div>
+                  <div fxFlex>
                       <mat-form-field>
                           <input matInput [(ngModel)]=bcc placeholder="BCC" class="InputField">
                         </mat-form-field>
-                  </td>
-                </tr>
+                  </div>
+                </div>
                 <br>
-                <tr>
-                  <td>
+                <div fxLayout="row" fxLayout.xs="column">
+                  <div fxFlex>
                     <a mat-mini-fab matTooltip="Speech to Text recording" color="primary" (click)="activateSpeech()"
                       [class.speechbutton]="recordactive">
                       <mat-icon>record_voice_over</mat-icon>
                     </a>
-                  </td>
-                </tr>
+                  </div>
+                </div>
 
-                <tr>
-                  <td>
+                <div fxLayout="row" fxLayout.xs="column">
+                  <div fxFlex>
                     <mat-checkbox [(ngModel)]=selectedCall.followup>
                       Follow Up
                     </mat-checkbox>
-                  </td>
-                  <td>
+                  </div>
+                  <div fxFlex>
                     <mat-datepicker #picker></mat-datepicker>
                     <input [matDatepicker]="myDatepicker" [(ngModel)]=selectedCall.callbackdate
                       placeholder="Callback Date">
                     <mat-datepicker-toggle matSuffix [for]="myDatepicker"></mat-datepicker-toggle>
                     <mat-datepicker #myDatepicker></mat-datepicker>
-                  </td>
-                </tr>
+                  </div>
+                </div>
 
-                <tr *ngIf="!selectedCall.html" rowspan="10">
-                  <td colspan="2">
+                <div fxLayout="row" fxLayout.xs="column"*ngIf="!selectedCall.html" rowspan="10">
+                  <div fxFlex colspan="2">
                     <div style="border-style: solid; border-width: 1px; border-color: lightgray; padding: 5px;">
                       <mat-form-field class="content-form">
                         <textarea matInput class="content-form" #content [(ngModel)]=selectedCall.content
@@ -575,18 +571,18 @@
                         <mat-hint align="end">{{content.value.length}}</mat-hint>
                       </mat-form-field>
                     </div>
-                  </td>
-                </tr>
-                <tr rowspan="10" *ngIf="selectedCall.html">
-                  <td colspan="2">
+                  </div>
+                </div>
+                <div fxLayout="row" fxLayout.xs="column" rowspan="10" *ngIf="selectedCall.html">
+                  <div fxFlex colspan="2">
                     <div class="content-form" style="border-style: solid; border-width: 1px; border-color: lightgray; padding: 5px;"
                       [innerHTML]="selectedCall.html"></div>
-                  </td>
-                </tr>
-                <tr>
+                  </div>
+                </div>
+                <div fxLayout="row" fxLayout.xs="column">
                   <button a mat-raised-button (click)="SendMessageDialog()">Edit</button>
-                </tr>
-              </table>
+                </div>
+              </div>
               <div>
                 <button a mat-raised-button (click)="sendNewMessage()">Send</button>
               </div>
@@ -629,9 +625,9 @@
           <mat-card class="standarddivclass">
             <mat-card-content>
               <div>
-                <table class="form-full-width" cellspacing="0">
-                  <tr>
-                    <td colspan="2">
+                <div fxLayout="column" class="form-full-width" cellspacing="0">
+                  <div fxLayout="row" fxLayout.xs="column">
+                    <div fxFlex colspan="2">
                       <mat-toolbar color="primary" class="titlebox">
                         <div>
                           <h2>{{selectedContactperson.firstname | uppercase}} {{selectedContactperson.lastname |
@@ -653,67 +649,67 @@
                         </mat-menu>
 
                       </mat-toolbar>
-                    </td>
-                  </tr>
+                    </div>
+                  </div>
 
-                  <tr>
-                    <td>
+                  <div fxLayout="row" fxLayout.xs="column">
+                    <div fxFlex>
                       <mat-form-field>
                         <input matInput [(ngModel)]=selectedContactperson.firstname placeholder="Firstname"
                           class="InputField">
                       </mat-form-field>
-                    </td>
-                    <td>
+                    </div>
+                    <div fxFlex>
                       <mat-form-field>
                         <input matInput [(ngModel)]=selectedContactperson.lastname placeholder="Lastname"
                           class="InputField">
                       </mat-form-field>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
+                    </div>
+                  </div>
+                  <div fxLayout="row" fxLayout.xs="column">
+                    <div fxFlex>
                       <mat-form-field>
                         <input matInput [(ngModel)]=selectedContactperson.email placeholder="E-mail" class="InputField">
                       </mat-form-field>
-                    </td>
-                    <td>
+                    </div>
+                    <div fxFlex>
                       <a (click)="sendMailToContact()">
                         <mat-icon>send</mat-icon>
                       </a>
-                    </td>
-                  </tr>
-                  <tr>
+                    </div>
+                  </div>
+                  <div fxLayout="row" fxLayout.xs="column">
                     <mat-form-field>
                       <input matInput [(ngModel)]=selectedContactperson.officephone placeholder="Office Phone"
                         class="InputField">
                     </mat-form-field>
-                  </tr>
-                  <tr>
+                  </div>
+                  <div fxLayout="row" fxLayout.xs="column">
                     <mat-form-field>
                       <input matInput [(ngModel)]=selectedContactperson.cellphone placeholder="Cell phone"
                         class="InputField">
                     </mat-form-field>
-                  </tr>
-                  <tr>
+                  </div>
+                  <div fxLayout="row" fxLayout.xs="column">
                     <mat-form-field>
                       <input matInput [(ngModel)]=selectedContactperson.socialmediaaccount placeholder="Social Media"
                         class="InputField">
                     </mat-form-field>
-                  </tr>
-                  <tr>
+                  </div>
+                  <div fxLayout="row" fxLayout.xs="column">
                     <mat-form-field>
                       <input matInput [(ngModel)]=selectedContactperson.im placeholder="IM" class="InputField">
                     </mat-form-field>
-                  </tr>
-                  <tr>
+                  </div>
+                  <div fxLayout="row" fxLayout.xs="column">
                     <mat-form-field>
                       <input matInput [(ngModel)]=selectedContactperson.imtype placeholder="Im Type" class="InputField">
                     </mat-form-field>
-                  </tr>
-                  <tr>
+                  </div>
+                  <div fxLayout="row" fxLayout.xs="column">
                     <button a mat-raised-button (click)="saveContactperson()">Save</button>
-                  </tr>
-                </table>
+                  </div>
+                </div>
               </div>
 
             </mat-card-content>
@@ -788,30 +784,30 @@
               <h3>Upload queue</h3>
               <p>Queue length: {{ uploader?.queue?.length }}</p>
 
-              <table>
+              <div fxLayout="column">
                 <thead>
-                  <tr>
-                    <th width="50%">Name</th>
-                    <th>Size</th>
-                    <th>Progress</th>
-                    <th>Status</th>
-                    <th>Actions</th>
-                  </tr>
+                  <div fxLayout="row" fxLayout.xs="column">
+                    <div fxLayout="row" fxLayout.xs="column"width="50%">Name</div>
+                    <div>Size</div>
+                    <div>Progress</div>
+                    <div>Status</div>
+                    <div>Actions</div>
+                  </div>
                 </thead>
                 <tbody>
-                  <tr *ngFor="let item of uploader.queue">
-                    <td>
+                  <div fxLayout="row" fxLayout.xs="column"*ngFor="let item of uploader.queue">
+                    <div fxFlex>
                       <strong>{{ item?.file?.name }}</strong>
-                    </td>
-                    <td *ngIf="uploader.isHTML5" nowrap>{{ item?.file?.size/1024/1024 | number:'.2' }} MB</td>
-                    <td *ngIf="uploader.isHTML5">
+                    </div>
+                    <div fxFlex *ngIf="uploader.isHTML5" nowrap>{{ item?.file?.size/1024/1024 | number:'.2' }} MB</div>
+                    <div fxFlex *ngIf="uploader.isHTML5">
                       <div style="margin-bottom: 0;">
                         <mat-progress-bar [color]="primary" [mode]="determinate" [value]="item.progress">
                         </mat-progress-bar>
                       </div>
-                    </td>
+                    </div>
 
-                    <td>
+                    <div fxFlex>
                       <span *ngIf="item.isSuccess">
                         <mat-icon>done</mat-icon>
                       </span>
@@ -821,8 +817,8 @@
                       <span *ngIf="item.isError">
                         <mat-icon>remove_circle</mat-icon>
                       </span>
-                    </td>
-                    <td nowrap>
+                    </div>
+                    <div fxFlexnowrap>
                       <button mat-button (click)="setupload(item?.file?.name)"
                         [disabled]="item.isReady || item.isUploading || item.isSuccess">
                         <mat-icon>file_upload</mat-icon>Upload
@@ -833,10 +829,10 @@
                       <button mat-button (click)="item.remove()">
                         <mat-icon>remove_circle</mat-icon> Remove
                       </button>
-                    </td>
-                  </tr>
+                    </div>
+                  </div>
                 </tbody>
-              </table>
+              </div>
 
               <div>
                 <div>
@@ -868,13 +864,13 @@
         <div fxFlex *ngIf="editCrawler">
           <mat-card class="standarddivclass">
             <mat-card-content>
-              <table>
-                <tr>
+              <div fxLayout="column">
+                <div fxLayout="row" fxLayout.xs="column">
                   <mat-form-field>
                     <input matInput [(ngModel)]=selectedCrawler.name placeholder="Crawler Name" class="InputField">
                   </mat-form-field>
-                </tr>
-              </table>
+                </div>
+              </div>
               <mat-horizontal-stepper #stepper>
                 <!-- step 1 -->
                 <mat-step [stepControl]="crawl1FormGroup">
@@ -994,11 +990,11 @@
             <mat-card class="standarddivclass">
               <mat-card-content>
                 <mat-toolbar color="primary" class="titlebox">
-                  <tr>
-                    <td>
+                  <div fxLayout="row" fxLayout.xs="column">
+                    <div fxFlex>
                       <h2>{{selectedCrawler.name | uppercase | slice:0:30 }}</h2>
-                    </td>
-                    <td>
+                    </div>
+                    <div fxFlex>
 
                       <button mat-icon-button [matMenuTriggerFor]="menumarketing" class="menu">
                         <mat-icon>more_vert</mat-icon>
@@ -1021,66 +1017,66 @@
                           <span>Run Again</span>
                         </button>
                       </mat-menu>
-                    </td>
-                  </tr>
+                    </div>
+                  </div>
                 </mat-toolbar>
-                <table class="table">
-                  <tr fxLayout="row" class="crawlerlistdetails">
-                    <td fxFlex="40%">Name: </td>
-                    <td fxFlex="60%">{{selectedCrawler.name}}</td>
-                  </tr>
-                  <tr fxLayout="row" class="crawlerlistdetails">
-                    <td fxFlex="40%">Date: </td>
-                    <td fxFlex="60%">{{selectedCrawler.date | date}}</td>
-                  </tr>
-                  <tr fxLayout="row" class="crawlerlistdetails">
-                    <td fxFlex="40%">Url: </td>
-                    <td fxFlex="60%">{{selectedCrawler.url}}</td>
-                  </tr>
-                  <tr fxLayout="row" class="crawlerlistdetails">
-                    <td fxFlex="40%">Search Terms: </td>
-                    <td fxFlex="60%">{{selectedCrawler.term}}</td>
-                  </tr>
-                  <tr fxLayout="row" class="crawlerlistdetails">
-                    <td fxFlex="40%">Find People</td>
-                    <td fxFlex="60%">
+                <div fxLayout="column" class="table">
+                  <div fxLayout="row" fxLayout.xs="column"fxLayout="row" class="crawlerlistdetails">
+                    <div fxFlexfxFlex="40%">Name: </div>
+                    <div fxFlexfxFlex="60%">{{selectedCrawler.name}}</div>
+                  </div>
+                  <div fxLayout="row" fxLayout.xs="column"fxLayout="row" class="crawlerlistdetails">
+                    <div fxFlexfxFlex="40%">Date: </div>
+                    <div fxFlexfxFlex="60%">{{selectedCrawler.date | date}}</div>
+                  </div>
+                  <div fxLayout="row" fxLayout.xs="column"fxLayout="row" class="crawlerlistdetails">
+                    <div fxFlexfxFlex="40%">Url: </div>
+                    <div fxFlexfxFlex="60%">{{selectedCrawler.url}}</div>
+                  </div>
+                  <div fxLayout="row" fxLayout.xs="column"fxLayout="row" class="crawlerlistdetails">
+                    <div fxFlexfxFlex="40%">Search Terms: </div>
+                    <div fxFlexfxFlex="60%">{{selectedCrawler.term}}</div>
+                  </div>
+                  <div fxLayout="row" fxLayout.xs="column"fxLayout="row" class="crawlerlistdetails">
+                    <div fxFlexfxFlex="40%">Find People</div>
+                    <div fxFlexfxFlex="60%">
                       <mat-checkbox color="primary" [(ngModel)]=selectedCrawler.people></mat-checkbox>
-                    </td>
-                  </tr>
-                  <tr fxLayout="row" class="crawlerlistdetails">
-                    <td fxFlex="40%">Companies</td>
-                    <td fxFlex="60%">
+                    </div>
+                  </div>
+                  <div fxLayout="row" fxLayout.xs="column"fxLayout="row" class="crawlerlistdetails">
+                    <div fxFlexfxFlex="40%">Companies</div>
+                    <div fxFlexfxFlex="60%">
                       <mat-checkbox color="primary" [(ngModel)]=selectedCrawler.companies></mat-checkbox>
-                    </td>
-                  </tr>
-                  <tr fxLayout="row" class="crawlerlistdetails">
-                    <td fxFlex="40%">Locations</td>
-                    <td fxFlex="60%">
+                    </div>
+                  </div>
+                  <div fxLayout="row" fxLayout.xs="column"fxLayout="row" class="crawlerlistdetails">
+                    <div fxFlexfxFlex="40%">Locations</div>
+                    <div fxFlexfxFlex="60%">
                       <mat-checkbox color="primary" [(ngModel)]=selectedCrawler.locations></mat-checkbox>
-                    </td>
-                  </tr>
-                  <tr fxLayout="row" class="crawlerlistdetails">
-                    <td fxFlex="40%">List</td>
-                    <td fxFlex="60%">
+                    </div>
+                  </div>
+                  <div fxLayout="row" fxLayout.xs="column"fxLayout="row" class="crawlerlistdetails">
+                    <div fxFlexfxFlex="40%">List</div>
+                    <div fxFlexfxFlex="60%">
                       <mat-checkbox color="primary" [(ngModel)]=selectedCrawler.findlist></mat-checkbox>
-                    </td>
-                  </tr>
-                  <tr fxLayout="row" class="crawlerlistdetails">
-                    <td fxFlex="40%">Crawler Page Depth</td>
-                    <td fxFlex="60%">{{selectedCrawler.depth}}</td>
-                  </tr>
-                </table>
+                    </div>
+                  </div>
+                  <div fxLayout="row" fxLayout.xs="column"fxLayout="row" class="crawlerlistdetails">
+                    <div fxFlexfxFlex="40%">Crawler Page Depth</div>
+                    <div fxFlexfxFlex="60%">{{selectedCrawler.depth}}</div>
+                  </div>
+                </div>
               </mat-card-content>
             </mat-card>
 
             <mat-card *ngFor="let response of selectedCrawler.response; let i = index" class="standarddivclass">
               <mat-card-content>
                 <mat-toolbar color="primary" class="titlebox">
-                  <tr>
-                    <td>
+                  <div fxLayout="row" fxLayout.xs="column">
+                    <div fxFlex>
                       <h2>{{response.term | uppercase | slice:0:30 }} - {{ response.date | date }}</h2>
-                    </td>
-                    <td>
+                    </div>
+                    <div fxFlex>
 
                       <button mat-icon-button [matMenuTriggerFor]="menumarketing" class="menu">
                         <mat-icon>more_vert</mat-icon>
@@ -1093,55 +1089,55 @@
 
 
                       </mat-menu>
-                    </td>
-                  </tr>
+                    </div>
+                  </div>
                 </mat-toolbar>
 
-                <table class="table">
-                  <tr>
-                    <td>
+                <div fxLayout="column" class="table">
+                  <div fxLayout="row" fxLayout.xs="column">
+                    <div fxFlex>
                       <span>{{response.term}}</span>
-                    </td>
-                    <td>
+                    </div>
+                    <div fxFlex>
                       <span>{{response.website}}</span>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
+                    </div>
+                  </div>
+                  <div fxLayout="row" fxLayout.xs="column">
+                    <div fxFlex>
                       <span>Persons</span>
                       <ul *ngFor="let persons of response.persons;">
                         <span class="box-response">{{persons.normal}}</span>
                       </ul>
-                    </td>
-                    <td>
+                    </div>
+                    <div fxFlex>
                       <span>Companies</span>
                       <ul *ngFor="let companies of response.companies;">
                         <span class="box-response">{{companies.normal}}</span>
                       </ul>
-                    </td>
-                    <td>
+                    </div>
+                    <div fxFlex>
                       <span>Locations</span>
                       <ul *ngFor="let locations of response.locations;">
                         <span class="box-response">{{locations.normal}}</span>
                       </ul>
-                    </td>
-                  </tr>
-                  <tr>
+                    </div>
+                  </div>
+                  <div fxLayout="row" fxLayout.xs="column">
 
                     <button a mat-raised-button (click)="togglerawsearch()">Show Raw Data</button>
-                  </tr>
-                  <tr>
+                  </div>
+                  <div fxLayout="row" fxLayout.xs="column">
 
-                    <td *ngIf="togglesearch" colSpan="3">
+                    <div fxFlex *ngIf="togglesearch" colSpan="3">
                       <div>{{response.search}}</div>
-                    </td>
-                  </tr>
-                  <tr>
+                    </div>
+                  </div>
+                  <div fxLayout="row" fxLayout.xs="column">
                     <a mat-mini-fab color="primary" (click)="deleteCrawl(i)">
                       <mat-icon>delete</mat-icon>
                     </a>
-                  </tr>
-                </table>
+                  </div>
+                </div>
               </mat-card-content>
             </mat-card>
           </div> -->
@@ -1196,34 +1192,34 @@
             <mat-card-title>Google Analytics</mat-card-title>
           </mat-card-header>
           <mat-card-content>
-            <tr>
-              <td>
+            <div fxLayout="row" fxLayout.xs="column">
+              <div fxFlex>
                 <div *ngFor="let Googleanalytics of Googleanalytics">
                   <span>{{ Googleanalytics.gaclientid }} {{ Googleanalytics.name }}</span>
                   <a mat-mini-fab color="primary">
                     <mat-icon>delete</mat-icon>
                   </a>
                 </div>
-              </td>
-            </tr>
-            <tr>
-              <td>
+              </div>
+            </div>
+            <div fxLayout="row" fxLayout.xs="column">
+              <div fxFlex>
                 <p>Please add xbmarketingservices@gmail.com to </p>
                 <p> management accounts and fill in your ID</p>
-              </td>
-            </tr>
-            <tr>
-              <td>
+              </div>
+            </div>
+            <div fxLayout="row" fxLayout.xs="column">
+              <div fxFlex>
                 <mat-form-field>
                   <input matInput [(ngModel)]=newGoogleAnalytics.gaclientid placeholder="ID" class="InputField">
                 </mat-form-field>
-              </td>
-              <td>
+              </div>
+              <div fxFlex>
                 <mat-form-field>
                   <input matInput [(ngModel)]=newGoogleAnalytics.name placeholder="Name" class="InputField">
                 </mat-form-field>
-              </td>
-            </tr>
+              </div>
+            </div>
           </mat-card-content>
           <mat-card-actions>
             <a mat-mini-fab color="primary" (click)="createGoogleAnalytics()">
@@ -1238,30 +1234,30 @@
             <mat-card-title>Twitter</mat-card-title>
           </mat-card-header>
           <mat-card-content>
-            <tr>
-              <td>
+            <div fxLayout="row" fxLayout.xs="column">
+              <div fxFlex>
                 <div *ngFor="let Twitter of Twitter; let i = index">
                   <span> {{ Twitter.name }}</span>
                   <a mat-mini-fab color="primary" (click)="deleteTwitter(i)">
                     <mat-icon>delete</mat-icon>
                   </a>
                 </div>
-              </td>
-            </tr>
-            <tr>
-              <td>
-              </td>
-            </tr>
-            <tr>
-              <td>
+              </div>
+            </div>
+            <div fxLayout="row" fxLayout.xs="column">
+              <div fxFlex>
+              </div>
+            </div>
+            <div fxLayout="row" fxLayout.xs="column">
+              <div fxFlex>
                 <mat-form-field>
                   <input matInput [(ngModel)]=newTwitter.name placeholder="ID" class="InputField">
                 </mat-form-field>
-              </td>
-              <td>
+              </div>
+              <div fxFlex>
                 <button mat-button (click)="linkTwitterAccount()">link Account</button>
-              </td>
-            </tr>
+              </div>
+            </div>
           </mat-card-content>
           <mat-card-actions>
             <a mat-mini-fab color="primary" (click)="createTwitter()">
@@ -1276,30 +1272,30 @@
             <mat-card-title>Pinterest</mat-card-title>
           </mat-card-header>
           <mat-card-content>
-            <tr>
-              <td>
+            <div fxLayout="row" fxLayout.xs="column">
+              <div fxFlex>
                 <div *ngFor="let Pinterest of Pinterest; let i = index">
                   <span> {{ Pinterest.name }}</span>
                   <a mat-mini-fab color="primary" (click)="deletePinterest(i)">
                     <mat-icon>delete</mat-icon>
                   </a>
                 </div>
-              </td>
-            </tr>
-            <tr>
-              <td>
-              </td>
-            </tr>
-            <tr>
-              <td>
+              </div>
+            </div>
+            <div fxLayout="row" fxLayout.xs="column">
+              <div fxFlex>
+              </div>
+            </div>
+            <div fxLayout="row" fxLayout.xs="column">
+              <div fxFlex>
                 <mat-form-field>
                   <input matInput [(ngModel)]=newPinterest.name placeholder="ID" class="InputField">
                 </mat-form-field>
-              </td>
-              <td>
+              </div>
+              <div fxFlex>
                 <button mat-button (click)="linkPinterestAccount()">link Account</button>
-              </td>
-            </tr>
+              </div>
+            </div>
           </mat-card-content>
           <mat-card-actions>
             <a mat-mini-fab color="primary" (click)="createPinterest()">
@@ -1315,32 +1311,32 @@
             <mat-card-title>Linkedin</mat-card-title>
           </mat-card-header>
           <mat-card-content>
-            <tr>
-              <td>
+            <div fxLayout="row" fxLayout.xs="column">
+              <div fxFlex>
                 <div *ngFor="let Linkedin of Linkedin; let i = index">
                   <span>{{ Linkedin.name }}</span>
                   <a mat-mini-fab color="primary" (click)="deleteLinkedin(i)">
                     <mat-icon>delete</mat-icon>
                   </a>
                 </div>
-              </td>
-            </tr>
-            <tr>
-              <td>
-              </td>
-            </tr>
-            <tr>
-              <td>
+              </div>
+            </div>
+            <div fxLayout="row" fxLayout.xs="column">
+              <div fxFlex>
+              </div>
+            </div>
+            <div fxLayout="row" fxLayout.xs="column">
+              <div fxFlex>
                 <mat-form-field>
                   <input matInput [(ngModel)]=newLinkedin.name placeholder="Name" class="InputField">
                 </mat-form-field>
-              </td>
-            </tr>
-            <tr>
-              <td>
+              </div>
+            </div>
+            <div fxLayout="row" fxLayout.xs="column">
+              <div fxFlex>
                 <button mat-button (click)="linkLinkedinAccount()">link Account</button>
-              </td>
-            </tr>
+              </div>
+            </div>
           </mat-card-content>
           <mat-card-actions>
             <a mat-mini-fab color="primary" (click)="createLinkedin()">
@@ -1355,8 +1351,8 @@
             <mat-card-title>Facebook</mat-card-title>
           </mat-card-header>
           <mat-card-content>
-            <tr>
-              <td>
+            <div fxLayout="row" fxLayout.xs="column">
+              <div fxFlex>
                 <div *ngFor="let Facebook of Facebook; let i = index">
                   <span>{{ Facebook.name }}</span>
                   <a mat-mini-fab color="primary" (click)="deleteFacebook(i)">
@@ -1366,24 +1362,24 @@
                     <mat-icon>info</mat-icon>
                   </a>
                 </div>
-              </td>
-            </tr>
-            <tr>
-              <td>
-              </td>
-            </tr>
-            <tr>
-              <!-- <td>
+              </div>
+            </div>
+            <div fxLayout="row" fxLayout.xs="column">
+              <div fxFlex>
+              </div>
+            </div>
+            <div fxLayout="row" fxLayout.xs="column">
+              <!-- <div fxFlex>
               <mat-form-field>
                 <input matInput [(ngModel)]=newFacebook.id placeholder="ID" class="InputField">
               </mat-form-field>
-            </td> -->
-              <td>
+            </div> -->
+              <div fxFlex>
                 <mat-form-field>
                   <input matInput [(ngModel)]=newFacebook.name placeholder="Name" class="InputField">
                 </mat-form-field>
-              </td>
-            </tr>
+              </div>
+            </div>
           </mat-card-content>
           <mat-card-actions>
             <a mat-mini-fab color="primary" (click)="linkFacebookAccount()">
@@ -1398,32 +1394,32 @@
             <mat-card-title>Adwords</mat-card-title>
           </mat-card-header>
           <mat-card-content>
-            <tr>
-              <td>
+            <div fxLayout="row" fxLayout.xs="column">
+              <div fxFlex>
                 <div *ngFor="let Adwords of Adwords; let i = index">
                   <span>{{ Adwords.id }} {{ Adwords.name }}</span>
                   <a mat-mini-fab color="primary" (click)="deleteAdwords(i)">
                     <mat-icon>delete</mat-icon>
                   </a>
                 </div>
-              </td>
-            </tr>
-            <tr>
-              <td>
-              </td>
-            </tr>
-            <tr>
-              <td>
+              </div>
+            </div>
+            <div fxLayout="row" fxLayout.xs="column">
+              <div fxFlex>
+              </div>
+            </div>
+            <div fxLayout="row" fxLayout.xs="column">
+              <div fxFlex>
                 <mat-form-field>
                   <input matInput [(ngModel)]=newAdwords.id placeholder="ID" class="InputField">
                 </mat-form-field>
-              </td>
-              <td>
+              </div>
+              <div fxFlex>
                 <mat-form-field>
                   <input matInput [(ngModel)]=newAdwords.name placeholder="Name" class="InputField">
                 </mat-form-field>
-              </td>
-            </tr>
+              </div>
+            </div>
           </mat-card-content>
           <label>Please login to verify</label>
           <mat-card-actions>
