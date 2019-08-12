@@ -265,6 +265,7 @@ export class MarketingComponent implements OnInit {
 
   public searchboxMailinglist;
   public searchboxCampaign;
+  public filteredRelations: Relations[];
 
   constructor(
     public dialog: MatDialog,
@@ -377,6 +378,30 @@ export class MarketingComponent implements OnInit {
         map(value => typeof value === 'string' ? value : value.relationname),
         map(relationname => relationname ? this.filter(relationname) : this.options.slice())
       );
+  }
+
+  //display name in searchbox
+  displayFnRelation(relation?: Relations): string | undefined {
+    return relation ? relation.relationname : undefined;
+  }
+
+  searchGoQuick(value): void {
+    let searchterm = value.trim();
+    this.CompanyApi.getRelations(this.Account.companyId,
+      {
+        where:
+        {
+          or: [{ "relationname": { "regexp": searchterm + '/i' } },
+          { "address1": { "regexp": searchterm + '/i' } },
+          { "city": { "regexp": searchterm + '/i' } }
+          ]
+        },
+        order: 'relationname ASC'
+      })
+      .subscribe((Relations: Relations[]) => {
+      this.filteredRelations = Relations,
+        console.log(this.filteredRelations)
+      });
   }
 
   // filter and to lower case for search
@@ -1794,6 +1819,7 @@ export class MarketingComponent implements OnInit {
     this.selectedMarketingplannerevents.mailinglist.splice(i);
     this.saveMailingCampaign('saved');
   }
+  
 
   
   // removes the items based on its name

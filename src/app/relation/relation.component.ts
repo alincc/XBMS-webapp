@@ -249,10 +249,14 @@ export class RelationComponent implements OnInit {
   filteredOptions: Observable<string[]>;
   myControlRelations: FormControl = new FormControl();
   filteredOptionsRelations: Observable<string[]>;
+  filteredRelations: Relations[];
   myControlfont: FormControl = new FormControl();
   filteredfonts: Observable<string[]>;
 
   ngOnInit() {
+
+    this.searchGoQuick('');
+
     if (this.AccountApi.isAuthenticated() == false) { this.router.navigate(['login']) }
     this.setFilter();
     this.getCurrentUserInfo();
@@ -332,11 +336,30 @@ export class RelationComponent implements OnInit {
     return this.relationsOptions.filter(option => option.relationname.toLowerCase().indexOf(filterValue) === 0);
   }
 
-
   //display name in searchbox
   displayFnRelation(relation?: Relations): string | undefined {
     return relation ? relation.relationname : undefined;
   }
+
+  searchGoQuick(value): void {
+    let searchterm = value.trim();
+    this.CompanyApi.getRelations(this.Account.companyId,
+      {
+        where:
+        {
+          or: [{ "relationname": { "regexp": searchterm + '/i' } },
+          { "address1": { "regexp": searchterm + '/i' } },
+          { "city": { "regexp": searchterm + '/i' } }
+          ]
+        },
+        order: 'relationname ASC'
+      })
+      .subscribe((Relations: Relations[]) => {
+      this.filteredRelations = Relations,
+        console.log(this.filteredRelations)
+      });
+  }
+
 
   getRelationsEntry(): void {
     this.relationsOptions = []
@@ -896,23 +919,24 @@ export class RelationComponent implements OnInit {
 
   getFiles(): void {
     this.RelationsApi.getFiles(this.selectedRelation.id)
-      .subscribe((Files: Files[]) => {this.Files = Files,
+      .subscribe((Files: Files[]) => {
+      this.Files = Files,
 
-      this.Files.forEach((file, index) => {
-        // console.log(file, index);
-        let ext = file.name.split('.').pop(); 
-        console.log(ext, file);
-        if (ext === "gif" || ext === "jpeg" || ext === "jpg" || ext === "bmp" || ext === "png"  ){
-          this.imagelist.push(file);
-        }
-        else if(ext === "mp4" || ext === "mpeg4" || ext === "mov" || ext === "avi" || ext === "wmv"  ){
-          this.videolist.push(file);
-                 }
-        else {
-          this.misclist.push(file)
-        }     
+        this.Files.forEach((file, index) => {
+          // console.log(file, index);
+          let ext = file.name.split('.').pop();
+          console.log(ext, file);
+          if (ext === "gif" || ext === "jpeg" || ext === "jpg" || ext === "bmp" || ext === "png") {
+            this.imagelist.push(file);
+          }
+          else if (ext === "mp4" || ext === "mpeg4" || ext === "mov" || ext === "avi" || ext === "wmv") {
+            this.videolist.push(file);
+          }
+          else {
+            this.misclist.push(file)
+          }
+        });
       });
-    });
   }
 
   onselectfile(file): void {

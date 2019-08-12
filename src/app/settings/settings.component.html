@@ -7,57 +7,49 @@
     <div class="account">
       <div fxLayout="row wrap">
         <div class="companyinfo" *ngIf="toggleedituser" fxFlex="40%">
-          <table>
-            <tr>
-              <td>
+          <div fxLayout="column">
+ 
+
                 <h2>Account info</h2>
-              </td>
-            </tr>
-            <tr>
+
+           
+       
               <mat-form-field class="form-full-width">
                 <input matInput [(ngModel)]=Account.email placeholder="Email" class="InputField">
               </mat-form-field>
-            </tr>
-            <tr>
-              <td>
+
                 <mat-form-field class="form-full-width">
                   <input matInput [(ngModel)]=Account.username placeholder="Username" class="InputField">
                 </mat-form-field>
-              </td>
-            </tr>
-            <tr>
-              <td>
+
+
                 <mat-form-field class="form-full-width">
                   <input matInput placeholder="Enter your password" name="password" [(ngModel)]="Account.password"
                     [type]="!hide ? 'password' : 'text'">
                   <mat-icon matSuffix (click)="!hide = hide">{{hide ? 'visibility' : 'visibility_off'}}</mat-icon>
                 </mat-form-field>
-              </td>
-            </tr>
-            <tr>
-              <td>
+
+
                 <mat-form-field class="form-full-width">
                   <input matInput [(ngModel)]=Account.companyname placeholder="Company Name" class="InputField">
                 </mat-form-field>
-              </td>
-              <td>
+
                 <button (click)="saveAccount()" a mat-raised-button class="button">Save Changes</button>
-              </td>
-            </tr>
-          </table>
-          <button mat-mini-fab color="primary" (click)="toggleEditUser()">
-            <mat-icon>edit</mat-icon>
-          </button>
+                <button mat-mini-fab color="primary" (click)="toggleEditUser()">
+                    <mat-icon>edit</mat-icon>
+                  </button>
+          </div>
+
         </div>
         <div class="companyinfo" fxFlex="40%">
-          <table>
-            <tr>
-              <td>
+          <div fxLayout="column">
+            <div fxLayout="row" fxLayout.xs="column">
+              <div fxFlex>
                 <h2>Set Standard Font and Colors</h2>
-              </td>
-            </tr>
-            <tr>
-              <td>
+              </div>
+            </div>
+            <div fxLayout="row" fxLayout.xs="column">
+              <div fxFlex>
                 <form>
                   <mat-form-field class="example-full-width">
                     <input [(ngModel)]=Company.companyfont type="text" placeholder="Pick one" aria-label="Number"
@@ -69,10 +61,10 @@
                     </mat-autocomplete>
                   </mat-form-field>
                 </form>
-              </td>
-            </tr>
-            <tr>
-              <td>
+              </div>
+            </div>
+            <div fxLayout="row" fxLayout.xs="column">
+              <div fxFlex>
                 <mat-accordion>
                   <mat-expansion-panel>
                     <mat-expansion-panel-header>
@@ -86,10 +78,10 @@
                       [(colorPicker)]="Company.companyprimairycolor"></span>
                   </mat-expansion-panel>
                 </mat-accordion>
-              </td>
-            </tr>
-            <tr>
-              <td>
+              </div>
+            </div>
+            <div fxLayout="row" fxLayout.xs="column">
+              <div fxFlex>
                 <mat-accordion>
                   <mat-expansion-panel>
                     <mat-expansion-panel-header>
@@ -103,367 +95,365 @@
                       [(colorPicker)]="Company.companysecondarycolor"></span>
                   </mat-expansion-panel>
                 </mat-accordion>
-              </td>
-            </tr>
-            <tr>
+              </div>
+            </div>
+            <div fxLayout="row" fxLayout.xs="column">
               <div [innerHTML]="Account.signature | safeHtml"></div>
-            </tr>
-            <tr>
+            </div>
+            <div fxLayout="row" fxLayout.xs="column">
               <button a mat-raised-button color="primary" (click)="openeditorsignature()">
                 Edit Signature
               </button>
-            </tr>
-            <tr>
-              <td>
+            </div>
+            <div fxLayout="row" fxLayout.xs="column">
+              <div fxFlex>
                 <button (click)="saveCompany()" a mat-raised-button class="button">Save Changes</button>
-              </td>
-            </tr>
-          </table>
+              </div>
+            </div>
+          </div>
 
         </div>
         <div class="companyinfo" *ngIf="!toggleedituser" fxFlex="40%">
-          <table>
-            <tr>
-              <td>
+          <div fxLayout="column">
+            <div fxLayout="row" fxLayout.xs="column">
+              <div fxFlex>
                 <h2>Account info</h2>
-              </td>
-            </tr>
-            <tr>
-              <td>
+              </div>
+            </div>
+            <div fxLayout="row" fxLayout.xs="column">
+              <div fxFlex>
                 <h4>{{Account.email}}</h4>
-              </td>
-            </tr>
-            <tr>
-              <td>
+              </div>
+            </div>
+            <div fxLayout="row" fxLayout.xs="column">
+              <div fxFlex>
                 <h4>{{Account.username}}</h4>
-              </td>
-            </tr>
-            <tr>
-              <td>
+              </div>
+            </div>
+            <div fxLayout="row" fxLayout.xs="column">
+              <div fxFlex>
                 <h4>{{Account.companyname}}</h4>
-              </td>
-            </tr>
-          </table>
+              </div>
+            </div>
+          </div>
           <button mat-mini-fab color="primary" (click)="toggleEditUser()">
             <mat-icon>edit</mat-icon>
           </button>
         </div>
         <div class="companyinfo" fxFlex="40%">
-          <table>
-            <tr>
-              <td>
+          <div fxLayout="column">
+            <div fxLayout="row" fxLayout.xs="column">
+              <div fxFlex>
                 <h2>Company information</h2>
-              </td>
-            </tr>
-            <tr>
-              <td>
+              </div>
+            </div>
+            <div fxLayout="row" fxLayout.xs="column">
+              <div fxFlex>
                 <mat-form-field fxFlex="90" class="form-full-width">
                   <input matInput [(ngModel)]=Company.companyname placeholder="Company Name" class="InputField">
                 </mat-form-field>
-              </td>
-            </tr>
-            <tr>
-              <td>
+              </div>
+            </div>
+            <div fxLayout="row" fxLayout.xs="column">
+              <div fxFlex>
                 <mat-form-field fxFlex="90" class="form-full-width">
                   <input matInput [(ngModel)]=Company.address placeholder="Address" class="InputField">
                 </mat-form-field>
-              </td>
-            </tr>
-          </table>
-          <table>
-            <tr>
-              <td>
+              </div>
+            </div>
+          </div>
+          <div fxLayout="column">
+            <div fxLayout="row" fxLayout.xs="column">
+              <div fxFlex>
                 <mat-form-field fxFlex="30" class="form-full-width">
                   <input matInput [(ngModel)]=Company.city placeholder="City" class="InputField">
                 </mat-form-field>
-              </td>
-              <td>
+              </div>
+              <div fxFlex>
                 <mat-form-field fxFlex="30" class="form-full-width">
                   <input matInput [(ngModel)]=Company.zipcode placeholder="Zipcode" class="InputField">
                 </mat-form-field>
-              </td>
-              <td>
+              </div>
+              <div fxFlex>
                 <mat-form-field fxFlex="30" class="form-full-width">
                   <input matInput [(ngModel)]=Company.stateprov placeholder="State/Province" class="InputField">
                 </mat-form-field>
-              </td>
-            </tr>
-          </table>
-          <table>
-            <tr>
-              <td>
+              </div>
+            </div>
+          </div>
+          <div fxLayout="column">
+            <div fxLayout="row" fxLayout.xs="column">
+              <div fxFlex>
                 <mat-form-field fxFlex="90" class="form-full-width">
                   <input matInput [(ngModel)]=Company.country placeholder="Country" class="InputField">
                 </mat-form-field>
-              </td>
-            </tr>
-            <tr>
-              <td>
+              </div>
+            </div>
+            <div fxLayout="row" fxLayout.xs="column">
+              <div fxFlex>
                 <button fxFlex="90" (click)="billingCompanyCopy()" a mat-raised-button class="button">Billing address is
                   the same</button>
-              </td>
-            </tr>
-            <tr>
-              <td>
+              </div>
+            </div>
+            <div fxLayout="row" fxLayout.xs="column">
+              <div fxFlex>
                 <mat-form-field fxFlex="90" class="form-full-width">
                   <input matInput [(ngModel)]=Company.billingaddress placeholder="Billing Address" class="InputField">
                 </mat-form-field>
-              </td>
-            </tr>
-            <tr>
-          </table>
-          <table>
-            <td>
-              <mat-form-field fxFlex="30" class="form-full-width">
-                <input matInput [(ngModel)]=Company.billingcity placeholder="Billing City" class="InputField">
-              </mat-form-field>
-            </td>
-            <td>
-              <mat-form-field fxFlex="30" class="form-full-width">
-                <input matInput [(ngModel)]=Company.billingzipcode placeholder="Billing zipcode" class="InputField">
-              </mat-form-field>
-            </td>
-            <td>
-              <mat-form-field fxFlex="30" class="form-full-width">
-                <input matInput [(ngModel)]=Company.billingstateprov placeholder="Billing State/Province"
-                  class="InputField">
-              </mat-form-field>
-            </td>
-          </table>
-          <table>
-            <tr>
-              <td>
-                <mat-form-field fxFlex="90" class="form-full-width">
-                  <input matInput [(ngModel)]=Company.billingcountry placeholder="Billing Country" class="InputField">
+              </div>
+            </div>
+            <div fxLayout="row" fxLayout.xs="column">
+            </div>
+            <div fxLayout="column">
+              <div fxFlex>
+                <mat-form-field fxFlex="30" class="form-full-width">
+                  <input matInput [(ngModel)]=Company.billingcity placeholder="Billing City" class="InputField">
                 </mat-form-field>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <mat-form-field fxFlex="90" class="form-full-width">
-                  <input matInput [(ngModel)]=Company.billingcontact placeholder="Billing Contact" class="InputField">
+              </div>
+              <div fxFlex>
+                <mat-form-field fxFlex="30" class="form-full-width">
+                  <input matInput [(ngModel)]=Company.billingzipcode placeholder="Billing zipcode" class="InputField">
                 </mat-form-field>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <mat-form-field fxFlex="90" class="form-full-width">
-                  <input matInput [(ngModel)]=Company.billingemail placeholder="Billing Email" class="InputField">
+              </div>
+              <div fxFlex>
+                <mat-form-field fxFlex="30" class="form-full-width">
+                  <input matInput [(ngModel)]=Company.billingstateprov placeholder="Billing State/Province"
+                    class="InputField">
                 </mat-form-field>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <mat-form-field fxFlex="90" class="form-full-width">
-                  <input matInput [(ngModel)]=Company.phonenumber placeholder="Phonenumber" class="InputField">
-                </mat-form-field>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <button (click)="saveCompany()" a mat-raised-button class="button">Save Changes</button>
-              </td>
-            </tr>
-          </table>
+              </div>
+            </div>
+            <div fxLayout="column">
+              <div fxLayout="row" fxLayout.xs="column">
+                <div fxFlex>
+                  <mat-form-field fxFlex="90" class="form-full-width">
+                    <input matInput [(ngModel)]=Company.billingcountry placeholder="Billing Country" class="InputField">
+                  </mat-form-field>
+                </div>
+              </div>
+              <div fxLayout="row" fxLayout.xs="column">
+                <div fxFlex>
+                  <mat-form-field fxFlex="90" class="form-full-width">
+                    <input matInput [(ngModel)]=Company.billingcontact placeholder="Billing Contact" class="InputField">
+                  </mat-form-field>
+                </div>
+              </div>
+              <div fxLayout="row" fxLayout.xs="column">
+                <div fxFlex>
+                  <mat-form-field fxFlex="90" class="form-full-width">
+                    <input matInput [(ngModel)]=Company.billingemail placeholder="Billing Email" class="InputField">
+                  </mat-form-field>
+                </div>
+              </div>
+              <div fxLayout="row" fxLayout.xs="column">
+                <div fxFlex>
+                  <mat-form-field fxFlex="90" class="form-full-width">
+                    <input matInput [(ngModel)]=Company.phonenumber placeholder="Phonenumber" class="InputField">
+                  </mat-form-field>
+                </div>
+              </div>
+              <div fxLayout="row" fxLayout.xs="column">
+                <div fxFlex>
+                  <button (click)="saveCompany()" a mat-raised-button class="button">Save Changes</button>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
         <div class="companyinfo" fxFlex="40%">
-          <form>
-            <table>
-              <tr>
-                <td>
-                  <h2>Password</h2>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <mat-form-field class="example-full-width">
-                    <input matInput name="password" type="password" [(ngModel)]="oldpassword" placeholder="Old Password"
-                      [formControl]="passwordFormControl">
-                  </mat-form-field>
-                </td>
-                <td>
-                  <button (click)="openDialogDeleteAccount()" a mat-raised-button class="button">Delete My
-                    Account</button>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <mat-form-field class="example-full-width">
-                    <input matInput name="password" placeholder="New Password" type="password"
-                      [formControl]="passwordFormControl" [(ngModel)]="newpassword">
-                    <!-- <mat-hint>Errors appear instantly!</mat-hint> -->
-                    <mat-error
-                      *ngIf="passwordFormControl.hasError('email') && !passwordFormControl.hasError('required')">
-                      Please enter a Password
-                    </mat-error>
-                    <mat-error *ngIf="passwordFormControl.hasError('required')">
-                      Password is
-                      <strong>required</strong>
-                    </mat-error>
-                  </mat-form-field>
-                </td>
-                <td>
-                  <button (click)="logout()" a mat-raised-button class="button">Logout</button>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <button (click)="changePassword()" a mat-raised-button class="button">Change Password</button>
-                </td>
-                <td>
-                  <div *ngIf="passwordsuccess">
-                    <i class="material-icons">check_circle</i>
-                  </div>
-                </td>
-              </tr>
-            </table>
-          </form>
+          <div fxLayout="column">
+            <div fxLayout="row" fxLayout.xs="column">
+              <div fxFlex>
+                <h2>Password</h2>
+              </div>
+            </div>
+            <div fxLayout="row" fxLayout.xs="column">
+              <div fxFlex>
+                <mat-form-field class="example-full-width">
+                  <input matInput name="password" type="password" [(ngModel)]="oldpassword" placeholder="Old Password"
+                    [formControl]="passwordFormControl">
+                </mat-form-field>
+              </div>
+              <div fxFlex>
+                <button (click)="openDialogDeleteAccount()" a mat-raised-button class="button">Delete My
+                  Account</button>
+              </div>
+            </div>
+            <div fxLayout="row" fxLayout.xs="column">
+              <div fxFlex>
+                <mat-form-field class="example-full-width">
+                  <input matInput name="password" placeholder="New Password" type="password"
+                    [formControl]="passwordFormControl" [(ngModel)]="newpassword">
+                  <!-- <mat-hint>Errors appear instantly!</mat-hint> -->
+                  <mat-error *ngIf="passwordFormControl.hasError('email') && !passwordFormControl.hasError('required')">
+                    Please enter a Password
+                  </mat-error>
+                  <mat-error *ngIf="passwordFormControl.hasError('required')">
+                    Password is
+                    <strong>required</strong>
+                  </mat-error>
+                </mat-form-field>
+              </div>
+              <div fxFlex>
+                <button (click)="logout()" a mat-raised-button class="button">Logout</button>
+              </div>
+            </div>
+            <div fxLayout="row" fxLayout.xs="column">
+              <div fxFlex>
+                <button (click)="changePassword()" a mat-raised-button class="button">Change Password</button>
+              </div>
+              <div fxFlex>
+                <div *ngIf="passwordsuccess">
+                  <i class="material-icons">check_circle</i>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
         <div class="companyinfo" fxFlex="40%" *ngIf="Account.companyadmin" class="team">
           <div class="teammembers">
             Teammembers {{Account.companyname}}
             <div *ngFor="let Team of Team; let i = index">
-              <table class="team" cellspacing="0">
-                <tr style="width: 100%;">
-                  <td>
+              <div fxLayout="column" class="team" cellspacing="0">
+                <div fxLayout="row" fxLayout.xs="column" style="width: 100%;">
+                  <div fxFlex>
                     <label>{{ Team.username }}</label>
-                  </td>
-                  <td>
+                  </div>
+                  <div fxFlex>
                     <label>{{ Team.teamName }}</label>
-                  </td>
-                  <td>
+                  </div>
+                  <div fxFlex>
                     <a mat-mini-fab color="primary" (click)="deleteTeamMember(Team, i)">
                       <mat-icon>delete</mat-icon>
                     </a>
-                  </td>
-                </tr>
-              </table>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
 
           <div *ngIf="Account.companyadmin" class="createteam">
             Create Teammember (send invite) {{Account.companyname}}
             <form>
-              <table class="form-login" cellspacing="0">
-                <tr>
-                  <td>
+              <div fxLayout="column" class="form-login" cellspacing="0">
+                <div fxLayout="row" fxLayout.xs="column">
+                  <div fxFlex>
                     <mat-form-field class="form-full-width">
                       <input matInput name="email" type="email" [(ngModel)]="newAccount.email" placeholder="email" />
                     </mat-form-field>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
+                  </div>
+                </div>
+                <div fxLayout="row" fxLayout.xs="column">
+                  <div fxFlex>
                     <mat-form-field class="form-full-width">
                       <input matInput name="password" type="password" [(ngModel)]="newAccount.password"
                         placeholder="password" />
                     </mat-form-field>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
+                  </div>
+                </div>
+                <div fxLayout="row" fxLayout.xs="column">
+                  <div fxFlex>
                     <mat-form-field class="form-full-width">
                       <input matInput name="username" type="username" [(ngModel)]="newAccount.username"
                         placeholder="username" />
                     </mat-form-field>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
+                  </div>
+                </div>
+                <div fxLayout="row" fxLayout.xs="column">
+                  <div fxFlex>
                     <mat-form-field class="form-full-width">
                       <input matInput name="Team name" type="Team name" [(ngModel)]="newAccount.teamname"
                         placeholder="Team name" />
                     </mat-form-field>
-                  </td>
-                </tr>
-                <tr>
+                  </div>
+                </div>
+                <div fxLayout="row" fxLayout.xs="column">
                   <button (click)="createTeamMember()" a mat-raised-button class="button">Create Member</button>
-                </tr>
-              </table>
+                </div>
+              </div>
             </form>
           </div>
 
 
         </div>
         <div class="companyinfo" fxFlex="40%">
-          <table class="form-login" cellspacing="0">
-            <tr>
-              <td>
+          <div fxLayout="column" class="form-login" cellspacing="0">
+            <div fxLayout="row" fxLayout.xs="column">
+              <div fxFlex>
                 <h2>Email Info</h2>
-              </td>
-            </tr>
-            <tr>
-              <td>
+              </div>
+            </div>
+            <div fxLayout="row" fxLayout.xs="column">
+              <div fxFlex>
                 <mat-form-field class="form-full-width">
                   <input matInput name="emailusername" type="email" [(ngModel)]="Emailhandler.username"
                     placeholder="username" />
                 </mat-form-field>
-              </td>
-            </tr>
-            <tr>
-              <td>
+              </div>
+            </div>
+            <div fxLayout="row" fxLayout.xs="column">
+              <div fxFlex>
                 <mat-form-field class="form-full-width">
                   <input matInput name="emailpassword" type="password" [(ngModel)]="Emailhandler.password"
                     placeholder="password" />
                 </mat-form-field>
-              </td>
-            </tr>
-            <tr>
-              <td>
+              </div>
+            </div>
+            <div fxLayout="row" fxLayout.xs="column">
+              <div fxFlex>
                 <mat-form-field class="form-full-width">
                   <input matInput name="Team name" type="Team name" [(ngModel)]="Emailhandler.host"
                     placeholder="Mail Server" />
                 </mat-form-field>
-              </td>
-            </tr>
-            <tr>
-              <td>
+              </div>
+            </div>
+            <div fxLayout="row" fxLayout.xs="column">
+              <div fxFlex>
                 <mat-form-field class="form-full-width">
                   <input matInput name="Team name" type="value" [(ngModel)]="Emailhandler.port" placeholder="port" />
                 </mat-form-field>
-              </td>
-              <td>
+              </div>
+              <div fxFlex>
                 <mat-checkbox [(ngModel)]="Emailhandler.tls">TLS</mat-checkbox>
-              </td>
-            </tr>
-            <tr>
-              <td>
+              </div>
+            </div>
+            <div fxLayout="row" fxLayout.xs="column">
+              <div fxFlex>
                 <mat-form-field class="form-full-width">
                   <input matInput name="Team name" type="value" [(ngModel)]="Emailhandler.mailbox"
                     placeholder="mailbox" />
                 </mat-form-field>
-              </td>
-              <td>
+              </div>
+              <div fxFlex>
                 <mat-form-field>
                   <mat-select [(ngModel)]="Emailhandler.searchfilter">
                     <mat-option value="FLAGGED">FLAGGED</mat-option>
                     <mat-option value="UNSEEN">UNSEEN</mat-option>
                   </mat-select>
                 </mat-form-field>
-              </td>
-            </tr>
-            <tr>
-              <td>
+              </div>
+            </div>
+            <div fxLayout="row" fxLayout.xs="column">
+              <div fxFlex>
                 <mat-checkbox [(ngModel)]="Emailhandler.markseen">Mark Seen</mat-checkbox>
-              </td>
-              <td>
+              </div>
+              <div fxFlex>
                 <mat-checkbox [(ngModel)]="Emailhandler.attachments">Save Attachments</mat-checkbox>
-              </td>
-            </tr>
-            <tr>
-              <td>
+              </div>
+            </div>
+            <div fxLayout="row" fxLayout.xs="column">
+              <div fxFlex>
                 <button (click)="createEmailHandler()" a mat-raised-button class="button">Save</button>
-              </td>
-              <td>
+              </div>
+              <div fxFlex>
                 <button (click)="deleteEmailhandler()" a mat-raised-button class="button">Delete</button>
-              </td>
-            </tr>
-          </table>
+              </div>
+            </div>
+          </div>
 
         </div>
+
       </div>
     </div>
-
   </mat-tab>
 
   <mat-tab label="Invoices" (click)="getInvoices()">
@@ -511,9 +501,9 @@
       <div fxFlex="80%" *ngIf="selectedCall">
         <mat-card>
           <mat-card-content style="padding: 30px;" fxLayout="row">
-            <table class="unsortedcalls" fxFlex>
-              <tr>
-                <td>
+            <div fxLayout="column" class="unsortedcalls" fxFlex>
+              <div fxLayout="row" fxLayout.xs="column">
+                <div fxFlex>
                   <mat-form-field class="example-full-width">
                     <input type="text" placeholder="Select Relation" aria-label="relation" [(ngModel)]=option matInput
                       [formControl]="myControl" [matAutocomplete]="auto">
@@ -523,13 +513,13 @@
                       </mat-option>
                     </mat-autocomplete>
                   </mat-form-field>
-                </td>
-                <td>
+                </div>
+                <div fxFlex>
                   <button a mat-raised-button (click)="assignCall()">Assign To</button>
-                </td>
-              </tr>
-              <tr>
-                <td>
+                </div>
+              </div>
+              <div fxLayout="row" fxLayout.xs="column">
+                <div fxFlex>
                   <mat-form-field>
                     <input matInput google-place (onSelect)="setAddress($event)" [(ngModel)]=newRelation.relationname
                       placeholder="New Relation Name" class="InputField" [ngModelOptions]="{standalone: true}">
@@ -541,14 +531,14 @@
                     </mat-option>
                   </mat-select>
 
-                </td>
-                <td>
+                </div>
+                <div fxFlex>
                   <button a mat-raised-button (click)="createNewAssign()">Assign and Create New</button>
-                </td>
-              </tr>
+                </div>
+              </div>
               <br>
-              <tr>
-                <td colspan="2">
+              <div fxLayout="row" fxLayout.xs="column">
+                <div fxFlexcolspan="2">
                   <mat-toolbar color="primary" class="titlebox">
                     <h2>{{selectedCall.title | uppercase | slice:0:30 }}</h2>
                     <button mat-icon-button [matMenuTriggerFor]="menucall" class="menu">
@@ -561,49 +551,49 @@
                       </button>
                     </mat-menu>
                   </mat-toolbar>
-                </td>
-              </tr>
-              <tr>
-                <td>
+                </div>
+              </div>
+              <div fxLayout="row" fxLayout.xs="column">
+                <div fxFlex>
                   <mat-form-field>
                     <input matInput [(ngModel)]=selectedCall.title placeholder="Title" class="InputField">
                   </mat-form-field>
-                </td>
-                <td>
+                </div>
+                <div fxFlex>
                   <mat-select [(ngModel)]=selectedCall.calltype placeholder="calltype" class="InputField">
                     <mat-option *ngFor="let calltype of calltype" [value]="calltype.value">
                       {{ calltype.viewValue }}
                     </mat-option>
                   </mat-select>
-                </td>
-              </tr>
-              <tr>
-                <td>
+                </div>
+              </div>
+              <div fxLayout="row" fxLayout.xs="column">
+                <div fxFlex>
                   {{selectedCall.email}}
-                </td>
-              </tr>
-              <tr>
-                <td colspan="2">
+                </div>
+              </div>
+              <div fxLayout="row" fxLayout.xs="column">
+                <div fxFlexcolspan="2">
                   <mat-datepicker #picker1></mat-datepicker>
                   <input [matDatepicker]="myDatepicker1" [(ngModel)]=selectedCall.date placeholder="Call Date">
                   <mat-datepicker-toggle matSuffix [for]="myDatepicker1"></mat-datepicker-toggle>
                   <mat-datepicker #myDatepicker1></mat-datepicker>
-                </td>
-              </tr>
+                </div>
+              </div>
               <br>
-              <tr *ngIf="!selectedCall.html" rowspan="10">
-                <td colspan="2">
+              <div fxLayout="row" fxLayout.xs="column" *ngIf="!selectedCall.html" rowspan="10">
+                <div fxFlexcolspan="2">
                   <div> {{selectedCall.content}} </div>
-                </td>
-              </tr>
-              <tr *ngIf="selectedCall.html">
-                <td colspan="2">
+                </div>
+              </div>
+              <div fxLayout="row" fxLayout.xs="column" *ngIf="selectedCall.html">
+                <div fxFlexcolspan="2">
                   <div [innerHTML]="selectedCall.html"></div>
-                </td>
-              </tr>
+                </div>
+              </div>
               <br>
-              <tr>
-                <td colspan="2">
+              <div fxLayout="row" fxLayout.xs="column">
+                <div fxFlexcolspan="2">
                   <mat-accordion>
                     <mat-expansion-panel>
                       <mat-expansion-panel-header>
@@ -611,28 +601,28 @@
                           Follow Up
                         </mat-panel-title>
                       </mat-expansion-panel-header>
-                      <table>
-                        <tr>
-                          <td class="tg-yw4l">
+                      <div fxLayout="column">
+                        <div fxLayout="row" fxLayout.xs="column">
+                          <div fxFlexclass="tg-yw4l">
                             <mat-checkbox [(ngModel)]=selectedCall.followup [(indeterminate)]="indeterminate"
                               [disabled]="disabled">
                               Follow Up
                             </mat-checkbox>
-                          </td>
-                          <td class="tg-yw4l">
+                          </div>
+                          <div fxFlexclass="tg-yw4l">
                             <mat-datepicker #picker></mat-datepicker>
                             <input [matDatepicker]="myDatepicker" [(ngModel)]=selectedCall.callbackdate
                               placeholder="Callback Date">
                             <mat-datepicker-toggle matSuffix [for]="myDatepicker"></mat-datepicker-toggle>
                             <mat-datepicker #myDatepicker></mat-datepicker>
-                          </td>
-                        </tr>
-                      </table>
+                          </div>
+                        </div>
+                      </div>
                     </mat-expansion-panel>
                   </mat-accordion>
-                </td>
-              </tr>
-            </table>
+                </div>
+              </div>
+            </div>
           </mat-card-content>
         </mat-card>
       </div>
@@ -640,10 +630,10 @@
   </mat-tab>
 
   <mat-tab label="System">
-      <ng-template mat-tab-label>
-          <mat-icon>system</mat-icon>System settings
-        </ng-template>
-      <!-- <div fxFlex="40%" class="innerfollowup">
+    <ng-template mat-tab-label>
+      <mat-icon>system</mat-icon>System settings
+    </ng-template>
+    <!-- <div fxFlex="40%" class="innerfollowup">
         <a
           mat-mini-fab
           color="primary"
@@ -654,7 +644,7 @@
         </a>
         <label class="mat-h4">Logs</label>
         <mat-divider></mat-divider>
-        <table class="websitedata">
+        <div fxLayout="column" class="websitedata">
           <tr
             fxLayout="column"
             fxLayoutWrap="wrap"
@@ -675,7 +665,7 @@
               </th>
               <th fxFlex="20%" class="thwebsitetr"></th>
             </mat-list-item>
-          </tr>
+          </div>
           <tr
             fxLayout="column"
             fxLayoutWrap="wrap"
@@ -683,31 +673,31 @@
             *ngFor="let logs of logger; let i = index"
           >
             <mat-list-item>
-              <td fxFlex="20%" class="tdwebsitetr">
+              <div fxFlexfxFlex="20%" class="tdwebsitetr">
                 <label class="followuplist">{{ logs.user }}</label>
-              </td>
-              <td fxFlex="20%" class="tdwebsitetr">
+              </div>
+              <div fxFlexfxFlex="20%" class="tdwebsitetr">
                 <label class="followuplist">{{ logs.relation }}</label>
-              </td>
-              <td fxFlex="20%" class="tdwebsitetr">
+              </div>
+              <div fxFlexfxFlex="20%" class="tdwebsitetr">
                 <label class="followuplist">{{
                   logs.code | slice: 0:50
                 }}</label>
-              </td>
-              <td fxFlex="20%" class="tdwebsitetr">
+              </div>
+              <div fxFlexfxFlex="20%" class="tdwebsitetr">
                 <label class="followuplist">{{
                   logs.date | date: "medium"
                 }}</label>
-              </td>
-              <td fxFlex="20%" class="tdwebsitetr">
+              </div>
+              <div fxFlexfxFlex="20%" class="tdwebsitetr">
                 <label (click)="deleteLog(i)" class="followuplist"
                   >Delete</label
                 >
-              </td>
+              </div>
             </mat-list-item>
             <mat-divider></mat-divider>
-          </tr>
-        </table>
+          </div>
+        </div>
       </div> -->
 
 
@@ -718,12 +708,12 @@
       <mat-icon>web</mat-icon>Wordpress
     </ng-template>
     <div class="account-container">
-      <table>
-        <tr>
+      <div fxLayout="column">
+        <div fxLayout="row" fxLayout.xs="column">
           <button (click)="wpauth()" a mat-raised-button class="button">Add Wordpress Website</button>
           <!-- use for open new window: assignActity()  -->
-        </tr>
-      </table>
+        </div>
+      </div>
 
       <b>To setup Wordpress:</b>
 

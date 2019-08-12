@@ -794,7 +794,8 @@ export class DashboardComponent implements OnInit {
   ];
   public MailChartLabels: Array<any> = this.acceptedLabel; // dates only 
   public MailChartOptions: any = {
-    responsive: true
+    responsive: true,
+    maintainAspectRatio: false
   };
 
   public MailChartColors: Array<any> = [

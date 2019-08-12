@@ -1,16 +1,19 @@
 <div fxLayout="column" fxLayoutWrap="wrap" fxLayoutAlign="space-around">
   <mat-card class="topbanner">
     <mat-card-content>
-      <div class="selectrelation">
-        <mat-form-field class="example-full-width">
+      <div>
+        <mat-form-field>
           <input type="text" placeholder="Select Relation" aria-label="relation" matInput
-            [formControl]="myControlRelations" [matAutocomplete]="relations">
-          <mat-autocomplete #relations="matAutocomplete" [displayWith]="displayFnRelation">
-            <mat-option *ngFor="let option of filteredOptionsRelations| async; let i = index" [value]="option"
+          (keyup)="searchGoQuick($event.srcElement.value)" [matAutocomplete]="relations"
+          [formControl]="myControlRelations">
+           <mat-autocomplete #relations="matAutocomplete" 
+           [displayWith]="displayFnRelation"> 
+            <mat-option *ngFor="let option of filteredRelations; let i = index" 
+              [value]="option"
               (blur)="onSelect(option, i)">
               {{ option.relationname }}
             </mat-option>
-          </mat-autocomplete>
+         </mat-autocomplete>
         </mat-form-field>
       </div>
     </mat-card-content>
@@ -781,20 +784,20 @@
             <mat-card-content *ngIf="selectedfile" fxLayout="column" fxLayoutGap="20px">
               <label>File Details</label>
               <div fxLayout="row" fxLayoutGap="20px">
-                <label>Name: </label>
-                <label>{{selectedfile.name}}</label>
+                <label fxFlex="40%">Name: </label>
+                <label fxFlex="40%">{{selectedfile.name}}</label>
               </div>
               <div fxLayout="row" fxLayoutGap="20px">
-                <label>Creation Date: </label>
-                <label>{{selectedfile.createdate | date }}</label>
+                <label fxFlex="40%">Creation Date: </label>
+                <label fxFlex="40%">{{selectedfile.createdate | date }}</label>
               </div>
               <div fxLayout="row" fxLayoutGap="20px">
-                <label>Type: </label>
-                <label>{{selectedfile.type}}</label>
+                <label fxFlex="40%">Type: </label>
+                <label fxFlex="40%">{{selectedfile.type}}</label>
               </div>
               <div fxLayout="row" fxLayoutGap="20px">
-                <label>Url: </label>
-                <label>{{selectedfile.url}}</label>
+                <label fxFlex="40%">Url: </label>
+                <label fxFlex="40%">{{selectedfile.url}}</label>
               </div>
             </mat-card-content>
           </mat-card>

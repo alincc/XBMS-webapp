@@ -217,33 +217,31 @@
       </div>
     </div>
 
-    <div fxFlex="30%" fxLayout="row" fxLayoutWrap="wrap" fxLayoutAlign="space-around">
+    <div fxFlex.gt-xs="30%" fxFlex.lt-sm="50%" fxLayout="row" fxLayoutWrap="wrap" fxLayoutAlign="space-around">
 
-      <div fxFlex="50%" class="doubleflex" *ngIf="mailstatsspinner">
-        <label class="mat-h4">Email Activities</label>
-        <mat-spinner style="margin: auto;"></mat-spinner>
-      </div>
-
-      <div fxFlex="50%" class="doubleflex" *ngIf="mailstatsspinner === false">
+      <div fxFlex="92%" class="doubleflex" >
         <label class="mat-h4">Email Activities</label>
         <mat-divider></mat-divider>
-        <div >
-          <canvas baseChart #baseMailChart="base-chart"  [datasets]="MailChartData"
+        <mat-spinner *ngIf="mailstatsspinner" style="margin: auto;"></mat-spinner>
+        <div *ngIf="mailstatsspinner === false" style="min-height: 400px">
+          <canvas baseChart #baseMailChart="base-chart"  
+          [datasets]="MailChartData"
             [labels]="MailChartLabels" [options]="MailChartOptions" [legend]="MailChartLegend"
             [chartType]="MailChartType" (chartHover)="MailChartHovered($event)"
             (chartClick)="MailChartClicked($event)"></canvas>
-          <mat-select style="width: 200px; height: 50px;" placeholder="Select timeframe"
-            [(value)]="mailStatsTimeSelected">
-            <mat-option *ngFor="let mailStatsTime of mailStatsTime" [value]="mailStatsTime" (blur)="getMailStats()">
-              {{ mailStatsTime.viewValue }}
-            </mat-option>
-          </mat-select>
+
         </div>
+        <mat-select style="width: 200px; height: 50px;" placeholder="Select timeframe"
+        [(value)]="mailStatsTimeSelected">
+        <mat-option *ngFor="let mailStatsTime of mailStatsTime" [value]="mailStatsTime" (blur)="getMailStats()">
+          {{ mailStatsTime.viewValue }}
+        </mat-option>
+      </mat-select>
       </div>
     </div>
 
-    <div fxFlex="30%" fxLayout="row" fxLayoutWrap="wrap" fxLayoutAlign="space-around">
-      <div fxFlex="45%" class="doubleflex">
+    <div fxFlex="30%" fxLayout="row wrap" fxLayoutWrap="wrap" fxLayoutAlign="space-around">
+      <div fxFlex.gt-xs="45%" fxFlex.lt-sm="90%" class="doubleflex">
         <label class="mat-h4">Website Source</label>
         <mat-divider></mat-divider>
         <div>
@@ -253,7 +251,7 @@
         </div>
       </div>
 
-      <div fxFlex="45%" class="doubleflex">
+      <div fxFlex.gt-xs="45%" fxFlex.lt-sm="90%" class="doubleflex">
         <label class="mat-h4">Website Source</label>
         <mat-divider></mat-divider>
         <!-- <ngx-charts-tree-map [view]="view" [scheme]="colorScheme" [results]="googleanalyticsreturn">

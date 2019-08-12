@@ -1,16 +1,6 @@
 /* You can add global styles to this file, and also import other style files */
 
 @import './theme.scss';
-
-// /* CSS reset */
-// body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,textarea,p,blockquote,th,td { 
-//   margin:0;
-//   padding:0;
-// }
-// html,body {
-//   margin:0;
-//   padding:0;
-// }
 @import "~@ctrl/ngx-emoji-mart/picker";
 
 .home-wrapper{
@@ -171,55 +161,44 @@
 .listview-noshow{
   min-height: 600px;
   width: 0%;
+  //margin: -50%;
   overflow: hidden;
-  -webkit-transition: 0.70s;
-  -moz-transition: 0.70s;
-  -ms-transition: 0.70s;
-  -o-transition: 0.70s;
+  transition: cubic-bezier(0.165, 0.84, 0.44, 1);
+  transition: 0.6s;
   }
 
 .listview-xs-show {
   min-height: 600px;
   width: 50%;
   overflow: hidden;
-  -webkit-transition: 0.70s;
-  -moz-transition: 0.70s;
-  -ms-transition: 0.70s;
-  -o-transition: 0.70s;
+  transition: cubic-bezier(0.165, 0.84, 0.44, 1);
+  transition: 0.6s;
 }
 
 .listview-normal {
   min-height: 600px;
   width: 20%;
   display: flex;
-  -webkit-transition: 0.70s;
-  -moz-transition: 0.70s;
-  -ms-transition: 0.70s;
-  -o-transition: 0.70s;
+  transition: cubic-bezier(0.165, 0.84, 0.44, 1);
+  transition: 0.6s;
 }
 
 .container-noshow{
   width: 100%;
-  -webkit-transition: 0.70s;
-  -moz-transition: 0.70s;
-  -ms-transition: 0.70s;
-  -o-transition: 0.70s;
+  transition: cubic-bezier(0.165, 0.84, 0.44, 1);
+  transition: 0.6s;
   }
 
 .container-xs-show {
   width: 50%;
-  -webkit-transition: 0.70s;
-  -moz-transition: 0.70s;
-  -ms-transition: 0.70s;
-  -o-transition: 0.70s;
+  transition: cubic-bezier(0.165, 0.84, 0.44, 1);
+  transition: 0.6s;
 }
 
 .container-normal {
   width: 80%;
-  -webkit-transition: 0.70s;
-  -moz-transition: 0.70s;
-  -ms-transition: 0.70s;
-  -o-transition: 0.70s;
+  transition: cubic-bezier(0.165, 0.84, 0.44, 1);
+  transition: 0.6s;
 }
 
 
