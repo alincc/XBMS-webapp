@@ -1,149 +1,181 @@
-<div class="toolsmenu">
-  <mat-accordion>
-    <mat-expansion-panel>
-      <mat-expansion-panel-header>
-        <mat-panel-title>
-          Select Relation
-        </mat-panel-title>
-      </mat-expansion-panel-header>
-      <form class="example-form">
-        <mat-form-field class="example-full-width">
-          <input type="text" placeholder="Select Relation" aria-label="Assignee" [(ngModel)]=option matInput [formControl]="myControl"
-            [matAutocomplete]="auto">
-          <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
-            <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
-              {{ option.relationname }}
-            </mat-option>
-          </mat-autocomplete>
-        </mat-form-field>
-
-      </form>
-    </mat-expansion-panel>
-
-    <mat-expansion-panel (opened)="getMarketingPlanner()" (closed)="panelOpenState = false">
-      <mat-expansion-panel-header>
-        <mat-panel-title>
-          Campagins
-        </mat-panel-title>
-      </mat-expansion-panel-header>
-
-      <div>
-        <ul class="Relations">
-          <div *ngFor="let Marketingplanner of Marketingplanner" (click)="onSelectMarketingPlanner(Marketingplanner)" [class.selected]="Marketingplanner === selectedmarketingplanner">
-            <span class="box">{{Marketingplanner.campaignname}} {{Marketingplanner.publicationdate}}</span>
-          </div>
-        </ul>
-      </div>
-
-      <button mat-mini-fab color="primary" class="mat-fab-toolsmenu" (click)="newPlanner()">
-        <mat-icon>add</mat-icon>
-      </button>
-
-
-    </mat-expansion-panel>
-    <mat-expansion-panel>
-
-      <mat-expansion-panel-header>
-        <mat-panel-title>
-          Tools
-        </mat-panel-title>
-      </mat-expansion-panel-header>
-      <div class='dragcontainer1'>
-        <div class="dragcontainertitle">
-          <mat-datepicker #picker1 class="InputField"></mat-datepicker>
-          <input [matDatepicker]="myDatepicker1" placeholder="Date">
-          <!-- [(ngModel)]=selectedCalls.date -->
-          <mat-datepicker-toggle matSuffix [for]="myDatepicker1"></mat-datepicker-toggle>
-          <mat-datepicker #myDatepicker1></mat-datepicker>
-        </div>
-        <div class='dragitem'>Email</div>
-        <div class='dragitem'>Pushnotification</div>
-        <div class='dragitem'>Intagram</div>
-      </div>
-
-    </mat-expansion-panel>
-    <mat-expansion-panel (opened)="getPublications()">
-      <mat-expansion-panel-header>
-        <mat-panel-title>
-          Publications
-        </mat-panel-title>
-      </mat-expansion-panel-header>
-      <div class='dragcontainer1'>
-        <div *ngFor="let Publications of Publications" (click)="onSelect(Publications)">
-          <div class='dragitem'>{{Publications.title}}</div>
-        </div>
-      </div>
-    </mat-expansion-panel>
-    <mat-expansion-panel>
-      <mat-expansion-panel-header>
-        <mat-panel-title>
-          (Social) Messages
-        </mat-panel-title>
-
-      </mat-expansion-panel-header>
-      <div class='dragitem'>Instagram</div>
-    </mat-expansion-panel>
-    <mat-expansion-panel>
-      <mat-expansion-panel-header>
-        <mat-panel-title>
-          Promotions
-        </mat-panel-title>
-      </mat-expansion-panel-header>
-      <div class='dragitem'>Adwords</div>
-    </mat-expansion-panel>
-  </mat-accordion>
+<div class="addtobutton">
+  <button mat-fab color="primary" matTooltip="Upload to or create Multiple Lists" (click)="createMailing()">
+    <mat-icon>add</mat-icon>
+  </button>
 </div>
 
-<div *ngFor="let Marketingplannerevents of Marketingplannerevents" 
- class='dragcontainer' [class.selected]="Marketingplannerevents === selectedmarketingplannerevents">
+<div fxLayout="row">
 
-  <div (click)="onSelectMarketingPlannerEvent(Marketingplannerevents)" on-focusout="saveEvent()">
-    {{Marketingplannerevents.type}} {{Marketingplannerevents.date | date: 'dd/MM/yyyy'}}
-
+  <div fxFlex="20%" class="toolsmenu">
     <mat-accordion>
-      <mat-expansion-panel hideToggle="true">
+      <mat-expansion-panel>
         <mat-expansion-panel-header>
-          Set Date
+          <mat-panel-title>
+            Select Relation
+          </mat-panel-title>
         </mat-expansion-panel-header>
-        <!-- <div class="dragcontainertitle"> -->
-        <!-- </div> -->
-        <div *ngIf="selectedmarketingplannerevent">
-          <mat-form-field>
-            <input matInput [(ngModel)]=selectedmarketingplannerevent.time placeholder="Time" class="InputField" type="time">
+        <form class="example-form">
+          <mat-form-field class="example-full-width">
+            <input type="text" placeholder="Select Relation" aria-label="Assignee" [(ngModel)]=option matInput
+              [formControl]="myControl" [matAutocomplete]="auto">
+            <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+              <mat-option *ngFor="let option of filteredOptions | async" [value]="option"
+              (blur)="onSelectRelation(option, i)">
+                {{ option.relationname }}
+                
+              </mat-option>
+            </mat-autocomplete>
           </mat-form-field>
-          <mat-datepicker #picker2 class="InputField"></mat-datepicker>
-          <input [matDatepicker]="myDatepicker2" placeholder="Date" [(ngModel)]=selectedmarketingplannerevent.date>
-          <mat-datepicker-toggle matSuffix [for]="myDatepicker2"></mat-datepicker-toggle>
-          <mat-datepicker #myDatepicker2></mat-datepicker>
+
+        </form>
+      </mat-expansion-panel>
+
+      <mat-expansion-panel (opened)="getMarketingPlanner()" (closed)="panelOpenState = false">
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            Campagins
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+
+        <div>
+          <ul class="Relations">
+            <div *ngFor="let Marketingplanner of Marketingplanner" (click)="onSelectMarketingPlanner(Marketingplanner)"
+              [class.selected]="Marketingplanner === selectedmarketingplanner">
+              <span class="box">{{Marketingplanner.campaignname}} {{Marketingplanner.publicationdate}}</span>
+            </div>
+          </ul>
+        </div>
+
+        <button mat-mini-fab color="primary" class="mat-fab-toolsmenu" (click)="newPlanner()">
+          <mat-icon>add</mat-icon>
+        </button>
+
+
+      </mat-expansion-panel>
+      <mat-expansion-panel>
+
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            Tools
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        <div class='dragcontainer1'>
+          <div class="dragcontainertitle">
+            <mat-datepicker #picker1 class="InputField"></mat-datepicker>
+            <input [matDatepicker]="myDatepicker1" placeholder="Date">
+            <!-- [(ngModel)]=selectedCalls.date -->
+            <mat-datepicker-toggle matSuffix [for]="myDatepicker1"></mat-datepicker-toggle>
+            <mat-datepicker #myDatepicker1></mat-datepicker>
+          </div>
+          <div class='dragitem'>Email</div>
+          <div class='dragitem'>Pushnotification</div>
+          <div class='dragitem'>Intagram</div>
+        </div>
+
+      </mat-expansion-panel>
+      <mat-expansion-panel (opened)="getPublications()">
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            Publications
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        <div class='dragcontainer1'>
+          <div *ngFor="let Publications of Publications" (click)="onSelect(Publications)">
+            <div class='dragitem'>{{Publications.title}}</div>
+          </div>
         </div>
       </mat-expansion-panel>
-      <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            (Social) Messages
+          </mat-panel-title>
+
+        </mat-expansion-panel-header>
+        <div class='dragitem'>Instagram</div>
+      </mat-expansion-panel>
+      <mat-expansion-panel>
         <mat-expansion-panel-header>
           <mat-panel-title>
             Promotions
           </mat-panel-title>
         </mat-expansion-panel-header>
-        test
-        <!-- <div class='dragitem'>Adwords</div> -->
-      </mat-expansion-panel>
-      <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
-        <mat-expansion-panel-header>
-          <mat-panel-title>
-            Channels
-          </mat-panel-title>
-        </mat-expansion-panel-header>
-        test
-        <div class='dragcontainer1'>
-          
-        </div>
+        <div class='dragitem'>Adwords</div>
       </mat-expansion-panel>
     </mat-accordion>
-
   </div>
+
+  <div class="row text-center">
+    <div class="col-md-4">
+      <div class="btn-group">
+        <div
+          class="btn btn-primary"
+          mwlCalendarPreviousView
+          [view]="view"
+          [(viewDate)]="viewDate"
+          (viewDateChange)="closeOpenMonthViewDay()"
+        >
+          Previous
+        </div>
+        <div
+          class="btn btn-outline-secondary"
+          mwlCalendarToday
+          [(viewDate)]="viewDate"
+        >
+          Today
+        </div>
+        <div
+          class="btn btn-primary"
+          mwlCalendarNextView
+          [view]="view"
+          [(viewDate)]="viewDate"
+          (viewDateChange)="closeOpenMonthViewDay()"
+        >
+          Next
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <h3>{{ viewDate | calendarDate:(view + 'ViewTitle'):'en' }}</h3>
+    </div>
+    <div class="col-md-4">
+      <div class="btn-group">
+        <div
+          class="btn btn-primary"
+          (click)="setView(CalendarView.Month)"
+          [class.active]="view === CalendarView.Month"
+        >
+          Month
+        </div>
+        <div
+          class="btn btn-primary"
+          (click)="setView(CalendarView.Week)"
+          [class.active]="view === CalendarView.Week"
+        >
+          Week
+        </div>
+        <div
+          class="btn btn-primary"
+          (click)="setView(CalendarView.Day)"
+          [class.active]="view === CalendarView.Day"
+        >
+          Day
+        </div>
+      </div>
+    </div>
+  </div>
+  <br />
+  <div fxFlex="80%" [ngSwitch]="view">
+    <mwl-calendar-month-view *ngSwitchCase="'month'" [viewDate]="viewDate" [events]="events"
+      [activeDayIsOpen]="activeDayIsOpen" (dayClicked)="dayClicked($event.day)"
+      (eventClicked)="eventClicked($event.event)">
+    </mwl-calendar-month-view>
+    <mwl-calendar-week-view *ngSwitchCase="'week'" [viewDate]="viewDate" [events]="events"
+      (eventClicked)="eventClicked($event.event)">
+    </mwl-calendar-week-view>
+    <mwl-calendar-day-view *ngSwitchCase="'day'" [viewDate]="viewDate" [events]="events"
+      (eventClicked)="eventClicked($event.event)">
+    </mwl-calendar-day-view>
+  </div>
+
 </div>
-
-
-
-<button mat-mini-fab color="primary" class="mat-fab" (click)="newEvent()">
-  <mat-icon>add</mat-icon>
-</button>

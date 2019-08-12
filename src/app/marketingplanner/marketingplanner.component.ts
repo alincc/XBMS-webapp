@@ -10,6 +10,8 @@ import {
   AccountApi,
   Company,
   CompanyApi,
+  Mailing,
+  MailingApi,
   Marketingplanner,
   MarketingplannerApi,
   Marketingplannerevents,
@@ -21,12 +23,35 @@ import { DialogsService } from './../dialogsservice/dialogs.service';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { FormControl } from '@angular/forms';
 import { Router, ActivatedRoute, Params } from '@angular/router';
-import {map, startWith} from "rxjs/operators";
+import { map, startWith } from "rxjs/operators";
+import { CalendarEvent } from 'angular-calendar';
+import {
+  isSameMonth,
+  isSameDay,
+  startOfMonth,
+  endOfMonth,
+  startOfWeek,
+  endOfWeek,
+  startOfDay,
+  endOfDay,
+  format
+} from 'date-fns';
+import { green } from 'ansi-colors';
+import { ColorFormats } from 'ngx-color-picker/dist/lib/formats';
+import { ColorPickerService } from 'ngx-color-picker';
+import { setHours, setMinutes } from 'date-fns';
+import {
+  CalendarEvent,
+  CalendarEventAction,
+  CalendarEventTimesChangedEvent,
+  CalendarView
+} from 'angular-calendar';
+
 
 @Component({
   selector: 'app-marketingplanner',
   templateUrl: './marketingplanner.component.html',
-  styleUrls: ['./marketingplanner.component.scss', "./dragula.css",]
+  styleUrls: ['./marketingplanner.component.scss']
 })
 export class MarketingplannerComponent implements OnInit {
 
@@ -50,6 +75,29 @@ export class MarketingplannerComponent implements OnInit {
   public time: string;
   public date: string;
   public convertdate: string;
+  //public events: CalendarEvent[] = [];
+
+  events: CalendarEvent[] = [
+    {
+      title: 'No event end date',
+      start: setHours(setMinutes(new Date(), 0), 3),
+      //color: colors.blue
+    },
+    {
+      title: 'No event end date',
+      start: setHours(setMinutes(new Date(), 0), 5),
+      //color: colors.yellow
+    }
+  ];
+
+  // events: Observable<CalendarEvent[]>;
+
+  filteredOptions: Observable<string[]>;
+  events$: Observable<Array<CalendarEvent<{ mailing: Mailing }>>>;
+  view: string = 'month';
+  viewDate: Date = new Date();
+  activeDayIsOpen: boolean = false;
+
   
   constructor(
     public router: Router,
@@ -66,21 +114,21 @@ export class MarketingplannerComponent implements OnInit {
   }
 
 
-  filteredOptions: Observable<string[]>;
+  
 
   myControl: FormControl = new FormControl();
 
   ngOnInit() {
-    if (this.AccountApi.isAuthenticated() == false ){this.router.navigate(['login'])}
+    if (this.AccountApi.isAuthenticated() == false) { this.router.navigate(['login']) }
     this.filteredOptions = this.myControl.valueChanges
-    .pipe(
-      startWith(''),
-      //map(options => options && typeof options === 'object' ? options.relationname : options),
-      map(relationname => relationname ? this.filter(relationname) : this.options.slice())
-    )
-
+      .pipe(
+        startWith(''),
+        //map(options => options && typeof options === 'object' ? options.relationname : options),
+        map(relationname => relationname ? this.filter(relationname) : this.options.slice())
+      )
   }
 
+  
 
 
   getCurrentUserInfo(): void {
@@ -97,6 +145,55 @@ export class MarketingplannerComponent implements OnInit {
     }
   }
 
+ 
+  onSelectRelation(option, i): void {
+    this.RelationsApi.getMarketingplannerevents(this.Account.standardrelation,
+      {
+        where: { scheduled: true },
+        include: {
+          relation: 'mailing',
+          scope:
+            { where: { and: [{ send: false }, { scheduled: true }] } }
+        },
+        order: 'date ASC'
+      })
+      .subscribe((Marketingplannerevents: Marketingplannerevents[]) => {
+        this.Marketingplannerevents = Marketingplannerevents,
+          this.Marketingplannerevents.forEach((item) => {
+            const mailingsub = item.mailing;
+            mailingsub.forEach((mailing) => {
+              this.events.push({
+                title: mailing.title,
+                start: new Date(
+                  mailing.date 
+                ),
+                color: {
+                  primary: '#1e90ff',
+                  secondary: '#D1E8FF'
+                },
+                allDay: false,
+                meta: {
+                  mailing
+                }
+              });
+              this.events = Array.from(this.events);
+            })
+          })
+
+      });
+
+  }
+
+
+  eventClicked($event){
+    console.log(this.events);
+  }
+
+  dayClicked($event){
+    console.log(this.events);
+  }
+
+
   filter(relationname: string) {
     return this.options.filter(option =>
       option.relationname.toLowerCase().indexOf(relationname.toLowerCase()) === 0);
@@ -108,29 +205,31 @@ export class MarketingplannerComponent implements OnInit {
 
   getMarketingPlanner(): void {
     this.RelationsApi.getMarketingplanner(this.option.id)
-    .subscribe((Marketingplanner: Marketingplanner[]) => {this.Marketingplanner = Marketingplanner});
+      .subscribe((Marketingplanner: Marketingplanner[]) => { this.Marketingplanner = Marketingplanner });
   }
 
   getMarketingPlannerEvents(): void {
     this.MarketingplannerApi.getMarketingplannerevents(this.selectedmarketingplanner.id)
-    .subscribe((Marketingplannerevents: Marketingplannerevents[]) => this.Marketingplannerevents = Marketingplannerevents);
+      .subscribe((Marketingplannerevents: Marketingplannerevents[]) => this.Marketingplannerevents = Marketingplannerevents);
   } //sort by date? 
 
   getChannels(): void {
     this.RelationsApi.getChannels(this.option.id)
-    .subscribe((Channels: Channels[]) => this.Channels = Channels);
+      .subscribe((Channels: Channels[]) => this.Channels = Channels);
   }
 
   newPlanner(): void {
-    this.RelationsApi.createMarketingplanner(this.option.id, 
-      {campaignname: "new Campaign", publicationdate: new Date(), owner: this.Account.id, 
-      companyId: this.Account.companyId})
-      .subscribe(res => {this.selectedmarketingplanner = res});
+    this.RelationsApi.createMarketingplanner(this.option.id,
+      {
+        campaignname: "new Campaign", publicationdate: new Date(), owner: this.Account.id,
+        companyId: this.Account.companyId
+      })
+      .subscribe(res => { this.selectedmarketingplanner = res });
   } //2017-12-15T13:22:36.206Z
 
   newEvent(): void {
     this.MarketingplannerApi.createMarketingplannerevents(this.selectedmarketingplanner.id)
-    .subscribe();
+      .subscribe();
   }
 
   onSelectMarketingPlanner(Marketingplanner: Marketingplanner): void {
@@ -146,11 +245,11 @@ export class MarketingplannerComponent implements OnInit {
   saveEvent(): void {
     this.date = this.selectedmarketingplannerevent.date.toISOString();
     this.time = this.selectedmarketingplannerevent.time;
-    this.convertdate = this.date.substring(0,11) + this.time + ":00.000Z";
+    this.convertdate = this.date.substring(0, 11) + this.time + ":00.000Z";
     this.selectedmarketingplannerevent.date = new Date(this.convertdate);
     this.MarketingplannerApi.updateByIdMarketingplannerevents(this.selectedmarketingplanner.id, this.selectedmarketingplannerevent.id, this.selectedmarketingplannerevent)
-    .subscribe();
-  } 
+      .subscribe();
+  }
 
   getPublications(): void {
     this.RelationsApi.getPublications(this.option.id, {
@@ -159,7 +258,21 @@ export class MarketingplannerComponent implements OnInit {
     })
       .subscribe((Publications: Publications[]) => this.Publications = Publications);
   }
+
+  deleteEvent(eventToDelete: CalendarEvent) {
+    this.events = this.events.filter(event => event !== eventToDelete);
+  }
+
+  setView(view: CalendarView) {
+    this.view = view;
+  }
+
+  closeOpenMonthViewDay() {
+    this.activeDayIsOpen = false;
+  }
+
   
+
 
 
 

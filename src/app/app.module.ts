@@ -81,6 +81,8 @@ import { VgOverlayPlayModule } from 'videogular2/compiled/overlay-play';
 import { VgBufferingModule } from 'videogular2/compiled/buffering';
 import {MatBottomSheetModule} from '@angular/material/bottom-sheet';
 import { HammerGestureConfig, HAMMER_GESTURE_CONFIG } from '@angular/platform-browser';
+import { CalendarModule, DateAdapter } from 'angular-calendar';
+import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
 
 //disable pinch and rotate to scroll swip check the hammerjs doc for future fix
 export class CustomHammerConfig extends HammerGestureConfig  {
@@ -161,6 +163,10 @@ export class CustomHammerConfig extends HammerGestureConfig  {
     FormsModule, ReactiveFormsModule, HttpClientModule, MatGridListModule, MatSlideToggleModule,
     MatDatepickerModule, MatExpansionModule, MatButtonToggleModule, MatChipsModule, MatBadgeModule,
     ModalGalleryModule.forRoot(),
+    CalendarModule.forRoot({
+      provide: DateAdapter,
+      useFactory: adapterFactory
+    }),
     AgmCoreModule.forRoot({
       apiKey: 'AIzaSyA0RsiG74QFKTDJZQ1Cl6kso_iOqnAYjV8',
       libraries: ["places"]
