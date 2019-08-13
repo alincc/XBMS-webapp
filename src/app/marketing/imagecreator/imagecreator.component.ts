@@ -8,6 +8,9 @@ import { NgModule, HostListener } from '@angular/core';
 import { MatSnackBar, MatSnackBarConfig, MatInput, MatAutocompleteSelectedEvent } from '@angular/material';
 import { ChartDataSets, ChartOptions } from 'chart.js';
 import { Color, BaseChartDirective, Label } from 'ng2-charts';
+import { Array } from 'core-js';
+import { ViewChild, ElementRef } from '@angular/core';
+import { FileUploader } from 'ng2-file-upload';
 //import * as pluginAnnotations from 'chartjs-plugin-annotation';
 
 export class image {
@@ -55,13 +58,22 @@ export class text {
   setpos: object;
 }
 
+
 export class chart {
   charttype: string;
+  finalurl: string;
   label: Label[] = [];
-  data: ChartDataSets[] = [];
+  data: ChartDataSets[];
   //options: 
-  colors:
-  legend:
+  colors: Color[] = [
+    { // grey
+      backgroundColor: '#232222',
+      borderColor: '#232222',
+      pointBackgroundColor: '#232222',
+      pointBorderColor: '#fff'
+    }
+  ]
+  legend: true;
   type: 'chart';
   style: {
     'z-index': number,
@@ -83,21 +95,22 @@ export class chart {
 
 
 export class ImagecreatorComponent implements OnInit {
-
+  @ViewChild('myCanvas', { static: false }) myCanvas: ElementRef;
   @Input() Account: Account = new Account();
   @Input() SelectedRelation: Relations;
   @Input() option: Relations = new Relations();
   @Input() company: Company = new Company;
 
+  uploader: FileUploader;
   public images = [];
   public changenow = true;
   public shiftX = 0;
   public shiftY = 0;
   public aspectRatio = true;
-  public imagename= 'New Image';
+  public imagename = 'New Image';
   public editableimage: Files;
   public editableimages: Files[];
-
+  public context: CanvasRenderingContext2D;
   public canvas = {
     width: '600px',
     height: '1000px',
@@ -107,7 +120,7 @@ export class ImagecreatorComponent implements OnInit {
   public moveitem = false;
   public selectedImage: image;
   public showemoji = false;
-  public newz= 1;
+  public newz = 1;
 
   inBounds = true;
   edge = {
@@ -124,32 +137,66 @@ export class ImagecreatorComponent implements OnInit {
     public snackBar: MatSnackBar,
   ) { }
 
-  ngOnInit(){}
+  ngOnInit() { }
 
 
   getEditFile() {
-    this.relationsApi.getFiles(this.option.id, {where:{template: true}})
-      .subscribe((files: Files[]) => {this.editableimages = files;
+    this.relationsApi.getFiles(this.option.id, { where: { template: true } })
+      .subscribe((files: Files[]) => {
+        this.editableimages = files;
         console.log('received files', this.editableimages);
       });
   }
 
   detectchange(): void {
     console.log('run check');
-     this.images.forEach(img => {
-       if (img.posx > 0){
-        img.setpos = {'x':img.posx, 'y':img.posy};
+    this.images.forEach(img => {
+      if (img.posx > 0) {
+        img.setpos = { 'x': img.posx, 'y': img.posy };
         //  img.style.transform = 'translate('+ img.posx + ' px, '+ img.posy + 'px)';
-       }
+        if (img.type === 'chart') {
+          //img.data = Array.from(img.data);
+        }
+      }
 
-     })
-     console.log(this.images)
-     this.changenow = false;
-     setTimeout(() => this.changenow = true);
+    })
+    console.log(this.images)
+    this.changenow = false;
+    setTimeout(() => this.changenow = true);
+  }
+
+  addcell(i, i1, i2): void {
+    this.images[i].data[i1].data.push(0);
+  }
+
+  addLabel(i, i1): void {
+    this.images[i].label.push("new label");
+  }
+
+  addgraph(i, i1): void {
+    this.images[i].data.push([0, 0, 0]);
+    this.images[i].colors.push(
+      { // grey
+        backgroundColor: '#232222',
+        borderColor: '#232222',
+        pointBackgroundColor: '#232222',
+        pointBorderColor: '#fff'
+      }
+    )
+  }
+
+  detectchangeChart(i, i1, i2, cell): void {
+    this.images[i].data[i1].data[i2] = cell;
+    this.detectchange();
+  }
+
+  detectchangeLabel(i, i1, label): void {
+    this.images[i].label[i1] = label;
+    this.detectchange();
   }
 
   addNewImage(): void {
-    this.newz= this.newz +1;  
+    this.newz = this.newz + 1;
     let img: image = {
       type: 'image',
       style: {
@@ -162,13 +209,13 @@ export class ImagecreatorComponent implements OnInit {
       src: '',
       posx: 50,
       posy: 50,
-      setpos: {'x':50, 'y':50}
+      setpos: { 'x': 50, 'y': 50 }
     }
     this.images.push(img);
   }
 
   addNewShape(): void {
-    this.newz= this.newz +1;  
+    this.newz = this.newz + 1;
     let img: shape = {
       type: 'shape',
       style: {
@@ -182,13 +229,13 @@ export class ImagecreatorComponent implements OnInit {
       src: '',
       posx: 50,
       posy: 50,
-      setpos: {'x':50, 'y':50}
+      setpos: { 'x': 50, 'y': 50 }
     }
     this.images.push(img);
   }
 
   addNewText(): void {
-    this.newz= this.newz +1;  
+    this.newz = this.newz + 1;
     let txt: text = {
       type: 'text',
       style: {
@@ -203,32 +250,40 @@ export class ImagecreatorComponent implements OnInit {
       content: 'write here',
       posx: 20,
       posy: 50,
-      setpos: {'x':20, 'y':50}
+      setpos: { 'x': 20, 'y': 50 }
     }
     this.images.push(txt);
   }
 
-  
+
 
   addNewChart(): void {
-    this.newz = this.newz +1;  
+    this.newz = this.newz + 1;
+    let colorset: Color[] = [
+      { // grey
+        backgroundColor: '#232222',
+        borderColor: '#232222',
+        pointBackgroundColor: '#232222',
+        pointBorderColor: '#fff'
+      },
+      { // grey
+        backgroundColor: '#232222',
+        borderColor: '#232222',
+        pointBackgroundColor: '#232222',
+        pointBorderColor: '#fff'
+      }
+    ]
     let chart: chart = {
-      charttype: 'lineChartType',
-      label: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+      finalurl: '',
+      charttype: 'line',
+      label: ['January', 'February', 'March'],
       data: [
-        { data: [65, 59, 80, 81, 56, 55, 40], label: 'Series A' },
-        { data: [28, 48, 40, 19, 86, 27, 90], label: 'Series B' }
+        { data: [65, 59, 40], label: 'Series A' },
+        { data: [28, 27, 90], label: 'Series B' }
       ],
       //options: 
-      colors:     { // grey
-        backgroundColor: 'rgba(148,159,177,0.2)',
-        borderColor: 'rgba(148,159,177,1)',
-        pointBackgroundColor: 'rgba(148,159,177,1)',
-        pointBorderColor: '#fff',
-        pointHoverBackgroundColor: '#fff',
-        pointHoverBorderColor: 'rgba(148,159,177,0.8)'
-      },
-      legend: ''
+      colors: colorset,
+      legend: true,
       type: 'chart',
       style: {
         'z-index': this.newz,
@@ -238,15 +293,16 @@ export class ImagecreatorComponent implements OnInit {
       },
       posx: 20,
       posy: 50,
-      setpos: {'x':20, 'y':50}
+      setpos: { 'x': 20, 'y': 50 }
     }
-
+    this.images.push(chart);
+    console.log(chart);
   }
 
   setImage(event, i): void {
     setTimeout(() => {
       this.images[i].src = event;
-    //else new file not uploaded yet  
+      //else new file not uploaded yet  
     }, 500);
   }
 
@@ -255,27 +311,77 @@ export class ImagecreatorComponent implements OnInit {
     this.images[i].posx = event.x;
   }
 
-  onResizing(e, i){
+  onResizing(e, i) {
     this.images[i].style.width = e.size.width + 'px';
-    this.images[i].style.height = e.size.height + 'px'; 
+    this.images[i].style.height = e.size.height + 'px';
   }
 
-  OnSaveImage(){
-    this.filesApi.createimage(this.option.id, this.Account.companyId, this.imagename, this.canvas, this.images)
-    .subscribe(res => {
-      console.log(res);
-      this.snackBar.open(res, undefined, {
-        duration: 2000,
-        panelClass: 'snackbar-class'
-      });
+  OnSaveImage() {
+    this.images.forEach((img, index) => {
+      if (img.type === 'chart') {
+        let idn = "graph" + index;
+        let canvas = <HTMLCanvasElement>document.getElementById(idn);
+        //let ctx = canvas.getContext("2d");
+        canvas.toBlob(function (blob1) {
+          let image = blob1;
+       
+        console.log(image);
+        let name = Math.random().toString(36).substring(7) + '.png';
+        // set upload url
+        let urluse = BASE_URL + '/api/Containers/' + this.option.id + '/upload';
+        this.uploader.setOptions({ url: urluse });
+        let blob: Blob = new Blob([image]);
+        let fileFromBlob: File = new File(blob, name);
+        let date: number = new Date().getTime();
+
+        // contents must be an array of strings, each representing a line in the new file
+        let file = new File(fileFromBlob, name, { type: "image/png", lastModified: date });
+        let fileItem = new FileItem(this.uploader, file, {});
+
+        // (Visual Only) adds the new fileItem to the upload queue
+        this.uploader.queue.push(fileItem);
+        this.uploader.uploadAll()
+
+        // set download url or actual url for publishing
+        let imgurl = BASE_URL + '/api/Containers/' + this.option.id + '/download/' + name
+        imgurl = imgurl.replace(/ /g, '-'),
+          // imgurl = encodeURI(imgurl);
+          // define the file settings
+          this.newFiles.name = name,
+          this.newFiles.url = imgurl,
+          this.newFiles.createdate = new Date(),
+          this.newFiles.type = 'marketing',
+          this.newFiles.companyId = this.account.companyId,
+          // check if container exists and create
+          this.ContainerApi.findById(this.option.id)
+            .subscribe(res => this.uploadFile(),
+              error =>
+                this.ContainerApi.createContainer({ name: this.option.id })
+                  .subscribe(res => this.uploadFile()));
+
+        this.relationsApi.createFiles(this.option.id, this.newFiles)
+          .subscribe(res => {
+            console.log(res), this.setimage(res.url)
+            // this.imgurl.emit(res.url)
+          });
+        }, 'image/png', 1);
+      }
     })
+    this.filesApi.createimage(this.option.id, this.Account.companyId, this.imagename, this.canvas, this.images)
+      .subscribe(res => {
+        console.log(res);
+        this.snackBar.open(res, undefined, {
+          duration: 2000,
+          panelClass: 'snackbar-class'
+        });
+      })
   }
 
-  deleteitem(i){
+  deleteitem(i) {
     this.images.splice(i, 1);
   }
 
-  drop(e){
+  drop(e) {
     console.log(e);
 
     this.swapElement(this.images, e.currentIndex, e.previousIndex);
@@ -299,7 +405,7 @@ export class ImagecreatorComponent implements OnInit {
     // console.log(bufStr);
     this.images[i].content = this.images[i].content + bufStr;
     this.onshowemoji(i)
-    
+
   }
 
   onshowemoji(i) {
@@ -308,7 +414,7 @@ export class ImagecreatorComponent implements OnInit {
     }
   }
 
-  loadEditableImage(){
+  loadEditableImage() {
     this.images = this.editableimage.template;
     this.canvas = this.editableimage.canvas;
     this.detectchange();
