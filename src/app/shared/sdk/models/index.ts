@@ -34,5 +34,6 @@ export * from './Ipcheckermodel';
 export * from './Ipcheckermodelarin';
 export * from './Ipcheckergeolocation';
 export * from './Logger';
+export * from './Crawlweb';
 export * from './BaseModels';
 export * from './FireLoopRef';

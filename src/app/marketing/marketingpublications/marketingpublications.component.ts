@@ -30,6 +30,7 @@ import {
   Adwords,
   AdwordsApi,
   timezones,
+  CrawlwebApi
 } from '../../shared/';
 import { DialogsService } from './../../dialogsservice/dialogs.service';
 import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material';
@@ -58,6 +59,7 @@ export class MarketingpublicationsComponent implements OnInit {
 
 
   constructor(
+    public crawlwebapi: CrawlwebApi,
     public PublicationsApi: PublicationsApi,
     public RelationsApi: RelationsApi,
     public dialogsService: DialogsService,
@@ -169,7 +171,10 @@ export class MarketingpublicationsComponent implements OnInit {
     //  this.error = res});
   }
 
-
+  createDynaContent(): void {
+    this.crawlwebapi.crawlurl()
+    .subscribe()
+  }
 
 
 }

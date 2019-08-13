@@ -35,6 +35,9 @@ export interface PublicationsInterface {
   "futuredimages"?: any;
   "keywords"?: string;
   "futuredsocialmedia"?: any;
+  "videoname"?: string;
+  "videourl"?: string;
+  "location"?: string;
   "id"?: any;
   "marketingplannerId"?: any;
   relations?: Relations;
@@ -71,6 +74,9 @@ export class Publications implements PublicationsInterface {
   "futuredimages": any;
   "keywords": string;
   "futuredsocialmedia": any;
+  "videoname": string;
+  "videourl": string;
+  "location": string;
   "id": any;
   "marketingplannerId": any;
   relations: Relations;
@@ -205,6 +211,18 @@ export class Publications implements PublicationsInterface {
         "futuredsocialmedia": {
           name: 'futuredsocialmedia',
           type: 'any'
+        },
+        "videoname": {
+          name: 'videoname',
+          type: 'string'
+        },
+        "videourl": {
+          name: 'videourl',
+          type: 'string'
+        },
+        "location": {
+          name: 'location',
+          type: 'string'
         },
         "id": {
           name: 'id',

@@ -925,7 +925,7 @@ export class RelationComponent implements OnInit {
         this.Files.forEach((file, index) => {
           // console.log(file, index);
           let ext = file.name.split('.').pop();
-          console.log(ext, file);
+          // console.log(ext, file);
           if (ext === "gif" || ext === "jpeg" || ext === "jpg" || ext === "bmp" || ext === "png") {
             this.imagelist.push(file);
           }

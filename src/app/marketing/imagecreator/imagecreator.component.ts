@@ -6,7 +6,9 @@ import {
 } from '../../shared';
 import { NgModule, HostListener } from '@angular/core';
 import { MatSnackBar, MatSnackBarConfig, MatInput, MatAutocompleteSelectedEvent } from '@angular/material';
-
+import { ChartDataSets, ChartOptions } from 'chart.js';
+import { Color, BaseChartDirective, Label } from 'ng2-charts';
+//import * as pluginAnnotations from 'chartjs-plugin-annotation';
 
 export class image {
   type: 'image';
@@ -53,6 +55,25 @@ export class text {
   setpos: object;
 }
 
+export class chart {
+  charttype: string;
+  label: Label[] = [];
+  data: ChartDataSets[] = [];
+  //options: 
+  colors:
+  legend:
+  type: 'chart';
+  style: {
+    'z-index': number,
+    width: string;
+    height: string;
+    position: 'absolute';
+  }
+  posx: number;
+  posy: number;
+  setpos: object;
+}
+
 @Component({
   selector: 'app-imagecreator',
   templateUrl: './imagecreator.component.html',
@@ -62,11 +83,6 @@ export class text {
 
 
 export class ImagecreatorComponent implements OnInit {
-  // @HostListener('document:mousemove', ['$event'])
-  // @HostListener('click', ['$event.target'])
-  // @HostListener('mousedown', ['$event'])
-  // @HostListener('mouseup', ['$event'])
-
 
   @Input() Account: Account = new Account();
   @Input() SelectedRelation: Relations;
@@ -190,6 +206,41 @@ export class ImagecreatorComponent implements OnInit {
       setpos: {'x':20, 'y':50}
     }
     this.images.push(txt);
+  }
+
+  
+
+  addNewChart(): void {
+    this.newz = this.newz +1;  
+    let chart: chart = {
+      charttype: 'lineChartType',
+      label: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+      data: [
+        { data: [65, 59, 80, 81, 56, 55, 40], label: 'Series A' },
+        { data: [28, 48, 40, 19, 86, 27, 90], label: 'Series B' }
+      ],
+      //options: 
+      colors:     { // grey
+        backgroundColor: 'rgba(148,159,177,0.2)',
+        borderColor: 'rgba(148,159,177,1)',
+        pointBackgroundColor: 'rgba(148,159,177,1)',
+        pointBorderColor: '#fff',
+        pointHoverBackgroundColor: '#fff',
+        pointHoverBorderColor: 'rgba(148,159,177,0.8)'
+      },
+      legend: ''
+      type: 'chart',
+      style: {
+        'z-index': this.newz,
+        width: '400px',
+        height: '400px',
+        position: 'absolute'
+      },
+      posx: 20,
+      posy: 50,
+      setpos: {'x':20, 'y':50}
+    }
+
   }
 
   setImage(event, i): void {

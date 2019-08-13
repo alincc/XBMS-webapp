@@ -14,33 +14,33 @@
                 <div fxFlex="20%">
                     <label style="font-size: 8pt">Subject</label>
                 </div> -->
-                <div fxFlex="45%">
+                <div fxFlex="45%" fxLayoutAlign="space-around">
                     <label style="font-size: 8pt">Code</label>
                 </div>
-                <div fxFlex="45%">
+                <div fxFlex="45%" fxLayoutAlign="space-around">
                     <label style="font-size: 8pt">Date</label>
                 </div>
-                <div fxFlex="8%">
+                <div fxFlex="10%" fxLayoutAlign="space-around">
                     <label style="font-size: 8pt">Action</label>
                 </div>
             </mat-list-item>
         </div>
         <div fxLayout="row" fxLayout.xs="column" fxLayoutWrap="wrap" fxLayoutAlign="space-around" style="width: 80%"
             *ngFor="let logs of logger; let i = index">
-            <mat-list-item fxFlex>
+            <mat-list-item fxFlex >
                 <!-- <div fxFlex="20%">
                     <label style="font-size: 8pt">{{ logs.user }}</label>
                 </div>
                 <div fxFlex="20%">
                     <label style="font-size: 8pt">{{ logs.relation }}</label>
                 </div> -->
-                <div fxFlex="45%">
+                <div fxFlex="45%" fxLayoutAlign="space-around">
                     <label style="font-size: 8pt">{{logs.code | slice: 0:50}}</label>
                 </div>
-                <div fxFlex="45%">
+                <div fxFlex="45%" fxLayoutAlign="space-around">
                     <label style="font-size: 8pt">{{logs.date | date: "medium"}}</label>
                 </div>
-                <div fxFlex="8%"  fxLayoutAlign="space-around">
+                <div fxFlex="10%" fxLayoutAlign="space-around">
                     <mat-icon (click)="deleteLog(i)" matTooltip="Delete message">delete</mat-icon>
                     <mat-icon (click)="markRead(i)" matTooltip="Mark seen">done</mat-icon>
                 </div>

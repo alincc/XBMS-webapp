@@ -34,5 +34,6 @@ export * from './Ipcheckermodel';
 export * from './Ipcheckermodelarin';
 export * from './Ipcheckergeolocation';
 export * from './Logger';
+export * from './Crawlweb';
 export * from './SDKModels';
 export * from './logger.service';

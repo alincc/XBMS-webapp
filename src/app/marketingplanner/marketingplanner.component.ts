@@ -41,11 +41,11 @@ import { ColorFormats } from 'ngx-color-picker/dist/lib/formats';
 import { ColorPickerService } from 'ngx-color-picker';
 import { setHours, setMinutes } from 'date-fns';
 import {
-  CalendarEvent,
   CalendarEventAction,
   CalendarEventTimesChangedEvent,
   CalendarView
 } from 'angular-calendar';
+
 
 
 @Component({
@@ -54,6 +54,30 @@ import {
   styleUrls: ['./marketingplanner.component.scss']
 })
 export class MarketingplannerComponent implements OnInit {
+
+
+  view: CalendarView = CalendarView.Month;
+  CalendarView = CalendarView;
+  viewDate: Date = new Date();
+
+  actions: CalendarEventAction[] = [
+    {
+      label: '<i class="fa fa-fw fa-pencil"></i>',
+      onClick: ({ event }: { event: CalendarEvent }): void => {
+        this.handleEvent('Edited', event);
+      }
+    },
+    {
+      label: '<i class="fa fa-fw fa-times"></i>',
+      onClick: ({ event }: { event: CalendarEvent }): void => {
+        this.events = this.events.filter(iEvent => iEvent !== event);
+        this.handleEvent('Deleted', event);
+      }
+    }
+  ];
+
+
+  activeDayIsOpen: boolean = true;
 
   public Channels: Channels[];
   public marketingplan; //create models
@@ -75,28 +99,10 @@ export class MarketingplannerComponent implements OnInit {
   public time: string;
   public date: string;
   public convertdate: string;
-  //public events: CalendarEvent[] = [];
-
-  events: CalendarEvent[] = [
-    {
-      title: 'No event end date',
-      start: setHours(setMinutes(new Date(), 0), 3),
-      //color: colors.blue
-    },
-    {
-      title: 'No event end date',
-      start: setHours(setMinutes(new Date(), 0), 5),
-      //color: colors.yellow
-    }
-  ];
-
-  // events: Observable<CalendarEvent[]>;
-
+  public listviewxsshow = false;
+  events: CalendarEvent[] = [];
   filteredOptions: Observable<string[]>;
   events$: Observable<Array<CalendarEvent<{ mailing: Mailing }>>>;
-  view: string = 'month';
-  viewDate: Date = new Date();
-  activeDayIsOpen: boolean = false;
 
   
   constructor(
@@ -109,12 +115,9 @@ export class MarketingplannerComponent implements OnInit {
     public PublicationsApi: PublicationsApi,
     public MarketingplannerApi: MarketingplannerApi
   ) {
-
     this.getCurrentUserInfo();
   }
 
-
-  
 
   myControl: FormControl = new FormControl();
 
@@ -128,7 +131,22 @@ export class MarketingplannerComponent implements OnInit {
       )
   }
 
-  
+  handleEvent(action: string, event: CalendarEvent): void {
+      this.dialogsService
+        .confirm(event.title, action)
+        .subscribe(res => {
+        });
+  }
+
+  swiperight(e) {
+    console.log(e);
+    this.listviewxsshow = true;
+  }
+
+  swipeleft(e) {
+    console.log(e);
+    this.listviewxsshow = false;
+  }
 
 
   getCurrentUserInfo(): void {
@@ -144,7 +162,6 @@ export class MarketingplannerComponent implements OnInit {
       this.options.push(relation);
     }
   }
-
  
   onSelectRelation(option, i): void {
     this.RelationsApi.getMarketingplannerevents(this.Account.standardrelation,
@@ -162,14 +179,24 @@ export class MarketingplannerComponent implements OnInit {
           this.Marketingplannerevents.forEach((item) => {
             const mailingsub = item.mailing;
             mailingsub.forEach((mailing) => {
+              let mailingliststring: string;
+              mailing.selectedlists.forEach(element => {
+                if (mailingliststring === undefined){
+                  mailingliststring = element.listname
+                } else {
+                  mailingliststring = mailingliststring + ' ' + element.listname
+                }
+                
+              });
+              
               this.events.push({
-                title: mailing.title,
+                title: mailing.title + ', list: ' + mailingliststring,
                 start: new Date(
                   mailing.date 
                 ),
                 color: {
-                  primary: '#1e90ff',
-                  secondary: '#D1E8FF'
+                  primary: '#23549d',
+                  secondary: '#ffffff'
                 },
                 allDay: false,
                 meta: {
@@ -189,14 +216,24 @@ export class MarketingplannerComponent implements OnInit {
     console.log(this.events);
   }
 
-  dayClicked($event){
-    console.log(this.events);
+  dayClicked({ date, events }: { date: Date; events: CalendarEvent[] }): void {
+    if (isSameMonth(date, this.viewDate)) {
+      if (
+        (isSameDay(this.viewDate, date) && this.activeDayIsOpen === true) ||
+        events.length === 0
+      ) {
+        this.activeDayIsOpen = false;
+      } else {
+        this.activeDayIsOpen = true;
+      }
+      this.viewDate = date;
+    }
   }
 
 
   filter(relationname: string) {
     return this.options.filter(option =>
-      option.relationname.toLowerCase().indexOf(relationname.toLowerCase()) === 0);
+      option.relationname.indexOf(relationname.toLowerCase()) === 0);
   }
 
   displayFn(options): string {
@@ -270,10 +307,6 @@ export class MarketingplannerComponent implements OnInit {
   closeOpenMonthViewDay() {
     this.activeDayIsOpen = false;
   }
-
-  
-
-
 
 
 }

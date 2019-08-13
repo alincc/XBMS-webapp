@@ -207,13 +207,22 @@
                       <mat-icon>text_fields</mat-icon> Static Content
                     </mat-panel-title>
                   </mat-expansion-panel-header>
-                  <mat-form-field class="form-full-width">
-                    <textarea matInput class="content-form" #content [(ngModel)]="selectedPublications.content"
+
+                  <!--  <mat-form-field class="form-full-width"> <textarea matInput class="content-form" #content [(ngModel)]="selectedPublications.content"
                       placeholder="content">Content</textarea>
                     <mat-hint align="end">{{
                                   content.value.length
-                                }}</mat-hint>
-                  </mat-form-field>
+                                }}</mat-hint> </mat-form-field>-->
+                  <ckeditor #content [(ngModel)]="selectedPublications.content" [config]="{
+                                  extraPlugins: 'emoji,font,spacingsliders,colorbutton,colordialog',
+                                  colorButton_enableMore: 'true',
+                                  toolbarCanCollapse: 'true',
+                                  width: '100%',
+                                  font_names: 'Arial/Arial, Helvetica, sans-serif;Comic Sans MS/Comic Sans MS, cursive;Courier New/Courier New, Courier, monospace;Georgia/Georgia, serif;Lucida Sans Unicode/Lucida Sans Unicode, Lucida Grande, sans-serif;Tahoma/Tahoma, Geneva, sans-serif;Times New Roman/Times New Roman, Times, serif;Trebuchet MS/Trebuchet MS, Helvetica, sans-serif;Verdana/Verdana, Geneva, sans-serif;Roboto/Roboto;Baloo Bhai/Baloo Bhai;Open Sans/Open Sans;',
+                                  contentsCss: 'https://fonts.googleapis.com/css?family=Baloo+Bhai&display=swap, https://fonts.googleapis.com/css?family=Open+Sans&display=swap',
+                                  toolbarStartupExpanded: 'false'}" (fileUploadResponse)="onRequestCkEvent($event)">
+                  </ckeditor>
+
                 </mat-expansion-panel>
                 <br>
                 <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
@@ -222,7 +231,20 @@
                       <mat-icon>forum</mat-icon> Dynamic Content
                     </mat-panel-title>
                   </mat-expansion-panel-header>
-                  set parameters for content creation
+                  Set parameters for sharing dynamic content
+                  <mat-form-field class="form-full-width">
+                    <input matInput [(ngModel)]="selectedPublications.keywords" placeholder="Keywords"
+                      class="InputField" />
+                  </mat-form-field>
+                  The article should be: <br>
+                  <mat-checkbox>Positive</mat-checkbox><br>
+                  <mat-checkbox>Negative</mat-checkbox><br>
+                  <mat-checkbox>Informative</mat-checkbox><br>
+                  <mat-form-field class="form-full-width">
+                      <input matInput [(ngModel)]="selectedPublications.location" placeholder="Location (optional)"
+                        class="InputField" />
+                    </mat-form-field>
+                  <<button mat-button (click)="createDynaContent()">Run</button>
                 </mat-expansion-panel>
                 <br>
                 <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
@@ -232,16 +254,35 @@
                     </mat-panel-title>
                   </mat-expansion-panel-header>
 
-
-                  <div *ngIf="selectedPublications.pictureurl">
-                    <img src="{{ selectedPublications.pictureurl }}" class="picture" />
-                    <button class="deletepicture" mat-mini-fab color="primary" (click)="deletePicture()">
-                      <mat-icon>delete</mat-icon>
-                    </button>
+                  <div>
+                    <div *ngIf="selectedPublications.pictureurl">
+                      <img src="{{ selectedPublications.pictureurl }}" class="picture" />
+                      <button class="deletepicture" mat-mini-fab color="primary" (click)="deletePicture()">
+                        <mat-icon (click)="selectedPublications.pictureurl = ''" >delete</mat-icon>
+                      </button>
+                    </div>
+                    <app-fileupload *ngIf="!selectedPublications.pictureurl" [account]="Account" [option]="option"
+                      (imgurl)="onSelectImage($event)">
+                    </app-fileupload>
                   </div>
-                  <app-fileupload *ngIf="!selectedPublications.pictureurl" [account]="Account" [option]="option"
-                    (imgurl)="onSelectImage($event)">
-                  </app-fileupload>
+
+                  <div>
+                    <div *ngIf="selectedPublications.videourl && !selectedPublications.pictureurl"
+                      style="max-width: 600px;">
+                      <vg-player style="max-width: 600px;">
+                        <video [vgMedia]="media" #media id="singleVideo" preload="auto" controls
+                          style="max-width: 600px;">
+                          <source [src]="selectedPublications.videourl" type="video/mp4">
+                        </video>
+                      </vg-player>
+                      <mat-icon (click)="selectedPublications.videourl = ''" class="icon-label" class="iconsize-12">
+                        delete</mat-icon>
+                    </div>
+                    <app-videoupload *ngIf="!selectedPublications.videourl && !selectedPublications.pictureurl"
+                      [account]="Account" [option]="option" (imgurl)="setVideo($event)">
+                    </app-videoupload>
+                  </div>
+
 
                 </mat-expansion-panel>
                 <br>

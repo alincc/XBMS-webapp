@@ -1,12 +1,14 @@
 <div class="addtobutton">
-  <button mat-fab color="primary" matTooltip="Upload to or create Multiple Lists" (click)="createMailing()">
+  <button mat-fab color="primary" matTooltip="Add event" (click)="newPlanner()">
     <mat-icon>add</mat-icon>
   </button>
 </div>
 
-<div fxLayout="row">
+<div fxLayout="row" (swipeleft)="swipeleft($event)" (swiperight)="swiperight($event)" class="mat-typography">
 
-  <div fxFlex="20%" class="toolsmenu">
+  <div fxFlex="20%" class="toolsmenu" ngClass.gt-xs="listview-normal" ngClass.lt-sm="listview-noshow"
+    [class.listview-xs-show]="listviewxsshow" ngClass.gt-xs="container-normal" ngClass.lt-sm="container-noshow"
+    [class.container-xs-show]="listviewxsshow">
     <mat-accordion>
       <mat-expansion-panel>
         <mat-expansion-panel-header>
@@ -20,9 +22,9 @@
               [formControl]="myControl" [matAutocomplete]="auto">
             <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
               <mat-option *ngFor="let option of filteredOptions | async" [value]="option"
-              (blur)="onSelectRelation(option, i)">
+                (blur)="onSelectRelation(option, i)">
                 {{ option.relationname }}
-                
+
               </mat-option>
             </mat-autocomplete>
           </mat-form-field>
@@ -105,77 +107,53 @@
     </mat-accordion>
   </div>
 
-  <div class="row text-center">
-    <div class="col-md-4">
-      <div class="btn-group">
-        <div
-          class="btn btn-primary"
-          mwlCalendarPreviousView
-          [view]="view"
-          [(viewDate)]="viewDate"
-          (viewDateChange)="closeOpenMonthViewDay()"
-        >
-          Previous
+  <div fxFlex="80%" flexLayout="column" ngClass.gt-xs="listview-normal" ngClass.lt-sm="listview-noshow"
+    [class.listview-xs-show]="listviewxsshow" ngClass.gt-xs="container-normal" ngClass.lt-sm="container-noshow"
+    [class.container-xs-show]="listviewxsshow">
+
+    <div>
+      <h2>{{ viewDate | calendarDate:(view + 'ViewTitle'):'en' }}</h2>
+    </div>
+    <div>
+      <div fxLayout="row">
+        <div (click)="setView(CalendarView.Month)" [class.active]="view === CalendarView.Month">
+          Month 
         </div>
-        <div
-          class="btn btn-outline-secondary"
-          mwlCalendarToday
-          [(viewDate)]="viewDate"
-        >
-          Today
+        <div (click)="setView(CalendarView.Week)" [class.active]="view === CalendarView.Week">
+          /Week 
         </div>
-        <div
-          class="btn btn-primary"
-          mwlCalendarNextView
-          [view]="view"
-          [(viewDate)]="viewDate"
-          (viewDateChange)="closeOpenMonthViewDay()"
-        >
-          Next
+        <div (click)="setView(CalendarView.Day)" [class.active]="view === CalendarView.Day">
+          /Day
         </div>
       </div>
     </div>
-    <div class="col-md-4">
-      <h3>{{ viewDate | calendarDate:(view + 'ViewTitle'):'en' }}</h3>
-    </div>
-    <div class="col-md-4">
-      <div class="btn-group">
-        <div
-          class="btn btn-primary"
-          (click)="setView(CalendarView.Month)"
-          [class.active]="view === CalendarView.Month"
-        >
-          Month
+    <div>
+      <div fxLayout="row" fxLayoutAlign="space-around center">
+        <div mwlCalendarPreviousView [view]="view" [(viewDate)]="viewDate" (viewDateChange)="closeOpenMonthViewDay()">
+            <mat-icon>navigate_before</mat-icon>
         </div>
-        <div
-          class="btn btn-primary"
-          (click)="setView(CalendarView.Week)"
-          [class.active]="view === CalendarView.Week"
-        >
-          Week
+        <div mwlCalendarToday [(viewDate)]="viewDate">
+          <mat-icon>today</mat-icon>
         </div>
-        <div
-          class="btn btn-primary"
-          (click)="setView(CalendarView.Day)"
-          [class.active]="view === CalendarView.Day"
-        >
-          Day
+        <div mwlCalendarNextView [view]="view" [(viewDate)]="viewDate" (viewDateChange)="closeOpenMonthViewDay()">
+            <mat-icon>navigate_next</mat-icon>
         </div>
       </div>
     </div>
-  </div>
-  <br />
-  <div fxFlex="80%" [ngSwitch]="view">
-    <mwl-calendar-month-view *ngSwitchCase="'month'" [viewDate]="viewDate" [events]="events"
-      [activeDayIsOpen]="activeDayIsOpen" (dayClicked)="dayClicked($event.day)"
-      (eventClicked)="eventClicked($event.event)">
-    </mwl-calendar-month-view>
-    <mwl-calendar-week-view *ngSwitchCase="'week'" [viewDate]="viewDate" [events]="events"
-      (eventClicked)="eventClicked($event.event)">
-    </mwl-calendar-week-view>
-    <mwl-calendar-day-view *ngSwitchCase="'day'" [viewDate]="viewDate" [events]="events"
-      (eventClicked)="eventClicked($event.event)">
-    </mwl-calendar-day-view>
+
+    <br/>
+    <div [ngSwitch]="view">
+      <mwl-calendar-month-view *ngSwitchCase="'month'" [viewDate]="viewDate" [events]="events"
+        [activeDayIsOpen]="activeDayIsOpen" (dayClicked)="dayClicked($event.day)"
+        (eventClicked)="eventClicked($event.event)">
+      </mwl-calendar-month-view>
+      <mwl-calendar-week-view *ngSwitchCase="'week'" [viewDate]="viewDate" [events]="events"
+        (eventClicked)="eventClicked($event.event)">
+      </mwl-calendar-week-view>
+      <mwl-calendar-day-view *ngSwitchCase="'day'" [viewDate]="viewDate" [events]="events"
+        (eventClicked)="eventClicked($event.event)">
+      </mwl-calendar-day-view>
+    </div>
   </div>
 
 </div>

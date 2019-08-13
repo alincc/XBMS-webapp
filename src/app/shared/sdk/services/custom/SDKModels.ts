@@ -35,6 +35,7 @@ import { Ipcheckermodel } from '../../models/Ipcheckermodel';
 import { Ipcheckermodelarin } from '../../models/Ipcheckermodelarin';
 import { Ipcheckergeolocation } from '../../models/Ipcheckergeolocation';
 import { Logger } from '../../models/Logger';
+import { Crawlweb } from '../../models/Crawlweb';
 
 export interface Models { [name: string]: any }
 
@@ -77,6 +78,7 @@ export class SDKModels {
     Ipcheckermodelarin: Ipcheckermodelarin,
     Ipcheckergeolocation: Ipcheckergeolocation,
     Logger: Logger,
+    Crawlweb: Crawlweb,
     
   };
 

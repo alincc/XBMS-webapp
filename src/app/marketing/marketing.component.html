@@ -5,8 +5,7 @@
         <div class="selectrelation" fxFlex fxShow.xs="false">
           <mat-form-field>
               <input type="text" placeholder="Select Relation" aria-label="relation" matInput
-              (keyup)="searchGoQuick($event.srcElement.value)" [matAutocomplete]="relations"
-              [formControl]="myControlRelations">
+              (keyup)="searchGoQuick($event.srcElement.value)" [matAutocomplete]="relations">
                <mat-autocomplete #relations="matAutocomplete" 
                [displayWith]="displayFnRelation"> 
                 <mat-option *ngFor="let option of filteredRelations; let i = index" 

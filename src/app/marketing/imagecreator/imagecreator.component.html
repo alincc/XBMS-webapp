@@ -263,6 +263,23 @@
                     [preventDefaultEvent]="true" [position]="image.setpos" (rzResizing)="onResizing($event, i)"
                     ngResizable rzContainment="#myBounds" [rzAspectRatio]="false">
                 </div>
+                <canvas *ngIf="image.type === 'chart'" style="overflow: hidden;" ngDraggable [bounds]="myBounds"
+                [inBounds]="inBounds" 
+                [style.height]="image.style.height" (movingOffset)="onMoving($event, i)"
+                [preventDefaultEvent]="true" [position]="image.setpos" (rzResizing)="onResizing($event, i)"
+                ngResizable rzContainment="#myBounds" [rzAspectRatio]="false"
+                [ngStyle]="image.style"
+                baseChart 
+                width="image.style.width" 
+                height="image.style.height"
+                [datasets]="image.data"
+                [labels]="image.label"
+                [options]="image.options"
+                [colors]="image.colors"
+                [legend]="image.legend"
+                [chartType]="image.charttype"
+                [plugins]="lineChartPlugins">
+            </canvas>
             </div>
         </div>
     </div>

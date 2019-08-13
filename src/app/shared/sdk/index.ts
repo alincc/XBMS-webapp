@@ -83,6 +83,7 @@ import { IpcheckermodelApi } from './services/custom/Ipcheckermodel';
 import { IpcheckermodelarinApi } from './services/custom/Ipcheckermodelarin';
 import { IpcheckergeolocationApi } from './services/custom/Ipcheckergeolocation';
 import { LoggerApi } from './services/custom/Logger';
+import { CrawlwebApi } from './services/custom/Crawlweb';
 /**
 * @module SDKBrowserModule
 * @description
@@ -148,6 +149,7 @@ export class SDKBrowserModule {
         IpcheckermodelarinApi,
         IpcheckergeolocationApi,
         LoggerApi,
+        CrawlwebApi,
         internalStorageProvider,
         { provide: SDKStorage, useClass: StorageBrowser },
         { provide: SocketDriver, useClass: SocketBrowser }
