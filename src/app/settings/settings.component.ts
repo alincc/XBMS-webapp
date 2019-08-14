@@ -23,7 +23,9 @@ import {
   EmailhandlerApi,
   Mailinglist,
   MailinglistApi,
-  ContainersecureApi
+  ContainersecureApi,
+  MailingApi,
+  Mailing
 } from '../shared/';
 import { NgClass, NgStyle } from '@angular/common';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
@@ -82,7 +84,8 @@ export class SettingsComponent implements OnInit {
   public bufferValue;
   public passwordsuccess = false;
   public toggleedituser = false;
-
+  public currentdomain: string;
+  public domainresponse: string; 
 
   public selectedCall: Unsortedcalls;
   public callindex: any;
@@ -129,6 +132,7 @@ export class SettingsComponent implements OnInit {
   public fontlist: string[] = fontoptions;
 
   constructor(
+    public mailingApi: MailingApi,
     public dialog: MatDialog,
     public zone: NgZone,
     public snackBar: MatSnackBar,
@@ -242,7 +246,7 @@ export class SettingsComponent implements OnInit {
   getAdminAccountsoverview(): void {
     if (this.Account.companyadmin === true) {
       this.CompanyApi.findById(this.Account.companyId).subscribe((company: Company) =>
-      {this.Company = company})
+      {this.Company = company, this.currentdomain = company.companywebsite})
       this.CompanyApi.getTeam(this.Account.companyId, { where: { accountId: { nlike: this.Account.id } } })
         .subscribe((Team: Team[]) => {
           this.Team = Team,     this.getRelations();
@@ -504,6 +508,23 @@ export class SettingsComponent implements OnInit {
   saveCompany(): void {
     this.CompanyApi.patchAttributes(this.Company.id, this.Company)
     .subscribe(res => this.openSnackBar("Changes saved"));
+    this.deleteDomain();
+    this.setDomain()
+  }
+
+  deleteDomain(){
+    this.mailingApi.deletedomain(this.Company.id, this.currentdomain)
+    .subscribe(res => console.log(res));
+  }
+
+  setDomain(): void {
+    this.mailingApi.setdomain(this.Company.id, this.Company.companywebsite)
+    .subscribe(res => console.log(res));
+  }
+
+  checkDomainSettings(): void {
+    this.mailingApi.getdomaininfo(this.Company.id, this.Company.companywebsite)
+    .subscribe(res => {this.domainresponse = res.sending_dns_records[1].value, console.log(res)});
   }
 
   billingCompanyCopy(): void {

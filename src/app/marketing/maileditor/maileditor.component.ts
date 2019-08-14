@@ -711,7 +711,7 @@ export class MaileditorComponent implements OnInit {
     let columnStyle = this.columnStyleArray;
     let sendobject = { templArray, sectionStyle, columnStyle };
 
-    this.mailingApi.mjml(this.option.id, sendobject).subscribe((data) => {
+    this.mailingApi.mjml(this.option.companyId, this.option.id, sendobject).subscribe((data) => {
       this.showprogressbar = false;
       // console.log(data.html);
       const previewstring = '<div style="width: 600px; height: 500px;>"' + data.html + '</div>';

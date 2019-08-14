@@ -172,7 +172,7 @@ export class ImagecreatorComponent implements OnInit {
   }
 
   addgraph(i, i1): void {
-    this.images[i].data.push([0, 0, 0]);
+    this.images[i].data.push({data: [0, 0, 0], labels: 'new label'});
     this.images[i].colors.push(
       { // grey
         backgroundColor: '#232222',
@@ -183,13 +183,41 @@ export class ImagecreatorComponent implements OnInit {
     )
   }
 
-  detectchangeChart(i, i1, i2, cell): void {
+  deletegraph(i): void {
+    let del = this.images[i].data.length - 1;
+    this.images[i].data.splice(del, 1);
+    this.detectchange();
+  }
+
+  detectchangerowcell(i, i1, i2, cell): void {
     this.images[i].data[i1].data[i2] = cell;
+    this.detectchange();
+  }
+
+  detectchangerowlabel(i, i1, labelnew): void {
+    this.images[i].data[i1].label = labelnew;
     this.detectchange();
   }
 
   detectchangeLabel(i, i1, label): void {
     this.images[i].label[i1] = label;
+    this.detectchange();
+  }
+
+  detectchangetype(i, type): void{
+    this.images[i].charttype = type;
+    this.detectchange();
+  }
+
+  deletelabel(i, i1){
+    let del = this.images[i].label.length -1;
+    this.images[i].label.splice(del, 1);
+    this.detectchange();
+  }
+
+  deletecell(i, i1){
+    let del = this.images[i].data[i1].data.length -1;
+    this.images[i].data[i1].data.splice(del, 1);
     this.detectchange();
   }
 

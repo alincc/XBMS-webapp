@@ -459,39 +459,7 @@ export class MailingApi extends BaseLoopBackApi {
          * (The remote method definition does not provide any description.)
          * </em>
    *
-   * @param {string} tag 
-   *
-   * @param {object} data Request data.
-   *
-   * This method expects a subset of model properties as request parameters.
-   *
-   * @returns {object} An empty reference that will be
-   *   populated with the actual data once the response is returned
-   *   from the server.
-   *
-   * <em>
-   * (The remote method definition does not provide any description.
-   * This usually means the response is a `Mailing` object.)
-   * </em>
-   */
-  public sendmail(data: any = {}, tag: any = {}, customHeaders?: Function): Observable<any> {
-    let _method: string = "POST";
-    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/mailings/send";
-    let _routeParams: any = {};
-    let _postBody: any = {
-      data: data
-    };
-    let _urlParams: any = {};
-    if (typeof tag !== 'undefined' && tag !== null) _urlParams.tag = tag;
-    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-    return result;
-  }
-
-  /**
-   * <em>
-         * (The remote method definition does not provide any description.)
-         * </em>
+   * @param {string} id 
    *
    * @param {string} tag 
    *
@@ -508,11 +476,13 @@ export class MailingApi extends BaseLoopBackApi {
    * This usually means the response is a `Mailing` object.)
    * </em>
    */
-  public sendmailing(data: any = {}, tag: any = {}, customHeaders?: Function): Observable<any> {
+  public sendmail(id: any = {}, data: any = {}, tag: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "POST";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/mailings/sendmailing";
-    let _routeParams: any = {};
+    "/mailings/send/:id";
+    let _routeParams: any = {
+      id: id
+    };
     let _postBody: any = {
       data: data
     };
@@ -526,6 +496,46 @@ export class MailingApi extends BaseLoopBackApi {
    * <em>
          * (The remote method definition does not provide any description.)
          * </em>
+   *
+   * @param {string} id 
+   *
+   * @param {string} tag 
+   *
+   * @param {object} data Request data.
+   *
+   * This method expects a subset of model properties as request parameters.
+   *
+   * @returns {object} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * <em>
+   * (The remote method definition does not provide any description.
+   * This usually means the response is a `Mailing` object.)
+   * </em>
+   */
+  public sendmailing(id: any = {}, data: any = {}, tag: any = {}, customHeaders?: Function): Observable<any> {
+    let _method: string = "POST";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/mailings/sendmailing/:id";
+    let _routeParams: any = {
+      id: id
+    };
+    let _postBody: any = {
+      data: data
+    };
+    let _urlParams: any = {};
+    if (typeof tag !== 'undefined' && tag !== null) _urlParams.tag = tag;
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
+   * <em>
+         * (The remote method definition does not provide any description.)
+         * </em>
+   *
+   * @param {string} id 
    *
    * @param {object} data Request data.
    *
@@ -539,11 +549,13 @@ export class MailingApi extends BaseLoopBackApi {
    *
    *  - `res` – `{object}` - 
    */
-  public getstats(data: any = {}, customHeaders?: Function): Observable<any> {
+  public getstats(id: any = {}, data: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "POST";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/mailings/getstats";
-    let _routeParams: any = {};
+    "/mailings/getstats/:id";
+    let _routeParams: any = {
+      id: id
+    };
     let _postBody: any = {};
     let _urlParams: any = {};
     if (typeof data !== 'undefined' && data !== null) _urlParams.data = data;
@@ -557,6 +569,8 @@ export class MailingApi extends BaseLoopBackApi {
          * </em>
    *
    * @param {string} id 
+   *
+   * @param {string} relationId 
    *
    * @param {string} templatename 
    *
@@ -573,7 +587,7 @@ export class MailingApi extends BaseLoopBackApi {
    * This usually means the response is a `Mailing` object.)
    * </em>
    */
-  public mjml(id: any = {}, mailtemplateArray: any = {}, templatename: any = {}, customHeaders?: Function): Observable<any> {
+  public mjml(id: any = {}, relationId: any = {}, mailtemplateArray: any = {}, templatename: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "POST";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
     "/mailings/mjml/:id";
@@ -584,7 +598,104 @@ export class MailingApi extends BaseLoopBackApi {
       mailtemplateArray: mailtemplateArray
     };
     let _urlParams: any = {};
+    if (typeof relationId !== 'undefined' && relationId !== null) _urlParams.relationId = relationId;
     if (typeof templatename !== 'undefined' && templatename !== null) _urlParams.templatename = templatename;
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
+   * <em>
+         * (The remote method definition does not provide any description.)
+         * </em>
+   *
+   * @param {string} id 
+   *
+   * @param {string} domain 
+   *
+   * @returns {object} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * <em>
+   * (The remote method definition does not provide any description.
+   * This usually means the response is a `Mailing` object.)
+   * </em>
+   */
+  public setdomain(id: any = {}, domain: any = {}, customHeaders?: Function): Observable<any> {
+    let _method: string = "GET";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/mailings/setdomain/:id";
+    let _routeParams: any = {
+      id: id
+    };
+    let _postBody: any = {};
+    let _urlParams: any = {};
+    if (typeof domain !== 'undefined' && domain !== null) _urlParams.domain = domain;
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
+   * <em>
+         * (The remote method definition does not provide any description.)
+         * </em>
+   *
+   * @param {string} id 
+   *
+   * @param {string} domain 
+   *
+   * @returns {object} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * <em>
+   * (The remote method definition does not provide any description.
+   * This usually means the response is a `Mailing` object.)
+   * </em>
+   */
+  public getdomaininfo(id: any = {}, domain: any = {}, customHeaders?: Function): Observable<any> {
+    let _method: string = "GET";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/mailings/getdomaininfo/:id";
+    let _routeParams: any = {
+      id: id
+    };
+    let _postBody: any = {};
+    let _urlParams: any = {};
+    if (typeof domain !== 'undefined' && domain !== null) _urlParams.domain = domain;
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
+   * <em>
+         * (The remote method definition does not provide any description.)
+         * </em>
+   *
+   * @param {string} id 
+   *
+   * @param {string} domain 
+   *
+   * @returns {object} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * <em>
+   * (The remote method definition does not provide any description.
+   * This usually means the response is a `Mailing` object.)
+   * </em>
+   */
+  public deletedomain(id: any = {}, domain: any = {}, customHeaders?: Function): Observable<any> {
+    let _method: string = "GET";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/mailings/deletedomain/:id";
+    let _routeParams: any = {
+      id: id
+    };
+    let _postBody: any = {};
+    let _urlParams: any = {};
+    if (typeof domain !== 'undefined' && domain !== null) _urlParams.domain = domain;
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
     return result;
   }

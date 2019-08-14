@@ -921,6 +921,9 @@ export class RelationComponent implements OnInit {
     this.RelationsApi.getFiles(this.selectedRelation.id)
       .subscribe((Files: Files[]) => {
       this.Files = Files,
+        this.imagelist = [];
+        this.videolist = [];
+        this.misclist = [];
 
         this.Files.forEach((file, index) => {
           // console.log(file, index);
@@ -1219,7 +1222,7 @@ export class RelationComponent implements OnInit {
       bcc: this.bcc,
       cc: this.cc
     };
-    this.MailingApi.sendmail(message).subscribe(res => {
+    this.MailingApi.sendmail(this.Account.companyId, message).subscribe(res => {
       console.log(res);
       let attendent = this.emailtosendto.firstname + ' ' + this.emailtosendto.lastname;
       let attenobj = { "attendent": attendent };

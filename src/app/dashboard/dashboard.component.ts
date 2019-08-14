@@ -724,7 +724,7 @@ export class DashboardComponent implements OnInit {
     if (this.mailStatsTimeSelected == undefined) {
       data = '7d';
     } else { data = this.mailStatsTimeSelected.value }
-    this.MailingApi.getstats(data).subscribe(res => {
+    this.MailingApi.getstats(this.Account.companyId, data).subscribe(res => {
       this.mailingstats = res.res,
         // console.log('mailingstats:', this.mailingstats)
 

@@ -913,7 +913,7 @@ export class MarketingComponent implements OnInit {
     } else { this.selectedMailing.to = mailtolist.join() };
 
     this.selectedMailing.text = this.onChangeHtml(this.selectedMailing.html),
-      this.MailingApi.sendmailing(this.selectedMailing, this.selectedMailing.id)
+      this.MailingApi.sendmailing(this.option.companyId, this.selectedMailing, this.selectedMailing.id)
         .subscribe(res => {
           this.response = res,
             this.selectedMailing.send = true;
