@@ -2,7 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { FileuploadComponent } from '../../shared/fileupload/fileupload.component';
 import {
   Relations, RelationsApi, BASE_URL, CompanyApi, Company, Account,
-  Files, FilesApi
+  Files, FilesApi, ContainerApi
 } from '../../shared';
 import { NgModule, HostListener } from '@angular/core';
 import { MatSnackBar, MatSnackBarConfig, MatInput, MatAutocompleteSelectedEvent } from '@angular/material';
@@ -10,7 +10,7 @@ import { ChartDataSets, ChartOptions } from 'chart.js';
 import { Color, BaseChartDirective, Label } from 'ng2-charts';
 import { Array } from 'core-js';
 import { ViewChild, ElementRef } from '@angular/core';
-import { FileUploader } from 'ng2-file-upload';
+import { FileUploader, FileItem } from 'ng2-file-upload';
 //import * as pluginAnnotations from 'chartjs-plugin-annotation';
 
 export class image {
@@ -61,7 +61,7 @@ export class text {
 
 export class chart {
   charttype: string;
-  finalurl: string;
+  src: string;
   label: Label[] = [];
   data: ChartDataSets[];
   //options: 
@@ -101,7 +101,8 @@ export class ImagecreatorComponent implements OnInit {
   @Input() option: Relations = new Relations();
   @Input() company: Company = new Company;
 
-  uploader: FileUploader;
+  public uploader: FileUploader;
+  public newFiles: Files = new Files();
   public images = [];
   public changenow = true;
   public shiftX = 0;
@@ -154,9 +155,6 @@ export class ImagecreatorComponent implements OnInit {
       if (img.posx > 0) {
         img.setpos = { 'x': img.posx, 'y': img.posy };
         //  img.style.transform = 'translate('+ img.posx + ' px, '+ img.posy + 'px)';
-        if (img.type === 'chart') {
-          //img.data = Array.from(img.data);
-        }
       }
 
     })
@@ -261,20 +259,20 @@ export class ImagecreatorComponent implements OnInit {
     this.newz = this.newz + 1;
     let colorset: Color[] = [
       { // grey
-        backgroundColor: '#232222',
+        backgroundColor: '',
         borderColor: '#232222',
         pointBackgroundColor: '#232222',
         pointBorderColor: '#fff'
       },
       { // grey
-        backgroundColor: '#232222',
+        backgroundColor: '',
         borderColor: '#232222',
         pointBackgroundColor: '#232222',
         pointBorderColor: '#fff'
       }
     ]
     let chart: chart = {
-      finalurl: '',
+      src: '',
       charttype: 'line',
       label: ['January', 'February', 'March'],
       data: [
@@ -317,65 +315,70 @@ export class ImagecreatorComponent implements OnInit {
   }
 
   OnSaveImage() {
+
+    let urluse = BASE_URL + '/api/Containers/' + this.option.id + '/upload';
+    
+    // this.uploader.setOptions({ url: urluse });
+    this.uploader = new FileUploader({ url: urluse });
+    let i = 0;
     this.images.forEach((img, index) => {
       if (img.type === 'chart') {
         let idn = "graph" + index;
         let canvas = <HTMLCanvasElement>document.getElementById(idn);
-        //let ctx = canvas.getContext("2d");
-        canvas.toBlob(function (blob1) {
+        canvas.toBlob((blob1) => {
           let image = blob1;
-       
-        console.log(image);
-        let name = Math.random().toString(36).substring(7) + '.png';
-        // set upload url
-        let urluse = BASE_URL + '/api/Containers/' + this.option.id + '/upload';
-        this.uploader.setOptions({ url: urluse });
-        let blob: Blob = new Blob([image]);
-        let fileFromBlob: File = new File(blob, name);
-        let date: number = new Date().getTime();
+          let name = Math.random().toString(36).substring(7) + '.png';
+          // set upload url
+          let date: number = new Date().getTime();
+          let blob: Blob = new Blob([image]);
+          //let fileFromBlob: File = new File([blob], name);
+          // contents must be an array of strings, each representing a line in the new file
+          let file = new File([blob], name, { type: "image/png", lastModified: date });
+          let fileItem = new FileItem(this.uploader, file, {});
+          this.uploader.queue.push(fileItem);
+          fileItem.upload();
 
-        // contents must be an array of strings, each representing a line in the new file
-        let file = new File(fileFromBlob, name, { type: "image/png", lastModified: date });
-        let fileItem = new FileItem(this.uploader, file, {});
-
-        // (Visual Only) adds the new fileItem to the upload queue
-        this.uploader.queue.push(fileItem);
-        this.uploader.uploadAll()
-
-        // set download url or actual url for publishing
-        let imgurl = BASE_URL + '/api/Containers/' + this.option.id + '/download/' + name
-        imgurl = imgurl.replace(/ /g, '-'),
-          // imgurl = encodeURI(imgurl);
-          // define the file settings
-          this.newFiles.name = name,
-          this.newFiles.url = imgurl,
-          this.newFiles.createdate = new Date(),
-          this.newFiles.type = 'marketing',
-          this.newFiles.companyId = this.account.companyId,
-          // check if container exists and create
-          this.ContainerApi.findById(this.option.id)
-            .subscribe(res => this.uploadFile(),
-              error =>
-                this.ContainerApi.createContainer({ name: this.option.id })
-                  .subscribe(res => this.uploadFile()));
-
-        this.relationsApi.createFiles(this.option.id, this.newFiles)
-          .subscribe(res => {
-            console.log(res), this.setimage(res.url)
-            // this.imgurl.emit(res.url)
-          });
+          // set download url or actual url for publishing
+          let imgurl = BASE_URL + '/api/Containers/' + this.option.id + '/download/' + name;
+          imgurl = imgurl.replace(/ /g, '-'),
+          //img.src = imgurl;
+          this.images[index].src = imgurl;
+            // define the file settings
+            this.newFiles.name = name,
+            this.newFiles.url = imgurl,
+            this.newFiles.createdate = new Date(),
+            this.newFiles.type = 'marketing',
+            this.newFiles.companyId = this.Account.companyId,
+            // check if container exists and create
+            this.relationsApi.createFiles(this.option.id, this.newFiles)
+              .subscribe(res => {
+                ++i; if (i === this.images.length) {this.uploadFinalImages()}
+                console.log(res);
+              });
         }, 'image/png', 1);
+      } else {++i; if (i === this.images.length) {this.uploadFinalImages()} }
+    });
+  }
+
+  uploadFinalImages() {
+    let uploadimages = this.images;
+    uploadimages.forEach((img, index)=> {
+      if (img.type === 'chart'){
+        img.data = undefined;
       }
     })
-    this.filesApi.createimage(this.option.id, this.Account.companyId, this.imagename, this.canvas, this.images)
-      .subscribe(res => {
-        console.log(res);
-        this.snackBar.open(res, undefined, {
-          duration: 2000,
-          panelClass: 'snackbar-class'
-        });
-      })
+    console.log(this.option.id, this.Account.companyId, this.imagename, this.canvas, this.images)
+    this.filesApi.createimage(
+      this.option.id, this.Account.companyId, this.imagename, this.canvas, this.images)
+    .subscribe(res => {
+      console.log(res);
+      this.snackBar.open(res, undefined, {
+        duration: 2000,
+        panelClass: 'snackbar-class'
+      });
+    })
   }
+
 
   deleteitem(i) {
     this.images.splice(i, 1);

@@ -212,51 +212,57 @@
                             </mat-expansion-panel>
                         </mat-accordion>
                     </div>
-                    <mat-accordion>
-                        <mat-expansion-panel style="width: 270px;">
-                            <mat-expansion-panel-header>
-                                <mat-panel-title>
-                                    <mat-icon>show_chart</mat-icon>
-                                    <mat-icon (click)="deleteitem(i)" class="iconsize-12">delete</mat-icon>
-                                </mat-panel-title>
-                            </mat-expansion-panel-header>
-                            <div *ngIf="image.type === 'chart'">
-                                <div *ngFor="let label of image.label; let i1 = index;">
+                    <div *ngIf="image.type === 'chart'">
+                        <mat-accordion>
+                            <mat-expansion-panel style="width: 270px;">
+                                <mat-expansion-panel-header>
+                                    <mat-panel-title>
+                                        <mat-icon>show_chart</mat-icon>
+                                        <mat-icon (click)="deleteitem(i)" class="iconsize-12">delete</mat-icon>
+                                    </mat-panel-title>
+                                </mat-expansion-panel-header>
+                                    <div *ngFor="let label of image.label; let i1 = index;">
                                         <mat-form-field fxflex>
-                                                <input (change)="detectchangeLabel(i, i1, label)" [(ngModel)]="label"
-                                                    type="text" matInput placeholder="label">
-                                            </mat-form-field>  
-                                </div>
-                                    <mat-icon (click)="addLabel(i, i1)">add</mat-icon>
-                                <div *ngFor="let row of image.data; let i1 = index;" fxLayout="row">
-                                    <div *ngFor="let cell of row.data; let i2 = index;" fxFlex fxLayout="row">
-                                        <mat-form-field fxflex style="width: 20px;">
-                                            <input (change)="detectchangeChart(i, i1, i2, cell)" [(ngModel)]="cell"
-                                                type="text" matInput>
+                                            <input (change)="detectchangeLabel(i, i1, label)" [(ngModel)]="label"
+                                                type="text" matInput placeholder="label">
                                         </mat-form-field>
-                                        
                                     </div>
-                                    <mat-icon (click)="addcell(i, i1, i2)">add</mat-icon>
-                                </div>
-                                <div *ngFor="let colors of image.colors" fxLayout="column">
-                                    <input style="width: 230px;" [style.background]="colors.backgroundColor"
-                                        [cpToggle]="true" [cpOutputFormat]="'hex'"
-                                        [(colorPicker)]="colors.backgroundColor" (colorPickerChange)="detectchange()">
-                                    <input style="width: 230px;" [style.background]="colors.borderColor"
-                                        [cpToggle]="true" [cpOutputFormat]="'hex'" [(colorPicker)]="colors.borderColor"
-                                        (colorPickerChange)="detectchange()">
-                                    <input style="width: 230px;" [style.background]="colors.pointBackgroundColor"
-                                        [cpToggle]="true" [cpOutputFormat]="'hex'"
-                                        [(colorPicker)]="colors.pointBackgroundColor"
-                                        (colorPickerChange)="detectchange()">
-                                    <input style="width: 230px;" [style.background]="colors.pointBorderColor"
-                                        [cpToggle]="true" [cpOutputFormat]="'hex'"
-                                        [(colorPicker)]="colors.pointBorderColor" (colorPickerChange)="detectchange()">
-                                </div>
-                                <mat-icon (click)="addgraph(i)">add</mat-icon>
-                            </div>
-                        </mat-expansion-panel>
-                    </mat-accordion>
+                                    <mat-icon (click)="addLabel(i, i1)">add</mat-icon>
+                                    <div *ngFor="let row of image.data; let i1 = index;" fxLayout="row">
+                                        <div *ngFor="let cell of row.data; let i2 = index;" fxFlex fxLayout="row">
+                                            <mat-form-field fxflex style="width: 20px;">
+                                                <input (change)="detectchangeChart(i, i1, i2, cell)" [(ngModel)]="cell"
+                                                    type="text" matInput>
+                                            </mat-form-field>
+
+                                        </div>
+                                        <mat-icon (click)="addcell(i, i1, i2)">add</mat-icon>
+                                    </div>
+                                    <div *ngFor="let colors of image.colors" fxLayout="column">
+                                        <input style="width: 230px;" [style.background]="colors.backgroundColor"
+                                            [cpToggle]="true" [cpOutputFormat]="'hex'"
+                                            [(colorPicker)]="colors.backgroundColor"
+                                            (colorPickerChange)="detectchange()"
+                                            [cpCancelButton]="true"
+                                            [cpPresetLabel]="'Company primairy color'"
+                                            [cpPresetColors]="[company.companyprimairycolor, company.secondairycolor]">
+                                        <input style="width: 230px;" [style.background]="colors.borderColor"
+                                            [cpToggle]="true" [cpOutputFormat]="'hex'"
+                                            [(colorPicker)]="colors.borderColor" (colorPickerChange)="detectchange()">
+                                        <input style="width: 230px;" [style.background]="colors.pointBackgroundColor"
+                                            [cpToggle]="true" [cpOutputFormat]="'hex'"
+                                            [(colorPicker)]="colors.pointBackgroundColor"
+                                            (colorPickerChange)="detectchange()">
+                                        <input style="width: 230px;" [style.background]="colors.pointBorderColor"
+                                            [cpToggle]="true" [cpOutputFormat]="'hex'"
+                                            [(colorPicker)]="colors.pointBorderColor"
+                                            (colorPickerChange)="detectchange()">
+                                    </div>
+                                    <mat-icon (click)="addgraph(i)">add</mat-icon>
+                                
+                            </mat-expansion-panel>
+                        </mat-accordion>
+                    </div>
                 </div>
             </tr>
             <tr>
@@ -316,8 +322,7 @@
 
                     <canvas baseChart width="image.style.width" height="image.style.height" [datasets]="image.data"
                         [labels]="image.label" [colors]="image.colors" [legend]="image.legend"
-                        [chartType]="image.charttype" [plugins]="lineChartPlugins"
-                        [attr.id]="'graph' + i">
+                        [chartType]="image.charttype" [plugins]="lineChartPlugins" [attr.id]="'graph' + i">
                     </canvas>
                 </div>
                 <!-- [options]="image.options" -->
