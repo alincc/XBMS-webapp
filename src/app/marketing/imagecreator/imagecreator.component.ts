@@ -445,7 +445,16 @@ export class ImagecreatorComponent implements OnInit {
           panelClass: 'snackbar-class'
         });
       })
+  }
 
+  resetImage(): void{
+    this.images = [];
+    this.canvas = {
+      width: '600px',
+      height: '1000px',
+      'background-color': '#ffffff',
+      position: 'relative'
+    }
   }
 
 

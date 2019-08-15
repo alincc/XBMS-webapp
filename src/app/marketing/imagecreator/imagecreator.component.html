@@ -25,7 +25,7 @@
             <input (change)="detectchange()" [(ngModel)]="canvas.height" type="text" matInput placeholder="height">
             <label matSuffix>px</label>
         </mat-form-field>
-
+        <button mat-button (click)="resetImage()">reset</button>
         <button mat-button (click)="getEditFile()">get images</button>
         <mat-form-field>
             <mat-label>Edit existing image</mat-label>
