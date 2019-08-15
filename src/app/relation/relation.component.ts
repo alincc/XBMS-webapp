@@ -1245,10 +1245,12 @@ export class RelationComponent implements OnInit {
 
   setDomain(): void {
     if (this.selectedRelation.domain !==  this.currentdomain){
-      this.deleteDomain();
+     // this.deleteDomain();
     }
+    this.saveRelation();
     this.MailingApi.setdomain(this.selectedRelation.companyId, this.selectedRelation.domain)
-    .subscribe(res => console.log(res));
+    .subscribe(res => {
+      console.log(res)});
   }
 
   checkDomainSettings(): void {

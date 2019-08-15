@@ -154,7 +154,7 @@ export class MarketingComponent implements OnInit {
   // public buttonsConfigFull: ButtonsConfig;
   public images: Image[] = [];
   public imagesNew: Image[] = [];
-
+  public listviewxsshow = false;
   public selectedTranslation: Translation;
   public selectedTranslationjob: Translationjob;
   public newTranslation = new Translation();
@@ -921,6 +921,16 @@ export class MarketingComponent implements OnInit {
             this.openSnackBar(this.response.message), this.saveMailing();
         }, err => this.response = err);
   }
+
+  
+  swiperight(e) {
+    this.listviewxsshow = true;
+  }
+
+  swipeleft(e) {
+    this.listviewxsshow = false;
+  }
+
 
   onSelectMailing(mailing: Mailing): void {
     this.selectedItems = [];

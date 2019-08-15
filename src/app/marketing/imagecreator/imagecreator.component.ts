@@ -11,7 +11,9 @@ import { Color, BaseChartDirective, Label } from 'ng2-charts';
 import { Array } from 'core-js';
 import { ViewChild, ElementRef } from '@angular/core';
 import { FileUploader, FileItem } from 'ng2-file-upload';
+import { MediaObserver, MediaChange } from '@angular/flex-layout';
 //import * as pluginAnnotations from 'chartjs-plugin-annotation';
+import {Subscription} from 'rxjs';
 
 export class image {
   type: 'image';
@@ -101,6 +103,8 @@ export class ImagecreatorComponent implements OnInit {
   @Input() option: Relations = new Relations();
   @Input() company: Company = new Company;
 
+  public listviewxsshow = false;
+  public showprogressbar = false;
   public uploader: FileUploader;
   public newFiles: Files = new Files();
   public images = [];
@@ -131,18 +135,26 @@ export class ImagecreatorComponent implements OnInit {
     right: true
   };
 
+  watcher: Subscription;
+  activeMediaQuery;
 
   constructor(
+    public media: MediaObserver,
     private relationsApi: RelationsApi,
     private filesApi: FilesApi,
     public snackBar: MatSnackBar,
-  ) { }
+  ) {
+    this.watcher = media.media$.subscribe((change: MediaChange) => {
+      this.activeMediaQuery = change;
+      console.log(this.activeMediaQuery)
+    });
+  }
 
   ngOnInit() { }
 
 
   getEditFile() {
-    this.relationsApi.getFiles(this.option.id, { where: { template: true } })
+    this.relationsApi.getFiles(this.option.id, { where: { template: { "neq":  null } } })
       .subscribe((files: Files[]) => {
         this.editableimages = files;
         console.log('received files', this.editableimages);
@@ -172,7 +184,7 @@ export class ImagecreatorComponent implements OnInit {
   }
 
   addgraph(i, i1): void {
-    this.images[i].data.push({data: [0, 0, 0], labels: 'new label'});
+    this.images[i].data.push({ data: [0, 0, 0], labels: 'new label' });
     this.images[i].colors.push(
       { // grey
         backgroundColor: '#232222',
@@ -204,19 +216,19 @@ export class ImagecreatorComponent implements OnInit {
     this.detectchange();
   }
 
-  detectchangetype(i, type): void{
+  detectchangetype(i, type): void {
     this.images[i].charttype = type;
     this.detectchange();
   }
 
-  deletelabel(i, i1){
-    let del = this.images[i].label.length -1;
+  deletelabel(i, i1) {
+    let del = this.images[i].label.length - 1;
     this.images[i].label.splice(del, 1);
     this.detectchange();
   }
 
-  deletecell(i, i1){
-    let del = this.images[i].data[i1].data.length -1;
+  deletecell(i, i1) {
+    let del = this.images[i].data[i1].data.length - 1;
     this.images[i].data[i1].data.splice(del, 1);
     this.detectchange();
   }
@@ -343,9 +355,9 @@ export class ImagecreatorComponent implements OnInit {
   }
 
   OnSaveImage() {
-
+    this.showprogressbar = true;
     let urluse = BASE_URL + '/api/Containers/' + this.option.id + '/upload';
-    
+
     // this.uploader.setOptions({ url: urluse });
     this.uploader = new FileUploader({ url: urluse });
     let i = 0;
@@ -366,13 +378,15 @@ export class ImagecreatorComponent implements OnInit {
           this.uploader.queue.push(fileItem);
           fileItem.upload();
 
+
+          this.uploader.onCompleteItem = (item:any, response:any, status:any, headers:any) => {
           // set download url or actual url for publishing
           let imgurl = BASE_URL + '/api/Containers/' + this.option.id + '/download/' + name;
           imgurl = imgurl.replace(/ /g, '-'),
-          //img.src = imgurl;
-          this.images[index].src = imgurl;
-            // define the file settings
-            this.newFiles.name = name,
+            //img.src = imgurl;
+            this.images[index].src = imgurl;
+          // define the file settings
+          this.newFiles.name = name,
             this.newFiles.url = imgurl,
             this.newFiles.createdate = new Date(),
             this.newFiles.type = 'marketing',
@@ -380,31 +394,58 @@ export class ImagecreatorComponent implements OnInit {
             // check if container exists and create
             this.relationsApi.createFiles(this.option.id, this.newFiles)
               .subscribe(res => {
-                ++i; if (i === this.images.length) {this.uploadFinalImages()}
+                ++i; if (i === this.images.length) { this.convertchartdata() }
                 console.log(res);
               });
+        };
+
         }, 'image/png', 1);
-      } else {++i; if (i === this.images.length) {this.uploadFinalImages()} }
+      } else { ++i; if (i === this.images.length) { this.convertchartdata() } }
     });
   }
 
-  uploadFinalImages() {
-    let uploadimages = this.images;
-    uploadimages.forEach((img, index)=> {
-      if (img.type === 'chart'){
-        img.data = undefined;
+  convertchartdata(): void {
+    let i = 0;
+    let imgup = this.images;
+    imgup.forEach((img, index) => {
+      if (img.type === 'chart') {
+        //img.data = undefined;
+        let newdata = [];
+        img.data.forEach(element => {
+          let newdataobj = [];
+          element.data.forEach(nr => {
+            newdataobj.push(nr);
+            console.log(nr)
+          });
+          newdata.push(newdataobj);
+        });
+        img.data = newdata;
+        ++i;
+        if (i === this.images.length){
+          this.uploadFinalImages(imgup) 
+        }
+      } else {
+        ++i;
+        if (i === this.images.length){
+          this.uploadFinalImages(imgup) 
+        }
       }
-    })
-    console.log(this.option.id, this.Account.companyId, this.imagename, this.canvas, this.images)
+    });
+  
+  }
+
+  uploadFinalImages(imgup) {
     this.filesApi.createimage(
-      this.option.id, this.Account.companyId, this.imagename, this.canvas, this.images)
-    .subscribe(res => {
-      console.log(res);
-      this.snackBar.open(res, undefined, {
-        duration: 2000,
-        panelClass: 'snackbar-class'
-      });
-    })
+      this.option.id, this.Account.companyId, this.imagename, this.canvas, imgup)
+      .subscribe(res => {
+        this.showprogressbar = false;
+        // console.log(res);
+        this.snackBar.open(res, undefined, {
+          duration: 2000,
+          panelClass: 'snackbar-class'
+        });
+      })
+
   }
 
 
@@ -446,9 +487,20 @@ export class ImagecreatorComponent implements OnInit {
   }
 
   loadEditableImage() {
+    console.log(this.editableimage.template)
     this.images = this.editableimage.template;
-    this.canvas = this.editableimage.canvas;
+    this.canvas = this.editableimage.canvas[0];
+    console.log(this.images, this.canvas);
     this.detectchange();
+  }
+
+
+  swiperight(e) {
+    this.listviewxsshow = true;
+  }
+
+  swipeleft(e) {
+    this.listviewxsshow = false;
   }
 
 

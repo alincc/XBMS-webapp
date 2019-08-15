@@ -36,7 +36,7 @@
 
       <div class="tabcontainer" fxLayout="row" (swipeleft)="swipeleft($event)" (swiperight)="swiperight($event)">
         <div fxLayout="column" ngClass.gt-xs="listview-normal" ngClass.lt-sm="listview-noshow"
-          [class.listview-xs-show]="listviewxsshow">
+          [class.listview-xs-show]="listviewxsshow" class="card-left-menu">
           <h4>Search</h4>
           <mat-form-field>
             <input matInput [(ngModel)]=searchterm (keyup.enter)="searchGo()" placeholder="Name/Address" />
@@ -269,7 +269,7 @@
       </div>
       <div class="tabcontainer" fxLayout="row" (swipeleft)="swipeleft($event)" (swiperight)="swiperight($event)">
         <div fxLayout="column" ngClass.gt-xs="listview-normal" ngClass.lt-sm="listview-noshow"
-          [class.listview-xs-show]="listviewxsshow">
+          [class.listview-xs-show]="listviewxsshow" class="card-left-menu">
           <h4>Search</h4>
           <mat-form-field>
             <input matInput #searchTerm id="seach-box" (keyup.enter)="searchGo()" placeholder="Call title/content" />
@@ -597,7 +597,7 @@
       </div>
       <div class="tabcontainer" fxLayout="row" (swipeleft)="swipeleft($event)" (swiperight)="swiperight($event)">
         <div fxLayout="column" ngClass.gt-xs="listview-normal" ngClass.lt-sm="listview-noshow"
-          [class.listview-xs-show]="listviewxsshow">
+          [class.listview-xs-show]="listviewxsshow" class="card-left-menu">
           <mat-form-field>
             <input matInput [(ngModel)]=searchterm (keyup.enter)="searchGo()" placeholder="Name/Email" />
           </mat-form-field>
@@ -717,7 +717,7 @@
       <div fxLayout="row" (swipeleft)="swipeleft($event)" (swiperight)="swiperight($event)">
 
         <div fxLayout="column" ngClass.gt-xs="listview-normal" ngClass.lt-sm="listview-noshow"
-          [class.listview-xs-show]="listviewxsshow">
+          [class.listview-xs-show]="listviewxsshow" class="card-left-menu">
           <mat-accordion>
             <mat-expansion-panel>
               <mat-expansion-panel-header>
@@ -1232,12 +1232,13 @@
           </mat-card-header>
           <mat-card-content fxLayout="column">
 
-            <label>setup new domain</label>
+            <label>setup new domain, add your domain and add the DNS variables to your hosting DNS records</label>
             <br>
             <mat-form-field fxFlex class="form-full-width">
               <input matInput [(ngModel)]=selectedRelation.domain placeholder="Domain">
             </mat-form-field>
             <br>
+            <h3>DNS variables</h3>
             <div fxLayout="column" fxLayoutAlign="space-around">
               <div fxLayout="row">
                 <h3 fxFlex>Type</h3>

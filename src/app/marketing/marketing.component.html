@@ -4,17 +4,15 @@
       <mat-card-content>
         <div class="selectrelation" fxFlex fxShow.xs="false">
           <mat-form-field>
-              <input type="text" placeholder="Select Relation" aria-label="relation" matInput
+            <input type="text" placeholder="Select Relation" aria-label="relation" matInput
               (keyup)="searchGoQuick($event.srcElement.value)" [matAutocomplete]="relations">
-               <mat-autocomplete #relations="matAutocomplete" 
-               [displayWith]="displayFnRelation"> 
-                <mat-option *ngFor="let option of filteredRelations; let i = index" 
-                  [value]="option"
-                  (blur)="onSelectRelation(option, i)">
-                  {{ option.relationname }}
-                </mat-option>
-             </mat-autocomplete>
-            </mat-form-field>
+            <mat-autocomplete #relations="matAutocomplete" [displayWith]="displayFnRelation">
+              <mat-option *ngFor="let option of filteredRelations; let i = index" [value]="option"
+                (blur)="onSelectRelation(option, i)">
+                {{ option.relationname }}
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
         </div>
       </mat-card-content>
     </mat-card>
@@ -24,14 +22,14 @@
 
   <mat-tab-group fxLayout="column" fxLayoutWrap="wrap" fxFlexAlign="start" class="relations"
     [selectedIndex]="selectedIndex">
-    <mat-tab fxFlex="100%" label="New Publications"  class="relations">
+    <mat-tab fxFlex="100%" label="New Publications" class="relations">
       <ng-template mat-tab-label class="mat-tab-labels">
         <mat-icon>text_format</mat-icon>
         <div fxShow.xs="false">Publications</div>
       </ng-template>
 
       <app-marketingpublications [Account]="Account" [SelectedRelation]="SelectedRelation" [option]="option">
-        </app-marketingpublications>
+      </app-marketingpublications>
 
 
     </mat-tab>
@@ -47,20 +45,21 @@
           <mat-icon>add</mat-icon>
         </button>
       </div>
-      <div class="tabcontainer" fxLayout="row">
-        <div class="listcontainer" fxFlex="20%" fxLayout="column">
+      <div fxLayout fxLayout="row" fxLayoutWrap="wrap" fxFlexAlign="start" (swipeleft)="swipeleft($event)"
+        (swiperight)="swiperight($event)">
+        <div class="card-left-menu" fxLayout="column" ngClass.gt-xs="listview-normal" ngClass.lt-sm="listview-noshow"
+          [class.listview-xs-show]="listviewxsshow">
           <h4>Search</h4>
           <p>
             <mat-form-field>
               <!-- (keyup.enter)="searchGo(searchTerm.value)" -->
-              <input matInput #searchTerm id="seach-box" 
-                placeholder="Name/Address" />
+              <input matInput #searchTerm id="seach-box" placeholder="Name/Address" />
             </mat-form-field>
           </p>
           <p>{{ this.errorMessage }}</p>
 
           <!-- (click)="searchGo(searchTerm.value)" -->
-          <button a mat-raised-button color="primary" >
+          <button a mat-raised-button color="primary">
             <mat-icon>search</mat-icon>Search
           </button>
 
@@ -71,7 +70,7 @@
           <div class="listview">
             <div *ngFor="let Translation of Translation" (click)="onSelectTranslation(Translation)"
               [class.selected]="Translation === selectedTranslation">
-              <span class="boxtranslation">
+              <div class="boxtranslation">
                 <div fxLayout="row" fxLayout.xs="column">
                   <div fxFlex>
                     {{ Translation.paymentreceived }}
@@ -81,7 +80,7 @@
                   </div>
                 </div>
                 <div fxLayout="row" fxLayout.xs="column"></div>
-              </span>
+              </div>
             </div>
           </div>
           <button mat-mini-fab color="primary" (click)="openDialogDeleteTranslation()">
@@ -89,7 +88,8 @@
           </button>
         </div>
 
-        <div *ngIf="selectedTranslation" class="relationcontainer" fxFlex="80%">
+        <div *ngIf="selectedTranslation" ngClass.gt-xs="container-normal" ngClass.lt-sm="container-noshow"
+          [class.container-xs-show]="listviewxsshow">
           <div *ngIf="showconfirmation">
             <mat-card>
               <label *ngIf="selectedTranslation.paymentreceived === 'paid'" style="color:green">Payment Received,
@@ -109,7 +109,7 @@
           <div *ngIf="selectedTranslation.paymentreceived !== 'paid'">
             <div *ngFor="let Translationjob of Translationjob" (click)="onSelectTranslationJob(Translationjob)">
               <mat-card>
-                <table class="form-full-width" cellspacing="0">
+                <div  class="form-full-width" cellspacing="0">
                   <!-- <mat-toolbar color="primary" class="titlebox">
                   <div>
                     <h2>{{ Translationjob.title }} {{Translationjob.language | uppercase}}</h2>
@@ -152,7 +152,7 @@
                     </div>
                   </div>
 
-                  <div fxLayout="row" fxLayout.xs="column"  rowSpan="6">
+                  <div fxLayout="row" fxLayout.xs="column" rowSpan="6">
                     <div fxFlex colspan="2">
                       <mat-form-field class="form-full-width">
                         <textarea matInput [(ngModel)]="Translationjob.body_src" placeholder="Content"
@@ -178,7 +178,7 @@
                       Save
                     </button>
                   </div>
-                </table>
+                </div >
 
                 <button mat-mini-fab color="primary" (click)="openDialogDeleteTranslationJob()">
                   <mat-icon>delete</mat-icon>
@@ -190,7 +190,7 @@
           <div *ngIf="selectedTranslation.paymentreceived === 'paid'">
             <div *ngFor="let Translationjob of Translationjob; let i = index">
               <mat-card style="margin: 10px 10px 40px 10px;">
-                <table>
+                <div >
                   <div fxLayout="row" fxLayout.xs="column">
                     <div fxFlex>
                       <label>{{ Translationjob.lc_tgt }}</label>
@@ -206,7 +206,7 @@
                       }}</label>
                     </div>
                   </div>
-                </table>
+                </div >
 
                 <div class="add-button">
                   <a class="sub-button tl" (click)="newpublication(i)" matTooltip="Copy to publication">
@@ -227,7 +227,7 @@
           </div>
 
           <div>
-            <table>
+            <div >
               <div fxLayout="row" fxLayout.xs="column">
                 <button class="addtranslationbutton" mat-mini-fab color="primary" (click)="createTranslationJob()">
                   <mat-icon>add</mat-icon>
@@ -238,7 +238,7 @@
                   Request Translation
                 </button>
               </div>
-            </table>
+            </div >
           </div>
         </div>
       </div>
@@ -269,7 +269,8 @@
           </mat-button-toggle>
         </mat-button-toggle-group>
 
-        <div fxLayout="column" style="width: 100%;" fxFlex>
+        <div fxLayout="column" style="width: 100%;" fxFlex (swipeleft)="swipeleft($event)"
+          (swiperight)="swiperight($event)">
           <div fxFlexOffset="10px" fxLayout="row" class="bottomlist" *ngIf="group.value == 'mailing'">
 
             <div class="addtobutton">
@@ -278,7 +279,8 @@
               </button>
             </div>
 
-            <div fxFlex="25% " class="Relations" fxLayout="column">
+            <div class="card-left-menu" fxLayout="column" ngClass.gt-xs="listview-normal"
+              ngClass.lt-sm="listview-noshow" [class.listview-xs-show]="listviewxsshow">
               <button a mat-raised-button color="primary" (click)="searchGoMailing(searchTerm.value)">
                 <mat-icon>search</mat-icon>Search Result
               </button>
@@ -290,9 +292,9 @@
 
                 <div *ngFor="let Mailing of Mailing" (click)="onSelectMailing(Mailing)"
                   [class.selected]="Mailing === selectedMailing">
-                  <span class="boxmailing">
-                    <table>
-                      <div fxLayout="row" fxLayout.xs="column"  style="height: 30px; vertical-align: middle;">
+                  <div  class="boxmailing">
+                    <div >
+                      <div fxLayout="row" fxLayout.xs="column" style="height: 30px; vertical-align: middle;">
                         <div fxFlexclass="selectionboxmailing">
                           <div [class.sendtrue]="Mailing.send === true" [class.sendfalse]="Mailing.send === false">
                           </div>
@@ -301,219 +303,219 @@
                           {{ Mailing.title | slice: 0:30 }}
                         </div>
                       </div>
-                      <div fxLayout="row" fxLayout.xs="column"  style="height: 30px; vertical-align: middle;">
+                      <div fxLayout="row" fxLayout.xs="column" style="height: 30px; vertical-align: middle;">
                         <div fxFlexcolspan="3" class="selectionboxmailing80">
                           {{ Mailing.date | date }}
                         </div>
                         <div fxFlex *ngIf="Mailing.scheduled" class="selectionboxmailing">
-                            <mat-icon >schedule</mat-icon>
-                          </div>
+                          <mat-icon>schedule</mat-icon>
+                        </div>
                       </div>
-                    </table>
-                  </span>
+                    </div >
+                  </div >
                 </div>
               </div>
             </div>
 
-            <div fxFlex="75%" fxLayout="column" class="relationcontainer"
-              *ngIf="selectedMailing && group.value == 'mailing'">
-              <mat-card>
-                <mat-card-content>
-                  <table class="mailingform">
-                    <div fxLayout="row" fxLayout.xs="column">
-                      <th colspan="2">
-                        <mat-toolbar color="primary" class="titlebox">
-                          <h2>
-                            {{
+
+            <mat-card ngClass.gt-xs="container-normal" ngClass.lt-sm="container-noshow"
+              [class.container-xs-show]="listviewxsshow" *ngIf="selectedMailing && group.value == 'mailing'">
+              <mat-card-content>
+                <div  class="mailingform">
+                  <div fxLayout="row" fxLayout.xs="column">
+                    <th colspan="2">
+                      <mat-toolbar color="primary" class="titlebox">
+                        <h2>
+                          {{
                               selectedMailing.subject | uppercase | slice: 0:30
                             }}
-                          </h2>
+                        </h2>
 
-                          <button mat-icon-button [matMenuTriggerFor]="menucall" class="menu">
-                            <mat-icon>more_vert</mat-icon>
+                        <button mat-icon-button [matMenuTriggerFor]="menucall" class="menu">
+                          <mat-icon>more_vert</mat-icon>
+                        </button>
+                        <mat-menu #menucall="matMenu">
+                          <button mat-menu-item (click)="openDialogDeleteMailing()">
+                            <mat-icon>delete</mat-icon>
+                            <div >Delete</div >
                           </button>
-                          <mat-menu #menucall="matMenu">
-                            <button mat-menu-item (click)="openDialogDeleteMailing()">
-                              <mat-icon>delete</mat-icon>
-                              <span>Delete</span>
-                            </button>
-                            <button mat-menu-item (click)="createMailing()">
-                              <mat-icon>note_add</mat-icon>
-                              <span>New</span>
-                            </button>
-                            <button mat-menu-item (click)="randomizeMailing()">
-                              <mat-icon>merge_type</mat-icon>
-                              <span>Add to campaign</span>
-                            </button>
-                            <button *ngIf="!this.selectedMailing.templatearray" mat-menu-item (click)="editMailing()"
-                              disabled>
-                              <mat-icon>edit</mat-icon>
-                              <span>Edit in Maileditor</span>
-                            </button>
-                            <button (click)="group.value = 'maileditor'" *ngIf="this.selectedMailing.templatearray"
-                              mat-menu-item (click)="editMailing()">
-                              <mat-icon>edit</mat-icon>
-                              <span>Edit in Maileditor</span>
-                            </button>
-                          </mat-menu>
-                        </mat-toolbar>
-                      </th>
-                    </div>
+                          <button mat-menu-item (click)="createMailing()">
+                            <mat-icon>note_add</mat-icon>
+                            <div >New</div >
+                          </button>
+                          <button mat-menu-item (click)="randomizeMailing()">
+                            <mat-icon>merge_type</mat-icon>
+                            <div >Add to campaign</div >
+                          </button>
+                          <button *ngIf="!this.selectedMailing.templatearray" mat-menu-item (click)="editMailing()"
+                            disabled>
+                            <mat-icon>edit</mat-icon>
+                            <div >Edit in Maileditor</div >
+                          </button>
+                          <button (click)="group.value = 'maileditor'" *ngIf="this.selectedMailing.templatearray"
+                            mat-menu-item (click)="editMailing()">
+                            <mat-icon>edit</mat-icon>
+                            <div >Edit in Maileditor</div >
+                          </button>
+                        </mat-menu>
+                      </mat-toolbar>
+                    </th>
+                  </div>
 
-                    <div fxLayout="row" fxLayout.xs="column">
-                      <div fxFlex>
-                        <mat-form-field class="form-full-width">
-                          <input matInput [(ngModel)]="selectedMailing.subject" placeholder="Subject"
-                            class="InputField" />
-                        </mat-form-field>
-                      </div>
-                      <div fxFlex>
-                        <mat-form-field class="form-full-width">
-                          <input matInput [(ngModel)]="selectedMailing.title" placeholder="Custom Titel/ID"
-                            class="InputField" />
-                        </mat-form-field>
-                      </div>
+                  <div fxLayout="row" fxLayout.xs="column">
+                    <div fxFlex>
+                      <mat-form-field class="form-full-width">
+                        <input matInput [(ngModel)]="selectedMailing.subject" placeholder="Subject"
+                          class="InputField" />
+                      </mat-form-field>
                     </div>
-                    <div fxLayout="row" fxLayout.xs="column">
-                      <div fxFlex>
-                        <mat-chip-list #chipList>
-                          <mat-chip color="primary" *ngFor="let item of selectedItems; let i = index">
-                            {{ item }}
-                            <mat-icon matChipRemove (click)="onRemoveItemsMailing(item, i)">cancel</mat-icon>
-                          </mat-chip>
-                          <!-- [(mailingaddresscampaign)] -->
-                          <input matInput (keydown.enter)="onAddItemManual($event)"
-                            placeholder="Type and Select mailinglist" [matChipInputFor]="chipList"
-                            [matChipInputSeparatorKeyCodes]="separatorKeysCodes" [matChipInputAddOnBlur]="true"
-                            [matAutocomplete]="maillists" [formControl]="addItems" #chipInput />
-                          <mat-autocomplete #maillists="matAutocomplete" (optionSelected)="onAddItemsMailing($event)">
-                            <mat-option *ngFor="
+                    <div fxFlex>
+                      <mat-form-field class="form-full-width">
+                        <input matInput [(ngModel)]="selectedMailing.title" placeholder="Custom Titel/ID"
+                          class="InputField" />
+                      </mat-form-field>
+                    </div>
+                  </div>
+                  <div fxLayout="row" fxLayout.xs="column">
+                    <div fxFlex>
+                      <mat-chip-list #chipList>
+                        <mat-chip color="primary" *ngFor="let item of selectedItems; let i = index">
+                          {{ item }}
+                          <mat-icon matChipRemove (click)="onRemoveItemsMailing(item, i)">cancel</mat-icon>
+                        </mat-chip>
+                        <!-- [(mailingaddresscampaign)] -->
+                        <input matInput (keydown.enter)="onAddItemManual($event)"
+                          placeholder="Type and Select mailinglist" [matChipInputFor]="chipList"
+                          [matChipInputSeparatorKeyCodes]="separatorKeysCodes" [matChipInputAddOnBlur]="true"
+                          [matAutocomplete]="maillists" [formControl]="addItems" #chipInput />
+                        <mat-autocomplete #maillists="matAutocomplete" (optionSelected)="onAddItemsMailing($event)">
+                          <mat-option *ngFor="
                                 let mailingaddress of filteredItems | async
                               " [value]="mailingaddress">
-                              <span>{{ mailingaddress.listname }} |
-                                {{ mailingaddresscampaign.industry }}</span>
-                            </mat-option>
-                          </mat-autocomplete>
-                        </mat-chip-list>
-                      </div>
+                            <div >{{ mailingaddress.listname }} |
+                              {{ mailingaddresscampaign.industry }}</div >
+                          </mat-option>
+                        </mat-autocomplete>
+                      </mat-chip-list>
+                    </div>
+                    <div fxFlex>
+                      <mat-form-field class="form-full-width">
+                        <input matInput [(ngModel)]="selectedMailing.from" placeholder="from@email.com"
+                          class="InputField" />
+                      </mat-form-field>
+                    </div>
+                  </div>
+                </div >
+
+                <br />
+                <a href="https://www.mail-tester.com" target="_blank">Check spam rating</a>
+                <br />
+
+                <mat-expansion-panel class="max-expansion-panel">
+                  <mat-expansion-panel-header>
+                    <mat-panel-title class="mat-expansion-panel-header-title">
+                      Schedule Mailing
+                    </mat-panel-title>
+                    <mat-panel-description>
+                      Schedule when your mail should be send
+                      <mat-icon>schedule</mat-icon>
+                    </mat-panel-description>
+                  </mat-expansion-panel-header>
+                  <div  class="max-div -content">
+                    <div fxLayout="row" fxLayout.xs="column">
                       <div fxFlex>
-                        <mat-form-field class="form-full-width">
-                          <input matInput [(ngModel)]="selectedMailing.from" placeholder="from@email.com"
-                            class="InputField" />
+                        <mat-form-field>
+                          <input matInput [(ngModel)]="selectedMailing.time" placeholder="Time" class="InputField"
+                            type="time" />
                         </mat-form-field>
                       </div>
+                      <div fxFlex>
+                        <mat-form-field>
+                          <mat-select placeholder="Timezone" [(ngModel)]="selectedMailing.timezone">
+                            <mat-option *ngFor="let timezone of timezones" [value]="timezone.value">
+                              {{ timezone.value }}
+                            </mat-option>
+                          </mat-select>
+                        </mat-form-field>
+                      </div>
+                      <div fxFlex>
+                        <mat-datepicker #picker2 class="form-half-width"></mat-datepicker>
+                        <input [min]="minDate" [max]="maxDate" [matDatepicker]="myDatepicker2"
+                          [(ngModel)]="selectedMailing.date" placeholder="Send Date" />
+                        <mat-datepicker-toggle matSuffix [for]="myDatepicker2"></mat-datepicker-toggle>
+                        <mat-datepicker #myDatepicker2></mat-datepicker>
+                      </div>
                     </div>
-                  </table>
-
-                  <br />
-                  <a href="https://www.mail-tester.com" target="_blank">Check spam rating</a>
-                  <br />
-
-                  <mat-expansion-panel class="max-expansion-panel">
-                    <mat-expansion-panel-header>
-                      <mat-panel-title class="mat-expansion-panel-header-title">
-                        Schedule Mailing
-                      </mat-panel-title>
-                      <mat-panel-description>
-                        Schedule when your mail should be send
+                    <div fxLayout="row" fxLayout.xs="column">
+                      <button a mat-raised-button (click)="openDialogScheduleMailing()">
+                        Schedule
                         <mat-icon>schedule</mat-icon>
-                      </mat-panel-description>
-                    </mat-expansion-panel-header>
-                    <table class="max-table-content">
-                      <div fxLayout="row" fxLayout.xs="column">
-                        <div fxFlex>
-                          <mat-form-field>
-                            <input matInput [(ngModel)]="selectedMailing.time" placeholder="Time" class="InputField"
-                              type="time" />
-                          </mat-form-field>
-                        </div>
-                        <div fxFlex>
-                          <mat-form-field>
-                            <mat-select placeholder="Timezone" [(ngModel)]="selectedMailing.timezone">
-                              <mat-option *ngFor="let timezone of timezones" [value]="timezone.value">
-                                {{ timezone.value }}
-                              </mat-option>
-                            </mat-select>
-                          </mat-form-field>
-                        </div>
-                        <div fxFlex>
-                          <mat-datepicker #picker2 class="form-half-width"></mat-datepicker>
-                          <input [min]="minDate" [max]="maxDate" [matDatepicker]="myDatepicker2"
-                            [(ngModel)]="selectedMailing.date" placeholder="Send Date" />
-                          <mat-datepicker-toggle matSuffix [for]="myDatepicker2"></mat-datepicker-toggle>
-                          <mat-datepicker #myDatepicker2></mat-datepicker>
-                        </div>
-                      </div>
-                      <div fxLayout="row" fxLayout.xs="column">
-                          <button a mat-raised-button (click)="openDialogScheduleMailing()">
-                              Schedule
-                              <mat-icon>schedule</mat-icon>
-                            </button>
-                      </div>
-                    </table>
-                  </mat-expansion-panel>
-                  <table style="background-color: whitesmoke; margin: 20px 2px 20px 20px; padding:20px 2px 20px 20px; width: 90%">
-                    <div fxLayout="row" fxLayout.xs="column">
-                      <div fxFlex>
-                        <mat-select placeholder="Copy from:" [(value)]="copyfrommailing">
-                          <mat-option *ngFor="let Mailing of Mailing; let i = index" [value]="Mailing">
-                            {{ Mailing.subject }} {{ Mailing.date }}
-                          </mat-option>
-                        </mat-select>
-                      </div>
-                      <div fxFlex>
-                        <button a mat-raised-button (click)="copyFromMailing()">
-                          Copy
-                          <mat-icon>copy</mat-icon>
-                        </button>
-                      </div>
+                      </button>
                     </div>
-                    <div fxLayout="row" fxLayout.xs="column">
-                      <div fxFlex>
-                        <button *ngIf="!selectedMailing.templatearray" a mat-raised-button (click)="addTextMailing()">
-                            Add/Edit text mailing
-                            <mat-icon>edit</mat-icon>
-                          </button>
-                        </div>
+                  </div >
+                </mat-expansion-panel>
+                <div 
+                  style="background-color: whitesmoke; margin: 20px 2px 20px 20px; padding:20px 2px 20px 20px; width: 90%">
+                  <div fxLayout="row" fxLayout.xs="column">
+                    <div fxFlex>
+                      <mat-select placeholder="Copy from:" [(value)]="copyfrommailing">
+                        <mat-option *ngFor="let Mailing of Mailing; let i = index" [value]="Mailing">
+                          {{ Mailing.subject }} {{ Mailing.date }}
+                        </mat-option>
+                      </mat-select>
                     </div>
-                    <div fxLayout="row" fxLayout.xs="column">
-                      <mat-accordion>
-                        <mat-expansion-panel>
-                          <mat-expansion-panel-header>
-                            <mat-panel-title>
-                              Dynamic input
-                            </mat-panel-title>
-                          </mat-expansion-panel-header>
-                          <div fxLayout="column" style="width: 200px;"
-                            matTooltip="Click to copy, insert in text to retreive mailinglist information">
-                            <label (mouseenter)="$event.stopImmediatePropagation()"
-                              (mouseleave)="$event.stopImmediatePropagation()" matTooltip="Copied!"
-                              #tooltip="matTooltip" (click)="tooltip.toggle()"
-                              (click)="copyMessage('%recipient_name%')">%recipient_name%</label>
-                            <label (mouseenter)="$event.stopImmediatePropagation()"
-                              (mouseleave)="$event.stopImmediatePropagation()" matTooltip="Copied!"
-                              #tooltip="matTooltip" (click)="tooltip.toggle()"
-                              (click)="copyMessage('%recipient.company%')">%recipient.company%</label>
-                            <label (mouseenter)="$event.stopImmediatePropagation()"
-                              (mouseleave)="$event.stopImmediatePropagation()" matTooltip="Copied!"
-                              #tooltip="matTooltip" (click)="tooltip.toggle()"
-                              (click)="copyMessage('%recipient%')">%recipient%</label>
-                            <label (mouseenter)="$event.stopImmediatePropagation()"
-                              (mouseleave)="$event.stopImmediatePropagation()" matTooltip="Copied!"
-                              #tooltip="matTooltip" (click)="tooltip.toggle()"
-                              (click)="copyMessage('%recipient.firstname%')">%recipient.firstname%</label>
-                            <label (mouseenter)="$event.stopImmediatePropagation()"
-                              (mouseleave)="$event.stopImmediatePropagation()" matTooltip="Copied!"
-                              #tooltip="matTooltip" (click)="tooltip.toggle()"
-                              (click)="copyMessage('%recipient.lastname%')">%recipient.lastname%</label>
-                          </div>
-                        </mat-expansion-panel>
-                      </mat-accordion>
+                    <div fxFlex>
+                      <button a mat-raised-button (click)="copyFromMailing()">
+                        Copy
+                        <mat-icon>copy</mat-icon>
+                      </button>
+                    </div>
+                  </div>
+                  <div fxLayout="row" fxLayout.xs="column">
+                    <div fxFlex>
+                      <button *ngIf="!selectedMailing.templatearray" a mat-raised-button (click)="addTextMailing()">
+                        Add/Edit text mailing
+                        <mat-icon>edit</mat-icon>
+                      </button>
+                    </div>
+                  </div>
+                  <div fxLayout="row" fxLayout.xs="column">
+                    <mat-accordion>
+                      <mat-expansion-panel>
+                        <mat-expansion-panel-header>
+                          <mat-panel-title>
+                            Dynamic input
+                          </mat-panel-title>
+                        </mat-expansion-panel-header>
+                        <div fxLayout="column" style="width: 200px;"
+                          matTooltip="Click to copy, insert in text to retreive mailinglist information">
+                          <label (mouseenter)="$event.stopImmediatePropagation()"
+                            (mouseleave)="$event.stopImmediatePropagation()" matTooltip="Copied!" #tooltip="matTooltip"
+                            (click)="tooltip.toggle()"
+                            (click)="copyMessage('%recipient_name%')">%recipient_name%</label>
+                          <label (mouseenter)="$event.stopImmediatePropagation()"
+                            (mouseleave)="$event.stopImmediatePropagation()" matTooltip="Copied!" #tooltip="matTooltip"
+                            (click)="tooltip.toggle()"
+                            (click)="copyMessage('%recipient.company%')">%recipient.company%</label>
+                          <label (mouseenter)="$event.stopImmediatePropagation()"
+                            (mouseleave)="$event.stopImmediatePropagation()" matTooltip="Copied!" #tooltip="matTooltip"
+                            (click)="tooltip.toggle()" (click)="copyMessage('%recipient%')">%recipient%</label>
+                          <label (mouseenter)="$event.stopImmediatePropagation()"
+                            (mouseleave)="$event.stopImmediatePropagation()" matTooltip="Copied!" #tooltip="matTooltip"
+                            (click)="tooltip.toggle()"
+                            (click)="copyMessage('%recipient.firstname%')">%recipient.firstname%</label>
+                          <label (mouseenter)="$event.stopImmediatePropagation()"
+                            (mouseleave)="$event.stopImmediatePropagation()" matTooltip="Copied!" #tooltip="matTooltip"
+                            (click)="tooltip.toggle()"
+                            (click)="copyMessage('%recipient.lastname%')">%recipient.lastname%</label>
+                        </div>
+                      </mat-expansion-panel>
+                    </mat-accordion>
 
-                    </div>
-                  </table>
-                  <!-- uploadUrl: 'http://localhost:3000/api/Containers/5af0573e196178122c6bb4a4/upload/', -->
-                  <!-- <div *ngIf="selectedMailing.done == true">
+                  </div>
+                </div >
+                <!-- uploadUrl: 'http://localhost:3000/api/Containers/5af0573e196178122c6bb4a4/upload/', -->
+                <!-- <div *ngIf="selectedMailing.done == true">
                     <ckeditor #content [name]="editor1" [(ngModel)]="selectedMailing.html" [config]="{
                   extraPlugins: 'filebrowser,popup,filetools',
                   toolbarCanCollapse: 'true',
@@ -524,7 +526,7 @@
 
                   </div> -->
 
-                  <!-- <table *ngIf="selectedMailing.done == true" class="max-table-content">
+                <!-- <div  *ngIf="selectedMailing.done == true" class="max-div -content">
                     <div fxLayout="row" fxLayout.xs="column"  rowspan="10">
                       <div fxFlexcolspan="3">
 
@@ -545,116 +547,116 @@
                         </mat-form-field>
                       </div>
                     </div>
-                  </table> -->
-                  <br />
-                  <mat-checkbox [(ngModel)]="selectedMailing.send">
-                    Send
-                  </mat-checkbox>
-                  <button a mat-raised-button (click)="saveMailing('save')">
-                    Save
-                    <mat-icon>save</mat-icon>
-                  </button>
-                  <button a mat-raised-button (click)="sendMailing()">
-                    Send
-                    <mat-icon>send</mat-icon>
-                  </button>
-                  <button a mat-raised-button (click)="showTemplatePreview()">
-                    Preview
-                    <mat-icon>view</mat-icon>
-                  </button>
+                  </div > -->
+                <br />
+                <mat-checkbox [(ngModel)]="selectedMailing.send">
+                  Send
+                </mat-checkbox>
+                <button a mat-raised-button (click)="saveMailing('save')">
+                  Save
+                  <mat-icon>save</mat-icon>
+                </button>
+                <button a mat-raised-button (click)="sendMailing()">
+                  Send
+                  <mat-icon>send</mat-icon>
+                </button>
+                <button a mat-raised-button (click)="showTemplatePreview()">
+                  Preview
+                  <mat-icon>view</mat-icon>
+                </button>
 
-                  <br />
+                <br />
 
-                  <div *ngIf="selectedMailing.send">
-                    <table style="margin: 20px 0px 40px 0px" class="max-table-content">
-                      <div fxLayout="row" fxLayout.xs="column">
-                        <div fxFlexstyle="width: 25%;">
-                          <label>Opened </label>
-                        </div>
-                        <div fxFlexstyle="width: 25%;">
-                          <label>Clicked </label>
-                        </div>
-                        <div fxFlexstyle="width: 25%;">
-                          <label>Bounced</label>
-                        </div>
-                        <div fxFlexstyle="width: 25%;">
-                          <label>Unsubscribed</label>
-                        </div>
+                <div *ngIf="selectedMailing.send">
+                  <div  style="margin: 20px 0px 40px 0px" class="max-div -content">
+                    <div fxLayout="row" fxLayout.xs="column">
+                      <div fxFlexstyle="width: 25%;">
+                        <label>Opened </label>
                       </div>
-                      <div fxLayout="row" fxLayout.xs="column">
-                        <div fxFlexstyle="width: 25%;">
-                          {{ selectedMailing.totalopened }}
-                        </div>
-                        <div fxFlexstyle="width: 25%;">
-                          {{ selectedMailing.totalclicked }}
-                        </div>
-                        <div fxFlexstyle="width: 25%;">
-                          {{ selectedMailing.totalbounced }}
-                        </div>
-                        <div fxFlexstyle="width: 25%;">
-                          {{ selectedMailing.totalunsubscribed }}
-                        </div>
+                      <div fxFlexstyle="width: 25%;">
+                        <label>Clicked </label>
                       </div>
-                    </table>
+                      <div fxFlexstyle="width: 25%;">
+                        <label>Bounced</label>
+                      </div>
+                      <div fxFlexstyle="width: 25%;">
+                        <label>Unsubscribed</label>
+                      </div>
+                    </div>
+                    <div fxLayout="row" fxLayout.xs="column">
+                      <div fxFlexstyle="width: 25%;">
+                        {{ selectedMailing.totalopened }}
+                      </div>
+                      <div fxFlexstyle="width: 25%;">
+                        {{ selectedMailing.totalclicked }}
+                      </div>
+                      <div fxFlexstyle="width: 25%;">
+                        {{ selectedMailing.totalbounced }}
+                      </div>
+                      <div fxFlexstyle="width: 25%;">
+                        {{ selectedMailing.totalunsubscribed }}
+                      </div>
+                    </div>
+                  </div >
 
-                    <mat-expansion-panel class="max-expansion-panel">
-                      <mat-expansion-panel-header>
-                        <mat-panel-title>
-                          Website Statistics
-                        </mat-panel-title>
-                        <mat-panel-description>
-                          Select your account to get Mailings website behavior
-                          <mat-icon>insert_chart</mat-icon>
-                        </mat-panel-description>
-                      </mat-expansion-panel-header>
-                      <table class="max-table-content">
-                        <div fxLayout="row" fxLayout.xs="column">
-                          <div fxFlex>
-                            <mat-form-field class="form-full-width">
-                              <mat-select [(ngModel)]="selectedanalytics" placeholder="GA Account" class="InputField">
-                                <mat-option *ngFor="
+                  <mat-expansion-panel class="max-expansion-panel">
+                    <mat-expansion-panel-header>
+                      <mat-panel-title>
+                        Website Statistics
+                      </mat-panel-title>
+                      <mat-panel-description>
+                        Select your account to get Mailings website behavior
+                        <mat-icon>insert_chart</mat-icon>
+                      </mat-panel-description>
+                    </mat-expansion-panel-header>
+                    <div  class="max-div -content">
+                      <div fxLayout="row" fxLayout.xs="column">
+                        <div fxFlex>
+                          <mat-form-field class="form-full-width">
+                            <mat-select [(ngModel)]="selectedanalytics" placeholder="GA Account" class="InputField">
+                              <mat-option *ngFor="
                                     let selectedanalytics of Googleanalytics
                                   " [value]="selectedanalytics">
-                                  {{ selectedanalytics.name }}
-                                </mat-option>
-                              </mat-select>
-                            </mat-form-field>
-                          </div>
-                          <div fxFlex></div>
-                          <div fxFlex>
-                            <button a mat-raised-button (click)="getAnalytics()">
-                              Get Statistics
-                              <mat-icon>insert_chart</mat-icon>
-                            </button>
-                          </div>
+                                {{ selectedanalytics.name }}
+                              </mat-option>
+                            </mat-select>
+                          </mat-form-field>
                         </div>
-                        <div fxLayout="row" fxLayout.xs="column">
-                          <div fxFlex>
-                            <label>Average Time on Website</label>
-                          </div>
-                          <label>Average Bounce Rate</label>
-                          <div fxFlex>
-                            <label>Completed Goals</label>
-                          </div>
-                          <div fxFlex>
-                            <label>Page Views</label>
-                          </div>
+                        <div fxFlex></div>
+                        <div fxFlex>
+                          <button a mat-raised-button (click)="getAnalytics()">
+                            Get Statistics
+                            <mat-icon>insert_chart</mat-icon>
+                          </button>
                         </div>
-                        <div fxLayout="row" fxLayout.xs="column">
-                          <div fxFlex>{{ avgTimeOnPage | slice: 0:4 }} seconds</div>
-                          {{
+                      </div>
+                      <div fxLayout="row" fxLayout.xs="column">
+                        <div fxFlex>
+                          <label>Average Time on Website</label>
+                        </div>
+                        <label>Average Bounce Rate</label>
+                        <div fxFlex>
+                          <label>Completed Goals</label>
+                        </div>
+                        <div fxFlex>
+                          <label>Page Views</label>
+                        </div>
+                      </div>
+                      <div fxLayout="row" fxLayout.xs="column">
+                        <div fxFlex>{{ avgTimeOnPage | slice: 0:4 }} seconds</div>
+                        {{
                             bounceRate | slice: 0:4
                           }}
-                          %
-                          <div fxFlex>{{ goalStartsAll }} goals</div>
-                          <div fxFlex>{{ pageview | slice: 0:4 }} views</div>
-                        </div>
-                      </table>
-                    </mat-expansion-panel>
-                  </div>
-                </mat-card-content>
-              </mat-card>
-            </div>
+                        %
+                        <div fxFlex>{{ goalStartsAll }} goals</div>
+                        <div fxFlex>{{ pageview | slice: 0:4 }} views</div>
+                      </div>
+                    </div >
+                  </mat-expansion-panel>
+                </div>
+              </mat-card-content>
+            </mat-card>
+
           </div>
 
           <div fxLayout="row" fxFlexOffset="10px" class="bottomlist" *ngIf="group.value == 'campaign'">
@@ -669,7 +671,8 @@
               </button>
             </div>
 
-            <div fxFlex="25%" class="Relations" fxLayout="column">
+            <div class="card-left-menu" fxLayout="column" ngClass.gt-xs="listview-normal"
+              ngClass.lt-sm="listview-noshow" [class.listview-xs-show]="listviewxsshow">
               <mat-form-field>
                 <input matInput [(ngModel)]="searchboxCampaign" (keyup.enter)="searchGoCampaign()" placeholder="Name" />
               </mat-form-field>
@@ -687,7 +690,7 @@
                   " [class.selected]="
                     Marketingplannerevents === selectedMarketingplannerevents
                   ">
-                  <span class="box">
+                  <div class="box">
                     <div fxLayout="row" fxLayout.xs="column">
                       <div fxFlexstyle="width: 80px">
                         <mat-icon *ngIf="Marketingplannerevents.countsend > 0"
@@ -704,7 +707,7 @@
                         {{ Marketingplannerevents.name | slice: 0:26 }}
                       </div>
                     </div>
-                  </span>
+                  </div>
                 </div>
               </div>
 
@@ -712,115 +715,115 @@
             </div>
 
             <!-- Mailing Campaign  -->
-            <div fxFlex="75%" fxLayout="column" class="relationcontainer" *ngIf="
-                selectedMarketingplannerevents && group.value == 'campaign'
-              ">
-              <mat-card>
-                <mat-card-content>
-                  <table class="form-full-width">
-                    <div fxLayout="row" fxLayout.xs="column">
-                      <th colspan="2">
-                        <mat-toolbar color="primary" class="titlebox">
-                          <h2>
-                            {{
+
+            <mat-card ngClass.gt-xs="container-normal" ngClass.lt-sm="container-noshow"
+              [class.container-xs-show]="listviewxsshow" *ngIf="
+              selectedMarketingplannerevents && group.value == 'campaign'">
+              <mat-card-content>
+                <div class="form-full-width">
+                  <div fxLayout="row" fxLayout.xs="column">
+                  
+                      <mat-toolbar color="primary" class="titlebox">
+                        <h2>
+                          {{
                               selectedMarketingplannerevents.name
                                 | uppercase
                                 | slice: 0:30
                             }}
-                          </h2>
-                          <button mat-icon-button [matMenuTriggerFor]="menucall" class="menu">
-                            <mat-icon>more_vert</mat-icon>
+                        </h2>
+                        <button mat-icon-button [matMenuTriggerFor]="menucall" class="menu">
+                          <mat-icon>more_vert</mat-icon>
+                        </button>
+                        <mat-menu #menucall="matMenu">
+                          <button mat-menu-item (click)="openDialogDeleteMarketingplannerevents()">
+                            <mat-icon>delete</mat-icon>
+                            <div >Delete</div >
                           </button>
-                          <mat-menu #menucall="matMenu">
-                            <button mat-menu-item (click)="openDialogDeleteMarketingplannerevents()">
-                              <mat-icon>delete</mat-icon>
-                              <span>Delete</span>
-                            </button>
-                            <button mat-menu-item (click)="createMarketingplannerevents()">
-                              <mat-icon>note_add</mat-icon>
-                              <span>New</span>
-                            </button>
-                          </mat-menu>
-                        </mat-toolbar>
-                      </th>
+                          <button mat-menu-item (click)="createMarketingplannerevents()">
+                            <mat-icon>note_add</mat-icon>
+                            <div >New</div >
+                          </button>
+                        </mat-menu>
+                      </mat-toolbar>
+                    
+                  </div>
+                  <div fxLayout="row" fxLayout.xs="column">
+                    <div fxFlex>
+                      <mat-form-field class="form-full-width">
+                        <input matInput [(ngModel)]="selectedMarketingplannerevents.name" placeholder="Name"
+                          class="InputField" />
+                      </mat-form-field>
                     </div>
-                    <div fxLayout="row" fxLayout.xs="column">
-                      <div fxFlex>
-                        <mat-form-field class="form-full-width">
-                          <input matInput [(ngModel)]="selectedMarketingplannerevents.name" placeholder="Name"
-                            class="InputField" />
-                        </mat-form-field>
-                      </div>
-                    </div>
-                    <div fxLayout="row" fxLayout.xs="column">
-                      <div fxFlex>
-                        <mat-chip-list #chipList>
-                          <mat-chip color="primary" *ngFor="let item of selectedItems; let i = index">
-                            {{ item }}
-                            <mat-icon matChipRemove (click)="onRemoveItems(item, i)">cancel</mat-icon>
-                          </mat-chip>
-                          <!-- [(mailingaddresscampaign)] -->
-                          <input matInput placeholder="Type and Select mailinglist" [matChipInputFor]="chipList"
-                            [matChipInputSeparatorKeyCodes]="separatorKeysCodes" [matChipInputAddOnBlur]="true"
-                            [matAutocomplete]="maillists" [formControl]="addItems" #chipInput />
-                          <mat-autocomplete #maillists="matAutocomplete" (optionSelected)="onAddItems($event); (i)">
-                            <mat-option *ngFor="
+                  </div>
+                  <div fxLayout="row" fxLayout.xs="column">
+                    <div fxFlex>
+                      <mat-chip-list #chipList>
+                        <mat-chip color="primary" *ngFor="let item of selectedItems; let i = index">
+                          {{ item }}
+                          <mat-icon matChipRemove (click)="onRemoveItems(item, i)">cancel</mat-icon>
+                        </mat-chip>
+                        <!-- [(mailingaddresscampaign)] -->
+                        <input matInput placeholder="Type and Select mailinglist" [matChipInputFor]="chipList"
+                          [matChipInputSeparatorKeyCodes]="separatorKeysCodes" [matChipInputAddOnBlur]="true"
+                          [matAutocomplete]="maillists" [formControl]="addItems" #chipInput />
+                        <mat-autocomplete #maillists="matAutocomplete" (optionSelected)="onAddItems($event); (i)">
+                          <mat-option *ngFor="
                                 let mailingaddresscampaign of filteredItems
                                   | async
                               " [value]="mailingaddresscampaign">
-                              <span>{{ mailingaddresscampaign.listname }} |
-                                {{ mailingaddresscampaign.industry }}</span>
-                            </mat-option>
-                          </mat-autocomplete>
-                        </mat-chip-list>
-                      </div>
-                      <div fxFlex>
-                        <button a mat-raised-button (click)="saveMailingCampaign()">
-                          Save as Draft
-                          <mat-icon>save</mat-icon>
-                        </button>
-                        <button a mat-raised-button (click)="openDialogDeleteMailingCampaign()">
-                          Delete
-                          <mat-icon>remove</mat-icon>
-                        </button>
-                      </div>
+                            <div >{{ mailingaddresscampaign.listname }} |
+                              {{ mailingaddresscampaign.industry }}</div >
+                          </mat-option>
+                        </mat-autocomplete>
+                      </mat-chip-list>
                     </div>
-                    <div fxLayout="row" fxLayout.xs="column">
-                      <div fxFlex>
-                        <mat-form-field style="width: 200px">
-                          <mat-select placeholder="select" [(ngModel)]="filtermailingselect"
-                            (selectionChange)="getMailingCampaignMailings()">
-                            <mat-option *ngFor="let filtermailingselect of filtermailing" [value]="filtermailingselect">
-                              {{ filtermailingselect }}
-                            </mat-option>
-                          </mat-select>
-                        </mat-form-field>
-                      </div>
-                      <div fxFlex>
-                        <mat-form-field class="form-full-width">
-                          <textarea matInput matTextareaAutosize="true" matAutosizeMinRows="6"
-                            [(ngModel)]="selectedMarketingplannerevents.notes" placeholder="Notes"
-                            class="InputField"></textarea>
-                        </mat-form-field>
-                      </div>
+                    <div fxFlex>
+                      <button a mat-raised-button (click)="saveMailingCampaign()">
+                        Save as Draft
+                        <mat-icon>save</mat-icon>
+                      </button>
+                      <button a mat-raised-button (click)="openDialogDeleteMailingCampaign()">
+                        Delete
+                        <mat-icon>remove</mat-icon>
+                      </button>
                     </div>
-                  </table>
+                  </div>
+                  <div fxLayout="row" fxLayout.xs="column">
+                    <div fxFlex>
+                      <mat-form-field style="width: 200px">
+                        <mat-select placeholder="select" [(ngModel)]="filtermailingselect"
+                          (selectionChange)="getMailingCampaignMailings()">
+                          <mat-option *ngFor="let filtermailingselect of filtermailing" [value]="filtermailingselect">
+                            {{ filtermailingselect }}
+                          </mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                    </div>
+                    <div fxFlex>
+                      <mat-form-field class="form-full-width">
+                        <textarea matInput matTextareaAutosize="true" matAutosizeMinRows="6"
+                          [(ngModel)]="selectedMarketingplannerevents.notes" placeholder="Notes"
+                          class="InputField"></textarea>
+                      </mat-form-field>
+                    </div>
+                  </div>
+                </div>
 
-                  <br />
-                  <div (blur)="saveMailingCampaign()">
-                    <div *ngFor="
+                <br />
+                <div (blur)="saveMailingCampaign()">
+                  <div *ngFor="
                         let CampaignMailing of CampaignMailing;
                         let i = index
                       ">
-                      <a mat-mini-fab color="primary" *ngIf="toggleCampaignMailing[i] === false"
-                        (click)="toggleCampaignMailingNow(i)" matTooltip="Expand Panel" [ngClass]="
+                    <a mat-mini-fab color="primary" *ngIf="toggleCampaignMailing[i] === false"
+                      (click)="toggleCampaignMailingNow(i)" matTooltip="Expand Panel" [ngClass]="
                           togglecampaignclasstrans[i] === true
                             ? 'toggelcampaignwindowfade'
                             : 'toggelcampaignwindow'
                         ">
-                        <mat-icon>aspect_ratio</mat-icon>
-                      </a>
-                      <mat-card *ngIf="toggleCampaignMailing[i] == false" [ngClass]="
+                      <mat-icon>aspect_ratio</mat-icon>
+                    </a>
+                    <mat-card *ngIf="toggleCampaignMailing[i] == false" [ngClass]="
                           togglecampaignclasstrans[i] == true
                             ? 'toggelcampaignwindowactive'
                             : 'quickcampaignmailing'
@@ -831,162 +834,161 @@
                           CampaignMailing.scheduled &&
                           CampaignMailing.send === true
                         ">
-                        <mat-card-content>
-                          <table class="smalloverviewmailingcampaign">
-                            <div fxLayout="row" fxLayout.xs="column">
-                              <div fxFlexstyle="width: 10%">
-                                <mat-icon *ngIf="
+                      <mat-card-content>
+                        <div class="smalloverviewmailingcampaign">
+                          <div fxLayout="row" fxLayout.xs="column">
+                            <div fxFlexstyle="width: 10%">
+                              <mat-icon *ngIf="
                                     CampaignMailing.scheduled &&
                                     CampaignMailing.send === false
                                   ">schedule
-                                </mat-icon>
-                                <mat-icon *ngIf="CampaignMailing.done === true">done_all</mat-icon>
-                                <mat-icon *ngIf="
+                              </mat-icon>
+                              <mat-icon *ngIf="CampaignMailing.done === true">done_all</mat-icon>
+                              <mat-icon *ngIf="
                                     CampaignMailing.scheduled === false &&
                                     CampaignMailing.send === false
                                   ">
-                                  build</mat-icon>
+                                build</mat-icon>
+                            </div>
+                            <div fxFlex>
+                              <label>Subject: {{ CampaignMailing.subject }}</label>
+                            </div>
+                          </div>
+                          <div fxLayout="row" fxLayout.xs="column">
+                            <div fxFlexstyle="width: 10%"></div>
+                            <div fxFlex>
+                              <label style="font-size: 8pt">Title: {{ CampaignMailing.title }}</label>
+                            </div>
+                          </div>
+                          <div fxLayout="row" fxLayout.xs="column">
+                            <div fxFlexstyle="width: 10%"></div>
+                            <div fxFlex>
+                              <label style="font-size: 8pt">Date: {{ CampaignMailing.date | date }},
+                                {{ CampaignMailing.time }}</label>
+                            </div>
+                          </div>
+                        </div>
+                      </mat-card-content>
+                    </mat-card>
+
+                    <mat-card *ngIf="toggleCampaignMailing[i]">
+                      <mat-card-content>
+                        <div *ngIf="CampaignMailing.send == false">
+                          <div class="max-div -content">
+                            <div fxLayout="row" fxLayout.xs="column">
+                              <div fxFlex>
+                                <mat-select placeholder="Copy from:" [(value)]="copyfrommailing"
+                                  [attr.disabled]="CampaignMailing.send">
+                                  <mat-option *ngFor="let Mailing of Mailing" [value]="Mailing">
+                                    {{ Mailing.title }}
+                                    {{ Mailing.date | date: "mediumDate" }}
+                                  </mat-option>
+                                </mat-select>
                               </div>
                               <div fxFlex>
-                                <label>Subject: {{ CampaignMailing.subject }}</label>
+                                <button a mat-raised-button (click)="copyFromMailingCampaign(i)">
+                                  Copy
+                                  <mat-icon>copy</mat-icon>
+                                </button>
                               </div>
                             </div>
                             <div fxLayout="row" fxLayout.xs="column">
-                              <div fxFlexstyle="width: 10%"></div>
-                              <div fxFlex>
-                                <label style="font-size: 8pt">Title: {{ CampaignMailing.title }}</label>
+                              <div fxFlexcolspan="3">
+                                <mat-form-field class="form-full-width">
+                                  <input matInput [(ngModel)]="CampaignMailing.subject" placeholder="Subject"
+                                    class="InputField" [attr.disabled]="CampaignMailing.send" />
+                                </mat-form-field>
                               </div>
                             </div>
                             <div fxLayout="row" fxLayout.xs="column">
-                              <div fxFlexstyle="width: 10%"></div>
                               <div fxFlex>
-                                <label style="font-size: 8pt">Date: {{ CampaignMailing.date | date }},
-                                  {{ CampaignMailing.time }}</label>
+                                <mat-form-field class="form-full-width">
+                                  <input matInput [(ngModel)]="CampaignMailing.title" placeholder="Custom Titel/ID"
+                                    class="InputField" [attr.disabled]="CampaignMailing.send" />
+                                </mat-form-field>
+                              </div>
+                              <div fxFlexcolspan="2">
+                                <mat-form-field class="form-full-width">
+                                  <input matInput [(ngModel)]="CampaignMailing.from" placeholder="from@email.com"
+                                    class="InputField" [attr.disabled]="CampaignMailing.send" />
+                                </mat-form-field>
                               </div>
                             </div>
-                          </table>
-                        </mat-card-content>
-                      </mat-card>
-
-                      <mat-card *ngIf="toggleCampaignMailing[i]">
-                        <mat-card-content>
-                          <div *ngIf="CampaignMailing.send == false">
-                            <table class="max-table-content">
-                              <div fxLayout="row" fxLayout.xs="column">
-                                <div fxFlex>
-                                  <mat-select placeholder="Copy from:" [(value)]="copyfrommailing"
-                                    [attr.disabled]="CampaignMailing.send">
-                                    <mat-option *ngFor="let Mailing of Mailing" [value]="Mailing">
-                                      {{ Mailing.title }}
-                                      {{ Mailing.date | date: "mediumDate" }}
-                                    </mat-option>
-                                  </mat-select>
-                                </div>
-                                <div fxFlex>
-                                  <button a mat-raised-button (click)="copyFromMailingCampaign(i)">
-                                    Copy
-                                    <mat-icon>copy</mat-icon>
-                                  </button>
-                                </div>
+                            <div fxLayout="row" fxLayout.xs="column">
+                              <div fxFlex>
+                                <mat-checkbox [(ngModel)]="CampaignMailing.send" [attr.disabled]="CampaignMailing.send">
+                                  Send
+                                </mat-checkbox>
                               </div>
+                              <div fxFlex>
+                                <mat-checkbox [(ngModel)]="CampaignMailing.toopened">
+                                  Send to Previous Openend Only
+                                </mat-checkbox>
+                              </div>
+                            </div>
+                            <div fxLayout="row" fxLayout.xs="column">
+                              <div fxFlex>
+                                <mat-checkbox [(ngModel)]="CampaignMailing.done">
+                                  Done
+                                </mat-checkbox>
+                              </div>
+                              <div fxFlex>
+                                <mat-checkbox [(ngModel)]="CampaignMailing.toclicked">
+                                  Send to Previous Clicked Only
+                                </mat-checkbox>
+                              </div>
+                            </div>
+                          </div>
+
+                          <br />
+
+                          <mat-expansion-panel class="max-expansion-panel">
+                            <mat-expansion-panel-header>
+                              <mat-panel-title class="mat-expansion-panel-header-title">
+                                Schedule Mailing
+                              </mat-panel-title>
+                              <mat-panel-description>
+                                Schedule when your mail should be send
+                                <mat-icon>schedule</mat-icon>
+                              </mat-panel-description>
+                            </mat-expansion-panel-header>
+                            <div class="max-div -content">
                               <div fxLayout="row" fxLayout.xs="column">
-                                <div fxFlexcolspan="3">
-                                  <mat-form-field class="form-full-width">
-                                    <input matInput [(ngModel)]="CampaignMailing.subject" placeholder="Subject"
-                                      class="InputField" [attr.disabled]="CampaignMailing.send" />
+                                <div fxFlex>
+                                  <mat-form-field>
+                                    <input matInput [(ngModel)]="CampaignMailing.time" placeholder="Time"
+                                      class="InputField" type="time" [attr.disabled]="CampaignMailing.send" />
                                   </mat-form-field>
                                 </div>
-                              </div>
-                              <div fxLayout="row" fxLayout.xs="column">
                                 <div fxFlex>
-                                  <mat-form-field class="form-full-width">
-                                    <input matInput [(ngModel)]="CampaignMailing.title" placeholder="Custom Titel/ID"
-                                      class="InputField" [attr.disabled]="CampaignMailing.send" />
+                                  <mat-form-field>
+                                    <mat-select placeholder="Timezone" [(ngModel)]="CampaignMailing.timezone"
+                                      [attr.disabled]="CampaignMailing.send">
+                                      <mat-option *ngFor="let timezone of timezones" [value]="timezone.value">
+                                        {{ timezone.value }}
+                                      </mat-option>
+                                    </mat-select>
                                   </mat-form-field>
                                 </div>
-                                <div fxFlexcolspan="2">
-                                  <mat-form-field class="form-full-width">
-                                    <input matInput [(ngModel)]="CampaignMailing.from" placeholder="from@email.com"
-                                      class="InputField" [attr.disabled]="CampaignMailing.send" />
-                                  </mat-form-field>
+                                <div fxFlex>
+                                  <mat-datepicker #picker2 class="form-half-width"></mat-datepicker>
+                                  <input [matDatepicker]="myDatepicker2" [(ngModel)]="CampaignMailing.date"
+                                    placeholder="Send Date" [attr.disabled]="CampaignMailing.send" />
+                                  <mat-datepicker-toggle matSuffix [for]="myDatepicker2"></mat-datepicker-toggle>
+                                  <mat-datepicker #myDatepicker2></mat-datepicker>
                                 </div>
                               </div>
-                              <div fxLayout="row" fxLayout.xs="column">
-                                <div fxFlex>
-                                  <mat-checkbox [(ngModel)]="CampaignMailing.send"
-                                    [attr.disabled]="CampaignMailing.send">
-                                    Send
-                                  </mat-checkbox>
-                                </div>
-                                <div fxFlex>
-                                  <mat-checkbox [(ngModel)]="CampaignMailing.toopened">
-                                    Send to Previous Openend Only
-                                  </mat-checkbox>
-                                </div>
-                              </div>
-                              <div fxLayout="row" fxLayout.xs="column">
-                                <div fxFlex>
-                                  <mat-checkbox [(ngModel)]="CampaignMailing.done">
-                                    Done
-                                  </mat-checkbox>
-                                </div>
-                                <div fxFlex>
-                                  <mat-checkbox [(ngModel)]="CampaignMailing.toclicked">
-                                    Send to Previous Clicked Only
-                                  </mat-checkbox>
-                                </div>
-                              </div>
-                            </table>
-
-                            <br />
-
-                            <mat-expansion-panel class="max-expansion-panel">
-                              <mat-expansion-panel-header>
-                                <mat-panel-title class="mat-expansion-panel-header-title">
-                                  Schedule Mailing
-                                </mat-panel-title>
-                                <mat-panel-description>
-                                  Schedule when your mail should be send
-                                  <mat-icon>schedule</mat-icon>
-                                </mat-panel-description>
-                              </mat-expansion-panel-header>
-                              <table class="max-table-content">
-                                <div fxLayout="row" fxLayout.xs="column">
-                                  <div fxFlex>
-                                    <mat-form-field>
-                                      <input matInput [(ngModel)]="CampaignMailing.time" placeholder="Time"
-                                        class="InputField" type="time" [attr.disabled]="CampaignMailing.send" />
-                                    </mat-form-field>
-                                  </div>
-                                  <div fxFlex>
-                                    <mat-form-field>
-                                      <mat-select placeholder="Timezone" [(ngModel)]="CampaignMailing.timezone"
-                                        [attr.disabled]="CampaignMailing.send">
-                                        <mat-option *ngFor="let timezone of timezones" [value]="timezone.value">
-                                          {{ timezone.value }}
-                                        </mat-option>
-                                      </mat-select>
-                                    </mat-form-field>
-                                  </div>
-                                  <div fxFlex>
-                                    <mat-datepicker #picker2 class="form-half-width"></mat-datepicker>
-                                    <input [matDatepicker]="myDatepicker2" [(ngModel)]="CampaignMailing.date"
-                                      placeholder="Send Date" [attr.disabled]="CampaignMailing.send" />
-                                    <mat-datepicker-toggle matSuffix [for]="myDatepicker2"></mat-datepicker-toggle>
-                                    <mat-datepicker #myDatepicker2></mat-datepicker>
-                                  </div>
-                                </div>
-                              </table>
-                            </mat-expansion-panel>
-                            <br />
-                            <!-- <table>
+                            </div>
+                          </mat-expansion-panel>
+                          <br />
+                          <!-- <div >
                               <div fxLayout="row" fxLayout.xs="column"  *ngIf="CampaignMailing.done == false">
                                 <label style="font-size: 8pt">%recipient_name%, %recipient.company%, %recipient%,
                                   %recipient.firstname%, %recipient.lastname%</label>
                               </div>
-                            </table> -->
+                            </div > -->
 
-                            <!-- <div *ngIf="CampaignMailing.done == false">
+                          <!-- <div *ngIf="CampaignMailing.done == false">
                               <ckeditor #content [name]="editor2" [(ngModel)]="CampaignMailing.html" [config]="{
                         extraPlugins: 'filebrowser,popup,filetools',
                           toolbarCanCollapse: 'true',
@@ -997,194 +999,197 @@
                               </ckeditor>
                             </div> -->
 
-                            <table style="width: 100%;">
-                              <div fxLayout="row" fxLayout.xs="column"  *ngIf="CampaignMailing.done == false" rowspan="10" style="width: 100%;">
-                                <div fxFlexcolspan="3"></div>
-                              </div>
-                              <div fxLayout="row" fxLayout.xs="column">
-                                <button a mat-raised-button (click)="showMailPreview(i)">
-                                  Preview
-                                  <mat-icon>view</mat-icon>
-                                </button>
-                              </div>
-                              <div fxLayout="row" fxLayout.xs="column">
-                                <label (click)="toggleTextView()">show plain text</label>
-                              </div>
-                              <div fxLayout="row" fxLayout.xs="column"  *ngIf="
+                          <div  style="width: 100%;">
+                            <div fxLayout="row" fxLayout.xs="column" *ngIf="CampaignMailing.done == false" rowspan="10"
+                              style="width: 100%;">
+                              <div fxFlexcolspan="3"></div>
+                            </div>
+                            <div fxLayout="row" fxLayout.xs="column">
+                              <button a mat-raised-button (click)="showMailPreview(i)">
+                                Preview
+                                <mat-icon>view</mat-icon>
+                              </button>
+                            </div>
+                            <div fxLayout="row" fxLayout.xs="column">
+                              <label (click)="toggleTextView()">show plain text</label>
+                            </div>
+                            <div fxLayout="row" fxLayout.xs="column" *ngIf="
                                   CampaignMailing.done == false &&
                                   toggletextview
                                 " rowspan="10">
-                                <div fxFlexcolspan="3">
-                                  <mat-form-field class="form-full-width">
-                                    <textarea matInput class="content-form" #content [(ngModel)]="CampaignMailing.text"
-                                      placeholder="content">
+                              <div fxFlexcolspan="3">
+                                <mat-form-field class="form-full-width">
+                                  <textarea matInput class="content-form" #content [(ngModel)]="CampaignMailing.text"
+                                    placeholder="content">
 Text Version</textarea>
-                                    <mat-hint align="end">{{
+                                  <mat-hint align="end">{{
                                       content.value.length
                                     }}</mat-hint>
-                                  </mat-form-field>
-                                </div>
+                                </mat-form-field>
                               </div>
-                            </table>
-                          </div>
+                            </div>
+                          </div >
+                        </div>
 
-                          <!--  -->
+                        <!--  -->
 
-                          <div *ngIf="CampaignMailing.send">
-                            <table class="max-table-content">
-                              <div fxLayout="row" fxLayout.xs="column"  *ngIf="toggleshorttext[i]">
-                                <div fxFlexcolSpan="4">
-                                  <br />
-                                  <!-- <div class="mailpreview">{{ CampaignMailing.text | slice:0:300 }}</div> -->
-                                  <br />
-                                  <label (click)="toggleToFullText(i)">Show Message</label>
-                                  <br />
-                                </div>
+                        <div *ngIf="CampaignMailing.send">
+                          <div  class="max-div -content">
+                            <div fxLayout="row" fxLayout.xs="column" *ngIf="toggleshorttext[i]">
+                              <div fxFlexcolSpan="4">
+                                <br />
+                                <!-- <div class="mailpreview">{{ CampaignMailing.text | slice:0:300 }}</div> -->
+                                <br />
+                                <label (click)="toggleToFullText(i)">Show Message</label>
+                                <br />
                               </div>
+                            </div>
 
-                              <div fxLayout="row" fxLayout.xs="column"  *ngIf="toggleshorttext[i] === false">
-                                <div fxFlexcolSpan="4">
-                                  <br />
-                                  <div class="mailpreview" [innerHTML]="htmlpreview[i]"></div>
-                                  <br />
-                                  <label (click)="toggleToFullText(i)">hide</label>
-                                  <br />
-                                </div>
+                            <div fxLayout="row" fxLayout.xs="column" *ngIf="toggleshorttext[i] === false">
+                              <div fxFlexcolSpan="4">
+                                <br />
+                                <div class="mailpreview" [innerHTML]="htmlpreview[i]"></div>
+                                <br />
+                                <label (click)="toggleToFullText(i)">hide</label>
+                                <br />
                               </div>
+                            </div>
+                            <div fxLayout="row" fxLayout.xs="column">
+                              <div fxFlex>
+                                <label>Opened </label>
+                              </div>
+                              <div fxFlex>
+                                <label>Clicked </label>
+                              </div>
+                              <div fxFlex>
+                                <label>Bounced</label>
+                              </div>
+                              <div fxFlex>
+                                <label>Unsubscribed</label>
+                              </div>
+                            </div>
+                            <div fxLayout="row" fxLayout.xs="column">
+                              <div fxFlex>
+                                {{ CampaignMailing.totalopened }}
+                              </div>
+                              <div fxFlex>
+                                {{ CampaignMailing.totalclicked }}
+                              </div>
+                              <div fxFlex>
+                                {{ CampaignMailing.totalbounced }}
+                              </div>
+                              <div fxFlex>
+                                {{ CampaignMailing.totalunsubscribed }}
+                              </div>
+                            </div>
+                          </div >
+
+                          <mat-expansion-panel class="max-expansion-panel">
+                            <mat-expansion-panel-header>
+                              <mat-panel-title>
+                                Website Statistics
+                              </mat-panel-title>
+                              <mat-panel-description>
+                                Select your account to get Mailings website
+                                behavior
+                                <mat-icon>insert_chart</mat-icon>
+                              </mat-panel-description>
+                            </mat-expansion-panel-header>
+                            <div  class="max-div -content">
                               <div fxLayout="row" fxLayout.xs="column">
                                 <div fxFlex>
-                                  <label>Opened </label>
-                                </div>
-                                <div fxFlex>
-                                  <label>Clicked </label>
-                                </div>
-                                <div fxFlex>
-                                  <label>Bounced</label>
-                                </div>
-                                <div fxFlex>
-                                  <label>Unsubscribed</label>
-                                </div>
-                              </div>
-                              <div fxLayout="row" fxLayout.xs="column">
-                                <div fxFlex>
-                                  {{ CampaignMailing.totalopened }}
-                                </div>
-                                <div fxFlex>
-                                  {{ CampaignMailing.totalclicked }}
-                                </div>
-                                <div fxFlex>
-                                  {{ CampaignMailing.totalbounced }}
-                                </div>
-                                <div fxFlex>
-                                  {{ CampaignMailing.totalunsubscribed }}
-                                </div>
-                              </div>
-                            </table>
-
-                            <mat-expansion-panel class="max-expansion-panel">
-                              <mat-expansion-panel-header>
-                                <mat-panel-title>
-                                  Website Statistics
-                                </mat-panel-title>
-                                <mat-panel-description>
-                                  Select your account to get Mailings website
-                                  behavior
-                                  <mat-icon>insert_chart</mat-icon>
-                                </mat-panel-description>
-                              </mat-expansion-panel-header>
-                              <table class="max-table-content">
-                                <div fxLayout="row" fxLayout.xs="column">
-                                  <div fxFlex>
-                                    <mat-form-field class="form-full-width">
-                                      <mat-select [(ngModel)]="selectedanalytics" placeholder="GA Account"
-                                        class="InputField">
-                                        <mat-option *ngFor="
+                                  <mat-form-field class="form-full-width">
+                                    <mat-select [(ngModel)]="selectedanalytics" placeholder="GA Account"
+                                      class="InputField">
+                                      <mat-option *ngFor="
                                             let selectedanalytics of Googleanalytics
                                           " [value]="selectedanalytics">
-                                          {{ selectedanalytics.name }}
-                                        </mat-option>
-                                      </mat-select>
-                                    </mat-form-field>
-                                  </div>
-                                  <div fxFlex></div>
-                                  <div fxFlex>
-                                    <button a mat-raised-button (click)="getAnalyticsCampaign(i)">
-                                      Get Statistics
-                                      <mat-icon>insert_chart</mat-icon>
-                                    </button>
-                                  </div>
+                                        {{ selectedanalytics.name }}
+                                      </mat-option>
+                                    </mat-select>
+                                  </mat-form-field>
                                 </div>
-                                <div fxLayout="row" fxLayout.xs="column">
-                                  <div fxFlex>
-                                    <label>Average Time on Website</label>
-                                  </div>
-                                  <label>Average Bounce Rate</label>
-                                  <div fxFlex>
-                                    <label>Completed Goals</label>
-                                  </div>
-                                  <div fxFlex>
-                                    <label>Page Views</label>
-                                  </div>
+                                <div fxFlex></div>
+                                <div fxFlex>
+                                  <button a mat-raised-button (click)="getAnalyticsCampaign(i)">
+                                    Get Statistics
+                                    <mat-icon>insert_chart</mat-icon>
+                                  </button>
                                 </div>
-                                <div fxLayout="row" fxLayout.xs="column">
-                                  <div fxFlex>
-                                    {{ avgTimeOnPage | slice: 0:4 }} seconds
-                                  </div>
-                                  {{
+                              </div>
+                              <div fxLayout="row" fxLayout.xs="column">
+                                <div fxFlex>
+                                  <label>Average Time on Website</label>
+                                </div>
+                                <label>Average Bounce Rate</label>
+                                <div fxFlex>
+                                  <label>Completed Goals</label>
+                                </div>
+                                <div fxFlex>
+                                  <label>Page Views</label>
+                                </div>
+                              </div>
+                              <div fxLayout="row" fxLayout.xs="column">
+                                <div fxFlex>
+                                  {{ avgTimeOnPage | slice: 0:4 }} seconds
+                                </div>
+                                {{
                                     bounceRate | slice: 0:4
                                   }}
-                                  %
-                                  <div fxFlex>{{ goalStartsAll }} goals</div>
-                                  <div fxFlex>{{ pageview | slice: 0:4 }} views</div>
-                                </div>
-                              </table>
-                            </mat-expansion-panel>
-                          </div>
-                          <button a mat-raised-button *ngIf="!CampaignMailing.send"
-                            (click)="openDialogScheduleMailingCampaign()">
-                            Schedule
-                            <mat-icon>schedule</mat-icon>
-                          </button>
-                          <a mat-mini-fab color="primary" (click)="openDialogDeleteMailingof(i)">
-                            <mat-icon>delete</mat-icon>
-                          </a>
-                          <a mat-mini-fab color="primary" (click)="saveMailingCampaign()">
-                            <mat-icon>save</mat-icon>
-                          </a>
-                          <a mat-mini-fab color="primary" class="toggelcampaignwindow"
-                            (click)="toggleCampaignMailingNow(i)" matTooltip="Minimalize Panel" [ngClass]="
+                                %
+                                <div fxFlex>{{ goalStartsAll }} goals</div>
+                                <div fxFlex>{{ pageview | slice: 0:4 }} views</div>
+                              </div>
+                            </div >
+                          </mat-expansion-panel>
+                        </div>
+                        <button a mat-raised-button *ngIf="!CampaignMailing.send"
+                          (click)="openDialogScheduleMailingCampaign()">
+                          Schedule
+                          <mat-icon>schedule</mat-icon>
+                        </button>
+                        <a mat-mini-fab color="primary" (click)="openDialogDeleteMailingof(i)">
+                          <mat-icon>delete</mat-icon>
+                        </a>
+                        <a mat-mini-fab color="primary" (click)="saveMailingCampaign()">
+                          <mat-icon>save</mat-icon>
+                        </a>
+                        <a mat-mini-fab color="primary" class="toggelcampaignwindow"
+                          (click)="toggleCampaignMailingNow(i)" matTooltip="Minimalize Panel" [ngClass]="
                               togglecampaignclasstrans[i] === false
                                 ? 'toggelcampaignwindowfade'
                                 : 'toggelcampaignwindow'
                             ">
-                            <mat-icon>aspect_ratio</mat-icon>
-                          </a>
-                        </mat-card-content>
-                      </mat-card>
+                          <mat-icon>aspect_ratio</mat-icon>
+                        </a>
+                      </mat-card-content>
+                    </mat-card>
 
-                      <!-- <button mat-mini-fab color="primary" (click)="createCampaignExtraMailing()" class="createcampaignextra">
+                    <!-- <button mat-mini-fab color="primary" (click)="createCampaignExtraMailing()" class="createcampaignextra">
                   <mat-icon>add</mat-icon>
                 </button> -->
 
-                      <!-- <mat-card>
+                    <!-- <mat-card>
                   <mat-card-content>
 
                   </mat-card-content>
                 </mat-card> -->
 
-                      <br />
-                    </div>
-                    <button mat-mini-fab color="primary" (click)="createCampaignMailing()" class="createcampaignbutton">
-                      <mat-icon>add</mat-icon>
-                    </button>
+                    <br />
                   </div>
-                </mat-card-content>
-              </mat-card>
-            </div>
+                  <button mat-mini-fab color="primary" (click)="createCampaignMailing()" class="createcampaignbutton">
+                    <mat-icon>add</mat-icon>
+                  </button>
+                </div>
+              </mat-card-content>
+            </mat-card>
+
           </div>
 
+          <!-- Mailing list  -->
           <div fxLayout="row" fxFlexOffset="10px" class="bottomlist" *ngIf="group.value == 'maillist'">
-            <div fxFlex="25%" class="relations" fxLayout="column">
+            <div class="card-left-menu" fxLayout="column" ngClass.gt-xs="listview-normal"
+              ngClass.lt-sm="listview-noshow" [class.listview-xs-show]="listviewxsshow">
 
               <div class="addtobutton">
                 <button mat-fab color="primary" matTooltip="Upload to or create Multiple Lists"
@@ -1219,7 +1224,7 @@ Text Version</textarea>
               <div class="listview">
                 <div *ngFor="let Mailinglist of Mailinglist" (click)="onSelectMailingList(Mailinglist)"
                   [class.selected]="Mailinglist === selectedMailingList">
-                  <span class="box" style="font-size: 8pt">
+                  <div class="box" style="font-size: 8pt">
                     <div fxLayout="row" fxLayout.xs="column">
                       <mat-icon color="primary">{{
                         Mailinglist.listname | slice: 0:1
@@ -1239,12 +1244,12 @@ Text Version</textarea>
                         Mailinglist.totalopened
                       }}
                     </div>
-                  </span>
+                  </div>
                 </div>
               </div>
 
               <div>
-                <table>
+                <div >
                   <div fxLayout="row" fxLayout.xs="column">
                     <div fxFlex>
                       Total Amount of Entries:
@@ -1262,21 +1267,20 @@ Text Version</textarea>
                     </div>
                   </div>
 
-                </table>
+                </div >
               </div>
             </div>
 
-            <!-- Mailing list  -->
-            <div fxFlex="75%" fxLayout="column" class="relationcontainer">
 
-
-              <mat-card fxFlex *ngIf="selectedMailingList">
+            <div ngClass.gt-xs="container-normal" ngClass.lt-sm="container-noshow"
+              [class.container-xs-show]="listviewxsshow" fxLayout="column" *ngIf="selectedMailingList">
+              <mat-card>
                 <mat-card-content>
-                  <table class="form-full-width">
+                  <div>
                     <div fxLayout="row" fxLayout.xs="column">
-                      <th>
-                        <label>Edit maillist</label>
-                      </th>
+
+                      <label>Edit maillist</label>
+
                     </div>
                     <div fxLayout="row" fxLayout.xs="column">
                       <div fxFlexcolspan="2">
@@ -1318,14 +1322,15 @@ Text Version</textarea>
                         </button>
                       </div>
                     </div>
-                  </table>
+                  </div>
                 </mat-card-content>
               </mat-card>
+
 
               <div fxFlex class="relationcontainer" *ngIf="newmailinglisttoggle">
                 <mat-card>
                   <mat-card-content>
-                    <table class="form-full-width">
+                    <div  class="form-full-width">
                       <div fxLayout="row" fxLayout.xs="column">
                         <th>
                           <label>Create new maillist</label>
@@ -1371,7 +1376,7 @@ Text Version</textarea>
                           </button>
                         </div>
                       </div>
-                    </table>
+                    </div >
                   </mat-card-content>
                 </mat-card>
               </div>
@@ -1386,7 +1391,7 @@ Text Version</textarea>
                       let mailinglistdetails of mailinglistdetails;
                       let i = index
                     ">
-                    <table style="width: 100%;">
+                    <div  style="width: 100%;">
                       <div fxLayout="row" fxLayout.xs="column">
                         <div fxFlexclass="mailinglistdetailscell">
                           {{ mailinglistdetails.vars.title }}
@@ -1399,7 +1404,8 @@ Text Version</textarea>
                         <div fxFlexclass="mailinglistdetailscell">
                           {{ mailinglistdetails.vars.company }}
                         </div>
-                        <div fxFlexstyle="color: blue;" class="mailinglistdetailscell" (click)="openmailinglistwebsite(i)">
+                        <div fxFlexstyle="color: blue;" class="mailinglistdetailscell"
+                          (click)="openmailinglistwebsite(i)">
                           {{ mailinglistdetails.vars.website }}
                           <!-- <mat-icon *ngIf="mailinglistdetails.vars.website" (click)="openmailinglistwebsite(i)">
                             open_in_new</mat-icon> -->
@@ -1411,7 +1417,7 @@ Text Version</textarea>
                             delete</mat-icon>
                         </div>
                       </div>
-                    </table>
+                    </div >
                   </div>
                 </div>
 
@@ -1422,7 +1428,7 @@ Text Version</textarea>
                     Check the following first:
                     <li>list is XLSX/XLS/CSV format</li>
                     <li>
-                      Table starts with columns: address, company, firstname,
+                      div  starts with columns: address, company, firstname,
                       lastname, title
                     </li>
                     <div *ngIf="selectedMailingList">
@@ -1474,7 +1480,7 @@ Text Version</textarea>
                           </mat-select>
                         </mat-form-field>
                       </div>
-                      <div fxFlexclass="importantClassTable">
+                      <div fxFlexclass="importantClassdiv ">
                         <mat-form-field>
                           <mat-select placeholder="Select Mailinglist (if applicable)" [(ngModel)]="mailinglistheader">
                             <mat-option *ngFor="let header of headers" [value]="header">
@@ -1636,14 +1642,14 @@ Text Version</textarea>
                         <div>
                           <h3>Upload large list</h3>
                           <div style="background-color:beige">
-                            <table>
+                            <div >
                               <div fxLayout="row" fxLayout.xs="column">
                                 <label>Please use standard xlsx format with the following header:</label>
                               </div>
                               <div fxLayout="row" fxLayout.xs="column">
                                 <label>company, firstname, lastname, title, website, mailing</label>
                               </div>
-                            </table>
+                            </div >
                           </div>
                           <div ng2FileDrop [ngClass]="{ 'drop-zone-over': hasBaseDropZoneOver }"
                             (fileOver)="fileOverAnother($event)" [uploader]="uploader" class="drop-zone">
@@ -1657,7 +1663,7 @@ Text Version</textarea>
                     <div fxLayout="row" fxLayout.xs="column">
                       <div fxFlexcolspan="2">
                         <div class="righ-upload-block">
-                          <table>
+                          <div >
                             <thead>
                               <div fxLayout="row" fxLayout.xs="column">
                                 <th width="50%">Name</th>
@@ -1668,7 +1674,7 @@ Text Version</textarea>
                               </div>
                             </thead>
                             <tbody>
-                              <div fxLayout="row" fxLayout.xs="column"  *ngFor="let item of uploader.queue">
+                              <div fxLayout="row" fxLayout.xs="column" *ngFor="let item of uploader.queue">
                                 <div fxFlex>
                                   <strong>{{ item?.file?.name }}</strong>
                                 </div>
@@ -1682,15 +1688,13 @@ Text Version</textarea>
                                 </div>
 
                                 <div fxFlex>
-                                  <span *ngIf="item.isSuccess">
-                                    <mat-icon>done</mat-icon>
-                                  </span>
-                                  <span *ngIf="item.isCancel">
-                                    <mat-icon>cancel</mat-icon>
-                                  </span>
-                                  <span *ngIf="item.isError">
-                                    <mat-icon>remove_circle</mat-icon>
-                                  </span>
+                                
+                                    <mat-icon *ngIf="item.isSuccess">done</mat-icon>
+                                  
+                                    <mat-icon *ngIf="item.isCancel">cancel</mat-icon>
+                                 
+                                    <mat-icon *ngIf="item.isError">remove_circle</mat-icon>
+                                 
                                 </div>
                                 <div fxFlexnowrap>
                                   <button mat-button (click)="setupload(item?.file?.name)"
@@ -1706,7 +1710,7 @@ Text Version</textarea>
                                 </div>
                               </div>
                             </tbody>
-                          </table>
+                          </div >
 
                           <div>
                             <div>
@@ -1729,6 +1733,7 @@ Text Version</textarea>
                 </mat-card>
               </div>
             </div>
+
           </div>
 
           <div style="width: 100%;" *ngIf="group.value == 'maileditor'">
@@ -1761,22 +1766,21 @@ Text Version</textarea>
       </ng-template>
 
       <app-marketingpromotions [Account]="Account" [SelectedRelation]="SelectedRelation" [option]="option">
-        </app-marketingpromotions>
+      </app-marketingpromotions>
 
     </mat-tab>
 
     <!-- Image Editor__________________________________ -->
-
     <mat-tab label="Image Editor">
-        <ng-template mat-tab-label class="mat-tab-labels">
-          <mat-icon>image</mat-icon>
-          <div fxShow.xs="false">Image Editor</div>
-        </ng-template>
-  
-        <app-imagecreator [company]="company" [Account]="Account" [SelectedRelation]="SelectedRelation" [option]="option">
-          </app-imagecreator>
-  
-      </mat-tab>
+      <ng-template mat-tab-label class="mat-tab-labels">
+        <mat-icon>image</mat-icon>
+        <div fxShow.xs="false">Image Editor</div>
+      </ng-template>
+
+      <app-imagecreator [company]="company" [Account]="Account" [SelectedRelation]="SelectedRelation" [option]="option">
+      </app-imagecreator>
+
+    </mat-tab>
 
   </mat-tab-group>
 </div>
