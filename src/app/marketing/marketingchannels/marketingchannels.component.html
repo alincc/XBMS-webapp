@@ -217,13 +217,13 @@
               </div>
             </div>
             <div fxLayout="row" fxLayout.xs="column" rowspan="10">
-              <div>
+              
                 <mat-form-field style="width:100%;">
                   <textarea style="width:100%; min-height: 100px;" matInput #channeltext
                     [(ngModel)]=selectedChannel.text placeholder="content">Text Version</textarea>
                   <mat-hint align="end">{{channeltext.value.length}}</mat-hint>
                 </mat-form-field>
-              </div>
+              
             </div>
             <div fxLayout="row" fxLayout.xs="column">
               <mat-accordion>
@@ -270,7 +270,7 @@
               </mat-accordion>
             </div>
             <div fxLayout="row" fxLayout.xs="column">
-              <div>
+             
                 <mat-select placeholder="Select Linkedin Account" [(value)]="linkedinoption">
                   <mat-option *ngFor="let Linkedin of Linkedin" [value]="Linkedin"
                     (onSelectionChange)="getLinkedinCompany()">
@@ -282,7 +282,7 @@
                     {{ companypage.vanityName }}
                   </mat-option>
                 </mat-select>
-              </div>
+
             </div>
             <div fxLayout="row" fxLayout.xs="column">
               <div>
@@ -464,13 +464,13 @@
               </div>
             </div>
             <div fxLayout="row" fxLayout.xs="column" rowspan="5">
-              <div>
+             
                 <mat-form-field style="width:100%;">
                   <textarea [disabled]="selectedChannel.send" style="width:100%; min-height: 100px;" matInput
                     #channeltext [(ngModel)]=selectedChannel.text placeholder="content">Text Version</textarea>
                   <mat-hint align="end">{{channeltext.value.length}}</mat-hint>
                 </mat-form-field>
-              </div>
+             
             </div>
             <div fxLayout="row" fxLayout.xs="column">
               <mat-accordion>
@@ -703,13 +703,13 @@
               </div>
             </div>
             <div fxLayout="row" fxLayout.xs="column" rowspan="5">
-              <div>
+              
                 <mat-form-field style="width:100%;">
                   <textarea [disabled]="selectedChannel.send" style="width:100%; min-height: 100px;" matInput
                     #channeltext [(ngModel)]=selectedChannel.text placeholder="content">Text Version</textarea>
                   <mat-hint align="end">{{channeltext.value.length}}</mat-hint>
                 </mat-form-field>
-              </div>
+             
             </div>
             <div fxLayout="row" fxLayout.xs="column">
               <mat-accordion>
@@ -756,21 +756,21 @@
               </mat-accordion>
             </div>
             <div fxLayout="row" fxLayout.xs="column">
-              <div fxFlexfxflex>
+             
                 <mat-select placeholder="Select Facebook Account" [(value)]="facebookoption">
                   <mat-option (onSelectionChange)="getFBAccountInfo()" [disabled]="selectedChannel.send"
                     *ngFor="let Facebook of Facebook" [value]="Facebook">
                     {{ Facebook.name }}
                   </mat-option>
                 </mat-select>
-                <mat-progress-spinner *ngIf="waitingforfbpages" [diameter]="20" [mode]="indeterminate">
-                </mat-progress-spinner>
+                <mat-progress-bar *ngIf="waitingforfbpages"  [mode]="indeterminate">
+                </mat-progress-bar>
                 <mat-select placeholder="Select companypage Account" [(value)]="selectcompanypage">
                   <mat-option *ngFor="let companypage of companypage" [value]="companypage">
                     {{ companypage.name }}
                   </mat-option>
                 </mat-select>
-              </div>
+             
             </div>
             <div fxLayout="row" fxLayout.xs="column">
               <div>
@@ -943,13 +943,13 @@
               </div>
             </div>
             <div fxLayout="row" fxLayout.xs="column" rowspan="5">
-              <div>
+              
                 <mat-form-field style="width:100%;">
                   <textarea [disabled]="selectedChannel.send" style="width:100%; min-height: 100px;" matInput
                     #channeltext [(ngModel)]=selectedChannel.text placeholder="content">Text Version</textarea>
                   <mat-hint align="end">{{channeltext.value.length}}</mat-hint>
                 </mat-form-field>
-              </div>
+             
             </div>
             <div fxLayout="row" fxLayout.xs="column">
               <div>
@@ -1010,21 +1010,21 @@
               </ul>
             </div>
             <div fxLayout="row" fxLayout.xs="column">
-              <div fxFlexfxflex>
+              
                 <mat-select placeholder="Select Facebook Account" [(value)]="facebookoption">
                   <mat-option (onSelectionChange)="getFBAccountInfo()" [disabled]="selectedChannel.send"
                     *ngFor="let Facebook of Facebook" [value]="Facebook">
                     {{ Facebook.name }}
                   </mat-option>
                 </mat-select>
-                <mat-progress-spinner *ngIf="waitingforfbpages" [diameter]="20" [mode]="indeterminate">
-                </mat-progress-spinner>
+                <mat-progress-bar *ngIf="waitingforfbpages"  [mode]="indeterminate">
+                </mat-progress-bar>
                 <mat-select placeholder="Select companypage Account" [(value)]="selectcompanypage">
                   <mat-option *ngFor="let companypage of companypage" [value]="companypage">
                     {{ companypage.name }}
                   </mat-option>
                 </mat-select>
-              </div>
+              
             </div>
             <div fxLayout="row" fxLayout.xs="column">
               <button a mat-raised-button *ngIf="!selectedChannel.send" (click)="saveChannel()">Save</button>
@@ -1186,13 +1186,13 @@
               </div>
             </div>
             <div fxLayout="row" fxLayout.xs="column" rowspan="5">
-              <div>
+             
                 <mat-form-field style="width:100%;">
                   <textarea [disabled]="selectedChannel.send" style="width:100%; min-height: 100px;" matInput
                     #channeltext [(ngModel)]=selectedChannel.text placeholder="content">Text Version</textarea>
                   <mat-hint align="end">{{channeltext.value.length}}</mat-hint>
                 </mat-form-field>
-              </div>
+            
             </div>
             <div fxLayout="row" fxLayout.xs="column">
               <div *ngIf="selectedChannel.pictureurl">
@@ -1204,15 +1204,15 @@
                 (imgurl)="setImage($event)">
               </app-fileupload>
             </div>
-            <div fxFlex>
+            <div fxLayout="row" fxLayout.xs="column">
               <mat-select placeholder="Select Pinterest Board" [(value)]="pinterestoption">
                 <mat-option (onSelectionChange)="getPinterestBoard()" *ngFor="let Pinterest of Pinterest"
                   [value]="Pinterest" [disabled]="selectedChannel.send">
                   {{ Pinterest.name }}
                 </mat-option>
               </mat-select>
-              <mat-progress-spinner *ngIf="waitingforfbpages" [diameter]="20" [mode]="indeterminate">
-              </mat-progress-spinner>
+              <mat-progress-bar *ngIf="waitingforfbpages"  [mode]="indeterminate">
+              </mat-progress-bar>
               <mat-select placeholder="Select pinterest board" [(value)]="selectpinterestboard">
                 <mat-option *ngFor="let pinterestboard of pinterestboard" [value]="pinterestboard">
                   {{ pinterestboard.name }}

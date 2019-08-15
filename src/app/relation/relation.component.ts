@@ -98,7 +98,8 @@ export class RelationComponent implements OnInit {
   public Files: Files[];
   public newFiles: Files = new Files();
   public crawlerrunning = false;
-
+  public currentdomain: string;
+  public domainresponse;
   public selectedRelation: Relations;
   public selectedContactperson: Contactpersons;
   public selectedCall: Calls;
@@ -399,6 +400,7 @@ export class RelationComponent implements OnInit {
     this.getGoogleAnalytics();
     this.getFiles();
     this.setFileParameter();
+    this.currentdomain = Relations.domain;
     //this.getCrawlers();
     //create search string google maps
     this.address =
@@ -1233,6 +1235,25 @@ export class RelationComponent implements OnInit {
       this.getCalls();
       this.openSnackBar(res.message);
     });
+  }
+
+
+  deleteDomain(){
+    this.MailingApi.deletedomain(this.selectedRelation.companyId, this.currentdomain)
+    .subscribe(res => console.log(res));
+  }
+
+  setDomain(): void {
+    if (this.selectedRelation.domain !==  this.currentdomain){
+      this.deleteDomain();
+    }
+    this.MailingApi.setdomain(this.selectedRelation.companyId, this.selectedRelation.domain)
+    .subscribe(res => console.log(res));
+  }
+
+  checkDomainSettings(): void {
+    this.MailingApi.getdomaininfo(this.selectedRelation.companyId, this.selectedRelation.domain)
+    .subscribe(res => {this.domainresponse = res.sending_dns_records[1].value, console.log(res)});
   }
 
 

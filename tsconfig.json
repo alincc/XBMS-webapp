@@ -12,8 +12,7 @@
     "allowJs": true,
     "typeRoots": [
       "node_modules",
-      "shared/sdk/sockets",
-      "share/sdk/storage"
+      "shared/sdk/"
     ],
     "lib": [
       "es2016",

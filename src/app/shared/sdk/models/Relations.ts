@@ -45,6 +45,7 @@ export interface RelationsInterface {
   "companyprimairycolor"?: string;
   "companysecondarycolor"?: string;
   "companyfont"?: string;
+  "domain"?: string;
   "id"?: any;
   contactpersons?: Contactpersons[];
   publications?: Publications[];
@@ -90,6 +91,7 @@ export class Relations implements RelationsInterface {
   "companyprimairycolor": string;
   "companysecondarycolor": string;
   "companyfont": string;
+  "domain": string;
   "id": any;
   contactpersons: Contactpersons[];
   publications: Publications[];
@@ -233,6 +235,10 @@ export class Relations implements RelationsInterface {
         },
         "companyfont": {
           name: 'companyfont',
+          type: 'string'
+        },
+        "domain": {
+          name: 'domain',
           type: 'string'
         },
         "id": {
