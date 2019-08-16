@@ -10,7 +10,8 @@
             <input [(ngModel)]="imagename" type="text" matInput placeholder="Image Name">
         </mat-form-field>
 
-        <input style="width: 150px; height: 50px;" [style.background]="canvas['background-color']" [cpToggle]="false"
+
+        <input style="width: 150px; height: 30px;" [style.background]="canvas['background-color']" [cpToggle]="false"
             [cpOutputFormat]="'hex'" [(colorPicker)]="canvas['background-color']" (colorPickerChange)="detectchange()"
             [cpCancelButton]="true" [cpPresetLabel]="'Company colors'"
             [cpPresetColors]="[option.companyprimairycolor, option.companysecondarycolor, company.companyprimairycolor, company.companysecondarycolor]">
@@ -25,8 +26,8 @@
             <input (change)="detectchange()" [(ngModel)]="canvas.height" type="text" matInput placeholder="height">
             <label matSuffix>px</label>
         </mat-form-field>
-        <button mat-button (click)="resetImage()">reset</button>
-        <button mat-button (click)="getEditFile()">get images</button>
+        <button mat-button (click)="resetImage()">Reset</button>
+        <!-- <button mat-button (click)="getEditFile()">get images</button> -->
         <mat-form-field>
             <mat-label>Edit existing image</mat-label>
             <mat-select [(value)]="editableimage">
@@ -143,6 +144,7 @@
                                             </mat-expansion-panel>
                                         </mat-accordion>
                                     </div>
+                                    <br>
                                     <div fxLayout="row" fxLayout.xs="column">
                                         <mat-form-field>
                                             <mat-label>Select font</mat-label>
@@ -160,6 +162,14 @@
                                             </mat-select>
                                         </mat-form-field>
                                     </div>
+
+                                    <div fxLayout="row">
+                                        <mat-button-toggle fxFlex (click)="setbold(image)" value="bold">Bold
+                                        </mat-button-toggle>
+                                        <mat-button-toggle fxFlex (click)="setitalic(image)" value="italic">Italic
+                                        </mat-button-toggle>
+                                    </div>
+
                                 </div>
                             </mat-expansion-panel>
                         </mat-accordion>
@@ -290,6 +300,48 @@
                                                       <mat-option value="scatter">Scatter</mat-option> -->
                                             </mat-select>
                                         </mat-form-field>
+                                        <div fxLayout="column">
+                                        X-Axe
+                                        Gridline color
+                                        <input
+                                            [style.background]="image.lineChartOptions.scales.xAxes[0].gridLines.color"
+                                            [(colorPicker)]="image.lineChartOptions.scales.xAxes[0].gridLines.color"
+                                            (colorPickerChange)="detectchange()" [cpPresetLabel]="'Company colors'"
+                                            [cpPresetColors]="[company.companyprimairycolor, company.secondarycolor]">
+                                        <mat-icon class="iconsize-12"
+                                            (click)="image.lineChartOptions.scales.xAxes[0].gridLines.color = ''">delete
+                                        </mat-icon>
+                                        X-Axe
+                                        Font color
+                                        <input
+                                            [style.background]="image.lineChartOptions.scales.xAxes[0].ticks.fontColor"
+                                            [(colorPicker)]="image.lineChartOptions.scales.xAxes[0].ticks.fontColor"
+                                            (colorPickerChange)="detectchange()" [cpPresetLabel]="'Company colors'"
+                                            [cpPresetColors]="[company.companyprimairycolor, company.secondarycolor]">
+                                        <mat-icon class="iconsize-12"
+                                            (click)="image.lineChartOptions.scales.xAxes[0].ticks.fontColor = ''">delete
+                                        </mat-icon>
+                                        Y-axe
+                                        Gridline color
+                                        <input
+                                            [style.background]="image.lineChartOptions.scales.yAxes[0].gridLines.color"
+                                            [(colorPicker)]="image.lineChartOptions.scales.yAxes[0].gridLines.color"
+                                            (colorPickerChange)="detectchange()" [cpPresetLabel]="'Company colors'"
+                                            [cpPresetColors]="[company.companyprimairycolor, company.secondarycolor]">
+                                        <mat-icon class="iconsize-12"
+                                            (click)="image.lineChartOptions.scales.yAxes[0].gridLines.color = ''">delete
+                                        </mat-icon>
+                                        Y-axe
+                                        Font color
+                                        <input
+                                            [style.background]="image.lineChartOptions.scales.yAxes[0].ticks.fontColor"
+                                            [(colorPicker)]="image.lineChartOptions.scales.yAxes[0].ticks.fontColor"
+                                            (colorPickerChange)="detectchange()" [cpPresetLabel]="'Company colors'"
+                                            [cpPresetColors]="[company.companyprimairycolor, company.secondarycolor]">
+                                        <mat-icon class="iconsize-12"
+                                            (click)="image.lineChartOptions.scales.xAxes[0].ticks.fontColor = ''">delete
+                                        </mat-icon>
+                                    </div>
                                     </mat-expansion-panel>
                                 </mat-accordion>
 
@@ -355,10 +407,11 @@
 
                     <canvas baseChart width="image.style.width" height="image.style.height" [datasets]="image.data"
                         [labels]="image.label" [colors]="image.colors" [legend]="image.legend"
-                        [chartType]="image.charttype" [plugins]="lineChartPlugins" [attr.id]="'graph' + i">
+                        [options]="image.lineChartOptions" [chartType]="image.charttype" [plugins]="lineChartPlugins"
+                        [attr.id]="'graph' + i">
                     </canvas>
                 </div>
-                <!-- [options]="image.options" -->
+                <!--  -->
             </div>
         </div>
     </div>

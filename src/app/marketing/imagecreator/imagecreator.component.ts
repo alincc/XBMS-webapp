@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, SimpleChange, SimpleChanges } from '@angular/core';
 import { FileuploadComponent } from '../../shared/fileupload/fileupload.component';
 import {
   Relations, RelationsApi, BASE_URL, CompanyApi, Company, Account,
@@ -54,12 +54,13 @@ export class text {
     position: 'absolute';
     'font-size': string;
     'font-style': string;
+    'font-weight': string;
+    'font-family': string;
   }
   posx: number;
   posy: number;
   setpos: object;
 }
-
 
 export class chart {
   charttype: string;
@@ -86,6 +87,32 @@ export class chart {
   posx: number;
   posy: number;
   setpos: object;
+  lineChartOptions: ChartOptions = {
+     scales: {
+      // We use this empty structure as a placeholder for dynamic theming.
+      xAxes:[
+        {
+          gridLines: {
+            color: 'rgba(255,0,0,0.3)',
+          },
+          ticks: {
+            fontColor: 'blue',
+          }
+        }
+      ],
+      yAxes: [
+        {
+          position: 'right',
+          gridLines: {
+            color: 'rgba(255,0,0,0.3)',
+          },
+          ticks: {
+            fontColor: 'blue',
+          }
+        }
+      ]
+    }
+  }
 }
 
 @Component({
@@ -102,6 +129,7 @@ export class ImagecreatorComponent implements OnInit {
   @Input() SelectedRelation: Relations;
   @Input() option: Relations = new Relations();
   @Input() company: Company = new Company;
+
 
   public listviewxsshow = false;
   public showprogressbar = false;
@@ -127,6 +155,8 @@ export class ImagecreatorComponent implements OnInit {
   public showemoji = false;
   public newz = 1;
 
+
+
   inBounds = true;
   edge = {
     top: true,
@@ -150,7 +180,19 @@ export class ImagecreatorComponent implements OnInit {
     });
   }
 
-  ngOnInit() { }
+  ngOnInit() { 
+    
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    const currentItem: SimpleChange = changes.option;
+    //console.log(currentItem)
+    if(currentItem !== undefined){
+      this.getEditFile();
+    }
+  }
+  
+
 
 
   getEditFile() {
@@ -282,7 +324,9 @@ export class ImagecreatorComponent implements OnInit {
         height: "auto",
         position: 'absolute',
         'font-size': '20px',
-        'font-style': 'open-sans'
+        'font-family': 'Open Sans',
+        'font-style': '',
+        'font-weight': '',
         //transform : 'translate(10px, 10px)'
       },
       content: 'write here',
@@ -310,7 +354,33 @@ export class ImagecreatorComponent implements OnInit {
         pointBackgroundColor: '#232222',
         pointBorderColor: '#fff'
       }
-    ]
+    ];
+    let lineChartOptions: ChartOptions = {
+     
+      scales: {
+        // We use this empty structure as a placeholder for dynamic theming.
+        xAxes:[
+          {
+            gridLines: {
+              color: 'rgba(0,0,0,0.3)',
+            },
+            ticks: {
+              fontColor: 'black',
+            }
+          }
+        ],
+        yAxes: [
+          {
+            gridLines: {
+              color: 'rgba(0,0,0,0.3)',
+            },
+            ticks: {
+              fontColor: 'black',
+            }
+          }
+        ]
+      }
+    };
     let chart: chart = {
       src: '',
       charttype: 'line',
@@ -331,7 +401,9 @@ export class ImagecreatorComponent implements OnInit {
       },
       posx: 20,
       posy: 50,
-      setpos: { 'x': 20, 'y': 50 }
+      setpos: { 'x': 20, 'y': 50 },
+      lineChartOptions: lineChartOptions
+      
     }
     this.images.push(chart);
     console.log(chart);
@@ -495,6 +567,24 @@ export class ImagecreatorComponent implements OnInit {
     this.images = this.editableimage.template;
     this.canvas = this.editableimage.canvas[0];
     console.log(this.images, this.canvas);
+    this.detectchange();
+  }
+
+  setbold(img){
+    if (img.style['font-weight'] === 'bold'){
+      img.style['font-weight'] = '';
+    } else{
+      img.style['font-weight'] = 'bold';
+    }
+    this.detectchange();
+  }
+
+  setitalic(img){
+    if (img.style['font-style'] === 'italic'){
+      img.style['font-style'] = '';
+    } else {
+      img.style['font-style'] = 'italic';
+    }
     this.detectchange();
   }
 
