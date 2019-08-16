@@ -146,7 +146,7 @@ export class ImagecreatorComponent implements OnInit {
   ) {
     this.watcher = media.media$.subscribe((change: MediaChange) => {
       this.activeMediaQuery = change;
-      console.log(this.activeMediaQuery)
+      //console.log(this.activeMediaQuery)
     });
   }
 
@@ -406,28 +406,23 @@ export class ImagecreatorComponent implements OnInit {
 
   convertchartdata(): void {
     let i = 0;
-    let imgup = this.images;
-    imgup.forEach((img, index) => {
+
+    this.images.forEach((img, index) => {
       if (img.type === 'chart') {
         //img.data = undefined;
-        let newdata = [];
-        img.data.forEach(element => {
-          let newdataobj = [];
-          element.data.forEach(nr => {
-            newdataobj.push(nr);
-            console.log(nr)
-          });
-          newdata.push(newdataobj);
+        img.data.forEach(dataelement => {
+          dataelement._meta = undefined;
         });
-        img.data = newdata;
         ++i;
         if (i === this.images.length){
-          this.uploadFinalImages(imgup) 
+          console.log(this.images)
+          this.uploadFinalImages(this.images) 
         }
       } else {
         ++i;
         if (i === this.images.length){
-          this.uploadFinalImages(imgup) 
+          console.log(this.images)
+          this.uploadFinalImages(this.images) 
         }
       }
     });
