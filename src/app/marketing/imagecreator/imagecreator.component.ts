@@ -155,8 +155,6 @@ export class ImagecreatorComponent implements OnInit {
   public showemoji = false;
   public newz = 1;
 
-
-
   inBounds = true;
   edge = {
     top: true,
@@ -174,9 +172,9 @@ export class ImagecreatorComponent implements OnInit {
     private filesApi: FilesApi,
     public snackBar: MatSnackBar,
   ) {
+    // detect screen type
     this.watcher = media.media$.subscribe((change: MediaChange) => {
       this.activeMediaQuery = change;
-      //console.log(this.activeMediaQuery)
     });
   }
 
@@ -185,10 +183,13 @@ export class ImagecreatorComponent implements OnInit {
   }
 
   ngOnChanges(changes: SimpleChanges) {
+    //wait for option.id
     const currentItem: SimpleChange = changes.option;
-    //console.log(currentItem)
+    
     if(currentItem !== undefined){
-      this.getEditFile();
+      if(currentItem.currentValue.id !== undefined){
+        this.getEditFile();
+      }
     }
   }
   
@@ -199,7 +200,7 @@ export class ImagecreatorComponent implements OnInit {
     this.relationsApi.getFiles(this.option.id, { where: { template: { "neq":  null } } })
       .subscribe((files: Files[]) => {
         this.editableimages = files;
-        console.log('received files', this.editableimages);
+        //console.log('received files', this.editableimages);
       });
   }
 

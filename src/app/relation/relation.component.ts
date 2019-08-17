@@ -256,7 +256,7 @@ export class RelationComponent implements OnInit {
 
   ngOnInit() {
 
-    this.searchGoQuick('');
+    //this.searchGoQuick('');
 
     if (this.AccountApi.isAuthenticated() == false) { this.router.navigate(['login']) }
     this.setFilter();
@@ -356,8 +356,8 @@ export class RelationComponent implements OnInit {
         order: 'relationname ASC'
       })
       .subscribe((Relations: Relations[]) => {
-      this.filteredRelations = Relations,
-        console.log(this.filteredRelations)
+        this.filteredRelations = Relations
+          //console.log(this.filteredRelations)
       });
   }
 
@@ -414,7 +414,7 @@ export class RelationComponent implements OnInit {
 
   setFileParameter(): void {
     this.ContainerApi.findById(this.selectedRelation.id)
-      .subscribe(res => console.log(res),
+      .subscribe(res => console.log(),
         error =>
           this.ContainerApi.createContainer({ name: this.selectedRelation.id })
             .subscribe(res2 => console.log(res2)));
@@ -922,8 +922,8 @@ export class RelationComponent implements OnInit {
   getFiles(): void {
     this.RelationsApi.getFiles(this.selectedRelation.id)
       .subscribe((Files: Files[]) => {
-      this.Files = Files,
-        this.imagelist = [];
+        this.Files = Files,
+          this.imagelist = [];
         this.videolist = [];
         this.misclist = [];
 
@@ -1238,25 +1238,33 @@ export class RelationComponent implements OnInit {
   }
 
 
-  deleteDomain(){
+  deleteDomain() {
     this.MailingApi.deletedomain(this.selectedRelation.companyId, this.currentdomain)
-    .subscribe(res => console.log(res));
+      .subscribe(res =>
+        this.openSnackBar(res));
   }
 
   setDomain(): void {
-    if (this.selectedRelation.domain !==  this.currentdomain){
-     // this.deleteDomain();
+    if (this.selectedRelation.domain !== this.currentdomain) {
+      // this.deleteDomain();
     }
     this.saveRelation();
     this.MailingApi.setdomain(this.selectedRelation.companyId, this.selectedRelation.domain)
-    .subscribe(res => {
-      console.log(res)});
+      .subscribe(res => {
+        this.openSnackBar(res)
+      });
   }
 
   checkDomainSettings(): void {
     this.MailingApi.getdomaininfo(this.selectedRelation.companyId, this.selectedRelation.domain)
-    .subscribe(res => {this.domainresponse = res.sending_dns_records[1].value, console.log(res)});
+      .subscribe(res => {
+        if (res.sending_dns_records[1].value) {
+          this.domainresponse = res.sending_dns_records[1].value,
+            this.openSnackBar('Domain set')
+        }
+      });
   }
+
 
 
 }

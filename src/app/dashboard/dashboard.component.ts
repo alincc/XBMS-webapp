@@ -551,7 +551,7 @@ export class DashboardComponent implements OnInit {
           this.googleanalyticsreturn.push(analyticsobject);
           this.Googleanalyticsnames.push(item[0]);
         }),
-          console.log(this.googleanalyticsreturn);
+          //console.log(this.googleanalyticsreturn);
         // get array even and uneven split
         // this.get1Numbers();
         this.getDoughnutNumbers(); // Doughnut

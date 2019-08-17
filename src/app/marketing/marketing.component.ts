@@ -399,8 +399,8 @@ export class MarketingComponent implements OnInit {
         order: 'relationname ASC'
       })
       .subscribe((Relations: Relations[]) => {
-      this.filteredRelations = Relations,
-        console.log(this.filteredRelations)
+      this.filteredRelations = Relations
+        //console.log(this.filteredRelations)
       });
   }
 
@@ -564,8 +564,8 @@ export class MarketingComponent implements OnInit {
   getTransationsjobs(): void {
     // need project nr. to fetch languages
     this.TranslationApi.getlanguages(this.selectedTranslation.id).subscribe(res => {
-      this.languages = res,
-        console.log(this.languages.language)
+      this.languages = res
+        //console.log(this.languages.language)
     });
     this.TranslationApi.getTranslationjob(this.selectedTranslation.id)
       .subscribe((translationjob: Translationjob[]) => {
@@ -821,7 +821,7 @@ export class MarketingComponent implements OnInit {
 
   // get update on jobS ! move to API as hook or automation
   updateTranslation(): void {
-    console.log(this.selectedTranslation.order_id);
+    // console.log(this.selectedTranslation.order_id);
     this.TranslationApi.getorder(this.selectedTranslation.order_id).subscribe(res => {
       let jobsoverview = [];
       Object.keys(res.order).forEach(key => {

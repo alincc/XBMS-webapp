@@ -69,7 +69,6 @@ export class MarketingpublicationsComponent implements OnInit {
   ngOnInit() {
   }
 
-  
   swiperight(e) {
     console.log(e);
     this.listviewxsshow = true;

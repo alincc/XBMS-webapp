@@ -105,7 +105,7 @@ export class AppComponent implements AfterViewInit {
           }).subscribe((logger: Logger[]) => {
             { this.logger = logger };
             this.messagecount = this.logger.length;
-            console.log(this.messagecount, this.logger);
+            // console.log(this.messagecount, this.logger);
           });
     });
   }
