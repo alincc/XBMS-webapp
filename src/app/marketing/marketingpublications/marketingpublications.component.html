@@ -236,15 +236,26 @@
                     <input matInput [(ngModel)]="selectedPublications.keywords" placeholder="Keywords"
                       class="InputField" />
                   </mat-form-field>
-                  The article should be: <br>
+                  The article should be mostly: <br>
                   <mat-checkbox>Positive</mat-checkbox><br>
                   <mat-checkbox>Negative</mat-checkbox><br>
                   <mat-checkbox>Informative</mat-checkbox><br>
                   <mat-form-field class="form-full-width">
-                      <input matInput [(ngModel)]="selectedPublications.location" placeholder="Location (optional)"
-                        class="InputField" />
-                    </mat-form-field>
-                  <<button mat-button (click)="createDynaContent()">Run</button>
+                    <input matInput [(ngModel)]="selectedPublications.location" placeholder="Location (optional)"
+                      class="InputField" />
+                  </mat-form-field>
+                  <mat-select placeholder="Country" [(ngModel)]="selectedcountry" name="Country">
+                    <mat-option *ngFor="let country of countries" [value]="country">
+                      {{ country }}
+                    </mat-option>
+                  </mat-select>
+                  <mat-select placeholder="Lanuage" [(ngModel)]="selectedlanguage" name="Language">
+                    <mat-option *ngFor="let language of languages" [value]="country">
+                      {{ language.name }}
+                    </mat-option>
+                  </mat-select>
+
+                  <button mat-button (click)="createDynaContent()">Run</button>
                 </mat-expansion-panel>
                 <br>
                 <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
@@ -258,7 +269,7 @@
                     <div *ngIf="selectedPublications.pictureurl">
                       <img src="{{ selectedPublications.pictureurl }}" class="picture" />
                       <button class="deletepicture" mat-mini-fab color="primary" (click)="deletePicture()">
-                        <mat-icon (click)="selectedPublications.pictureurl = ''" >delete</mat-icon>
+                        <mat-icon (click)="selectedPublications.pictureurl = ''">delete</mat-icon>
                       </button>
                     </div>
                     <app-fileupload *ngIf="!selectedPublications.pictureurl" [account]="Account" [option]="option"
