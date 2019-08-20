@@ -9,16 +9,15 @@ import { LoopBackFilter,  } from '../../models/BaseModels';
 import { ErrorHandler } from '../core/error.service';
 import { Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { Websitetracker } from '../../models/Websitetracker';
+import { Articlereposter } from '../../models/Articlereposter';
 import { SocketConnection } from '../../sockets/socket.connections';
-import { Relations } from '../../models/Relations';
 
 
 /**
- * Api services for the `Websitetracker` model.
+ * Api services for the `Articlereposter` model.
  */
 @Injectable()
-export class WebsitetrackerApi extends BaseLoopBackApi {
+export class ArticlereposterApi extends BaseLoopBackApi {
 
   constructor(
     @Inject(HttpClient) protected http: HttpClient,
@@ -33,7 +32,7 @@ export class WebsitetrackerApi extends BaseLoopBackApi {
   /**
    * Fetches belongsTo relation relations.
    *
-   * @param {any} id websitetracker id
+   * @param {any} id articlereposter id
    *
    * @param {boolean} refresh 
    *
@@ -43,13 +42,13 @@ export class WebsitetrackerApi extends BaseLoopBackApi {
    *
    * <em>
    * (The remote method definition does not provide any description.
-   * This usually means the response is a `Websitetracker` object.)
+   * This usually means the response is a `Articlereposter` object.)
    * </em>
    */
   public getRelations(id: any, refresh: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/websitetrackers/:id/relations";
+    "/articlereposters/:id/relations";
     let _routeParams: any = {
       id: id
     };
@@ -73,13 +72,13 @@ export class WebsitetrackerApi extends BaseLoopBackApi {
    *
    * <em>
    * (The remote method definition does not provide any description.
-   * This usually means the response is a `Websitetracker` object.)
+   * This usually means the response is a `Articlereposter` object.)
    * </em>
    */
   public patchOrCreate(data: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "PATCH";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/websitetrackers";
+    "/articlereposters";
     let _routeParams: any = {};
     let _postBody: any = {
       data: data
@@ -92,7 +91,7 @@ export class WebsitetrackerApi extends BaseLoopBackApi {
   /**
    * Patch attributes for a model instance and persist it into the data source.
    *
-   * @param {any} id websitetracker id
+   * @param {any} id articlereposter id
    *
    * @param {object} data Request data.
    *
@@ -104,13 +103,13 @@ export class WebsitetrackerApi extends BaseLoopBackApi {
    *
    * <em>
    * (The remote method definition does not provide any description.
-   * This usually means the response is a `Websitetracker` object.)
+   * This usually means the response is a `Articlereposter` object.)
    * </em>
    */
   public patchAttributes(id: any, data: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "PATCH";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/websitetrackers/:id";
+    "/articlereposters/:id";
     let _routeParams: any = {
       id: id
     };
@@ -127,28 +126,29 @@ export class WebsitetrackerApi extends BaseLoopBackApi {
          * (The remote method definition does not provide any description.)
          * </em>
    *
-   * @param {object} data Request data.
+   * @param {string} id 
    *
-   * This method expects a subset of model properties as request parameters.
+   * @param {string} text 
    *
-   * @returns {object} An empty reference that will be
+   * @returns {object[]} An empty reference that will be
    *   populated with the actual data once the response is returned
    *   from the server.
    *
    * <em>
    * (The remote method definition does not provide any description.
-   * This usually means the response is a `Websitetracker` object.)
+   * This usually means the response is a `Articlereposter` object.)
    * </em>
    */
-  public registervisit(req: any = {}, customHeaders?: Function): Observable<any> {
-    let _method: string = "POST";
+  public assistant(id: any = {}, text: any = {}, customHeaders?: Function): Observable<any> {
+    let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/websitetrackers/registervisit";
-    let _routeParams: any = {};
-    let _postBody: any = {
-      req: req
+    "/articlereposters/assistant/:id";
+    let _routeParams: any = {
+      id: id
     };
+    let _postBody: any = {};
     let _urlParams: any = {};
+    if (typeof text !== 'undefined' && text !== null) _urlParams.text = text;
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
     return result;
   }
@@ -158,70 +158,56 @@ export class WebsitetrackerApi extends BaseLoopBackApi {
          * (The remote method definition does not provide any description.)
          * </em>
    *
-   * @param {object} data Request data.
+   * @param {string} id 
    *
-   * This method expects a subset of model properties as request parameters.
+   * @param {string} url 
    *
-   * @returns {object} An empty reference that will be
+   * @param {string} term 
+   *
+   * @param {string} country 
+   *
+   * @param {string} language 
+   *
+   * @param {string} location 
+   *
+   * @param {string} timeframe 
+   *
+   * @param {string} negativekeywords 
+   *
+   * @returns {object[]} An empty reference that will be
    *   populated with the actual data once the response is returned
    *   from the server.
    *
    * <em>
    * (The remote method definition does not provide any description.
-   * This usually means the response is a `Websitetracker` object.)
+   * This usually means the response is a `Articlereposter` object.)
    * </em>
    */
-  public findip(req: any = {}, customHeaders?: Function): Observable<websitetracker[]> {
-    let _method: string = "POST";
+  public repost(id: any = {}, url: any = {}, term: any = {}, country: any = {}, language: any = {}, location: any = {}, timeframe: any = {}, negativekeywords: any = {}, customHeaders?: Function): Observable<any> {
+    let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/websitetrackers/findip";
-    let _routeParams: any = {};
-    let _postBody: any = {
-      req: req
+    "/articlereposters/repost/:id";
+    let _routeParams: any = {
+      id: id
     };
+    let _postBody: any = {};
     let _urlParams: any = {};
-    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-    return result.pipe(map((instances: Array<Websitetracker>) =>
-        instances.map((instance: Websitetracker) => new Websitetracker(instance))
-    ));
-  }
-
-  /**
-   * <em>
-         * (The remote method definition does not provide any description.)
-         * </em>
-   *
-   * @param {object} data Request data.
-   *
-   * This method expects a subset of model properties as request parameters.
-   *
-   * @returns {object} An empty reference that will be
-   *   populated with the actual data once the response is returned
-   *   from the server.
-   *
-   * <em>
-   * (The remote method definition does not provide any description.
-   * This usually means the response is a `Websitetracker` object.)
-   * </em>
-   */
-  public getGoogleMapsLocation(geocode: any = {}, customHeaders?: Function): Observable<any> {
-    let _method: string = "POST";
-    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/websitetrackers/getGoogleMapsLocation";
-    let _routeParams: any = {};
-    let _postBody: any = {
-      geocode: geocode
-    };
-    let _urlParams: any = {};
+    if (typeof url !== 'undefined' && url !== null) _urlParams.url = url;
+    if (typeof term !== 'undefined' && term !== null) _urlParams.term = term;
+    if (typeof country !== 'undefined' && country !== null) _urlParams.country = country;
+    if (typeof language !== 'undefined' && language !== null) _urlParams.language = language;
+    if (typeof location !== 'undefined' && location !== null) _urlParams.location = location;
+    if (typeof timeframe !== 'undefined' && timeframe !== null) _urlParams.timeframe = timeframe;
+    if (typeof negativekeywords !== 'undefined' && negativekeywords !== null) _urlParams.negativekeywords = negativekeywords;
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
     return result;
   }
 
   /**
    * The name of the model represented by this $resource,
-   * i.e. `Websitetracker`.
+   * i.e. `Articlereposter`.
    */
   public getModelName() {
-    return "Websitetracker";
+    return "Articlereposter";
   }
 }

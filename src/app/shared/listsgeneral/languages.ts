@@ -1,4 +1,4 @@
-const languages = [{"code":"ab","name":"Abkhaz","nativeName":"аҧсуа"},
+export const languages = [{"code":"ab","name":"Abkhaz","nativeName":"аҧсуа"},
       {"code":"aa","name":"Afar","nativeName":"Afaraf"},
       {"code":"af","name":"Afrikaans","nativeName":"Afrikaans"},
       {"code":"ak","name":"Akan","nativeName":"Akan"},

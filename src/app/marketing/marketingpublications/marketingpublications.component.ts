@@ -30,12 +30,27 @@ import {
   Adwords,
   AdwordsApi,
   timezones,
-  CrawlwebApi
+  CrawlwebApi,
+  ArticlereposterApi
 } from '../../shared/';
 import { DialogsService } from './../../dialogsservice/dialogs.service';
 import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material';
 import { TextEditorDialog } from './../maileditor/texteditordialog.component';
 import { WordpressService } from '../../shared/websiteservice';
+import { months } from 'moment';
+import { languages } from '../../shared/listsgeneral/languages';
+import { countrylist } from '../../shared/listsgeneral/countrylist';
+
+export class tone {score: number; tone_name: string;}
+
+export class Dynatext {
+  abstract: string;
+  keywords: string;
+  tag: string;
+  text: string;
+  url: string;
+  tone: Array<tone>;
+}
 
 @Component({
   selector: 'app-marketingpublications',
@@ -56,9 +71,26 @@ export class MarketingpublicationsComponent implements OnInit {
     { value: '30', viewValue: '30' }
   ];
   public listviewxsshow = false;
-
+  public languages = languages;
+  public countrylist = countrylist; 
+  public dynatext: Dynatext[]; 
+  public searchdynatext = false;
+  public timeframes = [
+    {name: 'None', value: ''},
+    {name: '1 day', value: '1d'},
+    {name: '2 days', value: '2d'},
+    {name: '3 days', value: '3d'},
+    {name: '7 days', value: '7d'},
+    {name: '1 months', value: '1m'},
+    {name: '2 months', value: '2m'},
+    {name: '3 months', value: '3m'},
+    {name: '1 year', value: '1y'},
+    {name: '2 years', value: '2y'},
+    {name: '3 years', value: '3y'},
+  ]
 
   constructor(
+    public articlereposterApi:  ArticlereposterApi,
     public crawlwebapi: CrawlwebApi,
     public PublicationsApi: PublicationsApi,
     public RelationsApi: RelationsApi,
@@ -171,8 +203,21 @@ export class MarketingpublicationsComponent implements OnInit {
   }
 
   createDynaContent(): void {
-    this.crawlwebapi.crawlurl()
-    .subscribe()
+    this.searchdynatext = true;
+    this.articlereposterApi.repost(
+      this.option.id, 
+      this.option.website,
+      this.selectedPublications.keywords,
+      this.selectedPublications.country,
+      this.selectedPublications.language,
+      this.selectedPublications.location,
+      this.selectedPublications.timeframe, 
+      this.selectedPublications.negativekeywords 
+       )
+    .subscribe((res:Dynatext[]) => {
+      this.searchdynatext = false; 
+      this.dynatext = res;
+    console.log(this.dynatext)});
   }
 
 

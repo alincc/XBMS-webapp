@@ -38,6 +38,11 @@ export interface PublicationsInterface {
   "videoname"?: string;
   "videourl"?: string;
   "location"?: string;
+  "country"?: string;
+  "language"?: string;
+  "term"?: string;
+  "timeframe"?: string;
+  "negativekeywords"?: string;
   "id"?: any;
   "marketingplannerId"?: any;
   relations?: Relations;
@@ -77,6 +82,11 @@ export class Publications implements PublicationsInterface {
   "videoname": string;
   "videourl": string;
   "location": string;
+  "country": string;
+  "language": string;
+  "term": string;
+  "timeframe": string;
+  "negativekeywords": string;
   "id": any;
   "marketingplannerId": any;
   relations: Relations;
@@ -222,6 +232,27 @@ export class Publications implements PublicationsInterface {
         },
         "location": {
           name: 'location',
+          type: 'string'
+        },
+        "country": {
+          name: 'country',
+          type: 'string'
+        },
+        "language": {
+          name: 'language',
+          type: 'string'
+        },
+        "term": {
+          name: 'term',
+          type: 'string'
+        },
+        "timeframe": {
+          name: 'timeframe',
+          type: 'string',
+          default: '1m'
+        },
+        "negativekeywords": {
+          name: 'negativekeywords',
           type: 'string'
         },
         "id": {

@@ -236,6 +236,10 @@
                     <input matInput [(ngModel)]="selectedPublications.keywords" placeholder="Keywords"
                       class="InputField" />
                   </mat-form-field>
+                  <mat-form-field class="form-full-width">
+                    <input matInput [(ngModel)]="selectedPublications.negativekeywords" placeholder="Negative keywords"
+                      class="InputField" />
+                  </mat-form-field>
                   The article should be mostly: <br>
                   <mat-checkbox>Positive</mat-checkbox><br>
                   <mat-checkbox>Negative</mat-checkbox><br>
@@ -244,19 +248,43 @@
                     <input matInput [(ngModel)]="selectedPublications.location" placeholder="Location (optional)"
                       class="InputField" />
                   </mat-form-field>
-                  <mat-select placeholder="Country" [(ngModel)]="selectedcountry" name="Country">
-                    <mat-option *ngFor="let country of countries" [value]="country">
+                  <br>
+                  <mat-select placeholder="Country" [(ngModel)]="selectedPublications.country" name="Country">
+                    <mat-option *ngFor="let country of countrylist" [value]="country">
                       {{ country }}
                     </mat-option>
                   </mat-select>
-                  <mat-select placeholder="Lanuage" [(ngModel)]="selectedlanguage" name="Language">
-                    <mat-option *ngFor="let language of languages" [value]="country">
+                  <br>
+                  <mat-select placeholder="Lanuage" [(ngModel)]="selectedPublications.language" name="Language">
+                    <mat-option *ngFor="let language of languages" [value]="language.name">
                       {{ language.name }}
+                    </mat-option>
+                  </mat-select>
+                  <br>
+                  <mat-select placeholder="Timeframe" [(ngModel)]="selectedPublications.timeframe" name="timeframe">
+                    <mat-option *ngFor="let timeframe of timeframes" [value]="timeframe.value">
+                      {{ timeframe.name }}
                     </mat-option>
                   </mat-select>
 
                   <button mat-button (click)="createDynaContent()">Run</button>
-                </mat-expansion-panel>
+                  <br>
+                  
+                  <mat-progress-bar *ngIf="searchdynatext" mode="query"></mat-progress-bar>
+
+                  <br>
+                  <div *ngIf="dynatext"> 
+                  <div *ngFor="let dynatext of dynatext" style="background-color: whitesmoke">
+                    <label>{{dynatext.abstract | slice:0:100 }}</label><br>
+                    <label>{{dynatext.keywords}}</label><br>
+                    <label>{{dynatext.url}}</label><br>
+                    <div *ngFor="let tone of dynatext.tone">
+                      <label>{{tone.score}}</label><br>
+                      <label>{{tone.tone_name}}</label><br>
+                  </div>
+                </div>
+                </div>
+              </mat-expansion-panel>
                 <br>
                 <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
                   <mat-expansion-panel-header>
@@ -268,9 +296,9 @@
                   <div>
                     <div *ngIf="selectedPublications.pictureurl">
                       <img src="{{ selectedPublications.pictureurl }}" class="picture" />
-                      <button class="deletepicture" mat-mini-fab color="primary" (click)="deletePicture()">
-                        <mat-icon (click)="selectedPublications.pictureurl = ''">delete</mat-icon>
-                      </button>
+                        <button class="deletepicture" mat-mini-fab color="primary" (click)="deletePicture()">
+                          <mat-icon (click)="selectedPublications.pictureurl = ''">delete</mat-icon>
+                        </button>
                     </div>
                     <app-fileupload *ngIf="!selectedPublications.pictureurl" [account]="Account" [option]="option"
                       (imgurl)="onSelectImage($event)">
