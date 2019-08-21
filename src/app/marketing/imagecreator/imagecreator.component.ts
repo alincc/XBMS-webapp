@@ -178,9 +178,7 @@ export class ImagecreatorComponent implements OnInit {
     });
   }
 
-  ngOnInit() { 
-    
-  }
+  ngOnInit() { }
 
   ngOnChanges(changes: SimpleChanges) {
     //wait for option.id
@@ -193,9 +191,6 @@ export class ImagecreatorComponent implements OnInit {
     }
   }
   
-
-
-
   getEditFile() {
     this.relationsApi.getFiles(this.option.id, { where: { template: { "neq":  null } } })
       .subscribe((files: Files[]) => {
@@ -211,7 +206,6 @@ export class ImagecreatorComponent implements OnInit {
         img.setpos = { 'x': img.posx, 'y': img.posy };
         //  img.style.transform = 'translate('+ img.posx + ' px, '+ img.posy + 'px)';
       }
-
     })
     console.log(this.images)
     this.changenow = false;
@@ -305,7 +299,6 @@ export class ImagecreatorComponent implements OnInit {
         height: "200px",
         position: 'absolute',
         'background-color': '#000000'
-
       },
       src: '',
       posx: 50,
