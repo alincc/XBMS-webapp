@@ -290,6 +290,9 @@
                         <label>{{dynatext.abstract | slice:0:300 }}</label><br>
                         <label>{{dynatext.keywords}}</label><br>
                       </mat-card>
+                      <button a mat-raised-button (click)="setTextPublication(dynatext)">
+                          Use text
+                        </button>
                       <br>
                     </div>
                   </div>

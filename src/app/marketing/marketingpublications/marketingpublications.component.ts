@@ -220,5 +220,13 @@ export class MarketingpublicationsComponent implements OnInit {
     console.log(this.dynatext)});
   }
 
+  setTextPublication(dynatext: Dynatext): void {
+    this.selectedPublications.text = 
+    '<h1>' + dynatext.keywords + '</h1><br>' +
+      dynatext.text + '<br> &nbsp;' +
+      'Orginal sources: ' + dynatext.url;
+  }
+
+  
 
 }
