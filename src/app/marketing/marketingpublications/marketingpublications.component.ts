@@ -227,6 +227,10 @@ export class MarketingpublicationsComponent implements OnInit {
       'Orginal sources: ' + dynatext.url;
   }
 
+  createChannel(): void {
+    
+  }
+
   
 
 }

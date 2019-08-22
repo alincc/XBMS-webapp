@@ -202,6 +202,7 @@ export class RelationComponent implements OnInit {
   public editCrawler = false;
   public togglesearch = false;
   public listviewxsshow = false;
+  public trackingcode: string;
 
   constructor(
     public dialog: MatDialog,
@@ -410,6 +411,10 @@ export class RelationComponent implements OnInit {
       this.selectedRelation.country;
     //get geo location
     this.getAddress();
+    this.trackingcode = '<script type="text/javascript">' +
+    'var currentLocation=window.location,url=new URL("' + 
+    'https://xbmsapi.eu-gb.mybluemix.net/api/websitetrackers/registervisit?id=' + this.selectedRelation.id +'");url.searchParams.append("src",currentLocation);var xmlHttp=new XMLHttpRequest;xmlHttp.onreadystatechange=function(){4==xmlHttp.readyState&&200==xmlHttp.status&&callback(xmlHttp.responseText)},xmlHttp.open("GET",url,!0),xmlHttp.send(null);' +
+    '</script>'
   }
 
   setFileParameter(): void {
@@ -1264,6 +1269,22 @@ export class RelationComponent implements OnInit {
         }
       });
   }
+
+  
+  copyMessage(val: string) {
+    let selBox = document.createElement('textarea');
+    selBox.style.position = 'fixed';
+    selBox.style.left = '0';
+    selBox.style.top = '0';
+    selBox.style.opacity = '0';
+    selBox.value = val;
+    document.body.appendChild(selBox);
+    selBox.focus();
+    selBox.select();
+    document.execCommand('copy');
+    document.body.removeChild(selBox);
+  }
+
 
 
 

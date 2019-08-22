@@ -1219,7 +1219,10 @@
                 </mat-button-toggle>
                 <mat-button-toggle value="Adwords" (click)="getAdwords()">
                   <mat-icon>details</mat-icon> Adwords
-                </mat-button-toggle>
+                </mat-button-toggle> 
+                <mat-button-toggle value="Tracking">
+                    <mat-icon>track_changes</mat-icon> Tracking
+                  </mat-button-toggle>
               </mat-button-toggle-group>
 
             </mat-list>
@@ -1522,6 +1525,27 @@
             <button mat-button>Save</button>
           </mat-card-actions>
         </mat-card>
+
+        <mat-card *ngIf="group.value == 'Tracking'" class="account-card">
+          <mat-card-header>
+            <mat-card-title>Tracking code</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+              <div fxLayout="column">
+            <label>Copy and paste the code below in your website header</label>
+            <a href="https://support.autopilothq.com/hc/en-us/articles/207933036-How-do-I-add-the-tracking-code-to-a-Wordpress-website-" target="_blank">For Wordpress</a>
+            <a href="https://support.energizethemes.com/how-do-i-update-the-header-and-footer-code/" target="_blank">For Joomla</a>
+            <a href="https://www.drupal.org/project/header_and_footer_scripts" target="_blank">For Drupal</a>
+              <mat-form-field class="example-full-width">
+                  <textarea matInput [(ngModel)]=trackingcode (click)="copyMessage(trackingcode)" (mouseenter)="$event.stopImmediatePropagation()" (mouseleave)="$event.stopImmediatePropagation()"
+                  matTooltip="Copied!" (click)="tooltip.toggle()" #tooltip="matTooltip"></textarea>
+                </mat-form-field>
+                <button mat-button (mouseenter)="$event.stopImmediatePropagation()" (mouseleave)="$event.stopImmediatePropagation()"
+                matTooltip="Copied!" #tooltip="matTooltip" (click)="copyMessage(trackingcode)" (click)="tooltip.toggle()">Copy</button>
+                </div>
+          </mat-card-content>
+        </mat-card>
+
       </div>
 
     </mat-tab>
