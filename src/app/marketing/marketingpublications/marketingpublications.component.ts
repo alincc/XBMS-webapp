@@ -220,7 +220,9 @@ export class MarketingpublicationsComponent implements OnInit {
     console.log(this.dynatext)});
   }
 
+
   setTextPublication(dynatext: Dynatext): void {
+    console.log(dynatext);
     this.selectedPublications.text = 
     '<h1>' + dynatext.keywords + '</h1><br>' +
       dynatext.text + '<br> &nbsp;' +
@@ -231,6 +233,6 @@ export class MarketingpublicationsComponent implements OnInit {
     
   }
 
-  
+
 
 }

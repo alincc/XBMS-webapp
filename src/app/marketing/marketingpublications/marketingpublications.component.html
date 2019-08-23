@@ -213,7 +213,7 @@
                     <mat-hint align="end">{{
                                   content.value.length
                                 }}</mat-hint> </mat-form-field>-->
-                  <ckeditor #content [(ngModel)]="selectedPublications.content" [config]="{
+                  <ckeditor #content [(ngModel)]="selectedPublications.text" [config]="{
                                   extraPlugins: 'emoji,font,spacingsliders,colorbutton,colordialog',
                                   colorButton_enableMore: 'true',
                                   toolbarCanCollapse: 'true',
