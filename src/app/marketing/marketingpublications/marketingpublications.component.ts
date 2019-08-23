@@ -49,8 +49,11 @@ export class Dynatext {
   tag: string;
   text: string;
   url: string;
+  title: string;
   tone: Array<tone>;
 }
+
+
 
 @Component({
   selector: 'app-marketingpublications',
@@ -179,7 +182,6 @@ export class MarketingpublicationsComponent implements OnInit {
         });
     }
 
-    
   // delete Publications -> check container?
   deletePublications(selectedOption): void {
     if (selectedOption === true) {
@@ -204,14 +206,17 @@ export class MarketingpublicationsComponent implements OnInit {
 
   createDynaContent(): void {
     this.searchdynatext = true;
+    //let language = this.selectedPublications.language;
+    const language = this.languages.find(language => language.name === this.selectedPublications.language);
+    const timeframe = this.timeframes.find(timeframe => timeframe.name === this.selectedPublications.timeframe);
     this.articlereposterApi.repost(
       this.option.id, 
       this.option.website,
       this.selectedPublications.keywords,
       this.selectedPublications.country,
-      this.selectedPublications.language,
+      'lang_' + language.code,
       this.selectedPublications.location,
-      this.selectedPublications.timeframe, 
+      timeframe.value, 
       this.selectedPublications.negativekeywords 
        )
     .subscribe((res:Dynatext[]) => {

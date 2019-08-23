@@ -60,7 +60,10 @@ export class RandomService {
             this.randomizer.time,
             list,
             this.randomizer.timezone,
-            createnewcampaign
+            createnewcampaign,
+            this.randomizer.followupmailing,
+            this.randomizer.followupdays,
+            this.randomizer.openclickedorall
           ).subscribe(res => { console.log(res), this.openSnackBar('Added To Campaigns') })
         } else { this.openSnackBar('no list or campaign selected') }
       } else {

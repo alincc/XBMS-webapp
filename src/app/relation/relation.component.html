@@ -37,7 +37,7 @@
       <div class="tabcontainer" fxLayout="row" (swipeleft)="swipeleft($event)" (swiperight)="swiperight($event)">
         <div fxLayout="column" ngClass.gt-xs="listview-normal" ngClass.lt-sm="listview-noshow"
           [class.listview-xs-show]="listviewxsshow" class="card-left-menu">
-          <h4>Search</h4>
+          <h4 i18n>Search</h4>
           <mat-form-field>
             <input matInput [(ngModel)]=searchterm (keyup.enter)="searchGo()" placeholder="Name/Address" />
           </mat-form-field>
@@ -72,7 +72,7 @@
               <label>{{skip}} / {{limit}}</label>
             </div>
             <div fxLayout="row" fxLayout.xs="column">
-              <div fxFlex><label>Total</label></div>
+              <div fxFlex><label i18n>Total</label></div>
               <div fxFlex><label>{{totalrelationcount}}</label></div>
             </div>
           </div>
@@ -93,11 +93,11 @@
                       <mat-menu #menurelation="matMenu">
                         <button mat-menu-item (click)="openDialogDelete()">
                           <mat-icon>delete</mat-icon>
-                          <span>Delete</span>
+                          <span i18n>Delete</span>
                         </button>
                         <button mat-menu-item (click)="openDialogNewRelation()">
                           <mat-icon>note_add</mat-icon>
-                          <span>New</span>
+                          <span i18n>New</span>
                         </button>
                       </mat-menu>
                     </mat-toolbar>
@@ -214,7 +214,7 @@
                     <mat-accordion>
                       <mat-expansion-panel>
                         <mat-expansion-panel-header>
-                          <mat-panel-title>
+                          <mat-panel-title i18n>
                             Secondary Color
                           </mat-panel-title>
                         </mat-expansion-panel-header>
@@ -253,7 +253,7 @@
     <mat-tab label="Calls">
       <ng-template mat-tab-label>
         <mat-icon>perm_phone_msg</mat-icon>
-        <div fxShow.xs="false">Calls</div>
+        <div i18n fxShow.xs="false">Calls</div>
       </ng-template>
       <div class="addtobutton">
         <button mat-fab color="primary" matTooltip="Create new Call" (click)="openDialogNewCall()">

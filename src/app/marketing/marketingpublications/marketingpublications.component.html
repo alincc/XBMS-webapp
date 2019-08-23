@@ -262,7 +262,7 @@
                   </mat-select>
                   <br>
                   <mat-select placeholder="Timeframe" [(ngModel)]="selectedPublications.timeframe" name="timeframe">
-                    <mat-option *ngFor="let timeframe of timeframes" [value]="timeframe.value">
+                    <mat-option *ngFor="let timeframe of timeframes" [value]="timeframe.name">
                       {{ timeframe.name }}
                     </mat-option>
                   </mat-select>
@@ -276,6 +276,7 @@
                   <div *ngIf="dynatext">
                     <div *ngFor="let dynatext of dynatext">
                       <mat-card>
+                        <h2 i18n>{{dynatext.title}}</h2>
                         <a href="{{dynatext.url}}" target="_blank">{{dynatext.url}}</a>
                         <br>
                         <div *ngFor="let tone of dynatext.tone" fxLayout="row">
@@ -287,13 +288,14 @@
                           <label fxFlex>&nbsp;{{tone.score | percent}} </label>
                           <br>
                         </div><br>
-                        <h4>Summary</h4>
+                        <h4 i18n>Summary</h4>
                         <label>{{dynatext.abstract }}</label><br>
                         <!-- | slice:0:300 -->
-                        <h4>Keywords</h4>
+                        <h4 i18n>Keywords</h4>
                         <label>{{dynatext.keywords}}</label><br>
                       </mat-card>
-                      <button a mat-raised-button (click)="setTextPublication(dynatext)">
+                      <br>
+                      <button a mat-raised-button style="margin: 10px 0px 10px 0px;"(click)="setTextPublication(dynatext)" i18n>
                           Use text
                         </button>
                       <br>
@@ -303,7 +305,7 @@
                 <br>
                 <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
                   <mat-expansion-panel-header>
-                    <mat-panel-title>
+                    <mat-panel-title i18n>
                       <mat-icon>insert_photo</mat-icon> Add media
                     </mat-panel-title>
                   </mat-expansion-panel-header>

@@ -569,7 +569,7 @@
 
                 <div *ngIf="selectedMailing.send">
                   <div  style="margin: 20px 0px 40px 0px" class="max-div -content">
-                    <div fxLayout="row" fxLayout.xs="column">
+                    <div fxLayout="row" fxLayout.xs="column" fxLayoutAlign="space-around">
                       <div fxFlexstyle="width: 25%;">
                         <label>Opened </label>
                       </div>
@@ -583,7 +583,7 @@
                         <label>Unsubscribed</label>
                       </div>
                     </div>
-                    <div fxLayout="row" fxLayout.xs="column">
+                    <div fxLayout="row" fxLayout.xs="column" fxLayoutAlign="space-around">
                       <div fxFlexstyle="width: 25%;">
                         {{ selectedMailing.totalopened }}
                       </div>

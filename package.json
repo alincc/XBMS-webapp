@@ -1,6 +1,6 @@
 {
   "name": "xbms",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "license": "MIT",
   "scripts": {
     "ng": "ng",
@@ -8,6 +8,7 @@
     "start": "node --max_old_space_size=8192 ./node_modules/@angular/cli/bin/ng serve",
     "build-check": "node --max_old_space_size=8192 ./node_modules/@angular/cli/bin/ng build --prod --stats-json",
     "build": "node --max_old_space_size=8192 ./node_modules/@angular/cli/bin/ng build --prod",
+    "build-i18n": "for lang in en nl; do node --max_old_space_size=8192 ./node_modules/@angular/cli/bin/ng build --output-path=dist/$lang  --prod --base-href /$lang/ --i18n-file=src/i18n/messages.$lang.xlf --i18n-format=xlf --i18n-locale=$lang; done",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"

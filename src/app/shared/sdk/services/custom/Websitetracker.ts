@@ -127,9 +127,11 @@ export class WebsitetrackerApi extends BaseLoopBackApi {
          * (The remote method definition does not provide any description.)
          * </em>
    *
-   * @param {object} data Request data.
+   * @param {string} src 
    *
-   * This method expects a subset of model properties as request parameters.
+   * @param {string} id 
+   *
+   * @param {object} ctx 
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -140,15 +142,14 @@ export class WebsitetrackerApi extends BaseLoopBackApi {
    * This usually means the response is a `Websitetracker` object.)
    * </em>
    */
-  public registervisit(req: any = {}, customHeaders?: Function): Observable<any> {
-    let _method: string = "POST";
+  public registervisit(src: any = {}, id: any = {}, ctx: any = {}, customHeaders?: Function): Observable<any> {
+    let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
     "/websitetrackers/registervisit";
     let _routeParams: any = {};
-    let _postBody: any = {
-      req: req
-    };
+    let _postBody: any = {};
     let _urlParams: any = {};
+    if (typeof src !== 'undefined' && src !== null) _urlParams.src = src;
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
     return result;
   }
@@ -166,12 +167,11 @@ export class WebsitetrackerApi extends BaseLoopBackApi {
    *   populated with the actual data once the response is returned
    *   from the server.
    *
-   * <em>
-   * (The remote method definition does not provide any description.
-   * This usually means the response is a `Websitetracker` object.)
-   * </em>
+   * Data properties:
+   *
+   *  - `res` – `{string}` - 
    */
-  public findip(req: any = {}, customHeaders?: Function): Observable<any[]> {
+  public findip(req: any = {}, customHeaders?: Function): Observable<websitetracker[]> {
     let _method: string = "POST";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
     "/websitetrackers/findip";

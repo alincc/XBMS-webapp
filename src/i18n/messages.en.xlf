@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+  <file source-language="en" datatype="plaintext" original="ng2.template">
+    <body>
+      <trans-unit id="7e892ba15f2c6c17e83510e273b3e10fc32ea016" datatype="html">
+        <source>Search</source>
+	<target>Search</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/relation/relation.component.html</context>
+          <context context-type="linenumber">40</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="d04d5b5d13ac9acf9750f1807f0227eeee98b247" datatype="html">
+        <source>Total</source>
+	<target>Total</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/relation/relation.component.html</context>
+          <context context-type="linenumber">75</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="826b25211922a1b46436589233cb6f1a163d89b7" datatype="html">
+        <source>Delete</source>
+	<target>Delete</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/relation/relation.component.html</context>
+          <context context-type="linenumber">96</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="d81f00c85d3b507f3e3d78bfc617a2c66e028391" datatype="html">
+        <source>New</source>
+ 	<target>New</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/relation/relation.component.html</context>
+          <context context-type="linenumber">100</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="545ce8c9b406e59c260f75c507e85becb83a4345" datatype="html">
+        <source>
+                            Secondary Color
+                          </source>
+	<target>Secondary Color</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/relation/relation.component.html</context>
+          <context context-type="linenumber">217</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="20046dddc882619b8cd0c6007e913e5041dca141" datatype="html">
+        <source>Calls</source>
+	<target>Calls</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/relation/relation.component.html</context>
+          <context context-type="linenumber">256</context>
+        </context-group>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

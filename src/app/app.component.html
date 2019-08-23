@@ -1,4 +1,6 @@
 <div class="topview">
+
+
     <div *ngIf="router.url !== '/login' && router.url.indexOf('filemanager') === -1">
         <div [class.menubuttonsmall]="isVisible === false " [class.menubuttonscroll]="isVisible === true">
             <button mat-stroked-button color="primary" (click)="sidenav.open()">
@@ -52,6 +54,15 @@
             </button>
 
             <img src="assets/xbms.png" class="menulogo">
+
+
+            <!-- https://dev.to/angular/deploying-an-i18n-angular-app-with-angular-cli-2fb9 -->
+            <ng-template ngFor let-lang [ngForOf]="languages" fxLayout="column">
+                <div *ngIf="lang.code !== localeId">
+                    <a class="mat-typography" href="/{{lang.code}}/">{{lang.label}}</a> </div>
+                <div *ngIf="lang.code === localeId"><label>{{lang.label}}</label> </div>
+            </ng-template>
+
         </mat-sidenav>
 
         <!-- onscroll="changemenu()" not used-->

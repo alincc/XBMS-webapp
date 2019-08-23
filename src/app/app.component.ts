@@ -1,4 +1,6 @@
-import { Renderer2, ElementRef, AfterViewInit, HostBinding, Component, ViewChild, OnInit, OnDestroy, HostListener } from '@angular/core';
+import { Renderer2, ElementRef, AfterViewInit, HostBinding, 
+  Component, ViewChild, OnInit, OnDestroy, HostListener,
+   LOCALE_ID} from '@angular/core';
 import {
   AccountApi,
   Account,
@@ -40,8 +42,13 @@ enum Direction {
 })
 
 
-export class AppComponent implements AfterViewInit {
 
+
+export class AppComponent implements AfterViewInit {
+  languages = [
+    { code: 'en', label: 'English'},
+    { code: 'nl', label: 'Nederlands'}
+  ];
   public scrolleffect = false;
   public Account: Account = new Account();
   public position = false;
