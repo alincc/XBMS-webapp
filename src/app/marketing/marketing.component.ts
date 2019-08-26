@@ -1597,7 +1597,7 @@ export class MarketingComponent implements OnInit {
       this.oneaddress,
       this.firstname,
       this.lastname,
-      this.company,
+      this.companyname,
       this.title)
       .subscribe(res => this.openSnackBar(res.message));
   }
