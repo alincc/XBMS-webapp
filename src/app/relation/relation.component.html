@@ -1451,14 +1451,22 @@
             <div fxLayout="row" fxLayout.xs="column">
               <div fxFlex>
                 <div *ngFor="let Facebook of Facebook; let i = index">
-                  <span>{{ Facebook.name }}</span>
-                  <span>{{ Facebook.AdsAccountId }}</span>
-                  <a mat-mini-fab color="primary" (click)="deleteFacebook(i)">
+
+                  <mat-form-field>
+                    <input matInput [(ngModel)]=Facebook.name placeholder="Name" class="InputField">
+                  </mat-form-field>
+                  <mat-form-field>
+                    <input matInput [(ngModel)]=Facebook.AdsAccountId placeholder="Ads Account ID" class="InputField">
+                  </mat-form-field>
+                  <a mat-mini-fab color="primary" (click)="deleteFacebook(Facebook)">
                     <mat-icon>delete</mat-icon>
                   </a>
-                  <a mat-mini-fab color="primary" (click)="showFacebook(i)">
+                  <a mat-mini-fab color="primary" (click)="showFacebook(Facebook)">
                     <mat-icon>info</mat-icon>
                   </a>
+                  <a mat-mini-fab color="primary" (click)="updateFacebook(Facebook)">
+                      <mat-icon>save</mat-icon>
+                    </a>
                 </div>
               </div>
             </div>
@@ -1468,6 +1476,7 @@
             </div>
             <div fxLayout="row" fxLayout.xs="column">
               <div fxFlex>
+                Add New
                 <mat-form-field>
                   <input matInput [(ngModel)]=newFacebook.name placeholder="Name" class="InputField">
                 </mat-form-field>

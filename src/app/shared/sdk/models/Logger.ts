@@ -9,7 +9,9 @@ export interface LoggerInterface {
   "user"?: string;
   "company"?: string;
   "relation"?: string;
+  "item"?: string;
   "code"?: string;
+  "description"?: string;
   "read"?: boolean;
   "id"?: any;
   "companyRelId"?: any;
@@ -22,7 +24,9 @@ export class Logger implements LoggerInterface {
   "user": string;
   "company": string;
   "relation": string;
+  "item": string;
   "code": string;
+  "description": string;
   "read": boolean;
   "id": any;
   "companyRelId": any;
@@ -77,8 +81,16 @@ export class Logger implements LoggerInterface {
           name: 'relation',
           type: 'string'
         },
+        "item": {
+          name: 'item',
+          type: 'string'
+        },
         "code": {
           name: 'code',
+          type: 'string'
+        },
+        "description": {
+          name: 'description',
           type: 'string'
         },
         "read": {

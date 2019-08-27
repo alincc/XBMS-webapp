@@ -1,4 +1,4 @@
-import { Component, OnInit, Input  } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import {
   Relations,
   RelationsApi,
@@ -17,6 +17,27 @@ import * as moment from 'moment-timezone';
 import { DialogsService } from './../../dialogsservice/dialogs.service';
 import { timeconv } from '../../shared/timeconv';
 
+export class Facebookcampaign {
+  id: string;
+  name: string;
+  adlabels: string;
+  bid_strategy: string;
+  budget_remaining: string;
+  buying_type: string;
+  created_time: string;
+  daily_budget: string;
+  effective_status: string;
+  issues_info: string;
+  lifetime_budget: string;
+  objective: string;
+  pacing_type: string;
+  promoted_object: string;
+  spend_cap: string;
+  start_time: string;
+  status: string;
+  stop_time: string;
+}
+
 @Component({
   selector: 'app-marketingpromotions',
   templateUrl: './marketingpromotions.component.html',
@@ -31,6 +52,10 @@ export class MarketingpromotionsComponent implements OnInit {
   public Twitter: Twitter[];
   public Linkedin: Linkedin[];
   public Facebook: Facebook[];
+  public selectedFB: Facebook;
+
+  public campaignsFB: Facebookcampaign[];
+  public selectedCampaignFB: Facebookcampaign;
 
 
   constructor(
@@ -56,15 +81,26 @@ export class MarketingpromotionsComponent implements OnInit {
     this.RelationsApi.getTwitter(this.option.id)
       .subscribe((Twitter: Twitter[]) => this.Twitter = Twitter)
   }
-  
+
+  getFacebookAds(): void {
+    this.FacebookApi.adsget(this.selectedFB.AccessToken, this.selectedFB.AdsAccountId)
+      .subscribe((campaigns: Facebookcampaign[]) => { this.campaignsFB = campaigns });
+  }
+
   getFacebook(): void {
     this.RelationsApi.getFacebook(this.option.id)
       .subscribe((Facebook: Facebook[]) => this.Facebook = Facebook);
   }
 
+  onselectFB(facebook: Facebook): void {
+    this.selectedFB = facebook;
+    console.log(this.selectedFB);
+    this.getFacebookAds();
+  }
+
   createFacebookAds(): void {
-    this.FacebookApi.adssdk().subscribe(
-      res => {console.log(res)}
+    this.FacebookApi.adsget(this.selectedFB.AccessToken, this.selectedFB.AdsAccountId).subscribe(
+      res => { console.log(res) }
     )
 
   }

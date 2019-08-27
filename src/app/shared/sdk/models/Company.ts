@@ -34,6 +34,9 @@ export interface CompanyInterface {
   "companysecondarycolor"?: string;
   "companyfont"?: string;
   "companywebsite"?: string;
+  "subscription"?: string;
+  "paid"?: boolean;
+  "subdate"?: Date;
   "id"?: any;
   relations?: Relations[];
   googleanalytics?: Googleanalytics[];
@@ -68,6 +71,9 @@ export class Company implements CompanyInterface {
   "companysecondarycolor": string;
   "companyfont": string;
   "companywebsite": string;
+  "subscription": string;
+  "paid": boolean;
+  "subdate": Date;
   "id": any;
   relations: Relations[];
   googleanalytics: Googleanalytics[];
@@ -191,6 +197,18 @@ export class Company implements CompanyInterface {
         "companywebsite": {
           name: 'companywebsite',
           type: 'string'
+        },
+        "subscription": {
+          name: 'subscription',
+          type: 'string'
+        },
+        "paid": {
+          name: 'paid',
+          type: 'boolean'
+        },
+        "subdate": {
+          name: 'subdate',
+          type: 'Date'
         },
         "id": {
           name: 'id',

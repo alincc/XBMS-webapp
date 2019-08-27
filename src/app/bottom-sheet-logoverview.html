@@ -15,7 +15,7 @@
                     <label style="font-size: 8pt">Subject</label>
                 </div> -->
                 <div fxFlex="45%" fxLayoutAlign="space-around">
-                    <label style="font-size: 8pt">Code</label>
+                    <label style="font-size: 8pt">Description</label>
                 </div>
                 <div fxFlex="45%" fxLayoutAlign="space-around">
                     <label style="font-size: 8pt">Date</label>
@@ -35,7 +35,7 @@
                     <label style="font-size: 8pt">{{ logs.relation }}</label>
                 </div> -->
                 <div fxFlex="45%" fxLayoutAlign="space-around">
-                    <label style="font-size: 8pt">{{logs.code | slice: 0:50}}</label>
+                    <label style="font-size: 8pt">{{logs.description | slice: 0:50}}</label>
                 </div>
                 <div fxFlex="45%" fxLayoutAlign="space-around">
                     <label style="font-size: 8pt">{{logs.date | date: "medium"}}</label>

@@ -433,8 +433,7 @@ export class MarketingchannelsComponent implements OnInit {
   }
 
   getAdssdk(): void {
-    this.FacebookApi.adssdk(this.linkedinoption.accesstoken, null)
-    .subscribe(res => {console.log(res)});
+
   }
 
   getLinkedinCompany(): void {

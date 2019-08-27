@@ -855,13 +855,18 @@ export class RelationComponent implements OnInit {
     this.FacebookApi.sessionsconnect(ids, domain).subscribe(res => { redirect = res, window.location.href = redirect; });
   };
 
-  showFacebook(i): void {
-    this.FacebookApi.me(this.Facebook[i].AccessToken)
+  showFacebook(facebook): void {
+    this.FacebookApi.me(facebook.AccessToken)
       .subscribe(res => this.openSnackBar(res)); // "Accountname: " + res.name
   }
+  
+  updateFacebook(facebook): void {
+    this.RelationsApi.updateByIdFacebook(this.selectedRelation.id, facebook.id, facebook).subscribe(res =>   this.openSnackBar("Facebook saved"));
+      }
 
-  deleteFacebook(i): void {
-    this.RelationsApi.destroyByIdFacebook(this.selectedRelation.id, this.Facebook[i].id)
+
+  deleteFacebook(facebook): void {
+    this.RelationsApi.destroyByIdFacebook(this.selectedRelation.id, facebook.id)
       .subscribe(res => {
         this.getFacebook(),
           this.openSnackBar("Facebook Deleted")

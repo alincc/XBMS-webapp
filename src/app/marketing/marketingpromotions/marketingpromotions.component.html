@@ -1,7 +1,7 @@
 <div class="tabcontainer" fxLayout="column">
-    <mat-button-toggle-group style="width: 300px; margin-top: 10px;" fxFlex="3 3 40px" fxFlexAlign="start"
+  <mat-button-toggle-group style="width: 300px; margin-top: 10px;" fxFlex="3 3 40px" fxFlexAlign="start"
     #group="matButtonToggleGroup" [vertical]="false" fxflex>
-    <mat-button-toggle style="width: 25%" matTooltip="Adwords" value="adwords" >
+    <mat-button-toggle style="width: 25%" matTooltip="Adwords" value="adwords">
       <mat-icon svgIcon="xbms_adwords"></mat-icon>
     </mat-button-toggle>
     <mat-button-toggle style="width: 25%" matTooltip="LinkedIn Ads" value="linkedinads" (click)="getLinkedin()">
@@ -15,7 +15,7 @@
     </mat-button-toggle>
   </mat-button-toggle-group>
 
-<div *ngIf="group.value == 'adwords'" fxLayout="column" style="width: 100%;" fxFlex>
+  <div *ngIf="group.value == 'adwords'" fxLayout="column" style="width: 100%;" fxFlex>
     <mat-card>
       <mat-card-content>
         <label>Adwords Account</label>
@@ -157,14 +157,103 @@
 
   </div>
 
-
+  <br>
   <div *ngIf="group.value == 'facebookads'" fxLayout="column" style="width: 100%;" fxFlex>
-    <button a mat-raised-button (click)="getAdssdk()">Check ads</button>
+    <div>
+      <div *ngFor="let facebook of Facebook">
+        <mat-card style="max-width: 400px" (click)="onselectFB(facebook)">{{facebook.name}}</mat-card>
+      </div>
+    </div>
+    <br>
+    <mat-card fxLayout="row">
+      <mat-card fxFlex *ngFor="let campaignfb of campaignsFB" fxLayout="column" fxLayoutAlign="space-around">
+        <div fxLayout="row">
+          <div fxFlex>
+            <h4>name: </h4>
+          </div>
+          <div fxFlex>
+            <h4>{{campaignfb.name}}</h4>
+          </div>
+        </div>
+        <div fxLayout="row">
+          <div fxFlex>adlabels</div>
+          <div fxFlex>{{campaignfb.adlabels}}</div>
+        </div>
+        <div fxLayout="row">
+          <div fxFlex>bid strategy</div>
+          <div fxFlex>{{campaignfb.bid_strategy}}</div>
+        </div>
+        <div fxLayout="row">
+          <div fxFlex>budget remaining</div>
+          <div fxFlex>{{campaignfb.budget_remaining}}</div>
+        </div>
+        <div fxLayout="row">
+          <div fxFlex>buying type</div>
+          <div fxFlex>{{campaignfb.buying_type}}</div>
+        </div>
+        <div fxLayout="row">
+          <div fxFlex>created time</div>
+          <div fxFlex>{{campaignfb.created_time  | date:'short'}}</div>
+        </div>
+        <div fxLayout="row">
+          <div fxFlex>daily budget</div>
+          <div fxFlex>{{campaignfb.daily_budget}}</div>
+        </div>
+        <div fxLayout="row">
+          <div fxFlex>effective status</div>
+          <div fxFlex>{{campaignfb.effective_status}}</div>
+        </div>
+        <div fxLayout="row">
+          <div fxFlex>issues info</div>
+          <div fxFlex>{{campaignfb.issues_info}}</div>
+        </div>
+        <div fxLayout="row">
+          <div fxFlex>lifetime budget</div>
+          <div fxFlex>{{campaignfb.lifetime_budget}}</div>
+        </div>
+        <div fxLayout="row">
+          <div fxFlex>objective</div>
+          <div fxFlex>{{campaignfb.objective}}</div>
+        </div>
+        <div fxLayout="row">
+          <div fxFlex>pacing type</div>
+          <div fxFlex>{{campaignfb.pacing_type}}</div>
+        </div>
+        <div fxLayout="row">
+          <div fxFlex>promoted object</div>
+          <div fxFlex>{{campaignfb.promoted_object}}</div>
+        </div>
+        <div fxLayout="row">
+          <div fxFlex>spend cap</div>
+          <div fxFlex>{{campaignfb.spend_cap}}</div>
+        </div>
+        <div fxLayout="row">
+          <div fxFlex>start time</div>
+          <div fxFlex>{{campaignfb.start_time  | date:'short'}}</div>
+        </div>
+        <div fxLayout="row">
+          <div fxFlex>status</div>
+          <div fxFlex>{{campaignfb.status}}</div>
+        </div>
+        <div fxLayout="row">
+          <div fxFlex>stop time</div>
+          <div fxFlex>{{campaignfb.stop_time  | date:'short'}}</div>
+        </div>
+
+        <br>
+      </mat-card>
+      <br>
+      <div fxFlex></div>
+      <br>
+      <div fxFlex></div>
+    </mat-card>
+    <br>
+    <!-- <button a mat-raised-button (click)="getFacebookAds()">Check ads</button> -->
   </div>
-  
 
-<div *ngIf="group.value == 'twitterads'" fxLayout="column" style="width: 100%;" fxFlex>
 
-</div>
+  <div *ngIf="group.value == 'twitterads'" fxLayout="column" style="width: 100%;" fxFlex>
+
+  </div>
 
 </div>

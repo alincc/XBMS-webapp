@@ -127,7 +127,6 @@ export class MarketingpublicationsComponent implements OnInit {
       })
         .subscribe((publications: Publications[]) => this.Publications = publications);
     }
-
     
   // search
   searchGo(name: string): void {

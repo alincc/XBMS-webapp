@@ -318,37 +318,6 @@ export class FacebookApi extends BaseLoopBackApi {
    *
    * @param {string} token 
    *
-   * @param {string} shareid 
-   *
-   * @returns {object} An empty reference that will be
-   *   populated with the actual data once the response is returned
-   *   from the server.
-   *
-   * <em>
-   * (The remote method definition does not provide any description.
-   * This usually means the response is a `Facebook` object.)
-   * </em>
-   */
-  public adssdk(token: any = {}, shareid: any = {}, customHeaders?: Function): Observable<any> {
-    let _method: string = "GET";
-    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/facebooks/adssdk";
-    let _routeParams: any = {};
-    let _postBody: any = {};
-    let _urlParams: any = {};
-    if (typeof token !== 'undefined' && token !== null) _urlParams.token = token;
-    if (typeof shareid !== 'undefined' && shareid !== null) _urlParams.shareid = shareid;
-    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-    return result;
-  }
-
-  /**
-   * <em>
-         * (The remote method definition does not provide any description.)
-         * </em>
-   *
-   * @param {string} token 
-   *
    * @param {string} user_id 
    *
    * @param {string} image_url 
@@ -467,6 +436,37 @@ export class FacebookApi extends BaseLoopBackApi {
     let _urlParams: any = {};
     if (typeof token !== 'undefined' && token !== null) _urlParams.token = token;
     if (typeof user_id !== 'undefined' && user_id !== null) _urlParams.user_id = user_id;
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
+   * <em>
+         * (The remote method definition does not provide any description.)
+         * </em>
+   *
+   * @param {string} access_token 
+   *
+   * @param {string} account_id 
+   *
+   * @returns {object} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * <em>
+   * (The remote method definition does not provide any description.
+   * This usually means the response is a `Facebook` object.)
+   * </em>
+   */
+  public adsget(access_token: any = {}, account_id: any = {}, customHeaders?: Function): Observable<any> {
+    let _method: string = "GET";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/facebooks/adsget";
+    let _routeParams: any = {};
+    let _postBody: any = {};
+    let _urlParams: any = {};
+    if (typeof access_token !== 'undefined' && access_token !== null) _urlParams.access_token = access_token;
+    if (typeof account_id !== 'undefined' && account_id !== null) _urlParams.account_id = account_id;
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
     return result;
   }
