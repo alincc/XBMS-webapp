@@ -1781,5 +1781,17 @@ Text Version</textarea>
 
     </mat-tab>
 
+        <!-- Video Editor__________________________________ -->
+        <mat-tab label="Video Editor">
+            <ng-template mat-tab-label class="mat-tab-labels">
+              <mat-icon>video</mat-icon>
+              <div fxShow.xs="false">Video Editor</div>
+            </ng-template>
+      
+            <app-videocreator [company]="company" [Account]="Account" [SelectedRelation]="SelectedRelation" [option]="option">
+            </app-videocreator>
+      
+          </mat-tab>
+
   </mat-tab-group>
 </div>
