@@ -1,17 +1,25 @@
-import { Component, OnInit, Input } from '@angular/core';
-import { ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, Input, SimpleChange, SimpleChanges, AfterViewInit, NgZone } from '@angular/core';
+import { ViewChild, ViewChildren, ElementRef, QueryList } from '@angular/core';
 import {
   Relations, RelationsApi, BASE_URL, CompanyApi, Company, Account,
   Files, FilesApi, ContainerApi
 } from '../../shared';
+import { Subscription } from 'rxjs';
+import { MediaObserver, MediaChange } from '@angular/flex-layout';
+import { TimelineMax } from 'gsap';
+import { TimelineLite, Back, Power1, SlowMo } from 'gsap';
+
+export class animation {
+  start_time: number;
+  end_time: number;
+  source: string;
+}
 
 @Component({
   selector: 'app-videocreator',
   templateUrl: './videocreator.component.html',
   styleUrls: ['./videocreator.component.scss']
 })
-
-
 
 export class VideocreatorComponent implements OnInit {
   @ViewChild('myCanvas', { static: false }) myCanvas: ElementRef;
@@ -20,64 +28,74 @@ export class VideocreatorComponent implements OnInit {
   @Input() option: Relations = new Relations();
   @Input() company: Company = new Company;
 
+  @ViewChild('box1', { static: false }) box: ElementRef;
+  @ViewChildren('btn') btnContainers: QueryList<ElementRef>;
+
+  public counter = 1000;
+  public currenttime = 0;
+  public animationarray = [];
   public sun = new Image();
   public moon = new Image();
   public earth = new Image();
-  
-
+  public play = false;
+  public menu = new TimelineMax({ paused: true, reversed: true });
+  public progressbar = new TimelineMax({ paused: true, reversed: true });
   public ctx: CanvasRenderingContext2D;
+  watcher: Subscription;
+  activeMediaQuery;
 
-constructor() {
-}
+  constructor(
+    public ngZone: NgZone,
+    public media: MediaObserver,
+  ) {
+    this.watcher = media.media$.subscribe((change: MediaChange) => {
+      this.activeMediaQuery = change;
+    });
+  }
 
-ngOnInit() {
-  let canvas = this.myCanvas.nativeElement;
-  this.ctx = canvas.getContext('2d');
-  this.init()
+  ngOnInit() {
+    this.createMenuAnim();
+    console.log(this.currenttime);
+  }
 
-}
+  createMenuAnim() {
+    this.menu.to("#topLine", .5, { rotation: '30', ease: "Expo.easeInOut" }, 0)
+    this.menu.to("#midLine", .5, { opacity: '0', ease: "Expo.easeInOut" }, 0)
+    this.menu.to("#botLine", .5, { rotation: '-30', ease: "Expo.easeInOut" }, 0)
+  }
+
+  menuClick() {
+    this.menu.reversed() ? this.menu.play() : this.menu.reverse();
+    return console.log('clicked');
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    const currentItem: SimpleChange = changes.myCanvas;
+    if (currentItem !== undefined) {
+    }
+  }
+
+  setProgressbar() {
+    this.progressbar.to("#progressbarline", 1, { x: this.currenttime });
+  }
+
+  playFunc() {
+    setInterval(this.incrementSeconds, 1000);
+  }
+
+  incrementSeconds() {
+    this.setProgressbar();
+    let nr = 1;
+    let nradd;
+    if (this.currenttime === undefined) {
+      nradd = 0;
+    } else { nradd = this.currenttime; }
+    this.currenttime = nr + +nradd;
+    console.log(this.currenttime);
+    
+  }
 
 
-init() {
-  this.sun.src = 'https://mdn.mozillademos.org/files/1456/Canvas_sun.png';
-  this.moon.src = 'https://mdn.mozillademos.org/files/1443/Canvas_moon.png';
-  this.earth.src = 'https://mdn.mozillademos.org/files/1429/Canvas_earth.png';
-  window.requestAnimationFrame(this.draw);
-}
-
-draw() {
-
-  this.ctx.globalCompositeOperation = 'destination-over';
-  this.ctx.clearRect(0, 0, 300, 300); // clear canvas
-
-  this.ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
-  this.ctx.strokeStyle = 'rgba(0, 153, 255, 0.4)';
-  this.ctx.save();
-  this.ctx.translate(150, 150);
-
-  // Earth
-  var time = new Date();
-  this.ctx.rotate(((2 * Math.PI) / 60) * time.getSeconds() + ((2 * Math.PI) / 60000) * time.getMilliseconds());
-  this.ctx.translate(105, 0);
-  this.ctx.fillRect(0, -12, 40, 24); // Shadow
-  this.ctx.drawImage(this.earth, -12, -12);
-
-  // Moon
-  this.ctx.save();
-  this.ctx.rotate(((2 * Math.PI) / 6) * time.getSeconds() + ((2 * Math.PI) / 6000) * time.getMilliseconds());
-  this.ctx.translate(0, 28.5);
-  this.ctx.drawImage(this.moon, -3.5, -3.5);
-  this.ctx.restore();
-
-  this.ctx.restore();
-
-  this.ctx.beginPath();
-  this.ctx.arc(150, 150, 105, 0, Math.PI * 2, false); // Earth orbit
-  this.ctx.stroke();
-
-  this.ctx.drawImage(this.sun, 0, 0, 300, 300);
-
-}
 
 
 }
