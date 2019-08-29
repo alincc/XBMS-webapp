@@ -232,7 +232,7 @@ export class VideocreatorComponent implements AfterViewInit {
       id: newelnr
     }
     this.animationarray.push(img);
-
+    this.detectchange();
     this.addAnimation(newelnr, img);
   }
 
@@ -264,7 +264,7 @@ export class VideocreatorComponent implements AfterViewInit {
       id: newelnr
     }
     this.animationarray.push(img);
-
+    this.detectchange();
     this.addAnimation(newelnr, img);
   }
 
@@ -301,6 +301,7 @@ export class VideocreatorComponent implements AfterViewInit {
       id: newelnr
     }
     this.animationarray.push(txt);
+    this.detectchange();
     this.addAnimation(newelnr, txt);
   }
 
