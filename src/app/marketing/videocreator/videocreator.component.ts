@@ -31,6 +31,7 @@ export class VideocreatorComponent implements OnInit {
   @ViewChild('box1', { static: false }) box: ElementRef;
   @ViewChildren('btn') btnContainers: QueryList<ElementRef>;
 
+  public t;
   public counter = 1000;
   public currenttime = 0;
   public animationarray = [];
@@ -62,6 +63,10 @@ export class VideocreatorComponent implements OnInit {
     this.menu.to("#topLine", .5, { rotation: '30', ease: "Expo.easeInOut" }, 0)
     this.menu.to("#midLine", .5, { opacity: '0', ease: "Expo.easeInOut" }, 0)
     this.menu.to("#botLine", .5, { rotation: '-30', ease: "Expo.easeInOut" }, 0)
+
+    this.progressbar.to("#progressbarline", 1, { x: 100 });
+    this.progressbar.to("#progressbarline", 1, { y: 50, delay: 1 });
+    this.progressbar.to("#progressbarline", 1, {opacity:0, delay:2});
   }
 
   menuClick() {
@@ -75,24 +80,20 @@ export class VideocreatorComponent implements OnInit {
     }
   }
 
-  setProgressbar() {
-    this.progressbar.to("#progressbarline", 1, { x: this.currenttime });
-  }
 
   playFunc() {
-    setInterval(this.incrementSeconds, 1000);
+    this.progressbar.reversed() ? this.progressbar.play() : this.progressbar.reverse();
+    this.t = setInterval( ()=>{this.incrementSeconds()},1000);
   }
 
+  stopFunc() {
+    clearTimeout(this.t); 
+  }
+
+
   incrementSeconds() {
-    this.setProgressbar();
-    let nr = 1;
-    let nradd;
-    if (this.currenttime === undefined) {
-      nradd = 0;
-    } else { nradd = this.currenttime; }
-    this.currenttime = nr + +nradd;
+    this.currenttime = this.currenttime +1;
     console.log(this.currenttime);
-    
   }
 
 
