@@ -1,11 +1,4 @@
-<!-- <canvas #myCanvas>
-</canvas> -->
-
-<!-- [attr.id]="'graph' + i" -->
-
-
-<div style="height: 400px; width: 800px;">
-    <button (click)="createMenuAnim()">Play</button>
+<!-- <button (click)="createMenuAnim()">Play</button>
     <a class="menuIcon" (click)="menuClick()">
         <svg class="hamburger" width="26.892" height="17.285" viewBox="0 0 26.892 17.285">
             <g id="MenuI" data-name="Group 1" transform="translate(0 1.5)">
@@ -16,20 +9,397 @@
                     stroke="#000" stroke-width="3" />
             </g>
         </svg>
-    </a>
+    </a> -->
 
+<div class="savetobutton">
+    <button mat-fab color="primary" matTooltip="Convert to element" (click)="OnSaveelement()">
+        <mat-icon>save</mat-icon>
+    </button>
+</div>
+
+<div style="width: 100%; margin-bottom: 10px;" (swipeleft)="swipeleft($event)" (swiperight)="swiperight($event)">
+    <mat-card style="width: 100%" fxLayout="row wrap" fxLayoutAlign="space-around">
+        <mat-form-field>
+            <input [(ngModel)]="elementname" type="text" matInput placeholder="element Name">
+        </mat-form-field>
+
+
+        <input style="width: 150px; height: 30px;" [style.background]="canvas['background-color']" [cpToggle]="false"
+            [cpOutputFormat]="'hex'" [(colorPicker)]="canvas['background-color']" (colorPickerChange)="detectchange()"
+            [cpCancelButton]="true" [cpPresetLabel]="'Company colors'"
+            [cpPresetColors]="[option.companyprimairycolor, option.companysecondarycolor, company.companyprimairycolor, company.companysecondarycolor]">
+
+
+        <mat-form-field>
+            <input (change)="detectchange()" [(ngModel)]="canvas.width" type="text" matInput placeholder="width">
+            <label matSuffix>px</label>
+        </mat-form-field>
+
+        <mat-form-field>
+            <input (change)="detectchange()" [(ngModel)]="canvas.height" type="text" matInput placeholder="height">
+            <label matSuffix>px</label>
+        </mat-form-field>
+        <button mat-button (click)="resetVideo()">Reset</button>
+        <!-- <button mat-button (click)="getEditFile()">get elements</button> -->
+        <mat-form-field>
+            <mat-label>Edit existing element</mat-label>
+            <mat-select [(value)]="editablevideo">
+                <mat-option *ngFor="let editvideo of editablevideos" [value]="editvideo">
+                    {{editelement.name}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+        <button mat-button (click)="loadEditableVideo()">Start edit</button>
+    </mat-card>
+    <mat-card fxLayout="row">
+        <mat-icon (click)="playFunc()">play_circle_outline</mat-icon>
+        <mat-icon (click)="stopFunc()">stop</mat-icon>
+        <div #progressbar class="progressbarline"></div>
+    </mat-card>
 </div>
 
 
+<div class="tabcontainer" fxLayout="row" cdkDropListGroup (swipeleft)="swipeleft($event)"
+    (swiperight)="swiperight($event)">
 
-<div style="height: 400px; width: 800px;">
-    <button (click)="playFunc()">Play</button>
 
-    <mat-progress-bar mode="determinate" [value]="currenttime"></mat-progress-bar> 
-    <svg  width="600" height="20" viewBox="0 0 200 20">
-            <g id="MenuI" data-name="Group 1" transform="translate(0 1.5)">
-            <line id="progressbarline" data-name="Line 1" x2="200" fill="none" stroke="#000" stroke-width="3" />
-        </g>
-        </svg>
+    <!-- to do: add magic wand toosl -->
 
-</div>
+    <div class="card-left-menu" ngClass.gt-xs="listview-normal" ngClass.lt-sm="listview-noshow"
+        [class.listview-xs-show]="listviewxsshow" fxLayout="column">
+        <label>Edit</label>
+        <div fxLayout="column">
+            <div fxLayout="column" fxLayout.xs="column" cdkDropList (cdkDropListDropped)="drop($event)">
+                <div *ngFor="let element of animationarray; let i = index" cdkDrag>
+                    <div *ngIf="element.type === 'image'">
+                        <mat-accordion>
+                            <mat-expansion-panel>
+                                <mat-expansion-panel-header>
+                                    <mat-panel-title>
+                                        <img *ngIf="element.src" src={{element.src}} class="elementsedit"
+                                            style="height: 30px; width: auto;">
+                                        <mat-icon (click)="deleteitem(i)" class="iconsize-12">delete</mat-icon>
+                                    </mat-panel-title>
+                                </mat-expansion-panel-header>
+                                <div *ngIf="element.style">
+                                    <img src={{element.src}} class="elementsedit">
+                                    <mat-icon (click)="element.src = ''" class="icon-label" class="iconsize-12">delete
+                                    </mat-icon>
+                                </div>
+                                <app-fileupload *ngIf="!element.src" [account]="Account" [option]="option"
+                                    (imgurl)="setImage($event, i)">
+                                </app-fileupload>
+                            </mat-expansion-panel>
+                        </mat-accordion>
+                    </div>
+                    <div *ngIf="element.type === 'text'">
+                        <mat-accordion>
+                            <mat-expansion-panel>
+                                <mat-expansion-panel-header>
+                                    <mat-panel-title>
+                                        <label>{{element.content}}</label>
+                                        <mat-icon (click)="deleteitem(i)" class="iconsize-12">delete</mat-icon>
+                                    </mat-panel-title>
+                                </mat-expansion-panel-header>
+                                <div fxLayout="column">
+                                    <div fxLayout="row" fxLayout.xs="column">
+                                        <mat-form-field style="width: 95%;" appearance="outline">
+                                            <input matTooltip="insert text" #inputpreview [(ngModel)]="element.content"
+                                                type="text" matInput placeholder="element text">
+                                            <mat-icon matTooltip="select Emoji" (click)="onshowemoji(i)" matSuffix>
+                                                insert_emoticon</mat-icon>
+                                            <mat-hint align="end">{{inputpreview.value?.length || 0}}/90</mat-hint>
+                                        </mat-form-field>
+                                    </div>
+                                    <div fxLayout="row" fxLayout.xs="column" *ngIf="showemoji">
+                                        <div fxFlex>
+                                            <div style="width: 100%;
+                                          height: 100%;
+                                          position: absolute;
+                                          top: 8;
+                                          left: 20;
+                                          z-index: 20;">
+                                                <emoji-mart (emojiClick)="setemoji($event, i)" set="emojione">
+                                                </emoji-mart>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div fxLayout="row" fxLayout.xs="column">
+                                        <mat-form-field>
+                                            <input [(ngModel)]="element.style['font-size']" type="text" matInput
+                                                placeholder="font size" (change)="detectchange()">
+                                        </mat-form-field>
+                                    </div>
+                                    <div fxLayout="row" fxLayout.xs="column">
+                                        <mat-accordion>
+                                            <mat-expansion-panel style="width: 240px;">
+                                                <mat-expansion-panel-header>
+                                                    <mat-panel-title>
+                                                        Text Color
+                                                    </mat-panel-title>
+                                                </mat-expansion-panel-header>
+                                                <br>
+                                                <input style="width: 230px;" [style.background]="element.style['color']"
+                                                    [cpOutputFormat]="'hex'" [(colorPicker)]="element.style['color']"
+                                                    (colorPickerChange)="detectchange()"
+                                                    [cpPresetLabel]="'Company colors'"
+                                                    [cpPresetColors]="[option.companyprimairycolor, option.companysecondarycolor, company.companyprimairycolor, company.companysecondarycolor]">
+
+
+                                            </mat-expansion-panel>
+                                        </mat-accordion>
+                                    </div>
+                                    <br>
+                                    <div fxLayout="row" fxLayout.xs="column">
+                                        <mat-form-field>
+                                            <mat-label>Select font</mat-label>
+                                            <mat-select [(value)]="element.style['font-family']"
+                                                (selectionChange)="detectchange()">
+                                                <mat-option value="Arial, Helvetica, sans-serif">Arial</mat-option>
+                                                <mat-option value="'Arial Black', Gadget, sans-serif">Arial Black
+                                                </mat-option>
+                                                <mat-option value="Tahoma, Geneva, sans-serif">Tahoma</mat-option>
+                                                <mat-option value="'Times New Roman', Times, serif">Times New Roman
+                                                </mat-option>
+                                                <mat-option value="Roboto">Roboto</mat-option>
+                                                <mat-option value="Open Sans">Open Sans</mat-option>
+                                                <mat-option value="Baloo Bhai">Baloo Bhai</mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div fxLayout="row">
+                                        <mat-button-toggle fxFlex (click)="setbold(element)" value="bold">Bold
+                                        </mat-button-toggle>
+                                        <mat-button-toggle fxFlex (click)="setitalic(element)" value="italic">Italic
+                                        </mat-button-toggle>
+                                    </div>
+
+                                </div>
+                            </mat-expansion-panel>
+                        </mat-accordion>
+                    </div>
+                    <div *ngIf="element.type === 'shape'">
+                        <mat-accordion>
+                            <mat-expansion-panel>
+                                <mat-expansion-panel-header>
+                                    <mat-panel-title>
+                                        <div style="height: 30px; width: 30px"
+                                            [style.background-color]="element.style['background-color']"></div>
+                                        <mat-icon (click)="deleteitem(i)" class="iconsize-12">delete</mat-icon>
+                                    </mat-panel-title>
+                                </mat-expansion-panel-header>
+                                <div fxLayout="column">
+
+                                    <input style="width: 230px;" [style.background]="element.style['background-color']"
+                                        [(colorPicker)]="element.style['background-color']"
+                                        (colorPickerChange)="detectchange()" [cpPresetLabel]="'Company colors'"
+                                        [cpPresetColors]="[option.companyprimairycolor, option.companysecondarycolor, company.companyprimairycolor, company.companysecondarycolor]">
+                                </div>
+
+                            </mat-expansion-panel>
+                        </mat-accordion>
+                    </div>
+                    <!-- <div *ngIf="element.type === 'chart'">
+                        <mat-accordion>
+                            <mat-expansion-panel>
+                                <mat-expansion-panel-header>
+                                    <mat-panel-title>
+                                        <mat-icon>show_chart</mat-icon>
+                                        <mat-icon (click)="deleteitem(i)" class="iconsize-12">delete</mat-icon>
+                                    </mat-panel-title>
+                                </mat-expansion-panel-header>
+                                <mat-accordion>
+                                    <mat-expansion-panel>
+                                        <mat-expansion-panel-header>
+                                            <mat-panel-title>
+                                                Data
+                                            </mat-panel-title>
+                                        </mat-expansion-panel-header>
+                                        <div *ngFor="let label of element.label; let i1 = index;">
+                                            <mat-form-field fxflex>
+                                                <input (change)="detectchangeLabel(i, i1, label)" [(ngModel)]="label"
+                                                    type="text" matInput placeholder="label">
+                                            </mat-form-field>
+                                        </div>
+                                        <mat-icon (click)="deletelabel(i, i1)" class="iconsize-12">delete</mat-icon>
+                                        <mat-icon (click)="addLabel(i, i1)">add</mat-icon>
+                                        <div *ngFor="let row of element.data; let i1 = index;" fxLayout="column">
+
+                                            <mat-form-field fxflex>
+                                                <input (change)="detectchangerowlabel(i, i1, row.label)"
+                                                    [(ngModel)]="row.label" type="text" matInput>
+                                            </mat-form-field>
+                                            <div fxFlex fxLayout="row wrap">
+                                                <div *ngFor="let cell of row.data; let i2 = index;">
+                                                    <mat-form-field fxflex style="width: 20px;">
+                                                        <input (change)="detectchangerowcell(i, i1, i2, cell)"
+                                                            [(ngModel)]="cell" type="text" matInput>
+                                                    </mat-form-field>
+                                                </div>
+                                            </div>
+                                            <mat-icon (click)="deletecell(i, i1)" class="iconsize-12">delete</mat-icon>
+                                            <mat-icon (click)="addcell(i, i1, i2)">add</mat-icon>
+                                        </div>
+                                    </mat-expansion-panel>
+                                </mat-accordion>
+
+                                <mat-accordion>
+                                    <mat-expansion-panel>
+                                        <mat-expansion-panel-header>
+                                            <mat-panel-title>
+                                                Colors
+                                            </mat-panel-title>
+                                        </mat-expansion-panel-header>
+                                        <div *ngFor="let colors of element.colors" fxLayout="column">
+                                            Color Specification
+                                            <input style="width: 150px;" [style.background]="colors.backgroundColor"
+                                                [(colorPicker)]="colors.backgroundColor"
+                                                (colorPickerChange)="detectchange()" [cpCancelButton]="true"
+                                                [cpPresetLabel]="'Company colors'"
+                                                [cpPresetColors]="[option.companyprimairycolor, option.companysecondarycolor, company.companyprimairycolor, company.companysecondarycolor]">
+                                            <mat-icon class="iconsize-12" (click)="colors.backgroundColor = ''">delete
+                                            </mat-icon>
+                                            <input style="width: 150px;" [style.background]="colors.borderColor"
+                                                [(colorPicker)]="colors.borderColor"
+                                                (colorPickerChange)="detectchange()" [cpPresetLabel]="'Company colors'"
+                                                [cpPresetColors]="[company.companyprimairycolor, company.companysecondarycolor]">
+                                            <mat-icon class="iconsize-12" (click)="colors.borderColor = ''">delete
+                                            </mat-icon>
+                                            <input style="width: 150px;"
+                                                [style.background]="colors.pointBackgroundColor"
+                                                [(colorPicker)]="colors.pointBackgroundColor"
+                                                (colorPickerChange)="detectchange()" [cpPresetLabel]="'Company colors'"
+                                                [cpPresetColors]="[company.companyprimairycolor, company.secondarycolor]">
+                                            <mat-icon class="iconsize-12" (click)="colors.pointBackgroundColor = ''">
+                                                delete
+                                            </mat-icon>
+                                            <input style="width: 150px;" [style.background]="colors.pointBorderColor"
+                                                [(colorPicker)]="colors.pointBorderColor"
+                                                (colorPickerChange)="detectchange()" [cpPresetLabel]="'Company colors'"
+                                                [cpPresetColors]="[company.companyprimairycolor, company.secondarycolor]">
+                                            <mat-icon class="iconsize-12" (click)="colors.pointBorderColor = ''">delete
+                                            </mat-icon>
+                                        </div>
+
+                                    </mat-expansion-panel>
+                                </mat-accordion>
+
+                                <mat-accordion>
+                                    <mat-expansion-panel>
+                                        <mat-expansion-panel-header>
+                                            <mat-panel-title>
+                                                Chart type
+                                            </mat-panel-title>
+                                        </mat-expansion-panel-header>
+                                        <mat-form-field>
+                                            <mat-select [(value)]="element.charttype"
+                                                (selectionChange)="detectchangetype(i, element.charttype)">
+                                                <mat-option value="line">line</mat-option>
+                                                <mat-option value="bar">bar</mat-option>
+                                                <mat-option value="radar">radar</mat-option>
+                                                <mat-option value="pie">pie</mat-option>
+                                                <mat-option value="polarArea">Polararea</mat-option>
+                                                <mat-option value="doughnut">Doughnut</mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                        <div fxLayout="column">
+                                            X-Axe
+                                            Gridline color
+                                            <input
+                                                [style.background]="element.lineChartOptions.scales.xAxes[0].gridLines.color"
+                                                [(colorPicker)]="element.lineChartOptions.scales.xAxes[0].gridLines.color"
+                                                (colorPickerChange)="detectchange()" [cpPresetLabel]="'Company colors'"
+                                                [cpPresetColors]="[company.companyprimairycolor, company.secondarycolor]">
+                                            <mat-icon class="iconsize-12"
+                                                (click)="element.lineChartOptions.scales.xAxes[0].gridLines.color = ''">
+                                                delete
+                                            </mat-icon>
+                                            X-Axe
+                                            Font color
+                                            <input
+                                                [style.background]="element.lineChartOptions.scales.xAxes[0].ticks.fontColor"
+                                                [(colorPicker)]="element.lineChartOptions.scales.xAxes[0].ticks.fontColor"
+                                                (colorPickerChange)="detectchange()" [cpPresetLabel]="'Company colors'"
+                                                [cpPresetColors]="[company.companyprimairycolor, company.secondarycolor]">
+                                            <mat-icon class="iconsize-12"
+                                                (click)="element.lineChartOptions.scales.xAxes[0].ticks.fontColor = ''">
+                                                delete
+                                            </mat-icon>
+                                            Y-axe
+                                            Gridline color
+                                            <input
+                                                [style.background]="element.lineChartOptions.scales.yAxes[0].gridLines.color"
+                                                [(colorPicker)]="element.lineChartOptions.scales.yAxes[0].gridLines.color"
+                                                (colorPickerChange)="detectchange()" [cpPresetLabel]="'Company colors'"
+                                                [cpPresetColors]="[company.companyprimairycolor, company.secondarycolor]">
+                                            <mat-icon class="iconsize-12"
+                                                (click)="element.lineChartOptions.scales.yAxes[0].gridLines.color = ''">
+                                                delete
+                                            </mat-icon>
+                                            Y-axe
+                                            Font color
+                                            <input
+                                                [style.background]="element.lineChartOptions.scales.yAxes[0].ticks.fontColor"
+                                                [(colorPicker)]="element.lineChartOptions.scales.yAxes[0].ticks.fontColor"
+                                                (colorPickerChange)="detectchange()" [cpPresetLabel]="'Company colors'"
+                                                [cpPresetColors]="[company.companyprimairycolor, company.secondarycolor]">
+                                            <mat-icon class="iconsize-12"
+                                                (click)="element.lineChartOptions.scales.xAxes[0].ticks.fontColor = ''">
+                                                delete
+                                            </mat-icon>
+                                        </div>
+                                    </mat-expansion-panel>
+                                </mat-accordion>
+
+                                <mat-icon (click)="addgraph(i)">add</mat-icon>
+                                <mat-icon (click)="deletegraph(i)">delete</mat-icon>
+                            </mat-expansion-panel>
+                        </mat-accordion>
+                    </div> -->
+                </div>
+            </div>
+            <div fxLayout="row wrap" fxLayout.xs="column">
+                <button mat-mini-fab class="addbutton" matTooltip="Add element" (click)="addNewImage()" color="primary">
+                    <mat-icon>image</mat-icon>
+                </button>
+                <button mat-mini-fab class="addbutton" matTooltip="Add text" (click)="addNewText()" color="primary">
+                    <mat-icon>text_format</mat-icon>
+                </button>
+                <button mat-mini-fab class="addbutton" matTooltip="Add shape" (click)="addNewShape()" color="primary">
+                    <mat-icon>format_shapes</mat-icon>
+                </button>
+                <!-- <button mat-mini-fab class="addbutton" matTooltip="Add Chart" (click)="addNewChart()" color="primary">
+                    <mat-icon>show_chart</mat-icon>
+                </button> -->
+            </div>
+        </div>
+    </div>
+
+    <div ngClass.gt-xs="container-normal" ngClass.lt-sm="container-noshow" [class.container-xs-show]="listviewxsshow">
+        <div *ngIf="animationarray.length > 0 && changenow" [ngStyle]="canvas" #myBounds id="myBounds">
+
+            <div *ngFor="let element of animationarray; let i = index"
+                [ngClass]="{ 'top-b': !edge?.top, 'bottom-b': !edge?.bottom, 'left-b': !edge?.left, 'right-b': !edge?.right }">
+
+                <div *ngIf="element.type === 'image'" id="{{element.id}}"  style="overflow: hidden;" ngDraggable
+                    [bounds]="myBounds" [inBounds]="inBounds" [ngStyle]="element.style"
+                    [style.width]="element.style.width" [style.height]="element.style.height"
+                    (movingOffset)="onMoving($event, i)" [preventDefaultEvent]="true" [position]="element.setpos"
+                    (rzResizing)="onResizing($event, i)" ngResizable rzContainment="#myBounds" [rzAspectRatio]="true">
+                    <img *ngIf="element.src" style="width: 100%; height: 100%;" src={{element.src}}>
+                </div>
+                <label ngResizable *ngIf="element.type === 'text'" id="{{element.id}}" [attr.id]="element.id" ngDraggable
+                    [bounds]="myBounds" [inBounds]="inBounds" style="width: 100px; height: 100px; overflow: hidden;"
+                    (movingOffset)="onMoving($event, i)" [preventDefaultEvent]="true" [position]="element.setpos"
+                    (rzResizing)="onResizing($event, i)" [ngStyle]="element.style" rzContainment="#myBounds"
+                    [rzAspectRatio]="false">{{element.content}}</label>
+                <div *ngIf="element.type === 'shape'" id="{{element.id}}"  style="overflow: hidden;" ngDraggable
+                    [bounds]="myBounds" [inBounds]="inBounds" [ngStyle]="element.style"
+                    [style.width]="element.style.width" [style.height]="element.style.height"
+                    (movingOffset)="onMoving($event, i)" [preventDefaultEvent]="true" [position]="element.setpos"
+                    (rzResizing)="onResizing($event, i)" ngResizable rzContainment="#myBounds" [rzAspectRatio]="false">
+                </div>
+            </div>
+
+        </div>

@@ -1,19 +1,15 @@
-body {
-    font :14px  arial;
-    text-align : center;
-    background : #36A;
+
+.progressbarline {
+    width: 500px;
+    height: 20px;
+    background-color: greenyellow;
 }
-h2 {
-    color : white;
-}
-canvas {
-    border : 10px white solid;
-    cursor : pointer;
-}
-a {
-  color : #F93;
-}
-.mute {
-    cursor : pointer;
-    display: initial;   
-}
+
+.savetobutton {
+    // margin-left: 70%;
+    // margin-top: 40%;
+    bottom: 40px;
+    right: 50px;
+    position: fixed;
+    z-index: 200000;
+  }
