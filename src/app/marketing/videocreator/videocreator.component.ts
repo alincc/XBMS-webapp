@@ -165,12 +165,13 @@ export class VideocreatorComponent implements AfterViewInit {
 
 
   detectchange(): void {
-    console.log('run check');
+    console.log('run check', this.animationarray);
     this.animationarray.forEach(elm => {
       if (elm.posx > 0) {
         elm.setpos = { 'x': elm.posx, 'y': elm.posy };
-        //  img.style.transform = 'translate('+ img.posx + ' px, '+ img.posy + 'px)';
       }
+      this.addEffect(elm);
+      console.log(elm);
     })
     console.log(this.animationarray)
     this.changenow = false;
@@ -233,7 +234,7 @@ export class VideocreatorComponent implements AfterViewInit {
     }
     this.animationarray.push(img);
     this.detectchange();
-    this.addAnimation(newelnr, img);
+    //this.addAnimation(newelnr, img);
   }
 
   addNewShape(): void {
@@ -265,15 +266,15 @@ export class VideocreatorComponent implements AfterViewInit {
     }
     this.animationarray.push(img);
     this.detectchange();
-    this.addAnimation(newelnr, img);
+    //this.addAnimation(newelnr, img);
   }
 
   addNewText(): void {
     let newelnr;
     if (this.animationarray.length === -1 ){
-      newelnr = 0 + 'element';
+      newelnr = 0; //+ 'element';
     } else {
-      newelnr =  this.animationarray.length + 'element';
+      newelnr =  this.animationarray.length;// + 'element';
     }
     //let elname = '#element' + newelnr;
     this.newz = this.newz + 1;
@@ -302,27 +303,29 @@ export class VideocreatorComponent implements AfterViewInit {
     }
     this.animationarray.push(txt);
     this.detectchange();
-    this.addAnimation(newelnr, txt);
+    //this.addAnimation(newelnr, txt);
   }
 
 
   addAnimation(i, element){
-    //this.animationarray[i]
-    //let animation = new TimelineMax({ paused: true, reversed: true });
-    console.log(this.animationarray, i);
+
     let duration = element.duration;
     let anitype = element.anim_type;
     let aniset; 
     if (anitype === 'rotation'){
       aniset = { rotation: '30', ease: "Expo.easeInOut"}
     }
-    let idname = '#' + i;
-    //let idname = document.getElementById(i);
-    console.log(idname);
-    //this.primairytimeline.to('#myBounds', duration, aniset, 0);
-    this.primairytimeline.to(idname, .5, { rotation: '30', ease: "Expo.easeInOut" }, 0)
-    console.log(this.primairytimeline);
-    //this.animationelements.push(animation);
+    if (anitype === 'translate'){
+      aniset = { rotation: '30', ease: "Expo.easeInOut"}
+    }
+    this.primairytimeline.to(i, duration, aniset, 0);
+    this.animationarray[i]
+  }
+
+  addEffect(element): void {
+    let id = document.getElementById(element.id);
+    console.log(id);
+    this.addAnimation(id, element);
   }
 
   createMenuAnim() {
