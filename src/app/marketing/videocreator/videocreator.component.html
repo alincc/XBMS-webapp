@@ -51,10 +51,74 @@
         </mat-form-field>
         <button mat-button (click)="loadEditableVideo()">Start edit</button>
     </mat-card>
-    <mat-card fxLayout="row">
-        <mat-icon (click)="playFunc()">play_circle_outline</mat-icon>
-        <mat-icon (click)="stopFunc()">stop</mat-icon>
-        <div #progressbar class="progressbarline"></div>
+
+    <div *ngIf="selectedelement" fxLayout="column">
+        <div *ngFor="let animation of selectedelement.animation; let i = index;">
+            <mat-accordion>
+                <mat-expansion-panel>
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>
+                            <label>{{animation.anim_type}}</label>
+                            <mat-icon (click)="deleteEffect(i)" class="iconsize-10">delete</mat-icon>
+                        </mat-panel-title>
+                    </mat-expansion-panel-header>
+                    <div fxLayout="row">
+                        <!-- <label>Effects &nbsp;</label> -->
+                        <mat-form-field>
+                            <mat-select [(value)]="animation.anim_type" (selectionChange)="addEffect(selectedelement)">
+                                <mat-option value="rotation">Rotate</mat-option>
+                                <mat-option value="translate">Translate</mat-option>
+                                <mat-option value="scale">Scale</mat-option>
+                                <mat-option value="skew">Skew</mat-option>
+                                <mat-option value="bounce">Bounce</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                        <mat-form-field style="max-width: 46px;">
+                            <input [(ngModel)]="animation.duration" type="number" step="0.1" min="0" matInput>
+                            <mat-hint>Duration</mat-hint>
+                        </mat-form-field>
+                        <mat-form-field style="max-width: 46px;">
+                            <input [(ngModel)]="animation.start_time" type="number" step="0.1" min="0" matInput>
+                            <mat-hint>Start</mat-hint>
+                        </mat-form-field>
+                        <div *ngIf="animation.anim_type === 'rotation'">
+                            <mat-form-field style="max-width: 46px;">
+                                <input [(ngModel)]="animation.rotationcycle" type="number" step="0.1" min="0" matInput>
+                                <mat-hint>Rotation</mat-hint>
+                            </mat-form-field>
+                        </div>
+                        <div *ngIf="animation.anim_type === 'bounce'">
+                            <mat-form-field style="max-width: 46px;">
+                                <input [(ngModel)]="animation.posy" type="number" matInput>
+                                <mat-hint>Y-axe</mat-hint>
+                            </mat-form-field>
+                            <mat-form-field style="max-width: 46px;">
+                                <input [(ngModel)]="animation.posx" type="number" matInput>
+                                <mat-hint>X-axe</mat-hint>
+                            </mat-form-field>
+                            <button mat-button
+                                (click)="animation.posy = selectedelement.posy; animation.posx = selectedelement.posx">Reset</button>
+                        </div>
+                    </div>
+
+                </mat-expansion-panel>
+            </mat-accordion>
+
+        </div>
+        <button mat-button (click)="addNewEffect(animation)">Add new effect</button>
+    </div>
+    <mat-card fxLayout="column">
+        <div fxLayout="row">
+            <mat-icon (click)="playFunc()">play_circle_outline</mat-icon>
+            <mat-icon (click)="stopFunc()">stop</mat-icon>
+            <mat-icon (click)="pauseFunc()">pause_circle_outline</mat-icon>
+            <mat-icon (click)="reverseFunc()">fast_rewind</mat-icon>
+            <mat-icon (click)="fastforwardFunc()">fast_forward</mat-icon>
+        </div>
+        <div fxLayout="row">
+            <label>Timeline lenght</label>
+            <mat-slider thumbLabel [displayWith]="formatLabel" tickInterval="100" min="1" max="10000"></mat-slider>
+        </div>
     </mat-card>
 </div>
 
@@ -70,7 +134,7 @@
         <label>Edit</label>
         <div fxLayout="column">
             <div fxLayout="column" fxLayout.xs="column" cdkDropList (cdkDropListDropped)="drop($event)">
-                <div *ngFor="let element of animationarray; let i = index" cdkDrag>
+                <div *ngFor="let element of animationarray; let i = index" cdkDrag (click)="onSelectElement(element)">
                     <div *ngIf="element.type === 'image'">
                         <mat-accordion>
                             <mat-expansion-panel>
@@ -195,21 +259,6 @@
                                         (colorPickerChange)="detectchange()" [cpPresetLabel]="'Company colors'"
                                         [cpPresetColors]="[option.companyprimairycolor, option.companysecondarycolor, company.companyprimairycolor, company.companysecondarycolor]">
                                 </div>
-
-                                <label>Effects</label>
-                                <mat-form-field>
-                                    <!-- -->
-                                    <mat-select [(value)]="element.anim_type" 
-                                    (selectionChange)="addEffect(element)" >
-                                        <mat-option value="rotation">Rotate</mat-option>
-                                        <mat-option value="translate">Translate</mat-option>
-                                        <mat-option value="scale">Scale</mat-option>
-                                        <mat-option value="skew">Skew</mat-option>
-                                    </mat-select>
-                                </mat-form-field>
-
-                                <button mat-button (click)="addEffect(element)">Add effect</button>
-
                             </mat-expansion-panel>
                         </mat-accordion>
 
@@ -391,9 +440,9 @@
     </div>
 
     <div ngClass.gt-xs="container-normal" ngClass.lt-sm="container-noshow" [class.container-xs-show]="listviewxsshow">
-        <div *ngIf="animationarray.length > 0 && changenow" [ngStyle]="canvas" #myBounds id="myBounds">
-
-            <div *ngFor="let element of animationarray; let i = index" style="overflow: hidden;" >
+        <div *ngIf="animationarray.length > 0 && changenow" [ngStyle]="canvas" #myBounds id="myBounds" style="overflow: hidden;">
+            <div *ngFor="let element of animationarray; let i = index"
+                (click)="onSelectElement(element)">
 
                 <div *ngIf="element.type === 'image'" id="{{element.id}}" style="overflow: hidden;" ngDraggable
                     [bounds]="myBounds" [inBounds]="inBounds" [ngStyle]="element.style"
@@ -409,8 +458,7 @@
                     [ngStyle]="element.style" rzContainment="#myBounds"
                     [rzAspectRatio]="false">{{element.content}}</label>
                 <div *ngIf="element.type === 'shape'" id="{{element.id}}" style="overflow: hidden;" ngDraggable
-                    [ngStyle]="element.style"
-                    [style.width]="element.style.width" [style.height]="element.style.height"
+                    [ngStyle]="element.style" [style.width]="element.style.width" [style.height]="element.style.height"
                     (movingOffset)="onMoving($event, i)" [preventDefaultEvent]="true" [position]="element.setpos"
                     (rzResizing)="onResizing($event, i)" ngResizable [rzAspectRatio]="false">
                 </div>

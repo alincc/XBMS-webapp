@@ -42,8 +42,6 @@ enum Direction {
 })
 
 
-
-
 export class AppComponent implements AfterViewInit {
   languages = [
     { code: 'en', label: 'English'},

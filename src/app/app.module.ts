@@ -9,7 +9,7 @@ import { MatMenuModule, MatButtonModule, MatCheckboxModule,
 import { MatSelectModule, MatNativeDateModule, MatTableModule,
   MatProgressSpinnerModule, MatTabsModule, MatTooltipModule } from '@angular/material';
 import { MatInputModule, MatCardModule, MatToolbarModule, MatAutocompleteModule } from '@angular/material';
-import { MatIconModule, MatExpansionModule, MatListModule, MatSlideToggleModule} from '@angular/material';
+import { MatIconModule, MatExpansionModule, MatListModule, MatSlideToggleModule, MatSliderModule} from '@angular/material';
 import {MatBadgeModule} from '@angular/material/badge';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import {MatGridListModule} from '@angular/material/grid-list';
@@ -161,7 +161,7 @@ export class CustomHammerConfig extends HammerGestureConfig  {
     MatMenuModule, MatSelectModule, MatTabsModule, MatInputModule, MatCardModule, MatToolbarModule,
     MatNativeDateModule, MatTableModule, MatToolbarModule, MatStepperModule,
     MatButtonModule, MatCheckboxModule, MatSidenavModule, MatDialogModule, MatProgressSpinnerModule,
-    MatProgressBarModule, MatAutocompleteModule, MatListModule,
+    MatProgressBarModule, MatAutocompleteModule, MatListModule, MatSliderModule,
     FormsModule, ReactiveFormsModule, HttpClientModule, MatGridListModule, MatSlideToggleModule,
     MatDatepickerModule, MatExpansionModule, MatButtonToggleModule, MatChipsModule, MatBadgeModule,
     ModalGalleryModule.forRoot(),

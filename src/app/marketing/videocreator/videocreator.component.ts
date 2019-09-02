@@ -11,6 +11,18 @@ import { TimelineLite, Back, Power1, SlowMo } from 'gsap';
 import { FileUploader, FileItem } from 'ng2-file-upload';
 import { MatSnackBar } from '@angular/material';
 
+export class animationtype {
+  start_time: number; //delayt
+  end_time: number;
+  anim_type: string;
+  duration: number;
+  ease: string;
+  posx: number;
+  posy: number;
+  rotationcycle: number;
+  } 
+
+
 export class imageanimation {
   type: 'image';
   style: {
@@ -23,11 +35,8 @@ export class imageanimation {
   posx: number;
   posy: number;
   setpos: object;
-  start_time: number;
-  end_time: number;
-  anim_type: string;
-  duration: number;
   id: number;
+  animation: animationtype[];
 }
 
 export class shapeanimation {
@@ -43,15 +52,12 @@ export class shapeanimation {
   posx: number;
   posy: number;
   setpos: object;
-  start_time: number;
-  end_time: number;
-  anim_type: string;
-  duration: number;
   id: number;
+  animation: animationtype[];
 }
 
 export class textanimation {
-  
+
   content: string;
   type: 'text';
   style: {
@@ -67,11 +73,8 @@ export class textanimation {
   posx: number;
   posy: number;
   setpos: object;
-  start_time: number;
-  end_time: number;
-  anim_type: string;
-  duration: number;
   id: number;
+  animation: animationtype[];
 }
 
 
@@ -82,6 +85,18 @@ export class textanimation {
 })
 
 export class VideocreatorComponent implements AfterViewInit {
+
+  formatLabel(value: number | null) {
+    if (!value) {
+      return 0;
+    }
+    if (value >= 1000) {
+      return Math.round(value / 100) + 'k';
+    }
+    this.counter = value; 
+    return value;
+  }
+
   @ViewChild('progressbar', { static: false }) progressbar: ElementRef;
 
   // @ViewChildren(LightsRowComponent)
@@ -105,7 +120,7 @@ export class VideocreatorComponent implements AfterViewInit {
   public play = false;
   public menu = new TimelineMax({ paused: true, reversed: true });
   public primairytimeline = new TimelineMax({ paused: true, reversed: true });
-  progressbarline =  new TimelineMax({ paused: true, reversed: true });
+  progressbarline = new TimelineMax({ paused: true, reversed: true });
 
   public listviewxsshow = false;
   public showprogressbar = false;
@@ -137,6 +152,7 @@ export class VideocreatorComponent implements AfterViewInit {
 
   watcher: Subscription;
   activeMediaQuery;
+  public selectedelement;
 
   constructor(
     private relationsApi: RelationsApi,
@@ -155,14 +171,18 @@ export class VideocreatorComponent implements AfterViewInit {
   ngOnChanges(changes: SimpleChanges) {
     //wait for option.id
     const currentItem: SimpleChange = changes.option;
-    
-    if(currentItem !== undefined){
-      if(currentItem.currentValue.id !== undefined){
+
+    if (currentItem !== undefined) {
+      if (currentItem.currentValue.id !== undefined) {
         this.createMenuAnim();
       }
     }
   }
 
+  onSelectElement(element): void {
+    this.selectedelement = element;
+    console.log(this.selectedelement); 
+  }
 
   detectchange(): void {
     console.log('run check', this.animationarray);
@@ -171,40 +191,68 @@ export class VideocreatorComponent implements AfterViewInit {
         elm.setpos = { 'x': elm.posx, 'y': elm.posy };
       }
     })
-    //console.log(this.animationarray)
+    console.log(this.animationarray)
+    // force dom update
     this.changenow = false;
     setTimeout(() => this.changenow = true);
-    this.animationarray.forEach(elm => {
-      this.addEffect(elm);
-    })
+     // wait for dom update to finish otherwise it will create the effects on the old dom
+    setTimeout(() =>
+      this.animationarray.forEach(elm => {
+        this.addEffect(elm);
+      })
+    );
   }
 
-  addAnimation(i, element){
+  addAnimation(i, element) {
     let duration = element.duration;
+    let startime = element.start_time
     let anitype = element.anim_type;
-    let aniset; 
-    if (anitype === 'rotation'){
-      aniset = { rotation: '30', ease: "Expo.easeInOut", onUpdate:this.updateFn('{self}'), onUpdateParams:['{self}']}
+    let rotationcycle = element.rotationcycle;
+    let travellocY = element.posy;
+    let travellocX = element.posx;
+    let aniset;
+    if (anitype === 'rotation') {
+      aniset = { rotation: rotationcycle, ease: "Expo.easeInOut"  }
     }
-    if (anitype === 'translate'){
-      aniset = { rotation: '30', ease: "Expo.easeInOut", onUpdate:this.updateFn('{self}'), onUpdateParams:['{self}']}
+    if (anitype === 'translate') {
+      aniset = { rotation: '30', ease: "Expo.easeInOut" }
     }
-    this.primairytimeline.to(i, duration, aniset, 0);
-    console.log(i);
+    if (anitype === 'bounce') {
+      aniset = { ease: 'Bounce.easeOut', y: travellocY - 100,  x: travellocX }
+    }
+    this.primairytimeline.to(i, duration, aniset, startime);
+    console.log(duration, aniset, startime);
   }
 
-  updateFn(para) {
-    console.log(para);
-  }
 
   addEffect(element): void {
     let id = document.getElementById(element.id);
     console.log(id);
-    this.addAnimation(id, element);
+    element.animation.forEach(animationsection => {
+      this.addAnimation(id, animationsection);
+    });
+  }
+
+  addNewEffect(element): void {
+    let newanimation: animationtype = {
+        start_time: 0, //delayt
+        end_time: 10,
+        anim_type: 'rotation',
+        duration:  0.5,
+        ease: '',
+        posx: this.selectedelement.posx,
+        posy: this.selectedelement.posy,
+        rotationcycle: 30
+    }
+    this.selectedelement.animation.push(newanimation)
+  }
+
+  deleteEffect(i){
+    this.selectedelement.animation.splice(i, 1);
   }
 
   getEditFile() {
-    this.relationsApi.getFiles(this.option.id, { where: { template: { "neq":  null } } })
+    this.relationsApi.getFiles(this.option.id, { where: { template: { "neq": null } } })
       .subscribe((files: Files[]) => {
         this.editablevideos = files;
         //console.log('received files', this.editableimages);
@@ -231,13 +279,23 @@ export class VideocreatorComponent implements AfterViewInit {
 
   addNewImage(): void {
     let newelnr;
-    if (this.animationarray.length === -1 ){
+    if (this.animationarray.length === -1) {
       newelnr = 0 + 'element';
     } else {
-      newelnr =  this.animationarray.length + 'element';
+      newelnr = this.animationarray.length + 'element';
     }
     //let elname = 'element' + newelnr;
     this.newz = this.newz + 1;
+    let anim: animationtype[] = [{
+      start_time: 0, //delayt
+      end_time: 10,
+      anim_type: 'rotation',
+      duration:  0.5,
+      ease: '',
+      posx: 0,
+      posy: 0,
+      rotationcycle: 30
+    }];
     let img: imageanimation = {
       type: 'image',
       style: {
@@ -251,10 +309,7 @@ export class VideocreatorComponent implements AfterViewInit {
       posx: 50,
       posy: 50,
       setpos: { 'x': 50, 'y': 50 },
-      start_time: 0,
-      end_time: 10,
-      anim_type: 'rotation',
-      duration: 0.5,
+      animation: anim,
       id: newelnr
     }
     this.animationarray.push(img);
@@ -264,12 +319,22 @@ export class VideocreatorComponent implements AfterViewInit {
 
   addNewShape(): void {
     let newelnr;
-    if (this.animationarray.length === -1 ){
+    if (this.animationarray.length === -1) {
       newelnr = 0 + 'element';
     } else {
-      newelnr =  this.animationarray.length + 'element';
+      newelnr = this.animationarray.length + 'element';
     }
     this.newz = this.newz + 1;
+    let anim: animationtype[] = [{
+      start_time: 0, //delayt
+      end_time: 10,
+      anim_type: 'rotation',
+      duration:  0.5,
+      ease: '',
+      posx: 0,
+      posy: 0,
+      rotationcycle: 30
+    }];
     let img: shapeanimation = {
       type: 'shape',
       style: {
@@ -283,10 +348,7 @@ export class VideocreatorComponent implements AfterViewInit {
       posx: 50,
       posy: 50,
       setpos: { 'x': 50, 'y': 50 },
-      start_time: 0,
-      end_time: 10,
-      anim_type: 'rotation',
-      duration: 0.5,
+      animation: anim,
       id: newelnr
     }
     this.animationarray.push(img);
@@ -296,13 +358,23 @@ export class VideocreatorComponent implements AfterViewInit {
 
   addNewText(): void {
     let newelnr;
-    if (this.animationarray.length === -1 ){
+    if (this.animationarray.length === -1) {
       newelnr = 0; //+ 'element';
     } else {
-      newelnr =  this.animationarray.length;// + 'element';
+      newelnr = this.animationarray.length;// + 'element';
     }
     //let elname = '#element' + newelnr;
     this.newz = this.newz + 1;
+    let anim: animationtype[] = [{
+      start_time: 0, //delayt
+      end_time: 10,
+      anim_type: 'rotation',
+      duration:  0.5,
+      ease: '',
+      posx: 0,
+      posy: 0,
+      rotationcycle: 30
+    }];
     let txt: textanimation = {
       type: 'text',
       style: {
@@ -320,10 +392,7 @@ export class VideocreatorComponent implements AfterViewInit {
       posx: 20,
       posy: 50,
       setpos: { 'x': 20, 'y': 50 },
-      start_time: 0,
-      end_time: 10,
-      anim_type: 'rotation',
-      duration: 0.5,
+      animation: anim,
       id: newelnr
     }
     this.animationarray.push(txt);
@@ -348,26 +417,37 @@ export class VideocreatorComponent implements AfterViewInit {
     return console.log('clicked');
   }
 
-
-
   playFunc() {
-    // this.animationarray.forEach((element, i) => {
-    //   this.addAnimation(element.id, element);
-    // })
-    
-    console.log('play')
-    this.progressbarline.play();
+    this.detectchange();
+    console.log('play');
+    //this.progressbarline.play();
     this.primairytimeline.play();
     this.t = setInterval(() => { this.incrementSeconds() }, 1000);
   }
 
   stopFunc() {
     console.log('stop')
-    clearTimeout(this.t);
+    clearTimeout(this.t); 
     this.currenttime = 0;
-    this.progressbarline.reverse();
-    this.primairytimeline.reverse(); 
+    this.primairytimeline.pause(); 
+    this.primairytimeline.progress(0);
+    this.primairytimeline.timeScale(1); 
+    //this.progressbarline.reverse();
+    //this.primairytimeline.reverse();
     //this.progressbar.reversed() ?
+    //this.progressbarline.progress(0);
+  }
+
+  pauseFunc() {
+    this.primairytimeline.pause();
+  }
+
+  reverseFunc() {
+    this.primairytimeline.reverse();
+  }
+
+  fastforwardFunc(){
+    this.primairytimeline.timeScale(5); 
   }
 
   incrementSeconds() {
@@ -381,7 +461,6 @@ export class VideocreatorComponent implements AfterViewInit {
     this.animationarray.forEach((img, i) => {
       img.style['z-index'] = i + 1;
     })
-
     this.detectchange()
   }
 
@@ -399,18 +478,17 @@ export class VideocreatorComponent implements AfterViewInit {
     this.detectchange();
   }
 
-  
-  setbold(img){
-    if (img.style['font-weight'] === 'bold'){
+  setbold(img) {
+    if (img.style['font-weight'] === 'bold') {
       img.style['font-weight'] = '';
-    } else{
+    } else {
       img.style['font-weight'] = 'bold';
     }
     this.detectchange();
   }
 
-  setitalic(img){
-    if (img.style['font-style'] === 'italic'){
+  setitalic(img) {
+    if (img.style['font-style'] === 'italic') {
       img.style['font-style'] = '';
     } else {
       img.style['font-style'] = 'italic';
@@ -422,7 +500,6 @@ export class VideocreatorComponent implements AfterViewInit {
     this.animationarray.splice(i, 1);
   }
 
-
   swiperight(e) {
     this.listviewxsshow = true;
   }
@@ -430,7 +507,5 @@ export class VideocreatorComponent implements AfterViewInit {
   swipeleft(e) {
     this.listviewxsshow = false;
   }
-
-
 
 }

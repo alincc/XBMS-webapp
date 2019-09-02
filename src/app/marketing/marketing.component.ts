@@ -505,27 +505,27 @@ export class MarketingComponent implements OnInit {
   //   });
   // }
 
-  onButtonAfterHook(event: ButtonEvent) {
-    if (!event || !event.button) {
-      return;
-    }
-    // Invoked after a click on a button, but before that the related
-    // action is applied.
-    // For instance: this method will be invoked after a click
-    // of 'close' button, but before that the modal gallery
-    // will be really closed.
-    if (event.button.type === ButtonType.DOWNLOAD) {
-      // remove the current image and reassign all other to the array of images
-      // You must think in a functional way! So, re-assign the array instead of modifying it.
-      // this.images = this.images.filter((val: Image) => event.image && val.id !== event.image.id);
-      console.log(event.image);
-      // this.onSelectImage(event.image);
-    }
-  }
+  // onButtonAfterHook(event: ButtonEvent) {
+  //   if (!event || !event.button) {
+  //     return;
+  //   }
+  //   // Invoked after a click on a button, but before that the related
+  //   // action is applied.
+  //   // For instance: this method will be invoked after a click
+  //   // of 'close' button, but before that the modal gallery
+  //   // will be really closed.
+  //   if (event.button.type === ButtonType.DOWNLOAD) {
+  //     // remove the current image and reassign all other to the array of images
+  //     // You must think in a functional way! So, re-assign the array instead of modifying it.
+  //     // this.images = this.images.filter((val: Image) => event.image && val.id !== event.image.id);
+  //     console.log(event.image);
+  //     // this.onSelectImage(event.image);
+  //   }
+  // }
 
-  onClickImage(e): void {
-    console.log(e);
-  }
+  // onClickImage(e): void {
+  //   console.log(e);
+  // }
 
   // uploadFile(): void {
   //   this.savePublication(),
