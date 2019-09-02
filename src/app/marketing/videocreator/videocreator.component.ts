@@ -170,12 +170,37 @@ export class VideocreatorComponent implements AfterViewInit {
       if (elm.posx > 0) {
         elm.setpos = { 'x': elm.posx, 'y': elm.posy };
       }
-      this.addEffect(elm);
-      console.log(elm);
     })
-    console.log(this.animationarray)
+    //console.log(this.animationarray)
     this.changenow = false;
     setTimeout(() => this.changenow = true);
+    this.animationarray.forEach(elm => {
+      this.addEffect(elm);
+    })
+  }
+
+  addAnimation(i, element){
+    let duration = element.duration;
+    let anitype = element.anim_type;
+    let aniset; 
+    if (anitype === 'rotation'){
+      aniset = { rotation: '30', ease: "Expo.easeInOut", onUpdate:this.updateFn('{self}'), onUpdateParams:['{self}']}
+    }
+    if (anitype === 'translate'){
+      aniset = { rotation: '30', ease: "Expo.easeInOut", onUpdate:this.updateFn('{self}'), onUpdateParams:['{self}']}
+    }
+    this.primairytimeline.to(i, duration, aniset, 0);
+    console.log(i);
+  }
+
+  updateFn(para) {
+    console.log(para);
+  }
+
+  addEffect(element): void {
+    let id = document.getElementById(element.id);
+    console.log(id);
+    this.addAnimation(id, element);
   }
 
   getEditFile() {
@@ -306,27 +331,6 @@ export class VideocreatorComponent implements AfterViewInit {
     //this.addAnimation(newelnr, txt);
   }
 
-
-  addAnimation(i, element){
-
-    let duration = element.duration;
-    let anitype = element.anim_type;
-    let aniset; 
-    if (anitype === 'rotation'){
-      aniset = { rotation: '30', ease: "Expo.easeInOut"}
-    }
-    if (anitype === 'translate'){
-      aniset = { rotation: '30', ease: "Expo.easeInOut"}
-    }
-    this.primairytimeline.to(i, duration, aniset, 0);
-    this.animationarray[i]
-  }
-
-  addEffect(element): void {
-    let id = document.getElementById(element.id);
-    console.log(id);
-    this.addAnimation(id, element);
-  }
 
   createMenuAnim() {
     console.log("menu created");
