@@ -20,7 +20,7 @@ export class animationtype {
   posx: number;
   posy: number;
   rotationcycle: number;
-  } 
+}
 
 
 export class imageanimation {
@@ -93,23 +93,17 @@ export class VideocreatorComponent implements AfterViewInit {
     if (value >= 1000) {
       return Math.round(value / 100) + 'k';
     }
-    this.counter = value; 
+    this.counter = value;
     return value;
   }
 
   @ViewChild('progressbar', { static: false }) progressbar: ElementRef;
 
-  // @ViewChildren(LightsRowComponent)
-  // public rows: QueryList<LightsRowComponent>;
-
   @Input() Account: Account = new Account();
   @Input() SelectedRelation: Relations;
   @Input() option: Relations = new Relations();
   @Input() company: Company = new Company;
-
-  // @ViewChild('box1', { static: false }) box: ElementRef;
-  // @ViewChildren('btn') btnContainers: QueryList<ElementRef>;
-
+  
   public t;
   public counter = 1000;
   public currenttime = 0;
@@ -153,6 +147,7 @@ export class VideocreatorComponent implements AfterViewInit {
   watcher: Subscription;
   activeMediaQuery;
   public selectedelement;
+  public elementname;
 
   constructor(
     private relationsApi: RelationsApi,
@@ -174,14 +169,22 @@ export class VideocreatorComponent implements AfterViewInit {
 
     if (currentItem !== undefined) {
       if (currentItem.currentValue.id !== undefined) {
-        this.createMenuAnim();
+        //this.createMenuAnim();
       }
     }
   }
 
+  converttovideo() {
+    this.filesApi.createvideo(this.option.id, this.option.companyId, this.elementname, this.canvas,
+      this.animationelements)
+    .subscribe(
+      res => { console.log }
+    );
+  }
+
   onSelectElement(element): void {
     this.selectedelement = element;
-    console.log(this.selectedelement); 
+    console.log(this.selectedelement);
   }
 
   detectchange(): void {
@@ -195,7 +198,7 @@ export class VideocreatorComponent implements AfterViewInit {
     // force dom update
     this.changenow = false;
     setTimeout(() => this.changenow = true);
-     // wait for dom update to finish otherwise it will create the effects on the old dom
+    // wait for dom update to finish otherwise it will create the effects on the old dom
     setTimeout(() =>
       this.animationarray.forEach(elm => {
         this.addEffect(elm);
@@ -212,13 +215,13 @@ export class VideocreatorComponent implements AfterViewInit {
     let travellocX = element.posx;
     let aniset;
     if (anitype === 'rotation') {
-      aniset = { rotation: rotationcycle, ease: "Expo.easeInOut"  }
+      aniset = { rotation: rotationcycle, ease: "Expo.easeInOut" }
     }
     if (anitype === 'translate') {
       aniset = { rotation: '30', ease: "Expo.easeInOut" }
     }
     if (anitype === 'bounce') {
-      aniset = { ease: 'Bounce.easeOut', y: travellocY - 100,  x: travellocX }
+      aniset = { ease: 'Bounce.easeOut', y: travellocY - 100, x: travellocX }
     }
     this.primairytimeline.to(i, duration, aniset, startime);
     console.log(duration, aniset, startime);
@@ -235,19 +238,19 @@ export class VideocreatorComponent implements AfterViewInit {
 
   addNewEffect(element): void {
     let newanimation: animationtype = {
-        start_time: 0, //delayt
-        end_time: 10,
-        anim_type: 'rotation',
-        duration:  0.5,
-        ease: '',
-        posx: this.selectedelement.posx,
-        posy: this.selectedelement.posy,
-        rotationcycle: 30
+      start_time: 0, //delayt
+      end_time: 10,
+      anim_type: 'rotation',
+      duration: 0.5,
+      ease: '',
+      posx: this.selectedelement.posx,
+      posy: this.selectedelement.posy,
+      rotationcycle: 30
     }
     this.selectedelement.animation.push(newanimation)
   }
 
-  deleteEffect(i){
+  deleteEffect(i) {
     this.selectedelement.animation.splice(i, 1);
   }
 
@@ -290,7 +293,7 @@ export class VideocreatorComponent implements AfterViewInit {
       start_time: 0, //delayt
       end_time: 10,
       anim_type: 'rotation',
-      duration:  0.5,
+      duration: 0.5,
       ease: '',
       posx: 0,
       posy: 0,
@@ -329,7 +332,7 @@ export class VideocreatorComponent implements AfterViewInit {
       start_time: 0, //delayt
       end_time: 10,
       anim_type: 'rotation',
-      duration:  0.5,
+      duration: 0.5,
       ease: '',
       posx: 0,
       posy: 0,
@@ -369,7 +372,7 @@ export class VideocreatorComponent implements AfterViewInit {
       start_time: 0, //delayt
       end_time: 10,
       anim_type: 'rotation',
-      duration:  0.5,
+      duration: 0.5,
       ease: '',
       posx: 0,
       posy: 0,
@@ -401,17 +404,6 @@ export class VideocreatorComponent implements AfterViewInit {
   }
 
 
-  createMenuAnim() {
-    console.log("menu created");
-    // this.menu.to("#topLine", .5, { rotation: '30', ease: "Expo.easeInOut" }, 0)
-    // this.menu.to("#midLine", .5, { opacity: '0', ease: "Expo.easeInOut" }, 0)
-    // this.menu.to("#botLine", .5, { rotation: '-30', ease: "Expo.easeInOut" }, 0)
-
-    //this.progressbarline.to(this.progressbar.nativeElement, 0.2, { x: 100 });
-    //this.progressbarline.to(this.progressbar.nativeElement, 1, { y: 50, delay: 1 });
-    this.progressbarline.to(this.progressbar.nativeElement, 0.2, { opacity: 0 });
-  }
-
   menuClick() {
     this.menu.reversed() ? this.menu.play() : this.menu.reverse();
     return console.log('clicked');
@@ -427,11 +419,11 @@ export class VideocreatorComponent implements AfterViewInit {
 
   stopFunc() {
     console.log('stop')
-    clearTimeout(this.t); 
+    clearTimeout(this.t);
     this.currenttime = 0;
-    this.primairytimeline.pause(); 
+    this.primairytimeline.pause();
     this.primairytimeline.progress(0);
-    this.primairytimeline.timeScale(1); 
+    this.primairytimeline.timeScale(1);
     //this.progressbarline.reverse();
     //this.primairytimeline.reverse();
     //this.progressbar.reversed() ?
@@ -446,8 +438,8 @@ export class VideocreatorComponent implements AfterViewInit {
     this.primairytimeline.reverse();
   }
 
-  fastforwardFunc(){
-    this.primairytimeline.timeScale(5); 
+  fastforwardFunc() {
+    this.primairytimeline.timeScale(5);
   }
 
   incrementSeconds() {
