@@ -116,8 +116,9 @@
             <mat-icon (click)="fastforwardFunc()">fast_forward</mat-icon>
         </div>
         <div fxLayout="row">
-            <label>Timeline lenght</label>
-            <mat-slider thumbLabel [displayWith]="formatLabel" tickInterval="100" min="1" max="10000"></mat-slider>
+            <label>Timeline lenght &nbsp; </label> 
+            <mat-slider  (input)="onSliderChange($event)" thumbLabel [displayWith]="formatLabel" tickInterval="1" min="1" max="600"></mat-slider>
+            <label>{{counter}} &nbsp; seconds</label> 
         </div>
     </mat-card>
 </div>
@@ -208,7 +209,6 @@
                                                     (colorPickerChange)="detectchange()"
                                                     [cpPresetLabel]="'Company colors'"
                                                     [cpPresetColors]="[option.companyprimairycolor, option.companysecondarycolor, company.companyprimairycolor, company.companysecondarycolor]">
-
 
                                             </mat-expansion-panel>
                                         </mat-accordion>

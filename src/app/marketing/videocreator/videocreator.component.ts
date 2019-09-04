@@ -86,17 +86,6 @@ export class textanimation {
 
 export class VideocreatorComponent implements AfterViewInit {
 
-  formatLabel(value: number | null) {
-    if (!value) {
-      return 0;
-    }
-    if (value >= 1000) {
-      return Math.round(value / 100) + 'k';
-    }
-    this.counter = value;
-    return value;
-  }
-
   @ViewChild('progressbar', { static: false }) progressbar: ElementRef;
 
   @Input() Account: Account = new Account();
@@ -105,7 +94,7 @@ export class VideocreatorComponent implements AfterViewInit {
   @Input() company: Company = new Company;
   
   public t;
-  public counter = 1000;
+  public counter = 4;
   public currenttime = 0;
 
   public animationarray = []; //array with style and position settings;
@@ -174,9 +163,24 @@ export class VideocreatorComponent implements AfterViewInit {
     }
   }
 
+  formatLabel(value: number | null) {
+    if (!value) {
+      return this.counter;
+    }  
+    if (value >= 60) {
+      return Math.round(value / 60) + 'm';
+    } else {
+      return value + 's'
+    }
+  }
+
+  onSliderChange(e){
+    this.counter = e.value;
+  }
+
   converttovideo() {
-    this.filesApi.createvideo(this.option.id, this.option.companyId, this.elementname, this.canvas,
-      this.animationarray)
+    this.filesApi.createvideo(this.option.id, this.option.companyId, 
+      this.elementname, this.canvas, this.animationarray, this.counter)
     .subscribe(
       res => { console.log }
     );

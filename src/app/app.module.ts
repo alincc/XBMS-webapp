@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { NgModule, Injectable } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
 import { Routes, RouterModule } from '@angular/router';
 import { NgxTwitterTimelineModule } from 'ngx-twitter-timeline';
@@ -85,13 +85,26 @@ import { CalendarModule, DateAdapter } from 'angular-calendar';
 import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
 import { VideocreatorComponent } from './marketing/videocreator/videocreator.component';
 import { RequestobjectComponent } from './marketing/videocreator/requestobject/requestobject.component';
-
 //disable pinch and rotate to scroll swip check the hammerjs doc for future fix
-export class CustomHammerConfig extends HammerGestureConfig  {
-  overrides = <any>{
-      'pinch': { enable: false },
-      'rotate': { enable: false }
+// export class CustomHammerConfig extends HammerGestureConfig  {
+//   overrides = <any>{
+//       'pinch': { enable: false },
+//       'rotate': { enable: false }
+//   }
+// }
+
+import { GestureConfig } from '@angular/material';
+
+declare var Hammer: any;
+@Injectable()
+export class HammerConfig extends GestureConfig  {
+  buildHammer(element: HTMLElement) {
+    return new GestureConfig({touchAction: 'pan-y'}).buildHammer(element);
   }
+  overrides = <any>{
+    'pinch': { enable: false },
+    'rotate': { enable: false }
+}
 }
 
 @NgModule({
@@ -139,21 +152,21 @@ export class CustomHammerConfig extends HammerGestureConfig  {
   ],
 
   imports: [
+    BrowserModule,
+    BrowserAnimationsModule,
     MatBottomSheetModule,
     VgCoreModule,
     VgControlsModule,
     VgOverlayPlayModule,
     VgBufferingModule,
     NgxTwitterTimelineModule,
-       PickerModule,
+    PickerModule,
     ColorPickerModule,
     FlexLayoutModule,
     CKEditorModule,
     FileUploadModule,
     AngularDraggableModule,
     ChartsModule,
-    BrowserModule,
-    BrowserAnimationsModule,
     RouterModule,
     AppRoutingModule,
     MatCheckboxModule,
@@ -194,7 +207,7 @@ export class CustomHammerConfig extends HammerGestureConfig  {
       { provide: MAT_DIALOG_DATA, useValue: {} },
       { provide: MatDialogRef, useValue: {} },
       { provide: HAMMER_GESTURE_CONFIG,
-        useClass: CustomHammerConfig}
+        useClass: HammerConfig}
   ],
   bootstrap: [AppComponent],
   exports: [

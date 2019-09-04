@@ -244,6 +244,8 @@ export class FilesApi extends BaseLoopBackApi {
    *
    * @param {string} images 
    *
+   * @param {number} duration 
+   *
    * @param {object} data Request data.
    *
    * This method does not accept any data. Supply an empty object.
@@ -257,7 +259,7 @@ export class FilesApi extends BaseLoopBackApi {
    * This usually means the response is a `Files` object.)
    * </em>
    */
-  public createvideo(id: any = {}, companyid: any = {}, name: any = {}, canvas: any = {}, images: any = {}, customHeaders?: Function): Observable<any> {
+  public createvideo(id: any = {}, companyid: any = {}, name: any = {}, canvas: any = {}, images: any = {}, duration: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "POST";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
     "/files/createvideo/:id";
@@ -270,6 +272,7 @@ export class FilesApi extends BaseLoopBackApi {
     if (typeof name !== 'undefined' && name !== null) _urlParams.name = name;
     if (typeof canvas !== 'undefined' && canvas !== null) _urlParams.canvas = canvas;
     if (typeof images !== 'undefined' && images !== null) _urlParams.images = images;
+    if (typeof duration !== 'undefined' && duration !== null) _urlParams.duration = duration;
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
     return result;
   }
