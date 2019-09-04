@@ -169,14 +169,14 @@ export class VideocreatorComponent implements AfterViewInit {
 
     if (currentItem !== undefined) {
       if (currentItem.currentValue.id !== undefined) {
-        //this.createMenuAnim();
+        
       }
     }
   }
 
   converttovideo() {
     this.filesApi.createvideo(this.option.id, this.option.companyId, this.elementname, this.canvas,
-      this.animationelements)
+      this.animationarray)
     .subscribe(
       res => { console.log }
     );

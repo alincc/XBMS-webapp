@@ -84,6 +84,7 @@ import { HammerGestureConfig, HAMMER_GESTURE_CONFIG } from '@angular/platform-br
 import { CalendarModule, DateAdapter } from 'angular-calendar';
 import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
 import { VideocreatorComponent } from './marketing/videocreator/videocreator.component';
+import { RequestobjectComponent } from './marketing/videocreator/requestobject/requestobject.component';
 
 //disable pinch and rotate to scroll swip check the hammerjs doc for future fix
 export class CustomHammerConfig extends HammerGestureConfig  {
@@ -123,7 +124,8 @@ export class CustomHammerConfig extends HammerGestureConfig  {
     MarketingpublicationsComponent,
     ImagecreatorComponent,
     VideouploadComponent,
-    VideocreatorComponent
+    VideocreatorComponent,
+    RequestobjectComponent
   ],
 
    entryComponents: [
