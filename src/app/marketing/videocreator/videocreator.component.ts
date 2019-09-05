@@ -6,7 +6,7 @@ import {
 } from '../../shared';
 import { Subscription } from 'rxjs';
 import { MediaObserver, MediaChange } from '@angular/flex-layout';
-import { TimelineMax } from 'gsap';
+import { TimelineMax, TweenLite } from 'gsap';
 import { TimelineLite, Back, Power1, SlowMo } from 'gsap';
 import { FileUploader, FileItem } from 'ng2-file-upload';
 import { MatSnackBar } from '@angular/material';
@@ -20,6 +20,9 @@ export class animationtype {
   posx: number;
   posy: number;
   rotationcycle: number;
+  travellocX: number;
+  travellocY: number;
+  scalesize: number;
 }
 
 
@@ -30,6 +33,7 @@ export class imageanimation {
     width: string;
     height: string;
     position: 'absolute';
+    opacity: 1;
   };
   src: string;
   posx: number;
@@ -47,6 +51,7 @@ export class shapeanimation {
     height: string;
     position: 'absolute';
     'background-color': string;
+    opacity: 1;
   };
   src: string;
   posx: number;
@@ -69,6 +74,7 @@ export class textanimation {
     'font-style': string;
     'font-weight': string;
     'font-family': string;
+    opacity: 1;
   }
   posx: number;
   posy: number;
@@ -92,11 +98,18 @@ export class VideocreatorComponent implements AfterViewInit {
   @Input() SelectedRelation: Relations;
   @Input() option: Relations = new Relations();
   @Input() company: Company = new Company;
+
+  videoPlayer: HTMLVideoElement;
+  @ViewChild('videoPlayer', { static: false })
+  set mainVideoEl(el: ElementRef) {
+    if (el !== undefined){
+      this.videoPlayer = el.nativeElement;
+    }
+  }
   
   public t;
   public counter = 4;
   public currenttime = 0;
-
   public animationarray = []; //array with style and position settings;
   public animationelements = []; //arrat with the actual greensock animations
 
@@ -105,11 +118,13 @@ export class VideocreatorComponent implements AfterViewInit {
   public primairytimeline = new TimelineMax({ paused: true, reversed: true });
   progressbarline = new TimelineMax({ paused: true, reversed: true });
 
+
   public listviewxsshow = false;
   public showprogressbar = false;
   public uploader: FileUploader;
   public newFiles: Files = new Files();
   public changenow = true;
+  public changevideo = true;
   public shiftX = 0;
   public shiftY = 0;
   public editablevideo: Files;
@@ -119,7 +134,8 @@ export class VideocreatorComponent implements AfterViewInit {
     height: '500px',
     'background-color': '#ffffff',
     position: 'relative',
-    videourl: ''
+    videourl: '',
+    loop: false
   }
   public moveitem = false;
   public selectedImage: imageanimation;
@@ -210,13 +226,20 @@ export class VideocreatorComponent implements AfterViewInit {
     );
   }
 
+  onchangevideo(){
+    if (this.canvas.videourl){this.canvas['background-color'] = 'transparent'}
+    this.changevideo = false;
+    setTimeout(() => this.changevideo = true);
+  }
+
   addAnimation(i, element) {
     let duration = element.duration;
     let startime = element.start_time
     let anitype = element.anim_type;
     let rotationcycle = element.rotationcycle;
-    let travellocY = element.posy;
-    let travellocX = element.posx;
+    let scalesize = element.scalesize;
+    //let travellocY = element.posy;
+    //let travellocX = element.posx;
     let aniset;
     if (anitype === 'rotation') {
       aniset = { rotation: rotationcycle, ease: "Expo.easeInOut" }
@@ -225,8 +248,21 @@ export class VideocreatorComponent implements AfterViewInit {
       aniset = { rotation: '30', ease: "Expo.easeInOut" }
     }
     if (anitype === 'bounce') {
-      aniset = { ease: 'Bounce.easeOut', y: travellocY - 100, x: travellocX }
+      aniset = { ease: 'Bounce.easeOut', y: element.travellocY, x: element.travellocX }
     }
+    if (anitype === 'scale') {
+      aniset = {scale: scalesize}
+    }
+    if (anitype === 'appear') {
+      this.selectedelement.style.opacity = 0;
+      aniset = {opacity:1};
+    }
+    if (anitype === 'disappear') {
+      aniset = {opacity:0}, {opacity:1};
+    }
+    if (anitype === 'move') {
+      aniset = {y: element.travellocY, x: element.travellocX }
+    }  
     this.primairytimeline.to(i, duration, aniset, startime);
     console.log(duration, aniset, startime);
   }
@@ -249,12 +285,20 @@ export class VideocreatorComponent implements AfterViewInit {
       ease: '',
       posx: this.selectedelement.posx,
       posy: this.selectedelement.posy,
-      rotationcycle: 30
+      rotationcycle: 30,
+      travellocX: this.selectedelement.posy+ 300,
+      travellocY: this.selectedelement.posx,
+      scalesize: 0.5
     }
     this.selectedelement.animation.push(newanimation)
   }
 
   deleteEffect(i) {
+    //reset opacity 
+    if ( this.selectedelement.animation[i].anim_type === 'appear') {
+      this.selectedelement.style.opacity = 1;
+      // console.log('delete opacity')
+    }
     this.selectedelement.animation.splice(i, 1);
   }
 
@@ -301,7 +345,10 @@ export class VideocreatorComponent implements AfterViewInit {
       ease: '',
       posx: 0,
       posy: 0,
-      rotationcycle: 30
+      rotationcycle: 30,
+      travellocX: 300,
+      travellocY: 0,
+      scalesize: 0.5
     }];
     let img: imageanimation = {
       type: 'image',
@@ -310,6 +357,7 @@ export class VideocreatorComponent implements AfterViewInit {
         width: "auto",
         height: "auto",
         position: 'absolute',
+        opacity: 1
         //transform : 'translate(10px, 10px)'
       },
       src: '',
@@ -340,7 +388,10 @@ export class VideocreatorComponent implements AfterViewInit {
       ease: '',
       posx: 0,
       posy: 0,
-      rotationcycle: 30
+      rotationcycle: 30,
+      travellocX: 300,
+      travellocY: 0,
+      scalesize: 0.5
     }];
     let img: shapeanimation = {
       type: 'shape',
@@ -349,7 +400,8 @@ export class VideocreatorComponent implements AfterViewInit {
         width: "200px",
         height: "200px",
         position: 'absolute',
-        'background-color': '#000000'
+        'background-color': '#000000',
+        opacity: 1
       },
       src: '',
       posx: 50,
@@ -380,7 +432,10 @@ export class VideocreatorComponent implements AfterViewInit {
       ease: '',
       posx: 0,
       posy: 0,
-      rotationcycle: 30
+      rotationcycle: 30,
+      travellocX: 300,
+      travellocY: 0,
+      scalesize: 0.5
     }];
     let txt: textanimation = {
       type: 'text',
@@ -393,6 +448,7 @@ export class VideocreatorComponent implements AfterViewInit {
         'font-family': 'Open Sans',
         'font-style': '',
         'font-weight': '',
+        opacity: 1
         //transform : 'translate(10px, 10px)'
       },
       content: 'write here',
@@ -417,8 +473,18 @@ export class VideocreatorComponent implements AfterViewInit {
     this.detectchange();
     console.log('play');
     //this.progressbarline.play();
+
+    setTimeout(() => {
+
+    if (this.canvas.videourl){
+      this.videoPlayer.play();
+    }
+    if (this.canvas.loop){
+      this.videoPlayer.loop = true;
+    }
     this.primairytimeline.play();
     this.t = setInterval(() => { this.incrementSeconds() }, 1000);
+  }, 300);
   }
 
   stopFunc() {
@@ -428,6 +494,9 @@ export class VideocreatorComponent implements AfterViewInit {
     this.primairytimeline.pause();
     this.primairytimeline.progress(0);
     this.primairytimeline.timeScale(1);
+    if (this.canvas.videourl){
+      this.videoPlayer.pause();
+    }
     //this.progressbarline.reverse();
     //this.primairytimeline.reverse();
     //this.progressbar.reversed() ?
@@ -436,10 +505,16 @@ export class VideocreatorComponent implements AfterViewInit {
 
   pauseFunc() {
     this.primairytimeline.pause();
+    if (this.canvas.videourl){
+      this.videoPlayer.pause();
+    }
   }
 
   reverseFunc() {
     this.primairytimeline.reverse();
+    if (this.canvas.videourl){
+      this.videoPlayer.playbackRate = 1.0;
+    }
   }
 
   fastforwardFunc() {
@@ -503,5 +578,12 @@ export class VideocreatorComponent implements AfterViewInit {
   swipeleft(e) {
     this.listviewxsshow = false;
   }
+
+  setVideo(event) {
+    //console.log(event);
+    this.canvas.videourl = event; 
+    this.onchangevideo();
+  }
+
 
 }

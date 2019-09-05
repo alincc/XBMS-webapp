@@ -237,6 +237,12 @@ export class MarketingpublicationsComponent implements OnInit {
     
   }
 
+  setVideo(event) {
+    //console.log(event);
+    this.selectedPublications.videourl = event; 
+  }
+
+
 
 
 }

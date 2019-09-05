@@ -678,7 +678,7 @@ export class MarketingchannelsComponent implements OnInit {
   }
 
   setVideo(event) {
-    console.log(event);
+    //console.log(event);
     this.selectedChannel.videourl = event; 
   }
 

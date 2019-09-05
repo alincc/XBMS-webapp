@@ -176,6 +176,7 @@ export class VideouploadComponent implements OnInit {
 }
 
 
+import { StockVideo } from './stockvideo'
 
 
 @Component({
@@ -186,9 +187,10 @@ export class VideouploadComponent implements OnInit {
 
 export class dialogvideogallerycomponent implements OnInit {
 
+  //public fileVideo = StockVideo;
   public existingIcons = [];
-  public video = [];
-  public existingIsoIcons = [];
+  public video = StockVideo;
+  public stockvideos = [];
 
   constructor(
     public dialogRef: MatDialogRef<dialogvideogallerycomponent>,
@@ -197,7 +199,9 @@ export class dialogvideogallerycomponent implements OnInit {
   ngOnInit() {
     this.video.forEach(element => {
       const iconurl = BASE_URL + element;
-      this.existingIcons.push(iconurl);
+      const previewurl = BASE_URL + element + '#t=0.5';
+      var filename = iconurl.replace(/^.*[\\\/]/, '')
+      this.stockvideos.push({url: iconurl, name: filename, preview: previewurl});
     });
   }
 

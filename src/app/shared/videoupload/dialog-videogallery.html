@@ -12,11 +12,15 @@
   </mat-button-toggle-group>
 
   <div *ngIf="group.value == 'standardvideos'" class="gallery" fxFlex="80%" fxLayout="row wrap">
-    <div *ngFor="let icon of existingIcons; let i = index" fxFlex>
-      <div>
-        <img src={{icon}} class="icongallery" (click)="selectedimage(icon)"
-          [class.selected]="icon === data.selected">
-      </div>
+    <div *ngFor="let video of stockvideos; let i = index" fxFlex>
+      <div fxLayout="colmn" [class.selected]="video.url === data.selected" (click)="selectedimage(video.url)">
+          <!-- <button a mat-raised-button (click)="selectedimage(video.url)"
+          [class.selected]="video.url === data.selected"><mat-icon>ondemand_video</mat-icon> {{video.name}}</button> -->
+          <video width="100" height="100" fxFlex  preload="metadata">
+            <source fxFlex src={{video.preview}} type="video/mp4">
+          </video>
+          <!-- <label>{{video.name}}</label> -->
+        </div>
     </div>
   </div>
 
@@ -24,7 +28,7 @@
     <div *ngFor="let image of data.img; let i = index" fxFlex>
         
       <button a mat-raised-button (click)="selectedimage(image.url)"
-      [class.selected]="image === data.selected"><mat-icon>ondemand_video</mat-icon> {{image.name}}</button>
+      [class.selected]="image.url === data.selected"><mat-icon>ondemand_video</mat-icon> {{image.name}}</button>
      
     </div>
   </div>
