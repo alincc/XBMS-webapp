@@ -496,6 +496,7 @@ export class VideocreatorComponent implements AfterViewInit {
     this.primairytimeline.timeScale(1);
     if (this.canvas.videourl){
       this.videoPlayer.pause();
+      this.videoPlayer.currentTime = 0;
     }
     //this.progressbarline.reverse();
     //this.primairytimeline.reverse();
