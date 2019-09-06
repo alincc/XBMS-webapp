@@ -97,8 +97,13 @@
                     (imgurl)="setVideo($event)">
                 </app-videoupload>
 
-                <video *ngIf="canvas.videourl" fxFlex style="width: 200px; height: 200px;"
-                    src={{canvas.videourl}}></video>
+                <!-- <video *ngIf="canvas.videourl" fxFlex style="width: 200px; height: 200px;"
+                    src={{canvas.videourl}}></video> -->
+
+                <mat-form-field fxFlex *ngIf="canvas.videourl">
+                    <input (change)="onchangevideo()" [(ngModel)]="canvas.videourl" type="text" matInput
+                        placeholder="height">
+                </mat-form-field>
 
                 <input fxFlex style="width: 150px; height: 30px;" [style.background]="canvas['background-color']"
                     [cpToggle]="false" [(colorPicker)]="canvas['background-color']"
