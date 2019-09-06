@@ -19,11 +19,21 @@
 
 <div class="videocontrols">
     <div fxLayout="row" fxLayoutGap="4px">
-        <button mat-mini-fab color="primary" (click)="playFunc()" fxFlex><mat-icon >play_circle_outline</mat-icon></button>
-        <button mat-mini-fab color="primary" (click)="stopFunc()" fxFlex><mat-icon >stop</mat-icon></button>
-        <button mat-mini-fab color="primary" (click)="pauseFunc()" fxFlex><mat-icon >pause_circle_outline</mat-icon></button>
-        <button mat-mini-fab color="primary" (click)="reverseFunc()" fxFlex><mat-icon >fast_rewind</mat-icon></button>
-        <button mat-mini-fab color="primary" (click)="fastforwardFunc()" fxFlex><mat-icon>fast_forward</mat-icon></button>
+        <button mat-mini-fab color="primary" (click)="playFunc()" fxFlex>
+            <mat-icon>play_circle_outline</mat-icon>
+        </button>
+        <button mat-mini-fab color="primary" (click)="stopFunc()" fxFlex>
+            <mat-icon>stop</mat-icon>
+        </button>
+        <button mat-mini-fab color="primary" (click)="pauseFunc()" fxFlex>
+            <mat-icon>pause_circle_outline</mat-icon>
+        </button>
+        <button mat-mini-fab color="primary" (click)="reverseFunc()" fxFlex>
+            <mat-icon>fast_rewind</mat-icon>
+        </button>
+        <button mat-mini-fab color="primary" (click)="fastforwardFunc()" fxFlex>
+            <mat-icon>fast_forward</mat-icon>
+        </button>
     </div>
     <div fxLayout="row">
         <!-- <label>Timeline lenght &nbsp; </label>  -->
@@ -48,7 +58,7 @@
                     <mat-menu #menumarketing="matMenu">
                         <button mat-button (click)="resetVideo()">
                             <mat-icon>delete</mat-icon>
-                            <span>Reseet</span>
+                            <span>Reset</span>
                         </button>
                         <button mat-menu-item (click)="newItem()">
                             <mat-icon>note_add</mat-icon>
@@ -84,17 +94,18 @@
                 </mat-form-field>
 
                 <app-videoupload *ngIf="!canvas.videourl" [account]="Account" [option]="option"
-                (imgurl)="setVideo($event)">
-            </app-videoupload>
+                    (imgurl)="setVideo($event)">
+                </app-videoupload>
 
-            <video *ngIf="canvas.videourl" fxFlex style="width: 200px; height: 200px;" src={{canvas.videourl}}></video>
+                <video *ngIf="canvas.videourl" fxFlex style="width: 200px; height: 200px;"
+                    src={{canvas.videourl}}></video>
 
-            <input fxFlex style="width: 150px; height: 30px;" [style.background]="canvas['background-color']"
-            [cpToggle]="false" [(colorPicker)]="canvas['background-color']" (colorPickerChange)="onchangevideo()"
-            [cpCancelButton]="true" [cpPresetLabel]="'Company colors'"
-            [cpPresetColors]="[option.companyprimairycolor, option.companysecondarycolor, company.companyprimairycolor, company.companysecondarycolor]">
+                <input fxFlex style="width: 150px; height: 30px;" [style.background]="canvas['background-color']"
+                    [cpToggle]="false" [(colorPicker)]="canvas['background-color']"
+                    (colorPickerChange)="onchangevideo()" [cpCancelButton]="true" [cpPresetLabel]="'Company colors'"
+                    [cpPresetColors]="[option.companyprimairycolor, option.companysecondarycolor, company.companyprimairycolor, company.companysecondarycolor]">
 
-            <mat-slide-toggle fxFlex *ngIf="canvas.videourl" [(ngModel)]="canvas.loop">Loop</mat-slide-toggle>
+                <mat-slide-toggle fxFlex *ngIf="canvas.videourl" [(ngModel)]="canvas.loop">Loop</mat-slide-toggle>
             </div>
 
         </mat-expansion-panel>
@@ -143,11 +154,11 @@
                             </mat-form-field>
                         </div>
                         <div *ngIf="animation.anim_type === 'scale'">
-                                <mat-form-field style="max-width: 46px;">
-                                    <input [(ngModel)]="animation.scalesize" type="number" step="0.1" min="0" matInput>
-                                    <mat-hint>Scale</mat-hint>
-                                </mat-form-field>
-                            </div>
+                            <mat-form-field style="max-width: 46px;">
+                                <input [(ngModel)]="animation.scalesize" type="number" step="0.1" min="0" matInput>
+                                <mat-hint>Scale</mat-hint>
+                            </mat-form-field>
+                        </div>
                         <div *ngIf="animation.anim_type === 'bounce'">
                             <mat-form-field style="max-width: 46px;">
                                 <input [(ngModel)]="animation.travellocY" type="number" matInput>
@@ -160,18 +171,30 @@
                             <button mat-button
                                 (click)="animation.travellocY = selectedelement.posy; animation.travellocX = selectedelement.posx">Reset</button>
                         </div>
+                        <div *ngIf="animation.anim_type === 'skew'">
+                            <mat-form-field style="max-width: 46px;">
+                                <input [(ngModel)]="animation.skewY" type="number" matInput>
+                                <mat-hint>Y-axe</mat-hint>
+                            </mat-form-field>
+                            <mat-form-field style="max-width: 46px;">
+                                <input [(ngModel)]="animation.skewX" type="number" matInput>
+                                <mat-hint>X-axe</mat-hint>
+                            </mat-form-field>
+                            <button mat-button
+                                (click)="animation.travellocY = selectedelement.posy; animation.travellocX = selectedelement.posx">Reset</button>
+                        </div>
                         <div *ngIf="animation.anim_type === 'move'">
-                                <mat-form-field style="max-width: 46px;">
-                                    <input [(ngModel)]="animation.travellocY" type="number" matInput>
-                                    <mat-hint>Y-axe</mat-hint>
-                                </mat-form-field>
-                                <mat-form-field style="max-width: 46px;">
-                                    <input [(ngModel)]="animation.travellocX" type="number" matInput>
-                                    <mat-hint>X-axe</mat-hint>
-                                </mat-form-field>
-                                <button mat-button
-                                    (click)="animation.travellocY = selectedelement.posy; animation.travellocX = selectedelement.posx">Reset</button>
-                            </div>
+                            <mat-form-field style="max-width: 46px;">
+                                <input [(ngModel)]="animation.travellocY" type="number" matInput>
+                                <mat-hint>Y-axe</mat-hint>
+                            </mat-form-field>
+                            <mat-form-field style="max-width: 46px;">
+                                <input [(ngModel)]="animation.travellocX" type="number" matInput>
+                                <mat-hint>X-axe</mat-hint>
+                            </mat-form-field>
+                            <button mat-button
+                                (click)="animation.travellocY = selectedelement.posy; animation.travellocX = selectedelement.posx">Reset</button>
+                        </div>
                     </div>
 
                 </mat-expansion-panel>
@@ -199,6 +222,8 @@
         <div fxLayout="column">
             <div fxLayout="column" fxLayout.xs="column" cdkDropList (cdkDropListDropped)="drop($event)">
                 <div *ngFor="let element of animationarray; let i = index" cdkDrag (click)="onSelectElement(element)">
+
+
                     <div *ngIf="element.type === 'image'">
                         <mat-accordion>
                             <mat-expansion-panel>
@@ -207,9 +232,18 @@
                                         <img *ngIf="element.src" src={{element.src}} class="elementsedit"
                                             style="height: 30px; width: auto;">
                                         <mat-icon (click)="deleteitem(i)" class="iconsize-12">delete</mat-icon>
+
                                     </mat-panel-title>
                                 </mat-expansion-panel-header>
-                                <div *ngIf="element.style">
+                                <mat-form-field style="max-width: 46px;">
+                                    <input (change)="detectchange()" [(ngModel)]="element.posy" type="number" matInput>
+                                    <mat-hint>Y |</mat-hint>
+                                </mat-form-field>
+                                <mat-form-field style="max-width: 46px;">
+                                    <input (change)="detectchange()" [(ngModel)]="element.posx" type="number" matInput>
+                                    <mat-hint>X -</mat-hint>
+                                </mat-form-field>
+                                <div *ngIf="element.src">
                                     <img src={{element.src}} class="elementsedit">
                                     <mat-icon (click)="element.src = ''" class="icon-label" class="iconsize-12">delete
                                     </mat-icon>
@@ -229,6 +263,14 @@
                                         <mat-icon (click)="deleteitem(i)" class="iconsize-12">delete</mat-icon>
                                     </mat-panel-title>
                                 </mat-expansion-panel-header>
+                                <mat-form-field style="max-width: 46px;">
+                                    <input (change)="detectchange()" [(ngModel)]="element.posy" type="number" matInput>
+                                    <mat-hint>Y |</mat-hint>
+                                </mat-form-field>
+                                <mat-form-field style="max-width: 46px;">
+                                    <input (change)="detectchange()" [(ngModel)]="element.posx" type="number" matInput>
+                                    <mat-hint>X -</mat-hint>
+                                </mat-form-field>
                                 <div fxLayout="column">
                                     <div fxLayout="row" fxLayout.xs="column">
                                         <mat-form-field style="width: 95%;" appearance="outline">
@@ -259,22 +301,10 @@
                                         </mat-form-field>
                                     </div>
                                     <div fxLayout="row" fxLayout.xs="column">
-                                        <mat-accordion>
-                                            <mat-expansion-panel style="width: 240px;">
-                                                <mat-expansion-panel-header>
-                                                    <mat-panel-title>
-                                                        Text Color
-                                                    </mat-panel-title>
-                                                </mat-expansion-panel-header>
-                                                <br>
-                                                <input style="width: 230px;" [style.background]="element.style['color']"
-                                                    [cpOutputFormat]="'hex'" [(colorPicker)]="element.style['color']"
-                                                    (colorPickerChange)="detectchange()"
-                                                    [cpPresetLabel]="'Company colors'"
-                                                    [cpPresetColors]="[option.companyprimairycolor, option.companysecondarycolor, company.companyprimairycolor, company.companysecondarycolor]">
-
-                                            </mat-expansion-panel>
-                                        </mat-accordion>
+                                        <input style="width: 230px;" [style.background]="element.style['color']"
+                                            [cpOutputFormat]="'hex'" [(colorPicker)]="element.style['color']"
+                                            (colorPickerChange)="detectchange()" [cpPresetLabel]="'Company colors'"
+                                            [cpPresetColors]="[option.companyprimairycolor, option.companysecondarycolor, company.companyprimairycolor, company.companysecondarycolor]">
                                     </div>
                                     <br>
                                     <div fxLayout="row" fxLayout.xs="column">
@@ -316,6 +346,14 @@
                                         <mat-icon (click)="deleteitem(i)" class="iconsize-12">delete</mat-icon>
                                     </mat-panel-title>
                                 </mat-expansion-panel-header>
+                                <mat-form-field style="max-width: 46px;">
+                                    <input (change)="detectchange()" [(ngModel)]="element.posy" type="number" matInput>
+                                    <mat-hint>Y |</mat-hint>
+                                </mat-form-field>
+                                <mat-form-field style="max-width: 46px;">
+                                    <input (change)="detectchange()" [(ngModel)]="element.posx" type="number" matInput>
+                                    <mat-hint>X -</mat-hint>
+                                </mat-form-field>
                                 <div fxLayout="column">
                                     <input style="width: 230px;" [style.background]="element.style['background-color']"
                                         [(colorPicker)]="element.style['background-color']"
@@ -507,24 +545,22 @@
         <div *ngIf="changevideo" [ngStyle]="canvas" style="border: 1px solid grey; overflow:hidden;">
             <video *ngIf="canvas.videourl" class="video-background" no-controls [src]="canvas.videourl" #videoPlayer>
             </video>
-            <div *ngIf="animationarray.length > 0 && changenow"  #myBounds id="myBounds"
+            <div *ngIf="animationarray.length > 0 && changenow" #myBounds id="myBounds"
                 style="overflow: hidden; background-color: transparent;">
                 <div *ngFor="let element of animationarray; let i = index" (click)="onSelectElement(element)"
-                style="background-color: transparent; overflow: hidden;">
+                    style="background-color: transparent; overflow: hidden;">
 
                     <div *ngIf="element.type === 'image'" id="{{element.id}}" style="overflow: hidden;" ngDraggable
-                        [ngStyle]="element.style"
-                        [style.width]="element.style.width" [style.height]="element.style.height"
-                        (movingOffset)="onMoving($event, i)" [preventDefaultEvent]="true" [position]="element.setpos"
-                        (rzResizing)="onResizing($event, i)" ngResizable 
-                        [rzAspectRatio]="true">
+                        [ngStyle]="element.style" [style.width]="element.style.width"
+                        [style.height]="element.style.height" (movingOffset)="onMoving($event, i)"
+                        [preventDefaultEvent]="true" [position]="element.setpos" (rzResizing)="onResizing($event, i)"
+                        ngResizable [rzAspectRatio]="true">
                         <img *ngIf="element.src" style="width: 100%; height: 100%;" src={{element.src}}>
                     </div>
                     <label ngResizable *ngIf="element.type === 'text'" id="{{element.id}}" [attr.id]="element.id"
-                        ngDraggable
-                        style="width: 100px; height: 100px; overflow: hidden;" (movingOffset)="onMoving($event, i)"
-                        [preventDefaultEvent]="true" [position]="element.setpos" (rzResizing)="onResizing($event, i)"
-                        [ngStyle]="element.style" 
+                        ngDraggable style="width: 100px; height: 100px; overflow: hidden;"
+                        (movingOffset)="onMoving($event, i)" [preventDefaultEvent]="true" [position]="element.setpos"
+                        (rzResizing)="onResizing($event, i)" [ngStyle]="element.style"
                         [rzAspectRatio]="false">{{element.content}}</label>
                     <div *ngIf="element.type === 'shape'" id="{{element.id}}" style="overflow: hidden;" ngDraggable
                         [ngStyle]="element.style" [style.width]="element.style.width"

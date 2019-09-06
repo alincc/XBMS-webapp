@@ -23,6 +23,8 @@ export class animationtype {
   travellocX: number;
   travellocY: number;
   scalesize: number;
+  skewY: number;
+  skewX: number;
 }
 
 
@@ -238,6 +240,8 @@ export class VideocreatorComponent implements AfterViewInit {
     let anitype = element.anim_type;
     let rotationcycle = element.rotationcycle;
     let scalesize = element.scalesize;
+    let skewY = element.skewY;
+    let skewX = element.skewX;
     //let travellocY = element.posy;
     //let travellocX = element.posx;
     let aniset;
@@ -262,6 +266,9 @@ export class VideocreatorComponent implements AfterViewInit {
     }
     if (anitype === 'move') {
       aniset = {y: element.travellocY, x: element.travellocX }
+    }  
+    if (anitype === 'skew') {
+      aniset =  {skewY: skewY, skewX: skewX}
     }  
     this.primairytimeline.to(i, duration, aniset, startime);
     console.log(duration, aniset, startime);
@@ -288,7 +295,9 @@ export class VideocreatorComponent implements AfterViewInit {
       rotationcycle: 30,
       travellocX: this.selectedelement.posy+ 300,
       travellocY: this.selectedelement.posx,
-      scalesize: 0.5
+      scalesize: 0.5,
+      skewY: 50,
+      skewX: 50
     }
     this.selectedelement.animation.push(newanimation)
   }
@@ -348,7 +357,9 @@ export class VideocreatorComponent implements AfterViewInit {
       rotationcycle: 30,
       travellocX: 300,
       travellocY: 0,
-      scalesize: 0.5
+      scalesize: 0.5,
+      skewY: 50,
+      skewX: 50
     }];
     let img: imageanimation = {
       type: 'image',
@@ -391,7 +402,9 @@ export class VideocreatorComponent implements AfterViewInit {
       rotationcycle: 30,
       travellocX: 300,
       travellocY: 0,
-      scalesize: 0.5
+      scalesize: 0.5,
+      skewY: 50,
+      skewX: 50
     }];
     let img: shapeanimation = {
       type: 'shape',
@@ -435,7 +448,9 @@ export class VideocreatorComponent implements AfterViewInit {
       rotationcycle: 30,
       travellocX: 300,
       travellocY: 0,
-      scalesize: 0.5
+      scalesize: 0.5,
+      skewY: 50,
+      skewX: 50
     }];
     let txt: textanimation = {
       type: 'text',
