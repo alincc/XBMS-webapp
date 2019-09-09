@@ -745,11 +745,12 @@
                 </mat-panel-title>
               </mat-expansion-panel-header>
               <div class="filelist">
-                <div *ngFor="let Filesvid of videolist; let i = index" (click)="onDownload(Files)" class="files"
+                <div *ngFor="let Filesvid of videolist; let i = index" (click)="onDownload(Filesvid)" class="files"
                   (click)="onselectfile(Filesvid)">
-                  <a href="{{ Files.url }}" style="font-size: 8pt">
+                  <a href="{{ Filesvid.url }}" style="font-size: 8pt">
                     {{ Filesvid.name }}
                   </a>
+                  
                   <mat-icon (click)="dialogDeleteFile(Filesvid)" color="primary" class="iconsize-12">delete</mat-icon>
                 </div>
               </div>

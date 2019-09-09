@@ -197,6 +197,7 @@ export class VideocreatorComponent implements AfterViewInit {
   }
 
   converttovideo() {
+    if (this.elementname === undefined){this.elementname = Math.random().toString(36).substring(7);}
     this.filesApi.createvideo(this.option.id, this.option.companyId, 
       this.elementname, this.canvas, this.animationarray, this.counter)
     .subscribe(
