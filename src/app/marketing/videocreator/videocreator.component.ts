@@ -45,6 +45,23 @@ export class imageanimation {
   animation: animationtype[];
 }
 
+export class vectoranimation {
+  type: 'vector';
+  style: {
+    'z-index': number,
+    width: string;
+    height: string;
+    position: 'absolute';
+    opacity: 1;
+  };
+  src: string;
+  posx: number;
+  posy: number;
+  setpos: object;
+  id: number;
+  animation: animationtype[];
+}
+
 export class shapeanimation {
   type: 'shape';
   style: {
@@ -335,6 +352,51 @@ export class VideocreatorComponent implements AfterViewInit {
   onResizing(e, i) {
     this.animationarray[i].style.width = e.size.width + 'px';
     this.animationarray[i].style.height = e.size.height + 'px';
+  }
+
+  addNewVector(): void {
+    let newelnr;
+    if (this.animationarray.length === -1) {
+      newelnr = 0 + 'element';
+    } else {
+      newelnr = this.animationarray.length + 'element';
+    }
+    //let elname = 'element' + newelnr;
+    this.newz = this.newz + 1;
+    let anim: animationtype[] = [{
+      start_time: 0, //delayt
+      end_time: 10,
+      anim_type: 'rotation',
+      duration: 0.5,
+      ease: '',
+      posx: 0,
+      posy: 0,
+      rotationcycle: 30,
+      travellocX: 300,
+      travellocY: 0,
+      scalesize: 0.5,
+      skewY: 50,
+      skewX: 50
+    }];
+    let vector: vectoranimation = {
+      type: 'vector',
+      style: {
+        'z-index': this.newz,
+        width: "auto",
+        height: "auto",
+        position: 'absolute',
+        opacity: 1
+        //transform : 'translate(10px, 10px)'
+      },
+      src: '',
+      posx: 50,
+      posy: 50,
+      setpos: { 'x': 50, 'y': 50 },
+      animation: anim,
+      id: newelnr
+    }
+    this.animationarray.push(vector);
+    this.detectchange(); 
   }
 
 

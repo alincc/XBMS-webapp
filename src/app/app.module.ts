@@ -94,6 +94,7 @@ import { RequestobjectComponent } from './marketing/videocreator/requestobject/r
 // }
 
 import { GestureConfig } from '@angular/material';
+import { VectoruploadComponent, dialogvectorgallerycomponent } from './shared/vectorupload/vectorupload.component';
 
 declare var Hammer: any;
 @Injectable()
@@ -130,6 +131,7 @@ export class HammerConfig extends GestureConfig  {
     FileuploadComponent,
     dialoggallerycomponent,
     dialogvideogallerycomponent,
+    dialogvectorgallerycomponent,
     TextEditorDialog,
     WordpressUploadDialogComponent,
     SafeHtml,
@@ -138,13 +140,15 @@ export class HammerConfig extends GestureConfig  {
     ImagecreatorComponent,
     VideouploadComponent,
     VideocreatorComponent,
-    RequestobjectComponent
+    RequestobjectComponent,
+    VectoruploadComponent
   ],
 
    entryComponents: [
     BottomSheetLogOverview,
     dialoggallerycomponent,
     dialogvideogallerycomponent,
+    dialogvectorgallerycomponent,
     ConfirmDialog,
     TextEditorDialog,
     RandomDialog,

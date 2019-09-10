@@ -1,0 +1,41 @@
+<div style="height: 500px" fxLayout="column">
+  <mat-button-toggle-group #group="matButtonToggleGroup" fxFlex="50px" style="width: 100%" fxFlexAlign="start" #group="matButtonToggleGroup" [vertical]="false">
+    <mat-button-toggle matTooltip="Local stored vectors" style="width: 50%" value="fromaccount">
+      <mat-icon>storage</mat-icon>
+    </mat-button-toggle>
+    <mat-button-toggle matTooltip="Standard vectors" style="width: 50%"  value="standardvectors">
+      <mat-icon>insert_emoticon</mat-icon>
+    </mat-button-toggle>
+    <!-- <mat-button-toggle matTooltip="Iso icons" style="width: 50%"  value="isoicon">
+      <mat-icon>iso</mat-icon>
+    </mat-button-toggle> -->
+  </mat-button-toggle-group>
+
+  <div *ngIf="group.value == 'standardvectors'" class="gallery" fxFlex="80%" fxLayout="row wrap">
+    <div *ngFor="let vector of stockvectors; let i = index" fxFlex>
+      <div fxLayout="colmn" [class.selected]="vector.url === data.selected" (click)="selectedimage(vector.url)">
+
+          <img src="{{ vector.url }}" class="image" (click)="selectedimage(vector.url)"
+          [class.selected]="vector.url === data.selected"/>
+
+        </div>
+    </div>
+  </div>
+
+  <div *ngIf="group.value == 'fromaccount'" class="gallery" fxFlex="80%" fxLayout="row wrap">
+    <div *ngFor="let vector of data.img; let i = index" fxFlex>
+        
+      <img src="{{ vector.url }}" class="image" (click)="selectedimage(vector.url)"
+      [class.selected]="vector.url === data.selected"/>
+
+    </div>
+  </div>
+
+
+  <div class="gallery-bottom" fxFlex="10%">
+    <button a mat-raised-button (click)="dialogRef.close()">Cancel</button>
+    <button a mat-raised-button [mat-dialog-close]="data.selected">
+      Import
+    </button>
+  </div>
+</div>

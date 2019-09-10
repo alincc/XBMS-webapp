@@ -1,16 +1,3 @@
-<!-- <button (click)="createMenuAnim()">Play</button>
-    <a class="menuIcon" (click)="menuClick()">
-        <svg class="hamburger" width="26.892" height="17.285" viewBox="0 0 26.892 17.285">
-            <g id="MenuI" data-name="Group 1" transform="translate(0 1.5)">
-                <line id="topLine" data-name="Line 1" x2="26.892" fill="none" stroke="#000" stroke-width="3" />
-                <line id="midLine" data-name="Line 1" x2="26.892" transform="translate(0 7.142)" fill="none"
-                    stroke="#000" stroke-width="3" />
-                <line id="botLine" data-name="Line 1" x2="26.892" transform="translate(0 14.285)" fill="none"
-                    stroke="#000" stroke-width="3" />
-            </g>
-        </svg>
-    </a> -->
-
 <div class="savetobutton">
     <button mat-fab color="primary" matTooltip="Convert to element" (click)="converttovideo()">
         <mat-icon>save</mat-icon>
@@ -369,6 +356,36 @@
                         </mat-accordion>
 
                     </div>
+                    <div *ngIf="element.type === 'vector'">
+                        <mat-accordion>
+                            <mat-expansion-panel>
+                                <mat-expansion-panel-header>
+                                    <mat-panel-title>
+                                        <img *ngIf="element.src" src={{element.src}} class="elementsedit"
+                                            style="height: 30px; width: auto;">
+                                        <mat-icon (click)="deleteitem(i)" class="iconsize-12">delete</mat-icon>
+
+                                    </mat-panel-title>
+                                </mat-expansion-panel-header>
+                                <mat-form-field style="max-width: 46px;">
+                                    <input (change)="detectchange()" [(ngModel)]="element.posy" type="number" matInput>
+                                    <mat-hint>Y |</mat-hint>
+                                </mat-form-field>
+                                <mat-form-field style="max-width: 46px;">
+                                    <input (change)="detectchange()" [(ngModel)]="element.posx" type="number" matInput>
+                                    <mat-hint>X -</mat-hint>
+                                </mat-form-field>
+                                <div *ngIf="element.src">
+                                    <img src={{element.src}} class="elementsedit">
+                                    <mat-icon (click)="element.src = ''" class="icon-label" class="iconsize-12">delete
+                                    </mat-icon>
+                                </div>
+                                <app-vectorupload *ngIf="!element.src" [account]="Account" [option]="option"
+                                    (imgurl)="setImage($event, i)">
+                                </app-vectorupload>
+                            </mat-expansion-panel>
+                        </mat-accordion>
+                    </div>
                     <!-- <div *ngIf="element.type === 'chart'">
                         <mat-accordion>
                             <mat-expansion-panel>
@@ -538,6 +555,9 @@
                 <button mat-mini-fab class="addbutton" matTooltip="Add shape" (click)="addNewShape()" color="primary">
                     <mat-icon>format_shapes</mat-icon>
                 </button>
+                <button mat-mini-fab class="addbutton" matTooltip="Add animated image" (click)="addNewVector()" color="primary">
+                    <mat-icon>wallpaper</mat-icon>
+                </button>
                 <!-- <button mat-mini-fab class="addbutton" matTooltip="Add Chart" (click)="addNewChart()" color="primary">
                     <mat-icon>show_chart</mat-icon>
                 </button> -->
@@ -572,6 +592,13 @@
                         [style.height]="element.style.height" (movingOffset)="onMoving($event, i)"
                         [preventDefaultEvent]="true" [position]="element.setpos" (rzResizing)="onResizing($event, i)"
                         ngResizable [rzAspectRatio]="false">
+                    </div>
+                    <div *ngIf="element.type === 'vector'" id="{{element.id}}" style="overflow: hidden;" ngDraggable
+                        [ngStyle]="element.style" [style.width]="element.style.width"
+                        [style.height]="element.style.height" (movingOffset)="onMoving($event, i)"
+                        [preventDefaultEvent]="true" [position]="element.setpos" (rzResizing)="onResizing($event, i)"
+                        ngResizable [rzAspectRatio]="true">
+                        <img *ngIf="element.src" style="width: 100%; height: 100%;" src={{element.src}}>
                     </div>
                 </div>
             </div>
