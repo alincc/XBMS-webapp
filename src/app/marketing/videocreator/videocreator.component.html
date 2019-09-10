@@ -236,7 +236,7 @@
                                     <mat-hint>X -</mat-hint>
                                 </mat-form-field>
                                 <div *ngIf="element.src">
-                                    <img src={{element.src}} class="elementsedit">
+                                    <img style="max-width: 100%;" src={{element.src}} class="elementsedit">
                                     <mat-icon (click)="element.src = ''" class="icon-label" class="iconsize-12">delete
                                     </mat-icon>
                                 </div>
@@ -381,7 +381,7 @@
                                     </mat-icon>
                                 </div>
                                 <app-vectorupload *ngIf="!element.src" [account]="Account" [option]="option"
-                                    (imgurl)="setImage($event, i)">
+                                    (imgurl)="setVector($event, i)">
                                 </app-vectorupload>
                             </mat-expansion-panel>
                         </mat-accordion>

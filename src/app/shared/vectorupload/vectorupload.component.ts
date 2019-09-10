@@ -28,11 +28,16 @@ export interface DialogData {
 export class VectoruploadComponent implements OnInit {
 
   uploader: FileUploader;
+  uploadersvg: FileUploader;
   errorMessage: string;
-  allowedMimeType = ['image/svg', 'image/svg+xml', 'image/eps', 'image/ai'];
+  errorMessageSvg: string;
+  allowedMimeType = ['image/svg', 'image/svg+xml'];
+  allowedMimeTypeSvg = ['image/eps', 'image/ai', 'application/postscript'];
   maxFileSize = 100 * 1024 * 1024;
   public hasBaseDropZoneOver = false;
   public hasAnotherDropZoneOver = false;
+  public hasBaseDropZoneOverSvg = false;
+  public hasAnotherDropZoneOverSvg = false;
   public PlainGalleryConfig: PlainGalleryConfig;
   public customButtonsConfig: ButtonsConfig;
   public ButtonEvent: ButtonEvent;
@@ -46,7 +51,7 @@ export class VectoruploadComponent implements OnInit {
   public showdropbox = true;
   public showgallery = false;
   public selectedimage;
-  public videos = [];
+  public vector = [];
 
 
   @Input('option') option: Relations; //get id for image gallery
@@ -63,6 +68,11 @@ export class VectoruploadComponent implements OnInit {
 
   ngOnInit() {
     // Clear the item queue (somehow they will upload to the old URL)
+    this.setDropUpload();
+    this.setDropSvgUpload();
+  }
+
+  setDropUpload() {
     this.uploader = new FileUploader({
       url: URL,
       allowedMimeType: this.allowedMimeType,
@@ -72,9 +82,9 @@ export class VectoruploadComponent implements OnInit {
     this.uploader.clearQueue();
     this.relationsApi.getFiles(this.option.id,
       {
-        where: { type: 'video' }
+        where: { type: 'vector' }
       }).subscribe((files: Files[]) => {
-        this.videos = files
+        this.vector = files
       });
 
     this.uploader.onAfterAddingAll = (files) => {
@@ -82,7 +92,26 @@ export class VectoruploadComponent implements OnInit {
         fileItem.file.name = fileItem.file.name.replace(/ /g, '-');
       });
     };
+  }
 
+  setDropSvgUpload() {
+    this.uploadersvg = new FileUploader({
+      url: URL,
+      allowedMimeType: this.allowedMimeTypeSvg,
+      maxFileSize: this.maxFileSize,
+    });
+    this.uploadersvg.onWhenAddingFileFailed = (item, filter, options) => this.onWhenAddingSvgFileFailed(item, filter, options);
+    this.uploadersvg.clearQueue();
+    this.uploadersvg.onAfterAddingAll = (files) => {
+      files.forEach(fileItem => {
+        fileItem.file.name = fileItem.file.name.replace(/ /g, '-');
+      });
+    };
+  }
+
+  dropped(e){
+    console.log(e, this.uploadersvg);
+    
   }
 
   onWhenAddingFileFailed(item, filter: any, options: any) {
@@ -99,6 +128,20 @@ export class VectoruploadComponent implements OnInit {
     }
   }
 
+  onWhenAddingSvgFileFailed(item, filter: any, options: any) {
+    switch (filter.name) {
+      case 'fileSize':
+        this.errorMessageSvg = `Maximum upload size exceeded (${item.size} of ${this.maxFileSize} allowed)`;
+        break;
+      case 'mimeType':
+        const allowedTypes = this.allowedMimeTypeSvg.join();
+        this.errorMessageSvg = `Type "${item.type} is not allowed. Allowed types: "${allowedTypes}"`;
+        break;
+      default:
+        this.errorMessageSvg = `Unknown error (filter is ${filter.name})`;
+    }
+  }
+
   // file upload 1
   public fileOverBase(e: any): void {
     this.hasBaseDropZoneOver = e;
@@ -107,6 +150,16 @@ export class VectoruploadComponent implements OnInit {
   // file upload 2
   public fileOverAnother(e: any): void {
     this.hasAnotherDropZoneOver = e;
+  }
+
+  // file upload 1
+  public fileOverBaseSvg(e: any): void {
+    this.hasBaseDropZoneOverSvg = e;
+  }
+
+  // file upload 2
+  public fileOverAnotherSvg(e: any): void {
+    this.hasAnotherDropZoneOverSvg = e;
   }
 
   onOpenGallery() {
@@ -118,7 +171,7 @@ export class VectoruploadComponent implements OnInit {
     // console.log(this.imagesNew)
     const dialogRef = this.dialog.open(dialogvectorgallerycomponent, {
       width: '600px',
-      data: { img: this.videos, selected: this.selectedimage }
+      data: { img: this.vector, selected: this.selectedimage }
     });
     dialogRef.afterClosed().subscribe(result => {
       console.log('The dialog was closed', result);
@@ -153,7 +206,7 @@ export class VectoruploadComponent implements OnInit {
       this.newFiles.name = name,
       this.newFiles.url = imgurl,
       this.newFiles.createdate = new Date(),
-      this.newFiles.type = 'video',
+      this.newFiles.type = 'vector',
       this.newFiles.companyId = this.account.companyId,
       // check if container exists and create
       this.ContainerApi.findById(this.option.id)
@@ -171,6 +224,42 @@ export class VectoruploadComponent implements OnInit {
       .subscribe(res => {
         console.log(res), this.setimage(res.url)
         // this.imgurl.emit(res.url)
+      });
+  }
+
+
+  setSvgupload(name): void {
+    // set upload url
+    let urluse = 'https://xbmsapi.eu-gb.mybluemix.net' + '/api/Containers/' + this.option.id + '/upload';
+    this.uploadersvg.setOptions({ url: urluse });
+
+    // set download url or actual url for publishing
+    let imgurl = 'https://xbmsapi.eu-gb.mybluemix.net' + '/api/Containers/' + this.option.id + '/download/' + name
+    imgurl = imgurl.replace(/ /g, '-'),
+      // imgurl = encodeURI(imgurl);
+      // define the file settings
+      this.newFiles.name = name,
+      this.newFiles.url = imgurl,
+      this.newFiles.createdate = new Date(),
+      this.newFiles.type = 'vector',
+      this.newFiles.companyId = this.account.companyId,
+      // check if container exists and create
+      this.ContainerApi.findById(this.option.id)
+        .subscribe(res => this.uploadSvgFile(name),
+          error =>
+            this.ContainerApi.createContainer({ name: this.option.id })
+              .subscribe(res => this.uploadSvgFile(name)));
+  }
+
+
+
+  uploadSvgFile(name): void {
+    this.uploadersvg.uploadAll();
+    this.relationsApi.createFiles(this.option.id, this.newFiles)
+      .subscribe(res => {
+        console.log(res), //this.setimage(res.url)
+          this.fileApi.converteps2svg(this.option.id, this.account.companyId, res.url, name)
+            .subscribe(res => { this.setimage(res.url) })
       });
   }
 
@@ -201,7 +290,7 @@ export class dialogvectorgallerycomponent implements OnInit {
       const iconurl = BASE_URL + element;
       const previewurl = BASE_URL + element + '#t=0.5';
       var filename = iconurl.replace(/^.*[\\\/]/, '')
-      this.stockvectors.push({url: iconurl, name: filename, preview: previewurl});
+      this.stockvectors.push({ url: iconurl, name: filename, preview: previewurl });
     });
   }
 

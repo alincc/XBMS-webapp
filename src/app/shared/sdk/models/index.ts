@@ -36,5 +36,6 @@ export * from './Ipcheckergeolocation';
 export * from './Logger';
 export * from './Crawlweb';
 export * from './Articlereposter';
+export * from './Filesdlcr';
 export * from './BaseModels';
 export * from './FireLoopRef';

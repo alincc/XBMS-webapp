@@ -344,6 +344,13 @@ export class VideocreatorComponent implements AfterViewInit {
     }, 500);
   }
 
+  setVector(event, i): void {
+    setTimeout(() => {
+      this.animationarray[i].src = event;
+      //else new file not uploaded yet  
+    }, 500);
+  }
+
   onMoving(event, i) {
     this.animationarray[i].posy = event.y;
     this.animationarray[i].posx = event.x;

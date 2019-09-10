@@ -37,6 +37,7 @@ import { Ipcheckergeolocation } from '../../models/Ipcheckergeolocation';
 import { Logger } from '../../models/Logger';
 import { Crawlweb } from '../../models/Crawlweb';
 import { Articlereposter } from '../../models/Articlereposter';
+import { Filesdlcr } from '../../models/Filesdlcr';
 
 export interface Models { [name: string]: any }
 
@@ -81,6 +82,7 @@ export class SDKModels {
     Logger: Logger,
     Crawlweb: Crawlweb,
     Articlereposter: Articlereposter,
+    Filesdlcr: Filesdlcr,
     
   };
 

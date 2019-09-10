@@ -1,10 +1,10 @@
 <div class="picture-container">
     <div *ngIf="showdropbox">
-        <div ng2FileDrop [ngClass]="{'drop-zone-over': hasBaseDropZoneOver}" (fileOver)="fileOverBase($event)"
-            [uploader]="uploader" class="drop-zone">
+        <div ng2FileDrop #fileInput [ngClass]="{'drop-zone-over': hasBaseDropZoneOver}" (fileOver)="fileOverBase($event)"
+            [uploader]="uploader" class="drop-zone"  (onFileDrop)="dropped($event)">
             Drop vector here
         </div>
-        <input type="file" ng2FileSelect [uploader]="uploader" />
+        <input type="file" #fileInputsel ng2FileSelect [uploader]="uploader" />
         <div *ngIf="errorMessage">{{errorMessage}}</div>
 
         <div *ngFor="let item of uploader.queue" style="min-width: 50px;">
@@ -32,6 +32,51 @@
                 <tr>
                     <td nowrap>
                         <button mat-button (click)="setupload(item?.file?.name)"
+                            [disabled]="item.isReady || item.isUploading || item.isSuccess">
+                            <mat-icon aria-hidden="false" class="iconsize-10">cloud_upload</mat-icon>Upload
+                        </button>
+                        <button mat-button (click)="item.cancel()" [disabled]="!item.isUploading">
+                            <mat-icon aria-hidden="false" class="iconsize-10">cancel</mat-icon> Cancel
+                        </button>
+                    </td>
+                </tr>
+            </table>
+
+        </div>
+    </div>
+    <div *ngIf="showdropbox">
+        <div ng2FileDrop #fileInputSVG [ngClass]="{'drop-zone-over': hasBaseDropZoneOverSvg}" (fileOver)="fileOverBaseSvg($event)"
+            [uploader]="uploadersvg" class="drop-zone" (onFileDrop)="dropped($event)">
+            Drop EPS here
+        </div>
+        <input type="file" #fileInputSVGsel ng2FileSelect [uploader]="uploadersvg" />
+        <div *ngIf="errorSvgMessage">{{errorMessageSvg}}</div>
+
+        <div *ngFor="let item of uploadersvg.queue" style="min-width: 50px;">
+            <table>
+                <tr>
+                    {{ item?.file?.name}}
+                </tr>
+                <tr>
+                    <mat-progress-bar [mode]="determinate" [value]="item.progress">
+                        upload </mat-progress-bar>
+                </tr>
+                <tr>
+                    <td class="text-center">
+                        <span *ngIf="item.isSuccess">
+                            <mat-icon aria-hidden="false" class="iconsize-10">done</mat-icon>
+                        </span>
+                        <span *ngIf="item.isCancel">
+                            <mat-icon aria-hidden="false" class="iconsize-10">cancel</mat-icon>
+                        </span>
+                        <span *ngIf="item.isError">
+                            <mat-icon aria-hidden="false" class="iconsize-10">error</mat-icon>
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td nowrap>
+                        <button mat-button (click)="setSvgupload(item?.file?.name)"
                             [disabled]="item.isReady || item.isUploading || item.isSuccess">
                             <mat-icon aria-hidden="false" class="iconsize-10">cloud_upload</mat-icon>Upload
                         </button>
