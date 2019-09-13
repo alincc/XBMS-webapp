@@ -26,7 +26,9 @@
               "./node_modules/angular2-draggable/css/resizable.min.css",
               "./node_modules/videogular2/fonts/videogular.css"
             ],
-            "scripts": []
+            "scripts": [
+              "./node_modules/svg.js/dist/svg.min.js"
+            ]
           },
           "configurations": {
             "production": {
