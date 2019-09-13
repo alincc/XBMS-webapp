@@ -7,8 +7,8 @@ import {
 import { Subscription } from 'rxjs';
 import { MediaObserver, MediaChange } from '@angular/flex-layout';
 import { TimelineMax, TweenLite } from 'gsap';
-import * as MorphSVGPlugin from '../../../assets/js/MorphSVGPlugin.min';
-import * as DrawSVGPlugin from '../../../assets/js/DrawSVGPlugin.min';
+import * as MorphSVGPlugin from '../../../assets/js/MorphSVGPlugin';
+import * as DrawSVGPlugin from '../../../assets/js/DrawSVGPlugin';
 import { TimelineLite, Back, Power1, SlowMo } from 'gsap';
 import { FileUploader, FileItem } from 'ng2-file-upload';
 import { MatSnackBar } from '@angular/material';
@@ -771,7 +771,7 @@ combineSVGs(element){
         
       });
       child.setAttribute('id', vect.idx+'SVG');
-      MorphSVGPlugin.convertToPath(vect.idx+'SVG');
+      //  MorphSVGPlugin.convertToPath(vect.idx+'SVG');
     })
     if (index > 0) {
       this.primairytimeline.to(idfrom, vect.duration, { morphSVG: idtosvg }, vect.start_time);
