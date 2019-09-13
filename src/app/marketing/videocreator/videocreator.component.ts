@@ -7,8 +7,8 @@ import {
 import { Subscription } from 'rxjs';
 import { MediaObserver, MediaChange } from '@angular/flex-layout';
 import { TimelineMax, TweenLite } from 'gsap';
-import * as MorphSVGPlugin from '../../../assets/js/MorphSVGPlugin';
-import * as DrawSVGPlugin from '../../../assets/js/DrawSVGPlugin';
+import * as MorphSVGPlugin from '../../../assets/js/MorphSVGPlugin.min';
+import * as DrawSVGPlugin from '../../../assets/js/DrawSVGPlugin.min';
 import { TimelineLite, Back, Power1, SlowMo } from 'gsap';
 import { FileUploader, FileItem } from 'ng2-file-upload';
 import { MatSnackBar } from '@angular/material';
@@ -320,26 +320,8 @@ export class VideocreatorComponent implements AfterViewInit {
 
     if (element.type === 'vector' && element.vectors.length > 1) {
       //let idx = document.getElementById(element.id);
-      console.log('morph added to vector')
-      let idfrom, idto, idtosvg;
-      element.vectors.forEach((vect, index) => {
 
-        // set id per inlineSVG, inline creates a child object 
-        idto = document.getElementById(vect.idx);
-        idtosvg = vect.idx+'SVG'
-        let children = idto.childNodes;
-        console.log(children);
-       
-        children.forEach(child => {
-          child.setAttribute('id', vect.idx+'SVG');
-          MorphSVGPlugin.convertToPath(vect.idx+'SVG');
-        })
-        if (index > 0) {
-          this.primairytimeline.to(idfrom, vect.duration, { morphSVG: idtosvg }, vect.start_time);
-          idfrom = document.getElementById(vect.idx+'SVG');
-        } else { idfrom = document.getElementById(vect.idx+'SVG'); }
-      });
-
+      this.combineSVGs(element);
     }
   }
 
@@ -770,6 +752,44 @@ addNewVectorSrc(i, element: vectoranimation){
 deleteVectorSrc(idx, element){
   this.selectedelement.vectors.splice(idx, 1);
 }
+
+combineSVGs(element){
+  console.log('morph added to vector')
+  let idfrom, idto, idtosvg;
+  element.vectors.forEach((vect, index) => {
+
+    // set id per inlineSVG, inline creates a child object 
+    idto = document.getElementById(vect.idx);
+    idtosvg = vect.idx+'SVG'
+    let children = idto.childNodes;
+    console.log(children);
+   
+    children.forEach(child => {
+      let g = child.getElementsByTagName("g");
+      console.log(g);
+      g.forEach(element => {
+        
+      });
+      child.setAttribute('id', vect.idx+'SVG');
+      MorphSVGPlugin.convertToPath(vect.idx+'SVG');
+    })
+    if (index > 0) {
+      this.primairytimeline.to(idfrom, vect.duration, { morphSVG: idtosvg }, vect.start_time);
+      idfrom = document.getElementById(vect.idx+'SVG');
+    } else { idfrom = document.getElementById(vect.idx+'SVG'); }
+  });
+}
+
+//   var SVG = document.getElementsByTagName('svg')[0];
+// var children = SVG.childNodes;
+// var ID = 0;
+// [].forEach.call(children, function (child) {
+//   if (child.nodeType === 1 && child.tagName == "rect") {
+//     child.setAttribute('id', ID);
+//     ID++;
+//   }
+// });
+
 
 
 }
