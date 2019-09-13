@@ -46,6 +46,7 @@
     "moment": "^2.22.2",
     "moment-timezone": "^0.5.23",
     "mousetrap": "^1.6.3",
+    "ng-inline-svg": "^9.0.1",
     "ng2-charts": "^2.3.0",
     "ng2-ckeditor": "^1.2.4",
     "ng2-file-upload": "^1.3.0",

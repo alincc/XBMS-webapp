@@ -288,9 +288,9 @@ export class dialogvectorgallerycomponent implements OnInit {
   ngOnInit() {
     this.vector.forEach(element => {
       const iconurl = BASE_URL + element;
-      const previewurl = BASE_URL + element + '#t=0.5';
+      //const previewurl = BASE_URL + element + '#t=0.5';
       var filename = iconurl.replace(/^.*[\\\/]/, '')
-      this.stockvectors.push({ url: iconurl, name: filename, preview: previewurl });
+      this.stockvectors.push({ url: iconurl, name: filename });
     });
   }
 
