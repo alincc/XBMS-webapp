@@ -13,7 +13,7 @@ import { TimelineLite, Back, Power1, SlowMo } from 'gsap';
 import { FileUploader, FileItem } from 'ng2-file-upload';
 import { MatSnackBar } from '@angular/material';
 declare const SVG: any;
-
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 const plugins = [DrawSVGPlugin, MorphSVGPlugin]; //needed for GSAP 
 
@@ -67,6 +67,7 @@ export class vectoranimation {
   id: number;
   animation: animationtype[];
   vectors: vectorelement[];
+  svgcombi: SafeHtml;
 }
 
 export class vectorelement {
@@ -74,6 +75,7 @@ export class vectorelement {
   src: string;
   duration: number;
   start_time: number;
+  pathids: [];
 }
 
 export class shapeanimation {
@@ -189,7 +191,7 @@ export class VideocreatorComponent implements AfterViewInit {
   private MorphSVGPlugin = MorphSVGPlugin;
 
   constructor(
-
+    private sanitizer: DomSanitizer,
     private relationsApi: RelationsApi,
     private filesApi: FilesApi,
     public snackBar: MatSnackBar,
@@ -250,21 +252,19 @@ export class VideocreatorComponent implements AfterViewInit {
         elm.setpos = { 'x': elm.posx, 'y': elm.posy };
       }
     })
-    //console.log(this.animationarray)
     // force dom update
-    this.changenow = false;
-    setTimeout(() => this.changenow = true);
     // wait for dom update to finish otherwise it will create the effects on the old dom
     setTimeout(() =>
       this.animationarray.forEach(elm => {
         this.addEffect(elm);
-        if (elm.type === 'vector' && elm.vectors.length > 1) {
-          //let idx = document.getElementById(element.id);
-
+        if (elm.type === 'vector') {
+          //let idx = document.getElementById(element.id);  && elm.vectors.length > 1
           this.combineSVGs(elm);
         }
       })
     );
+    this.changenow = false;
+    setTimeout(() => this.changenow = true, 20);
   }
 
   onchangevideo() {
@@ -420,7 +420,8 @@ export class VideocreatorComponent implements AfterViewInit {
       src: '',
       idx: vectorid,
       duration: 1,
-      start_time: undefined
+      start_time: undefined,
+      pathids: []
     }]
     let vector: vectoranimation = {
       type: 'vector',
@@ -438,7 +439,8 @@ export class VideocreatorComponent implements AfterViewInit {
       setpos: { 'x': 50, 'y': 50 },
       animation: [],
       id: newelnr,
-      vectors: vectors
+      vectors: vectors,
+      svgcombi: ''
     }
     this.animationarray.push(vector);
     this.detectchange();
@@ -736,7 +738,8 @@ export class VideocreatorComponent implements AfterViewInit {
       src: '',
       idx: idnr,
       duration: 1,
-      start_time: undefined
+      start_time: undefined,
+      pathids: []
     }
     this.animationarray[i].vectors.push(newVector)
   }
@@ -745,42 +748,114 @@ export class VideocreatorComponent implements AfterViewInit {
     this.selectedelement.vectors.splice(idx, 1);
   }
 
-  combineSVGs(element) {
+  async combineSVGs(element) {
     //const draw = SVG('drawing');
     let idnew;
-    let total = []; 
-    console.log('morph added to vector', element)
+    let total = [];
+    let startstr = '<svg xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#"' +
+      ' xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg"' +
+      ' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1496 1496" height="100%" width="100%" xml:space="preserve"' +
+      'id="svg2" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.com/svgjs">';
+    console.log('morph added to vector');
 
-    element.vectors.forEach((vect, index) => {
-      idnew = document.getElementById(vect.idx);
-      total.push(idnew.childNodes[0].innerHTML);
-      if (index === element.vectors.length -1){
-        this.createNewGS(vect, total, element.id)
-      }
-    });
+    total.push(startstr);
+    let index = 0;
+    for (const vect of element.vectors) {
+      idnew = document.getElementById(vect.idx); // get document
+      let vectstring = idnew.childNodes[0].innerHTML;
+      let setarraypath = element.vectors[index].pathids;
+
+      let pathidar = vectstring.match(/<path id="\S+/g); //get ids
+      vectstring = await this.deleteBackgroundSvg(vectstring, vect.idx); //delete background
+      const pathidar2 = pathidar.splice(0, 1)
+      element.vectors[index].pathids = setarraypath.concat(pathidar2);
+      console.log(element.vectors[index].pathids);
+      const newvectstring = await this.renumberSvgIds(vectstring, vect.idx, pathidar2); // set ids
+      total.push(newvectstring);
+      ++index;
+    }
+    //console.log('loop done')
+    total.push('</svg>');
+    let childrenst = total.join('');
+    element.svgcombi = this.sanitizer.bypassSecurityTrustHtml(childrenst);
+    // console.log(element.vectors); 1x path??
+    this.createMorph(element.vectors);
   }
 
-  createNewGS(vect, total, id): void {
-    var draw = SVG(id);
-    let childrenst = total.join();
-    draw.svg(childrenst).id(vect.idx + 'gs');
+  createMorph(vectors: vectorelement[]) {
+    // create vector animation foreach path vector 1 to 2, 2 to 3 etc..
+    let i1 = 0;
+    let i2 = 0;
+    console.log(vectors)
+    for (const vector of vectors) {
+      for (const pathid of vector.pathids) {
+        let set2 = i1 + 1;
+        if (i1 < vectors.length -1) {
+          let pathidclean: string;
+          pathidclean = pathid;
+          pathidclean = pathidclean.replace('<path id=', '');
+          let fromvac = pathidclean.replace('"', '');
+          let pathidclean2: string;
+          pathidclean2 = vectors[set2].pathids[i2];
+          pathidclean2 = pathidclean.replace('<path id=', '');
+          pathidclean2 = pathidclean.replace('"', '');
+          let tovec = '#' + pathidclean2;
+          console.log(fromvac, tovec);
+          this.primairytimeline.to(fromvac, 1, { morphSVG: tovec }, "+=1")
+        }
+        ++i2;
+      }
+      ++i1;
+      // this.primairytimeline.to(i, duration, aniset, startime);
+    }
+  }
+
+
+  async renumberSvgIds(svgstring, id, pathidar) {
+    // string startin with <path id="path14" id vect id + indexnr 
+    let newsvgstring = svgstring;
+    let index = 0;
+    //let final;
+
+    for (const element of pathidar) {
+      let ind = index + 1;
+      let newid = '<path id="' + id + ind + '"';
+      newsvgstring = await this.runloop(newsvgstring, element, newid);
+      ++index;
+    };
+    //console.log(newsvgstring);
+    return newsvgstring;
+  }
+
+  async runloop(newsvgstring, element, newid) {
+    newsvgstring = newsvgstring.replace(element, newid);
+    return newsvgstring
+  }
+
+
+  deleteBackgroundSvg(svgstring, id) {
+    //string to object delete object with id 1 en return string 
+    const idx = id + "1";
+    const n = svgstring.indexOf('<path id=' + idx);
+    const lx = svgstring.indexOf('</path>');
+    const l = lx + 7;
+    let newstring = svgstring.replace(svgstring.substring(n, l), '');
+    return newstring
   }
 
   deleteVectorGroup(idx): void {
     // this works don't ask why
     let idto = document.getElementById(idx);
     let g;
-    const INTERVAL = 500;	// in milliseconds
+    const INTERVAL = 200;	// in milliseconds
 
     setTimeout(() => {
       g = idto.getElementsByTagName("g");
       for (let index = 0; index < g.length; index++) {
         setTimeout(() => {
           let sg = g[0].id;
-          // console.log(sg)
-          var groupElement = SVG.get(sg);
+          let groupElement = SVG.get(sg);
           groupElement.ungroup(groupElement.parent());
-
         }, INTERVAL * index);
       }
     }, 200);

@@ -13,6 +13,7 @@ import {
 import { ContainerApi, Files, Relations, RelationsApi, Company, Account, FilesApi } from '../sdk';
 import { BASE_URL, API_VERSION } from '../base.api'
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 
 export interface DialogData {
@@ -59,6 +60,7 @@ export class VectoruploadComponent implements OnInit {
   @Output() imgurl = new EventEmitter(); //send url img back
 
   constructor(
+    private sanitizer: DomSanitizer,
     public dialog: MatDialog,
     public ContainerApi: ContainerApi,
     public relationsApi: RelationsApi,
@@ -92,6 +94,14 @@ export class VectoruploadComponent implements OnInit {
         fileItem.file.name = fileItem.file.name.replace(/ /g, '-');
       });
     };
+  }
+
+  
+  handleSVG(svg: SVGElement, parent): SVGElement {
+    //console.log('Loaded SVG: ', svg, parent);
+    svg.setAttribute('width', '200');
+    svg.setAttribute('height', '200');
+    return svg;
   }
 
   setDropSvgUpload() {
@@ -250,8 +260,6 @@ export class VectoruploadComponent implements OnInit {
             this.ContainerApi.createContainer({ name: this.option.id })
               .subscribe(res => this.uploadSvgFile(name)));
   }
-
-
 
   uploadSvgFile(name): void {
     this.uploadersvg.uploadAll();

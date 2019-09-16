@@ -15,19 +15,23 @@
     <div *ngFor="let vector of stockvectors; let i = index" fxFlex>
       <div fxLayout="colmn" [class.selected]="vector.url === data.selected" (click)="selectedimage(vector.url)">
 
-          <img src="{{ vector.url }}" class="image" (click)="selectedimage(vector.url)"
-          [class.selected]="vector.url === data.selected"/>
-
+          <!-- <img src="{{ vector.url }}" class="image" (click)="selectedimage(vector.url)"
+          [class.selected]="vector.url === data.selected"/> -->
+          <div [inlineSVG]="vector.url" [onSVGLoaded]="handleSVG" (click)="selectedimage(vector.url)"
+          [class.selected]="vector.url === data.selected">
+          </div>
         </div>
     </div>
   </div>
 
   <div *ngIf="group.value == 'fromaccount'" class="gallery" fxFlex="80%" fxLayout="row wrap">
     <div *ngFor="let vector of data.img; let i = index" fxFlex>
-        
+<!--         
       <img src="{{ vector.url }}" class="image" (click)="selectedimage(vector.url)"
-      [class.selected]="vector.url === data.selected"/>
-
+      [class.selected]="vector.url === data.selected"/> -->
+      <div [inlineSVG]="vector.url" [onSVGLoaded]="handleSVG" (click)="selectedimage(vector.url)"
+      [class.selected]="vector.url === data.selected">
+      </div>
     </div>
   </div>
 
