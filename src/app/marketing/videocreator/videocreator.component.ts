@@ -13,6 +13,7 @@ import { TimelineLite, Back, Power1, SlowMo } from 'gsap';
 import { FileUploader, FileItem } from 'ng2-file-upload';
 import { MatSnackBar } from '@angular/material';
 declare const SVG: any;
+import '@svgdotjs/svg.draggable.js'
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 const plugins = [DrawSVGPlugin, MorphSVGPlugin]; //needed for GSAP 
@@ -372,6 +373,7 @@ export class VideocreatorComponent implements AfterViewInit {
 
   setVector(event, i, idx): void {
     //console.log(event, i, idx);
+    
     setTimeout(() => {
       this.animationarray[i].vectors[idx].src = event;
       let vect = this.animationarray[i].vectors[idx].idx;
@@ -757,6 +759,7 @@ export class VideocreatorComponent implements AfterViewInit {
 
   deleteVectorSrc(idx, element) {
     this.selectedelement.vectors.splice(idx, 1);
+    this.combineSVGs(element);
   }
 
   async combineSVGs(element) {
@@ -775,12 +778,8 @@ export class VideocreatorComponent implements AfterViewInit {
     for (const vect of element.vectors) {
       idnew = document.getElementById(vect.idx); // get document
 
-      var bbox = idnew.getBBox();
-      var viewBox = [bbox.x, bbox.y, bbox.width, bbox.height].join(" ");
-      idnew.setAttribute("viewBox", viewBox);
-      
       let vectstring;
-      console.log(idnew); // check null ref error
+      //console.log(idnew); // check null ref error
       if (idnew.childNodes[0] !== null) {
         vectstring = idnew.childNodes[0].innerHTML;
       } else {
@@ -794,7 +793,7 @@ export class VideocreatorComponent implements AfterViewInit {
       let pathidar2 = newvectstring.match(/<path id="\S+/g); //get ids
 
       element.vectors[index].pathids = pathidar2;
-      console.log(element.vectors[index].pathids);
+      //console.log(element.vectors[index].pathids);
       total.push(newvectstring);
       ++index;
     }
@@ -808,6 +807,19 @@ export class VideocreatorComponent implements AfterViewInit {
     setTimeout(() => {
       this.createMorph(element.vectors)
     }, 200)
+  }
+
+  setViewBox(): void{
+    const svg = document.getElementsByTagName("svg");
+    let i = 0;
+    
+    for (i = 0; i < svg.length -1 ; i++) {
+      const bbox = svg[i].getBBox();
+      const viewBox = [bbox.x, bbox.y, bbox.width, bbox.height].join(" ");
+      console.log(viewBox);
+      svg[i].setAttribute("viewBox", viewBox);
+      
+    }
   }
 
   async createMorph(vectors: vectorelement[]) {
@@ -851,6 +863,7 @@ export class VideocreatorComponent implements AfterViewInit {
             pathidclean2 = pathidclean2.replace(/<path id=/g, '');
             pathidclean2 = pathidclean2.replace(/"/g, '');
             let tovec = document.getElementById(pathidclean2);
+     
 
             if (i1 > 0) {
               tovec.style.display = "none"; // hide element is not first vector
@@ -868,6 +881,11 @@ export class VideocreatorComponent implements AfterViewInit {
       ++set2;
     }
   }
+
+  centeralign(){
+    https://stackoverflow.com/questions/28641165/center-path-inside-svg
+  }
+
 
   async setMorphAni(from, to, time) {
     //console.log(from, to);
@@ -922,6 +940,7 @@ export class VideocreatorComponent implements AfterViewInit {
 
   deleteVectorGroup(idx): void {
     // this works don't ask why
+    this.setViewBox();
     let idto = document.getElementById(idx);
     let g;
     const INTERVAL = 100;	// in milliseconds

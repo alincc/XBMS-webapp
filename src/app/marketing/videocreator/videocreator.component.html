@@ -639,7 +639,7 @@
                     ngDraggable [ngStyle]="element.style"
                     (movingOffset)="onMoving($event, i)" [preventDefaultEvent]="true" [position]="element.setpos"
                     (rzResizing)="onResizing($event, i)" ngResizable [rzAspectRatio]="true">
-                    <div [innerHTML]="element.svgcombi"></div>
+                    <div style="height: 100%; width: 100%;" [innerHTML]="element.svgcombi"></div>
                     
                     <!-- <div *ngFor="let vectorelement of element.vectors; let iv = index;"                  
                     [style.width]="element.style.width" [style.height]="element.style.height">
