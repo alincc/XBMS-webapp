@@ -190,6 +190,8 @@ export class VideocreatorComponent implements AfterViewInit {
   public selectedelement;
   public elementname;
   private MorphSVGPlugin = MorphSVGPlugin;
+  private largesthbox: number;
+  private largestwbox: number;
 
   constructor(
     private sanitizer: DomSanitizer,
@@ -373,7 +375,7 @@ export class VideocreatorComponent implements AfterViewInit {
 
   setVector(event, i, idx): void {
     //console.log(event, i, idx);
-    
+    this.setViewBox()
     setTimeout(() => {
       this.animationarray[i].vectors[idx].src = event;
       let vect = this.animationarray[i].vectors[idx].idx;
@@ -385,9 +387,55 @@ export class VideocreatorComponent implements AfterViewInit {
       //combine in one vector display
       setTimeout(() => {
         this.combineSVGs(this.animationarray[i]);
-      }, 1000);
-
+      }, 500);
     }, 100);
+  }
+
+  setViewBox(): void{
+    // delete whitespaces
+    const svg = document.getElementsByTagName("svg");
+    let i = 0;
+    for (i = 0; i < svg.length ; i++) {
+      const bbox = svg[i].getBBox();
+      if (bbox.width > this.largesthbox){this.largesthbox = bbox.width}
+      if (bbox.height > this.largestwbox){this.largestwbox = bbox.width}
+      const viewBox = [bbox.x, bbox.y, bbox.width, bbox.height].join(" ");
+      console.log(viewBox);
+      svg[i].setAttribute("viewBox", viewBox);
+    }
+  }
+
+  centeralign(element){
+    let id = element.id;
+    for (const vector of element.vectors){
+      for (const el of vector.pathids){
+
+      console.log(el)
+      let element = SVG.get(el);
+
+      var bbox = element.bbox()
+      var svg = document.getElementById('svg2');
+
+      console.log(bbox, svg)
+
+      var viewBox = svg.getAttribute('viewBox');
+      let viewboxnew = viewBox.split(' ');
+
+      var cx = parseFloat(viewboxnew[0])+(parseFloat(viewboxnew[2])/2);
+      var cy = parseFloat(viewboxnew[1])+(parseFloat(viewboxnew[3])/2);
+
+      console.log(cx, bbox.y, bbox.width);
+      console.log(cy, bbox.x, bbox.height);
+      var x = cx - bbox.x - (bbox.width/2);
+      var y = cy - bbox.y - (bbox.height/2);
+      var matrix='1 0 0 1 '+ x +' '+ y;
+
+      console.log(matrix);
+
+      element.attr('transform','matrix('+matrix+')');
+    }
+    }
+
   }
 
   onMoving(event, i) {
@@ -764,12 +812,13 @@ export class VideocreatorComponent implements AfterViewInit {
 
   async combineSVGs(element) {
     //const draw = SVG('drawing');
+    this.setViewBox();
     let idnew;
     let total = [];
     let startstr = '<svg xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#"' +
       ' xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg"' +
-      ' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1496 1496" height="100%" width="100%" xml:space="preserve"' +
-      'id="svg2" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.com/svgjs">';
+      ' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2000 2000" height="100%" width="100%"' +
+      'id="svg2" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink">';
     console.log('morph added to vector');
 
     total.push(startstr);
@@ -791,9 +840,9 @@ export class VideocreatorComponent implements AfterViewInit {
       let pathidar = vectstring.match(/<path id="\S+/g); //get ids
       const newvectstring = await this.renumberSvgIds(vectstring, vect.idx, pathidar); // set ids
       let pathidar2 = newvectstring.match(/<path id="\S+/g); //get ids
-
+      pathidar2 = await this.cleantags(pathidar2);
       element.vectors[index].pathids = pathidar2;
-      //console.log(element.vectors[index].pathids);
+      console.log(element.vectors[index].pathids);
       total.push(newvectstring);
       ++index;
     }
@@ -801,69 +850,75 @@ export class VideocreatorComponent implements AfterViewInit {
     total.push('</svg>');
     let childrenst = total.join('');
     element.svgcombi = this.sanitizer.bypassSecurityTrustHtml(childrenst);
+    this.centeralign(element);
     // console.log(element.vectors); 1x path??
     //this.createMorph(element.vectors);
 
-    setTimeout(() => {
-      this.createMorph(element.vectors)
+    setTimeout( async() => {
+      await this.createMorph(element.vectors);
+     
     }, 200)
   }
 
-  setViewBox(): void{
-    const svg = document.getElementsByTagName("svg");
-    let i = 0;
-    
-    for (i = 0; i < svg.length -1 ; i++) {
-      const bbox = svg[i].getBBox();
-      const viewBox = [bbox.x, bbox.y, bbox.width, bbox.height].join(" ");
-      console.log(viewBox);
-      svg[i].setAttribute("viewBox", viewBox);
-      
-    }
+  async cleantags(paths){
+    let newpaths = [];
+    for (const path of paths) {
+      let newpath = path.replace(/<path id=/g, '');
+      let finalpath = newpath.replace(/"/g, '');
+      newpaths.push(finalpath);
+    };
+    return newpaths
   }
+
+ 
 
   async createMorph(vectors: vectorelement[]) {
     // create vector animation foreach path vector 1 to 2, 2 to 3 etc..
+
+    
     console.log('morph', vectors)
     let i1 = 1;
     let i2 = 0;
     let set2 = i1;
 
     for (const vector of vectors) {
-      // if (set2 === vectors.length){
-      //   set2 = 0
-      // }
       if (i1 < vectors.length) {
-        for (const pathid of vector.pathids) {
 
+        if (vectors[set2].pathids.length > vector.pathids.length){
+          //console.log('path vec 2 is longer')
+          let exti = 0
+          for (const extrvect of vectors[set2].pathids){
+            if ( exti > vector.pathids.length-1){
+              //console.log(exti, extrvect)
+              let aniset;
+              let fromexvac = document.getElementById(extrvect);
+              //aniset = { autoAlpha: 0 };
+              fromexvac.style.opacity = '0';
+              aniset = { opacity: 1 };
+              this.primairytimeline.to(fromexvac, 1, aniset, 1);
+            }
+            ++exti
+          }
+        }
+
+        for (const pathid of vector.pathids) {
+          
           if (i2 >= vectors[set2].pathids.length) {
             let aniset
-            let pathidclean: string;
-            pathidclean = pathid;
-            pathidclean = pathidclean.replace(/<path id=/g, '');
-            pathidclean = pathidclean.replace(/"/g, '');
-            //console.log('hide', pathidclean);
-            let fromvac = document.getElementById(pathidclean);
+
+            let fromvac = document.getElementById(pathid);
             aniset = { autoAlpha: 0 };
             this.primairytimeline.to(fromvac, 0, aniset, 1);
-
           } else {
-            let pathidclean: string;
-            pathidclean = pathid;
-            pathidclean = pathidclean.replace(/<path id=/g, '');
-            pathidclean = pathidclean.replace(/"/g, '');
-            let fromvac = document.getElementById(pathidclean);
-            fromvac.style.display = 'block';
+
+            let fromvac = document.getElementById(pathid);
+            //fromvac.style.display = 'block';
             fromvac.style.margin = 'auto';
+            fromvac.setAttribute("x", '500');
+            fromvac.setAttribute("y", '500');
 
-
-            let pathidclean2: string;
-            //console.log(set2, i1, i2);
-            pathidclean2 = vectors[set2].pathids[i2];
-            pathidclean2 = pathidclean2.replace(/<path id=/g, '');
-            pathidclean2 = pathidclean2.replace(/"/g, '');
-            let tovec = document.getElementById(pathidclean2);
-     
+            let pathid2 = vectors[set2].pathids[i2];
+            let tovec = document.getElementById(pathid2);
 
             if (i1 > 0) {
               tovec.style.display = "none"; // hide element is not first vector
@@ -882,9 +937,6 @@ export class VideocreatorComponent implements AfterViewInit {
     }
   }
 
-  centeralign(){
-    https://stackoverflow.com/questions/28641165/center-path-inside-svg
-  }
 
 
   async setMorphAni(from, to, time) {
@@ -940,7 +992,7 @@ export class VideocreatorComponent implements AfterViewInit {
 
   deleteVectorGroup(idx): void {
     // this works don't ask why
-    this.setViewBox();
+    
     let idto = document.getElementById(idx);
     let g;
     const INTERVAL = 100;	// in milliseconds

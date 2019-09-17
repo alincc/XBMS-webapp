@@ -302,6 +302,13 @@ export class dialogvectorgallerycomponent implements OnInit {
     });
   }
 
+  handleSVG(svg: SVGElement, parent): SVGElement {
+    //console.log('Loaded SVG: ', svg, parent);
+    svg.setAttribute('width', '100');
+    svg.setAttribute('height', '100');
+    return svg;
+  }
+
   onNoClick(): void {
     this.data.selected = '';
     this.dialogRef.close();
