@@ -190,8 +190,8 @@ export class VideocreatorComponent implements AfterViewInit {
   public selectedelement;
   public elementname;
   private MorphSVGPlugin = MorphSVGPlugin;
-  private largesthbox: number;
-  private largestwbox: number;
+  private largesthbox;
+  private largestwbox;
 
   constructor(
     private sanitizer: DomSanitizer,
@@ -375,13 +375,13 @@ export class VideocreatorComponent implements AfterViewInit {
 
   setVector(event, i, idx): void {
     //console.log(event, i, idx);
-    this.setViewBox()
+    this.setViewBox();
     setTimeout(() => {
       this.animationarray[i].vectors[idx].src = event;
       let vect = this.animationarray[i].vectors[idx].idx;
       //delete groups
       setTimeout(() => {
-        this.deleteVectorGroup(vect);
+        //this.deleteVectorGroup(vect);
       }, 100);
 
       //combine in one vector display
@@ -395,11 +395,16 @@ export class VideocreatorComponent implements AfterViewInit {
     // delete whitespaces
     const svg = document.getElementsByTagName("svg");
     let i = 0;
-    for (i = 0; i < svg.length ; i++) {
+    for (i = 0; i < svg.length-1 ; i++) {
       const bbox = svg[i].getBBox();
-      if (bbox.width > this.largesthbox){this.largesthbox = bbox.width}
-      if (bbox.height > this.largestwbox){this.largestwbox = bbox.width}
-      const viewBox = [bbox.x, bbox.y, bbox.width, bbox.height].join(" ");
+      console.log(svg[i], bbox);
+     // if (bbox.width > this.largesthbox){
+        this.largesthbox = 2000;//bbox.width
+     // }
+     // if (bbox.height > this.largestwbox){
+        this.largestwbox = 2000;//bbox.width
+    //  }
+      const viewBox = [0, 0, 1000, 1000].join(" ");
       console.log(viewBox);
       svg[i].setAttribute("viewBox", viewBox);
     }
@@ -817,7 +822,7 @@ export class VideocreatorComponent implements AfterViewInit {
     let total = [];
     let startstr = '<svg xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#"' +
       ' xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg"' +
-      ' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2000 2000" height="100%" width="100%"' +
+      ' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" height="100%" width="100%"' +
       'id="svg2" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink">';
     console.log('morph added to vector');
 
@@ -850,7 +855,7 @@ export class VideocreatorComponent implements AfterViewInit {
     total.push('</svg>');
     let childrenst = total.join('');
     element.svgcombi = this.sanitizer.bypassSecurityTrustHtml(childrenst);
-    this.centeralign(element);
+    // this.centeralign(element);
     // console.log(element.vectors); 1x path??
     //this.createMorph(element.vectors);
 
@@ -914,8 +919,6 @@ export class VideocreatorComponent implements AfterViewInit {
             let fromvac = document.getElementById(pathid);
             //fromvac.style.display = 'block';
             fromvac.style.margin = 'auto';
-            fromvac.setAttribute("x", '500');
-            fromvac.setAttribute("y", '500');
 
             let pathid2 = vectors[set2].pathids[i2];
             let tovec = document.getElementById(pathid2);
