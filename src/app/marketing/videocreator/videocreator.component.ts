@@ -375,13 +375,15 @@ export class VideocreatorComponent implements AfterViewInit {
 
   setVector(event, i, idx): void {
     //console.log(event, i, idx);
-    this.setViewBox()
+    this.setViewBox();
+   
     setTimeout(() => {
       this.animationarray[i].vectors[idx].src = event;
       let vect = this.animationarray[i].vectors[idx].idx;
       //delete groups
       setTimeout(() => {
-        this.deleteVectorGroup(vect);
+        //this.deleteVectorGroup(vect);
+        // this.centeralign();
       }, 100);
 
       //combine in one vector display
@@ -392,26 +394,57 @@ export class VideocreatorComponent implements AfterViewInit {
   }
 
   setViewBox(): void{
+          // if (bbox.width > this.largesthbox){this.largesthbox = bbox.width}
+      // if (bbox.height > this.largestwbox){this.largestwbox = bbox.width}
     // delete whitespaces
     const svg = document.getElementsByTagName("svg");
+    //matrix(1.3333333,0,0,-1.3333333,0,1496)
     let i = 0;
     for (i = 0; i < svg.length ; i++) {
       const bbox = svg[i].getBBox();
-      if (bbox.width > this.largesthbox){this.largesthbox = bbox.width}
-      if (bbox.height > this.largestwbox){this.largestwbox = bbox.width}
-      const viewBox = [bbox.x, bbox.y, bbox.width, bbox.height].join(" ");
+      // console.log(bbox);
+      // const wdif = Number((bbox.width - 1000).toFixed(4)); 
+      // console.log(wdif);
+      // const hdif = Number((bbox.height - 1000).toFixed(4));
+      // const pwdif = Number((wdif / bbox.width -1).toFixed(4));
+      // console.log(pwdif);
+      // const phdif = Number((hdif / bbox.width -1).toFixed(4));
+      // const scw = pwdif * -1;
+      // const sch = phdif * -1;  
+      // let finalscale;
+      // if (scw > sch){finalscale = scw} else {
+      //   finalscale = scw
+      // }
+      //console.log(finalscale);
+      //const viewBox = [bbox.x, bbox.y, bbox.width, bbox.height].join(" ");
+
+      const viewBox = [0, 0, 1000, 1000].join(" ");
       console.log(viewBox);
       svg[i].setAttribute("viewBox", viewBox);
+
+      let idto = document.getElementById(svg[i].id);
+      let g = idto.getElementsByTagName("g");
+      for (let index = 0; index < g.length; index++) {
+          let sg = g[0].id;
+          let groupElement = SVG.get(sg);
+          var matrix='1 0 0 -1 0 1000'//+ x +' '+ y;
+          groupElement.transform({'matrix': matrix })
+      }
+      //svg[i].setAttribute("transform", "scale("+ finalscale +")");
     }
   }
 
-  centeralign(element){
-    let id = element.id;
-    for (const vector of element.vectors){
-      for (const el of vector.pathids){
+  centeralign(){
+    const svg1 = document.getElementsByTagName("svg");
+    //matrix(1.3333333,0,0,-1.3333333,0,1496)
+    let i = 0;
+    for (i = 0; i < svg1.length ; i++) {
+    // let id = element.id;
+    // for (const vector of element.vectors){
+    //   for (const el of vector.pathids){
 
-      console.log(el)
-      let element = SVG.get(el);
+      console.log(svg1[i])
+      let element = SVG.get(svg1[i].id);
 
       var bbox = element.bbox()
       var svg = document.getElementById('svg2');
@@ -434,7 +467,7 @@ export class VideocreatorComponent implements AfterViewInit {
 
       element.attr('transform','matrix('+matrix+')');
     }
-    }
+    //}
 
   }
 
@@ -817,7 +850,7 @@ export class VideocreatorComponent implements AfterViewInit {
     let total = [];
     let startstr = '<svg xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#"' +
       ' xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg"' +
-      ' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2000 2000" height="100%" width="100%"' +
+      ' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" height="100%" width="100%"' +
       'id="svg2" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink">';
     console.log('morph added to vector');
 
@@ -850,7 +883,7 @@ export class VideocreatorComponent implements AfterViewInit {
     total.push('</svg>');
     let childrenst = total.join('');
     element.svgcombi = this.sanitizer.bypassSecurityTrustHtml(childrenst);
-    this.centeralign(element);
+    //this.centeralign(element);
     // console.log(element.vectors); 1x path??
     //this.createMorph(element.vectors);
 
@@ -1003,6 +1036,10 @@ export class VideocreatorComponent implements AfterViewInit {
         setTimeout(() => {
           let sg = g[0].id;
           let groupElement = SVG.get(sg);
+
+          var matrix='1 0 0 -1 0 1000'//+ x +' '+ y;
+
+          //groupElement.transform({'matrix': matrix })
           groupElement.ungroup(groupElement.parent());
         }, INTERVAL * index);
       }
