@@ -424,6 +424,7 @@ export class VideocreatorComponent implements AfterViewInit {
 
       let idto = document.getElementById(svg[i].id);
       let g = idto.getElementsByTagName("g");
+      console.log(g);
       for (let index = 0; index < g.length; index++) {
           let sg = g[0].id;
           let groupElement = SVG.get(sg);
