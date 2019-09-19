@@ -379,13 +379,15 @@ export class VideocreatorComponent implements AfterViewInit {
     this.animationarray[i].vectors[idx].src = event;
     let vect = this.animationarray[i].vectors[idx].idx;
     //delete groups
-    setTimeout(() => {
+    let originalsize;
+    setTimeout(async() => {
       //this.setViewBox(vect);
-      this.deleteVectorGroup(vect);
+      originalsize = await this.deleteVectorGroup(vect);
+      console.log(originalsize);
     }, 300);
 
     setTimeout(() => {
-      this.normalizepath(vect);// this.setViewBox();
+      this.normalizepath(vect, originalsize);// this.setViewBox();
       //this.normalizepath('svg2');
     }, 400);
 
@@ -967,7 +969,7 @@ export class VideocreatorComponent implements AfterViewInit {
     return
   }
 
-  async normalizepath(idx) {
+  async normalizepath(idx, originalsize) {
     let idto = document.getElementById(idx);
     let p = idto.getElementsByTagName("path");
     // console.log(p);
@@ -978,17 +980,24 @@ export class VideocreatorComponent implements AfterViewInit {
       let transf = window.getComputedStyle(p[index]).transform;
       console.log(transf);
       if (transf !== undefined) {
-       // transf = transf; //.replace('matrix(');
+
+        const os = originalsize.split(' ');
+        const part2 = parseFloat(os[3])
+        const set3 = 500/part2;
+
+       transf = transf; //.replace('matrix(');
         console.log(transf);
         transf = transf.replace('matrix(', '');
         transf = transf.replace(')', '');
         let viewboxnew = transf.split(' ');
-        const 
-        if (viewboxnew[0] !== '0' || viewboxnew[0] !== null) {
-          const set1 = 500 / viewboxnew[0];
-          set2 = set1 / 100;
+        const part1 = parseFloat(viewboxnew[2])
+        if (viewboxnew[2] !== '0' || viewboxnew[0] !== null) {
+          const set1 = 500 / part1;
+          set2 = set1 * set3;
         }
       }
+
+
 
       console.log(set2);
 
@@ -1046,9 +1055,11 @@ export class VideocreatorComponent implements AfterViewInit {
     return newstring
   }
 
-  deleteVectorGroup(idx): void {
+  deleteVectorGroup(idx) {
     // this works don't ask why
     let idto = document.getElementById(idx);
+    var viewBox = idto.getAttribute('viewBox');
+    
     let g;
     let p = idto.getElementsByTagName("path");
     //console.log(p);
@@ -1077,5 +1088,6 @@ export class VideocreatorComponent implements AfterViewInit {
         groupElement.ungroup(groupElement.parent());
       }
     }
+    return viewBox
   }
 }
