@@ -374,43 +374,31 @@ export class VideocreatorComponent implements AfterViewInit {
   }
 
   setVector(event, i, idx): void {
-    //console.log(event, i, idx);
-
     this.animationarray[i].vectors[idx].src = event;
     let vect = this.animationarray[i].vectors[idx].idx;
-    //delete groups
-    let originalsize;
-    setTimeout(async() => {
-      //this.setViewBox(vect);
-      originalsize = await this.deleteVectorGroup(vect);
+
+    //wait a few seconds as it takes a moment to fetch the file (no cb available)
+    let originalsize; // {x: 0, y: 0, width: 1496, height: 1496, zoom: 0.06684491978609626}
+    setTimeout(async () => {
+      originalsize = await this.getViewBox(vect);
+      await this.deleteVectorGroup(vect);
+      await this.normalizepath(vect, originalsize);
+      await this.combineSVGs(this.animationarray[i]);
+      //await this.createMorph(this.animationarray[i].vector);
       console.log(originalsize);
     }, 300);
-
-    setTimeout(() => {
-      this.normalizepath(vect, originalsize);// this.setViewBox();
-      //this.normalizepath('svg2');
-    }, 400);
-
-    //combine in one vector display
-    setTimeout(() => {
-      this.combineSVGs(this.animationarray[i]);
-    }, 500);
-
   }
 
-  setViewBox(vect): void {
-    // delete whitespaces
-    const svg = document.getElementById(vect);
-    //let i = 0;
-    //for (i = 0; i < svg.length; i++) {
-      //const bbox = svg[i].getBBox();
-      var viewBox = svg.getAttribute('viewBox');
-      let bbox = viewBox.split(' ');
-      console.log(bbox);
-      const newviewBox = [0, 0, 500, 500].join(" ");
-      //console.log(viewBox);
-      svg.setAttribute("viewBox", newviewBox);
-    //}
+  getViewBox(vect) {
+    return new Promise((resolve, reject) => {
+      let set = document.getElementById(vect);
+      let doc = set.getElementsByTagName('svg');
+      let element = SVG.get(doc[0].id);
+      var box = element.viewbox();
+      //var bbox = element.rbox()
+      //element.viewbox(bbox.x, bbox.y, bbox.width, bbox.height);
+      resolve(box);
+    });
   }
 
   centeralign(element) {
@@ -818,6 +806,7 @@ export class VideocreatorComponent implements AfterViewInit {
   }
 
   async combineSVGs(element) {
+    return new Promise(async(resolve, reject) => {
     //const draw = SVG('drawing');
     let idnew;
     let total = [];
@@ -847,8 +836,6 @@ export class VideocreatorComponent implements AfterViewInit {
       let pathidar2 = newvectstring.match(/id="\S+/g); //get ids
       pathidar2 = await this.cleantags(pathidar2);
       element.vectors[index].pathids = pathidar2;
-      //console.log(element.vectors[index].pathids);
-
       total.push(newvectstring);
       ++index;
     }
@@ -856,10 +843,8 @@ export class VideocreatorComponent implements AfterViewInit {
     total.push('</svg>');
     let childrenst = total.join('');
     element.svgcombi = this.sanitizer.bypassSecurityTrustHtml(childrenst);
-
-    setTimeout(async () => {
-      await this.createMorph(element.vectors);
-    }, 200)
+    resolve();
+  });
   }
 
   async cleantags(paths) {
@@ -894,7 +879,7 @@ export class VideocreatorComponent implements AfterViewInit {
     let set2 = i1;
 
     for (const vector of vectors) {
-     
+
       if (i1 < vectors.length) {
 
         if (vectors[set2].pathids.length > vector.pathids.length) {
@@ -949,8 +934,8 @@ export class VideocreatorComponent implements AfterViewInit {
     }
   }
 
-  async setDrawAni(from, time){
-    this.primairytimeline.staggerFrom(from, 2, {drawSVG:0}, 0.1);
+  async setDrawAni(from, time) {
+    this.primairytimeline.staggerFrom(from, 2, { drawSVG: 0 }, 0.1);
   }
 
   async setMorphAni(from, to, time) {
@@ -970,56 +955,58 @@ export class VideocreatorComponent implements AfterViewInit {
   }
 
   async normalizepath(idx, originalsize) {
-    let idto = document.getElementById(idx);
-    let p = idto.getElementsByTagName("path");
-    // console.log(p);
-    for (let index = 0; index < p.length; index++) {
+    return new Promise((resolve, reject) => {
 
-      let set2;
-      //let transf = p[index].attributes['transform'];
-      let transf = window.getComputedStyle(p[index]).transform;
-      console.log(transf);
-      if (transf !== undefined) {
+      // example originalsize = {x: 0, y: 0, width: 1496, height: 1496, zoom: 0.06684491978609626}
+      let idto = document.getElementById(idx);
+      let p = idto.getElementsByTagName("path");
+      let bxn
+      // console.log(p);
+      for (let index = 0; index < p.length; index++) {
 
-        const os = originalsize.split(' ');
-        const part2 = parseFloat(os[3])
-        const set3 = 500/part2;
-
-       transf = transf; //.replace('matrix(');
-        console.log(transf);
-        transf = transf.replace('matrix(', '');
-        transf = transf.replace(')', '');
-        let viewboxnew = transf.split(' ');
-        const part1 = parseFloat(viewboxnew[2])
-        if (viewboxnew[2] !== '0' || viewboxnew[0] !== null) {
-          const set1 = 500 / part1;
-          set2 = set1 * set3;
+        // let set2 = originalsize.width * originalsize.zoom;
+        let transf = window.getComputedStyle(p[index]).transform;
+         console.log(transf);
+         if (transf !== undefined) {
+        //   const os = originalsize.split(' ');
+        //   const part2 = parseFloat(os[3])
+        //   const set3 = 500 / part2;
+           transf = transf; //.replace('matrix(');
+           console.log(transf);
+           transf = transf.replace('matrix(', '');
+           transf = transf.replace(')', '');
+           bxn = transf.split(', ');
+        //   const part1 = parseFloat(viewboxnew[2])
+        //   if (viewboxnew[2] !== '0' || viewboxnew[0] !== null) {
+        //     const set1 = 500 / part1;
+        //     set2 = set1 * set3;
+           }
+        // }
+        //console.log(set2);
+        //const scale = 500 / originalsize.width;
+        const matrix = 'matrix(' + bxn[0] + ', ' + bxn[1] +', ' +bxn[2] + ', '+ bxn[3] + ', '+ bxn[4] +', 500)';
+        const scale = 'scale(' + bxn[0] + ')';
+        p[index].removeAttribute("transform");
+        p[index].setAttribute("transform", scale );
+        if (p[index].id === '') {
+          p[index].setAttribute("id", "child-" + index);
         }
+
+        const normalizedPath = normalize({
+          viewBox: '0 0 ' + originalsize.width +' '+ originalsize.height,
+          //viewBox: '0 0 500 500',
+          path: p[index].attributes['d'].value,//'M150.883 169.12c11.06-.887 20.275-7.079 24.422-17.256',
+          min: 0,
+          max: 500, //originalsize.width * scale,
+          asList: false
+        })
+
+        p[index].setAttribute("d", normalizedPath);
+
       }
-
-
-
-      console.log(set2);
-
-      p[index].removeAttribute("transform");
-
-      if (p[index].id === '') {
-        p[index].setAttribute("id", "child-" + index);
-      }
-
-
-      const normalizedPath = normalize({
-        viewBox: '0 0 500 500',
-        path: p[index].attributes['d'].value,//'M150.883 169.12c11.06-.887 20.275-7.079 24.422-17.256',
-        min: 0,
-        max: set2,
-        asList: false
-      })
-
-      //console.log(normalizedPath);
-      p[index].setAttribute("d", normalizedPath);
-
-    }
+      console.log(idto);
+      resolve();
+    })
   }
 
 
@@ -1046,20 +1033,23 @@ export class VideocreatorComponent implements AfterViewInit {
 
 
   deleteBackgroundSvg(svgstring, id) {
-    //string to object delete object with id 1 en return string 
     const idx = id + "1";
-    const n = svgstring.indexOf('id=' + idx);
-    const lx = svgstring.indexOf('</path>');
-    const l = lx + 7;
-    let newstring = svgstring.replace(svgstring.substring(n, l), '');
-    return newstring
+    document.getElementById(idx).remove();
+    //string to object delete object with id 1 en return string 
+    
+    // const n = svgstring.indexOf('id=' + idx);
+    // const lx = svgstring.indexOf('</path>');
+    // const l = lx + 7;
+    // let newstring = svgstring.replace(svgstring.substring(n, l), '');
+    // return newstring
   }
 
   deleteVectorGroup(idx) {
+    return new Promise((resolve, reject) => {
     // this works don't ask why
     let idto = document.getElementById(idx);
     var viewBox = idto.getAttribute('viewBox');
-    
+
     let g;
     let p = idto.getElementsByTagName("path");
     //console.log(p);
@@ -1088,6 +1078,8 @@ export class VideocreatorComponent implements AfterViewInit {
         groupElement.ungroup(groupElement.parent());
       }
     }
-    return viewBox
+    resolve(viewBox);
+  });
   }
+  
 }
