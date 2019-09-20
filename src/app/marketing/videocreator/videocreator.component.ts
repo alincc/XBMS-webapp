@@ -322,9 +322,9 @@ export class VideocreatorComponent implements AfterViewInit {
 
 
   addEffect(element): void {
-    console.log(element);
+    //console.log(element);
     let id = document.getElementById(element.id);
-    console.log(id);
+    //console.log(id);
     element.animation.forEach(animationsection => {
       this.addAnimation(id, animationsection);
     });
@@ -384,7 +384,7 @@ export class VideocreatorComponent implements AfterViewInit {
       await this.deleteVectorGroup(vect);
       await this.normalizepath(vect, originalsize);
       await this.combineSVGs(this.animationarray[i]);
-      //await this.createMorph(this.animationarray[i].vector);
+      await this.createMorph(this.animationarray[i].vector);
       console.log(originalsize);
     }, 300);
   }
@@ -395,9 +395,9 @@ export class VideocreatorComponent implements AfterViewInit {
       let doc = set.getElementsByTagName('svg');
       let element = SVG.get(doc[0].id);
       var box = element.viewbox();
-      //var bbox = element.rbox()
-      //element.viewbox(bbox.x, bbox.y, bbox.width, bbox.height);
-      resolve(box);
+      var bbox = element.bbox();
+      let res = {viewbox: box, bbox: bbox}
+      resolve(res);
     });
   }
 
@@ -428,7 +428,7 @@ export class VideocreatorComponent implements AfterViewInit {
 
         console.log(matrix);
 
-        element.attr('transform', 'matrix(' + matrix + ')');
+        //element.attr('transform', 'matrix(' + matrix + ')');
       }
     }
 
@@ -829,7 +829,7 @@ export class VideocreatorComponent implements AfterViewInit {
       } else {
         vectstring = idnew.childNodes.innerHTML;
       }
-      vectstring = await this.deleteBackgroundSvg(vectstring, vect.idx); //delete background
+      //vectstring = await this.deleteBackgroundSvg(vectstring, vect.idx); //delete background
       //pathidar.splice(0, 1); no need as fetch new list anyway
       let pathidar = vectstring.match(/id="\S+/g); //get ids
       const newvectstring = await this.renumberSvgIds(vectstring, vect.idx, pathidar); // set ids
@@ -964,36 +964,48 @@ export class VideocreatorComponent implements AfterViewInit {
       // console.log(p);
       for (let index = 0; index < p.length; index++) {
 
-        // let set2 = originalsize.width * originalsize.zoom;
         let transf = window.getComputedStyle(p[index]).transform;
          console.log(transf);
          if (transf !== undefined) {
-        //   const os = originalsize.split(' ');
-        //   const part2 = parseFloat(os[3])
-        //   const set3 = 500 / part2;
-           transf = transf; //.replace('matrix(');
-           console.log(transf);
+           transf = transf; 
            transf = transf.replace('matrix(', '');
            transf = transf.replace(')', '');
            bxn = transf.split(', ');
-        //   const part1 = parseFloat(viewboxnew[2])
-        //   if (viewboxnew[2] !== '0' || viewboxnew[0] !== null) {
-        //     const set1 = 500 / part1;
-        //     set2 = set1 * set3;
            }
-        // }
-        //console.log(set2);
-        //const scale = 500 / originalsize.width;
+
         const matrix = 'matrix(' + bxn[0] + ', ' + bxn[1] +', ' +bxn[2] + ', '+ bxn[3] + ', '+ bxn[4] +', 500)';
         const scale = 'scale(' + bxn[0] + ')';
+        const skew = 'scale(-1,1)'; //skewX(40)
         p[index].removeAttribute("transform");
-        p[index].setAttribute("transform", scale );
+        //if (Math.sign(bxn[3]) === -1 ){p[index].setAttribute("transform", scale + ' ' + skew );} else {
+          p[index].setAttribute("transform", scale )
+        //}
+        
         if (p[index].id === '') {
           p[index].setAttribute("id", "child-" + index);
         }
 
+        let bbox = originalsize.bbox;
+        let viewbox = originalsize.viewbox;
+
+        const middlew = (viewbox.width - 500) / 2;
+        const middleh = (viewbox.height - 500) /2;
+        const w = viewbox.width; //+ middlew;
+        const h =viewbox.height; //+ middleh
+
+        
+        var cx = parseFloat(viewbox.x) + (parseFloat(viewbox.width) / 2);
+        var cy = parseFloat(viewbox.y) + (parseFloat(viewbox.height) / 2);
+
+     
+        var x = cx - bbox.x - (bbox.width / 2);
+        var y = cy - bbox.y - (bbox.height / 2);
+        
+        console.log(cx, bbox.y, bbox.width);
+        console.log(x, y);
+
         const normalizedPath = normalize({
-          viewBox: '0 0 ' + originalsize.width +' '+ originalsize.height,
+          viewBox: '0 0 ' + w +' '+ h,
           //viewBox: '0 0 500 500',
           path: p[index].attributes['d'].value,//'M150.883 169.12c11.06-.887 20.275-7.079 24.422-17.256',
           min: 0,
@@ -1034,14 +1046,14 @@ export class VideocreatorComponent implements AfterViewInit {
 
   deleteBackgroundSvg(svgstring, id) {
     const idx = id + "1";
-    document.getElementById(idx).remove();
+    //document.getElementById(idx).remove();
     //string to object delete object with id 1 en return string 
     
-    // const n = svgstring.indexOf('id=' + idx);
-    // const lx = svgstring.indexOf('</path>');
-    // const l = lx + 7;
-    // let newstring = svgstring.replace(svgstring.substring(n, l), '');
-    // return newstring
+    const n = svgstring.indexOf('id=' + idx);
+    const lx = svgstring.indexOf('</path>');
+    const l = lx + 7;
+    let newstring = svgstring.replace(svgstring.substring(n, l), '');
+    return newstring
   }
 
   deleteVectorGroup(idx) {
