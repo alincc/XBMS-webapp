@@ -1005,7 +1005,7 @@ export class VideocreatorComponent implements AfterViewInit {
   }
 
   svgDeleteBackground(element, i){
-    console.log(element); 
+    console.log(element, i); 
     let n,lx,l,svgstring;
     let pathid = element.vectors[i].pathids[0];
     console.log(pathid)
