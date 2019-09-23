@@ -17,6 +17,7 @@ import '@svgdotjs/svg.draggable.js'
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import * as normalize from 'normalize-svg-coords';
 const plugins = [DrawSVGPlugin, MorphSVGPlugin]; //needed for GSAP 
+import { spo } from 'svg-path-outline';
 
 export class animationtype {
   start_time: number; //delayt
@@ -385,7 +386,7 @@ export class VideocreatorComponent implements AfterViewInit {
       await this.normalizepath(vect, originalsize);
       await this.combineSVGs(this.animationarray[i]);
       //await this.createMorph(this.animationarray[i].vector);
-      console.log(originalsize);
+      //console.log(originalsize);
     }, 300);
   }
 
@@ -396,7 +397,7 @@ export class VideocreatorComponent implements AfterViewInit {
       let element = SVG.get(doc[0].id);
       //element.draggable()
       var box = element.viewbox();
-       console.log(element.rbox());
+      console.log(element.rbox());
       //element.viewbox(bbox.x, bbox.y, bbox.width, bbox.height);
       resolve(box);
     });
@@ -832,17 +833,29 @@ export class VideocreatorComponent implements AfterViewInit {
         }
         vectstring = await this.deleteMetaSvg(vectstring); //delete background
         //pathidar.splice(0, 1); no need as fetch new list anyway
-        let pathidar = vectstring.match(/id="\S+/g); //get ids
-        const newvectstring = await this.renumberSvgIds(vectstring, vect.idx, pathidar); // set ids
-        let pathidar2 = newvectstring.match(/id="\S+/g); //get ids
-        pathidar2 = await this.cleantags(pathidar2);
-        element.vectors[index].pathids = pathidar2;
+        //console.log(vectstring);
+        let pathidar;
+        let newvectstring;
+        pathidar = vectstring.match(/id="\S+/g); //get ids
+        newvectstring = await this.grabPaths(vectstring, pathidar);
+        pathidar = newvectstring.match(/id="\S+/g); //get ids
+        pathidar = await this.cleantags(pathidar);
+        //console.log( newvectstring);
+        newvectstring = await this.renumberSvgIds(newvectstring, vect.idx, pathidar); // set ids
+        pathidar = newvectstring.match(/id="\S+/g); //get ids
+        //console.log( newvectstring);
+        pathidar = await this.cleantags(pathidar);
+        //console.log(pathidar);
+        //pathidar = newvectstring.match(/id="\S+/g); //get ids
+        //pathidar = await this.cleantags(pathidar);
+        element.vectors[index].pathids = pathidar;
         total.push(newvectstring);
         ++index;
       }
       //console.log('loop done')
       total.push('</svg>');
       let childrenst = total.join('');
+      //console.log(childrenst);
       element.svgcombi = this.sanitizer.bypassSecurityTrustHtml(childrenst);
       resolve();
     });
@@ -869,8 +882,6 @@ export class VideocreatorComponent implements AfterViewInit {
     }
   }
 
-
-
   async createMorph(vectors: vectorelement[]) {
     // create vector animation foreach path vector 1 to 2, 2 to 3 etc..
     //this.setPos(vectors);
@@ -889,7 +900,7 @@ export class VideocreatorComponent implements AfterViewInit {
             if (exti > vector.pathids.length - 1) {
               let aniset;
               let fromexvac = document.getElementById(extrvect);
-              //aniset = { autoAlpha: 0 };
+              aniset = { autoAlpha: 0 };
               fromexvac.style.opacity = '0';
 
               aniset = { opacity: 1 };
@@ -937,8 +948,15 @@ export class VideocreatorComponent implements AfterViewInit {
   }
 
   async setDrawAni(from, time) {
+    // https://www.npmjs.com/package/svg-path-outline
+    var starPath = document.querySelector(from);
+    var d = starPath.getAttribute('d');
+    var outline = spo(d, 2);
+
+    console.log(d, outline);
+
     this.primairytimeline.to(from, 2, { drawSVG: 0 }, 0.1);
-    this.primairytimeline.staggerFromTo(from, 1, {drawSVG:"100%"}, {drawSVG:"50% 50%"}, 0.1)
+    this.primairytimeline.staggerFromTo(from, 1, { drawSVG: "100%" }, { drawSVG: "50% 50%" }, 0.1)
   }
 
   async setMorphAni(from, to, time) {
@@ -962,52 +980,51 @@ export class VideocreatorComponent implements AfterViewInit {
       // example originalsize = {x: 0, y: 0, width: 1496, height: 1496, zoom: 0.06684491978609626}
       let idto = document.getElementById(idx);
       let p = idto.getElementsByTagName("path");
+      //console.log(p);
       let bxn
       for (let index = 0; index < p.length; index++) {
-        let transf = window.getComputedStyle(p[index]).transform;
-        //console.log(transf);
-        if (transf !== undefined) {
-
+        let idto2 = document.getElementById(p[index].id);
+        console.log(idto2);
+        let transf = p[index].getAttribute("transform");
+        //let transf = window.getComputedStyle(p[index]).transform;
+        console.log(transf);
+        if (transf !== null) {
           transf = transf; //.replace('matrix(');
           //console.log(transf);
           transf = transf.replace('matrix(', '');
           transf = transf.replace(')', '');
           bxn = transf.split(', ');
-
-          if (bxn[0] !== 1){
+          //console.log(bxn);
+          if (bxn[0] !== '1' || bxn[0] === undefined) {
             let newscale1 = originalsize.width - 500;
             newscale1 = newscale1 / originalsize.width;
             newscale1 = newscale1 * bxn[0];
             let newscale2 = originalsize.width - 500;
             newscale2 = newscale2 / originalsize.width;
             newscale2 = newscale2 * bxn[3];
-  
-            const matrix = 'matrix(' +  newscale1 + ', ' + bxn[1] + ', ' + bxn[2] + ', ' + newscale2 + ', ' + bxn[4] +', ' + 500 +')';
+
+            const matrix = 'matrix(' + newscale1 + ', ' + bxn[1] + ', ' + bxn[2] + ', ' + newscale2 + ', ' + bxn[4] + ', ' + 500 + ')';
             const scale = 'scale(' + bxn[0] + ')';
             p[index].removeAttribute("transform");
             p[index].setAttribute("transform", matrix);
-  
+
             if (p[index].id === '') {
               p[index].setAttribute("id", "child-" + index);
             }
             const h = originalsize.width; // * newscale1;
             const w = originalsize.height; // * newscale1;
-  
-            // console.log(originalsize);
+
+            //console.log(p[index].attributes['d'].value);
             const normalizedPath = normalize({
-              viewBox: '0 0 ' + h + ' ' + h,
+              viewBox: '0 0 ' + h + ' ' + w,
               //viewBox: '0 0 500 500',
               path: p[index].attributes['d'].value,//'M150.883 169.12c11.06-.887 20.275-7.079 24.422-17.256',
               min: 0,
-              max: 500 * (1+ newscale1),
+              max: 500 * (1 + newscale1),
               asList: false
             })
-  
             p[index].setAttribute("d", normalizedPath);
           }
-
-     
-
         }
         //console.log(idto);
         resolve();
@@ -1037,7 +1054,24 @@ export class VideocreatorComponent implements AfterViewInit {
     return newsvgstring
   }
 
-
+  grabPaths(svgstring, pathidar) {
+    return new Promise((resolve, reject) => {
+      let svgarray = [];
+      for (const element of pathidar) {
+        let n = svgstring.indexOf('<path ');
+        let lx = svgstring.indexOf('</path>'); //<defs
+        let l = lx + 7;
+        if (n !== -1) {
+          svgarray.push(svgstring.substring(n, l));
+          svgstring = svgstring.replace(svgstring.substring(n, l), '');
+          //console.log(n, l);
+        }
+      }
+      //console.log(svgarray, svgstring);
+      svgstring = svgarray.join('');
+      resolve(svgstring)
+    });
+  }
 
 
   deleteMetaSvg(svgstring) {
@@ -1045,25 +1079,32 @@ export class VideocreatorComponent implements AfterViewInit {
       let n = svgstring.indexOf('<metadata');
       let lx = svgstring.indexOf('</metadata>'); //<defs
       let l = lx + 11;
-      if (n !== -1){
+      if (n !== -1) {
         svgstring = svgstring.replace(svgstring.substring(n, l), '');
       }
-    
+
+      // n = svgstring.indexOf('<g');
+      // lx = svgstring.indexOf('</g>'); //<defs
+      // l = lx + 4;
+      // if (n !== -1) {
+      //   svgstring = svgstring.replace(svgstring.substring(n, l), '');
+      // }
+
 
       n = svgstring.indexOf('<defs');
       lx = svgstring.indexOf('</defs>'); //<defs
       l = lx + 7;
-      if (n !== -1){
+      if (n !== -1) {
         svgstring = svgstring.replace(svgstring.substring(n, l), '');
       }
 
 
-      n = svgstring.indexOf('<path');
-      lx = svgstring.indexOf('</path>'); //<defs
-      l = lx + 7;
-      if (n !== -1){
-        svgstring = svgstring.replace(svgstring.substring(n, l), '');
-      }
+      // n = svgstring.indexOf('<path');
+      // lx = svgstring.indexOf('</path>'); //<defs
+      // l = lx + 7;
+      // if (n !== -1) {
+      //   svgstring = svgstring.replace(svgstring.substring(n, l), '');
+      // }
 
 
       resolve(svgstring)
@@ -1072,40 +1113,38 @@ export class VideocreatorComponent implements AfterViewInit {
 
 
   deleteVectorGroup(idx) {
-    return new Promise((resolve, reject) => {
+    return new Promise(async(resolve, reject) => {
       // this works don't ask why
+      let groupElement;
       let idto = document.getElementById(idx);
-      var viewBox = idto.getAttribute('viewBox');
-
       let g;
-      let p = idto.getElementsByTagName("path");
-      //console.log(p);
-      for (let index = 0; index < p.length; index++) {
-        if (p[index].id === '') {
-          p[index].setAttribute("id", "child-" + index);
-        }
-      }
-
       g = idto.getElementsByTagName("g");
-      //console.log(g);
-      for (let index = 0; index < g.length; index++) {
-        //g[index].setAttribute('transform', 'matrix(' + matrix + ')');
-        let groupElement
 
-        if (g[index].id === '') {
+      console.log(g);
+    //  if (g[0].id !== ''){
+    //     let sg = g[0].id;
+    //     groupElement = SVG.get(sg);
+    //     groupElement.ungroup(groupElement.parent());
+    //  } 
+    //  else {
+        for (let index = 0; index < g.length; index++) {
           g[index].setAttribute("id", "child-" + index);
           let sg = "child-" + index;
           groupElement = SVG.get(sg);
-          //console.log('found g id', groupElement);
-          groupElement.ungroup(groupElement.parent());
-        } else {
-          let sg = g[0].id;
-          groupElement = SVG.get(sg);
-          //console.log('found g id', groupElement);
-          groupElement.ungroup(groupElement.parent());
-        }
+           if (typeof groupElement.ungroup === "function"){
+             console.log('found g id', groupElement);
+            groupElement.ungroup(groupElement.parent());
+          }
+         }
+    //   }
+      
+      
+      let p;
+      p = idto.getElementsByTagName("path");
+      for (let index = 0; index < p.length; index++) {
+        p[index].setAttribute("id", "child-" + index);
       }
-      resolve(viewBox);
+      resolve();
     });
   }
 
