@@ -32,3 +32,9 @@ svg { display: block; float: left; }
     top: 0;
     z-index: -1;
 }
+
+path {
+  stroke:red;
+  stroke-width:4px;
+  fill:papayawhip;
+}
