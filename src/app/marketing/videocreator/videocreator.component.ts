@@ -398,12 +398,9 @@ export class VideocreatorComponent implements AfterViewInit {
     vector.style['stroke-width'] = '5px';
     //vector.style['opacity'] = 0;
     let list = vector.vectors[0].pathids;
-
-
     // let fromvac = document.getElementById(list[3]);
     // this.setDrawAni(fromvac, 1);
     
-
     for (const pathid of list) {
       console.log(pathid);
       let fromvac = document.getElementById(pathid);
@@ -1005,25 +1002,22 @@ export class VideocreatorComponent implements AfterViewInit {
   }
 
   svgDeleteBackground(element, i){
+<<<<<<< HEAD
     console.log(element, i); 
     let n,lx,l,svgstring;
+=======
+>>>>>>> 6a7cd5f5bd34ba0f7a547ed36cd1aa8a630be8b6
     let pathid = element.vectors[i].pathids[0];
-    console.log(pathid)
-    svgstring = element.svgcombi.changingThisBreaksApplicationSecurity;
-    var splitstring = svgstring.split('<path');
-    splitstring.forEach((item, index, object) => {
-      console.log(item.indexOf(pathid));
-      if (item.indexOf(pathid) !== -1){
-        object.splice(index, i);
-      }
-    });
-      // n = svgstring.indexOf(pathid);
-      // lx = svgstring.indexOf('</path>'); //<defs
-      // l = lx + 7;
-      // if (n !== -1) {
-      //   svgstring = svgstring.replace(svgstring.substring(n, l), '');
-      // }
-
+    element.vectors[i].pathids.splice(0, 1);
+    let svgstring = element.svgcombi.changingThisBreaksApplicationSecurity;
+    let n, l;
+    let nstring = '<path id="' + pathid;
+    n = svgstring.indexOf(nstring)
+    l = svgstring.indexOf('</path>')
+    l = l + 7;
+    let x = svgstring.substring(n, l);
+    let newsvgs = svgstring.replace(x, '');
+    element.svgcombi = this.sanitizer.bypassSecurityTrustHtml(newsvgs);
   }
 
   async setMorphAni(from, to, time) {
