@@ -113,8 +113,36 @@
                 <mat-expansion-panel>
                     <mat-expansion-panel-header>
                         <mat-panel-title>
-                            <label>{{animation.anim_type}}</label>
-                            <mat-icon (click)="deleteEffect(i)" class="iconsize-10">delete</mat-icon>
+                            <label style="width: 300px;">{{animation.anim_type}}</label>
+                            <mat-icon (click)="deleteEffect(i)" matTooltip="Delete effect" class="iconsize-10">delete
+                            </mat-icon>
+                            <mat-icon (click)="copyEffect(i)" matTooltip="Duplicate effect" class="iconsize-10">
+                                filter_none</mat-icon>
+
+                            <div class="timeline-container" [style.width]="'6000px'">
+                                <div class="timeline-active" [style.width]="counter * 10 + 'px'" #timelinebound
+                                    id="timelinebound">
+                                    <div class="timeline-setter" 
+                                    [style.transform]= "'translate(' + currenttime * 10 + 'px, 0px')"
+                                   
+                                        [inBounds]="true" [bounds]="timelinebound" [lockAxis]="'y'" ngDraggable
+                                        (movingOffset)="onMovingTimeline($event, i, animation)"
+                                        [scale]="'1'"></div>
+
+                                    <div class="timeline-currentelement" ngDraggable
+                                        [scale]="'1'"
+                                        (movingOffset)="onMovingAnimationEl($event, i, animation)"
+                                        [bounds]="timelinebound" [inBounds]="true" [lockAxis]="'y'"
+                                        [preventDefaultEvent]="true" ngResizable rzContainment="#timelinebound"
+                                        [rzHandles]="'e, w'" (rzResizing)="onResizeAnimationEl($event, i, animation)"
+                                        [style.width]="animation.duration * 10 + 'px'">
+                                    </div>
+
+                                </div>
+                            </div>
+
+<!--  [style.left]="currenttime * 10 + 'px'" -->
+
                         </mat-panel-title>
                     </mat-expansion-panel-header>
                     <div fxLayout="row">
@@ -189,11 +217,91 @@
                         </div>
                     </div>
 
+
+
+
                 </mat-expansion-panel>
             </mat-accordion>
 
         </div>
         <button mat-button (click)="addNewEffect(animation)">Add new effect</button>
+
+        <div *ngIf="selectedelement.type === 'vector'">
+            <div *ngFor="let vectoranimation of selectedelement.vectoranimation">
+                <mat-accordion>
+                    <mat-expansion-panel>
+                        <mat-expansion-panel-header>
+                            <mat-panel-title>
+                                <label>{{vectoranimation.svganimationtype}}</label>
+                                <mat-icon (click)="deleteVectorAnimation(i)" class="iconsize-10">delete</mat-icon>
+                            </mat-panel-title>
+                        </mat-expansion-panel-header>
+                        <mat-form-field>
+                            <mat-select [(value)]="vectoranimation.svganimationtype" (selectionChange)="detectchange()">
+                                <mat-option value="draw">Draw</mat-option>
+                                <mat-option value="morph">Morph</mat-option>
+                                <!-- (selectionChange)="addEffect(selectedelement)" -->
+                            </mat-select>
+                        </mat-form-field>
+                        <mat-checkbox (click)="setSvgOpacity(selectedelement, idx)"
+                            [(ngModel)]=vectoranimation.hideimage>Hide Image</mat-checkbox>
+
+                        <div *ngIf="vectoranimation.svganimationtype">
+                            <div *ngIf="vectoranimation.svganimationtype === 'draw'" fxLayout="row">
+
+                                <mat-slide-toggle [(ngModel)]=vectoranimation.yoyo fxFlex (change)="detectchange()">Yoyo
+                                    effect</mat-slide-toggle>
+
+                                <mat-form-field style="max-width: 46px;" fxFlex>
+                                    <input [(ngModel)]="vectoranimation.repeat" type="number" matInput
+                                        (change)="detectchange()">
+                                    <mat-hint>Repeat</mat-hint>
+                                </mat-form-field>
+
+                                <mat-form-field style="max-width: 46px;" fxFlex>
+                                    <input [(ngModel)]="vectoranimation.linethickness" matInput
+                                        (change)="detectchange()">
+                                    <mat-hint>Thickness</mat-hint>
+                                </mat-form-field>
+
+                                <div style="max-width: 150px; height: 30px;" fxFlex>
+                                    <input style="max-width: 150px; height: 30px;" (change)="detectchange()"
+                                        [style.background]="vectoranimation.drawcolor" [cpToggle]="false"
+                                        [(colorPicker)]="vectoranimation.drawcolor" [cpCancelButton]="true"
+                                        [cpPresetLabel]="'Company colors'"
+                                        [cpPresetColors]="[option.companyprimairycolor, option.companysecondarycolor, company.companyprimairycolor, company.companysecondarycolor]">
+                                </div>
+
+                                <mat-form-field style="max-width: 46px;" fxFlex>
+                                    <input [(ngModel)]="vectoranimation.repeat" type="number" matInput
+                                        (change)="detectchange()">
+                                    <mat-hint>Percentage fill</mat-hint>
+                                </mat-form-field>
+
+                                <mat-form-field style="max-width: 46px;" fxFlex>
+                                    <input [(ngModel)]="vectoranimation.repeat" type="number" matInput
+                                        (change)="detectchange()">
+                                    <mat-hint>Percentage draw</mat-hint>
+                                </mat-form-field>
+
+                                <mat-form-field style="max-width: 46px;" fxFlex>
+                                    <input [(ngModel)]="vectoranimation.repeat" type="number" matInput
+                                        (change)="detectchange()">
+                                    <mat-hint>Percentage draw opposite direction</mat-hint>
+                                </mat-form-field>
+                                <!-- deduct percentage from draw  percentage  {drawSVG:"100%"}, {drawSVG:"50% 50%"}, 0.1) -->
+
+                            </div>
+
+                            <div *ngIf="vectoranimation.svganimationtype === 'morph'" fxLayout="row">
+
+                            </div>
+                        </div>
+                    </mat-expansion-panel>
+                </mat-accordion>
+            </div>
+        </div>
+
     </div>
     <!-- <mat-card fxLayout="column">
 
@@ -399,13 +507,13 @@
                                             <mat-hint>Start</mat-hint>
                                         </mat-form-field>
                                         <mat-expansion-panel-header>
-                                           <div *ngIf="vector.src" [inlineSVG]="vector.src"
-                                                [onSVGLoaded]="previewSVG" id="previewbox" class="elementsedit"
-                                                style="height: 30px; width: auto;"></div>
+                                            <div *ngIf="vector.src" [inlineSVG]="vector.src" [onSVGLoaded]="previewSVG"
+                                                id="previewbox" class="elementsedit" style="height: 30px; width: auto;">
+                                            </div>
                                         </mat-expansion-panel-header>
                                         <div *ngIf="vector.src">
                                             <div *ngIf="vector.src" [inlineSVG]="vector.src"
-                                                [onSVGLoaded]="previewSVGBig"  id="{{vector.idx}}" >
+                                                [onSVGLoaded]="previewSVGBig" id="{{vector.idx}}">
                                             </div>
                                             <mat-icon (click)="vector.src = ''" class="icon-label" class="iconsize-12">
                                                 delete
@@ -414,12 +522,15 @@
                                         <app-vectorupload *ngIf="!vector.src" [account]="Account" [option]="option"
                                             (imgurl)="setVector($event, i, idx)">
                                         </app-vectorupload>
-                                        <mat-icon (click)="deleteVectorSrc(idx, element)" class="icon-label" class="iconsize-14">
+                                        <mat-icon (click)="deleteVectorSrc(idx, element)" class="icon-label"
+                                            class="iconsize-14">
                                             delete
                                         </mat-icon>
-                                        <mat-icon (click)="svgDeleteBackground(element, idx)" matTooltip="Delete Background" class="icon-label" class="iconsize-14">
+                                        <mat-icon (click)="svgDeleteBackground(element, idx)"
+                                            matTooltip="Delete Background" class="icon-label" class="iconsize-14">
                                             image
                                         </mat-icon>
+
                                     </mat-expansion-panel>
                                 </div>
                                 <button mat-mini-fab class="addbutton" matTooltip="Add vector"
@@ -637,21 +748,21 @@
                         [preventDefaultEvent]="true" [position]="element.setpos" (rzResizing)="onResizing($event, i)"
                         ngResizable [rzAspectRatio]="false">
                     </div>
-                    <div *ngIf="element.type === 'vector'" 
-                    style="overflow: hidden;" [style.width]="element.style.width" [style.height]="element.style.height" 
-                    ngDraggable [ngStyle]="element.style"
-                    (movingOffset)="onMoving($event, i)" [preventDefaultEvent]="true" [position]="element.setpos"
-                    (rzResizing)="onResizing($event, i)" ngResizable [rzAspectRatio]="true">
-                    <div style="height: 100%; width: 100%;" id="{{element.id}}" [innerHTML]="element.svgcombi"></div>
-                    
-                    <!-- <div *ngFor="let vectorelement of element.vectors; let iv = index;"                  
+                    <div *ngIf="element.type === 'vector'" style="overflow: hidden;" [style.width]="element.style.width"
+                        [style.height]="element.style.height" ngDraggable [ngStyle]="element.style"
+                        (movingOffset)="onMoving($event, i)" [preventDefaultEvent]="true" [position]="element.setpos"
+                        (rzResizing)="onResizing($event, i)" ngResizable [rzAspectRatio]="true">
+                        <div style="height: 100%; width: 100%;" id="{{element.id}}" [innerHTML]="element.svgcombi">
+                        </div>
+
+                        <!-- <div *ngFor="let vectorelement of element.vectors; let iv = index;"                  
                     [style.width]="element.style.width" [style.height]="element.style.height">
                         <div [style.width]="element.style.width" [style.height]="element.style.height"
                          id="{{vectorelement.idx}}"   [style.width]="1000px" [style.height]="1000px"
                         [inlineSVG]="vectorelement.src" [onSVGLoaded]="handleSVG">
                         </div> -->
-                    <!-- </div> -->
-                </div>
+                        <!-- </div> -->
+                    </div>
                 </div>
             </div>
         </div>

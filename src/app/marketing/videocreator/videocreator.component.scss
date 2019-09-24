@@ -38,3 +38,33 @@ path {
   stroke-width:4px;
   fill:papayawhip;
 }
+
+.timeline-container {
+  background-color: gainsboro;
+  height: 20px;
+  position: relative;
+  z-index: 1;
+  margin: 0px 20px 0px 40px;
+}
+
+.timeline-active {
+  background-color: lightblue;
+  height: 20px;
+  position: relative;
+  z-index: 2
+}
+
+.timeline-setter {
+  height: 30px;
+  width: 5px;
+  background-color: black;
+  position: absolute;
+  z-index: 4
+}
+
+.timeline-currentelement {
+  height: 18px;
+  background-color: azure;
+  position: absolute;
+  z-index: 3;
+}
