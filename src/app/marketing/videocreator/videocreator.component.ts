@@ -34,6 +34,20 @@ export class animationtype {
   skewX: number;
 }
 
+export class vectoranimationtype {
+  svganimationtype: string;
+  drawcolor: string;
+  linethickness: string;
+  repeat: number;
+  yoyo: boolean;
+  filldrw: string;
+  drawlenght: string;
+  oppdrawlenght: string;
+  start_time: number; //delayt
+  end_time: number;
+  duration: number;
+  hideimage: boolean;
+}
 
 export class imageanimation {
   type: 'image';
@@ -60,6 +74,8 @@ export class vectoranimation {
     height: string;
     position: 'absolute';
     opacity: 1;
+    'stroke-width': string;
+    stroke: string;
   };
   src: string;
   posx: number;
@@ -68,7 +84,9 @@ export class vectoranimation {
   id: number;
   animation: animationtype[];
   vectors: vectorelement[];
+  vectoranimation: vectoranimationtype[];
   svgcombi: SafeHtml;
+  
 }
 
 export class vectorelement {
@@ -119,7 +137,6 @@ export class textanimation {
   animation: animationtype[];
 }
 
-
 @Component({
   selector: 'app-videocreator',
   templateUrl: './videocreator.component.html',
@@ -153,7 +170,6 @@ export class VideocreatorComponent implements AfterViewInit {
   public menu = new TimelineMax({ paused: true, reversed: true });
   public primairytimeline = new TimelineMax({ paused: true, reversed: true });
   progressbarline = new TimelineMax({ paused: true, reversed: true });
-
 
   public listviewxsshow = false;
   public showprogressbar = false;
@@ -261,14 +277,18 @@ export class VideocreatorComponent implements AfterViewInit {
     // wait for dom update to finish otherwise it will create the effects on the old dom
     setTimeout(() =>
       this.animationarray.forEach(elm => {
-        this.addEffect(elm);
-        if (elm.type === 'vector') {
+
+        if (elm.type === 'vector') { //vector animation
           setTimeout(() => {
             // add vector efffects
-            this.drawVector(elm)
-            //this.createMorph(elm.vectors)
+            elm.vectoranimation.forEach(vecani => {
+              if (vecani.svganimationtype === 'draw') { this.drawVector(elm, vecani) }
+              if (vecani.svganimationtype === 'morph') { this.createMorph(elm, vecani) }
+            });
           }, 300) // mininmum needed for dom to process
-        }
+        } 
+         this.addEffect(elm); //normal animatoin
+        
       })
     );
 
@@ -359,6 +379,12 @@ export class VideocreatorComponent implements AfterViewInit {
     this.selectedelement.animation.splice(i, 1);
   }
 
+  copyEffect(i) {
+   const neweffect = this.selectedelement.animation[i];
+   this.selectedelement.animation.push(neweffect); 
+
+  }
+
   getEditFile() {
     this.relationsApi.getFiles(this.option.id, { where: { template: { "neq": null } } })
       .subscribe((files: Files[]) => {
@@ -391,26 +417,26 @@ export class VideocreatorComponent implements AfterViewInit {
     }, 300);
   }
 
-  drawVector(vector){
+  drawVector(vector, animation: vectoranimationtype) {
     return new Promise(async (resolve, reject) => {
-    console.log(vector)
-    vector.style.stroke = 'red';
-    vector.style['stroke-width'] = '5px';
-    //vector.style['opacity'] = 0;
-    let list = vector.vectors[0].pathids;
-    // let fromvac = document.getElementById(list[3]);
-    // this.setDrawAni(fromvac, 1);
-    
-    for (const pathid of list) {
-      console.log(pathid);
-      let fromvac = document.getElementById(pathid);
-      console.log(fromvac);
-      //await 
-      this.setDrawAni(fromvac, 1);
+      console.log(vector, animation)
+      vector.style.stroke = animation.drawcolor;
+      vector.style['stroke-width'] = animation.linethickness;
+      //vector.style['opacity'] = 0;
+      let list = vector.vectors[0].pathids;
+      // let fromvac = document.getElementById(list[3]);
+      // this.setDrawAni(fromvac, 1);
+
+      for (const pathid of list) {
+        console.log(pathid);
+        let fromvac = document.getElementById(pathid);
+        console.log(fromvac);
+        //await 
+        this.setDrawAni(fromvac, 1);
       }
       resolve();
     });
-    }
+  }
 
 
   getViewBox(vect) {
@@ -426,38 +452,25 @@ export class VideocreatorComponent implements AfterViewInit {
     });
   }
 
-  centeralign(element) {
-    let id = element.id;
-    for (const vector of element.vectors) {
-      for (const el of vector.pathids) {
-
-        console.log(el)
-        let element = SVG.get(el);
-
-        var bbox = element.bbox()
-        var svg = document.getElementById('svg2');
-
-        console.log(bbox, svg)
-
-        var viewBox = svg.getAttribute('viewBox');
-        let viewboxnew = viewBox.split(' ');
-
-        var cx = parseFloat(viewboxnew[0]) + (parseFloat(viewboxnew[2]) / 2);
-        var cy = parseFloat(viewboxnew[1]) + (parseFloat(viewboxnew[3]) / 2);
-
-        console.log(cx, bbox.y, bbox.width);
-        console.log(cy, bbox.x, bbox.height);
-        var x = cx - bbox.x - (bbox.width / 2);
-        var y = cy - bbox.y - (bbox.height / 2);
-        var matrix = '1 0 0 1 ' + x + ' ' + y;
-
-        console.log(matrix);
-
-        element.attr('transform', 'matrix(' + matrix + ')');
-      }
-    }
-
+  onMovingAnimationEl(event, i, animation) {
+   console.log(event, i, animation);
+    animation.start_time = event.x / 10; 
+   // html (movingOffset)="onMovingAnimationEl($event, i, animation)"
+   //  [style.left]="animation.start_time * 10 + 'px'"
   }
+
+  onResizeAnimationEl(event, i, animation) {
+    console.log(event, i, animation);
+    animation.duration = event.size.width / 10; 
+    // html (movingOffset)="onMovingAnimationEl($event, i, animation)"
+   }
+
+   onMovingTimeline(event, i){
+     console.log(i); 
+    this.currenttime = event.x / 10; 
+    console.log(this.currenttime); 
+   }
+
 
   onMoving(event, i) {
     this.animationarray[i].posy = event.y;
@@ -495,6 +508,20 @@ export class VideocreatorComponent implements AfterViewInit {
       skewY: 50,
       skewX: 50
     }];
+    let vectanim: vectoranimationtype[] = [{
+      svganimationtype: 'draw',
+      drawcolor: 'red',
+      linethickness: '5px',
+      repeat: 0,
+      yoyo: false,
+      filldrw: '100%',
+      drawlenght: '100%',
+      oppdrawlenght: '0%',
+      start_time: 0, //delayt
+      end_time: 10,
+      duration: 0.5,
+      hideimage: false
+    }]
     // do not add animation from beginning with morph SVG's 
     let vectors: vectorelement[] = [{
       src: '',
@@ -510,7 +537,9 @@ export class VideocreatorComponent implements AfterViewInit {
         width: "200px",
         height: "200px",
         position: 'absolute',
-        opacity: 1
+        opacity: 1,
+        'stroke-width': '',
+        stroke: ''
         //transform : 'translate(10px, 10px)'
       },
       src: '',
@@ -520,7 +549,10 @@ export class VideocreatorComponent implements AfterViewInit {
       animation: [],
       id: newelnr,
       vectors: vectors,
-      svgcombi: ''
+      svgcombi: '',
+      vectoranimation: vectanim,
+      // from, 4, {drawSVG:0, repeat:10, yoyo:true}, 4)
+
     }
     this.animationarray.push(vector);
     this.detectchange();
@@ -687,8 +719,8 @@ export class VideocreatorComponent implements AfterViewInit {
       if (this.canvas.loop) {
         this.videoPlayer.loop = true;
       }
-      this.primairytimeline.play();
-      this.t = setInterval(() => { this.incrementSeconds() }, 1000);
+      this.primairytimeline.play(this.currenttime);
+      this.t = setInterval(() => { this.incrementSeconds() }, 100);
     }, 300);
   }
 
@@ -703,6 +735,9 @@ export class VideocreatorComponent implements AfterViewInit {
       this.videoPlayer.pause();
       this.videoPlayer.currentTime = 0;
     }
+
+    console.log(this.currenttime);
+    this.detectchange();
     //this.progressbarline.reverse();
     //this.primairytimeline.reverse();
     //this.progressbar.reversed() ?
@@ -714,6 +749,7 @@ export class VideocreatorComponent implements AfterViewInit {
     if (this.canvas.videourl) {
       this.videoPlayer.pause();
     }
+    clearTimeout(this.t);
   }
 
   reverseFunc() {
@@ -728,8 +764,11 @@ export class VideocreatorComponent implements AfterViewInit {
   }
 
   incrementSeconds() {
-    this.currenttime = this.currenttime + 1;
-    //console.log(this.currenttime);
+    this.currenttime = this.currenttime + 0.1;
+    // console.log(this.currenttime, this.t);
+    if (this.currenttime >= this.counter){
+      this.pauseFunc();
+    }
   }
 
   drop(e) {
@@ -825,6 +864,24 @@ export class VideocreatorComponent implements AfterViewInit {
     this.animationarray[i].vectors.push(newVector);
   }
 
+  addNewVectorAnimation(i, element: vectoranimation) {
+    let vectanim: vectoranimationtype[] = [{
+      svganimationtype: 'draw',
+      drawcolor: 'red',
+      linethickness: '5px',
+      repeat: 0,
+      yoyo: false,
+      filldrw: '100%',
+      drawlenght: '100%',
+      oppdrawlenght: '0%',
+      start_time: 0, //delayt
+      end_time: 10,
+      duration: 0.5,
+      hideimage: false
+    }]
+    this.animationarray[i].vectoranimation.push(vectanim);
+  }
+
   deleteVectorSrc(idx, element) {
     this.selectedelement.vectors.splice(idx, 1);
     this.combineSVGs(element);
@@ -905,12 +962,16 @@ export class VideocreatorComponent implements AfterViewInit {
     }
   }
 
-  
 
-  async createMorph(vectors: vectorelement[]) {
+
+  async createMorph(element: vectoranimation, animation) {
     // create vector animation foreach path vector 1 to 2, 2 to 3 etc..
     //this.setPos(vectors);
     //console.log('morph', vectors)
+
+    let vectors: vectorelement[];
+    vectors = element.vectors;
+
     let i1 = 1;
     let i2 = 0;
     let set2 = i1;
@@ -930,13 +991,13 @@ export class VideocreatorComponent implements AfterViewInit {
 
               let style = fromexvac.getAttribute("style"); //style="fill:#7a7b7c;fill-opacity:1;fill-rule:nonzero;stroke:none"
               console.log(style);
-              if (style){
+              if (style) {
                 style = style + ';opacity:0';
                 fromexvac.setAttribute("style", style);
               } else {
                 fromexvac.setAttribute("style", 'opacity:0');
               }
-              
+
               aniset = { opacity: 1 };
               this.primairytimeline.to(fromexvac, 1, aniset, 1);
             }
@@ -967,7 +1028,7 @@ export class VideocreatorComponent implements AfterViewInit {
               //tovec.style.display = "none"; // hide element is not first vector
               let style = tovec.getAttribute("style"); //style="fill:#7a7b7c;fill-opacity:1;fill-rule:nonzero;stroke:none"
               console.log(style);
-              if (style){
+              if (style) {
                 style = style + ';display:none';
                 tovec.setAttribute("style", style);
               } else {
@@ -979,7 +1040,7 @@ export class VideocreatorComponent implements AfterViewInit {
             }
             //console.log(pathidclean, pathidclean2);
             await this.setMorphAni(fromvac, tovec, set2);
-           
+
           }
           ++i2;
         }
@@ -995,18 +1056,13 @@ export class VideocreatorComponent implements AfterViewInit {
     // https://www.npmjs.com/package/svg-path-outline
     //this.primairytimeline.to(from, 1, { drawSVG: 0 }, 2);
     //TweenMax.to("#cross", 5, {drawSVG:0, repeat:10, yoyo:true});
-    this.primairytimeline.to(from, 4, {drawSVG:0, repeat:10, yoyo:true}, 4)
+    this.primairytimeline.to(from, 4, { drawSVG: 0, repeat: 10, yoyo: true }, 4)
     return
     //resolve();
     //});
   }
 
-  svgDeleteBackground(element, i){
-<<<<<<< HEAD
-    console.log(element, i); 
-    let n,lx,l,svgstring;
-=======
->>>>>>> 6a7cd5f5bd34ba0f7a547ed36cd1aa8a630be8b6
+  svgDeleteBackground(element, i) {
     let pathid = element.vectors[i].pathids[0];
     element.vectors[i].pathids.splice(0, 1);
     let svgstring = element.svgcombi.changingThisBreaksApplicationSecurity;
@@ -1019,6 +1075,25 @@ export class VideocreatorComponent implements AfterViewInit {
     let newsvgs = svgstring.replace(x, '');
     element.svgcombi = this.sanitizer.bypassSecurityTrustHtml(newsvgs);
   }
+
+  setSvgOpacity(element) {
+    console.log('opacity', element);
+    // if (element.hideimage === false ){
+    //   element.hideimage = true;
+    // } else {element.hideimage = false}
+    let svgstring = element.svgcombi.changingThisBreaksApplicationSecurity;
+    if (element.hideimage = false){
+      let newstring = svgstring.replace(/fill-opacity: 0/g, 'fill-opacity: 1');
+      newstring = newstring.replace(/fill-opacity:0/g, 'fill-opacity:1');
+      element.svgcombi = this.sanitizer.bypassSecurityTrustHtml(newstring);
+    } else {
+      let newstring = svgstring.replace(/fill-opacity: 1/g, 'fill-opacity: 0');
+      newstring = newstring.replace(/fill-opacity:1/g, 'fill-opacity:0');
+      element.svgcombi = this.sanitizer.bypassSecurityTrustHtml(newstring);
+    }
+
+  }
+
 
   async setMorphAni(from, to, time) {
     //console.log(from, to);
@@ -1035,7 +1110,7 @@ export class VideocreatorComponent implements AfterViewInit {
     //   ease: Power1.easeInOut
     // });
     // this.primairytimeline.to(from, 1, { morphSVG: to, type:"rotational", origin:"20% 60%"  }, 1)
-    
+
     return
   }
 
@@ -1138,6 +1213,7 @@ export class VideocreatorComponent implements AfterViewInit {
   }
 
 
+
   deleteMetaSvg(svgstring) {
     return new Promise((resolve, reject) => {
       let n = svgstring.indexOf('<metadata');
@@ -1147,13 +1223,9 @@ export class VideocreatorComponent implements AfterViewInit {
         svgstring = svgstring.replace(svgstring.substring(n, l), '');
       }
 
-      // n = svgstring.indexOf('<g');
-      // lx = svgstring.indexOf('</g>'); //<defs
-      // l = lx + 4;
-      // if (n !== -1) {
-      //   svgstring = svgstring.replace(svgstring.substring(n, l), '');
-      // }
-
+      // "stroke: none;"
+      svgstring = svgstring.replace(/stroke:none/g, '');
+      svgstring = svgstring.replace(/stroke: none/g, '');
 
       n = svgstring.indexOf('<defs');
       lx = svgstring.indexOf('</defs>'); //<defs
@@ -1162,36 +1234,27 @@ export class VideocreatorComponent implements AfterViewInit {
         svgstring = svgstring.replace(svgstring.substring(n, l), '');
       }
 
-
-      // n = svgstring.indexOf('<path');
-      // lx = svgstring.indexOf('</path>'); //<defs
-      // l = lx + 7;
-      // if (n !== -1) {
-      //   svgstring = svgstring.replace(svgstring.substring(n, l), '');
-      // }
-
-
       resolve(svgstring)
     })
   }
 
 
   deleteVectorGroup(idx) {
-    return new Promise(async(resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
       // this works don't ask why
       let groupElement;
       let idto = document.getElementById(idx);
       let g;
       g = idto.getElementsByTagName("g");
-        for (let index = 0; index < g.length; index++) {  // ---> g.length
-          g[index].setAttribute("id", idx + index + 'g');
-          let sg = idx + index + 'g';
-          groupElement = SVG.get(sg);
-           if (typeof groupElement.ungroup === "function"){
-             //console.log('found g id', groupElement);
-            groupElement.ungroup(groupElement.parent());
-          }
-         }
+      for (let index = 0; index < g.length; index++) {  // ---> g.length
+        g[index].setAttribute("id", idx + index + 'g');
+        let sg = idx + index + 'g';
+        groupElement = SVG.get(sg);
+        if (typeof groupElement.ungroup === "function") {
+          //console.log('found g id', groupElement);
+          groupElement.ungroup(groupElement.parent());
+        }
+      }
 
       let p;
       p = idto.getElementsByTagName("path");
