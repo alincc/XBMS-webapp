@@ -121,15 +121,12 @@
                             <div class="timeline-container" [style.width]="'6000px'">
                                 <div class="timeline-active" [style.width]="counter * 10 + 'px'" #timelinebound
                                     id="timelinebound">
-                                    <div class="timeline-setter" 
-                                        [style.transform]= "'translate(' + currenttime * 10 + 'px, 0px)'"
-                                   
+                                    <div class="timeline-setter"
+                                        [style.transform]="'translate(' + currenttime * 10 + 'px, 0px)'"
                                         [inBounds]="true" [bounds]="timelinebound" [lockAxis]="'y'" ngDraggable
-                                        (movingOffset)="onMovingTimeline($event, i, animation)"
-                                        [scale]="'1'"></div>
+                                        (movingOffset)="onMovingTimeline($event, i, animation)" [scale]="'1'"></div>
 
-                                    <div class="timeline-currentelement" ngDraggable
-                                        [scale]="'1'"
+                                    <div class="timeline-currentelement" ngDraggable [scale]="'1'"
                                         (movingOffset)="onMovingAnimationEl($event, i, animation)"
                                         [bounds]="timelinebound" [inBounds]="true" [lockAxis]="'y'"
                                         [preventDefaultEvent]="true" ngResizable rzContainment="#timelinebound"
@@ -140,7 +137,7 @@
                                 </div>
                             </div>
 
-<!--  [style.left]="currenttime * 10 + 'px'" -->
+                            <!--  [style.left]="currenttime * 10 + 'px'" -->
 
                         </mat-panel-title>
                     </mat-expansion-panel-header>
@@ -226,26 +223,28 @@
         <button mat-button (click)="addNewEffect(animation)">Add new effect</button>
 
         <div *ngIf="selectedelement.type === 'vector'">
-            <div *ngFor="let vectoranimation of selectedelement.vectoranimation">
+            <div *ngFor="let vectoranimation of selectedelement.vectoranimation; let iv = index">
                 <mat-accordion>
                     <mat-expansion-panel>
                         <mat-expansion-panel-header>
                             <mat-panel-title>
-                                <label>{{vectoranimation.svganimationtype}}</label>
+                                <label style="width: 300px;">{{vectoranimation.svganimationtype}}</label>
                                 <mat-icon (click)="deleteVectorAnimation(i)" class="iconsize-10">delete</mat-icon>
+                                <mat-icon (click)="copyEffect(i)" matTooltip="Duplicate effect" class="iconsize-10">
+                                    filter_none</mat-icon>
                                 <div class="timeline-container" [style.width]="'6000px'">
                                     <div class="timeline-active" [style.width]="counter * 10 + 'px'" #timelinebound
                                         id="timelinebound">
-                                        <div class="timeline-setter" 
-                                            [style.transform]= "'translate(' + currenttime * 10 + 'px, 0px)'"
+                                        <div class="timeline-setter"
+                                            [style.transform]="'translate(' + currenttime * 10 + 'px, 0px)'"
                                             [inBounds]="true" [bounds]="timelinebound" [lockAxis]="'y'" ngDraggable
                                             (movingOffset)="onMovingTimeline($event, i, animation)">
                                         </div>
                                         <div class="timeline-currentelement" ngDraggable
-                                            (movingOffset)="onMovingAnimationEl($event, i, animation)"
-                                            [bounds]="timelinebound" [inBounds]="true" [lockAxis]="'y'"
-                                             ngResizable rzContainment="#timelinebound"
-                                            [rzHandles]="'e, w'" (rzResizing)="onResizeAnimationEl($event, i, vectoranimation)"
+                                            (movingOffset)="onMovingAnimationEl($event, i, vectoranimation)"
+                                            [bounds]="timelinebound" [inBounds]="true" [lockAxis]="'y'" ngResizable
+                                            rzContainment="#timelinebound" [rzHandles]="'e, w'"
+                                            (rzResizing)="onResizeAnimationEl($event, iv, vectoranimation)"
                                             [style.width]="vectoranimation.duration * 10 + 'px'">
                                         </div>
                                     </div>
@@ -297,22 +296,25 @@
                                 </div>
 
                                 <mat-form-field style="max-width: 46px;" fxFlex>
-                                    <input [(ngModel)]="vectoranimation.repeat" type="number" matInput
-                                        (change)="detectchange()">
-                                    <mat-hint>Percentage fill</mat-hint>
+                                    <input [(ngModel)]="vectoranimation.fillleft" matInput (change)="detectchange()">
+                                    <mat-hint>Start fill left</mat-hint>
                                 </mat-form-field>
 
                                 <mat-form-field style="max-width: 46px;" fxFlex>
-                                    <input [(ngModel)]="vectoranimation.repeat" type="number" matInput
-                                        (change)="detectchange()">
-                                    <mat-hint>Percentage draw</mat-hint>
+                                    <input [(ngModel)]="vectoranimation.fillright" matInput (change)="detectchange()">
+                                    <mat-hint>Start fill right</mat-hint>
                                 </mat-form-field>
 
                                 <mat-form-field style="max-width: 46px;" fxFlex>
-                                    <input [(ngModel)]="vectoranimation.repeat" type="number" matInput
-                                        (change)="detectchange()">
-                                    <mat-hint>Percentage draw opposite direction</mat-hint>
+                                    <input [(ngModel)]="vectoranimation.drawleft" matInput (change)="detectchange()">
+                                    <mat-hint>Draw left</mat-hint>
                                 </mat-form-field>
+
+                                <mat-form-field style="max-width: 46px;" fxFlex>
+                                    <input [(ngModel)]="vectoranimation.drawright" matInput (change)="detectchange()">
+                                    <mat-hint>Draw right</mat-hint>
+                                </mat-form-field>
+
                                 <!-- deduct percentage from draw  percentage  {drawSVG:"100%"}, {drawSVG:"50% 50%"}, 0.1) -->
 
                             </div>
@@ -342,7 +344,7 @@
 
     <div class="card-left-menu" ngClass.gt-xs="listview-normal" ngClass.lt-sm="listview-noshow"
         [class.listview-xs-show]="listviewxsshow" fxLayout="column">
-        <label>Edit</label>
+        <!-- <label>Edit</label> -->
         <div fxLayout="column">
             <div fxLayout="column" fxLayout.xs="column" cdkDropList (cdkDropListDropped)="drop($event)">
                 <div *ngFor="let element of animationarray; let i = index" cdkDrag (click)="onSelectElement(element)">
