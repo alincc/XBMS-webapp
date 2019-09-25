@@ -1173,7 +1173,7 @@ export class VideocreatorComponent implements AfterViewInit {
             newscale1 = newscale1 * bxn[0];
             // let newscale2 = originalsize.width - 500;
             let newscale2 = 500 / originalsize.width;
-            newscale2 = topangle * bxn[3];
+            newscale2 =  newscale2 * bxn[3];
 
             const matrix = 'matrix(' + newscale1 + ',' + bxn[1] + ',' + bxn[2] + ',' + newscale2 + ',' + bxn[4] + ',' + 500
              + ')';
