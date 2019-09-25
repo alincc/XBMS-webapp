@@ -43,7 +43,7 @@ export class vectoranimationtype {
   filldrw: string;
   drawlenght: string;
   oppdrawlenght: string;
-  start_time: number; //delayt
+  start_time: number; //delay
   end_time: number;
   duration: number;
   hideimage: boolean;
@@ -86,7 +86,7 @@ export class vectoranimation {
   vectors: vectorelement[];
   vectoranimation: vectoranimationtype[];
   svgcombi: SafeHtml;
-  
+
 }
 
 export class vectorelement {
@@ -286,9 +286,9 @@ export class VideocreatorComponent implements AfterViewInit {
               if (vecani.svganimationtype === 'morph') { this.createMorph(elm, vecani) }
             });
           }, 300) // mininmum needed for dom to process
-        } 
-         this.addEffect(elm); //normal animatoin
-        
+        }
+        this.addEffect(elm); //normal animatoin
+
       })
     );
 
@@ -380,8 +380,8 @@ export class VideocreatorComponent implements AfterViewInit {
   }
 
   copyEffect(i) {
-   const neweffect = this.selectedelement.animation[i];
-   this.selectedelement.animation.push(neweffect); 
+    const neweffect = this.selectedelement.animation[i];
+    this.selectedelement.animation.push(neweffect);
 
   }
 
@@ -411,9 +411,6 @@ export class VideocreatorComponent implements AfterViewInit {
       originalsize = await this.getViewBox(vect);
       await this.normalizepath(vect, originalsize);
       await this.combineSVGs(this.animationarray[i]);
-      //await this.drawVector(this.animationarray[i].vectors)
-      //await this.createMorph(this.animationarray[i].vector);
-      //console.log(originalsize);
     }, 300);
   }
 
@@ -432,7 +429,7 @@ export class VideocreatorComponent implements AfterViewInit {
         let fromvac = document.getElementById(pathid);
         console.log(fromvac);
         //await 
-        this.setDrawAni(fromvac, 1);
+        this.setDrawAni(fromvac, animation);
       }
       resolve();
     });
@@ -453,23 +450,23 @@ export class VideocreatorComponent implements AfterViewInit {
   }
 
   onMovingAnimationEl(event, i, animation) {
-   console.log(event, i, animation);
-    animation.start_time = event.x / 10; 
-   // html (movingOffset)="onMovingAnimationEl($event, i, animation)"
-   //  [style.left]="animation.start_time * 10 + 'px'"
+    console.log(event, i, animation);
+    animation.start_time = event.x / 10;
+    // html (movingOffset)="onMovingAnimationEl($event, i, animation)"
+    //  [style.left]="animation.start_time * 10 + 'px'"
   }
 
   onResizeAnimationEl(event, i, animation) {
     console.log(event, i, animation);
-    animation.duration = event.size.width / 10; 
+    animation.duration = event.size.width / 10;
     // html (movingOffset)="onMovingAnimationEl($event, i, animation)"
-   }
+  }
 
-   onMovingTimeline(event, i){
-     console.log(i); 
-    this.currenttime = event.x / 10; 
-    console.log(this.currenttime); 
-   }
+  onMovingTimeline(event, i) {
+    // console.log(i); 
+    this.currenttime = event.x / 10;
+    // console.log(this.currenttime); 
+  }
 
 
   onMoving(event, i) {
@@ -766,7 +763,7 @@ export class VideocreatorComponent implements AfterViewInit {
   incrementSeconds() {
     this.currenttime = this.currenttime + 0.1;
     // console.log(this.currenttime, this.t);
-    if (this.currenttime >= this.counter){
+    if (this.currenttime >= this.counter) {
       this.pauseFunc();
     }
   }
@@ -966,6 +963,7 @@ export class VideocreatorComponent implements AfterViewInit {
 
   async createMorph(element: vectoranimation, animation) {
     // create vector animation foreach path vector 1 to 2, 2 to 3 etc..
+    // add appear and dissapear effect for if the paths are uneven 
     //this.setPos(vectors);
     //console.log('morph', vectors)
 
@@ -977,9 +975,7 @@ export class VideocreatorComponent implements AfterViewInit {
     let set2 = i1;
     console.log(vectors);
     for (const vector of vectors) {
-
       if (i1 < vectors.length) {
-
         if (vectors[set2].pathids.length > vector.pathids.length) {
           let exti = 0
           for (const extrvect of vectors[set2].pathids) {
@@ -1039,8 +1035,7 @@ export class VideocreatorComponent implements AfterViewInit {
               this.primairytimeline.to(fromvac, 1, { morphSVG: tovec })
             }
             //console.log(pathidclean, pathidclean2);
-            await this.setMorphAni(fromvac, tovec, set2);
-
+            await this.setMorphAni(fromvac, tovec, animation);
           }
           ++i2;
         }
@@ -1051,15 +1046,24 @@ export class VideocreatorComponent implements AfterViewInit {
     }
   }
 
-  setDrawAni(from, time) {
-    //return new Promise(async (resolve, reject) => {
-    // https://www.npmjs.com/package/svg-path-outline
-    //this.primairytimeline.to(from, 1, { drawSVG: 0 }, 2);
-    //TweenMax.to("#cross", 5, {drawSVG:0, repeat:10, yoyo:true});
-    this.primairytimeline.to(from, 4, { drawSVG: 0, repeat: 10, yoyo: true }, 4)
+  setDrawAni(from, animation: vectoranimationtype) {
+    let fromset =
+    {
+      drawSVG: '100%',
+      repeat: animation.repeat,
+      yoyo: animation.yoyo
+    }
+
+    let toset =
+      {
+        drawSVG: '0%',
+        delay: animation.start_time
+      }
+      ;
+
+    this.primairytimeline.fromTo(from, animation.duration, fromset, toset );
+
     return
-    //resolve();
-    //});
   }
 
   svgDeleteBackground(element, i) {
@@ -1082,7 +1086,7 @@ export class VideocreatorComponent implements AfterViewInit {
     //   element.hideimage = true;
     // } else {element.hideimage = false}
     let svgstring = element.svgcombi.changingThisBreaksApplicationSecurity;
-    if (element.hideimage = false){
+    if (element.hideimage = false) {
       let newstring = svgstring.replace(/fill-opacity: 0/g, 'fill-opacity: 1');
       newstring = newstring.replace(/fill-opacity:0/g, 'fill-opacity:1');
       element.svgcombi = this.sanitizer.bypassSecurityTrustHtml(newstring);
@@ -1091,26 +1095,21 @@ export class VideocreatorComponent implements AfterViewInit {
       newstring = newstring.replace(/fill-opacity:1/g, 'fill-opacity:0');
       element.svgcombi = this.sanitizer.bypassSecurityTrustHtml(newstring);
     }
-
   }
 
 
-  async setMorphAni(from, to, time) {
-    //console.log(from, to);
-    var overlap = "1";
-    var overlap2 = '2';
-    this.primairytimeline.to(from, time, { morphSVG: to, }, overlap);
-    this.primairytimeline.to(from, 2, { morphSVG: from, }, overlap2)
-    // this.primairytimeline.to(from, 1, {
-    //   morphSVG: {
-    //     shape: to,
-    //     type: "rotational",
-    //     origin: "20% 60%"
-    //   },
-    //   ease: Power1.easeInOut
-    // });
-    // this.primairytimeline.to(from, 1, { morphSVG: to, type:"rotational", origin:"20% 60%"  }, 1)
+  async setMorphAni(from, to, animation: animationtype) {
+    console.log(from, to, animation);
+    let aniset = {
+      morphSVG: {
+        shape: to,
+        type: "rotational",
+        origin: "20% 60%"
+      },
+      ease: Power1.easeInOut
+    };
 
+    this.primairytimeline.to(from, animation.duration, aniset, animation.start_time);
     return
   }
 

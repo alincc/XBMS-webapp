@@ -67,7 +67,6 @@
 
             <div fxLayout="row wrap" fxLayoutGap="20px">
 
-
                 <mat-form-field fxFlex>
                     <input (change)="onchangevideo()" [(ngModel)]="canvas.width" type="text" matInput
                         placeholder="width">
@@ -123,7 +122,7 @@
                                 <div class="timeline-active" [style.width]="counter * 10 + 'px'" #timelinebound
                                     id="timelinebound">
                                     <div class="timeline-setter" 
-                                    [style.transform]= "'translate(' + currenttime * 10 + 'px, 0px')"
+                                        [style.transform]= "'translate(' + currenttime * 10 + 'px, 0px)'"
                                    
                                         [inBounds]="true" [bounds]="timelinebound" [lockAxis]="'y'" ngDraggable
                                         (movingOffset)="onMovingTimeline($event, i, animation)"
@@ -234,8 +233,33 @@
                             <mat-panel-title>
                                 <label>{{vectoranimation.svganimationtype}}</label>
                                 <mat-icon (click)="deleteVectorAnimation(i)" class="iconsize-10">delete</mat-icon>
+                                <div class="timeline-container" [style.width]="'6000px'">
+                                    <div class="timeline-active" [style.width]="counter * 10 + 'px'" #timelinebound
+                                        id="timelinebound">
+                                        <div class="timeline-setter" 
+                                            [style.transform]= "'translate(' + currenttime * 10 + 'px, 0px)'"
+                                            [inBounds]="true" [bounds]="timelinebound" [lockAxis]="'y'" ngDraggable
+                                            (movingOffset)="onMovingTimeline($event, i, animation)">
+                                        </div>
+                                        <div class="timeline-currentelement" ngDraggable
+                                            (movingOffset)="onMovingAnimationEl($event, i, animation)"
+                                            [bounds]="timelinebound" [inBounds]="true" [lockAxis]="'y'"
+                                             ngResizable rzContainment="#timelinebound"
+                                            [rzHandles]="'e, w'" (rzResizing)="onResizeAnimationEl($event, i, vectoranimation)"
+                                            [style.width]="vectoranimation.duration * 10 + 'px'">
+                                        </div>
+                                    </div>
+                                </div>
                             </mat-panel-title>
                         </mat-expansion-panel-header>
+                        <mat-form-field style="max-width: 46px;">
+                            <input [(ngModel)]="vectoranimation.duration" type="number" step="0.1" min="0" matInput>
+                            <mat-hint>Duration</mat-hint>
+                        </mat-form-field>
+                        <mat-form-field style="max-width: 46px;">
+                            <input [(ngModel)]="vectoranimation.start_time" type="number" step="0.1" min="0" matInput>
+                            <mat-hint>Start</mat-hint>
+                        </mat-form-field>
                         <mat-form-field>
                             <mat-select [(value)]="vectoranimation.svganimationtype" (selectionChange)="detectchange()">
                                 <mat-option value="draw">Draw</mat-option>
