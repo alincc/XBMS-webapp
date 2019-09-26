@@ -21,6 +21,9 @@
         <button mat-mini-fab color="primary" (click)="fastforwardFunc()" fxFlex>
             <mat-icon>fast_forward</mat-icon>
         </button>
+        <mat-icon *ngIf="setreplay === false" color="primary" (click)="setReplay()">replay</mat-icon>
+         <mat-icon *ngIf="setreplay === true" color="accent" (click)="setReplay()">replay</mat-icon>
+       
     </div>
     <div fxLayout="row">
         <!-- <label>Timeline lenght &nbsp; </label>  -->
@@ -266,9 +269,9 @@
                                 <!-- (selectionChange)="addEffect(selectedelement)" -->
                             </mat-select>
                         </mat-form-field>
-                        <mat-checkbox (click)="setSvgOpacity(selectedelement, idx)"
+                        <mat-checkbox 
                             [(ngModel)]=vectoranimation.hideimage>Hide Image</mat-checkbox>
-
+                            <!-- (click)="setSvgOpacity(selectedelement, idx)" -->
                         <div *ngIf="vectoranimation.svganimationtype">
                             <div *ngIf="vectoranimation.svganimationtype === 'draw'" fxLayout="row">
 
@@ -358,6 +361,8 @@
                                         <img *ngIf="element.src" src={{element.src}} class="elementsedit"
                                             style="height: 30px; width: auto;">
                                         <mat-icon (click)="deleteitem(i)" class="iconsize-12">delete</mat-icon>
+                                        <mat-icon (click)="copyElement(i, element)" matTooltip="Duplicate effect" class="iconsize-10">
+                                                filter_none</mat-icon>
 
                                     </mat-panel-title>
                                 </mat-expansion-panel-header>
@@ -387,6 +392,8 @@
                                     <mat-panel-title>
                                         <label>{{element.content}}</label>
                                         <mat-icon (click)="deleteitem(i)" class="iconsize-12">delete</mat-icon>
+                                        <mat-icon (click)="copyElement(i, element)" matTooltip="Duplicate effect" class="iconsize-10">
+                                                filter_none</mat-icon>
                                     </mat-panel-title>
                                 </mat-expansion-panel-header>
                                 <mat-form-field style="max-width: 46px;">
@@ -415,7 +422,7 @@
                                           top: 8;
                                           left: 20;
                                           z-index: 20;">
-                                                <emoji-mart (emojiClick)="setemoji($event, i)" set="emojione">
+                                                <emoji-mart (emojiClick)="setemoji($event, i, element)" set="emojione">
                                                 </emoji-mart>
                                             </div>
                                         </div>
@@ -470,6 +477,8 @@
                                         <div style="height: 30px; width: 30px"
                                             [style.background-color]="element.style['background-color']"></div>
                                         <mat-icon (click)="deleteitem(i)" class="iconsize-12">delete</mat-icon>
+                                        <mat-icon (click)="copyElement(i, element)" matTooltip="Duplicate effect" class="iconsize-10">
+                                                filter_none</mat-icon>
                                     </mat-panel-title>
                                 </mat-expansion-panel-header>
                                 <mat-form-field style="max-width: 46px;">
@@ -500,6 +509,8 @@
                                             style="height: 30px; width: auto;"></div> -->
 
                                         <mat-icon (click)="deleteitem(i)" class="iconsize-12">delete</mat-icon>
+                                        <mat-icon (click)="copyElement(i, element)" matTooltip="Duplicate effect" class="iconsize-10">
+                                                filter_none</mat-icon>
 
                                     </mat-panel-title>
                                 </mat-expansion-panel-header>
@@ -723,6 +734,8 @@
                             </mat-expansion-panel>
                         </mat-accordion>
                     </div> -->
+                
+
                 </div>
             </div>
             <div fxLayout="row wrap" fxLayout.xs="column">
@@ -759,24 +772,31 @@
                     <div *ngIf="element.type === 'image'" id="{{element.id}}" style="overflow: hidden;" ngDraggable
                         [ngStyle]="element.style" [style.width]="element.style.width"
                         [style.height]="element.style.height" (movingOffset)="onMoving($event, i)"
-                        [preventDefaultEvent]="true" [position]="element.setpos" (rzResizing)="onResizing($event, i)"
+                        [preventDefaultEvent]="true" 
+                        [style.transform]="'translate(' + element.posx + 'px, ' + element.posy +'px)'"
+                        (rzResizing)="onResizing($event, i)"
                         ngResizable [rzAspectRatio]="true">
                         <img *ngIf="element.src" style="width: 100%; height: 100%;" src={{element.src}}>
                     </div>
                     <label ngResizable *ngIf="element.type === 'text'" id="{{element.id}}" [attr.id]="element.id"
                         ngDraggable style="width: 100px; height: 100px; overflow: hidden;"
-                        (movingOffset)="onMoving($event, i)" [preventDefaultEvent]="true" [position]="element.setpos"
+                        (movingOffset)="onMoving($event, i)" [preventDefaultEvent]="true" 
+                        [style.transform]="'translate(' + element.posx + 'px, ' + element.posy +'px)'"
                         (rzResizing)="onResizing($event, i)" [ngStyle]="element.style"
                         [rzAspectRatio]="false">{{element.content}}</label>
                     <div *ngIf="element.type === 'shape'" id="{{element.id}}" style="overflow: hidden;" ngDraggable
                         [ngStyle]="element.style" [style.width]="element.style.width"
                         [style.height]="element.style.height" (movingOffset)="onMoving($event, i)"
-                        [preventDefaultEvent]="true" [position]="element.setpos" (rzResizing)="onResizing($event, i)"
+                        [preventDefaultEvent]="true" 
+                        [style.transform]="'translate(' + element.posx + 'px, ' + element.posy +'px)'"
+                        (rzResizing)="onResizing($event, i)"
                         ngResizable [rzAspectRatio]="false">
                     </div>
                     <div *ngIf="element.type === 'vector'" style="overflow: hidden;" [style.width]="element.style.width"
                         [style.height]="element.style.height" ngDraggable [ngStyle]="element.style"
-                        (movingOffset)="onMoving($event, i)" [preventDefaultEvent]="true" [position]="element.setpos"
+                        (movingOffset)="onMoving($event, i)" [preventDefaultEvent]="true" 
+                      
+                        [style.transform]="'translate(' + element.posx + 'px, ' + element.posy +'px)'"
                         (rzResizing)="onResizing($event, i)" ngResizable [rzAspectRatio]="true">
                         <div style="height: 100%; width: 100%;" id="{{element.id}}" [innerHTML]="element.svgcombi">
                         </div>
@@ -786,8 +806,8 @@
                         <div [style.width]="element.style.width" [style.height]="element.style.height"
                          id="{{vectorelement.idx}}"   [style.width]="1000px" [style.height]="1000px"
                         [inlineSVG]="vectorelement.src" [onSVGLoaded]="handleSVG">
-                        </div> -->
-                        <!-- </div> -->
+                        </div> --> 
+                        <!-- </div>   [position]="element.setpos" -->
                     </div>
                 </div>
             </div>

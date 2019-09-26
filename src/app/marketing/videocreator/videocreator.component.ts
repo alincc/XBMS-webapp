@@ -210,6 +210,8 @@ export class VideocreatorComponent implements AfterViewInit {
   private largesthbox;
   private largestwbox;
 
+  private setreplay = false;
+
   constructor(
     private sanitizer: DomSanitizer,
     private relationsApi: RelationsApi,
@@ -381,9 +383,30 @@ export class VideocreatorComponent implements AfterViewInit {
   }
 
   copyEffect(i) {
-    const neweffect = this.selectedelement.animation[i];
+    const curan = this.selectedelement.animation[i];
+    let neweffect: animationtype = {
+      start_time: curan.start_time, //delayt
+      end_time: curan.end_time,
+      anim_type: curan.anim_type,
+      duration: curan.duration,
+      ease: '',
+      posx: curan.posx,
+      posy: curan.posy,
+      rotationcycle: curan.rotationcycle,
+      travellocX: curan.travellocX,
+      travellocY: curan.travellocY,
+      scalesize: curan.scalesize,
+      skewY: curan.skewY,
+      skewX: curan.skewY
+    };
     this.selectedelement.animation.push(neweffect);
+  }
 
+  copyElement(i, element) {
+    if (element.type === 'image') { }
+    if (element.type === 'text') { }
+    if (element.type === 'shape') { }
+    if (element.type === 'vector') { }
   }
 
   getEditFile() {
@@ -514,8 +537,8 @@ export class VideocreatorComponent implements AfterViewInit {
       yoyo: false,
       fillright: '100%',
       fillleft: '0%',
-      drawright: '100',
-      drawleft: '0',
+      drawright: '0%',
+      drawleft: '0%',
       start_time: 0, //delayt
       end_time: 10,
       duration: 2.5,
@@ -719,6 +742,7 @@ export class VideocreatorComponent implements AfterViewInit {
         this.videoPlayer.loop = true;
       }
       this.primairytimeline.play(this.currenttime);
+      clearTimeout(this.t); //to make sure there is no second loop
       this.t = setInterval(() => { this.incrementSeconds() }, 100);
     }, 300);
   }
@@ -727,10 +751,10 @@ export class VideocreatorComponent implements AfterViewInit {
     console.log('stop')
     //clearTimeout(this.t);
 
-    if(this.t){
+    if (this.t) {
       clearTimeout(this.t);
       this.t = null;
-  }
+    }
 
     this.currenttime = 0;
     this.primairytimeline.pause();
@@ -741,7 +765,7 @@ export class VideocreatorComponent implements AfterViewInit {
       this.videoPlayer.currentTime = 0;
     }
 
-    console.log(this.currenttime);
+    // console.log(this.currenttime);
     this.detectchange();
     //this.progressbarline.reverse();
     //this.primairytimeline.reverse();
@@ -755,6 +779,14 @@ export class VideocreatorComponent implements AfterViewInit {
       this.videoPlayer.pause();
     }
     clearTimeout(this.t);
+  }
+
+  setReplay() {
+    if (this.setreplay === true) {
+      this.setreplay = false;
+    } else {
+      this.setreplay = true;
+    }
   }
 
   reverseFunc() {
@@ -772,7 +804,12 @@ export class VideocreatorComponent implements AfterViewInit {
     this.currenttime = this.currenttime + 0.1;
     // console.log(this.currenttime, this.t);
     if (this.currenttime >= this.counter) {
-      this.pauseFunc();
+      if (this.setreplay === false) {
+        this.pauseFunc();
+      } else {
+        this.currenttime = 0;
+        this.playFunc()
+      }
     }
   }
 
@@ -878,8 +915,8 @@ export class VideocreatorComponent implements AfterViewInit {
       yoyo: false,
       fillright: '100%',
       fillleft: '0%',
-      drawright: '100',
-      drawleft: '0',
+      drawright: '0%',
+      drawleft: '0%',
       start_time: 0, //delayt
       end_time: 10,
       duration: 2.5,
@@ -960,9 +997,9 @@ export class VideocreatorComponent implements AfterViewInit {
     let vectors: vectorelement[];
     vectors = element.vectors;
 
-    let i1 = 1;
+    let i1 = 0;
     let i2 = 0;
-    let set2 = i1;
+    let set2 = 1;
     console.log(vectors);
     for (const vector of vectors) {
       if (i1 < vectors.length) {
@@ -972,22 +1009,22 @@ export class VideocreatorComponent implements AfterViewInit {
           let exti = 0
           for (const extrvect of vectors[set2].pathids) {
             if (exti > vector.pathids.length - 1) {
-              //let aniset;
+              let aniset;
               let fromexvac = document.getElementById(extrvect);
               console.log(fromexvac, extrvect)
-              //aniset = { autoAlpha: 0 };
+              aniset = { autoAlpha: 0 };
 
-              // let style = fromexvac.getAttribute("style"); //style="fill:#7a7b7c;fill-opacity:1;fill-rule:nonzero;stroke:none"
-              // console.log(style);
-              // if (style) {
-              //   style = style + ';opacity:0';
-              //   fromexvac.setAttribute("style", style);
-              // } else {
-              //   fromexvac.setAttribute("style", 'opacity:0');
-              // }
-              let fromset = { opacity: 0 };
-              let toset = { opacity: 1 };
-              this.primairytimeline.fromTo(fromexvac, animation.duration, fromset, toset, animation.start_time);
+              let style = fromexvac.getAttribute("style"); //style="fill:#7a7b7c;fill-opacity:1;fill-rule:nonzero;stroke:none"
+              console.log(style);
+              if (style) {
+                style = style + ';opacity:0';
+                fromexvac.setAttribute("style", style);
+              } else {
+                fromexvac.setAttribute("style", 'opacity:0');
+              }
+              // let fromset = { 'fill-opacity': 0 };
+              // let toset = { 'fill-opacity': 1 };
+              // this.primairytimeline.fromTo(fromexvac, animation.duration, fromset, toset, animation.start_time);
             }
             ++exti
           }
@@ -1001,32 +1038,32 @@ export class VideocreatorComponent implements AfterViewInit {
 
             let fromvac = document.getElementById(pathid);
             console.log(fromvac);
-            aniset = { autoAlpha: 0 };
-            this.primairytimeline.to(fromvac, 0, aniset, 1);
+            aniset = { 'fill-opacity': 0 };
+            this.primairytimeline.to(fromvac, animation.duration, aniset, animation.start_time);
           } else {
 
             let fromvac = document.getElementById(pathid);
             let pathid2 = vectors[set2].pathids[i2];
             let tovec = document.getElementById(pathid2);
 
-            if (i1 > 0) {
+           // if (i1 > 0) {
               //tovec.style.display = "none"; // hide element is not first vector
-              //let style = tovec.getAttribute("style"); //style="fill:#7a7b7c;fill-opacity:1;fill-rule:nonzero;stroke:none"
-              //console.log(style);
-              // if (style) {
-              //   style = style + ';display:none';
-              //   tovec.setAttribute("style", style);
-              // } else {
-              //   tovec.setAttribute(style, 'display:none');
-              // }
+              let style = tovec.getAttribute("style"); //style="fill:#7a7b7c;fill-opacity:1;fill-rule:nonzero;stroke:none"
+              console.log(style);
+              if (style) {
+                style = style + ';display:none';
+                tovec.setAttribute("style", style);
+              } else {
+                tovec.setAttribute(style, 'display:none');
+              }
               // let fromset = { autoAlpha: 0 };
-              let fromset = { display: 'none' };
-              this.primairytimeline.from(fromvac, animation.duration, fromset)
-            }
-            if (i2 === 0) {
-              this.primairytimeline.to(fromvac, 1, { morphSVG: tovec })
-            }
-            //console.log(pathidclean, pathidclean2);
+              // let fromset = { display: 'none' };
+              //this.primairytimeline.from(fromvac, animation.duration, fromset, 1)
+            //}
+            // if (i2 === 0) {
+            //   this.primairytimeline.to(fromvac, animation.duration, { morphSVG: tovec }, animation.start_time)
+            // }
+            console.log(fromvac, tovec);
             await this.setMorphAni(fromvac, tovec, animation);
           }
           ++i2;
@@ -1049,27 +1086,33 @@ export class VideocreatorComponent implements AfterViewInit {
   setDrawAni(from, animation: vectoranimationtype) {
     // fillright: '100%',
     // fillleft: '0%',
-    // drawright: '100',
-    // drawleft: '0',
+    // drawright: '100%',
+    // drawleft: '0%',
     let animationdrawto = animation.fillleft + ' ' + animation.fillright;
     let animationdrawfrom = animation.drawleft + ' ' + animation.drawright;
+    let hideelement = 0;
+
+    if (animation.hideimage === true) {
+      hideelement = 0;
+    } else { hideelement = 1 }
 
     let fromset =
     {
       drawSVG: animationdrawfrom,
       repeat: animation.repeat,
-      stroke: animation.drawcolor, 
-      strokeWidth: animation.linethickness
+      stroke: animation.drawcolor,
+      strokeWidth: animation.linethickness,
+      'fill-opacity': hideelement
       //yoyo: animation.yoyo
     };
 
     let toset =
-      {
-        drawSVG: animationdrawto,
-        // delay: animation.start_time
-      };
+    {
+      drawSVG: animationdrawto,
+      // delay: animation.start_time
+    };
 
-    this.primairytimeline.fromTo(from, animation.duration, fromset, toset, animation.start_time );
+    this.primairytimeline.fromTo(from, animation.duration, fromset, toset, animation.start_time);
     // this.primairytimeline.to(from, animation.duration, 
     // {rotation:360, scale:0.5, drawSVG:"100%", 
     // stroke:"white", strokeWidth:6, transformOrigin:"50% 50%"})
@@ -1088,14 +1131,14 @@ export class VideocreatorComponent implements AfterViewInit {
     l = svgstring.indexOf('</path>', n)
     l = l + 7;
     // console.log(l, n )
-    if (n !== -1){
+    if (n !== -1) {
       let x = svgstring.substring(n, l);
       newsvgs = svgstring.replace(x, '');
       element.svgcombi = this.sanitizer.bypassSecurityTrustHtml(newsvgs);
       //console.log('BG deleted', newsvgs, element);
-    } else {console.log('bg not found')}
+    } else { console.log('bg not found') }
 
-   
+
   }
 
   // setSvgOpacity(element) {
@@ -1116,7 +1159,6 @@ export class VideocreatorComponent implements AfterViewInit {
   //   }
   // }
 
-
   async setMorphAni(from, to, animation: animationtype) {
     console.log(from, to, animation);
 
@@ -1133,7 +1175,8 @@ export class VideocreatorComponent implements AfterViewInit {
       ease: Power1.easeInOut
     };
 
-    this.primairytimeline.to(from, animation.duration, toset, animation.start_time);
+    // this.primairytimeline.fromTo(from, animation.duration, toset, animation.start_time);
+    this.primairytimeline.to(from, animation.duration, { morphSVG: to }, animation.start_time);
     // this.primairytimeline.to(to, animation.duration, {opacity}, animation.start_time);
     return
   }
@@ -1160,12 +1203,12 @@ export class VideocreatorComponent implements AfterViewInit {
           //console.log(bxn);
           if (bxn[0] !== '1' || bxn[0] === undefined) {
 
-            let topangle; 
+            let topangle;
 
-            if (originalsize.width > originalsize.height){
-              topangle = originalsize.width - 500;
+            if (originalsize.width > originalsize.height) {
+              topangle = 500 / originalsize.width
             } else {
-              topangle = originalsize.height = 500;
+              topangle = 500 / originalsize.height
             }
 
             // let newscale1 = originalsize.width - 500;
@@ -1173,10 +1216,10 @@ export class VideocreatorComponent implements AfterViewInit {
             newscale1 = newscale1 * bxn[0];
             // let newscale2 = originalsize.width - 500;
             let newscale2 = 500 / originalsize.width;
-            newscale2 =  newscale2 * bxn[3];
+            newscale2 = newscale2 * bxn[3];
 
             const matrix = 'matrix(' + newscale1 + ',' + bxn[1] + ',' + bxn[2] + ',' + newscale2 + ',' + bxn[4] + ',' + 500
-             + ')';
+              + ')';
             const scale = 'scale(' + bxn[0] + ')';
             //p[index].removeAttribute("transform");
             p[index].setAttribute("transform", matrix);
@@ -1184,15 +1227,15 @@ export class VideocreatorComponent implements AfterViewInit {
             if (p[index].id === '') {
               p[index].setAttribute("id", "child-" + index);
             }
-            const w = originalsize.width; // * newscale1;
-            const h = originalsize.height; // * newscale1;
+            const h = originalsize.width; // * newscale1;
+            const w = originalsize.height; // * newscale1;
             //console.log(p[index].attributes['d'].value);
             const normalizedPath = normalize({
-              //viewBox: '0 0 ' + h + ' ' + w,
+              //viewBox: '0 0 ' + w + ' ' + h,
               viewBox: '0 0 500 500',
               path: p[index].attributes['d'].value,//'M150.883 169.12c11.06-.887 20.275-7.079 24.422-17.256',
               min: 0,
-              max: 500, //* (1 - topangle),
+              max: 500, // * (1 + newscale1),
               asList: false
             })
             p[index].setAttribute("d", normalizedPath);
@@ -1295,6 +1338,19 @@ export class VideocreatorComponent implements AfterViewInit {
       }
       resolve();
     });
+  }
+
+  onshowemoji(i) {
+    if (this.showemoji) { this.showemoji = false } else {
+      this.showemoji = true;
+    }
+  }
+
+  setemoji(event, i, element) {
+    const bufStr = String.fromCodePoint(parseInt(event.emoji.unified, 16));
+    element.content = element.content + bufStr;
+    this.onshowemoji(i)
+
   }
 
 }
