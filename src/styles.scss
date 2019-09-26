@@ -4,6 +4,21 @@
 @import "~@ctrl/ngx-emoji-mart/picker";
 @import "../node_modules/angular-calendar/css/angular-calendar.css";
 
+body{
+  background-color: #bdc3c7
+}
+
+.mat-tab-header {
+  background-color: #7f8c8d;
+}
+
+.topbanner{
+  background-color: #bdc3c7
+}
+
+
+
+
 .home-wrapper{
   position: relative;
 }
@@ -213,4 +228,5 @@
   z-index: 102;
   background-color: white;
 }
+
 

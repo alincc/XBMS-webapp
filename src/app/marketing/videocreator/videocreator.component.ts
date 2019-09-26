@@ -1163,9 +1163,9 @@ export class VideocreatorComponent implements AfterViewInit {
             let topangle; 
 
             if (originalsize.width > originalsize.height){
-              topangle = 500 / originalsize.width
+              topangle = originalsize.width - 500;
             } else {
-              topangle = 500 / originalsize.height
+              topangle = originalsize.height = 500;
             }
 
             // let newscale1 = originalsize.width - 500;
@@ -1184,15 +1184,15 @@ export class VideocreatorComponent implements AfterViewInit {
             if (p[index].id === '') {
               p[index].setAttribute("id", "child-" + index);
             }
-            const h = originalsize.width; // * newscale1;
-            const w = originalsize.height; // * newscale1;
+            const w = originalsize.width; // * newscale1;
+            const h = originalsize.height; // * newscale1;
             //console.log(p[index].attributes['d'].value);
             const normalizedPath = normalize({
-              //viewBox: '0 0 ' + w + ' ' + h,
+              //viewBox: '0 0 ' + h + ' ' + w,
               viewBox: '0 0 500 500',
               path: p[index].attributes['d'].value,//'M150.883 169.12c11.06-.887 20.275-7.079 24.422-17.256',
               min: 0,
-              max: 500, // * (1 + newscale1),
+              max: 500, //* (1 - topangle),
               asList: false
             })
             p[index].setAttribute("d", normalizedPath);
