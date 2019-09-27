@@ -1000,74 +1000,71 @@ export class VideocreatorComponent implements AfterViewInit {
     let i1 = 0;
     let i2 = 0;
     let set2 = 1;
-    console.log(vectors);
-    for (const vector of vectors) {
-      if (i1 < vectors.length) {
 
+    for (const vector of vectors) {
+      if (i1 < vectors.length-1) {
+        let fintime = animation.start_time + animation.duration;
         let set2length = vectors[set2].pathids.length;
-        // for if there paths in vector 1 then 2 
-        if ( set2length > vector.pathids.length) {
+
+        for (const pathid of vector.pathids) { 
+          let fromvac = document.getElementById(pathid);
+         
+          if (i2 >= set2length) {  // if there more parths in vector 2 then 1
+            this.primairytimeline.to(fromvac, 1, { opacity: 0 }, animation.start_time);
+          } else {
+
+            let pathid2 = vectors[set2].pathids[i2];
+            let tovec = document.getElementById(pathid2); //get element
+            // hidden is needed for the morph animation but we also need to show the original on finish 
+            // opacity can make it appear more gratually which visibility can not
+            this.primairytimeline.set(tovec, { opacity: 0 }, 0);  
+            this.primairytimeline.to(tovec, 1, { opacity: 1 }, fintime);
+            this.primairytimeline.set(tovec, { visibility: 'hidden' }, 0); 
+            this.primairytimeline.set(tovec, { visibility: 'visible' }, fintime);
+
+            await this.setMorphAni(fromvac, tovec, animation);
+          }
+          ++i2;
+        }
+
+        if (set2length > vector.pathids.length) { // for if there paths in vector 1 then 2 
           let exti = 0
           for (const extrvect of vectors[set2].pathids) {
             if (exti > vector.pathids.length - 1) {
               let fromexvac = document.getElementById(extrvect);
-              console.log(fromexvac, extrvect)
-              let style = fromexvac.getAttribute("style"); //style="fill:#7a7b7c;fill-opacity:1;fill-rule:nonzero;stroke:none"
-              if (style) {
-                style = style + ';opacity:0';
-                fromexvac.setAttribute("style", style);
-              } else {
-                fromexvac.setAttribute("style", 'opacity:0');
-              }
-              // let fromset = { 'fill-opacity': 0 };
-              let toset = { opacity: 1 };
-              this.primairytimeline.to(fromexvac, animation.duration, toset, animation.start_time);
+
+              // reset connected to another path from svg 2 
+              let resetindex = exti - vector.pathids.length;
+              let resettovec = document.getElementById(vectors[set2].pathids[resetindex]);
+              // await this.setMorphAni(fromexvac, resettovec, animation);
+              this.primairytimeline.to(fromexvac, animation.duration, { morphSVG: resettovec }, animation.start_time);
+              
+              // hide the paths that are not connected to another path form svg 2 
+              // this.primairytimeline.set(fromexvac, { opacity: 0 }, 0);
+              // this.primairytimeline.to(fromexvac, animation.duration, { opacity: 1 }, animation.start_time);
             }
             ++exti
           }
         }
 
-        for (const pathid of vector.pathids) {
-          let fromvac = document.getElementById(pathid);
-          // if there more parths in vector 2 then 1
-          if (i2 >= set2length ) {
-            console.log('more vec 1 paths then vec 2')
-            let aniset
-            aniset = { opacity: 0 };
-            this.primairytimeline.to(fromvac, animation.duration, aniset, animation.start_time);
-          } else {
 
-            //let fromvac = document.getElementById(pathid);
-            let pathid2 = vectors[set2].pathids[i2];
-            let tovec = document.getElementById(pathid2);
-
-            //if (tovec !==  null) {
-              //tovec.style.display = "none"; // hide element is not first vector
-              let style = tovec.getAttribute("style"); //style="fill:#7a7b7c;fill-opacity:1;fill-rule:nonzero;stroke:none"
-              //console.log(style);
-              if (style !== null) {
-                style = style + ';display:none';
-                tovec.setAttribute("style", style);
-              } else {
-                tovec.setAttribute(style, 'display:none');
-              }
-              // let fromset = { autoAlpha: 0 };
-              // let fromset = { display: 'none' };
-              //this.primairytimeline.from(fromvac, animation.duration, fromset, 1)
-            //}
-            // if (i2 === 0) {
-            //   this.primairytimeline.to(fromvac, animation.duration, { morphSVG: tovec }, animation.start_time)
-            // }
-            //console.log(fromvac, tovec);
-            await this.setMorphAni(fromvac, tovec, animation);
-          }
-          ++i2;
-        }
       }
 
       ++i1;
       ++set2;
     }
+  }
+
+  async getLargestSvgPath(vector) {
+    let longestEl = document.getElementById(vector[0]);
+    let longestElD = longestEl['d'].length
+    for (const element of vector) {
+      let el = document.getElementById(element);
+      if (el['d'].length > longestEl){
+        longestEl = longestEl;
+      }
+    };
+
   }
 
 
@@ -1079,10 +1076,6 @@ export class VideocreatorComponent implements AfterViewInit {
   // .staggerTo(shapes, 0.5, {stroke:"red", scale:1.5, opacity:0}, 0.2)
 
   setDrawAni(from, animation: vectoranimationtype) {
-    // fillright: '100%',
-    // fillleft: '0%',
-    // drawright: '100%',
-    // drawleft: '0%',
     let animationdrawto = animation.fillleft + ' ' + animation.fillright;
     let animationdrawfrom = animation.drawleft + ' ' + animation.drawright;
     let hideelement = 0;
@@ -1156,7 +1149,6 @@ export class VideocreatorComponent implements AfterViewInit {
 
   async setMorphAni(from, to, animation: animationtype) {
     // console.log(from, to, animation);
-
     let fintime = animation.start_time + animation.duration;
     let fromset = {}
     let toset = {
@@ -1170,8 +1162,8 @@ export class VideocreatorComponent implements AfterViewInit {
 
     // this.primairytimeline.fromTo(from, animation.duration, toset, animation.start_time);
     this.primairytimeline.to(from, animation.duration, { morphSVG: to }, animation.start_time);
-    this.primairytimeline.to(to, 1, {opacity: 1}, fintime);
-    this.primairytimeline.to(from, 1, {opacity: 0}, fintime);
+    this.primairytimeline.to(to, 1, { opacity: 1 }, fintime);
+    this.primairytimeline.to(from, 1, { opacity: 0 }, fintime);
     // this.primairytimeline.to(to, animation.duration, {opacity}, animation.start_time);
     return
   }
