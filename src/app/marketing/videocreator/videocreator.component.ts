@@ -1004,18 +1004,15 @@ export class VideocreatorComponent implements AfterViewInit {
     for (const vector of vectors) {
       if (i1 < vectors.length) {
 
+        let set2length = vectors[set2].pathids.length;
         // for if there paths in vector 1 then 2 
-        if (vectors[set2].pathids.length > vector.pathids.length) {
+        if ( set2length > vector.pathids.length) {
           let exti = 0
           for (const extrvect of vectors[set2].pathids) {
             if (exti > vector.pathids.length - 1) {
-              let aniset;
               let fromexvac = document.getElementById(extrvect);
               console.log(fromexvac, extrvect)
-              aniset = { autoAlpha: 0 };
-
               let style = fromexvac.getAttribute("style"); //style="fill:#7a7b7c;fill-opacity:1;fill-rule:nonzero;stroke:none"
-              console.log(style);
               if (style) {
                 style = style + ';opacity:0';
                 fromexvac.setAttribute("style", style);
@@ -1023,34 +1020,32 @@ export class VideocreatorComponent implements AfterViewInit {
                 fromexvac.setAttribute("style", 'opacity:0');
               }
               // let fromset = { 'fill-opacity': 0 };
-              // let toset = { 'fill-opacity': 1 };
-              // this.primairytimeline.fromTo(fromexvac, animation.duration, fromset, toset, animation.start_time);
+              let toset = { opacity: 1 };
+              this.primairytimeline.to(fromexvac, animation.duration, toset, animation.start_time);
             }
             ++exti
           }
         }
 
         for (const pathid of vector.pathids) {
-
+          let fromvac = document.getElementById(pathid);
           // if there more parths in vector 2 then 1
-          if (i2 >= vectors[set2].pathids.length) {
+          if (i2 >= set2length ) {
+            console.log('more vec 1 paths then vec 2')
             let aniset
-
-            let fromvac = document.getElementById(pathid);
-            console.log(fromvac);
-            aniset = { 'fill-opacity': 0 };
+            aniset = { opacity: 0 };
             this.primairytimeline.to(fromvac, animation.duration, aniset, animation.start_time);
           } else {
 
-            let fromvac = document.getElementById(pathid);
+            //let fromvac = document.getElementById(pathid);
             let pathid2 = vectors[set2].pathids[i2];
             let tovec = document.getElementById(pathid2);
 
-           // if (i1 > 0) {
+            //if (tovec !==  null) {
               //tovec.style.display = "none"; // hide element is not first vector
               let style = tovec.getAttribute("style"); //style="fill:#7a7b7c;fill-opacity:1;fill-rule:nonzero;stroke:none"
-              console.log(style);
-              if (style) {
+              //console.log(style);
+              if (style !== null) {
                 style = style + ';display:none';
                 tovec.setAttribute("style", style);
               } else {
@@ -1063,7 +1058,7 @@ export class VideocreatorComponent implements AfterViewInit {
             // if (i2 === 0) {
             //   this.primairytimeline.to(fromvac, animation.duration, { morphSVG: tovec }, animation.start_time)
             // }
-            console.log(fromvac, tovec);
+            //console.log(fromvac, tovec);
             await this.setMorphAni(fromvac, tovec, animation);
           }
           ++i2;
@@ -1160,12 +1155,10 @@ export class VideocreatorComponent implements AfterViewInit {
   // }
 
   async setMorphAni(from, to, animation: animationtype) {
-    console.log(from, to, animation);
+    // console.log(from, to, animation);
 
-    let fromset = {
-      
-    }
-
+    let fintime = animation.start_time + animation.duration;
+    let fromset = {}
     let toset = {
       morphSVG: {
         shape: to,
@@ -1177,6 +1170,8 @@ export class VideocreatorComponent implements AfterViewInit {
 
     // this.primairytimeline.fromTo(from, animation.duration, toset, animation.start_time);
     this.primairytimeline.to(from, animation.duration, { morphSVG: to }, animation.start_time);
+    this.primairytimeline.to(to, 1, {opacity: 1}, fintime);
+    this.primairytimeline.to(from, 1, {opacity: 0}, fintime);
     // this.primairytimeline.to(to, animation.duration, {opacity}, animation.start_time);
     return
   }
