@@ -33,7 +33,8 @@ export class VectoruploadComponent implements OnInit {
   errorMessage: string;
   errorMessageSvg: string;
   allowedMimeType = ['image/svg', 'image/svg+xml'];
-  allowedMimeTypeSvg = ['image/eps', 'image/ai', 'application/postscript'];
+  allowedMimeTypeSvg = [
+    'image/eps', 'image/ai', 'application/postscript', 'image/jpg', 'image/jpeg', 'image/png', 'image/bmp'];
   maxFileSize = 100 * 1024 * 1024;
   public hasBaseDropZoneOver = false;
   public hasAnotherDropZoneOver = false;

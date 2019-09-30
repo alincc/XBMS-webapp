@@ -47,7 +47,7 @@
     <div *ngIf="showdropbox">
         <div ng2FileDrop #fileInputSVG [ngClass]="{'drop-zone-over': hasBaseDropZoneOverSvg}" (fileOver)="fileOverBaseSvg($event)"
             [uploader]="uploadersvg" class="drop-zone" (onFileDrop)="dropped($event)">
-            Drop EPS here
+            Drop EPS/JPG/PNG/BMP here
         </div>
         <input type="file" #fileInputSVGsel ng2FileSelect [uploader]="uploadersvg" />
         <div *ngIf="errorSvgMessage">{{errorMessageSvg}}</div>

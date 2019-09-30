@@ -464,10 +464,12 @@ export class VideocreatorComponent implements AfterViewInit {
     return new Promise((resolve, reject) => {
       let set = document.getElementById(vect);
       let doc = set.getElementsByTagName('svg');
+      doc[0].setAttribute("id", '3knrk2l');
       let element = SVG.get(doc[0].id);
+      //console.log(element);
       //element.draggable()
       var box = element.viewbox();
-      console.log(element.rbox());
+      //console.log(element.rbox());
       //element.viewbox(bbox.x, bbox.y, bbox.width, bbox.height);
       resolve(box);
     });
@@ -530,8 +532,8 @@ export class VideocreatorComponent implements AfterViewInit {
       skewX: 50
     }];
     let vectanim: vectoranimationtype[] = [{
-      svganimationtype: 'draw',
-      drawcolor: 'red',
+      svganimationtype: '',
+      drawcolor: 'blue',
       linethickness: '5px',
       repeat: 0,
       yoyo: false,
@@ -937,7 +939,7 @@ export class VideocreatorComponent implements AfterViewInit {
       let startstr = '<svg xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#"' +
         ' xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg"' +
         ' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" height="100%" width="100%"' +
-        'id="svg2" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink">';
+        'id="svg2" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" preserveAspectRatio="xMinYMin meet">';
       //console.log('morph added to vector');
 
       total.push(startstr);
