@@ -34,8 +34,13 @@ export class VectoruploadComponent implements OnInit {
   errorMessageSvg: string;
   allowedMimeType = ['image/svg', 'image/svg+xml'];
   allowedMimeTypeSvg = [
-    'image/eps', 'image/ai', 'application/postscript', 'image/jpg', 'image/jpeg', 'image/png', 'image/bmp'];
-  maxFileSize = 100 * 1024 * 1024;
+    'application/psd',
+    'image/vnd.adobe.photoshop',
+    'application/x-photoshop',
+    'application/photoshop',
+    'application/psd',
+    'image/psd', 'image/eps', 'image/ai', 'application/postscript', 'image/jpg', 'image/jpeg', 'image/png', 'image/bmp'];
+  maxFileSize = 400 * 1024 * 1024;
   public hasBaseDropZoneOver = false;
   public hasAnotherDropZoneOver = false;
   public hasBaseDropZoneOverSvg = false;
@@ -97,7 +102,7 @@ export class VectoruploadComponent implements OnInit {
     };
   }
 
-  
+
   handleSVG(svg: SVGElement, parent): SVGElement {
     //console.log('Loaded SVG: ', svg, parent);
     svg.setAttribute('width', '200');
@@ -120,9 +125,9 @@ export class VectoruploadComponent implements OnInit {
     };
   }
 
-  dropped(e){
+  dropped(e) {
     console.log(e, this.uploadersvg);
-    
+
   }
 
   onWhenAddingFileFailed(item, filter: any, options: any) {
@@ -264,12 +269,19 @@ export class VectoruploadComponent implements OnInit {
 
   uploadSvgFile(name): void {
     this.uploadersvg.uploadAll();
-    this.relationsApi.createFiles(this.option.id, this.newFiles)
-      .subscribe(res => {
-        console.log(res), //this.setimage(res.url)
-          this.fileApi.converteps2svg(this.option.id, this.account.companyId, res.url, name)
-            .subscribe(res => { this.setimage(res.url) })
-      });
+
+    this.uploadersvg.onCompleteItem = (item, response, status, header) => {
+      if (status === 200) {
+        this.relationsApi.createFiles(this.option.id, this.newFiles)
+          .subscribe(res => {
+            console.log(res), //this.setimage(res.url)
+              this.fileApi.converteps2svg(this.option.id, this.account.companyId, res.url, name)
+                .subscribe(res => { this.setimage(res.url) })
+          });
+      }
+    }
+
+
   }
 
 }

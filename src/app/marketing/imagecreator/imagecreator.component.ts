@@ -492,7 +492,6 @@ export class ImagecreatorComponent implements OnInit {
         }
       }
     });
-  
   }
 
   uploadFinalImages(imgup) {
@@ -518,7 +517,6 @@ export class ImagecreatorComponent implements OnInit {
     }
   }
 
-
   deleteitem(i) {
     this.images.splice(i, 1);
   }
@@ -540,14 +538,10 @@ export class ImagecreatorComponent implements OnInit {
     array[indexB] = tmp;
   }
 
-
   setemoji(event, i) {
-    // console.log(event);
     const bufStr = String.fromCodePoint(parseInt(event.emoji.unified, 16));
-    // console.log(bufStr);
     this.images[i].content = this.images[i].content + bufStr;
-    this.onshowemoji(i)
-
+    this.onshowemoji(i);
   }
 
   onshowemoji(i) {
@@ -581,7 +575,6 @@ export class ImagecreatorComponent implements OnInit {
     }
     this.detectchange();
   }
-
 
   swiperight(e) {
     this.listviewxsshow = true;
