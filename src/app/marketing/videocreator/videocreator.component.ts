@@ -429,13 +429,19 @@ export class VideocreatorComponent implements AfterViewInit {
     let vect = this.animationarray[i].vectors[idx].idx;
 
     //wait a few seconds as it takes a moment to fetch the file (no cb available)
+   
+    // setTimeout(async () => {
+
+    // }, 300);
+  }
+
+  async setInitVectors(svg, parent){
+    console.log('set vectors', svg, parent)
     let originalsize; // {x: 0, y: 0, width: 1496, height: 1496, zoom: 0.06684491978609626}
-    setTimeout(async () => {
-      await this.deleteVectorGroup(vect);
-      originalsize = await this.getViewBox(vect);
-      await this.normalizepath(vect, originalsize);
-      await this.combineSVGs(this.animationarray[i]);
-    }, 300);
+    await this.deleteVectorGroup(svg.idx);
+    originalsize = await this.getViewBox(svg.idx);
+    await this.normalizepath(svg.idx, originalsize);
+    await this.combineSVGs(parent);
   }
 
   drawVector(vector, animation: vectoranimationtype) {
@@ -462,16 +468,25 @@ export class VideocreatorComponent implements AfterViewInit {
 
   getViewBox(vect) {
     return new Promise((resolve, reject) => {
+      console.log('get/set viewbox')
       let set = document.getElementById(vect);
       let doc = set.getElementsByTagName('svg');
-      doc[0].setAttribute("id", '3knrk2l');
-      let element = SVG.get(doc[0].id);
-      //console.log(element);
-      //element.draggable()
-      var box = element.viewbox();
-      //console.log(element.rbox());
-      //element.viewbox(bbox.x, bbox.y, bbox.width, bbox.height);
-      resolve(box);
+      if (doc.length > 0) {
+        doc[0].setAttribute("id", '3knrk2l');
+        let element = SVG.get(doc[0].id);
+        //console.log(element);
+        //element.draggable()
+        var box = element.viewbox();
+        if (box === undefined){
+          box.viewbox(0, 0, 500, 500)
+        }
+        //console.log(element.rbox());
+        //element.viewbox(bbox.x, bbox.y, bbox.width, bbox.height);
+        resolve(box);
+      } else {
+        resolve();
+      }
+
     });
   }
 
@@ -885,6 +900,8 @@ export class VideocreatorComponent implements AfterViewInit {
     //console.log('Loaded SVG: ', svg, parent);
     svg.setAttribute('width', '30');
     svg.setAttribute('height', '30');
+    svg.setAttribute('viewBox', '0 0 500 500');
+    this.setInitVectors(svg, parent);
     return svg;
   }
 
@@ -892,6 +909,7 @@ export class VideocreatorComponent implements AfterViewInit {
     //console.log('Loaded SVG: ', svg, parent);
     svg.setAttribute('width', '100');
     svg.setAttribute('height', '100');
+    svg.setAttribute('viewBox', '0 0 500 500');
     return svg;
   }
 
