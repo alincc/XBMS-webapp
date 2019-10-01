@@ -41,17 +41,15 @@
                     </td>
                 </tr>
             </table>
-
         </div>
     </div>
     <div *ngIf="showdropbox">
         <div ng2FileDrop #fileInputSVG [ngClass]="{'drop-zone-over': hasBaseDropZoneOverSvg}" (fileOver)="fileOverBaseSvg($event)"
             [uploader]="uploadersvg" class="drop-zone" (onFileDrop)="dropped($event)">
-            Drop EPS/JPG/PNG/BMP here
+            Drop EPS/JPEG/PNG/BMP here
         </div>
         <input type="file" #fileInputSVGsel ng2FileSelect [uploader]="uploadersvg" />
         <div *ngIf="errorSvgMessage">{{errorMessageSvg}}</div>
-
         <div *ngFor="let item of uploadersvg.queue" style="min-width: 50px;">
             <table>
                 <tr>
@@ -86,9 +84,7 @@
                     </td>
                 </tr>
             </table>
-
         </div>
-
 
     </div>
     <button matTooltip="Open gallery" class="deletepicture" mat-mini-fab color="primary" (click)="onOpenGallery()">
