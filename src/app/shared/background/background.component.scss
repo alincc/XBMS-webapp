@@ -1,0 +1,99 @@
+.picture-container {
+    //position: absolute;
+  }
+  
+  .gallery {
+    // width: 590px;
+    // height: 80%;
+    margin: 2px;
+    padding: 2px;
+    overflow: auto;
+    background-color: whitesmoke;
+    // z-index: 15;
+    // top: 1px;
+    // left: 1px;
+  }
+  
+  .gallery-bottom {
+    // height: 20%;
+  }
+  
+  .selected {
+    color: #01579b;
+    border-style: solid;
+    border-color: #01579b;
+    border-width: 5px;
+    margin: 0px;
+    opacity: 0.5;
+  }
+  
+  .image {
+    height: 100px;
+    z-index: 20;
+    // overflow: visible;
+    border-width: 0px;
+    margin: 5px;
+  }
+  
+  .icongallery {
+    height: 50px;
+    z-index: 20;
+    // overflow: visible;
+    border-width: 0px;
+    margin: 5px;
+  }
+  
+  .icongallery:hover {
+    color: #01579b;
+    border-style: solid;
+    border-color: #01579b;
+    border-width: 5px;
+    margin: 0px;
+  }
+  
+  .image:hover {
+    color: #01579b;
+    border-style: solid;
+    border-color: #01579b;
+    border-width: 5px;
+    margin: 0px;
+  }
+  
+  // original stilll in styles.scss
+  
+  .drop-zone {
+    min-width: 100px;
+    min-height: 100px;
+    height: auto;
+    max-width: 500px;
+    margin: 20px;
+    padding: 20px;
+    border-style: dashed;
+    border-width: 5px;
+    margin: 10px;
+    word-wrap: break-word;
+    z-index: 20;
+  }
+  
+  .drop-zone-over {
+    min-width: 100px;
+    min-height: 100px;
+    max-width: 500px;
+    margin: 20px;
+    padding: 20px;
+    border-style: dashed;
+    border-width: 5px;
+    border-color: red;
+    margin: 10px;
+    z-index: 20;
+  }
+  
+  .mat-progress-bar {
+    display: block;
+    height: 4px;
+    overflow: hidden;
+    position: relative;
+    transition: opacity 250ms linear;
+    width: 100%;
+    min-width: 50px;
+  }

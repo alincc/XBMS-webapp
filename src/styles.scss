@@ -16,8 +16,14 @@ body{
   background-color: #bdc3c7
 }
 
-
-
+.backgroundcontainer{
+  background: url('assets/images/castle.jpg');
+  background-size: cover;                      /* <------ */
+  background-repeat: no-repeat;
+  background-position: center center;   
+  width: 100%;
+  height: 100%;
+}
 
 .home-wrapper{
   position: relative;

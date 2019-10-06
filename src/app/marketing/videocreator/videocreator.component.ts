@@ -186,6 +186,7 @@ export class VideocreatorComponent implements AfterViewInit {
     width: '600px',
     height: '500px',
     'background-color': '#ffffff',
+    'background-image': '',
     position: 'relative',
     videourl: '',
     loop: false
@@ -209,8 +210,8 @@ export class VideocreatorComponent implements AfterViewInit {
   private MorphSVGPlugin = MorphSVGPlugin;
   private largesthbox;
   private largestwbox;
-
   private setreplay = false;
+  //this.webkitspeech.onresult = ($event) => { this.onresult($event) };
 
   constructor(
     private sanitizer: DomSanitizer,
@@ -224,6 +225,7 @@ export class VideocreatorComponent implements AfterViewInit {
       this.activeMediaQuery = change;
     });
   }
+  private myFuncSvg = this.initVectors.bind(this);
 
   ngAfterViewInit() { }
 
@@ -427,22 +429,24 @@ export class VideocreatorComponent implements AfterViewInit {
   setVector(event, i, idx): void {
     this.animationarray[i].vectors[idx].src = event;
     let vect = this.animationarray[i].vectors[idx].idx;
-
     //wait a few seconds as it takes a moment to fetch the file (no cb available)
-   
     // setTimeout(async () => {
-
     // }, 300);
   }
 
-  async setInitVectors(svg, parent){
-    console.log('set vectors', svg, parent)
+  initVectors(e, i, idx, vectorid){
+    return new Promise(async (resolve, reject) => {
+    console.log('set vectors', e, i, idx, vectorid);
+    let vect = this.animationarray[i].vectors[idx].idx;
     let originalsize; // {x: 0, y: 0, width: 1496, height: 1496, zoom: 0.06684491978609626}
-    await this.deleteVectorGroup(svg.idx);
-    originalsize = await this.getViewBox(svg.idx);
-    await this.normalizepath(svg.idx, originalsize);
-    await this.combineSVGs(parent);
+    await this.deleteVectorGroup(e);
+    originalsize = await this.getViewBox(e);
+    await this.normalizepath(e, originalsize);
+    await this.combineSVGs(this.animationarray[i]);
+    resolve();
+    })
   }
+
 
   drawVector(vector, animation: vectoranimationtype) {
     return new Promise(async (resolve, reject) => {
@@ -469,19 +473,25 @@ export class VideocreatorComponent implements AfterViewInit {
   getViewBox(vect) {
     return new Promise((resolve, reject) => {
       console.log('get/set viewbox')
-      let set = document.getElementById(vect);
-      let doc = set.getElementsByTagName('svg');
-      if (doc.length > 0) {
-        doc[0].setAttribute("id", '3knrk2l');
-        let element = SVG.get(doc[0].id);
-        //console.log(element);
+      // let set = vect;//document.getElementById(vect);
+      let doc = vect; // set.getElementsByTagName('svg');
+      if (doc !== undefined) {
+        if (doc.id === undefined){
+          
+        }
+        doc.setAttribute("id", '3knrk2l');
+        let element = SVG.get(doc.id);
+        console.log(element);
         //element.draggable()
         var box = element.viewbox();
         if (box === undefined){
           box.viewbox(0, 0, 500, 500)
         }
+
         //console.log(element.rbox());
         //element.viewbox(bbox.x, bbox.y, bbox.width, bbox.height);
+
+        console.log(box);
         resolve(box);
       } else {
         resolve();
@@ -889,6 +899,12 @@ export class VideocreatorComponent implements AfterViewInit {
     this.onchangevideo();
   }
 
+  setBackground(event){
+    console.log(event);
+    this.canvas['background-image'] =  'url('+ event +')';
+    //this.onchangebackground();
+  }
+
   handleSVG(svg: SVGElement, parent): SVGElement {
     //console.log('Loaded SVG: ', svg, parent);
     svg.setAttribute('width', parent.style.width);
@@ -897,19 +913,16 @@ export class VideocreatorComponent implements AfterViewInit {
   }
 
   previewSVG(svg: SVGElement, parent): SVGElement {
-    //console.log('Loaded SVG: ', svg, parent);
     svg.setAttribute('width', '30');
     svg.setAttribute('height', '30');
-    svg.setAttribute('viewBox', '0 0 500 500');
-    this.setInitVectors(svg, parent);
+    //svg.setAttribute('viewBox', '0 0 500 500');
     return svg;
   }
 
   previewSVGBig(svg: SVGElement, parent): SVGElement {
-    //console.log('Loaded SVG: ', svg, parent);
     svg.setAttribute('width', '100');
     svg.setAttribute('height', '100');
-    svg.setAttribute('viewBox', '0 0 500 500');
+    //svg.setAttribute('viewBox', '0 0 500 500');
     return svg;
   }
 
@@ -957,7 +970,7 @@ export class VideocreatorComponent implements AfterViewInit {
       let startstr = '<svg xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#"' +
         ' xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg"' +
         ' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" height="100%" width="100%"' +
-        'id="svg2" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" preserveAspectRatio="xMinYMin meet">';
+        'id="svg2" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" preserveAspectRatio="none">';
       //console.log('morph added to vector');
 
       total.push(startstr);
@@ -1191,9 +1204,9 @@ export class VideocreatorComponent implements AfterViewInit {
   async normalizepath(idx, originalsize) {
     return new Promise((resolve, reject) => {
       // example originalsize = {x: 0, y: 0, width: 1496, height: 1496, zoom: 0.06684491978609626}
-      let idto = document.getElementById(idx);
+      let idto = idx;
       let p = idto.getElementsByTagName("path");
-      //console.log(p);
+      console.log(p);
       let bxn
       for (let index = 0; index < p.length; index++) {
         let idto2 = document.getElementById(p[index].id);
@@ -1325,7 +1338,7 @@ export class VideocreatorComponent implements AfterViewInit {
     return new Promise(async (resolve, reject) => {
       // this works don't ask why
       let groupElement;
-      let idto = document.getElementById(idx);
+      let idto = idx; //document.getElementById(idx);
       let g;
       g = idto.getElementsByTagName("g");
       for (let index = 0; index < g.length; index++) {  // ---> g.length

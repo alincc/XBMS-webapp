@@ -96,6 +96,7 @@ import { InlineSVGModule } from 'ng-inline-svg';
 
 import { GestureConfig } from '@angular/material';
 import { VectoruploadComponent, dialogvectorgallerycomponent } from './shared/vectorupload/vectorupload.component';
+import { BackgroundComponent, dialogbackgroundgallerycomponent } from './shared/background/background.component';
 
 declare var Hammer: any;
 @Injectable()
@@ -133,6 +134,7 @@ export class HammerConfig extends GestureConfig  {
     dialoggallerycomponent,
     dialogvideogallerycomponent,
     dialogvectorgallerycomponent,
+    dialogbackgroundgallerycomponent,
     TextEditorDialog,
     WordpressUploadDialogComponent,
     SafeHtml,
@@ -142,7 +144,8 @@ export class HammerConfig extends GestureConfig  {
     VideouploadComponent,
     VideocreatorComponent,
     RequestobjectComponent,
-    VectoruploadComponent
+    VectoruploadComponent,
+    BackgroundComponent
   ],
 
    entryComponents: [
@@ -150,6 +153,7 @@ export class HammerConfig extends GestureConfig  {
     dialoggallerycomponent,
     dialogvideogallerycomponent,
     dialogvectorgallerycomponent,
+    dialogbackgroundgallerycomponent,
     ConfirmDialog,
     TextEditorDialog,
     RandomDialog,

@@ -34,13 +34,14 @@ export class VectoruploadComponent implements OnInit {
   errorMessageSvg: string;
   allowedMimeType = ['image/svg', 'image/svg+xml'];
   allowedMimeTypeSvg = [
-    'application/psd',
-    'image/vnd.adobe.photoshop',
-    'application/x-photoshop',
-    'application/photoshop',
-    'application/psd',
-    'image/psd', 'image/eps', 'image/ai', 'application/postscript', 'image/jpg', 'image/jpeg', 'image/png', 'image/bmp'];
-  maxFileSize = 400 * 1024 * 1024;
+ 'image/eps', 'image/ai', 'application/postscript', 'image/jpg', 'image/jpeg', 'image/png', 'image/bmp'];
+//  'application/psd',
+//  'image/vnd.adobe.photoshop',
+//  'application/x-photoshop',
+//  'application/photoshop',
+//  'application/psd',
+//  'image/psd', 
+ maxFileSize = 400 * 1024 * 1024;
   public hasBaseDropZoneOver = false;
   public hasAnotherDropZoneOver = false;
   public hasBaseDropZoneOverSvg = false;
