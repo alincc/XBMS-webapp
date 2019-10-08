@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, SimpleChange, SimpleChanges, AfterViewInit, NgZone } from '@angular/core';
+import { Component, ViewEncapsulation, OnInit, Input, SimpleChange, SimpleChanges, AfterViewInit, NgZone } from '@angular/core';
 import { ViewChild, ViewChildren, ElementRef, QueryList } from '@angular/core';
 import {
   Relations, RelationsApi, BASE_URL, CompanyApi, Company, Account,
@@ -17,6 +17,7 @@ import '@svgdotjs/svg.draggable.js'
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import * as normalize from 'normalize-svg-coords';
 const plugins = [DrawSVGPlugin, MorphSVGPlugin]; //needed for GSAP 
+import { CanvasWhiteboardComponent } from 'ng2-canvas-whiteboard';
 
 export class animationtype {
   start_time: number; //delayt
@@ -116,6 +117,24 @@ export class shapeanimation {
   animation: animationtype[];
 }
 
+export class whiteboardanimation {
+  type: 'whiteboard';
+  style: {
+    'z-index': number,
+    width: string;
+    height: string;
+    position: string;
+    'background-color': string;
+    opacity: 1;
+  };
+  src: string;
+  posx: number;
+  posy: number;
+  setpos: object;
+  id: number;
+  animation: animationtype[];
+}
+
 export class textanimation {
 
   content: string;
@@ -141,7 +160,9 @@ export class textanimation {
 @Component({
   selector: 'app-videocreator',
   templateUrl: './videocreator.component.html',
-  styleUrls: ['./videocreator.component.scss']
+  styleUrls: ['./videocreator.component.scss'],
+  viewProviders: [ CanvasWhiteboardComponent ],
+  encapsulation: ViewEncapsulation.None
 })
 
 export class VideocreatorComponent implements AfterViewInit {
@@ -695,6 +716,51 @@ export class VideocreatorComponent implements AfterViewInit {
       id: newelnr
     }
     this.animationarray.push(img);
+    this.detectchange();
+    //this.addAnimation(newelnr, img);
+  }
+
+  addNewWhiteboard(): void {
+    let newelnr;
+    if (this.animationarray.length === -1) {
+      newelnr = 0 + 'el';
+    } else {
+      newelnr = this.animationarray.length + 'el';
+    }
+    this.newz = this.newz + 1;
+    let anim: animationtype[] = [{
+      start_time: 0, //delayt
+      end_time: 10,
+      anim_type: 'rotation',
+      duration: 2.5,
+      ease: '',
+      posx: 0,
+      posy: 0,
+      rotationcycle: 30,
+      travellocX: 300,
+      travellocY: 0,
+      scalesize: 0.5,
+      skewY: 50,
+      skewX: 50
+    }];
+    let whiteboard: whiteboardanimation = {
+      type: 'whiteboard',
+      style: {
+        'z-index': this.newz,
+        width: "100%",
+        height: "100%",
+        position: '',
+        'background-color': '',
+        opacity: 1
+      },
+      src: '',
+      posx: 0,
+      posy: 0,
+      setpos: { 'x': 0, 'y': 0 },
+      animation: anim,
+      id: newelnr
+    }
+    this.animationarray.push(whiteboard);
     this.detectchange();
     //this.addAnimation(newelnr, img);
   }

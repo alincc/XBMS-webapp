@@ -87,7 +87,7 @@
                 </app-videoupload>
 
                 <app-background *ngIf="!canvas.videourl" [account]="Account" [option]="option"
-                (imgurl)="setBackground($event)">
+                    (imgurl)="setBackground($event)">
                 </app-background>
 
                 <!-- <video *ngIf="canvas.videourl" fxFlex style="width: 200px; height: 200px;"
@@ -552,8 +552,7 @@
                                         </mat-form-field>
                                         <mat-expansion-panel-header>
                                             <div *ngIf="vector.src" [inlineSVG]="vector.src" [onSVGLoaded]="previewSVG"
-                                                 id="previewbox" class="elementsedit"
-                                                style="height: 30px; width: auto;">
+                                                id="previewbox" class="elementsedit" style="height: 30px; width: auto;">
                                             </div>
                                         </mat-expansion-panel-header>
                                         <div *ngIf="vector.src">
@@ -761,6 +760,10 @@
                     color="primary">
                     <mat-icon>wallpaper</mat-icon>
                 </button>
+                <button mat-mini-fab class="addbutton" matTooltip="Add animated image" (click)="addNewWhiteboard()"
+                    color="primary">
+                    <mat-icon>edit</mat-icon>
+                </button>
                 <!-- <button mat-mini-fab class="addbutton" matTooltip="Add Chart" (click)="addNewChart()" color="primary">
                     <mat-icon>show_chart</mat-icon>
                 </button> -->
@@ -815,8 +818,46 @@
                         </div> -->
                         <!-- </div>   [position]="element.setpos" -->
                     </div>
+                    
+                    <canvas-whiteboard *ngIf="element.type === 'whiteboard'" id="{{element.id}}"
+                    style="overflow: hidden;"  [ngStyle]="element.style"
+                    [style.width]="element.style.width" [style.height]="element.style.height"
+                    
+                    [style.transform]="'translate(' + element.posx + 'px, ' + element.posy +'px)'"
+                     #canvasWhiteboard
+                    [drawButtonClass]="'drawButtonClass'" [drawButtonText]="'Draw'"
+                    [clearButtonClass]="'clearButtonClass'" [clearButtonText]="'Clear'"
+                    [undoButtonText]="'Undo'" [undoButtonEnabled]="true" [redoButtonText]="'Redo'"
+                    [redoButtonEnabled]="true" [colorPickerEnabled]="true" [saveDataButtonEnabled]="true"
+                    [saveDataButtonText]="'Save'" [lineWidth]="5" [strokeColor]="'rgb(0,0,0)'"
+                    [shouldDownloadDrawing]="true" (onBatchUpdate)="sendBatchUpdate($event)"
+                    (onClear)="onCanvasClear()" (onUndo)="onCanvasUndo($event)" (onRedo)="onCanvasRedo($event)">
+                </canvas-whiteboard>
+
                 </div>
             </div>
         </div>
     </div>
+
+    <canvas-whiteboard #canvasWhiteboard
+    style="width: 500px; height: 500px;" 
+    [drawButtonClass]="'drawButtonClass'"
+    [drawButtonText]="'Draw'"
+    [clearButtonClass]="'clearButtonClass'"
+    [clearButtonText]="'Clear'"
+    [undoButtonText]="'Undo'"
+    [undoButtonEnabled]="true"
+    [redoButtonText]="'Redo'"
+    [redoButtonEnabled]="true"
+    [colorPickerEnabled]="true"
+    [saveDataButtonEnabled]="true"
+    [saveDataButtonText]="'Save'"
+    [lineWidth]="5"
+    [strokeColor]="'rgb(0,0,0)'"
+    [shouldDownloadDrawing]="true"
+    (onBatchUpdate)="sendBatchUpdate($event)"
+    (onClear)="onCanvasClear()"
+    (onUndo)="onCanvasUndo($event)"
+    (onRedo)="onCanvasRedo($event)">
+</canvas-whiteboard>
 </div>
