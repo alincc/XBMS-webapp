@@ -161,7 +161,7 @@ export class textanimation {
   selector: 'app-videocreator',
   templateUrl: './videocreator.component.html',
   styleUrls: ['./videocreator.component.scss'],
-  viewProviders: [ CanvasWhiteboardComponent ]
+  viewProviders: [CanvasWhiteboardComponent]
 })
 
 export class VideocreatorComponent implements AfterViewInit {
@@ -311,14 +311,16 @@ export class VideocreatorComponent implements AfterViewInit {
             });
           }, 300) // mininmum needed for dom to process
         }
-        if (elm.type === 'whiteboard'){
-          let wb = document.getElementById(elm.id);
-          let cv = wb.getElementsByTagName('canvas');
-          for (let index = 0; index < cv.length; index++) {
-            cv[index].setAttribute('width', this.canvas.width);
-            cv[index].setAttribute('height', this.canvas.height);
-          }
- 
+
+        if (elm.type === 'whiteboard') {
+          setTimeout(() => {
+            let wb = document.getElementById(elm.id);
+            let cv = wb.getElementsByTagName('canvas');
+            //for (let index = 0; index < cv.length; index++) {
+            cv[0].setAttribute('width', this.canvas.width);
+            cv[0].setAttribute('height', this.canvas.height);
+          }, 300) // mininmum needed for dom to process
+
         }
         this.addEffect(elm); //normal animatoin
       })
@@ -462,16 +464,16 @@ export class VideocreatorComponent implements AfterViewInit {
     // }, 300);
   }
 
-  initVectors(e, i, idx, vectorid){
+  initVectors(e, i, idx, vectorid) {
     return new Promise(async (resolve, reject) => {
-    console.log('set vectors', e, i, idx, vectorid);
-    let vect = this.animationarray[i].vectors[idx].idx;
-    let originalsize; // {x: 0, y: 0, width: 1496, height: 1496, zoom: 0.06684491978609626}
-    await this.deleteVectorGroup(e);
-    originalsize = await this.getViewBox(e);
-    await this.normalizepath(e, originalsize);
-    await this.combineSVGs(this.animationarray[i]);
-    resolve();
+      console.log('set vectors', e, i, idx, vectorid);
+      let vect = this.animationarray[i].vectors[idx].idx;
+      let originalsize; // {x: 0, y: 0, width: 1496, height: 1496, zoom: 0.06684491978609626}
+      await this.deleteVectorGroup(e);
+      originalsize = await this.getViewBox(e);
+      await this.normalizepath(e, originalsize);
+      await this.combineSVGs(this.animationarray[i]);
+      resolve();
     })
   }
 
@@ -504,15 +506,15 @@ export class VideocreatorComponent implements AfterViewInit {
       // let set = vect;//document.getElementById(vect);
       let doc = vect; // set.getElementsByTagName('svg');
       if (doc !== undefined) {
-        if (doc.id === undefined){
-          
+        if (doc.id === undefined) {
+
         }
         doc.setAttribute("id", '3knrk2l');
         let element = SVG.get(doc.id);
         console.log(element);
         //element.draggable()
         var box = element.viewbox();
-        if (box === undefined){
+        if (box === undefined) {
           box.viewbox(0, 0, 500, 500)
         }
 
@@ -631,7 +633,7 @@ export class VideocreatorComponent implements AfterViewInit {
       // from, 4, {drawSVG:0, repeat:10, yoyo:true}, 4)
 
     }
-    if (src){vector.src = src};
+    if (src) { vector.src = src };
     this.animationarray.push(vector);
     this.detectchange();
   }
@@ -754,9 +756,9 @@ export class VideocreatorComponent implements AfterViewInit {
     let whiteboard: whiteboardanimation = {
       type: 'whiteboard',
       style: {
-        'z-index': this.newz,
-        width: "100%",
-        height: "100%",
+        'z-index': 100,
+        width: this.canvas.width,
+        height: this.canvas.height,
         position: '',
         'background-color': '',
         opacity: 1
@@ -973,9 +975,9 @@ export class VideocreatorComponent implements AfterViewInit {
     this.onchangevideo();
   }
 
-  setBackground(event){
+  setBackground(event) {
     console.log(event);
-    this.canvas['background-image'] =  'url('+ event +')';
+    this.canvas['background-image'] = 'url(' + event + ')';
     //this.onchangebackground();
   }
 
@@ -1109,13 +1111,13 @@ export class VideocreatorComponent implements AfterViewInit {
     let set2 = 1;
 
     for (const vector of vectors) {
-      if (i1 < vectors.length-1) {
+      if (i1 < vectors.length - 1) {
         let fintime = animation.start_time + animation.duration;
         let set2length = vectors[set2].pathids.length;
 
-        for (const pathid of vector.pathids) { 
+        for (const pathid of vector.pathids) {
           let fromvac = document.getElementById(pathid);
-         
+
           if (i2 >= set2length) {  // if there more parths in vector 2 then 1
             this.primairytimeline.to(fromvac, 1, { opacity: 0 }, animation.start_time);
           } else {
@@ -1124,9 +1126,9 @@ export class VideocreatorComponent implements AfterViewInit {
             let tovec = document.getElementById(pathid2); //get element
             // hidden is needed for the morph animation but we also need to show the original on finish 
             // opacity can make it appear more gratually which visibility can not
-            this.primairytimeline.set(tovec, { opacity: 0 }, 0);  
+            this.primairytimeline.set(tovec, { opacity: 0 }, 0);
             this.primairytimeline.to(tovec, 1, { opacity: 1 }, fintime);
-            this.primairytimeline.set(tovec, { visibility: 'hidden' }, 0); 
+            this.primairytimeline.set(tovec, { visibility: 'hidden' }, 0);
             this.primairytimeline.set(tovec, { visibility: 'visible' }, fintime);
 
             await this.setMorphAni(fromvac, tovec, animation);
@@ -1145,7 +1147,7 @@ export class VideocreatorComponent implements AfterViewInit {
               let resettovec = document.getElementById(vectors[set2].pathids[resetindex]);
               // await this.setMorphAni(fromexvac, resettovec, animation);
               this.primairytimeline.to(fromexvac, animation.duration, { morphSVG: resettovec }, animation.start_time);
-              
+
               // hide the paths that are not connected to another path form svg 2 
               // this.primairytimeline.set(fromexvac, { opacity: 0 }, 0);
               // this.primairytimeline.to(fromexvac, animation.duration, { opacity: 1 }, animation.start_time);
@@ -1167,7 +1169,7 @@ export class VideocreatorComponent implements AfterViewInit {
     let longestElD = longestEl['d'].length
     for (const element of vector) {
       let el = document.getElementById(element);
-      if (el['d'].length > longestEl){
+      if (el['d'].length > longestEl) {
         longestEl = longestEl;
       }
     };
@@ -1442,48 +1444,49 @@ export class VideocreatorComponent implements AfterViewInit {
 
     // this.uploader.setOptions({ url: urluse });
     this.uploader = new FileUploader({ url: urluse });
-        let canvas = e;
-        canvas.toBlob((blob1) => {
-          let image = blob1;
-          let name = Math.random().toString(36).substring(7) + '.png';
-          // set upload url
-          let date: number = new Date().getTime();
-          let blob: Blob = new Blob([image]);
-          //let fileFromBlob: File = new File([blob], name);
-          // contents must be an array of strings, each representing a line in the new file
-          let file = new File([blob], name, { type: "image/png", lastModified: date });
-          let fileItem = new FileItem(this.uploader, file, {});
-          this.uploader.queue.push(fileItem);
-          fileItem.upload();
+    //let canvas = e;
+    //canvas.toBlob((blob1) => {
+    //let image = blob1;
+    let image = e;
+    let name = Math.random().toString(36).substring(7) + '.png';
+    // set upload url
+    let date: number = new Date().getTime();
+    let blob: Blob = new Blob([image]);
+    //let fileFromBlob: File = new File([blob], name);
+    // contents must be an array of strings, each representing a line in the new file
+    let file = new File([blob], name, { type: "image/png", lastModified: date });
+    let fileItem = new FileItem(this.uploader, file, {});
+    this.uploader.queue.push(fileItem);
+    fileItem.upload();
 
 
-          this.uploader.onCompleteItem = (item:any, response:any, status:any, headers:any) => {
-          // set download url or actual url for publishing
-          let imgurl = BASE_URL + '/api/Containers/' + this.option.id + '/download/' + name;
-          imgurl = imgurl.replace(/ /g, '-'),
-          // define the file settings
-          this.newFiles.name = name,
-            this.newFiles.url = imgurl,
-            this.newFiles.createdate = new Date(),
-            this.newFiles.type = 'tmp',
-            this.newFiles.companyId = this.Account.companyId,
-            // check if container exists and create
-            this.relationsApi.createFiles(this.option.id, this.newFiles)
+    this.uploader.onCompleteItem = (item: any, response: any, status: any, headers: any) => {
+      // set download url or actual url for publishing
+      let imgurl = BASE_URL + '/api/Containers/' + this.option.id + '/download/' + name;
+      imgurl = imgurl.replace(/ /g, '-'),
+        // define the file settings
+        this.newFiles.name = name,
+        this.newFiles.url = imgurl,
+        this.newFiles.createdate = new Date(),
+        this.newFiles.type = 'tmp',
+        this.newFiles.companyId = this.Account.companyId,
+        // check if container exists and create
+        this.relationsApi.createFiles(this.option.id, this.newFiles)
+          .subscribe(res => {
+            // create SVG png
+            this.filesApi.converteps2svg(this.option.id, this.Account.companyId, res.url, name)
               .subscribe(res => {
-                // create SVG png
-                this.filesApi.converteps2svg(this.option.id, this.Account.companyId, res.url, name)
-                .subscribe(res => { 
-                  //this.setimage(res.url) 
-                  // set SVG as new element
-                  this.addNewVector(res.url)
-                  this.deleteitem(i);
-                })
-                
-                // delete whiteboard
-                console.log(res);
-              });
-          };
-        }, 'image/png', 1);
+                //this.setimage(res.url) 
+                // set SVG as new element
+                this.addNewVector(res.url)
+                this.deleteitem(i);
+              })
+
+            // delete whiteboard
+            console.log(res);
+          });
+    };
+    //}, 'image/png', 1);
   }
 
   onshowemoji(i) {
