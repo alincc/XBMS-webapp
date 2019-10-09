@@ -315,10 +315,11 @@ export class VideocreatorComponent implements AfterViewInit {
         if (elm.type === 'whiteboard') {
           setTimeout(() => {
             let wb = document.getElementById(elm.id);
-            let cv = wb.getElementsByTagName('canvas');
+            let cv = wb.getElementsByClassName('canvas');
             //for (let index = 0; index < cv.length; index++) {
             cv[0].setAttribute('width', this.canvas.width);
             cv[0].setAttribute('height', this.canvas.height);
+            // by class canvas_whiteboard incomplete_shapes_canvas_whiteboard
           }, 300) // mininmum needed for dom to process
 
         }
