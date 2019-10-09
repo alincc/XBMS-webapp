@@ -503,7 +503,6 @@
                                 </div>
                             </mat-expansion-panel>
                         </mat-accordion>
-
                     </div>
                     <div *ngIf="element.type === 'whiteboard'">
                         <mat-accordion>
@@ -849,46 +848,16 @@
                         </div> -->
                         <!-- </div>   [position]="element.setpos" -->
                     </div>
-                    
-                    <canvas-whiteboard *ngIf="element.type === 'whiteboard'" id="{{element.id}}"
-                    style="overflow: hidden;"  [ngStyle]="element.style"
-                    [style.width]="element.style.width" [style.height]="element.style.height"
-                    
-                    [style.transform]="'translate(' + element.posx + 'px, ' + element.posy +'px)'"
-                     #canvasWhiteboard
-                    [drawButtonClass]="'drawButtonClass'" [drawButtonText]="'Draw'"
-                    [clearButtonClass]="'clearButtonClass'" [clearButtonText]="'Clear'"
-                    [undoButtonText]="'Undo'" [undoButtonEnabled]="true" [redoButtonText]="'Redo'"
-                    [redoButtonEnabled]="true" [colorPickerEnabled]="true" [saveDataButtonEnabled]="true"
-                    [saveDataButtonText]="'Save'" [lineWidth]="5" [strokeColor]="'rgb(0,0,0)'"
-                    [shouldDownloadDrawing]="true" (onBatchUpdate)="sendBatchUpdate($event)"
-                    (onClear)="onCanvasClear()" (onUndo)="onCanvasUndo($event)" (onRedo)="onCanvasRedo($event)">
-                </canvas-whiteboard>
-
+                    <canvas-whiteboard *ngIf="element.type === 'whiteboard'" id="{{element.id}}" #canvasWhiteboard
+                        [drawButtonClass]="'drawButtonClass'" [drawButtonText]="'Draw'" [ngStyle]="element.style"
+                        [clearButtonClass]="'clearButtonClass'" [clearButtonText]="'Clear'" [undoButtonText]="'Undo'"
+                        [undoButtonEnabled]="true" [redoButtonText]="'Redo'" [redoButtonEnabled]="true"
+                        [colorPickerEnabled]="true" [saveDataButtonEnabled]="true" [saveDataButtonText]="'Save'"
+                        [lineWidth]="5" [strokeColor]="'rgb(0,0,0)'" [shouldDownloadDrawing]="false"
+                        (onSave)="onCanvasSave($event, i)">
+                    </canvas-whiteboard>
                 </div>
             </div>
         </div>
     </div>
-
-    <canvas-whiteboard #canvasWhiteboard
-    style="width: 500px; height: 500px;" 
-    [drawButtonClass]="'drawButtonClass'"
-    [drawButtonText]="'Draw'"
-    [clearButtonClass]="'clearButtonClass'"
-    [clearButtonText]="'Clear'"
-    [undoButtonText]="'Undo'"
-    [undoButtonEnabled]="true"
-    [redoButtonText]="'Redo'"
-    [redoButtonEnabled]="true"
-    [colorPickerEnabled]="true"
-    [saveDataButtonEnabled]="true"
-    [saveDataButtonText]="'Save'"
-    [lineWidth]="5"
-    [strokeColor]="'rgb(0,0,0)'"
-    [shouldDownloadDrawing]="true"
-    (onBatchUpdate)="sendBatchUpdate($event)"
-    (onClear)="onCanvasClear()"
-    (onUndo)="onCanvasUndo($event)"
-    (onRedo)="onCanvasRedo($event)">
-</canvas-whiteboard>
 </div>

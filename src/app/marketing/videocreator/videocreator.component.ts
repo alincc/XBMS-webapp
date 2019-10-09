@@ -1,4 +1,4 @@
-import { Component, ViewEncapsulation, OnInit, Input, SimpleChange, SimpleChanges, AfterViewInit, NgZone } from '@angular/core';
+import { Component, OnInit, Input, SimpleChange, SimpleChanges, AfterViewInit, NgZone } from '@angular/core';
 import { ViewChild, ViewChildren, ElementRef, QueryList } from '@angular/core';
 import {
   Relations, RelationsApi, BASE_URL, CompanyApi, Company, Account,
@@ -161,8 +161,7 @@ export class textanimation {
   selector: 'app-videocreator',
   templateUrl: './videocreator.component.html',
   styleUrls: ['./videocreator.component.scss'],
-  viewProviders: [ CanvasWhiteboardComponent ],
-  encapsulation: ViewEncapsulation.None
+  viewProviders: [ CanvasWhiteboardComponent ]
 })
 
 export class VideocreatorComponent implements AfterViewInit {
@@ -303,7 +302,6 @@ export class VideocreatorComponent implements AfterViewInit {
     // wait for dom update to finish otherwise it will create the effects on the old dom
     setTimeout(() =>
       this.animationarray.forEach(elm => {
-
         if (elm.type === 'vector') { //vector animation
           setTimeout(() => {
             // add vector efffects
@@ -313,10 +311,19 @@ export class VideocreatorComponent implements AfterViewInit {
             });
           }, 300) // mininmum needed for dom to process
         }
+        if (elm.type === 'whiteboard'){
+          let wb = document.getElementById(elm.id);
+          let cv = wb.getElementsByTagName('canvas');
+          for (let index = 0; index < cv.length; index++) {
+            cv[index].setAttribute('width', this.canvas.width);
+            cv[index].setAttribute('height', this.canvas.height);
+          }
+ 
+        }
         this.addEffect(elm); //normal animatoin
-
       })
     );
+
 
   }
 
@@ -551,7 +558,7 @@ export class VideocreatorComponent implements AfterViewInit {
     this.animationarray[i].style.height = e.size.height + 'px';
   }
 
-  addNewVector(): void {
+  addNewVector(src?): void {
     let newelnr;
     if (this.animationarray.length === -1) {
       newelnr = 0 + 'el';
@@ -624,6 +631,7 @@ export class VideocreatorComponent implements AfterViewInit {
       // from, 4, {drawSVG:0, repeat:10, yoyo:true}, 4)
 
     }
+    if (src){vector.src = src};
     this.animationarray.push(vector);
     this.detectchange();
   }
@@ -1424,6 +1432,58 @@ export class VideocreatorComponent implements AfterViewInit {
       }
       resolve();
     });
+  }
+
+
+  onCanvasSave(e, i) {
+    console.log(e);
+
+    let urluse = BASE_URL + '/api/Containers/' + this.option.id + '/upload';
+
+    // this.uploader.setOptions({ url: urluse });
+    this.uploader = new FileUploader({ url: urluse });
+        let canvas = e;
+        canvas.toBlob((blob1) => {
+          let image = blob1;
+          let name = Math.random().toString(36).substring(7) + '.png';
+          // set upload url
+          let date: number = new Date().getTime();
+          let blob: Blob = new Blob([image]);
+          //let fileFromBlob: File = new File([blob], name);
+          // contents must be an array of strings, each representing a line in the new file
+          let file = new File([blob], name, { type: "image/png", lastModified: date });
+          let fileItem = new FileItem(this.uploader, file, {});
+          this.uploader.queue.push(fileItem);
+          fileItem.upload();
+
+
+          this.uploader.onCompleteItem = (item:any, response:any, status:any, headers:any) => {
+          // set download url or actual url for publishing
+          let imgurl = BASE_URL + '/api/Containers/' + this.option.id + '/download/' + name;
+          imgurl = imgurl.replace(/ /g, '-'),
+          // define the file settings
+          this.newFiles.name = name,
+            this.newFiles.url = imgurl,
+            this.newFiles.createdate = new Date(),
+            this.newFiles.type = 'tmp',
+            this.newFiles.companyId = this.Account.companyId,
+            // check if container exists and create
+            this.relationsApi.createFiles(this.option.id, this.newFiles)
+              .subscribe(res => {
+                // create SVG png
+                this.filesApi.converteps2svg(this.option.id, this.Account.companyId, res.url, name)
+                .subscribe(res => { 
+                  //this.setimage(res.url) 
+                  // set SVG as new element
+                  this.addNewVector(res.url)
+                  this.deleteitem(i);
+                })
+                
+                // delete whiteboard
+                console.log(res);
+              });
+          };
+        }, 'image/png', 1);
   }
 
   onshowemoji(i) {
