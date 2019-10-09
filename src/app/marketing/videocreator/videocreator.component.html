@@ -505,6 +505,37 @@
                         </mat-accordion>
 
                     </div>
+                    <div *ngIf="element.type === 'whiteboard'">
+                        <mat-accordion>
+                            <mat-expansion-panel>
+                                <mat-expansion-panel-header>
+                                    <mat-panel-title>
+                                        <div style="height: 30px; width: 30px"
+                                            [style.background-color]="element.style['background-color']"></div>
+                                        <mat-icon (click)="deleteitem(i)" class="iconsize-12">delete</mat-icon>
+                                        <mat-icon (click)="copyElement(i, element)" matTooltip="Duplicate effect"
+                                            class="iconsize-10">
+                                            filter_none</mat-icon>
+                                    </mat-panel-title>
+                                </mat-expansion-panel-header>
+                                <mat-form-field style="max-width: 46px;">
+                                    <input (change)="detectchange()" [(ngModel)]="element.posy" type="number" matInput>
+                                    <mat-hint>Y |</mat-hint>
+                                </mat-form-field>
+                                <mat-form-field style="max-width: 46px;">
+                                    <input (change)="detectchange()" [(ngModel)]="element.posx" type="number" matInput>
+                                    <mat-hint>X -</mat-hint>
+                                </mat-form-field>
+                                <div fxLayout="column">
+                                    <input style="width: 230px;" [style.background]="element.style['background-color']"
+                                        [(colorPicker)]="element.style['background-color']"
+                                        (colorPickerChange)="detectchange()" [cpPresetLabel]="'Company colors'"
+                                        [cpPresetColors]="[option.companyprimairycolor, option.companysecondarycolor, company.companyprimairycolor, company.companysecondarycolor]">
+                                </div>
+                            </mat-expansion-panel>
+                        </mat-accordion>
+
+                    </div>
                     <div *ngIf="element.type === 'vector'">
                         <mat-accordion>
                             <mat-expansion-panel>
