@@ -313,21 +313,7 @@ export class VideocreatorComponent implements AfterViewInit {
         }
 
         if (elm.type === 'whiteboard') {
-          setTimeout(() => {
-            let wb = document.getElementById(elm.id);
-            // let cv = wb.getElementsByClassName('canvas');
-            let cv1 = wb.getElementsByClassName('canvas_whiteboard');
-            let cv2 = wb.getElementsByClassName('incomplete_shapes_canvas_whiteboard');
-            cv1[0].setAttribute('width', this.canvas.width);
-            cv1[0].setAttribute('height', this.canvas.height);
-            cv2[0].setAttribute('width', this.canvas.width);
-            cv2[0].setAttribute('height', this.canvas.height);
-            // for (let index = 0; index < cv.length; index++) {
-            // cv[index].setAttribute('width', this.canvas.width);
-            // cv[index].setAttribute('height', this.canvas.height);
-            // // by class canvas_whiteboard incomplete_shapes_canvas_whiteboard
-            // }
-          }, 300) // mininmum needed for dom to process
+
 
         }
         this.addEffect(elm); //normal animatoin
@@ -780,6 +766,21 @@ export class VideocreatorComponent implements AfterViewInit {
     }
     this.animationarray.push(whiteboard);
     this.detectchange();
+    setTimeout(() => {
+      let wb = document.getElementById(newelnr);
+      // let cv = wb.getElementsByClassName('canvas');
+      let cv1 = wb.getElementsByClassName('canvas_whiteboard');
+      let cv2 = wb.getElementsByClassName('incomplete_shapes_canvas_whiteboard');
+      cv1[0].setAttribute('width', this.canvas.width);
+      cv1[0].setAttribute('height', this.canvas.height);
+      cv2[0].setAttribute('width', this.canvas.width);
+      cv2[0].setAttribute('height', this.canvas.height);
+      // for (let index = 0; index < cv.length; index++) {
+      // cv[index].setAttribute('width', this.canvas.width);
+      // cv[index].setAttribute('height', this.canvas.height);
+      // // by class canvas_whiteboard incomplete_shapes_canvas_whiteboard
+      // }
+    }, 300) // mininmum needed for dom to process
     //this.addAnimation(newelnr, img);
   }
 
@@ -1522,7 +1523,7 @@ export class VideocreatorComponent implements AfterViewInit {
   }
 
   loadEditableVideo(){
-    
+
   }
 
 }
