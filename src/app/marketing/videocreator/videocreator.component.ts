@@ -230,7 +230,7 @@ export class VideocreatorComponent implements AfterViewInit {
   private MorphSVGPlugin = MorphSVGPlugin;
   private largesthbox;
   private largestwbox;
-  private setreplay = false;
+  public setreplay = false;
   //this.webkitspeech.onresult = ($event) => { this.onresult($event) };
 
   constructor(
@@ -315,11 +315,18 @@ export class VideocreatorComponent implements AfterViewInit {
         if (elm.type === 'whiteboard') {
           setTimeout(() => {
             let wb = document.getElementById(elm.id);
-            let cv = wb.getElementsByClassName('canvas');
-            //for (let index = 0; index < cv.length; index++) {
-            cv[0].setAttribute('width', this.canvas.width);
-            cv[0].setAttribute('height', this.canvas.height);
-            // by class canvas_whiteboard incomplete_shapes_canvas_whiteboard
+            // let cv = wb.getElementsByClassName('canvas');
+            let cv1 = wb.getElementsByClassName('canvas_whiteboard');
+            let cv2 = wb.getElementsByClassName('incomplete_shapes_canvas_whiteboard');
+            cv1[0].setAttribute('width', this.canvas.width);
+            cv1[0].setAttribute('height', this.canvas.height);
+            cv2[0].setAttribute('width', this.canvas.width);
+            cv2[0].setAttribute('height', this.canvas.height);
+            // for (let index = 0; index < cv.length; index++) {
+            // cv[index].setAttribute('width', this.canvas.width);
+            // cv[index].setAttribute('height', this.canvas.height);
+            // // by class canvas_whiteboard incomplete_shapes_canvas_whiteboard
+            // }
           }, 300) // mininmum needed for dom to process
 
         }
@@ -1439,21 +1446,25 @@ export class VideocreatorComponent implements AfterViewInit {
 
 
   onCanvasSave(e, i) {
-    console.log(e);
-
     let urluse = BASE_URL + '/api/Containers/' + this.option.id + '/upload';
-
-    // this.uploader.setOptions({ url: urluse });
     this.uploader = new FileUploader({ url: urluse });
-    //let canvas = e;
-    //canvas.toBlob((blob1) => {
-    //let image = blob1;
-    let image = e;
     let name = Math.random().toString(36).substring(7) + '.png';
-    // set upload url
     let date: number = new Date().getTime();
-    let blob: Blob = new Blob([image]);
-    //let fileFromBlob: File = new File([blob], name);
+    let data = e.replace('data:image/png;base64,', '');
+    let b64Data, contentType = '', sliceSize = 512;
+    b64Data = data;
+    const byteCharacters = atob(b64Data);
+    const byteArrays = [];
+    for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+      const slice = byteCharacters.slice(offset, offset + sliceSize);
+      const byteNumbers = new Array(slice.length);
+      for (let i = 0; i < slice.length; i++) {
+        byteNumbers[i] = slice.charCodeAt(i);
+      }
+      const byteArray = new Uint8Array(byteNumbers);
+      byteArrays.push(byteArray);
+    }
+    const blob = new Blob(byteArrays, { type: contentType });
     // contents must be an array of strings, each representing a line in the new file
     let file = new File([blob], name, { type: "image/png", lastModified: date });
     let fileItem = new FileItem(this.uploader, file, {});
@@ -1464,6 +1475,7 @@ export class VideocreatorComponent implements AfterViewInit {
     this.uploader.onCompleteItem = (item: any, response: any, status: any, headers: any) => {
       // set download url or actual url for publishing
       let imgurl = BASE_URL + '/api/Containers/' + this.option.id + '/download/' + name;
+      let setimgurl = + 'https://xbmsapi.eu-gb.mybluemix.net/api/Containers/' + this.option.id + '/download/' + name;
       imgurl = imgurl.replace(/ /g, '-'),
         // define the file settings
         this.newFiles.name = name,
@@ -1475,19 +1487,18 @@ export class VideocreatorComponent implements AfterViewInit {
         this.relationsApi.createFiles(this.option.id, this.newFiles)
           .subscribe(res => {
             // create SVG png
-            this.filesApi.converteps2svg(this.option.id, this.Account.companyId, res.url, name)
+            this.filesApi.converteps2svg(this.option.id, this.Account.companyId, setimgurl, name)
               .subscribe(res => {
                 //this.setimage(res.url) 
                 // set SVG as new element
-                this.addNewVector(res.url)
+                this.addNewVector(res.url);
+                // delete whiteboard
+                console.log(res);
                 this.deleteitem(i);
-              })
-
-            // delete whiteboard
-            console.log(res);
+              });
           });
     };
-    //}, 'image/png', 1);
+
   }
 
   onshowemoji(i) {
@@ -1500,7 +1511,18 @@ export class VideocreatorComponent implements AfterViewInit {
     const bufStr = String.fromCodePoint(parseInt(event.emoji.unified, 16));
     element.content = element.content + bufStr;
     this.onshowemoji(i)
+  }
 
+  resetVideo(){
+
+  }
+
+  newItem(){
+
+  }
+
+  loadEditableVideo(){
+    
   }
 
 }
