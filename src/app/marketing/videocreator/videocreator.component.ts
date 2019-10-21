@@ -6,18 +6,22 @@ import {
 } from '../../shared';
 import { Subscription } from 'rxjs';
 import { MediaObserver, MediaChange } from '@angular/flex-layout';
-import { TimelineMax, TweenLite } from 'gsap';
+import { TimelineMax, TweenLite, Power0 } from 'gsap';
 import * as MorphSVGPlugin from '../../../assets/js/MorphSVGPlugin';
 import * as DrawSVGPlugin from '../../../assets/js/DrawSVGPlugin';
-import { TimelineLite, Back, Power1, SlowMo } from 'gsap';
+import * as SplitText from '../../../assets/js/SplitText';
+import * as physicsProps from '../../../assets/js/PhysicsPropsPlugin'
+import * as physics2D from '../../../assets/js/Physics2DPlugin'
+import { TimelineLite, Back, Power1, SlowMo, Elastic, Bounce, Circ, Sine, Power3 } from 'gsap';
 import { FileUploader, FileItem } from 'ng2-file-upload';
 import { MatSnackBar, AnimationDurations } from '@angular/material';
 declare const SVG: any;
 import '@svgdotjs/svg.draggable.js'
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import * as normalize from 'normalize-svg-coords';
-const plugins = [DrawSVGPlugin, MorphSVGPlugin]; //needed for GSAP 
+const plugins = [DrawSVGPlugin, MorphSVGPlugin, SplitText, physics2D]; //needed for GSAP 
 import { CanvasWhiteboardComponent } from 'ng2-canvas-whiteboard';
+import { fonts } from '../../shared/listsgeneral/fonts';
 
 export class animationtype {
   start_time: number; //delayt
@@ -33,6 +37,10 @@ export class animationtype {
   scalesize: number;
   skewY: number;
   skewX: number;
+  easetype: any;
+  fromto: string;
+  transformOriginX: string; 
+  transformOriginY: string;
 }
 
 export class vectoranimationtype {
@@ -49,6 +57,20 @@ export class vectoranimationtype {
   end_time: number;
   duration: number;
   hideimage: boolean;
+  easetype: any;
+  fromto: string;
+}
+
+export class splittexttype {
+  textanimationtype: string;
+  repeat: number;
+  start_time: number; //delay
+  end_time: number;
+  duration: number;
+  x: number;
+  y: number;
+  fromto: string;
+  easetype: any;
 }
 
 export class imageanimation {
@@ -64,7 +86,7 @@ export class imageanimation {
   posx: number;
   posy: number;
   setpos: object;
-  id: number;
+  id: string;
   animation: animationtype[];
 }
 
@@ -83,12 +105,11 @@ export class vectoranimation {
   posx: number;
   posy: number;
   setpos: object;
-  id: number;
+  id: string;
   animation: animationtype[];
   vectors: vectorelement[];
   vectoranimation: vectoranimationtype[];
   svgcombi: SafeHtml;
-
 }
 
 export class vectorelement {
@@ -97,6 +118,8 @@ export class vectorelement {
   duration: number;
   start_time: number;
   pathids: [];
+  easetype: any;
+  fromto: string;
 }
 
 export class shapeanimation {
@@ -113,7 +136,7 @@ export class shapeanimation {
   posx: number;
   posy: number;
   setpos: object;
-  id: number;
+  id: string;
   animation: animationtype[];
 }
 
@@ -131,12 +154,11 @@ export class whiteboardanimation {
   posx: number;
   posy: number;
   setpos: object;
-  id: number;
+  id: string;
   animation: animationtype[];
 }
 
 export class textanimation {
-
   content: string;
   type: 'text';
   style: {
@@ -148,12 +170,14 @@ export class textanimation {
     'font-style': string;
     'font-weight': string;
     'font-family': string;
+    padding: string;
     opacity: 1;
   }
   posx: number;
   posy: number;
   setpos: object;
-  id: number;
+  id: string;
+  splittextanimation: splittexttype[];
   animation: animationtype[];
 }
 
@@ -223,11 +247,13 @@ export class VideocreatorComponent implements AfterViewInit {
     right: true
   };
 
+  public Fonts = fonts;
   watcher: Subscription;
   activeMediaQuery;
   public selectedelement;
   public elementname;
   private MorphSVGPlugin = MorphSVGPlugin;
+  private SplitText = SplitText;
   private largesthbox;
   private largestwbox;
   public setreplay = false;
@@ -290,7 +316,7 @@ export class VideocreatorComponent implements AfterViewInit {
   }
 
   async detectchange() {
-    //console.log('run check', this.animationarray);
+    console.log('run check', this.animationarray);
     this.animationarray.forEach(elm => {
       if (elm.posx > 0) {
         elm.setpos = { 'x': elm.posx, 'y': elm.posy };
@@ -311,16 +337,91 @@ export class VideocreatorComponent implements AfterViewInit {
             });
           }, 300) // mininmum needed for dom to process
         }
-
-        if (elm.type === 'whiteboard') {
-
-
+        if (elm.type === 'text') {
+          setTimeout(() => {
+            elm.splittextanimation.forEach((textani: splittexttype) => {
+              if (textani.textanimationtype) { this.createSplitText(elm, textani) }
+            });
+          }, 300) // mininmum needed for dom to process
         }
         this.addEffect(elm); //normal animatoin
       })
     );
+  }
 
+  createSplitText(elm: textanimation, textani: splittexttype) {
 
+    let splittextwhere = textani.textanimationtype;
+    let id = document.getElementById(elm.id);
+    let splitText = new SplitText.SplitText(id, { type: textani.textanimationtype })
+    let toset = {
+      y: 100,
+      autoAlpha: 0
+    }
+
+    let char = splitText.chars;
+    let word = splitText.words;
+    let line = splitText.lines;
+
+    let setto;
+    let lenghtarr;
+    if (textani.textanimationtype === 'chars') { setto = char; lenghtarr = char.length }
+    if (textani.textanimationtype === 'words') { setto = word; lenghtarr = word.length }
+    if (textani.textanimationtype === 'lines') { setto = line; lenghtarr = line.length }
+
+    let dura = textani.duration / lenghtarr;
+    // stagger durationis for each stag (word line character etc.. )
+    // this.primairytimeline.to(splitText.chars, textani.duration, toset, textani.start_time);
+    //this.primairytimeline.staggerTo(setto, 1, { opacity:0, cycle:{ y:[20, -20], rotationX:[-90, 90]} }, 0.01, "erase+=1.5");
+
+    //{physicsProps:{
+    //  x:{velocity:100, acceleration:200},
+    //  y:{velocity:-200, friction:0.1}
+
+    //{physics2D:{
+    //  velocity:300, angle:-60, acceleration:50, accelerationAngle:18}}
+
+    let ease = this.selectEaseType(textani.easetype);
+
+    if (textani.fromto === 'from') {
+      this.primairytimeline.staggerFrom(setto, textani.duration, { x: textani.y, y: textani.x, autoAlpha: 0, ease: ease }, 0.1, textani.start_time)
+    }
+    if (textani.fromto === 'to') {
+      this.primairytimeline.staggerTo(setto, textani.duration, { x: textani.y, y: textani.x, autoAlpha: 0, ease: ease }, 0.1, textani.start_time)
+    }
+
+  }
+
+  selectEaseType(type) {
+    let ease;
+    switch (type) {
+      case 'bounce':
+        ease = Bounce.easeOut;
+        break;
+      case 'elastic':
+        ease = Elastic.easeOut.config(1, 0.3)
+        break;
+      case 'circle':
+        ease = Circ.easeOut
+        break;
+      case 'sine':
+        ease = Sine.easeOut
+        break;
+      case 'over':
+        ease = Back.easeOut.config(1.7)
+        break;
+      case 'linear':
+        ease = Power3.easeOut
+        break;
+      case 'easy':
+        ease = Power0.easeOut
+        break;
+      case 'slowmotion':
+        ease = SlowMo.ease.config(0.7, 0.7, false)
+      default:
+        ease = Bounce.easeOut;
+    }
+    return ease
   }
 
   onchangevideo() {
@@ -329,7 +430,7 @@ export class VideocreatorComponent implements AfterViewInit {
     setTimeout(() => this.changevideo = true);
   }
 
-  addAnimation(i, element) {
+  addAnimation(iset, element: animationtype) {
     let duration = element.duration;
     let startime = element.start_time
     let anitype = element.anim_type;
@@ -340,17 +441,17 @@ export class VideocreatorComponent implements AfterViewInit {
     //let travellocY = element.posy;
     //let travellocX = element.posx;
     let aniset;
+
+    let ease = this.selectEaseType(element.easetype);
     if (anitype === 'rotation') {
-      aniset = { rotation: rotationcycle, ease: "Expo.easeInOut" }
+      let orgin = element.transformOriginX + ' ' + element.transformOriginY
+      aniset = { rotation: rotationcycle, ease: ease, transformOrigin: orgin }
     }
     if (anitype === 'translate') {
-      aniset = { rotation: '30', ease: "Expo.easeInOut" }
-    }
-    if (anitype === 'bounce') {
-      aniset = { ease: 'Bounce.easeOut', y: element.travellocY, x: element.travellocX }
+      aniset = { rotation: '30', ease: ease }
     }
     if (anitype === 'scale') {
-      aniset = { scale: scalesize }
+      aniset = { scale: scalesize, ease: ease }
     }
     if (anitype === 'appear') {
       this.selectedelement.style.opacity = 0;
@@ -360,24 +461,60 @@ export class VideocreatorComponent implements AfterViewInit {
       aniset = { opacity: 0 }, { opacity: 1 };
     }
     if (anitype === 'move') {
-      aniset = { y: element.travellocY, x: element.travellocX }
+      aniset = { y: element.travellocY, x: element.travellocX, ease: ease }
     }
     if (anitype === 'skew') {
-      aniset = { skewY: skewY, skewX: skewX }
+      aniset = { skewY: skewY, skewX: skewX, ease: ease }
+    }
+    if (anitype === 'fountain') {
+      //let dots = this.primairytimeline;
+      var dots = new TimelineLite()
+      let qty = 80;
+      let duration = 2.5;
+      let colors = ["#91e600", "#84d100", "#73b403", "#528003"];
+            
+      for (let i = 0; i < qty; i++) {
+        let cln = iset.cloneNode(true);
+        let parent = iset.parentElement;
+        parent.append(cln);
+        let color = colors[(Math.random() * colors.length) | 0];
+        let delay = Math.random() * duration;
+        if (element.fromto === 'from') {
+          this.primairytimeline.from(cln, duration, { physics2D: { velocity: Math.random() * 400 + 150, angle: Math.random() * 40 + 250, gravity: 500 } }, delay);
+        }
+  
+        if (element.fromto === 'to') {
+          this.primairytimeline.to(cln, duration, { physics2D: { velocity: Math.random() * 400 + 150, angle: Math.random() * 40 + 250, gravity: 500 } }, delay);
+        }
+        
+      }
     }
 
-    this.primairytimeline.to(i, duration, aniset, startime);
+
+    if (anitype !== 'fountain') {
+
+      if (element.fromto === 'from') {
+        this.primairytimeline.from(iset, duration, aniset, startime);
+      }
+
+      if (element.fromto === 'to') {
+        this.primairytimeline.to(iset, duration, aniset, startime);
+      }
+    }
+
+
     //console.log(duration, aniset, startime);
   }
 
 
   addEffect(element): void {
-    console.log(element);
+    // console.log(element);
     let id = document.getElementById(element.id);
     //console.log(id);
     element.animation.forEach(animationsection => {
       this.addAnimation(id, animationsection);
     });
+    // this.detectchange();
   }
 
   addNewEffect(element): void {
@@ -394,7 +531,11 @@ export class VideocreatorComponent implements AfterViewInit {
       travellocY: this.selectedelement.posx,
       scalesize: 0.5,
       skewY: 50,
-      skewX: 50
+      skewX: 50,
+      easetype: 'bounce',
+      fromto: 'from',
+      transformOriginX: '50%', 
+      transformOriginY: '200px'
     }
     this.selectedelement.animation.push(newanimation)
   }
@@ -410,29 +551,14 @@ export class VideocreatorComponent implements AfterViewInit {
 
   copyEffect(i) {
     const curan = this.selectedelement.animation[i];
-    let neweffect: animationtype = {
-      start_time: curan.start_time, //delayt
-      end_time: curan.end_time,
-      anim_type: curan.anim_type,
-      duration: curan.duration,
-      ease: '',
-      posx: curan.posx,
-      posy: curan.posy,
-      rotationcycle: curan.rotationcycle,
-      travellocX: curan.travellocX,
-      travellocY: curan.travellocY,
-      scalesize: curan.scalesize,
-      skewY: curan.skewY,
-      skewX: curan.skewY
-    };
+    let neweffect = JSON.parse(JSON.stringify(curan));
     this.selectedelement.animation.push(neweffect);
   }
 
   copyElement(i, element) {
-    if (element.type === 'image') { }
-    if (element.type === 'text') { }
-    if (element.type === 'shape') { }
-    if (element.type === 'vector') { }
+    const curel = element;
+    let newElement = JSON.parse(JSON.stringify(curel));
+    this.animationarray.push(newElement);
   }
 
   getEditFile() {
@@ -451,11 +577,9 @@ export class VideocreatorComponent implements AfterViewInit {
   }
 
   setVector(event, i, idx): void {
+    console.log(event, i, idx);
     this.animationarray[i].vectors[idx].src = event;
     let vect = this.animationarray[i].vectors[idx].idx;
-    //wait a few seconds as it takes a moment to fetch the file (no cb available)
-    // setTimeout(async () => {
-    // }, 300);
   }
 
   initVectors(e, i, idx, vectorid) {
@@ -474,19 +598,9 @@ export class VideocreatorComponent implements AfterViewInit {
 
   drawVector(vector, animation: vectoranimationtype) {
     return new Promise(async (resolve, reject) => {
-      //console.log(vector, animation)
-      // vector.style.stroke = animation.drawcolor;
-      // vector.style['stroke-width'] = animation.linethickness;
-      //vector.style['opacity'] = 0;
       let list = vector.vectors[0].pathids;
-      // let fromvac = document.getElementById(list[3]);
-      // this.setDrawAni(fromvac, 1);
-
       for (const pathid of list) {
-        //console.log(pathid);
         let fromvac = document.getElementById(pathid);
-        //console.log(fromvac);
-        //await 
         this.setDrawAni(fromvac, animation);
       }
       resolve();
@@ -554,7 +668,19 @@ export class VideocreatorComponent implements AfterViewInit {
     this.animationarray[i].style.height = e.size.height + 'px';
   }
 
-  addNewVector(src?): void {
+  addNewVector(src?, height?, width?, svgcombi?, posx?, posy?): void {
+    let svgc = this.sanitizer.bypassSecurityTrustHtml('');
+    if (svgcombi){svgc = this.sanitizer.bypassSecurityTrustHtml(svgcombi)}
+    let newsrc = '';
+    let newheight = 'auto';
+    let newwidth = 'auto';
+    let posxset = 0;
+    let posyset = 0;
+    if (posx){posyset = posy};
+    if (posy){posxset = posx};
+    if (src) { newsrc = src };
+    if (height) { newheight = height };
+    if (width) { newwidth = width };
     let newelnr;
     if (this.animationarray.length === -1) {
       newelnr = 0 + 'el';
@@ -568,7 +694,7 @@ export class VideocreatorComponent implements AfterViewInit {
     let anim: animationtype[] = [{
       start_time: 0, //delayt
       end_time: 10,
-      anim_type: 'rotation',
+      anim_type: '',
       duration: 2.5,
       ease: '',
       posx: 0,
@@ -578,7 +704,11 @@ export class VideocreatorComponent implements AfterViewInit {
       travellocY: 0,
       scalesize: 0.5,
       skewY: 50,
-      skewX: 50
+      skewX: 50,
+      easetype: '',
+      fromto: 'to',
+      transformOriginX: '50%', 
+      transformOriginY: '200px'
     }];
     let vectanim: vectoranimationtype[] = [{
       svganimationtype: '',
@@ -593,22 +723,26 @@ export class VideocreatorComponent implements AfterViewInit {
       start_time: 0, //delayt
       end_time: 10,
       duration: 2.5,
-      hideimage: false
+      hideimage: false,
+      easetype: 'linear',
+      fromto: 'to'
     }]
     // do not add animation from beginning with morph SVG's 
     let vectors: vectorelement[] = [{
-      src: '',
+      src: newsrc,
       idx: vectorid,
       duration: 1,
       start_time: undefined,
-      pathids: []
+      pathids: [],
+      easetype: 'bounce',
+      fromto: 'to'
     }]
     let vector: vectoranimation = {
       type: 'vector',
       style: {
         'z-index': this.newz,
-        width: "200px",
-        height: "200px",
+        width: newwidth,
+        height: newheight,
         position: 'absolute',
         opacity: 1,
         'stroke-width': '',
@@ -616,20 +750,28 @@ export class VideocreatorComponent implements AfterViewInit {
         //transform : 'translate(10px, 10px)'
       },
       src: '',
-      posx: 50,
-      posy: 50,
-      setpos: { 'x': 50, 'y': 50 },
+      posx: posxset,
+      posy: posyset,
+      setpos: { 'x': 0, 'y': 0},
       animation: [],
       id: newelnr,
       vectors: vectors,
-      svgcombi: '',
+      svgcombi: svgc,
       vectoranimation: vectanim,
       // from, 4, {drawSVG:0, repeat:10, yoyo:true}, 4)
-
     }
-    if (src) { vector.src = src };
+    console.log(vector);
     this.animationarray.push(vector);
-    this.detectchange();
+    if (!svgcombi){
+      this.detectchange();
+    } else {
+      
+    }
+    
+  }
+
+  deleteVectorAnimation(iv){
+    this.selectedelement.vectoranimation.splice(iv, 1);
   }
 
 
@@ -655,7 +797,11 @@ export class VideocreatorComponent implements AfterViewInit {
       travellocY: 0,
       scalesize: 0.5,
       skewY: 50,
-      skewX: 50
+      skewX: 50,
+      easetype: Bounce.easeOut,
+      fromto: 'to',
+      transformOriginX: '50%', 
+      transformOriginY: '200px'
     }];
     let img: imageanimation = {
       type: 'image',
@@ -670,7 +816,7 @@ export class VideocreatorComponent implements AfterViewInit {
       src: '',
       posx: 50,
       posy: 50,
-      setpos: { 'x': 50, 'y': 50 },
+      setpos: { 'x': 0, 'y': 0 },
       animation: anim,
       id: newelnr
     }
@@ -700,7 +846,11 @@ export class VideocreatorComponent implements AfterViewInit {
       travellocY: 0,
       scalesize: 0.5,
       skewY: 50,
-      skewX: 50
+      skewX: 50,
+      easetype: 'bounce',
+      fromto: 'to',
+      transformOriginX: '50%', 
+      transformOriginY: '200px'
     }];
     let img: shapeanimation = {
       type: 'shape',
@@ -715,7 +865,7 @@ export class VideocreatorComponent implements AfterViewInit {
       src: '',
       posx: 50,
       posy: 50,
-      setpos: { 'x': 50, 'y': 50 },
+      setpos: { 'x': 0, 'y': 0 },
       animation: anim,
       id: newelnr
     }
@@ -745,7 +895,11 @@ export class VideocreatorComponent implements AfterViewInit {
       travellocY: 0,
       scalesize: 0.5,
       skewY: 50,
-      skewX: 50
+      skewX: 50,
+      easetype: 'bounce',
+      fromto: 'to',
+      transformOriginX: '50%', 
+      transformOriginY: '200px'
     }];
     let whiteboard: whiteboardanimation = {
       type: 'whiteboard',
@@ -806,8 +960,23 @@ export class VideocreatorComponent implements AfterViewInit {
       travellocY: 0,
       scalesize: 0.5,
       skewY: 50,
-      skewX: 50
+      skewX: 50,
+      easetype: 'bounce',
+      fromto: 'to',
+      transformOriginX: '50%', 
+      transformOriginY: '200px'
     }];
+    let splittext: splittexttype[] = [{
+      textanimationtype: '',
+      repeat: 0,
+      start_time: 0, //delay
+      end_time: 10,
+      duration: 2.5,
+      x: 0,
+      y: 100,
+      fromto: 'from',
+      easetype: 'bounce'
+    }]
     let txt: textanimation = {
       type: 'text',
       style: {
@@ -819,15 +988,17 @@ export class VideocreatorComponent implements AfterViewInit {
         'font-family': 'Open Sans',
         'font-style': '',
         'font-weight': '',
-        opacity: 1
+        opacity: 1,
+        padding: '15px' //neccarry to get all fonts
         //transform : 'translate(10px, 10px)'
       },
       content: 'write here',
       posx: 20,
       posy: 50,
-      setpos: { 'x': 20, 'y': 50 },
+      setpos: { 'x': 0, 'y': 0 },
       animation: anim,
-      id: newelnr
+      id: newelnr,
+      splittextanimation: splittext
     }
     this.animationarray.push(txt);
     this.detectchange();
@@ -841,7 +1012,7 @@ export class VideocreatorComponent implements AfterViewInit {
   }
 
   playFunc() {
-    this.detectchange();
+    // this.detectchange();
     console.log('play');
     //this.progressbarline.play();
 
@@ -941,10 +1112,8 @@ export class VideocreatorComponent implements AfterViewInit {
   }
 
   loadEditableImage() {
-    //console.log(this.editablevideo.template)
     this.animationarray = this.editablevideo.template;
     this.canvas = this.editablevideo.canvas[0];
-    //console.log(this.animationarray, this.canvas);
     this.detectchange();
   }
 
@@ -979,15 +1148,12 @@ export class VideocreatorComponent implements AfterViewInit {
   }
 
   setVideo(event) {
-    //console.log(event);
     this.canvas.videourl = event;
     this.onchangevideo();
   }
 
   setBackground(event) {
-    console.log(event);
     this.canvas['background-image'] = 'url(' + event + ')';
-    //this.onchangebackground();
   }
 
   handleSVG(svg: SVGElement, parent): SVGElement {
@@ -1019,7 +1185,9 @@ export class VideocreatorComponent implements AfterViewInit {
       idx: idnr,
       duration: 1,
       start_time: undefined,
-      pathids: []
+      pathids: [],
+      easetype: 'bounce',
+      fromto: 'to'
     }
     this.animationarray[i].vectors.push(newVector);
   }
@@ -1038,7 +1206,9 @@ export class VideocreatorComponent implements AfterViewInit {
       start_time: 0, //delayt
       end_time: 10,
       duration: 2.5,
-      hideimage: false
+      hideimage: false,
+      easetype: 'linear',
+      fromto: 'to'
     }]
     this.animationarray[i].vectoranimation.push(vectanim);
   }
@@ -1197,6 +1367,7 @@ export class VideocreatorComponent implements AfterViewInit {
     let animationdrawto = animation.fillleft + ' ' + animation.fillright;
     let animationdrawfrom = animation.drawleft + ' ' + animation.drawright;
     let hideelement = 0;
+    let ease = animation.easetype;
 
     if (animation.hideimage === true) {
       hideelement = 0;
@@ -1215,6 +1386,7 @@ export class VideocreatorComponent implements AfterViewInit {
     let toset =
     {
       drawSVG: animationdrawto,
+      ease: ease
       // delay: animation.start_time
     };
 
@@ -1267,6 +1439,7 @@ export class VideocreatorComponent implements AfterViewInit {
 
   async setMorphAni(from, to, animation: animationtype) {
     // console.log(from, to, animation);
+    let ease = this.selectEaseType(animation.easetype);
     let fintime = animation.start_time + animation.duration;
     let fromset = {}
     let toset = {
@@ -1275,11 +1448,11 @@ export class VideocreatorComponent implements AfterViewInit {
         type: "rotational",
         origin: "20% 60%"
       },
-      ease: Power1.easeInOut
+      ease: ease
     };
 
     // this.primairytimeline.fromTo(from, animation.duration, toset, animation.start_time);
-    this.primairytimeline.to(from, animation.duration, { morphSVG: to }, animation.start_time);
+    this.primairytimeline.to(from, animation.duration, { morphSVG: to, ease: ease }, animation.start_time);
     this.primairytimeline.to(to, 1, { opacity: 1 }, fintime);
     this.primairytimeline.to(from, 1, { opacity: 0 }, fintime);
     // this.primairytimeline.to(to, animation.duration, {opacity}, animation.start_time);
@@ -1342,10 +1515,9 @@ export class VideocreatorComponent implements AfterViewInit {
               min: 0,
               max: 500, // * (1 + newscale1),
               asList: false
-            })
+            });
             p[index].setAttribute("d", normalizedPath);
-          }
-        }
+          }}
         resolve();
       }
     });
@@ -1402,7 +1574,6 @@ export class VideocreatorComponent implements AfterViewInit {
       if (n !== -1) {
         svgstring = svgstring.replace(svgstring.substring(n, l), '');
       }
-
       // "stroke: none;"
       svgstring = svgstring.replace(/stroke:none/g, '');
       svgstring = svgstring.replace(/stroke: none/g, '');
@@ -1413,7 +1584,6 @@ export class VideocreatorComponent implements AfterViewInit {
       if (n !== -1) {
         svgstring = svgstring.replace(svgstring.substring(n, l), '');
       }
-
       resolve(svgstring)
     })
   }
@@ -1445,6 +1615,26 @@ export class VideocreatorComponent implements AfterViewInit {
     });
   }
 
+  seperatePaths(idx, vector: vectorelement, element: vectoranimation) {    
+    vector.pathids.forEach(pid => {
+      let svgel = document.getElementById(pid);
+      let s = new XMLSerializer(); // convert to string
+      let svgstring = s.serializeToString(svgel);
+      //console.log(svgstring);
+      let newsvgarray = [
+        '<svg xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#"' +
+        ' xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg"' +
+        ' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" height="100%" width="100%"' +
+        'id="svg2" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" preserveAspectRatio="none">',
+        svgstring, '</svg>'
+      ]
+      let newsvg = newsvgarray.join('');
+      this.addNewVector(null, element.style.height, element.style.width, newsvg, element.posx, element.posy);
+    });
+    this.deleteVectorSrc(idx, vector);
+    this.detectchange();
+  }
+
 
   onCanvasSave(e, i) {
     let urluse = BASE_URL + '/api/Containers/' + this.option.id + '/upload';
@@ -1470,36 +1660,40 @@ export class VideocreatorComponent implements AfterViewInit {
     let file = new File([blob], name, { type: "image/png", lastModified: date });
     let fileItem = new FileItem(this.uploader, file, {});
     this.uploader.queue.push(fileItem);
-    fileItem.upload();
-
+    // fileItem.upload();
+    this.uploader.uploadAll();
 
     this.uploader.onCompleteItem = (item: any, response: any, status: any, headers: any) => {
-      // set download url or actual url for publishing
-      let imgurl = BASE_URL + '/api/Containers/' + this.option.id + '/download/' + name;
-      let setimgurl = + 'https://xbmsapi.eu-gb.mybluemix.net/api/Containers/' + this.option.id + '/download/' + name;
-      imgurl = imgurl.replace(/ /g, '-'),
-        // define the file settings
-        this.newFiles.name = name,
-        this.newFiles.url = imgurl,
-        this.newFiles.createdate = new Date(),
-        this.newFiles.type = 'tmp',
-        this.newFiles.companyId = this.Account.companyId,
-        // check if container exists and create
-        this.relationsApi.createFiles(this.option.id, this.newFiles)
-          .subscribe(res => {
-            // create SVG png
-            this.filesApi.converteps2svg(this.option.id, this.Account.companyId, setimgurl, name)
-              .subscribe(res => {
-                //this.setimage(res.url) 
-                // set SVG as new element
-                this.addNewVector(res.url);
-                // delete whiteboard
-                console.log(res);
-                this.deleteitem(i);
-              });
-          });
+      if (status === 200) {
+        // set download url or actual url for publishing
+        let imgurl = BASE_URL + '/api/Containers/' + this.option.id + '/download/' + name;
+        let setimgurl = 'https://xbmsapi.eu-gb.mybluemix.net/api/Containers/' + this.option.id + '/download/' + name;
+        imgurl = imgurl.replace(/ /g, '-'),
+          // define the file settings
+          this.newFiles.name = name,
+          this.newFiles.url = setimgurl,
+          this.newFiles.createdate = new Date(),
+          this.newFiles.type = 'tmp',
+          this.newFiles.companyId = this.Account.companyId,
+          // check if container exists and create
+          this.relationsApi.createFiles(this.option.id, this.newFiles)
+            .subscribe(res => {
+              // create SVG png
+              console.log(res);
+              setTimeout(() => {
+                this.filesApi.converteps2svg(this.option.id, this.Account.companyId, res.url, name, true)
+                  .subscribe(resp => {
+                    //this.setimage(res.url) 
+                    // set SVG as new element
+                    this.addNewVector(resp.url, this.canvas.height, this.canvas.width);
+                    // delete whiteboard
+                    console.log(resp);
+                    this.deleteitem(i);
+                  });
+              }, 300);
+            });
+      }
     };
-
   }
 
   onshowemoji(i) {
@@ -1514,15 +1708,15 @@ export class VideocreatorComponent implements AfterViewInit {
     this.onshowemoji(i)
   }
 
-  resetVideo(){
+  resetVideo() {
 
   }
 
-  newItem(){
+  newItem() {
 
   }
 
-  loadEditableVideo(){
+  loadEditableVideo() {
 
   }
 
