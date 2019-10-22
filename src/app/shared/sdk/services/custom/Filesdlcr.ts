@@ -285,6 +285,8 @@ export class FilesdlcrApi extends BaseLoopBackApi {
    *
    * @param {string} name 
    *
+   * @param {boolean} centerline 
+   *
    * @param {object} data Request data.
    *
    * This method does not accept any data. Supply an empty object.
@@ -298,7 +300,7 @@ export class FilesdlcrApi extends BaseLoopBackApi {
    * This usually means the response is a `Filesdlcr` object.)
    * </em>
    */
-  public converteps2svg(id: any = {}, imageurl: any = {}, name: any = {}, customHeaders?: Function): Observable<any> {
+  public converteps2svg(id: any = {}, imageurl: any = {}, name: any = {}, centerline: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "POST";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
     "/filesdlcrs/converteps2svg/:id";
@@ -309,6 +311,7 @@ export class FilesdlcrApi extends BaseLoopBackApi {
     let _urlParams: any = {};
     if (typeof imageurl !== 'undefined' && imageurl !== null) _urlParams.imageurl = imageurl;
     if (typeof name !== 'undefined' && name !== null) _urlParams.name = name;
+    if (typeof centerline !== 'undefined' && centerline !== null) _urlParams.centerline = centerline;
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
     return result;
   }

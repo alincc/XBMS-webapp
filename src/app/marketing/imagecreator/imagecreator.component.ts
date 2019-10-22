@@ -14,6 +14,7 @@ import { FileUploader, FileItem } from 'ng2-file-upload';
 import { MediaObserver, MediaChange } from '@angular/flex-layout';
 //import * as pluginAnnotations from 'chartjs-plugin-annotation';
 import {Subscription} from 'rxjs';
+import { fonts } from '../../shared/listsgeneral/fonts';
 
 export class image {
   type: 'image';
@@ -130,7 +131,7 @@ export class ImagecreatorComponent implements OnInit {
   @Input() option: Relations = new Relations();
   @Input() company: Company = new Company;
 
-
+  public Fonts =  fonts;
   public listviewxsshow = false;
   public showprogressbar = false;
   public uploader: FileUploader;
@@ -423,8 +424,6 @@ export class ImagecreatorComponent implements OnInit {
   OnSaveImage() {
     this.showprogressbar = true;
     let urluse = BASE_URL + '/api/Containers/' + this.option.id + '/upload';
-
-    // this.uploader.setOptions({ url: urluse });
     this.uploader = new FileUploader({ url: urluse });
     let i = 0;
     this.images.forEach((img, index) => {
@@ -437,19 +436,16 @@ export class ImagecreatorComponent implements OnInit {
           // set upload url
           let date: number = new Date().getTime();
           let blob: Blob = new Blob([image]);
-          //let fileFromBlob: File = new File([blob], name);
           // contents must be an array of strings, each representing a line in the new file
           let file = new File([blob], name, { type: "image/png", lastModified: date });
           let fileItem = new FileItem(this.uploader, file, {});
           this.uploader.queue.push(fileItem);
           fileItem.upload();
 
-
           this.uploader.onCompleteItem = (item:any, response:any, status:any, headers:any) => {
           // set download url or actual url for publishing
           let imgurl = BASE_URL + '/api/Containers/' + this.option.id + '/download/' + name;
           imgurl = imgurl.replace(/ /g, '-'),
-            //img.src = imgurl;
             this.images[index].src = imgurl;
           // define the file settings
           this.newFiles.name = name,

@@ -4,6 +4,29 @@
 @import "~@ctrl/ngx-emoji-mart/picker";
 @import "../node_modules/angular-calendar/css/angular-calendar.css";
 
+@font-face {
+  font-family: SandBrush;
+  src: url("assets/fonts/SandbrushPro.ttf") format("truetype");
+}
+@font-face {
+  font-family: Shipwreck;
+  src: url("assets/fonts/SchoonerScript.ttf") format("truetype");
+}
+@font-face {
+  font-family: WesternOld;
+  src: url("assets/fonts/WesternOld.ttf") format("truetype");
+}
+@font-face {
+  font-family: IndustrialOld;
+  src: url("assets/fonts/IndustrialOld.ttf") format("truetype");
+}
+@font-face {
+  font-family: Hillpark;
+  src: url("assets/fonts/Hillpark.ttf") format("truetype");
+}
+
+
+
 body{
   background-color: #bdc3c7
 }

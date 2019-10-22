@@ -137,7 +137,6 @@ export class VideouploadComponent implements OnInit {
     this.imgurl.emit(url);
   }
 
-
   // set constiable and upload + save reference in Publications
   setupload(name): void {
     // set upload url
@@ -162,8 +161,6 @@ export class VideouploadComponent implements OnInit {
               .subscribe(res => this.uploadFile()));
   }
 
-
-
   uploadFile(): void {
     this.uploader.uploadAll();
     this.relationsApi.createFiles(this.option.id, this.newFiles)
@@ -177,7 +174,6 @@ export class VideouploadComponent implements OnInit {
 
 
 import { StockVideo } from './stockvideo'
-
 
 @Component({
   selector: 'dialog-videogallery',
@@ -198,8 +194,8 @@ export class dialogvideogallerycomponent implements OnInit {
 
   ngOnInit() {
     this.video.forEach(element => {
-      const iconurl = BASE_URL + element;
-      const previewurl = BASE_URL + element + '#t=0.5';
+      const iconurl = element;
+      const previewurl = element + '#t=0.5';
       var filename = iconurl.replace(/^.*[\\\/]/, '')
       this.stockvideos.push({url: iconurl, name: filename, preview: previewurl});
     });

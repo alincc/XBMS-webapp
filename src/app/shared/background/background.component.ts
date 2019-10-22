@@ -104,14 +104,14 @@ export class dialogbackgroundgallerycomponent implements OnInit {
 
   ngOnInit() {
     this.background.forEach(element => {
-      const iconurl = BASE_URL + element;
-      //const previewurl = BASE_URL + element + '#t=0.5';
+      const iconurl = element;
+      //const previewurl = element + '#t=0.5';
       var filename = iconurl.replace(/^.*[\\\/]/, '')
       this.stockbackgrounds.push({ url: iconurl, name: filename });
     });
     this.animatedbackground.forEach(element => {
-      const iconurl = BASE_URL + element;
-      //const previewurl = BASE_URL + element + '#t=0.5';
+      const iconurl = element;
+      //const previewurl = element + '#t=0.5';
       var filename = iconurl.replace(/^.*[\\\/]/, '')
       this.animatedbackgrounds.push({ url: iconurl, name: filename });
     });

@@ -1,7 +1,10 @@
 <div class="picture-container">
+    <button matTooltip="Open gallery" class="deletepicture" mat-mini-fab color="primary" (click)="onOpenGallery()">
+        <mat-icon>wallpaper</mat-icon>
+    </button>
     <div *ngIf="showdropbox">
-        <div ng2FileDrop #fileInput [ngClass]="{'drop-zone-over': hasBaseDropZoneOver}" (fileOver)="fileOverBase($event)"
-            [uploader]="uploader" class="drop-zone"  (onFileDrop)="dropped($event)">
+        <div ng2FileDrop #fileInput [ngClass]="{'drop-zone-over': hasBaseDropZoneOver}"
+            (fileOver)="fileOverBase($event)" [uploader]="uploader" class="drop-zone" (onFileDrop)="dropped($event)">
             Drop vector here
         </div>
         <input type="file" #fileInputsel ng2FileSelect [uploader]="uploader" />
@@ -44,8 +47,9 @@
         </div>
     </div>
     <div *ngIf="showdropbox">
-        <div ng2FileDrop #fileInputSVG [ngClass]="{'drop-zone-over': hasBaseDropZoneOverSvg}" (fileOver)="fileOverBaseSvg($event)"
-            [uploader]="uploadersvg" class="drop-zone" (onFileDrop)="dropped($event)">
+        <div ng2FileDrop #fileInputSVG [ngClass]="{'drop-zone-over': hasBaseDropZoneOverSvg}"
+            (fileOver)="fileOverBaseSvg($event)" [uploader]="uploadersvg" class="drop-zone"
+            (onFileDrop)="dropped($event)">
             Drop EPS/JPEG/PNG/BMP here
         </div>
         <input type="file" #fileInputSVGsel ng2FileSelect [uploader]="uploadersvg" />
@@ -87,7 +91,5 @@
         </div>
 
     </div>
-    <button matTooltip="Open gallery" class="deletepicture" mat-mini-fab color="primary" (click)="onOpenGallery()">
-        <mat-icon>wallpaper</mat-icon>
-    </button>
+
 </div>

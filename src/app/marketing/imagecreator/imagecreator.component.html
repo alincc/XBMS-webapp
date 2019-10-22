@@ -150,15 +150,9 @@
                                             <mat-label>Select font</mat-label>
                                             <mat-select [(value)]="image.style['font-family']"
                                                 (selectionChange)="detectchange()">
-                                                <mat-option value="Arial, Helvetica, sans-serif">Arial</mat-option>
-                                                <mat-option value="'Arial Black', Gadget, sans-serif">Arial Black
+                                                <mat-option *ngFor="let font of Fonts" [value]="font.value">
+                                                <label [style.font-family]="font.value">{{font.name}}</label> 
                                                 </mat-option>
-                                                <mat-option value="Tahoma, Geneva, sans-serif">Tahoma</mat-option>
-                                                <mat-option value="'Times New Roman', Times, serif">Times New Roman
-                                                </mat-option>
-                                                <mat-option value="Roboto">Roboto</mat-option>
-                                                <mat-option value="Open Sans">Open Sans</mat-option>
-                                                <mat-option value="Baloo Bhai">Baloo Bhai</mat-option>
                                             </mat-select>
                                         </mat-form-field>
                                     </div>
@@ -301,47 +295,51 @@
                                             </mat-select>
                                         </mat-form-field>
                                         <div fxLayout="column">
-                                        X-Axe
-                                        Gridline color
-                                        <input
-                                            [style.background]="image.lineChartOptions.scales.xAxes[0].gridLines.color"
-                                            [(colorPicker)]="image.lineChartOptions.scales.xAxes[0].gridLines.color"
-                                            (colorPickerChange)="detectchange()" [cpPresetLabel]="'Company colors'"
-                                            [cpPresetColors]="[company.companyprimairycolor, company.secondarycolor]">
-                                        <mat-icon class="iconsize-12"
-                                            (click)="image.lineChartOptions.scales.xAxes[0].gridLines.color = ''">delete
-                                        </mat-icon>
-                                        X-Axe
-                                        Font color
-                                        <input
-                                            [style.background]="image.lineChartOptions.scales.xAxes[0].ticks.fontColor"
-                                            [(colorPicker)]="image.lineChartOptions.scales.xAxes[0].ticks.fontColor"
-                                            (colorPickerChange)="detectchange()" [cpPresetLabel]="'Company colors'"
-                                            [cpPresetColors]="[company.companyprimairycolor, company.secondarycolor]">
-                                        <mat-icon class="iconsize-12"
-                                            (click)="image.lineChartOptions.scales.xAxes[0].ticks.fontColor = ''">delete
-                                        </mat-icon>
-                                        Y-axe
-                                        Gridline color
-                                        <input
-                                            [style.background]="image.lineChartOptions.scales.yAxes[0].gridLines.color"
-                                            [(colorPicker)]="image.lineChartOptions.scales.yAxes[0].gridLines.color"
-                                            (colorPickerChange)="detectchange()" [cpPresetLabel]="'Company colors'"
-                                            [cpPresetColors]="[company.companyprimairycolor, company.secondarycolor]">
-                                        <mat-icon class="iconsize-12"
-                                            (click)="image.lineChartOptions.scales.yAxes[0].gridLines.color = ''">delete
-                                        </mat-icon>
-                                        Y-axe
-                                        Font color
-                                        <input
-                                            [style.background]="image.lineChartOptions.scales.yAxes[0].ticks.fontColor"
-                                            [(colorPicker)]="image.lineChartOptions.scales.yAxes[0].ticks.fontColor"
-                                            (colorPickerChange)="detectchange()" [cpPresetLabel]="'Company colors'"
-                                            [cpPresetColors]="[company.companyprimairycolor, company.secondarycolor]">
-                                        <mat-icon class="iconsize-12"
-                                            (click)="image.lineChartOptions.scales.xAxes[0].ticks.fontColor = ''">delete
-                                        </mat-icon>
-                                    </div>
+                                            X-Axe
+                                            Gridline color
+                                            <input
+                                                [style.background]="image.lineChartOptions.scales.xAxes[0].gridLines.color"
+                                                [(colorPicker)]="image.lineChartOptions.scales.xAxes[0].gridLines.color"
+                                                (colorPickerChange)="detectchange()" [cpPresetLabel]="'Company colors'"
+                                                [cpPresetColors]="[company.companyprimairycolor, company.secondarycolor]">
+                                            <mat-icon class="iconsize-12"
+                                                (click)="image.lineChartOptions.scales.xAxes[0].gridLines.color = ''">
+                                                delete
+                                            </mat-icon>
+                                            X-Axe
+                                            Font color
+                                            <input
+                                                [style.background]="image.lineChartOptions.scales.xAxes[0].ticks.fontColor"
+                                                [(colorPicker)]="image.lineChartOptions.scales.xAxes[0].ticks.fontColor"
+                                                (colorPickerChange)="detectchange()" [cpPresetLabel]="'Company colors'"
+                                                [cpPresetColors]="[company.companyprimairycolor, company.secondarycolor]">
+                                            <mat-icon class="iconsize-12"
+                                                (click)="image.lineChartOptions.scales.xAxes[0].ticks.fontColor = ''">
+                                                delete
+                                            </mat-icon>
+                                            Y-axe
+                                            Gridline color
+                                            <input
+                                                [style.background]="image.lineChartOptions.scales.yAxes[0].gridLines.color"
+                                                [(colorPicker)]="image.lineChartOptions.scales.yAxes[0].gridLines.color"
+                                                (colorPickerChange)="detectchange()" [cpPresetLabel]="'Company colors'"
+                                                [cpPresetColors]="[company.companyprimairycolor, company.secondarycolor]">
+                                            <mat-icon class="iconsize-12"
+                                                (click)="image.lineChartOptions.scales.yAxes[0].gridLines.color = ''">
+                                                delete
+                                            </mat-icon>
+                                            Y-axe
+                                            Font color
+                                            <input
+                                                [style.background]="image.lineChartOptions.scales.yAxes[0].ticks.fontColor"
+                                                [(colorPicker)]="image.lineChartOptions.scales.yAxes[0].ticks.fontColor"
+                                                (colorPickerChange)="detectchange()" [cpPresetLabel]="'Company colors'"
+                                                [cpPresetColors]="[company.companyprimairycolor, company.secondarycolor]">
+                                            <mat-icon class="iconsize-12"
+                                                (click)="image.lineChartOptions.scales.xAxes[0].ticks.fontColor = ''">
+                                                delete
+                                            </mat-icon>
+                                        </div>
                                     </mat-expansion-panel>
                                 </mat-accordion>
 

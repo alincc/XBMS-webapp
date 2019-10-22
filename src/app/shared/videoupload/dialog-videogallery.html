@@ -16,7 +16,7 @@
       <div fxLayout="colmn" [class.selected]="video.url === data.selected" (click)="selectedimage(video.url)">
           <!-- <button a mat-raised-button (click)="selectedimage(video.url)"
           [class.selected]="video.url === data.selected"><mat-icon>ondemand_video</mat-icon> {{video.name}}</button> -->
-          <video width="100" height="100" fxFlex  preload="metadata">
+          <video width="100" height="100" fxFlex  preload="auto">
             <source fxFlex src={{video.preview}} type="video/mp4">
           </video>
           <!-- <label>{{video.name}}</label> -->

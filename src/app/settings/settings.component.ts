@@ -43,7 +43,7 @@ import { ErrorStateMatcher } from '@angular/material/core';
 import { MatSnackBar, MatSnackBarConfig, MatInput, MatAutocompleteSelectedEvent } from '@angular/material';
 import { fontoptions } from './google-fonts-list';
 import { TextEditorDialog } from '../marketing/maileditor/texteditordialog.component';
-
+import { fonts } from '../shared/listsgeneral/fonts';
 
 // export class MyErrorStateMatcher implements ErrorStateMatcher {
 //   isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
@@ -60,7 +60,7 @@ import { TextEditorDialog } from '../marketing/maileditor/texteditordialog.compo
 })
 
 export class SettingsComponent implements OnInit {
-
+  public Fonts =  fonts;
   public Relations: Relations[];
   public Account: Account = new Account();
   public Team: Team[];

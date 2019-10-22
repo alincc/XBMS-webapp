@@ -36,13 +36,8 @@ import { MatSnackBar, MatDatepickerModule } from '@angular/material';
 import { DatePipe } from '@angular/common';
 import { LinkedinService } from '../shared/socialservice';
 import { MatDialog, MatDialogRef } from '@angular/material';
-// import {
-//   trigger,
-//   state,
-//   style,
-//   animate,
-//   transition
-// } from '@angular/animations';
+import { fonts } from '../shared/listsgeneral/fonts';
+
 import { HostBinding } from '@angular/core';
 import { GoogleMapService } from '../shared/googlemapservice/googlemap.service';
 import { Observable } from 'rxjs';
@@ -104,7 +99,7 @@ export class RelationComponent implements OnInit {
   public selectedContactperson: Contactpersons;
   public selectedCall: Calls;
   // public selectedCrawler: Crawler;
-
+  public Fonts =  fonts;
   public selectedAdwords: Adwords;
   public Adwords: Adwords[];
 
@@ -941,7 +936,7 @@ export class RelationComponent implements OnInit {
           // console.log(file, index);
           let ext = file.name.split('.').pop();
           // console.log(ext, file);
-          if (ext === "gif" || ext === "jpeg" || ext === "jpg" || ext === "bmp" || ext === "png") {
+          if (ext === "gif" || ext === "jpeg" || ext === "jpg" || ext === "bmp" || ext === "png" || ext === "svg" || ext === "ai" || ext === "eps") {
             this.imagelist.push(file);
           }
           else if (ext === "mp4" || ext === "mpeg4" || ext === "mov" || ext === "avi" || ext === "wmv") {

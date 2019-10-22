@@ -34,14 +34,14 @@ export class VectoruploadComponent implements OnInit {
   errorMessageSvg: string;
   allowedMimeType = ['image/svg', 'image/svg+xml'];
   allowedMimeTypeSvg = [
- 'image/eps', 'image/ai', 'application/postscript', 'image/jpg', 'image/jpeg', 'image/png', 'image/bmp'];
-//  'application/psd',
-//  'image/vnd.adobe.photoshop',
-//  'application/x-photoshop',
-//  'application/photoshop',
-//  'application/psd',
-//  'image/psd', 
- maxFileSize = 400 * 1024 * 1024;
+    'image/eps', 'image/ai', 'application/postscript', 'image/jpg', 'image/jpeg', 'image/png', 'image/bmp'];
+  //  'application/psd',
+  //  'image/vnd.adobe.photoshop',
+  //  'application/x-photoshop',
+  //  'application/photoshop',
+  //  'application/psd',
+  //  'image/psd', 
+  maxFileSize = 400 * 1024 * 1024;
   public hasBaseDropZoneOver = false;
   public hasAnotherDropZoneOver = false;
   public hasBaseDropZoneOverSvg = false;
@@ -258,7 +258,7 @@ export class VectoruploadComponent implements OnInit {
       this.newFiles.name = name,
       this.newFiles.url = imgurl,
       this.newFiles.createdate = new Date(),
-      this.newFiles.type = 'vector',
+      this.newFiles.type = 'tmp',
       this.newFiles.companyId = this.account.companyId,
       // check if container exists and create
       this.ContainerApi.findById(this.option.id)
@@ -276,15 +276,12 @@ export class VectoruploadComponent implements OnInit {
         this.relationsApi.createFiles(this.option.id, this.newFiles)
           .subscribe(res => {
             console.log(res), //this.setimage(res.url)
-              this.fileApi.converteps2svg(this.option.id, this.account.companyId, res.url, name)
+              this.fileApi.converteps2svg(this.option.id, this.account.companyId, res.url, name, false)
                 .subscribe(res => { this.setimage(res.url) })
           });
       }
     }
-
-
   }
-
 }
 
 

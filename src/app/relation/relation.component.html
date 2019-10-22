@@ -228,17 +228,14 @@
                 </div>
                 <div fxLayout="row" fxLayout.xs="column">
                   <div fxFlex class="cell">
-                    <form>
-                      <mat-form-field class="example-full-width">
-                        <input [(ngModel)]=selectedRelation.companyfont type="text" placeholder="Pick one"
-                          aria-label="Number" matInput [formControl]="myControlfont" [matAutocomplete]="auto">
-                        <mat-autocomplete #auto="matAutocomplete">
-                          <mat-option *ngFor="let font of filteredfonts | async" [value]="font">
-                            {{font}}
-                          </mat-option>
-                        </mat-autocomplete>
+                      <mat-form-field>
+                          <mat-label>Select font</mat-label>
+                          <mat-select [(value)]="selectedRelation.companyfont">
+                              <mat-option *ngFor="let font of Fonts" [value]="font.value">
+                                  {{font.name}}
+                              </mat-option>
+                          </mat-select>
                       </mat-form-field>
-                    </form>
                   </div>
                 </div>
               </div>
