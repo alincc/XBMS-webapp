@@ -11,7 +11,8 @@ import { LoginComponent } from './login/login.component';
 import { ReturnpageComponent } from './returnpage/returnpage.component';
 import { MarketingplannerComponent } from './marketingplanner/marketingplanner.component'
 import { LinkedinComponent } from './shared/linkedin/linkedin.component';
-import { RequestobjectComponent } from './marketing/videocreator/requestobject/requestobject.component'
+import { RequestobjectComponent } from './marketing/videocreator/requestobject/requestobject.component';
+import { TranslationsComponent } from './translations/translations.component'
 
 const routes: Routes = [
   {
@@ -49,6 +50,11 @@ const routes: Routes = [
 
   {
     path: 'settings', component: SettingsComponent
+    , canActivate: [AuthGuard]
+  },
+
+  {
+    path: 'translations', component: TranslationsComponent
     , canActivate: [AuthGuard]
   },
 

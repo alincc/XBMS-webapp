@@ -55,7 +55,7 @@ import {
 })
 export class MarketingplannerComponent implements OnInit {
 
-
+  public filteredRelations: Relations[];
   view: CalendarView = CalendarView.Month;
   CalendarView = CalendarView;
   viewDate: Date = new Date();
@@ -307,6 +307,30 @@ export class MarketingplannerComponent implements OnInit {
   closeOpenMonthViewDay() {
     this.activeDayIsOpen = false;
   }
+
+  searchGoQuick(value): void {
+    let searchterm = value.trim();
+    this.CompanyApi.getRelations(this.Account.companyId,
+      {
+        where:
+        {
+          or: [{ "relationname": { "regexp": searchterm + '/i' } },
+          { "address1": { "regexp": searchterm + '/i' } },
+          { "city": { "regexp": searchterm + '/i' } }
+          ]
+        },
+        order: 'relationname ASC'
+      })
+      .subscribe((Relations: Relations[]) => {
+      this.filteredRelations = Relations
+        //console.log(this.filteredRelations)
+      });
+  }
+
+    //display name in searchbox
+    displayFnRelation(relation?: Relations): string | undefined {
+      return relation ? relation.relationname : undefined;
+    }
 
 
 }

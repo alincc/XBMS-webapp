@@ -373,6 +373,7 @@
                     </mat-expansion-panel>
                 </mat-accordion>
             </div>
+            <button mat-button (click)="addVectorAnimation(selectedelement)">Add new Vector effect</button>
         </div>
 
         <div *ngIf="selectedelement.type === 'text'">
@@ -974,12 +975,12 @@
                         </div> -->
                         <!-- </div>   [position]="element.setpos" -->
                     </div>
-                    <canvas-whiteboard *ngIf="element.type === 'whiteboard'" id="{{element.id}}" #canvasWhiteboard
+                    <canvas-whiteboard *ngIf="whiteboard === true" id="{{element.id}}" #canvasWhiteboard
                         [drawButtonClass]="'drawButtonClass'" [drawButtonText]="'Draw'" [ngStyle]="element.style"
                         [clearButtonClass]="'clearButtonClass'" [clearButtonText]="'Clear'" [undoButtonText]="'Undo'"
                         [undoButtonEnabled]="true" [redoButtonText]="'Redo'" [redoButtonEnabled]="true"
                         [colorPickerEnabled]="true" [saveDataButtonEnabled]="true" [saveDataButtonText]="'Save'"
-                        [lineWidth]="5" [strokeColor]="'rgb(0,0,0)'" [shouldDownloadDrawing]="false"
+                        [lineWidth]="1" [strokeColor]="'rgb(0,0,0)'" [shouldDownloadDrawing]="false"
                         (onSave)="onCanvasSave($event, i)">
                     </canvas-whiteboard>
                 </div>

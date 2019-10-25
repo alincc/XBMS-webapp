@@ -1,159 +1,180 @@
-<div class="addtobutton">
-  <button mat-fab color="primary" matTooltip="Add event" (click)="newPlanner()">
-    <mat-icon>add</mat-icon>
-  </button>
-</div>
+<div fxLayout="column">
+    <div fxFlex="100%" fxLayout="column">
+        <mat-card class="topbanner">
+            <mat-card-content>
+                <div class="selectrelation" fxFlex fxShow.xs="false">
+                    <mat-form-field>
+                        <input type="text" placeholder="Select Relation" aria-label="relation" matInput
+                            (keyup)="searchGoQuick($event.srcElement.value)" [matAutocomplete]="relations">
+                        <mat-autocomplete #relations="matAutocomplete" [displayWith]="displayFnRelation">
+                            <mat-option *ngFor="let option of filteredRelations; let i = index" [value]="option"
+                                (blur)="onSelectRelation(option, i)">
+                                {{ option.relationname }}
+                            </mat-option>
+                        </mat-autocomplete>
+                    </mat-form-field>
+                </div>
+            </mat-card-content>
+        </mat-card>
+    </div>
+  <div class="addtobutton">
+    <button mat-fab color="primary" matTooltip="Add event" (click)="newPlanner()">
+      <mat-icon>add</mat-icon>
+    </button>
+  </div>
 
-<div fxLayout="row" (swipeleft)="swipeleft($event)" (swiperight)="swiperight($event)" class="mat-typography">
+  <div fxLayout="row" (swipeleft)="swipeleft($event)" (swiperight)="swiperight($event)" class="mat-typography">
 
-  <div fxFlex="20%" class="toolsmenu" ngClass.gt-xs="listview-normal" ngClass.lt-sm="listview-noshow"
-    [class.listview-xs-show]="listviewxsshow" ngClass.gt-xs="container-normal" ngClass.lt-sm="container-noshow"
-    [class.container-xs-show]="listviewxsshow">
-    <mat-accordion>
-      <mat-expansion-panel>
-        <mat-expansion-panel-header>
-          <mat-panel-title>
-            Select Relation
-          </mat-panel-title>
-        </mat-expansion-panel-header>
-        <form class="example-form">
-          <mat-form-field class="example-full-width">
-            <input type="text" placeholder="Select Relation" aria-label="Assignee" [(ngModel)]=option matInput
-              [formControl]="myControl" [matAutocomplete]="auto">
-            <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
-              <mat-option *ngFor="let option of filteredOptions | async" [value]="option"
-                (blur)="onSelectRelation(option, i)">
-                {{ option.relationname }}
+    <div fxFlex="20%" class="toolsmenu" ngClass.gt-xs="listview-normal" ngClass.lt-sm="listview-noshow"
+      [class.listview-xs-show]="listviewxsshow" ngClass.gt-xs="container-normal" ngClass.lt-sm="container-noshow"
+      [class.container-xs-show]="listviewxsshow">
+      <mat-accordion>
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              Select Relation
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+          <form class="example-form">
+            <mat-form-field class="example-full-width">
+              <input type="text" placeholder="Select Relation" aria-label="Assignee" [(ngModel)]=option matInput
+                [formControl]="myControl" [matAutocomplete]="auto">
+              <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+                <mat-option *ngFor="let option of filteredOptions | async" [value]="option"
+                  (blur)="onSelectRelation(option, i)">
+                  {{ option.relationname }}
 
-              </mat-option>
-            </mat-autocomplete>
-          </mat-form-field>
+                </mat-option>
+              </mat-autocomplete>
+            </mat-form-field>
 
-        </form>
-      </mat-expansion-panel>
+          </form>
+        </mat-expansion-panel>
 
-      <mat-expansion-panel (opened)="getMarketingPlanner()" (closed)="panelOpenState = false">
-        <mat-expansion-panel-header>
-          <mat-panel-title>
-            Campagins
-          </mat-panel-title>
-        </mat-expansion-panel-header>
+        <mat-expansion-panel (opened)="getMarketingPlanner()" (closed)="panelOpenState = false">
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              Campagins
+            </mat-panel-title>
+          </mat-expansion-panel-header>
 
-        <div>
-          <ul class="Relations">
-            <div *ngFor="let Marketingplanner of Marketingplanner" (click)="onSelectMarketingPlanner(Marketingplanner)"
-              [class.selected]="Marketingplanner === selectedmarketingplanner">
-              <span class="box">{{Marketingplanner.campaignname}} {{Marketingplanner.publicationdate}}</span>
+          <div>
+            <ul class="Relations">
+              <div *ngFor="let Marketingplanner of Marketingplanner"
+                (click)="onSelectMarketingPlanner(Marketingplanner)"
+                [class.selected]="Marketingplanner === selectedmarketingplanner">
+                <span class="box">{{Marketingplanner.campaignname}} {{Marketingplanner.publicationdate}}</span>
+              </div>
+            </ul>
+          </div>
+
+          <button mat-mini-fab color="primary" class="mat-fab-toolsmenu" (click)="newPlanner()">
+            <mat-icon>add</mat-icon>
+          </button>
+
+
+        </mat-expansion-panel>
+        <mat-expansion-panel>
+
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              Tools
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+          <div class='dragcontainer1'>
+            <div class="dragcontainertitle">
+              <mat-datepicker #picker1 class="InputField"></mat-datepicker>
+              <input [matDatepicker]="myDatepicker1" placeholder="Date">
+              <!-- [(ngModel)]=selectedCalls.date -->
+              <mat-datepicker-toggle matSuffix [for]="myDatepicker1"></mat-datepicker-toggle>
+              <mat-datepicker #myDatepicker1></mat-datepicker>
             </div>
-          </ul>
-        </div>
-
-        <button mat-mini-fab color="primary" class="mat-fab-toolsmenu" (click)="newPlanner()">
-          <mat-icon>add</mat-icon>
-        </button>
-
-
-      </mat-expansion-panel>
-      <mat-expansion-panel>
-
-        <mat-expansion-panel-header>
-          <mat-panel-title>
-            Tools
-          </mat-panel-title>
-        </mat-expansion-panel-header>
-        <div class='dragcontainer1'>
-          <div class="dragcontainertitle">
-            <mat-datepicker #picker1 class="InputField"></mat-datepicker>
-            <input [matDatepicker]="myDatepicker1" placeholder="Date">
-            <!-- [(ngModel)]=selectedCalls.date -->
-            <mat-datepicker-toggle matSuffix [for]="myDatepicker1"></mat-datepicker-toggle>
-            <mat-datepicker #myDatepicker1></mat-datepicker>
+            <div class='dragitem'>Email</div>
+            <div class='dragitem'>Pushnotification</div>
+            <div class='dragitem'>Intagram</div>
           </div>
-          <div class='dragitem'>Email</div>
-          <div class='dragitem'>Pushnotification</div>
-          <div class='dragitem'>Intagram</div>
-        </div>
 
-      </mat-expansion-panel>
-      <mat-expansion-panel (opened)="getPublications()">
-        <mat-expansion-panel-header>
-          <mat-panel-title>
-            Publications
-          </mat-panel-title>
-        </mat-expansion-panel-header>
-        <div class='dragcontainer1'>
-          <div *ngFor="let Publications of Publications" (click)="onSelect(Publications)">
-            <div class='dragitem'>{{Publications.title}}</div>
+        </mat-expansion-panel>
+        <mat-expansion-panel (opened)="getPublications()">
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              Publications
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+          <div class='dragcontainer1'>
+            <div *ngFor="let Publications of Publications" (click)="onSelect(Publications)">
+              <div class='dragitem'>{{Publications.title}}</div>
+            </div>
           </div>
-        </div>
-      </mat-expansion-panel>
-      <mat-expansion-panel>
-        <mat-expansion-panel-header>
-          <mat-panel-title>
-            (Social) Messages
-          </mat-panel-title>
+        </mat-expansion-panel>
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              (Social) Messages
+            </mat-panel-title>
 
-        </mat-expansion-panel-header>
-        <div class='dragitem'>Instagram</div>
-      </mat-expansion-panel>
-      <mat-expansion-panel>
-        <mat-expansion-panel-header>
-          <mat-panel-title>
-            Promotions
-          </mat-panel-title>
-        </mat-expansion-panel-header>
-        <div class='dragitem'>Adwords</div>
-      </mat-expansion-panel>
-    </mat-accordion>
-  </div>
-
-  <div fxFlex="80%" flexLayout="column" ngClass.gt-xs="listview-normal" ngClass.lt-sm="listview-noshow"
-    [class.listview-xs-show]="listviewxsshow" ngClass.gt-xs="container-normal" ngClass.lt-sm="container-noshow"
-    [class.container-xs-show]="listviewxsshow">
-
-    <div>
-      <h2>{{ viewDate | calendarDate:(view + 'ViewTitle'):'en' }}</h2>
+          </mat-expansion-panel-header>
+          <div class='dragitem'>Instagram</div>
+        </mat-expansion-panel>
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              Promotions
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+          <div class='dragitem'>Adwords</div>
+        </mat-expansion-panel>
+      </mat-accordion>
     </div>
-    <div>
-      <div fxLayout="row">
-        <div (click)="setView(CalendarView.Month)" [class.active]="view === CalendarView.Month">
-          Month 
-        </div>
-        <div (click)="setView(CalendarView.Week)" [class.active]="view === CalendarView.Week">
-          /Week 
-        </div>
-        <div (click)="setView(CalendarView.Day)" [class.active]="view === CalendarView.Day">
-          /Day
+
+    <div fxFlex="80%" flexLayout="column" ngClass.gt-xs="listview-normal" ngClass.lt-sm="listview-noshow"
+      [class.listview-xs-show]="listviewxsshow" ngClass.gt-xs="container-normal" ngClass.lt-sm="container-noshow"
+      [class.container-xs-show]="listviewxsshow">
+
+      <div>
+        <h2>{{ viewDate | calendarDate:(view + 'ViewTitle'):'en' }}</h2>
+      </div>
+      <div>
+        <div fxLayout="row">
+          <div (click)="setView(CalendarView.Month)" [class.active]="view === CalendarView.Month">
+            Month
+          </div>
+          <div (click)="setView(CalendarView.Week)" [class.active]="view === CalendarView.Week">
+            /Week
+          </div>
+          <div (click)="setView(CalendarView.Day)" [class.active]="view === CalendarView.Day">
+            /Day
+          </div>
         </div>
       </div>
-    </div>
-    <div>
-      <div fxLayout="row" fxLayoutAlign="space-around center">
-        <div mwlCalendarPreviousView [view]="view" [(viewDate)]="viewDate" (viewDateChange)="closeOpenMonthViewDay()">
+      <div>
+        <div fxLayout="row" fxLayoutAlign="space-around center">
+          <div mwlCalendarPreviousView [view]="view" [(viewDate)]="viewDate" (viewDateChange)="closeOpenMonthViewDay()">
             <mat-icon>navigate_before</mat-icon>
-        </div>
-        <div mwlCalendarToday [(viewDate)]="viewDate">
-          <mat-icon>today</mat-icon>
-        </div>
-        <div mwlCalendarNextView [view]="view" [(viewDate)]="viewDate" (viewDateChange)="closeOpenMonthViewDay()">
+          </div>
+          <div mwlCalendarToday [(viewDate)]="viewDate">
+            <mat-icon>today</mat-icon>
+          </div>
+          <div mwlCalendarNextView [view]="view" [(viewDate)]="viewDate" (viewDateChange)="closeOpenMonthViewDay()">
             <mat-icon>navigate_next</mat-icon>
+          </div>
         </div>
+      </div>
+
+      <br />
+      <div [ngSwitch]="view">
+        <mwl-calendar-month-view *ngSwitchCase="'month'" [viewDate]="viewDate" [events]="events"
+          [activeDayIsOpen]="activeDayIsOpen" (dayClicked)="dayClicked($event.day)"
+          (eventClicked)="eventClicked($event.event)">
+        </mwl-calendar-month-view>
+        <mwl-calendar-week-view *ngSwitchCase="'week'" [viewDate]="viewDate" [events]="events"
+          (eventClicked)="eventClicked($event.event)">
+        </mwl-calendar-week-view>
+        <mwl-calendar-day-view *ngSwitchCase="'day'" [viewDate]="viewDate" [events]="events"
+          (eventClicked)="eventClicked($event.event)">
+        </mwl-calendar-day-view>
       </div>
     </div>
 
-    <br/>
-    <div [ngSwitch]="view">
-      <mwl-calendar-month-view *ngSwitchCase="'month'" [viewDate]="viewDate" [events]="events"
-        [activeDayIsOpen]="activeDayIsOpen" (dayClicked)="dayClicked($event.day)"
-        (eventClicked)="eventClicked($event.event)">
-      </mwl-calendar-month-view>
-      <mwl-calendar-week-view *ngSwitchCase="'week'" [viewDate]="viewDate" [events]="events"
-        (eventClicked)="eventClicked($event.event)">
-      </mwl-calendar-week-view>
-      <mwl-calendar-day-view *ngSwitchCase="'day'" [viewDate]="viewDate" [events]="events"
-        (eventClicked)="eventClicked($event.event)">
-      </mwl-calendar-day-view>
-    </div>
   </div>
-
 </div>

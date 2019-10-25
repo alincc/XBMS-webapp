@@ -31,14 +31,14 @@
               <mat-option *ngFor="
                       let option of filteredOptions | async;
                       let i = index
-                    " [value]="option" (blur)="getAnalyticsAccounts(option, i)">
+                    " [value]="option" (selectionChange)="getAnalyticsAccounts(option, i)">
                 {{ option.relationname }}
               </mat-option>
             </mat-autocomplete>
           </mat-form-field>
           <mat-form-field class="selectboxheader">
             <mat-select [(ngModel)]="selectedanalytics.name" placeholder="GA Account" class="InputField"
-              (blur)="buildDashboard()">
+              (selectionChange)="buildDashboard()">
               <mat-option *ngFor="let selectedanalytics of GoogleanalyticsModel" [value]="selectedanalytics">
                 {{ selectedanalytics.name }}
               </mat-option>

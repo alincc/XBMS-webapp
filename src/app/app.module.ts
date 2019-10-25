@@ -98,6 +98,7 @@ import { CanvasWhiteboardModule } from 'ng2-canvas-whiteboard';
 import { GestureConfig } from '@angular/material';
 import { VectoruploadComponent, dialogvectorgallerycomponent } from './shared/vectorupload/vectorupload.component';
 import { BackgroundComponent, dialogbackgroundgallerycomponent } from './shared/background/background.component';
+import { TranslationsComponent } from './translations/translations.component';
 
 declare var Hammer: any;
 @Injectable()
@@ -146,7 +147,8 @@ export class HammerConfig extends GestureConfig  {
     VideocreatorComponent,
     RequestobjectComponent,
     VectoruploadComponent,
-    BackgroundComponent
+    BackgroundComponent,
+    TranslationsComponent
   ],
 
    entryComponents: [

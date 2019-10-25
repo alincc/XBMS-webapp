@@ -39,7 +39,7 @@ export class animationtype {
   skewX: number;
   easetype: any;
   fromto: string;
-  transformOriginX: string; 
+  transformOriginX: string;
   transformOriginY: string;
 }
 
@@ -216,6 +216,7 @@ export class VideocreatorComponent implements AfterViewInit {
   public primairytimeline = new TimelineMax({ paused: true, reversed: true });
   progressbarline = new TimelineMax({ paused: true, reversed: true });
 
+  public whiteboard = false;
   public listviewxsshow = false;
   public showprogressbar = false;
   public uploader: FileUploader;
@@ -281,7 +282,6 @@ export class VideocreatorComponent implements AfterViewInit {
 
     if (currentItem !== undefined) {
       if (currentItem.currentValue.id !== undefined) {
-
       }
     }
   }
@@ -472,21 +472,21 @@ export class VideocreatorComponent implements AfterViewInit {
       let qty = 80;
       let duration = 2.5;
       let colors = ["#91e600", "#84d100", "#73b403", "#528003"];
-            
+
       for (let i = 0; i < qty; i++) {
         let cln = iset.cloneNode(true);
+        console.log(cln);
         let parent = iset.parentElement;
         parent.append(cln);
-        let color = colors[(Math.random() * colors.length) | 0];
+        //let color = colors[(Math.random() * colors.length) | 0];
         let delay = Math.random() * duration;
         if (element.fromto === 'from') {
           this.primairytimeline.from(cln, duration, { physics2D: { velocity: Math.random() * 400 + 150, angle: Math.random() * 40 + 250, gravity: 500 } }, delay);
         }
-  
         if (element.fromto === 'to') {
           this.primairytimeline.to(cln, duration, { physics2D: { velocity: Math.random() * 400 + 150, angle: Math.random() * 40 + 250, gravity: 500 } }, delay);
         }
-        
+
       }
     }
 
@@ -502,19 +502,14 @@ export class VideocreatorComponent implements AfterViewInit {
       }
     }
 
-
-    //console.log(duration, aniset, startime);
   }
 
 
   addEffect(element): void {
-    // console.log(element);
     let id = document.getElementById(element.id);
-    //console.log(id);
     element.animation.forEach(animationsection => {
       this.addAnimation(id, animationsection);
     });
-    // this.detectchange();
   }
 
   addNewEffect(element): void {
@@ -534,7 +529,7 @@ export class VideocreatorComponent implements AfterViewInit {
       skewX: 50,
       easetype: 'bounce',
       fromto: 'from',
-      transformOriginX: '50%', 
+      transformOriginX: '50%',
       transformOriginY: '200px'
     }
     this.selectedelement.animation.push(newanimation)
@@ -670,14 +665,15 @@ export class VideocreatorComponent implements AfterViewInit {
 
   addNewVector(src?, height?, width?, svgcombi?, posx?, posy?): void {
     let svgc = this.sanitizer.bypassSecurityTrustHtml('');
-    if (svgcombi){svgc = this.sanitizer.bypassSecurityTrustHtml(svgcombi)}
+    if (svgcombi) { svgc = this.sanitizer.bypassSecurityTrustHtml(svgcombi) }
     let newsrc = '';
     let newheight = 'auto';
     let newwidth = 'auto';
     let posxset = 0;
     let posyset = 0;
-    if (posx){posyset = posy};
-    if (posy){posxset = posx};
+    let vectanim = [];
+    if (posx) { posyset = posy };
+    if (posy) { posxset = posx };
     if (src) { newsrc = src };
     if (height) { newheight = height };
     if (width) { newwidth = width };
@@ -707,26 +703,29 @@ export class VideocreatorComponent implements AfterViewInit {
       skewX: 50,
       easetype: '',
       fromto: 'to',
-      transformOriginX: '50%', 
+      transformOriginX: '50%',
       transformOriginY: '200px'
     }];
-    let vectanim: vectoranimationtype[] = [{
-      svganimationtype: '',
-      drawcolor: 'blue',
-      linethickness: '5px',
-      repeat: 0,
-      yoyo: false,
-      fillright: '100%',
-      fillleft: '0%',
-      drawright: '0%',
-      drawleft: '0%',
-      start_time: 0, //delayt
-      end_time: 10,
-      duration: 2.5,
-      hideimage: false,
-      easetype: 'linear',
-      fromto: 'to'
-    }]
+    // only add if new svg not split from 
+    if (!svgcombi) {
+      vectanim = [{
+        svganimationtype: '',
+        drawcolor: 'blue',
+        linethickness: '5px',
+        repeat: 0,
+        yoyo: false,
+        fillright: '100%',
+        fillleft: '0%',
+        drawright: '0%',
+        drawleft: '0%',
+        start_time: 0, //delayt
+        end_time: 10,
+        duration: 2.5,
+        hideimage: false,
+        easetype: 'linear',
+        fromto: 'to'
+      }]
+    }
     // do not add animation from beginning with morph SVG's 
     let vectors: vectorelement[] = [{
       src: newsrc,
@@ -752,7 +751,7 @@ export class VideocreatorComponent implements AfterViewInit {
       src: '',
       posx: posxset,
       posy: posyset,
-      setpos: { 'x': 0, 'y': 0},
+      setpos: { 'x': 0, 'y': 0 },
       animation: [],
       id: newelnr,
       vectors: vectors,
@@ -760,17 +759,38 @@ export class VideocreatorComponent implements AfterViewInit {
       vectoranimation: vectanim,
       // from, 4, {drawSVG:0, repeat:10, yoyo:true}, 4)
     }
-    console.log(vector);
+    //console.log(vector);
     this.animationarray.push(vector);
-    if (!svgcombi){
+    if (!svgcombi) {
       this.detectchange();
     } else {
-      
+
     }
-    
+
   }
 
-  deleteVectorAnimation(iv){
+  addVectorAnimation(element: vectoranimation){
+    let vectanim = [{
+      svganimationtype: '',
+      drawcolor: 'blue',
+      linethickness: '5px',
+      repeat: 0,
+      yoyo: false,
+      fillright: '100%',
+      fillleft: '0%',
+      drawright: '0%',
+      drawleft: '0%',
+      start_time: 0, //delayt
+      end_time: 10,
+      duration: 2.5,
+      hideimage: false,
+      easetype: 'linear',
+      fromto: 'to'
+    }]
+    element.vectoranimation = vectanim;
+  }
+
+  deleteVectorAnimation(iv) {
     this.selectedelement.vectoranimation.splice(iv, 1);
   }
 
@@ -800,7 +820,7 @@ export class VideocreatorComponent implements AfterViewInit {
       skewX: 50,
       easetype: Bounce.easeOut,
       fromto: 'to',
-      transformOriginX: '50%', 
+      transformOriginX: '50%',
       transformOriginY: '200px'
     }];
     let img: imageanimation = {
@@ -849,7 +869,7 @@ export class VideocreatorComponent implements AfterViewInit {
       skewX: 50,
       easetype: 'bounce',
       fromto: 'to',
-      transformOriginX: '50%', 
+      transformOriginX: '50%',
       transformOriginY: '200px'
     }];
     let img: shapeanimation = {
@@ -875,6 +895,7 @@ export class VideocreatorComponent implements AfterViewInit {
   }
 
   addNewWhiteboard(): void {
+   
     let newelnr;
     if (this.animationarray.length === -1) {
       newelnr = 0 + 'el';
@@ -898,7 +919,7 @@ export class VideocreatorComponent implements AfterViewInit {
       skewX: 50,
       easetype: 'bounce',
       fromto: 'to',
-      transformOriginX: '50%', 
+      transformOriginX: '50%',
       transformOriginY: '200px'
     }];
     let whiteboard: whiteboardanimation = {
@@ -918,7 +939,11 @@ export class VideocreatorComponent implements AfterViewInit {
       animation: anim,
       id: newelnr
     }
-    this.animationarray.push(whiteboard);
+    if (this.whiteboard === false){
+      this.animationarray.push(whiteboard);
+      this.whiteboard = true;
+    }
+  
     this.detectchange();
     setTimeout(() => {
       let wb = document.getElementById(newelnr);
@@ -934,6 +959,7 @@ export class VideocreatorComponent implements AfterViewInit {
       // cv[index].setAttribute('height', this.canvas.height);
       // // by class canvas_whiteboard incomplete_shapes_canvas_whiteboard
       // }
+      
     }, 300) // mininmum needed for dom to process
     //this.addAnimation(newelnr, img);
   }
@@ -963,7 +989,7 @@ export class VideocreatorComponent implements AfterViewInit {
       skewX: 50,
       easetype: 'bounce',
       fromto: 'to',
-      transformOriginX: '50%', 
+      transformOriginX: '50%',
       transformOriginY: '200px'
     }];
     let splittext: splittexttype[] = [{
@@ -1049,7 +1075,7 @@ export class VideocreatorComponent implements AfterViewInit {
     }
 
     // console.log(this.currenttime);
-    this.detectchange();
+    // this.detectchange();
     //this.progressbarline.reverse();
     //this.primairytimeline.reverse();
     //this.progressbar.reversed() ?
@@ -1275,8 +1301,6 @@ export class VideocreatorComponent implements AfterViewInit {
     };
     return newpaths
   }
-
-
 
   async createMorph(element: vectoranimation, animation: animationtype) {
     // create vector animation foreach path vector 1 to 2, 2 to 3 etc..
@@ -1517,7 +1541,8 @@ export class VideocreatorComponent implements AfterViewInit {
               asList: false
             });
             p[index].setAttribute("d", normalizedPath);
-          }}
+          }
+        }
         resolve();
       }
     });
@@ -1615,7 +1640,7 @@ export class VideocreatorComponent implements AfterViewInit {
     });
   }
 
-  seperatePaths(idx, vector: vectorelement, element: vectoranimation) {    
+  seperatePaths(idx, vector: vectorelement, element: vectoranimation) {
     vector.pathids.forEach(pid => {
       let svgel = document.getElementById(pid);
       let s = new XMLSerializer(); // convert to string
@@ -1631,7 +1656,7 @@ export class VideocreatorComponent implements AfterViewInit {
       let newsvg = newsvgarray.join('');
       this.addNewVector(null, element.style.height, element.style.width, newsvg, element.posx, element.posy);
     });
-    this.deleteVectorSrc(idx, vector);
+    //this.deleteVectorSrc(idx, vector);
     this.detectchange();
   }
 
@@ -1689,6 +1714,7 @@ export class VideocreatorComponent implements AfterViewInit {
                     // delete whiteboard
                     console.log(resp);
                     this.deleteitem(i);
+                    this.whiteboard = false;
                   });
               }, 300);
             });

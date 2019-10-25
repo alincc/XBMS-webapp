@@ -8,10 +8,6 @@ import {
   API_VERSION,
   Container,
   ContainerApi,
-  Translation,
-  TranslationApi,
-  Translationjob,
-  TranslationjobApi,
   Relations,
   RelationsApi,
   Account,
@@ -50,8 +46,6 @@ import { Router, ActivatedRoute, Params } from '@angular/router';
 import { Location, NgClass, NgStyle } from '@angular/common';
 import { DialogsService } from './../dialogsservice/dialogs.service';
 import { RandomService } from '../dialogsservice/random.service';
-import { WordpressUploadDialogComponent} from '../dialogsservice/wordpressupload-dialog.component';
-import { WordpressService } from '../shared/websiteservice';
 import { LinkedinService } from '../shared/socialservice';
 import { timeconv } from '../shared/timeconv';
 import { FormControl } from '@angular/forms';
@@ -60,22 +54,15 @@ import { MatSnackBar, MatSnackBarConfig, MatInput, MatAutocompleteSelectedEvent 
 import { ENTER, COMMA } from '@angular/cdk/keycodes';
 import { map, startWith, timeoutWith } from 'rxjs/operators';
 import { Observable, BehaviorSubject } from 'rxjs';
-// import {
-//   trigger,
-//   state,
-//   style,
-//   animate,
-//   transition
-// } from '@angular/animations';
 import * as moment from 'moment-timezone';
-import { reject } from '../../../node_modules/@types/q';
+// import { reject } from '../../../node_modules/@types/q';
 declare const CKEDITOR: any;
 const URL = 'http://localhost:3000/api/containers/tmp/upload';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 
 import { MarketingchannelsComponent } from './marketingchannels/marketingchannels.component';
 import { ImagecreatorComponent } from './imagecreator/imagecreator.component';
 import { MaileditorComponent } from './maileditor/maileditor.component';
-import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material';
 import { TextEditorDialog } from './maileditor/texteditordialog.component';
 
 export interface UploadResult {
@@ -117,8 +104,6 @@ export class MarketingComponent implements OnInit {
   public Adwords: Adwords[];
   public container: Container[];
   public Publications: Publications[];
-  public Translation: Translation[];
-  public Translationjob: Translationjob[];
   public Relations: Relations[];
   public Googleanalytics: Googleanalytics[];
   public Marketingplannerevents: Marketingplannerevents[];
@@ -138,11 +123,6 @@ export class MarketingComponent implements OnInit {
   public newMailinglist: Mailinglist = new Mailinglist();
   public newmailinglisttoggle = false;
   public callback
-
-  public MarkTranJobs;
-  public MarkTranJobRes;
-  public translationJob = {};
-  public languages;
   public errorMessage;
   public selectedPublications: Publications;
 
@@ -155,10 +135,7 @@ export class MarketingComponent implements OnInit {
   public images: Image[] = [];
   public imagesNew: Image[] = [];
   public listviewxsshow = false;
-  public selectedTranslation: Translation;
-  public selectedTranslationjob: Translationjob;
-  public newTranslation = new Translation();
-  public jobs = [];
+
 
   public selectedAdwords: Adwords;
   // delete?? calls only
@@ -258,9 +235,7 @@ export class MarketingComponent implements OnInit {
   public bounceRate = '-';
   public goalStartsAll = '-';
   public pageview = '-';
-  public urlparameter: string;
-  public selectedIndex = 0;
-  public showconfirmation = false;
+
   public updateMailingObj: Mailing = new Mailing;
 
   public searchboxMailinglist;
@@ -269,7 +244,7 @@ export class MarketingComponent implements OnInit {
 
   constructor(
     public dialog: MatDialog,
-    public dialogWordpress: MatDialog,
+
     private MarketingChannel: MarketingchannelsComponent,
     //private Maileditor: MaileditorComponent,
     private sanitizer: DomSanitizer,
@@ -285,13 +260,9 @@ export class MarketingComponent implements OnInit {
     public CompanyApi: CompanyApi,
     public AccountApi: AccountApi,
     public RelationsApi: RelationsApi,
-    public TranslationApi: TranslationApi,
-    public TranslationjobApi: TranslationjobApi,
     public LinkedinService: LinkedinService,
-    public WordpressService: WordpressService,
     public dialogsService: DialogsService,
     public randomService: RandomService,
-    public WordpressUploadDialogComponent: WordpressUploadDialogComponent,
     public PublicationsApi: PublicationsApi,
     public location: Location,
     public router: Router,
@@ -316,22 +287,6 @@ export class MarketingComponent implements OnInit {
     this.maxDate = new Date(2030, 0, 1);
     // console.log(this.minDate);
 
-    this.urlparameter = this.route.snapshot.params['id'];
-    if (this.urlparameter) {
-      this.selectedIndex = 1;
-      this.TranslationApi.findById(this.urlparameter).subscribe((translation: Translation) => {
-        this.selectedTranslation = translation,
-          this.onSelectTranslation(this.selectedTranslation);
-          this.getTranslations();
-        // this.TranslationApi.    // check payment hook
-        if (this.selectedTranslation.status === 'paid') {
-        // confirm translation assignment
-        this.publishTranslationJob(this.selectedOption);
-        }
-        // send confirmation email with invoice to adminaddress (add admin address to account profile)
-        this.showconfirmation = true;
-      })
-    }
   }
 
   public openSnackBar(message: string) {
@@ -357,7 +312,7 @@ export class MarketingComponent implements OnInit {
                   this.CompanyApi.findById(this.Account.companyId)
                   .subscribe((company: Company) => {
                     this.company = company;
-                    this.getTranslations();
+                    //this.getTranslations();
                     //console.log(this.company);
                   });
                 })
@@ -541,70 +496,6 @@ export class MarketingComponent implements OnInit {
 
 
 
-  newTranslationItem(): void {
-    this.newTranslation.companyId = this.Account.companyId,
-      this.newTranslation.title = 'New',
-      this.newTranslation.status = 'Draft',
-      this.newTranslation.paymentreceived = 'Not Submitted'
-      this.RelationsApi.createTranslation(this.option.id, this.newTranslation)
-        .subscribe(result => {
-          this.selectedTranslation = result,
-            this.getTranslations();
-        });
-  }
-
-
-
-  getTranslations(): void {
-    const languages = []
-    this.RelationsApi.getTranslation(this.option.id)
-      .subscribe((result) => { this.Translation = result });
-  };
-
-  getTransationsjobs(): void {
-    // need project nr. to fetch languages
-    this.TranslationApi.getlanguages(this.selectedTranslation.id).subscribe(res => {
-      this.languages = res
-        //console.log(this.languages.language)
-    });
-    this.TranslationApi.getTranslationjob(this.selectedTranslation.id)
-      .subscribe((translationjob: Translationjob[]) => {
-        this.Translationjob = translationjob
-        // , this.Translationjob.forEach(element => {
-        //      this.updateTranslation(element.job_id);
-        //    })
-      });
-  }
-
-  createTranslationJob(): void {
-    this.TranslationApi.createTranslationjob(this.selectedTranslation.id)
-      .subscribe(res => this.getTransationsjobs());
-  }
-
-  // count words in text 
-  private wordCount(str) {
-    return str.split(' ')
-      .filter(function (n) { return n != '' })
-      .length;
-  }
-
-  // calculate price 
-  private priceCalculator() {
-    // words, level, languagefrom, languageto 
-    let totalamount = 0;
-    this.Translationjob.forEach(job => {
-      let jobwordcount = 0;
-      jobwordcount = this.wordCount(job.body_src);
-      let jobprice = 0;
-      jobprice = jobwordcount * 0.1;
-      totalamount = jobprice + totalamount;
-    })
-    const roundnumber = totalamount.toFixed(2);
-    return roundnumber;
-  }
-
-
-
   onSelectMailingList(mailinglist: Mailinglist): void {
     // this.uploaderContent.subscription.unsubscribe();
     if (this.selectedMailingList) {this.saveMailingList();}
@@ -655,201 +546,7 @@ export class MarketingComponent implements OnInit {
       // console.log(this.selectedMailing)
   }
 
-  // select and set parameters PublicationsTranslation
-  onSelectTranslation(translation: Translation): void {
-    this.translationJob = [];
-    this.selectedTranslation = translation;
-    this.getTransationsjobs();
-    console.log(this.selectedTranslation.order_id)
-    this.updateTranslation();
-  }
 
-  onSelectTranslationJob(translationjob: Translationjob): void {
-    this.selectedTranslationjob = translationjob;
-  }
-
-
-
-  public saveTranslationJob(Translationjob: Translationjob): void {
-    this.selectedTranslationjob = Translationjob;
-    this.TranslationApi.updateByIdTranslationjob(
-      this.selectedTranslation.id, this.selectedTranslationjob.id,
-      this.selectedTranslationjob)
-      .subscribe(res => {
-        const amount = this.priceCalculator();
-        this.selectedTranslation.amount = amount;
-        this.updateTranslationHolder();
-      });
-  };
-
-
-
-  openDialogDeleteTranslation() {
-    this.dialogsService
-      .confirm('Delete Translation', 'Are you sure you want to do this?')
-      .subscribe(res => {
-        this.selectedOption = res, this.deleteTranslation(this.selectedOption);
-      });
-  }
-
-  opendialogconfirmpayment() {
-    const amount = this.priceCalculator(),
-      id = this.selectedTranslation.id,
-      transsubid = Math.floor(Math.random() * 100) + 1,
-      date = Math.round(new Date().getTime() / 1000),
-      transid = 'IXT' + date + '-' + transsubid,
-      desctranjob = [],
-      currencytra = 'EUR'; // ISO4217
-      let descriptiontra,
-      langdescr;
-      this.Translationjob.forEach(job => { desctranjob.push(job.lc_tgt)})
-      langdescr = desctranjob.join(', ');
-      descriptiontra = 'online Translationid: ' + transid + ' language: ' + descriptiontra;
-      this.selectedTranslation.transid = transid;
-    
-    this.dialogsService
-      .confirm('Request Translation', 'Total Amount: €' + amount +
-      ' Are you sure you want to do this? You will be redirected to the payment page')
-      .subscribe(res => {
-        // this.selectedOption = res,
-        if (res) {
-          this.RelationsApi.updateByIdTranslation(this.option.id, this.selectedTranslation.id, this.selectedTranslation)
-          .subscribe(res => { 
-        this.TranslationApi.getpayment(id, transid, amount, currencytra, descriptiontra, langdescr)
-          .subscribe((url: string) => {
-            if (url) { window.open(url, '_self') }
-          });
-        });
-        }
-      });
-    // on confirm payment navigate to payment site
-  }
-
-  private updateTranslationHolder(): void {
-    this.RelationsApi.updateByIdTranslation(this.option.id, this.selectedTranslation.id, this.selectedTranslation)
-    .subscribe(res => {console.log(res)})
-  }
-
-
-
-  public newwebsite(i): void {
-    const newwebsid = this.Translationjob[i].id;
-    const dialogRef = this.dialogWordpress.open(WordpressUploadDialogComponent, {
-        width: '400px',
-        data: {
-          id: newwebsid,
-          website: '',
-          req: {
-            user: '', 
-            password: '' }
-              }
-      });
-  
-      dialogRef.afterClosed().subscribe(result => {
-        console.log(result);
-        this.TranslationjobApi.updatewordpress(newwebsid, result.website, result.req)
-        .subscribe();
-      });
-
-    // open dialog select new page or translation total website
-    // new page upload new page check wp options
-    // translated website send to backend with correct credentials 
-    // in api design create upload function for websites
-
-  }
-  
-  public newmailcampaign(i): void {
-    const newmailcampaign = this.translationJob[i];
-  }
-
-  public newsocialmedia(i): void {
-    const newsocialmedia = this.translationJob[i];
-  }
-
-  deleteTranslation(selectedOption): void {
-    if (selectedOption === true) {
-      this.RelationsApi.destroyByIdTranslation(this.option.id, this.selectedTranslation.id)
-        .subscribe(res => { this.getTranslations(), this.selectedTranslation = null });
-    }
-  }
-
-  openDialogDeleteTranslationJob() {
-    this.dialogsService
-      .confirm('Delete Translation Job', 'Are you sure you want to do this?')
-      .subscribe(res => {
-        this.selectedOption = res, this.deleteTranslationJob(this.selectedOption);
-      });
-  }
-
-  deleteTranslationJob(selectedOption): void {
-    if (selectedOption === true) {
-      this.TranslationApi.destroyByIdTranslationjob(this.selectedTranslation.id, this.selectedTranslationjob.id)
-        .subscribe(res => this.getTransationsjobs());
-    }
-  }
-
-
-  // Translation job and update job_id
-  publishTranslationJob(selectedOption): void {
-    // set custom data to get ids
-    this.Translationjob.forEach((item, index) => {
-      item.custom_data = item.id
-    });
-    // reduce for api
-    if (selectedOption == true) {
-      const jobs = this.Translationjob.reduce(function (acc, cur, i) {
-        acc[i] = cur;
-        return acc;
-      }, {});
-
-      this.TranslationApi.creategengojob(jobs, this.selectedTranslation.id).subscribe(res => {
-        this.selectedTranslation.credits = res.credits_used,
-          this.selectedTranslation.order_id = res.order_id,
-          this.RelationsApi.updateByIdTranslation(this.option.id, this.selectedTranslation.id, this.selectedTranslation)
-            .subscribe(res => {
-              this.openSnackBar('Translation Requested')
-            })
-      });
-    }
-  }
-
-  // get order info
-  getOrderTranslation(order_id): void {
-    // custom_data
-  }
-
-
-  // get update on jobS ! move to API as hook or automation
-  updateTranslation(): void {
-    // console.log(this.selectedTranslation.order_id);
-    this.TranslationApi.getorder(this.selectedTranslation.order_id).subscribe(res => {
-      let jobsoverview = [];
-      Object.keys(res.order).forEach(key => {
-        if (Array.isArray(res.order[key])) {
-          //console.log(key.length);          // the name of the current key.
-          if (typeof key === 'string') { jobsoverview.push(res.order[key]) }
-          else { res.order[key].foreEach((item) => { jobsoverview.map(item) }) }
-        }
-      }),
-        jobsoverview = [].concat.apply([], jobsoverview),
-        //console.log(jobsoverview),
-        jobsoverview.forEach((item) => {
-          //console.log(item),
-            this.TranslationApi.getgengojob(item).subscribe(res => {
-              this.MarkTranJobs = res.job,
-                //console.log(this.MarkTranJobs)
-              this.TranslationApi.updateByIdTranslationjob(
-                this.selectedTranslation.id, this.MarkTranJobs.custom_data,
-                {
-                  'status': this.MarkTranJobs.status,
-                  'body_tgt': this.MarkTranJobs.body_tgt,
-                  'job_id': this.MarkTranJobs.job_id
-                }).subscribe();
-
-            });
-        });
-    });
-  };
 
   // Mailing ______________________________________
 
