@@ -1,21 +1,21 @@
 <div fxLayout="column" fxLayoutWrap="wrap" fxLayoutAlign="space-around">
-  <mat-card class="topbanner">
-    <mat-card-content>
-      <div>
-        <mat-form-field>
-          <input type="text" placeholder="Select Relation" aria-label="relation" matInput
-            (keyup)="searchGoQuick($event.srcElement.value)" [matAutocomplete]="relations"
-            [formControl]="myControlRelations">
-          <mat-autocomplete #relations="matAutocomplete" [displayWith]="displayFnRelation">
-            <mat-option *ngFor="let option of filteredRelations; let i = index" [value]="option"
-              (blur)="onSelect(option, i)">
-              {{ option.relationname }}
-            </mat-option>
-          </mat-autocomplete>
-        </mat-form-field>
-      </div>
-    </mat-card-content>
-  </mat-card>
+
+  <div class="topbanner">
+    <div class="selectrelation" fxFlex fxShow.xs="false">
+      <mat-form-field>
+        <input type="text" placeholder="Select Relation" aria-label="relation" matInput
+          (keyup)="searchGoQuick($event.srcElement.value)" [matAutocomplete]="relations"
+          [formControl]="myControlRelations">
+        <mat-autocomplete #relations="matAutocomplete" [displayWith]="displayFnRelation">
+          <mat-option *ngFor="let option of filteredRelations; let i = index" [value]="option"
+            (blur)="onSelect(option, i)">
+            {{ option.relationname }}
+          </mat-option>
+        </mat-autocomplete>
+      </mat-form-field>
+    </div>
+  </div>
+
 
   <!-- Relations -->
 
@@ -228,14 +228,14 @@
                 </div>
                 <div fxLayout="row" fxLayout.xs="column">
                   <div fxFlex class="cell">
-                      <mat-form-field>
-                          <mat-label>Select font</mat-label>
-                          <mat-select [(value)]="selectedRelation.companyfont">
-                              <mat-option *ngFor="let font of Fonts" [value]="font.value">
-                                  {{font.name}}
-                              </mat-option>
-                          </mat-select>
-                      </mat-form-field>
+                    <mat-form-field>
+                      <mat-label>Select font</mat-label>
+                      <mat-select [(value)]="selectedRelation.companyfont">
+                        <mat-option *ngFor="let font of Fonts" [value]="font.value">
+                          {{font.name}}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
                   </div>
                 </div>
               </div>
@@ -747,7 +747,7 @@
                   <a href="{{ Filesvid.url }}" style="font-size: 8pt">
                     {{ Filesvid.name }}
                   </a>
-                  
+
                   <mat-icon (click)="dialogDeleteFile(Filesvid)" color="primary" class="iconsize-12">delete</mat-icon>
                 </div>
               </div>
@@ -795,9 +795,9 @@
                 <label fxFlex="40%">Url: </label>
                 <label fxFlex="40%">{{selectedfile.url}}</label>
               </div>
-              <vg-player *ngIf="selectedfile.type === 'marketing-video' || selectedfile.type === 'video'" style="max-width: 600px;">
-                <video [vgMedia]="media" #media id="singleVideo" preload="auto" controls
-                  style="max-width: 600px;">
+              <vg-player *ngIf="selectedfile.type === 'marketing-video' || selectedfile.type === 'video'"
+                style="max-width: 600px;">
+                <video [vgMedia]="media" #media id="singleVideo" preload="auto" controls style="max-width: 600px;">
                   <source [src]="selectedfile.url" type="video/mp4">
                 </video>
               </vg-player>
@@ -1223,10 +1223,10 @@
                 </mat-button-toggle>
                 <mat-button-toggle value="Adwords" (click)="getAdwords()">
                   <mat-icon>details</mat-icon> Adwords
-                </mat-button-toggle> 
+                </mat-button-toggle>
                 <mat-button-toggle value="Tracking">
-                    <mat-icon>track_changes</mat-icon> Tracking
-                  </mat-button-toggle>
+                  <mat-icon>track_changes</mat-icon> Tracking
+                </mat-button-toggle>
               </mat-button-toggle-group>
 
             </mat-list>
@@ -1469,8 +1469,8 @@
                     <mat-icon>info</mat-icon>
                   </a>
                   <a mat-mini-fab color="primary" (click)="updateFacebook(Facebook)">
-                      <mat-icon>save</mat-icon>
-                    </a>
+                    <mat-icon>save</mat-icon>
+                  </a>
                 </div>
               </div>
             </div>
@@ -1544,18 +1544,22 @@
             <mat-card-title>Tracking code</mat-card-title>
           </mat-card-header>
           <mat-card-content>
-              <div fxLayout="column">
-            <label>Copy and paste the code below in your website header</label>
-            <a href="https://support.autopilothq.com/hc/en-us/articles/207933036-How-do-I-add-the-tracking-code-to-a-Wordpress-website-" target="_blank">For Wordpress</a>
-            <a href="https://support.energizethemes.com/how-do-i-update-the-header-and-footer-code/" target="_blank">For Joomla</a>
-            <a href="https://www.drupal.org/project/header_and_footer_scripts" target="_blank">For Drupal</a>
+            <div fxLayout="column">
+              <label>Copy and paste the code below in your website header</label>
+              <a href="https://support.autopilothq.com/hc/en-us/articles/207933036-How-do-I-add-the-tracking-code-to-a-Wordpress-website-"
+                target="_blank">For Wordpress</a>
+              <a href="https://support.energizethemes.com/how-do-i-update-the-header-and-footer-code/"
+                target="_blank">For Joomla</a>
+              <a href="https://www.drupal.org/project/header_and_footer_scripts" target="_blank">For Drupal</a>
               <mat-form-field class="example-full-width">
-                  <textarea matInput [(ngModel)]=trackingcode (click)="copyMessage(trackingcode)" (mouseenter)="$event.stopImmediatePropagation()" (mouseleave)="$event.stopImmediatePropagation()"
+                <textarea matInput [(ngModel)]=trackingcode (click)="copyMessage(trackingcode)"
+                  (mouseenter)="$event.stopImmediatePropagation()" (mouseleave)="$event.stopImmediatePropagation()"
                   matTooltip="Copied!" (click)="tooltip.toggle()" #tooltip="matTooltip"></textarea>
-                </mat-form-field>
-                <button mat-button (mouseenter)="$event.stopImmediatePropagation()" (mouseleave)="$event.stopImmediatePropagation()"
-                matTooltip="Copied!" #tooltip="matTooltip" (click)="copyMessage(trackingcode)" (click)="tooltip.toggle()">Copy</button>
-                </div>
+              </mat-form-field>
+              <button mat-button (mouseenter)="$event.stopImmediatePropagation()"
+                (mouseleave)="$event.stopImmediatePropagation()" matTooltip="Copied!" #tooltip="matTooltip"
+                (click)="copyMessage(trackingcode)" (click)="tooltip.toggle()">Copy</button>
+            </div>
           </mat-card-content>
         </mat-card>
 

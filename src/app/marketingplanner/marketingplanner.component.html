@@ -1,7 +1,6 @@
 <div fxLayout="column">
-    <div fxFlex="100%" fxLayout="column">
-        <mat-card class="topbanner">
-            <mat-card-content>
+    <div fxFlex="100%" fxLayout="column" class="topbanner">
+
                 <div class="selectrelation" fxFlex fxShow.xs="false">
                     <mat-form-field>
                         <input type="text" placeholder="Select Relation" aria-label="relation" matInput
@@ -14,8 +13,7 @@
                         </mat-autocomplete>
                     </mat-form-field>
                 </div>
-            </mat-card-content>
-        </mat-card>
+
     </div>
   <div class="addtobutton">
     <button mat-fab color="primary" matTooltip="Add event" (click)="newPlanner()">

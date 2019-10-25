@@ -28,19 +28,16 @@
 
 
 body{
-  background-color: #bdc3c7
+  background-color: #bdc3c7;
 }
 
 .mat-tab-header {
   background-color: #7f8c8d;
 }
 
-.topbanner{
-  background-color: #bdc3c7
-}
 
-.backgroundcontainer{
-  background: url('assets/images/castle.jpg');
+.backgroundcontainer {
+  background: url('assets/castle.jpg');
   background-size: cover;                      /* <------ */
   background-repeat: no-repeat;
   background-position: center center;   
@@ -145,11 +142,11 @@ body{
 }
 
 .topbanner {
-  overflow: hidden;
-  position: fixed;
-  top: 0;
-  left: 0;
+  height: 60px;
   position:relative;  
+  background-color: #bdc3c7;
+  border-radius: 0px;
+  box-shadow: 0px 2px 1px -1px rgba(0, 0, 0, 0.2), 0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 1px 3px 0px rgba(0, 0, 0, 0.12);
 }
 
 .mat-tab-list {
