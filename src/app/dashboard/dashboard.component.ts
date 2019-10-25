@@ -295,11 +295,13 @@ export class DashboardComponent implements OnInit {
   markisp(i): void {
     this.Websitetracker[i].isp = true
     this.RelationsApi.updateByIdWebsitetracker(this.option.id, this.Websitetracker[i].id, this.Websitetracker[i])
-      .subscribe(res => this.getWebsiteTracker());
+       .subscribe(res => this.getWebsiteTracker());
+    // this.WebsitetrackerApi.update({where: {IP: this.Websitetracker[i].IP}}, {isp: true})
+    // .subscribe(res => this.getWebsiteTracker());
   }
 
   buildDashboard(): void {
-    //  delay for user input
+    //  delay for user inputs
     setTimeout(() => {
       this.countRelations(),
         this.getTask(),
