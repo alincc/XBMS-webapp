@@ -25,7 +25,7 @@
             <label matSuffix>px</label>
         </mat-form-field>
 
-        <app-background *ngIf="!canvas.url" [account]="Account" [option]="option" (imgurl)="setBackground($event)">
+        <app-background [account]="Account" [option]="option" (imgurl)="setBackground($event)">
         </app-background>
 
         <button mat-button (click)="resetImage()">Reset</button>

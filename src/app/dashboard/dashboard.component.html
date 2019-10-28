@@ -35,17 +35,17 @@
               </mat-option>
             </mat-autocomplete>
           </mat-form-field> -->
-          
+
           <mat-form-field>
-              <input type="text" placeholder="Select Relation" aria-label="relation" matInput
-                (keyup)="searchGoQuick($event.srcElement.value)" [matAutocomplete]="relations">
-              <mat-autocomplete #relations="matAutocomplete" [displayWith]="displayFnRelation">
-                <mat-option *ngFor="let option of filteredRelations; let i = index" [value]="option"
-                  (blur)="onSelectRelation(option, i)">
-                  {{ option.relationname }}
-                </mat-option>
-              </mat-autocomplete>
-            </mat-form-field>
+            <input type="text" placeholder="Select Relation" aria-label="relation" matInput
+              (keyup)="searchGoQuick($event.srcElement.value)" [matAutocomplete]="relations">
+            <mat-autocomplete #relations="matAutocomplete" [displayWith]="displayFnRelation">
+              <mat-option *ngFor="let option of filteredRelations; let i = index" [value]="option"
+                (blur)="onSelectRelation(option, i)">
+                {{ option.relationname }}
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
 
 
           <mat-form-field class="selectboxheader">
@@ -78,6 +78,11 @@
         </div>
       </div>
 
+
+    </div>
+
+    <!-- fxLayout.lt-md="column" -->
+    <div fxFlex="30%" fxLayout="row" fxLayoutWrap="wrap" fxLayoutAlign="space-around">
       <div fxFlex="50%" class="innerfollowup">
         <a mat-mini-fab color="primary" style="float: right;" (click)="getAdsMailing()">
           <mat-icon>refresh</mat-icon>
@@ -109,34 +114,30 @@
             <mat-list-item>
               <td fxFlex="20%" class="tdwebsitetr">
                 <label class="followuplist">{{
-                  Mailing.marketingplannereventsIds
-                }}</label>
+                      Mailing.marketingplannereventsIds
+                    }}</label>
               </td>
               <td fxFlex="20%" class="tdwebsitetr">
                 <label class="followuplist">{{ Mailing.subject }}</label>
               </td>
               <td fxFlex="20%" class="tdwebsitetr">
                 <label class="followuplist">{{
-                  Mailing.from | slice: 0:50
-                }}</label>
+                      Mailing.from | slice: 0:50
+                    }}</label>
               </td>
               <td fxFlex="20%" class="tdwebsitetr">
                 <label class="followuplist">{{ Mailing.title }}</label>
               </td>
               <td fxFlex="20%" class="tdwebsitetr">
                 <label class="followuplist">{{
-                  Mailing.date | date: "medium"
-                }}</label>
+                      Mailing.date | date: "medium"
+                    }}</label>
               </td>
             </mat-list-item>
             <mat-divider></mat-divider>
           </tr>
         </table>
       </div>
-    </div>
-
-    <!-- fxLayout.lt-md="column" -->
-    <div fxFlex="30%" fxLayout="row" fxLayoutWrap="wrap" fxLayoutAlign="space-around">
       <div fxFlex="40%" class="innerfollowup">
         <label class="mat-h4">Follow Up</label>
         <mat-divider></mat-divider>
@@ -171,84 +172,96 @@
           </mat-list>
         </div>
       </div>
+    </div>
 
-      <div fxFlex="50%" class="innerfollowup">
+    <div fxFlex="30%" fxLayout="row" fxLayoutWrap="wrap" fxLayoutAlign="space-around">
+
+      <div fxFlex="90%" class="innerfollowup">
         <a mat-mini-fab color="primary" style="float: right;" (click)="getWebsiteTracker()">
           <mat-icon>refresh</mat-icon>
         </a>
         <label class="mat-h4">Website Visitors</label>
         <mat-divider></mat-divider>
-        <table class="websitedata">
-          <tr fxLayout="column" fxLayoutWrap="wrap" fxLayoutAlign="space-around">
-            <mat-list-item>
-              <th fxFlex="25%" class="thwebsitetr">
-                <label class="followuplist">Source</label>
-              </th>
-              <th fxFlex="25%" class="thwebsitetr">
-                <label class="followuplist">Visited URL</label>
-              </th>
-              <th fxFlex="25%" class="thwebsitetr">
-                <label class="followuplist">Address</label>
-              </th>
-              <th fxFlex="25%" class="thwebsitetr">
-                <label class="followuplist">Date</label>
-              </th>
-              <th fxFlex="8%" class="thwebsitetr">
-                <label class="followuplist">isp</label>
-              </th>
-            </mat-list-item>
-          </tr>
-          <tr fxLayout="column" fxLayoutWrap="wrap" fxLayoutAlign="space-around"
-            *ngFor="let Websitetracker of Websitetracker; let i = index">
-            <mat-list-item>
-              <td fxFlex="23%" class="tdwebsitetr">
-                <label class="followuplist">{{
-                  Websitetracker.companyname
-                }}</label>
-              </td>
-              <td fxFlex="23%" class="tdwebsitetr">
-                <label class="followuplist">{{
-                  Websitetracker.url | slice: 0:50
-                }}</label>
-              </td>
-              <td fxFlex="23%" class="tdwebsitetr">
-                <label class="followuplist">{{ Websitetracker.street }}</label>
-              </td>
-              <td fxFlex="23%" class="tdwebsitetr">
-                <label class="followuplist">{{
-                  Websitetracker.date | date: "medium"
-                }}</label>
-              </td>
-              <td fxFlex="8%">
-                <label (click)="markisp(i)" style="font-size: 6pt">Mark isp</label>
-              </td>
-            </mat-list-item>
-            <mat-divider></mat-divider>
-          </tr>
-        </table>
+        <div class="websitedata">
+          <div fxLayout="row" fxLayoutWrap="wrap" fxLayoutAlign="space-around">
+
+            <div fxFlex="25%">
+              <label class="followuplist">Source</label>
+            </div>
+            <div fxFlex="25%">
+              <label class="followuplist">Visited URL</label>
+            </div>
+            <div fxFlex="25%">
+              <label class="followuplist">Address</label>
+            </div>
+            <div fxFlex="25%">
+              <label class="followuplist">Date</label>
+            </div>
+            <div fxFlex="8%">
+              <label class="followuplist">isp</label>
+            </div>
+          </div>
+          <mat-accordion>
+            <mat-expansion-panel (opened)="findWebsiteTrackerByIP(Websitetracker)" class="websitedata"
+              *ngFor="let Websitetracker of Websitetracker; let i = index">
+              <mat-expansion-panel-header>
+                <mat-panel-title>
+                  <div class="websitedata" fxLayout="row" fxLayoutWrap="wrap" fxLayoutAlign="space-around">
+                    <div fxFlex="23%">
+                      <label class="followuplist">
+                        {{ Websitetracker.companyname }}</label>
+                    </div>
+                    <div fxFlex="23%">
+                      <label class="followuplist">{{ Websitetracker.url | slice: 0:50 }}</label>
+                    </div>
+                    <div fxFlex="23%">
+                      <label class="followuplist">{{ Websitetracker.street }}</label>
+                    </div>
+                    <div fxFlex="23%">
+                      <label class="followuplist">{{ Websitetracker.date | date: "medium" }}</label>
+                    </div>
+                    <div fxFlex="8%">
+                      <label (click)="markisp(i)" style="font-size: 6pt">Mark isp</label>
+                    </div>
+                  </div>
+                </mat-panel-title>
+              </mat-expansion-panel-header>
+             
+                <div *ngFor="let visit of WebsitetrackerFullList" class="websitedata" fxLayout="row" fxLayoutWrap="wrap"
+                  fxLayoutAlign="space-around">
+                  <div fxFlex="50%">
+                    <label class="followuplist">{{ visit.url | slice: 0:50 }}</label>
+                  </div>
+                  <div fxFlex="50%">
+                    <label class="followuplist">{{ visit.date | date: "medium" }}</label>
+                  </div>
+                </div>
+             
+            </mat-expansion-panel>
+          </mat-accordion>
+
+        </div>
       </div>
+
     </div>
 
     <div fxFlex.gt-xs="30%" fxFlex.lt-sm="50%" fxLayout="row" fxLayoutWrap="wrap" fxLayoutAlign="space-around">
-
-      <div fxFlex="92%" class="doubleflex" >
+      <div fxFlex="92%" class="doubleflex">
         <label class="mat-h4">Email Activities</label>
         <mat-divider></mat-divider>
         <mat-spinner *ngIf="mailstatsspinner" style="margin: auto;"></mat-spinner>
         <div *ngIf="mailstatsspinner === false" style="min-height: 400px">
-          <canvas baseChart #baseMailChart="base-chart"  
-          [datasets]="MailChartData"
-            [labels]="MailChartLabels" [options]="MailChartOptions" [legend]="MailChartLegend"
-            [chartType]="MailChartType" (chartHover)="MailChartHovered($event)"
-            (chartClick)="MailChartClicked($event)"></canvas>
+          <canvas baseChart #baseMailChart="base-chart" [datasets]="MailChartData" [labels]="MailChartLabels"
+            [options]="MailChartOptions" [legend]="MailChartLegend" [chartType]="MailChartType"
+            (chartHover)="MailChartHovered($event)" (chartClick)="MailChartClicked($event)"></canvas>
 
         </div>
         <mat-select style="width: 200px; height: 50px;" placeholder="Select timeframe"
-        [(value)]="mailStatsTimeSelected">
-        <mat-option *ngFor="let mailStatsTime of mailStatsTime" [value]="mailStatsTime" (blur)="getMailStats()">
-          {{ mailStatsTime.viewValue }}
-        </mat-option>
-      </mat-select>
+          [(value)]="mailStatsTimeSelected">
+          <mat-option *ngFor="let mailStatsTime of mailStatsTime" [value]="mailStatsTime" (blur)="getMailStats()">
+            {{ mailStatsTime.viewValue }}
+          </mat-option>
+        </mat-select>
       </div>
     </div>
 

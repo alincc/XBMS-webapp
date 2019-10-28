@@ -65,6 +65,7 @@ export class DashboardComponent implements OnInit {
   public Googleanalyticsnames = [];
   public GoogleanalyticsModel: Googleanalytics[];
   public Websitetracker: Websitetracker[];
+  public WebsitetrackerFullList: Websitetracker[];
   public analytics_ids: string;
   public analytics_startdate: string;
   public analytics_enddate: string;
@@ -290,11 +291,21 @@ export class DashboardComponent implements OnInit {
       order: 'date DESC', limit: 100
     })
       .subscribe((websitetracker: Websitetracker[]) => {
+       
         this.Websitetracker = websitetracker.filter((WebsitetrackerFil, index, self) =>
           index === self.findIndex((t) => (
             t.IP === WebsitetrackerFil.IP
           )))
       })
+  }
+
+  findWebsiteTrackerByIP(Websitetracker): void {
+    this.RelationsApi.getWebsitetracker(this.option.id, {
+      where: { IP: Websitetracker.IP },
+      order: 'date DESC', limit: 20
+    }).subscribe(filteredList => {
+      this.WebsitetrackerFullList = filteredList;
+    })
   }
 
   markisp(i): void {

@@ -77,7 +77,7 @@ export interface UploadResult {
 })
 
 export class MarketingComponent implements OnInit {
-
+  public selectedIndex = 0;
   allowedMimeType = ['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'];
   maxFileSize = 10 * 1024 * 1024;
   public timezones = timezones;
