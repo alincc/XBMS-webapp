@@ -25,16 +25,15 @@
   src: url("assets/fonts/Hillpark.ttf") format("truetype");
 }
 
-
-
 body{
   background-color: #bdc3c7;
+  margin: 0px;
+  padding: 0px;
 }
 
 .mat-tab-header {
   background-color: #7f8c8d;
 }
-
 
 .backgroundcontainer {
   background: url('assets/castle.jpg');

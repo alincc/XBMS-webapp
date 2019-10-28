@@ -23,7 +23,7 @@
 
   <div fxLayout="row" (swipeleft)="swipeleft($event)" (swiperight)="swiperight($event)" class="mat-typography">
 
-    <div fxFlex="20%" class="toolsmenu" ngClass.gt-xs="listview-normal" ngClass.lt-sm="listview-noshow"
+    <!-- <div fxFlex="20%" class="toolsmenu" ngClass.gt-xs="listview-normal" ngClass.lt-sm="listview-noshow"
       [class.listview-xs-show]="listviewxsshow" ngClass.gt-xs="container-normal" ngClass.lt-sm="container-noshow"
       [class.container-xs-show]="listviewxsshow">
       <mat-accordion>
@@ -83,7 +83,6 @@
             <div class="dragcontainertitle">
               <mat-datepicker #picker1 class="InputField"></mat-datepicker>
               <input [matDatepicker]="myDatepicker1" placeholder="Date">
-              <!-- [(ngModel)]=selectedCalls.date -->
               <mat-datepicker-toggle matSuffix [for]="myDatepicker1"></mat-datepicker-toggle>
               <mat-datepicker #myDatepicker1></mat-datepicker>
             </div>
@@ -123,7 +122,7 @@
           <div class='dragitem'>Adwords</div>
         </mat-expansion-panel>
       </mat-accordion>
-    </div>
+    </div> -->
 
     <div fxFlex="80%" flexLayout="column" ngClass.gt-xs="listview-normal" ngClass.lt-sm="listview-noshow"
       [class.listview-xs-show]="listviewxsshow" ngClass.gt-xs="container-normal" ngClass.lt-sm="container-noshow"

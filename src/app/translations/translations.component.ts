@@ -10,7 +10,7 @@ import {
   Account,
   AccountApi,
   CompanyApi,
-  Company
+  Company,
 } from '../shared'
 import { WordpressUploadDialogComponent } from '../dialogsservice/wordpressupload-dialog.component';
 import { WordpressService } from '../shared/websiteservice';
@@ -42,7 +42,11 @@ export class TranslationsComponent implements OnInit {
   public option: Relations = new Relations();
   public Account: Account = new Account();
   public languages;
-  
+  public listviewxsshow = false;
+  public Relations: Relations[];
+  public options = [];
+  public company: Company;
+
 
   constructor(
     public router: Router,
@@ -54,11 +58,13 @@ export class TranslationsComponent implements OnInit {
     public RelationsApi: RelationsApi,
     public snackBar: MatSnackBar,
     public dialogWordpress: MatDialog,
-    public CompanyApi: CompanyApi
+    public CompanyApi: CompanyApi,
+    public AccountApi: AccountApi
     //public WordpressUploadDialogComponent: WordpressUploadDialogComponent
   ) { }
 
   ngOnInit() {
+    this.getCurrentUserInfo();
     this.urlparameter = this.route.snapshot.params['id'];
     if (this.urlparameter) {
       this.selectedIndex = 1;
@@ -359,16 +365,58 @@ export class TranslationsComponent implements OnInit {
         order: 'relationname ASC'
       })
       .subscribe((Relations: Relations[]) => {
-      this.filteredRelations = Relations
+        this.filteredRelations = Relations
         //console.log(this.filteredRelations)
       });
   }
 
-    //display name in searchbox
-    displayFnRelation(relation?: Relations): string | undefined {
-      return relation ? relation.relationname : undefined;
+  //display name in searchbox
+  displayFnRelation(relation?: Relations): string | undefined {
+    return relation ? relation.relationname : undefined;
+  }
+
+  swiperight(e) {
+    this.listviewxsshow = true;
+  }
+
+  swipeleft(e) {
+    this.listviewxsshow = false;
+  }
+
+  getCurrentUserInfo(): void {
+    this.AccountApi.getCurrent().subscribe((account: Account) => {
+      this.Account = account,
+        this.CompanyApi.getRelations(this.Account.companyId,
+          { fields: { id: true, relationname: true } })
+          .subscribe((relations: Relations[]) => {
+            this.Relations = relations
+            if (this.Account.standardrelation !== undefined) {
+              this.RelationsApi.findById(this.Account.standardrelation)
+                .subscribe(rel => {
+                  this.onSelectRelation(rel, null),
+                    this.CompanyApi.findById(this.Account.companyId)
+                      .subscribe((company: Company) => {
+                        this.company = company;
+                        this.getTranslations();
+                      });
+                });
+            }
+            this.getrelationsEntry();
+            this.getTranslations();
+          });
+    });
+  }
+
+  onSelectRelation(option, i): void {
+    this.option = option;
+  }
+
+  // set Relations and quick selections
+  getrelationsEntry(): void {
+    this.options = []
+    for (const relation of this.Relations) {
+      this.options.push(relation);
     }
-
-
+  }
 
 }

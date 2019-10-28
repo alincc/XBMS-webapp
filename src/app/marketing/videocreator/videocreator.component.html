@@ -33,14 +33,15 @@
     </div>
 </div>
 
-<div style="width: 100%; margin-bottom: 10px;" (swipeleft)="swipeleft($event)" (swiperight)="swiperight($event)">
+<div style="width: 100%; margin-bottom: 10px;" (swipeleft)="swipeleft($event)" 
+(swiperight)="swiperight($event)" *ngIf="animationarray.length > 0">
 
     <mat-accordion style="width: 100%">
         <mat-expansion-panel>
             <mat-expansion-panel-header>
                 <mat-panel-title>
                     <mat-form-field>
-                        <input [(ngModel)]="elementname" type="text" matInput placeholder="element Name">
+                        <input [(ngModel)]="elementname" type="text" matInput placeholder="Video Name">
                     </mat-form-field>
                     <button mat-icon-button [matMenuTriggerFor]="menumarketing" class="menu">
                         <mat-icon>more_vert</mat-icon>
@@ -912,7 +913,7 @@
                     color="primary">
                     <mat-icon>wallpaper</mat-icon>
                 </button>
-                <button mat-mini-fab class="addbutton" matTooltip="Add animated image" (click)="addNewWhiteboard()"
+                <button mat-mini-fab class="addbutton" matTooltip="Add drawing" (click)="addNewWhiteboard()"
                     color="primary">
                     <mat-icon>edit</mat-icon>
                 </button>

@@ -187,6 +187,7 @@ export class dialogvideogallerycomponent implements OnInit {
   public existingIcons = [];
   public video = StockVideo;
   public stockvideos = [];
+  publi
 
   constructor(
     public dialogRef: MatDialogRef<dialogvideogallerycomponent>,
@@ -196,8 +197,16 @@ export class dialogvideogallerycomponent implements OnInit {
     this.video.forEach(element => {
       const iconurl = element;
       const previewurl = element + '#t=0.5';
-      var filename = iconurl.replace(/^.*[\\\/]/, '')
-      this.stockvideos.push({url: iconurl, name: filename, preview: previewurl});
+      const filename = iconurl.replace(/^.*[\\\/]/, '');
+      const ext = filename.substr(filename.lastIndexOf('.') + 1);
+      const url = iconurl;
+      const fileimage = url.replace(ext, 'jpg');
+      this.stockvideos.push({
+        url: iconurl, 
+        name: filename, 
+        preview: previewurl,
+        fileimage: fileimage
+      });
     });
   }
 

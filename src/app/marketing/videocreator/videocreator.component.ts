@@ -188,7 +188,7 @@ export class textanimation {
   viewProviders: [CanvasWhiteboardComponent]
 })
 
-export class VideocreatorComponent implements AfterViewInit {
+export class VideocreatorComponent implements OnInit {
 
   @ViewChild('progressbar', { static: false }) progressbar: ElementRef;
 
@@ -210,12 +210,10 @@ export class VideocreatorComponent implements AfterViewInit {
   public currenttime = 0;
   public animationarray = []; //array with style and position settings;
   public animationelements = []; //arrat with the actual greensock animations
-
   public play = false;
   public menu = new TimelineMax({ paused: true, reversed: true });
   public primairytimeline = new TimelineMax({ paused: true, reversed: true });
-  progressbarline = new TimelineMax({ paused: true, reversed: true });
-
+  private progressbarline = new TimelineMax({ paused: true, reversed: true });
   public whiteboard = false;
   public listviewxsshow = false;
   public showprogressbar = false;
@@ -240,17 +238,16 @@ export class VideocreatorComponent implements AfterViewInit {
   public selectedImage: imageanimation;
   public showemoji = false;
   public newz = 1;
-  inBounds = true;
-  edge = {
+  public inBounds = true;
+  public edge = {
     top: true,
     bottom: true,
     left: true,
     right: true
   };
-
   public Fonts = fonts;
-  watcher: Subscription;
-  activeMediaQuery;
+  private watcher: Subscription;
+  public activeMediaQuery;
   public selectedelement;
   public elementname;
   private MorphSVGPlugin = MorphSVGPlugin;
@@ -274,7 +271,7 @@ export class VideocreatorComponent implements AfterViewInit {
   }
   private myFuncSvg = this.initVectors.bind(this);
 
-  ngAfterViewInit() { }
+  ngOnInit() { }
 
   ngOnChanges(changes: SimpleChanges) {
     //wait for option.id
@@ -350,7 +347,6 @@ export class VideocreatorComponent implements AfterViewInit {
   }
 
   createSplitText(elm: textanimation, textani: splittexttype) {
-
     let splittextwhere = textani.textanimationtype;
     let id = document.getElementById(elm.id);
     let splitText = new SplitText.SplitText(id, { type: textani.textanimationtype })
@@ -358,17 +354,14 @@ export class VideocreatorComponent implements AfterViewInit {
       y: 100,
       autoAlpha: 0
     }
-
     let char = splitText.chars;
     let word = splitText.words;
     let line = splitText.lines;
-
     let setto;
     let lenghtarr;
     if (textani.textanimationtype === 'chars') { setto = char; lenghtarr = char.length }
     if (textani.textanimationtype === 'words') { setto = word; lenghtarr = word.length }
     if (textani.textanimationtype === 'lines') { setto = line; lenghtarr = line.length }
-
     let dura = textani.duration / lenghtarr;
     // stagger durationis for each stag (word line character etc.. )
     // this.primairytimeline.to(splitText.chars, textani.duration, toset, textani.start_time);

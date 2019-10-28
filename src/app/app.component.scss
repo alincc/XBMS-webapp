@@ -1,15 +1,20 @@
 /* CSS reset */
-body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,textarea,p,blockquote,th,td { 
-  margin:0;
-  padding:0;
-}
+// body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,textarea,p,blockquote,th,td { 
+//   margin:0;
+//   padding:0;
+// }
 
-.topview{
-  margin: 0;
-  padding: 0;
-  height: 100%;
-}
+// .topview{
+//   margin: 0;
+//   padding: 0;
+//   height: 100%;
+// }
 
+
+// body {
+//   margin: 0px;
+//   padding: 0px;
+// }
 
 .menulogo{
   margin-top: 50px;
@@ -123,18 +128,6 @@ body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,textarea,p,
     -ms-transform: rotate(180deg);
     transform: rotate(180deg);
   }
-
-
-html,body {
-  margin:0;
-  padding:0;
-}
-
-.topview{
-  margin: 0;
-  padding: 0;
-  height: 100%;
-}
 
 .maintoolbar1{
   opacity: 0.6;

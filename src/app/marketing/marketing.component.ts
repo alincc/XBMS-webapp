@@ -244,9 +244,7 @@ export class MarketingComponent implements OnInit {
 
   constructor(
     public dialog: MatDialog,
-
     private MarketingChannel: MarketingchannelsComponent,
-    //private Maileditor: MaileditorComponent,
     private sanitizer: DomSanitizer,
     public AdwordsApi: AdwordsApi,
     public timeconv: timeconv,
@@ -274,7 +272,7 @@ export class MarketingComponent implements OnInit {
 
   ngOnInit() {
     if (this.AccountApi.isAuthenticated() === false) { this.router.navigate(['login']) }
-    this.setFilter();
+    // this.setFilter();
     this.getCurrentUserInfo();
     // Clear the item queue (somehow they will upload to the old URL)
     this.uploader.clearQueue();
@@ -322,18 +320,18 @@ export class MarketingComponent implements OnInit {
     });
   }
 
-  myControl: FormControl = new FormControl();
-  filteredOptions: Observable<string[]>;
+  // myControl: FormControl = new FormControl();
+  // filteredOptions: Observable<string[]>;
 
-  // compare filter search Relations
-  setFilter(): void {
-    this.filteredOptions = this.myControl.valueChanges
-      .pipe(
-        startWith<string | Relations>(''),
-        map(value => typeof value === 'string' ? value : value.relationname),
-        map(relationname => relationname ? this.filter(relationname) : this.options.slice())
-      );
-  }
+  // // compare filter search Relations
+  // setFilter(): void {
+  //   this.filteredOptions = this.myControl.valueChanges
+  //     .pipe(
+  //       startWith<string | Relations>(''),
+  //       map(value => typeof value === 'string' ? value : value.relationname),
+  //       map(relationname => relationname ? this.filter(relationname) : this.options.slice())
+  //     );
+  // }
 
   //display name in searchbox
   displayFnRelation(relation?: Relations): string | undefined {

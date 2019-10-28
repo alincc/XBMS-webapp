@@ -104,6 +104,7 @@ export class DashboardComponent implements OnInit {
   public failedNumbers = [];
   public twitterselected;
   public Twitter: Twitter[];
+  public filteredRelations: Relations[];
 
   mailStatsTime = [
     { value: '12m', viewValue: 'Year/months' },
@@ -155,7 +156,7 @@ export class DashboardComponent implements OnInit {
   ngOnInit(): void {
     if (this.AccountApi.isAuthenticated() === false) { this.router.navigate(['login']) }
     if (this.AccountApi.getCurrentToken() === undefined) { this.router.navigate(['login']) }
-    this.setFilter();
+    // this.setFilter();
     this.getCurrentUserInfo();
   }
 
@@ -169,7 +170,7 @@ export class DashboardComponent implements OnInit {
         )
           .subscribe((relations: Relations[]) => {
             this.Relations = relations,
-              this.getrelationsEntry();
+              //this.getrelationsEntry();
             this.getAdsMailing();
             if (this.Account.standardrelation !== undefined) {
               this.RelationsApi.findById(this.Account.standardrelation)
@@ -194,6 +195,7 @@ export class DashboardComponent implements OnInit {
   getTwitterAccount(): void {
     this.RelationsApi.getTwitter(this.option.id)
       .subscribe((Twitter: Twitter[]) => {
+        if (Twitter.length > 0){
         this.Twitter = Twitter;
         if (Twitter[0].screenname === undefined) {
           this.TwitterApi.verifycredentials(this.Twitter[0].AccessToken, this.Twitter[0].AccessTokenSecret)
@@ -205,13 +207,16 @@ export class DashboardComponent implements OnInit {
               this.RelationsApi.updateByIdTwitter(this.option.id, this.Twitter[0].id, this.Twitter[0]).subscribe();
             });
         } else { this.twitterselected = { sourceType: 'url', url: 'https://twitter.com/' + this.Twitter[0].screenname }; }
+      }
       });
   }
 
   //  select relation --> get info for all tabs
   onSelectRelation(option, i): void {
     this.option = option;
-    this.AccountApi.addStdRelation(this.Account.id, option.id).subscribe()
+    this.AccountApi.addStdRelation(this.Account.id, option.id).subscribe();
+    this.getAnalyticsAccounts(option, i);
+    this.getWebsiteTracker();
   }
 
   getLogs(): void {
@@ -355,37 +360,37 @@ export class DashboardComponent implements OnInit {
       });
   }
 
-  myControl: FormControl = new FormControl();
-  filteredOptions: Observable<string[]>;
+  // myControl: FormControl = new FormControl();
+  // filteredOptions: Observable<string[]>;
 
   //  compare filter search Relations
-  setFilter(): void {
-    this.filteredOptions = this.myControl.valueChanges
-      .pipe(
-        startWith<string | Relations>(''),
-        map(value => typeof value === 'string' ? value : value.relationname),
-        map(relationname => relationname ? this.filter(relationname) : this.options.slice())
-      );
-  }
+  // setFilter(): void {
+  //   this.filteredOptions = this.myControl.valueChanges
+  //     .pipe(
+  //       startWith<string | Relations>(''),
+  //       map(value => typeof value === 'string' ? value : value.relationname),
+  //       map(relationname => relationname ? this.filter(relationname) : this.options.slice())
+  //     );
+  // }
 
   //  filter and to lower case for search
-  private filter(relationname: string): Relations[] {
-    const filterValue = relationname.toLowerCase();
-    return this.options.filter(option => option.relationname.toLowerCase().indexOf(filterValue) === 0);
-  }
+  // private filter(relationname: string): Relations[] {
+  //   const filterValue = relationname.toLowerCase();
+  //   return this.options.filter(option => option.relationname.toLowerCase().indexOf(filterValue) === 0);
+  // }
 
   //  set Relations and quick selections
-  getrelationsEntry(): void {
-    this.options = []
-    for (const relation of this.Relations) {
-      this.options.push(relation);
-    }
-  }
+  // getrelationsEntry(): void {
+  //   this.options = []
+  //   for (const relation of this.Relations) {
+  //     this.options.push(relation);
+  //   }
+  // }
 
   // display name in searchbox
-  displayFn(relation?: Relations): string | undefined {
-    return relation ? relation.relationname : undefined;
-  }
+  // displayFn(relation?: Relations): string | undefined {
+  //   return relation ? relation.relationname : undefined;
+  // }
 
 
 
@@ -858,7 +863,30 @@ export class DashboardComponent implements OnInit {
     this.mailstatsspinner = false;
   }
 
+  searchGoQuick(value): void {
+    let searchterm = value.trim();
+    this.CompanyApi.getRelations(this.Account.companyId,
+      {
+        where:
+        {
+          or: [{ "relationname": { "regexp": searchterm + '/i' } },
+          { "address1": { "regexp": searchterm + '/i' } },
+          { "city": { "regexp": searchterm + '/i' } }
+          ]
+        },
+        order: 'relationname ASC'
+      })
+      .subscribe((Relations: Relations[]) => {
+      this.filteredRelations = Relations
+        //console.log(this.filteredRelations)
+      });
+  }
 
+    //display name in searchbox
+    displayFnRelation(relation?: Relations): string | undefined {
+      return relation ? relation.relationname : undefined;
+    }
+  
 
 
 }
