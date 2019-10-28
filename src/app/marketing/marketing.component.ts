@@ -1643,9 +1643,9 @@ export class MarketingComponent implements OnInit {
   saveMailingCampaign(message?): void {
     // count for listview numbers
 
-    this.CampaignMailing.forEach(mailElement => {
+    this.CampaignMailing.forEach((mailElement: Mailing) => {
       mailElement.text = this.onChangeHtml(mailElement.html); // convert to text
-
+      mailElement.relationsId = this.option.id;
       // dats is set on select
       if (mailElement.date == null) {
         this.date = moment().format();
