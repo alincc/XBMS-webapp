@@ -10,12 +10,10 @@
             <input [(ngModel)]="imagename" type="text" matInput placeholder="Image Name">
         </mat-form-field>
 
-
         <input style="width: 150px; height: 30px;" [style.background]="canvas['background-color']" [cpToggle]="false"
             [cpOutputFormat]="'hex'" [(colorPicker)]="canvas['background-color']" (colorPickerChange)="detectchange()"
             [cpCancelButton]="true" [cpPresetLabel]="'Company colors'"
             [cpPresetColors]="[option.companyprimairycolor, option.companysecondarycolor, company.companyprimairycolor, company.companysecondarycolor]">
-
 
         <mat-form-field>
             <input (change)="detectchange()" [(ngModel)]="canvas.width" type="text" matInput placeholder="width">
@@ -26,6 +24,10 @@
             <input (change)="detectchange()" [(ngModel)]="canvas.height" type="text" matInput placeholder="height">
             <label matSuffix>px</label>
         </mat-form-field>
+
+        <app-background *ngIf="!canvas.url" [account]="Account" [option]="option" (imgurl)="setBackground($event)">
+        </app-background>
+
         <button mat-button (click)="resetImage()">Reset</button>
         <!-- <button mat-button (click)="getEditFile()">get images</button> -->
         <mat-form-field>
@@ -151,7 +153,7 @@
                                             <mat-select [(value)]="image.style['font-family']"
                                                 (selectionChange)="detectchange()">
                                                 <mat-option *ngFor="let font of Fonts" [value]="font.value">
-                                                <label [style.font-family]="font.value">{{font.name}}</label> 
+                                                    <label [style.font-family]="font.value">{{font.name}}</label>
                                                 </mat-option>
                                             </mat-select>
                                         </mat-form-field>

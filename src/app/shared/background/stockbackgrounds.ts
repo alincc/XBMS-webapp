@@ -16,5 +16,17 @@ export const StockBackgrounds = [
     BASE_URL  + '/api/Containers/standardbackgroundimages/download/nebula09.jpg',
     BASE_URL  + '/api/Containers/standardbackgroundimages/download/nebula10.jpg',
     BASE_URL  + '/api/Containers/standardbackgroundimages/download/WinterSnowStorm.jpg',
-    BASE_URL  + '/api/Containers/standardbackgroundimages/download/Elements%20Business-24.jpg'
+    BASE_URL  + '/api/Containers/standardbackgroundimages/download/Elements%20Business-24.jpg',
+    BASE_URL  + '/api/Containers/standardbackgroundimages/download/wood-white-rustic-1.jpg',
+    BASE_URL  + '/api/Containers/standardbackgroundimages/download/wood-white-rustic-2.jpg',
+    BASE_URL  + '/api/Containers/standardbackgroundimages/download/wood-white-rustic-3.jpg',
+    BASE_URL  + '/api/Containers/standardbackgroundimages/download/wood-white-rustic-4.jpg',
+    BASE_URL  + '/api/Containers/standardbackgroundimages/download/wood-white-rustic-5.jpg',
+    BASE_URL  + '/api/Containers/standardbackgroundimages/download/wood-white-rustic-6.jpg',
+    BASE_URL  + '/api/Containers/standardbackgroundimages/download/wood-white-rustic-7.jpg',
+    BASE_URL  + '/api/Containers/standardbackgroundimages/download/wood-white-rustic-8.jpg',
+    BASE_URL  + '/api/Containers/standardbackgroundimages/download/wood-white-rustic-9.jpg',
+    BASE_URL  + '/api/Containers/standardbackgroundimages/download/wood-white-rustic-10.jpg',
+    BASE_URL  + '/api/Containers/standardbackgroundimages/download/green-black-tech.jpg',
+    BASE_URL  + '/api/Containers/standardbackgroundimages/download/Tropical-Pink.jpg',
 ]

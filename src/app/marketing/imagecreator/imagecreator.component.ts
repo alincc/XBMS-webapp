@@ -149,7 +149,10 @@ export class ImagecreatorComponent implements OnInit {
     width: '600px',
     height: '1000px',
     'background-color': '#ffffff',
-    position: 'relative'
+    position: 'relative',
+    'background-image': '',
+    'background-size': 'cover',
+    bgimg: ''
   }
   public moveitem = false;
   public selectedImage: image;
@@ -509,8 +512,18 @@ export class ImagecreatorComponent implements OnInit {
       width: '600px',
       height: '1000px',
       'background-color': '#ffffff',
-      position: 'relative'
+      position: 'relative',
+      'background-image': '',
+      'background-size': 'cover',
+      bgimg: ''
     }
+  }
+
+  setBackground(event) {
+    this.canvas['background-image'] = 'url(' + event + ')';
+    //console.log(this.canvas);
+    this.canvas.bgimg = event;
+    this.detectchange();
   }
 
   deleteitem(i) {
