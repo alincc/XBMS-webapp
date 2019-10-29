@@ -182,23 +182,22 @@
         </a>
         <label class="mat-h4">Website Visitors</label>
         <mat-divider></mat-divider>
-        <div class="websitedata">
-          <div fxLayout="row" fxLayoutWrap="wrap" fxLayoutAlign="space-around">
-
-            <div fxFlex="25%">
-              <label class="followuplist">Source</label>
+        <div>
+          <div class="websitedata" fxLayout="row" fxLayoutWrap="wrap" fxLayoutAlign="space-around">
+            <div fxFlex="23%">
+              <h4 class="mat-h4">Source</h4>
             </div>
-            <div fxFlex="25%">
-              <label class="followuplist">Visited URL</label>
+            <div fxFlex="23%">
+              <h4 class="mat-h4">Visited URL</h4>
             </div>
-            <div fxFlex="25%">
-              <label class="followuplist">Address</label>
+            <div fxFlex="23%">
+              <h4 class="mat-h4">Address</h4>
             </div>
-            <div fxFlex="25%">
-              <label class="followuplist">Date</label>
+            <div fxFlex="23%">
+              <h4 class="mat-h4">Date</h4>
             </div>
             <div fxFlex="8%">
-              <label class="followuplist">isp</label>
+              <h4 class="mat-h4">isp</h4>
             </div>
           </div>
           <mat-accordion>
@@ -239,7 +238,6 @@
              
             </mat-expansion-panel>
           </mat-accordion>
-
         </div>
       </div>
 
@@ -248,6 +246,12 @@
     <div fxFlex.gt-xs="30%" fxFlex.lt-sm="50%" fxLayout="row" fxLayoutWrap="wrap" fxLayoutAlign="space-around">
       <div fxFlex="92%" class="doubleflex">
         <label class="mat-h4">Email Activities</label>
+        <!-- <mat-select style="width: 200px; height: 50px;" placeholder="Select Domain"
+        [(value)]="selecteddomain">
+        <mat-option *ngFor="let domain of domains" [value]="selecteddomain" (blur)="getMailStats()">
+          {{ domain }}
+        </mat-option>
+      </mat-select> -->
         <mat-divider></mat-divider>
         <mat-spinner *ngIf="mailstatsspinner" style="margin: auto;"></mat-spinner>
         <div *ngIf="mailstatsspinner === false" style="min-height: 400px">

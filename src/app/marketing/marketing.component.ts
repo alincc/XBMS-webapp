@@ -720,6 +720,7 @@ export class MarketingComponent implements OnInit {
     if (this.selectedMailing.time == null) {
       this.time = moment().format('hh:mm')
       this.selectedMailing.time = this.time;
+      this.selectedMailing.companyId = this.option.companyId;
     }
 
     this.selectedMailing.date = this.timeconv.convertTime(this.selectedMailing.date, this.selectedMailing.time, this.selectedMailing.timezone);

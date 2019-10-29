@@ -167,7 +167,7 @@ export class DashboardComponent implements OnInit {
     this.AccountApi.getCurrent().subscribe((account: Account) => {
       this.Account = account,
         this.CompanyApi.getRelations(this.Account.companyId,
-          { fields: { id: true, relationname: true } }
+          { fields: { id: true, relationname: true, domain: true } }
         )
           .subscribe((relations: Relations[]) => {
             this.Relations = relations,
@@ -175,11 +175,13 @@ export class DashboardComponent implements OnInit {
             this.getAdsMailing();
             if (this.Account.standardrelation !== undefined) {
               this.RelationsApi.findById(this.Account.standardrelation)
-                .subscribe(rel => {
+                .subscribe((rel: Relations) => {
+                  console.log(rel);
                   this.onSelectRelation(rel, null)
                   this.getWebsiteTracker();
                   this.getLogs();
                   this.getTwitterAccount();
+                  this.getMailStats(rel.domain);
                 })
             }
             if (this.Account.standardGa) {
@@ -735,14 +737,20 @@ export class DashboardComponent implements OnInit {
 
   //  __________ Mailing Charts
 
-  getMailStats(): void {
+
+  getMailStats(domain?): void {
+    let SDomain;
+    if (domain){SDomain = domain
+    console.log(domain)} else {
+      SDomain = this.option.domain
+    }
     this.mailstatsspinner = true;
     //  set d/m/h 
     let data;
     if (this.mailStatsTimeSelected == undefined) {
       data = '7d';
     } else { data = this.mailStatsTimeSelected.value }
-    this.MailingApi.getstats(this.Account.companyId, data).subscribe(res => {
+    this.MailingApi.getstats(this.Account.companyId, SDomain, data).subscribe(res => {
       this.mailingstats = res.res,
         // console.log('mailingstats:', this.mailingstats)
 
@@ -888,7 +896,7 @@ export class DashboardComponent implements OnInit {
         order: 'relationname ASC'
       })
       .subscribe((Relations: Relations[]) => {
-      this.filteredRelations = Relations
+      this.filteredRelations = Relations;
         //console.log(this.filteredRelations)
       });
   }

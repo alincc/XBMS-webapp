@@ -537,6 +537,8 @@ export class MailingApi extends BaseLoopBackApi {
    *
    * @param {string} id 
    *
+   * @param {string} domain 
+   *
    * @param {object} data Request data.
    *
    *  - `data` – `{string}` - 
@@ -549,7 +551,7 @@ export class MailingApi extends BaseLoopBackApi {
    *
    *  - `res` – `{object}` - 
    */
-  public getstats(id: any = {}, data: any = {}, customHeaders?: Function): Observable<any> {
+  public getstats(id: any = {}, domain: any = {}, data: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "POST";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
     "/mailings/getstats/:id";
@@ -558,6 +560,7 @@ export class MailingApi extends BaseLoopBackApi {
     };
     let _postBody: any = {};
     let _urlParams: any = {};
+    if (typeof domain !== 'undefined' && domain !== null) _urlParams.domain = domain;
     if (typeof data !== 'undefined' && data !== null) _urlParams.data = data;
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
     return result;
