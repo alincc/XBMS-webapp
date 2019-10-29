@@ -339,8 +339,9 @@ export class MaileditorComponent implements OnInit {
     console.log(i1, i2, event, this.sectionpartselect)
     if (event.previousContainer === event.container) {
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
-      // if eventcontainer is new column create new eventcontainer
-    } else if (event.previousContainer.id === 'cdk-drop-list-0') {
+      // if eventcontainer is new column create new eventcontainer 
+      // cdk-drop-list-0
+    } else if (event.previousContainer.id === 'toolboxid') {
       // } else if (event.previousContainer.element.nativeElement.className === 'tools-list cdk-drop-list') {
       const arrayItem = [];
       event.previousContainer.data.forEach((element) => {

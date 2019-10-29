@@ -180,7 +180,7 @@ export class MarketingComponent implements OnInit {
   selectedOption = false;
   public error;
   public createItem: any;
-  public SelectedRelation: Relations;
+  //public SelectedRelation: Relations;
   public options = [];
   public mailinglist = [];
   public mailingaddress;

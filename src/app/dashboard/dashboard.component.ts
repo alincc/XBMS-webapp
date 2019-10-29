@@ -442,11 +442,11 @@ export class DashboardComponent implements OnInit {
 
   //  events
   public chartClicked(e: any): void {
-    console.log(e);
+   // console.log(e);
   }
 
   public chartHovered(e: any): void {
-    console.log(e);
+   // console.log(e);
   }
 
 
@@ -752,7 +752,7 @@ export class DashboardComponent implements OnInit {
     } else { data = this.mailStatsTimeSelected.value }
     this.MailingApi.getstats(this.Account.companyId, SDomain, data).subscribe(res => {
       this.mailingstats = res.res,
-        // console.log('mailingstats:', this.mailingstats)
+        console.log('mailingstats:', this.mailingstats)
 
         this.acceptedNumbers = [],
         // set accepted mails
@@ -769,37 +769,37 @@ export class DashboardComponent implements OnInit {
 
       this.deliveredNumbers = [],
         // set accepted mails
-        this.mailingstats[1].stats.forEach(element => {
+        this.mailingstats[0].stats.forEach(element => {
           this.deliveredNumbers.push(element.delivered.total) // smtp/html
         });
 
       this.openedNumbers = [],
-        this.mailingstats[2].stats.forEach(element => {
+        this.mailingstats[0].stats.forEach(element => {
           this.openedNumbers.push(element.opened.total)
         });
 
       this.clickedNumbers = [],
-        this.mailingstats[3].stats.forEach(element => {
+        this.mailingstats[0].stats.forEach(element => {
           this.clickedNumbers.push(element.clicked.total)
         });
 
       this.unsubscribedNumbers = [],
-        this.mailingstats[4].stats.forEach(element => {
+        this.mailingstats[0].stats.forEach(element => {
           this.unsubscribedNumbers.push(element.unsubscribed.total)
         });
 
       this.complainedNumbers = [],
-        this.mailingstats[5].stats.forEach(element => {
+        this.mailingstats[0].stats.forEach(element => {
           this.complainedNumbers.push(element.complained.total)
         });
 
       this.storedNumbers = [],
-        this.mailingstats[6].stats.forEach(element => {
+        this.mailingstats[0].stats.forEach(element => {
           this.storedNumbers.push(element.stored.total)
         });
 
       this.failedNumbers = [],
-        this.mailingstats[7].stats.forEach(element => {
+        this.mailingstats[0].stats.forEach(element => {
           this.failedNumbers.push(element.failed.permanent.total)
         });
 

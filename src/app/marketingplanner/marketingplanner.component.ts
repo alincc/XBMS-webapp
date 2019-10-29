@@ -153,7 +153,15 @@ export class MarketingplannerComponent implements OnInit {
     this.AccountApi.getCurrent().subscribe((Account: Account) => {
       this.Account = Account,
         this.CompanyApi.getRelations(this.Account.companyId)
-          .subscribe((Relations: Relations[]) => { this.Relations = Relations, this.getrelationsEntry() });
+          .subscribe((Relations: Relations[]) => { 
+            this.Relations = Relations, 
+            this.getrelationsEntry(),
+            this.RelationsApi.findById(this.Account.standardrelation)
+            .subscribe((relation: Relations) => {
+              this.option = relation;
+              this.onSelectRelation(this.Account.standardrelation)});
+            })
+         
     });
   }
 
@@ -163,8 +171,8 @@ export class MarketingplannerComponent implements OnInit {
     }
   }
  
-  onSelectRelation(option, i): void {
-    this.RelationsApi.getMarketingplannerevents(this.Account.standardrelation,
+  onSelectRelation(relid): void {
+    this.RelationsApi.getMarketingplannerevents(relid,
       {
         where: { scheduled: true },
         include: {

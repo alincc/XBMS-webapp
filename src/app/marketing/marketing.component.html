@@ -1,7 +1,10 @@
 <div fxLayout="column" fxLayoutWrap="wrap" fxLayoutAlign="space-around">
   <div fxFlex="100%" fxLayout="column" class="topbanner">
-        <div class="selectrelation" fxFlex fxShow.xs="false">
-          <mat-form-field>
+        <div class="selectrelation" fxFlex fxShow.xs="false" fxLayout="row">
+            <mat-chip-list *ngIf="option"style="margin: 10px">
+                <mat-chip color="primary" class="mat-h4">{{ option.relationname }}</mat-chip>
+              </mat-chip-list>
+          <mat-form-field style="width: 50%">
             <input type="text" placeholder="Select Relation" aria-label="relation" matInput
               (keyup)="searchGoQuick($event.srcElement.value)" [matAutocomplete]="relations">
             <mat-autocomplete #relations="matAutocomplete" [displayWith]="displayFnRelation">
@@ -13,6 +16,7 @@
           </mat-form-field>
         </div>
   </div>
+
 
   <!-- Publications_______________________________ -->
 

@@ -25,7 +25,9 @@ import {
   MailinglistApi,
   ContainersecureApi,
   MailingApi,
-  Mailing
+  Mailing,
+  LoggerApi, 
+  Logger
 } from '../shared/';
 import { NgClass, NgStyle } from '@angular/common';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
@@ -86,7 +88,7 @@ export class SettingsComponent implements OnInit {
   public toggleedituser = false;
   public currentdomain: string;
   public domainresponse: string; 
-
+  public logs: Logger[];
   public selectedCall: Unsortedcalls;
   public callindex: any;
   public UnsortedcallsId;
@@ -217,6 +219,7 @@ export class SettingsComponent implements OnInit {
       startWith(''),
       map(value => this._filterfont(value))
     );
+
   }
 
   private _filterfont(value: string): string[] {
@@ -240,7 +243,15 @@ export class SettingsComponent implements OnInit {
         this.getLinkedin(),
         this.getAdminAccountsoverview();
       this.emailHandler();
+      this.getLogs();
     });
+  }
+
+  getLogs(){
+    this.CompanyApi.getLogger(this.Account.companyId)
+    .subscribe((logs: Logger[]) => {
+      this.logs = logs;
+    })
   }
 
   getAdminAccountsoverview(): void {

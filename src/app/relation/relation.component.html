@@ -1,8 +1,12 @@
 <div fxLayout="column" fxLayoutWrap="wrap" fxLayoutAlign="space-around">
 
   <div class="topbanner">
-    <div class="selectrelation" fxFlex fxShow.xs="false">
-      <mat-form-field>
+    <div class="selectrelation" fxFlex fxShow.xs="false" fxLayout="row">
+
+      <mat-chip-list *ngIf="selectedRelation" style="margin: 10px">
+        <mat-chip color="primary" class="mat-h4">{{ selectedRelation.relationname }}</mat-chip>
+      </mat-chip-list>
+      <mat-form-field style="width: 50%">
         <input type="text" placeholder="Select Relation" aria-label="relation" matInput
           (keyup)="searchGoQuick($event.srcElement.value)" [matAutocomplete]="relations"
           [formControl]="myControlRelations">
@@ -894,7 +898,7 @@
       </div>
     </mat-tab>
 
-    <mat-tab label="Follow ups/Automation">
+    <!-- <mat-tab label="Follow ups/Automation">
       <ng-template mat-tab-label>
         <mat-icon>settings_applicationss</mat-icon>
         <div fxShow.xs="false">Automations</div>
@@ -911,7 +915,7 @@
                 </div>
               </div>
               <mat-horizontal-stepper #stepper>
-                <!-- step 1 -->
+               
                 <mat-step [stepControl]="crawl1FormGroup">
 
                   <ng-template matStepLabel>Fill in Website</ng-template>
@@ -924,7 +928,7 @@
                   </div>
 
                 </mat-step>
-                <!-- step 2 -->
+               
                 <mat-step [stepControl]="crawl1FormGroup">
 
                   <ng-template matStepLabel>Fill in Search Term</ng-template>
@@ -938,7 +942,7 @@
                   </div>
 
                 </mat-step>
-                <!-- step 3 -->
+               
                 <mat-step [stepControl]="crawl1FormGroup">
 
                   <ng-template matStepLabel>Type of info to Crawl for</ng-template>
@@ -959,7 +963,7 @@
                   </div>
 
                 </mat-step>
-                <!-- step 4 -->
+              
                 <mat-step [stepControl]="crawl2FormGroup">
                   <ng-template matStepLabel>About the Data</ng-template>
                   <mat-checkbox [(ngModel)]=selectedCrawler.findlist>Do you need a list</mat-checkbox>
@@ -968,7 +972,7 @@
                     <button mat-button matStepperNext>Next</button>
                   </div>
                 </mat-step>
-                <!-- step 5 -->
+               
                 <mat-step *ngIf="selectedCrawler.output" [stepControl]="crawl2FormGroup">
                   <ng-template matStepLabel>Output Type</ng-template>
                   <mat-select class="selectionbox" [(ngModel)]=selectedCrawler.depth placeholder="Depth">
@@ -981,7 +985,7 @@
                     <button mat-button matStepperNext>Next</button>
                   </div>
                 </mat-step>
-                <!-- step 6 -->
+                
                 <mat-step [stepControl]="crawl2FormGroup">
                   <ng-template matStepLabel>Depth</ng-template>
                   <mat-select class="selectionbox" [(ngModel)]=selectedCrawler.output placeholder="Depth">
@@ -994,7 +998,7 @@
                     <button mat-button matStepperNext>Next</button>
                   </div>
                 </mat-step>
-                <!-- step 7 -->
+               
                 <mat-step>
                   <ng-template matStepLabel>Done</ng-template>
                   You are now done.
@@ -1014,18 +1018,14 @@
           <div fxFlex="20%" class="standarddivclass" ngClass.lt-sm="listview-xs-minimal"
             ngClass.gt-xs="listview-xs-minimal-show" [class.listview-xs-minimal-show]="listviewxsshow">
 
-            <!-- <div *ngFor="let Crawler of Crawler; let i = index" (click)="onSelectCrawler(Crawler, i)"
-              [class.selected]="Crawler === selectedCall">
-              <span class="box">{{Crawler.name| slice:0:20}} | {{Crawler.date | date}}</span>
-            </div> -->
 
             <button a mat-raised-button (click)="getCrawlers()">Show All</button>
 
             <a mat-mini-fab color="primary" (click)="newCrawler()">
               <mat-icon>add</mat-icon>
             </a>
-          </div>
-          <!-- 
+          </div> -->
+    <!-- 
           <div fxFlex="78%" fxLayout="column" *ngIf="selectedCrawler" class="standarddivclass">
             <mat-card class="standarddivclass">
               <mat-card-content>
@@ -1181,11 +1181,11 @@
               </mat-card-content>
             </mat-card>
           </div> -->
-        </div>
+    <!-- </div>
 
 
       </div>
-    </mat-tab>
+    </mat-tab> -->
 
 
     <mat-tab label="Connected Accounts">
@@ -1566,13 +1566,13 @@
       </div>
 
     </mat-tab>
-
+    <!-- 
     <mat-tab label="Proposals">
       <ng-template mat-tab-label>
         <mat-icon>attach_money</mat-icon>
         <div fxShow.xs="false">Proposals</div>
       </ng-template>
 
-    </mat-tab>
+    </mat-tab> -->
   </mat-tab-group>
 </div>

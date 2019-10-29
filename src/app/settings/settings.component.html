@@ -51,12 +51,12 @@
             <div fxLayout="row" fxLayout.xs="column">
               <div fxFlex>
                 <mat-form-field>
-                    <mat-label>Select font</mat-label>
-                    <mat-select [(value)]="Company.companyfont">
-                        <mat-option *ngFor="let font of Fonts" [value]="font.value">
-                            {{font.name}}
-                        </mat-option>
-                    </mat-select>
+                  <mat-label>Select font</mat-label>
+                  <mat-select [(value)]="Company.companyfont">
+                    <mat-option *ngFor="let font of Fonts" [value]="font.value">
+                      {{font.name}}
+                    </mat-option>
+                  </mat-select>
                 </mat-form-field>
               </div>
             </div>
@@ -95,26 +95,26 @@
               </div>
             </div>
             <mat-accordion>
-                <mat-expansion-panel>
-                  <mat-expansion-panel-header>
-                    <mat-panel-title>
-                      Signature
-                    </mat-panel-title>
-                  </mat-expansion-panel-header>
-            <div fxLayout="row" fxLayout.xs="column">
-              <div [innerHTML]="Account.signature | safeHtml"></div>
-            </div>
-            <div fxLayout="row" fxLayout.xs="column">
-              <button a mat-raised-button color="primary" (click)="openeditorsignature()">
-                Edit Signature
-              </button>
-            </div>
-            <div fxLayout="row" fxLayout.xs="column">
-              <div fxFlex>
-                <button (click)="saveCompany()" a mat-raised-button class="button">Save Changes</button>
-              </div>
-            </div>
-            </mat-expansion-panel>
+              <mat-expansion-panel>
+                <mat-expansion-panel-header>
+                  <mat-panel-title>
+                    Signature
+                  </mat-panel-title>
+                </mat-expansion-panel-header>
+                <div fxLayout="row" fxLayout.xs="column">
+                  <div [innerHTML]="Account.signature | safeHtml"></div>
+                </div>
+                <div fxLayout="row" fxLayout.xs="column">
+                  <button a mat-raised-button color="primary" (click)="openeditorsignature()">
+                    Edit Signature
+                  </button>
+                </div>
+                <div fxLayout="row" fxLayout.xs="column">
+                  <div fxFlex>
+                    <button (click)="saveCompany()" a mat-raised-button class="button">Save Changes</button>
+                  </div>
+                </div>
+              </mat-expansion-panel>
             </mat-accordion>
 
 
@@ -155,109 +155,109 @@
                 <h2>Company information</h2>
               </div>
             </div>
-    
-              <div fxFlex>
-                <mat-form-field fxFlex="90" class="form-full-width">
-                  <input matInput [(ngModel)]=Company.companyname placeholder="Company Name" class="InputField">
-                </mat-form-field>
-              </div>
-     
-          
-              <div fxFlex>
-                <mat-form-field fxFlex="90" class="form-full-width">
-                  <input matInput [(ngModel)]=Company.address placeholder="Address" class="InputField">
-                </mat-form-field>
-              </div>
-        
-          
-            
-              <div fxFlex>
-                <mat-form-field class="form-full-width">
-                  <input matInput [(ngModel)]=Company.city placeholder="City" class="InputField">
-                </mat-form-field>
-              </div>
-              <div fxFlex>
-                <mat-form-field  class="form-full-width">
-                  <input matInput [(ngModel)]=Company.zipcode placeholder="Zipcode" class="InputField">
-                </mat-form-field>
-              </div>
-              <div fxFlex>
-                <mat-form-field class="form-full-width">
-                  <input matInput [(ngModel)]=Company.stateprov placeholder="State/Province" class="InputField">
-                </mat-form-field>
-              </div>
-  
-           
-              <div fxFlex>
-                <mat-form-field fxFlex="90" class="form-full-width">
-                  <input matInput [(ngModel)]=Company.country placeholder="Country" class="InputField">
-                </mat-form-field>
-              </div>
-     
-  
-              <div fxFlex>
-                <button fxFlex="90" (click)="billingCompanyCopy()" a mat-raised-button class="button">Billing address is
-                  the same</button>
-              </div>
 
-              <div fxFlex>
-                <mat-form-field fxFlex="90" class="form-full-width">
-                  <input matInput [(ngModel)]=Company.billingaddress placeholder="Billing Address" class="InputField">
-                </mat-form-field>
-              </div>
- 
+            <div fxFlex>
+              <mat-form-field fxFlex="90" class="form-full-width">
+                <input matInput [(ngModel)]=Company.companyname placeholder="Company Name" class="InputField">
+              </mat-form-field>
+            </div>
 
 
-              <div fxFlex>
-                <mat-form-field fxFlex="30" class="form-full-width">
-                  <input matInput [(ngModel)]=Company.billingcity placeholder="Billing City" class="InputField">
-                </mat-form-field>
-              </div>
-              <div fxFlex>
-                <mat-form-field fxFlex="30" class="form-full-width">
-                  <input matInput [(ngModel)]=Company.billingzipcode placeholder="Billing zipcode" class="InputField">
-                </mat-form-field>
-              </div>
-              <div fxFlex>
-                <mat-form-field fxFlex="30" class="form-full-width">
-                  <input matInput [(ngModel)]=Company.billingstateprov placeholder="Billing State/Province"
-                    class="InputField">
-                </mat-form-field>
-              </div>
+            <div fxFlex>
+              <mat-form-field fxFlex="90" class="form-full-width">
+                <input matInput [(ngModel)]=Company.address placeholder="Address" class="InputField">
+              </mat-form-field>
+            </div>
 
 
-                <div fxFlex>
-                  <mat-form-field fxFlex="90" class="form-full-width">
-                    <input matInput [(ngModel)]=Company.billingcountry placeholder="Billing Country" class="InputField">
-                  </mat-form-field>
-                </div>
 
-                <div fxFlex>
-                  <mat-form-field fxFlex="90" class="form-full-width">
-                    <input matInput [(ngModel)]=Company.billingcontact placeholder="Billing Contact" class="InputField">
-                  </mat-form-field>
-                </div>
-  
-                <div fxFlex>
-                  <mat-form-field fxFlex="90" class="form-full-width">
-                    <input matInput [(ngModel)]=Company.billingemail placeholder="Billing Email" class="InputField">
-                  </mat-form-field>
-                </div>
-        
-      
-                <div fxFlex>
-                  <mat-form-field fxFlex="90" class="form-full-width">
-                    <input matInput [(ngModel)]=Company.phonenumber placeholder="Phonenumber" class="InputField">
-                  </mat-form-field>
-                </div>
-            
-                <div fxFlex>
-                  <button (click)="saveCompany()" a mat-raised-button class="button">Save Changes</button>
-                </div>
-              </div>
-            
+            <div fxFlex>
+              <mat-form-field class="form-full-width">
+                <input matInput [(ngModel)]=Company.city placeholder="City" class="InputField">
+              </mat-form-field>
+            </div>
+            <div fxFlex>
+              <mat-form-field class="form-full-width">
+                <input matInput [(ngModel)]=Company.zipcode placeholder="Zipcode" class="InputField">
+              </mat-form-field>
+            </div>
+            <div fxFlex>
+              <mat-form-field class="form-full-width">
+                <input matInput [(ngModel)]=Company.stateprov placeholder="State/Province" class="InputField">
+              </mat-form-field>
+            </div>
+
+
+            <div fxFlex>
+              <mat-form-field fxFlex="90" class="form-full-width">
+                <input matInput [(ngModel)]=Company.country placeholder="Country" class="InputField">
+              </mat-form-field>
+            </div>
+
+
+            <div fxFlex>
+              <button fxFlex="90" (click)="billingCompanyCopy()" a mat-raised-button class="button">Billing address is
+                the same</button>
+            </div>
+
+            <div fxFlex>
+              <mat-form-field fxFlex="90" class="form-full-width">
+                <input matInput [(ngModel)]=Company.billingaddress placeholder="Billing Address" class="InputField">
+              </mat-form-field>
+            </div>
+
+
+
+            <div fxFlex>
+              <mat-form-field fxFlex="30" class="form-full-width">
+                <input matInput [(ngModel)]=Company.billingcity placeholder="Billing City" class="InputField">
+              </mat-form-field>
+            </div>
+            <div fxFlex>
+              <mat-form-field fxFlex="30" class="form-full-width">
+                <input matInput [(ngModel)]=Company.billingzipcode placeholder="Billing zipcode" class="InputField">
+              </mat-form-field>
+            </div>
+            <div fxFlex>
+              <mat-form-field fxFlex="30" class="form-full-width">
+                <input matInput [(ngModel)]=Company.billingstateprov placeholder="Billing State/Province"
+                  class="InputField">
+              </mat-form-field>
+            </div>
+
+
+            <div fxFlex>
+              <mat-form-field fxFlex="90" class="form-full-width">
+                <input matInput [(ngModel)]=Company.billingcountry placeholder="Billing Country" class="InputField">
+              </mat-form-field>
+            </div>
+
+            <div fxFlex>
+              <mat-form-field fxFlex="90" class="form-full-width">
+                <input matInput [(ngModel)]=Company.billingcontact placeholder="Billing Contact" class="InputField">
+              </mat-form-field>
+            </div>
+
+            <div fxFlex>
+              <mat-form-field fxFlex="90" class="form-full-width">
+                <input matInput [(ngModel)]=Company.billingemail placeholder="Billing Email" class="InputField">
+              </mat-form-field>
+            </div>
+
+
+            <div fxFlex>
+              <mat-form-field fxFlex="90" class="form-full-width">
+                <input matInput [(ngModel)]=Company.phonenumber placeholder="Phonenumber" class="InputField">
+              </mat-form-field>
+            </div>
+
+            <div fxFlex>
+              <button (click)="saveCompany()" a mat-raised-button class="button">Save Changes</button>
+            </div>
           </div>
-      
+
+        </div>
+
         <div class="companyinfo" fxFlex="40%">
           <div fxLayout="column">
             <div fxLayout="row" fxLayout.xs="column">
@@ -435,12 +435,12 @@
             <div fxLayout="column">
               <div fxLayout="row">
                 <div fxFlex>
-                    settings offices 365
+                  settings offices 365
                 </div>
                 <button a mat-raised-button (click)="Emailhandler.port = '993'; 
                 Emailhandler.host = 'outlook.office365.com';
                 Emailhandler.tls = true;"></button>
-             </div>
+              </div>
             </div>
             <div fxLayout="row" fxLayout.xs="column">
               <div fxFlex>
@@ -464,50 +464,50 @@
         <div class="companyinfo" fxFlex="40%" fxLayout="column" fxLayoutAlign="space-around">
           <h2>Domain Settings</h2>
 
-          
-            <label>setup new domain</label>
-            <br>
-            <mat-form-field fxFlex class="form-full-width">
-                <input matInput [(ngModel)]=Company.companywebsite placeholder="Domain">
-              </mat-form-field>
-              <br>
-            <div fxLayout="column" fxLayoutAlign="space-around">
-                <div fxLayout="row">
-                  <h3 fxFlex>Type</h3>
-                  <h3 fxFlex>Hostname</h3>
-                  <h3 fxFlex>Value to enter</h3>
-                  </div>
-              <div fxLayout="row" fxLayoutAlign="space-around">
-                  <label fxFlex>TXT</label>
-                  <label fxFlex>{{Company.companywebsite}}</label>
-                  <label fxFlex>v=spf1 include:mailgun.org ~all</label>
-              </div>
-              <div fxLayout="row" fxLayoutAlign="space-around">
-                  <label fxFlex>CNAME</label>
-                  <label fxFlex>{{Company.companywebsite}}</label>
-                  <label fxFlex>mailgun.org</label>
-              </div>
-              <div fxLayout="row" fxLayoutAlign="space-around">
-                  <label fxFlex>MX</label>
-                  <label fxFlex>priority: 10</label>
-                  <label fxFlex>mxa.mailgun.org</label>
-              </div>
-              <div fxLayout="row" fxLayoutAlign="space-around">
-                  <label fxFlex>MX</label>
-                  <label fxFlex>priority: 10</label>
-                  <label fxFlex>mxb.mailgun.org</label>
-              </div>
-              <div fxLayout="row" fxLayoutAlign="space-around">
 
-              </div>
+          <label>setup new domain</label>
+          <br>
+          <mat-form-field fxFlex class="form-full-width">
+            <input matInput [(ngModel)]=Company.companywebsite placeholder="Domain">
+          </mat-form-field>
+          <br>
+          <div fxLayout="column" fxLayoutAlign="space-around">
+            <div fxLayout="row">
+              <h3 fxFlex>Type</h3>
+              <h3 fxFlex>Hostname</h3>
+              <h3 fxFlex>Value to enter</h3>
             </div>
-            <button (click)="saveCompany()" a mat-raised-button class="button">Save domain settings</button>
-            <!-- <button (click)="setDomain()" a mat-raised-button class="button">Check settings</button> -->
-            <button (click)="checkDomainSettings()" a mat-raised-button class="button">Check Status</button>
-            <div *ngIf="domainresponse" fxFlex>
-              <label style="font-size: 8pt; overflow-wrap: break-word;">{{domainresponse}}</label>
+            <div fxLayout="row" fxLayoutAlign="space-around">
+              <label fxFlex>TXT</label>
+              <label fxFlex>{{Company.companywebsite}}</label>
+              <label fxFlex>v=spf1 include:mailgun.org ~all</label>
+            </div>
+            <div fxLayout="row" fxLayoutAlign="space-around">
+              <label fxFlex>CNAME</label>
+              <label fxFlex>{{Company.companywebsite}}</label>
+              <label fxFlex>mailgun.org</label>
+            </div>
+            <div fxLayout="row" fxLayoutAlign="space-around">
+              <label fxFlex>MX</label>
+              <label fxFlex>priority: 10</label>
+              <label fxFlex>mxa.mailgun.org</label>
+            </div>
+            <div fxLayout="row" fxLayoutAlign="space-around">
+              <label fxFlex>MX</label>
+              <label fxFlex>priority: 10</label>
+              <label fxFlex>mxb.mailgun.org</label>
+            </div>
+            <div fxLayout="row" fxLayoutAlign="space-around">
+
             </div>
           </div>
+          <button (click)="saveCompany()" a mat-raised-button class="button">Save domain settings</button>
+          <!-- <button (click)="setDomain()" a mat-raised-button class="button">Check settings</button> -->
+          <button (click)="checkDomainSettings()" a mat-raised-button class="button">Check Status</button>
+          <div *ngIf="domainresponse" fxFlex>
+            <label style="font-size: 8pt; overflow-wrap: break-word;">{{domainresponse}}</label>
+          </div>
+        </div>
 
       </div>
     </div>
@@ -688,79 +688,22 @@
 
   <mat-tab label="System">
     <ng-template mat-tab-label>
-      <mat-icon>system</mat-icon>System settings
+      <mat-icon>system</mat-icon>System Logs
     </ng-template>
-    <!-- <div fxFlex="40%" class="innerfollowup">
-        <a
-          mat-mini-fab
-          color="primary"
-          style="float: right;"
-          (click)="getLogs()"
-        >
-          <mat-icon>refresh</mat-icon>
-        </a>
-        <label class="mat-h4">Logs</label>
-        <mat-divider></mat-divider>
-        <div fxLayout="column" class="websitedata">
-          <tr
-            fxLayout="column"
-            fxLayoutWrap="wrap"
-            fxLayoutAlign="space-around"
-          >
-            <mat-list-item>
-              <th fxFlex="20%" class="thwebsitetr">
-                <label class="followuplist">User</label>
-              </th>
-              <th fxFlex="20%" class="thwebsitetr">
-                <label class="followuplist">Subject</label>
-              </th>
-              <th fxFlex="20%" class="thwebsitetr">
-                <label class="followuplist">code</label>
-              </th>
-              <th fxFlex="20%" class="thwebsitetr">
-                <label class="followuplist">Date</label>
-              </th>
-              <th fxFlex="20%" class="thwebsitetr"></th>
-            </mat-list-item>
-          </div>
-          <tr
-            fxLayout="column"
-            fxLayoutWrap="wrap"
-            fxLayoutAlign="space-around"
-            *ngFor="let logs of logger; let i = index"
-          >
-            <mat-list-item>
-              <div fxFlexfxFlex="20%" class="tdwebsitetr">
-                <label class="followuplist">{{ logs.user }}</label>
-              </div>
-              <div fxFlexfxFlex="20%" class="tdwebsitetr">
-                <label class="followuplist">{{ logs.relation }}</label>
-              </div>
-              <div fxFlexfxFlex="20%" class="tdwebsitetr">
-                <label class="followuplist">{{
-                  logs.code | slice: 0:50
-                }}</label>
-              </div>
-              <div fxFlexfxFlex="20%" class="tdwebsitetr">
-                <label class="followuplist">{{
-                  logs.date | date: "medium"
-                }}</label>
-              </div>
-              <div fxFlexfxFlex="20%" class="tdwebsitetr">
-                <label (click)="deleteLog(i)" class="followuplist"
-                  >Delete</label
-                >
-              </div>
-            </mat-list-item>
-            <mat-divider></mat-divider>
-          </div>
-        </div>
-      </div> -->
 
+    <div style="height: 400px; width: 100%; margin: 10px">
+      <div *ngFor="let log of logs" fxLayout="row" fxLayoutAlign="space-around">
+        <div fxFlex="25%">{{log.date | date: "medium" }}</div>
+        <div fxFlex="25%">{{log.item}}</div>
+        <div fxFlex="25%">{{log.code}}</div>
+        <div fxFlex="25%">{{log.description}}</div>
+        <mat-divider></mat-divider>
+      </div>
+    </div>
 
   </mat-tab>
 
-  <mat-tab label="Wordpress Websites">
+  <!-- <mat-tab label="Wordpress Websites">
     <ng-template mat-tab-label>
       <mat-icon>web</mat-icon>Wordpress
     </ng-template>
@@ -768,7 +711,7 @@
       <div fxLayout="column">
         <div fxLayout="row" fxLayout.xs="column">
           <button (click)="wpauth()" a mat-raised-button class="button">Add Wordpress Website</button>
-          <!-- use for open new window: assignActity()  -->
+
         </div>
       </div>
 
@@ -782,5 +725,5 @@
       <li>5. Get the Client Key and Client Secret and save in the above</li>
       <li>7. Press Add Wordpress Website above</li>
     </div>
-  </mat-tab>
+  </mat-tab> -->
 </mat-tab-group>

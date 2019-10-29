@@ -226,6 +226,7 @@ body{
   display: flex;
   transition: cubic-bezier(0.165, 0.84, 0.44, 1);
   transition: 0.6s;
+  margin: 10px; 
 }
 
 .container-noshow{
@@ -244,6 +245,7 @@ body{
   width: 80%;
   transition: cubic-bezier(0.165, 0.84, 0.44, 1);
   transition: 0.6s;
+  margin: 10px; 
 }
 
 .showprogressbardiv {
@@ -252,6 +254,10 @@ body{
   height: 100%;
   z-index: 102;
   background-color: white;
+}
+
+.mat-tab-header {
+  box-shadow: 0px 2px 1px -1px rgba(0, 0, 0, 0.2), 0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 1px 3px 0px rgba(0, 0, 0, 0.12);
 }
 
 

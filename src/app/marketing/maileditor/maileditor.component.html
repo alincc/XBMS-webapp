@@ -8,12 +8,12 @@
 
   <div fxFlex="10%" class="tools">
     <div cdkDropList #toolsetList="cdkDropList" [cdkDropListData]="toolset" class="tools-list"
-      (cdkDropListDropped)="drop($event)">
+      (cdkDropListDropped)="drop($event)" id="toolboxid">
       <span>Tools</span>
       <br style='margin: 5px'>
       <mat-progress-bar *ngIf='showprogressbar' mode="indeterminate"></mat-progress-bar>
       
-      <div class="tool-box" *ngFor="let item of toolset" cdkDrag>
+      <div class="tool-box" *ngFor="let item of toolset" cdkDrag id="toolboxid" >
         <div *ngIf="item.type === 'Image'" matTooltip="add iamge">
           <mat-icon class="iconsize-18" matSuffix>add_photo_alternate</mat-icon> {{item.type}}
         </div>

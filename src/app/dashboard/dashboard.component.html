@@ -1,6 +1,6 @@
 <div fxLayout="column" fxLayoutWrap="wrap" fxLayoutAlign="space-around" class="home-wrapper">
 
-  <div fxFlex="100%" fxLayout="column">
+  <div fxFlex="100%" fxLayout="column" class="topbanner">
     <mat-card style="min-height: 100px">
       <mat-card-content>
         <div style="margin-left: 100px" fxFlex fxShow.xs="false">
@@ -36,6 +36,10 @@
             </mat-autocomplete>
           </mat-form-field> -->
 
+          
+      <mat-chip-list style="margin: 10px">
+          <mat-chip color="primary" class="mat-h4">{{ option.relationname }}</mat-chip>
+        </mat-chip-list>
           <mat-form-field>
             <input type="text" placeholder="Select Relation" aria-label="relation" matInput
               (keyup)="searchGoQuick($event.srcElement.value)" [matAutocomplete]="relations">
