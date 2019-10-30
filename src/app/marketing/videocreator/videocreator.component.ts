@@ -1659,12 +1659,15 @@ export class VideocreatorComponent implements OnInit {
   }
 
   editVectorPaths(idx, vector: vectorelement, element: vectoranimation) {
-    vector.pathids.forEach(pid => {
-      let svgel = document.getElementById(pid);
-      svgel.addEventListener('click', (e) =>  {
-       console.log(e);
-    });
-    })
+    console.log(vector, idx, element);
+    let svgel = document.getElementById(vector.idx);
+    let p = svgel.getElementsByTagName("path");
+    //console.log(p);
+    for (let index = 0; index < p.length; index++) {
+      console.log(p[index]);
+      p[index].onclick = function() { alert('blah'); };
+      //p[index].setAttribute("onclick","alert('blah');");
+    }
   }
 
 
