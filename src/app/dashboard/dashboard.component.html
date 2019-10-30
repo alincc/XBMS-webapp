@@ -72,11 +72,21 @@
 
     <div fxFlex="30%" fxLayout.lt-md="column" fxLayout="row" fxLayoutWrap="wrap" fxLayoutAlign="space-around">
 
-      <div fxFlex="40%" class="doubleflex">
+      <div fxFlex="45%" class="doubleflex">
         <label class="mat-h4">Total Activities</label>
         <mat-divider></mat-divider>
         <div>
           <canvas baseChart #baseChartBar="base-chart" [datasets]="barChartData" [labels]="barChartLabels"
+            [options]="barChartOptions" [legend]="barChartLegend" [chartType]="barChartType"
+            (chartHover)="chartHovered($event)" (chartClick)="chartClicked($event)"></canvas>
+        </div>
+      </div>
+
+      <div fxFlex="45%" class="doubleflex">
+        <label class="mat-h4">Total Activities</label>
+        <mat-divider></mat-divider>
+        <div>
+          <canvas baseChart #baseChartBarChannel="base-chart" [datasets]="barChartDataChannel" [labels]="barChartChannelLabels"
             [options]="barChartOptions" [legend]="barChartLegend" [chartType]="barChartType"
             (chartHover)="chartHovered($event)" (chartClick)="chartClicked($event)"></canvas>
         </div>
@@ -87,7 +97,7 @@
 
     <!-- fxLayout.lt-md="column" -->
     <div fxFlex="30%" fxLayout="row" fxLayoutWrap="wrap" fxLayoutAlign="space-around">
-      <div fxFlex="50%" class="innerfollowup">
+      <div fxFlex="45%" class="innerfollowup">
         <a mat-mini-fab color="primary" style="float: right;" (click)="getAdsMailing()">
           <mat-icon>refresh</mat-icon>
         </a>
@@ -142,7 +152,7 @@
           </tr>
         </table>
       </div>
-      <div fxFlex="40%" class="innerfollowup">
+      <div fxFlex="45%" class="innerfollowup">
         <label class="mat-h4">Follow Up</label>
         <mat-divider></mat-divider>
         <div>
@@ -248,7 +258,7 @@
     </div>
 
     <div fxFlex.gt-xs="30%" fxFlex.lt-sm="50%" fxLayout="row" fxLayoutWrap="wrap" fxLayoutAlign="space-around">
-      <div fxFlex="92%" class="doubleflex">
+      <div fxFlex="90%" class="doubleflex">
         <label class="mat-h4">Email Activities</label>
         <!-- <mat-select style="width: 200px; height: 50px;" placeholder="Select Domain"
         [(value)]="selecteddomain">

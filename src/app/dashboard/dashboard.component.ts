@@ -54,6 +54,7 @@ export class DashboardComponent implements OnInit {
   public Calls: Calls[];
   public errorMessage
   public TotalNumber = [];
+  public TotalNumberChannels = [];
   public returnnumber: any;
   public analyticsresult: any;
   public Account: Account = new Account();
@@ -172,7 +173,7 @@ export class DashboardComponent implements OnInit {
           .subscribe((relations: Relations[]) => {
             this.Relations = relations,
               //this.getrelationsEntry();
-            this.getAdsMailing();
+              this.getAdsMailing();
             if (this.Account.standardrelation !== undefined) {
               this.RelationsApi.findById(this.Account.standardrelation)
                 .subscribe((rel: Relations) => {
@@ -198,19 +199,19 @@ export class DashboardComponent implements OnInit {
   getTwitterAccount(): void {
     this.RelationsApi.getTwitter(this.option.id)
       .subscribe((Twitter: Twitter[]) => {
-        if (Twitter.length > 0){
-        this.Twitter = Twitter;
-        if (Twitter[0].screenname === undefined) {
-          this.TwitterApi.verifycredentials(this.Twitter[0].AccessToken, this.Twitter[0].AccessTokenSecret)
-            .subscribe(res => {
-              res = JSON.parse(res);
-              this.twitterselected = { sourceType: 'url', url: 'https://twitter.com/' + res.screen_name };
-              console.log(this.twitterselected, res);
-              this.Twitter[0].screenname = res.screen_name;
-              this.RelationsApi.updateByIdTwitter(this.option.id, this.Twitter[0].id, this.Twitter[0]).subscribe();
-            });
-        } else { this.twitterselected = { sourceType: 'url', url: 'https://twitter.com/' + this.Twitter[0].screenname }; }
-      }
+        if (Twitter.length > 0) {
+          this.Twitter = Twitter;
+          if (Twitter[0].screenname === undefined) {
+            this.TwitterApi.verifycredentials(this.Twitter[0].AccessToken, this.Twitter[0].AccessTokenSecret)
+              .subscribe(res => {
+                res = JSON.parse(res);
+                this.twitterselected = { sourceType: 'url', url: 'https://twitter.com/' + res.screen_name };
+                console.log(this.twitterselected, res);
+                this.Twitter[0].screenname = res.screen_name;
+                this.RelationsApi.updateByIdTwitter(this.option.id, this.Twitter[0].id, this.Twitter[0]).subscribe();
+              });
+          } else { this.twitterselected = { sourceType: 'url', url: 'https://twitter.com/' + this.Twitter[0].screenname }; }
+        }
       });
   }
 
@@ -293,7 +294,7 @@ export class DashboardComponent implements OnInit {
       order: 'date DESC', limit: 100
     })
       .subscribe((websitetracker: Websitetracker[]) => {
-       
+
         this.Websitetracker = websitetracker.filter((WebsitetrackerFil, index, self) =>
           index === self.findIndex((t) => (
             t.IP === WebsitetrackerFil.IP
@@ -313,7 +314,7 @@ export class DashboardComponent implements OnInit {
   markisp(i): void {
     this.Websitetracker[i].isp = true
     this.RelationsApi.updateByIdWebsitetracker(this.option.id, this.Websitetracker[i].id, this.Websitetracker[i])
-       .subscribe(res => this.getWebsiteTracker());
+      .subscribe(res => this.getWebsiteTracker());
     // this.WebsitetrackerApi.update({where: {IP: this.Websitetracker[i].IP}}, {isp: true})
     // .subscribe(res => this.getWebsiteTracker());
   }
@@ -322,6 +323,7 @@ export class DashboardComponent implements OnInit {
     //  delay for user inputs
     setTimeout(() => {
       this.countRelations(),
+        this.countChannels(),
         this.getTask(),
         this.getFollowups(),
         this.getMailStats()
@@ -430,6 +432,9 @@ export class DashboardComponent implements OnInit {
     { data: [], label: 'Mailings' }
   ];
 
+
+
+
   public barChartColors: Array<any> = [
     { //  grey --> deconsted using standard settings make option for user select
       backgroundColor: 'rgba(148,159,177,0.2)',
@@ -442,11 +447,11 @@ export class DashboardComponent implements OnInit {
 
   //  events
   public chartClicked(e: any): void {
-   // console.log(e);
+    // console.log(e);
   }
 
   public chartHovered(e: any): void {
-   // console.log(e);
+    // console.log(e);
   }
 
 
@@ -471,6 +476,30 @@ export class DashboardComponent implements OnInit {
      * so one way around it, is to clone the data, change it and then
      * assign it;
      */
+  }
+
+  @ViewChild('baseChartBarChannel', { static: false }) chartBarChannel: BaseChartDirective;
+
+  public barChartDataChannel: any[] = [
+    { data: [], label: 'Linkedin' },
+    { data: [], label: 'Twitter' },
+    { data: [], label: 'Instagram' },
+    { data: [], label: 'Facebook' },
+    { data: [], label: 'Pinterest' }
+  ];
+
+  public barChartChannelLabels: string[] = ['Social Messages'];
+
+  public countChannels() {
+    this.TotalNumberChannels = [];
+    let channeltypes = ['linkedin', 'twitter', 'instagram', 'facebook', 'pinterest'];
+    channeltypes.forEach((typeCh, index) => {
+      this.RelationsApi.countChannels(this.option.id, { 'type': typeCh }).subscribe(res => {
+        //this.TotalNumberChannels.push(res.count);
+        this.barChartDataChannel[index].data.push(res.count)
+      })
+    })
+
   }
 
   public countRelations() {
@@ -572,9 +601,9 @@ export class DashboardComponent implements OnInit {
           this.Googleanalyticsnames.push(item[0]);
         }),
           //console.log(this.googleanalyticsreturn);
-        // get array even and uneven split
-        // this.get1Numbers();
-        this.getDoughnutNumbers(); // Doughnut
+          // get array even and uneven split
+          // this.get1Numbers();
+          this.getDoughnutNumbers(); // Doughnut
         // import to update for ngx charts
         this.googleanalyticsreturn = [...this.googleanalyticsreturn];
 
@@ -740,8 +769,10 @@ export class DashboardComponent implements OnInit {
 
   getMailStats(domain?): void {
     let SDomain;
-    if (domain){SDomain = domain
-    console.log(domain)} else {
+    if (domain) {
+      SDomain = domain
+      console.log(domain)
+    } else {
       SDomain = this.option.domain
     }
     this.mailstatsspinner = true;
@@ -754,7 +785,7 @@ export class DashboardComponent implements OnInit {
       this.mailingstats = res.res,
         console.log('mailingstats:', this.mailingstats)
 
-        this.acceptedNumbers = [],
+      this.acceptedNumbers = [],
         // set accepted mails
         this.mailingstats[0].stats.forEach(element => {
           this.acceptedNumbers.push(element.accepted.outgoing)
@@ -896,16 +927,16 @@ export class DashboardComponent implements OnInit {
         order: 'relationname ASC'
       })
       .subscribe((Relations: Relations[]) => {
-      this.filteredRelations = Relations;
+        this.filteredRelations = Relations;
         //console.log(this.filteredRelations)
       });
   }
 
-    //display name in searchbox
-    displayFnRelation(relation?: Relations): string | undefined {
-      return relation ? relation.relationname : undefined;
-    }
-  
+  //display name in searchbox
+  displayFnRelation(relation?: Relations): string | undefined {
+    return relation ? relation.relationname : undefined;
+  }
+
 
 
 }
