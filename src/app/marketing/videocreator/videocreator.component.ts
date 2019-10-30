@@ -110,6 +110,7 @@ export class vectoranimation {
   vectors: vectorelement[];
   vectoranimation: vectoranimationtype[];
   svgcombi: SafeHtml;
+  selected: boolean;
 }
 
 export class vectorelement {
@@ -750,6 +751,7 @@ export class VideocreatorComponent implements OnInit {
       vectors: vectors,
       svgcombi: svgc,
       vectoranimation: vectanim,
+      selected: false
       // from, 4, {drawSVG:0, repeat:10, yoyo:true}, 4)
     }
     //console.log(vector);
@@ -1155,6 +1157,9 @@ export class VideocreatorComponent implements OnInit {
   }
 
   deleteitem(i) {
+    if (this.animationarray[i].type === 'whiteboard'){
+      this.whiteboard = false;
+    }
     this.animationarray.splice(i, 1);
   }
 
@@ -1651,6 +1656,15 @@ export class VideocreatorComponent implements OnInit {
     });
     //this.deleteVectorSrc(idx, vector);
     this.detectchange();
+  }
+
+  editVectorPaths(idx, vector: vectorelement, element: vectoranimation) {
+    vector.pathids.forEach(pid => {
+      let svgel = document.getElementById(pid);
+      svgel.addEventListener('click', (e) =>  {
+       console.log(e);
+    });
+    })
   }
 
 

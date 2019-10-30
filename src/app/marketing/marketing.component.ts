@@ -180,7 +180,7 @@ export class MarketingComponent implements OnInit {
   selectedOption = false;
   public error;
   public createItem: any;
-  //public SelectedRelation: Relations;
+  public SelectedRelation: Relations;
   public options = [];
   public mailinglist = [];
   public mailingaddress;
@@ -375,6 +375,7 @@ export class MarketingComponent implements OnInit {
   // select relation --> get info for all tabs
   onSelectRelation(option, i): void {
     this.option = option;
+    this.SelectedRelation = option; 
     this.getMailing();
     this.getMailinglist();
     this.getMailingCampaign();

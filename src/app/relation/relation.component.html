@@ -84,12 +84,12 @@
         </div>
         <div ngClass.gt-xs="container-normal" ngClass.lt-sm="container-noshow"
           [class.container-xs-show]="listviewxsshow" *ngIf="selectedRelation" on-focusout="saveRelation()">
-          <mat-card class="standarddivclass">
+          <mat-card>
             <mat-card-content>
               <div fxLayout="column">
                 <div fxLayout="row" fxLayout.xs="column">
                   <div fxFlex>
-                    <mat-toolbar color="primary" class="titlebox">
+                    <mat-toolbar class="titlebox">
                       <h2>{{selectedRelation.relationname | uppercase}}</h2>
                       <button mat-icon-button [matMenuTriggerFor]="menurelation" class="menu">
                         <mat-icon>more_vert</mat-icon>
@@ -293,7 +293,7 @@
               <div fxLayout="column" fxFlex>
                 <div fxFlex="row" fxLayout.xs="column">
                   <div fxLayout>
-                    <mat-toolbar color="primary" class="titlebox">
+                    <mat-toolbar class="titlebox">
                       <h2>{{selectedCall.title | uppercase | slice:0:30 }}</h2>
 
                       <button mat-icon-button [matMenuTriggerFor]="menucall" class="menu">
@@ -466,7 +466,7 @@
 
                 <div fxLayout="row" fxLayout.xs="column">
                   <div fxFlex>
-                    <mat-toolbar color="primary">
+                    <mat-toolbar>
                       <h2>{{selectedCall.title | uppercase | slice:0:30 }}</h2>
 
                       <button mat-icon-button [matMenuTriggerFor]="menucall" class="menu">
@@ -618,7 +618,7 @@
                 <div fxLayout="column" class="form-full-width" cellspacing="0">
                   <div fxLayout="row" fxLayout.xs="column">
                     <div fxFlex colspan="2">
-                      <mat-toolbar color="primary" class="titlebox">
+                      <mat-toolbar class="titlebox">
                         <div>
                           <h2>{{selectedContactperson.firstname | uppercase}} {{selectedContactperson.lastname |
                             uppercase}}</h2>

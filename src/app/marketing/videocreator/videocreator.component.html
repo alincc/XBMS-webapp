@@ -33,8 +33,8 @@
     </div>
 </div>
 
-<div style="width: 100%; margin-bottom: 10px;" (swipeleft)="swipeleft($event)" 
-(swiperight)="swiperight($event)" *ngIf="animationarray.length > 0">
+<div style="width: 100%; margin: 10px 0px 10px 0px;" (swipeleft)="swipeleft($event)" (swiperight)="swiperight($event)"
+    *ngIf="animationarray.length > 0">
 
     <mat-accordion style="width: 100%">
         <mat-expansion-panel>
@@ -178,16 +178,19 @@
                             </mat-select>
                         </mat-form-field>
                         <mat-form-field style="max-width: 46px;">
-                            <input [(ngModel)]="animation.duration" type="number" step="0.1" min="0" matInput (change)="detectchange()">
+                            <input [(ngModel)]="animation.duration" type="number" step="0.1" min="0" matInput
+                                (change)="detectchange()">
                             <mat-hint>Duration</mat-hint>
                         </mat-form-field>
                         <mat-form-field style="max-width: 46px;">
-                            <input [(ngModel)]="animation.start_time" type="number" step="0.1" min="0" matInput (change)="detectchange()">
+                            <input [(ngModel)]="animation.start_time" type="number" step="0.1" min="0" matInput
+                                (change)="detectchange()">
                             <mat-hint>Start</mat-hint>
                         </mat-form-field>
                         <div *ngIf="animation.anim_type === 'rotation'">
                             <mat-form-field style="max-width: 46px;">
-                                <input [(ngModel)]="animation.rotationcycle" type="number" step="0.1" min="0" matInput (change)="detectchange()">
+                                <input [(ngModel)]="animation.rotationcycle" type="number" step="0.1" min="0" matInput
+                                    (change)="detectchange()">
                                 <mat-hint>Rotation</mat-hint>
                             </mat-form-field>
                             <mat-form-field style="max-width: 46px;">
@@ -195,9 +198,9 @@
                                 <mat-hint>distance from bottom object</mat-hint>
                             </mat-form-field>
                             <mat-form-field style="max-width: 46px;">
-                                    <input [(ngModel)]="animation.transformOriginY" matInput (change)="detectchange()">
-                                    <mat-hint>distance from top object</mat-hint>
-                                </mat-form-field>
+                                <input [(ngModel)]="animation.transformOriginY" matInput (change)="detectchange()">
+                                <mat-hint>distance from top object</mat-hint>
+                            </mat-form-field>
                         </div>
                         <div *ngIf="animation.anim_type === 'scale'">
                             <mat-form-field style="max-width: 46px;">
@@ -242,17 +245,13 @@
                                 (click)="animation.travellocY = selectedelement.posy; animation.travellocX = selectedelement.posx">Reset</button>
                         </div>
                     </div>
-
-
-
-
                 </mat-expansion-panel>
             </mat-accordion>
 
         </div>
         <button mat-button (click)="addNewEffect(animation)">Add new effect</button>
 
-        <div *ngIf="selectedelement.type === 'vector'">
+        <div *ngIf="selectedelement.type === 'vector'" fxLayout="column">
             <div *ngFor="let vectoranimation of selectedelement.vectoranimation; let iv = index">
                 <mat-accordion>
                     <mat-expansion-panel>
@@ -377,7 +376,7 @@
             <button mat-button (click)="addVectorAnimation(selectedelement)">Add new Vector effect</button>
         </div>
 
-        <div *ngIf="selectedelement.type === 'text'">
+        <div *ngIf="selectedelement.type === 'text'" fxLayout="column">
             <div *ngFor="let textanimation of selectedelement.splittextanimation; let iv = index">
                 <mat-accordion>
                     <mat-expansion-panel>
@@ -660,13 +659,13 @@
                             <mat-expansion-panel>
                                 <mat-expansion-panel-header>
                                     <mat-panel-title>
+                                        <mat-checkbox color="primary" [(ngModel)]="element.selected"></mat-checkbox>
                                         <div *ngIf="element.svgcombi" [innerHTML]="element.svgcombi"
                                             class="elementsedit" style="height: 30px; width: 30px;"></div>
 
                                         <mat-icon (click)="deleteitem(i)" class="iconsize-12">delete</mat-icon>
-                                        <mat-icon (click)="copyElement(i, element)" matTooltip="Duplicate effect"
-                                            class="iconsize-10">
-                                            filter_none</mat-icon>
+                                        <mat-icon (click)="copyElement(i, element)" matTooltip="Duplicate element"
+                                            class="iconsize-10">filter_none</mat-icon>
 
                                     </mat-panel-title>
                                 </mat-expansion-panel-header>
@@ -728,6 +727,11 @@
                                             class="iconsize-14" matTooltip="Seperate images parts">
                                             tab_unselected
                                         </mat-icon>
+                                        <mat-icon (click)="editVectorPaths(idx, vector, element)" class="icon-label"
+                                            class="iconsize-14" matTooltip="edit vector">
+                                            edit
+                                        </mat-icon>
+
 
                                     </mat-expansion-panel>
                                 </div>

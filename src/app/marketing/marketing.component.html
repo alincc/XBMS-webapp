@@ -28,7 +28,7 @@
         <div fxShow.xs="false">Publications</div>
       </ng-template>
 
-      <app-marketingpublications [Account]="Account" [SelectedRelation]="SelectedRelation" [option]="option">
+      <app-marketingpublications [Account]="Account" [SelectedRelation]="option" [option]="option">
       </app-marketingpublications>
 
 
@@ -116,7 +116,7 @@
                 <div  class="mailingform">
                   <div fxLayout="row" fxLayout.xs="column">
                     
-                      <mat-toolbar color="primary" class="titlebox">
+                      <mat-toolbar class="titlebox">
                         <h2>
                           {{
                               selectedMailing.subject | uppercase | slice: 0:30
@@ -515,7 +515,7 @@
                 <div class="form-full-width">
                   <div fxLayout="row" fxLayout.xs="column">
                   
-                      <mat-toolbar color="primary" class="titlebox">
+                      <mat-toolbar class="titlebox">
                         <h2>
                           {{
                               selectedMarketingplannerevents.name

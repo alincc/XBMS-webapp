@@ -39,7 +39,7 @@
   <div ngClass.gt-xs="container-normal" ngClass.lt-sm="container-noshow" [class.container-xs-show]="listviewxsshow">
     <mat-card *ngIf="selectedPublications">
       <mat-card-content on-focusout="savePublication()" fxLayout="column">
-        <mat-toolbar color="primary">
+        <mat-toolbar class="titlebox">
           <h2>
             {{ selectedPublications.title | uppercase | slice: 0:30 }}
           </h2>
