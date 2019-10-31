@@ -1,6 +1,12 @@
 <div class="savetobutton">
-    <button mat-fab color="primary" matTooltip="Convert to element" (click)="converttovideo()">
-        <mat-icon>save</mat-icon>
+    <button mat-fab color="primary" matTooltip="Convert to video" (click)="converttovideo()">
+        <mat-icon>video_library</mat-icon>
+    </button>
+    <button mat-mini-fab color="primary" matTooltip="Save video" (click)="saveVideo()">
+        <mat-icon >save</mat-icon>
+    </button>
+    <button mat-mini-fab color="primary" matTooltip="Convert to GIF" (click)="converttogif()">
+        <mat-icon>gif</mat-icon>
     </button>
 </div>
 
@@ -478,6 +484,15 @@
         <!-- <label>Edit</label> -->
         <div fxLayout="column">
             <div fxLayout="column" fxLayout.xs="column" cdkDropList (cdkDropListDropped)="drop($event)">
+
+
+                <div *ngIf="selectedVecPath && selectedelement.type === 'vector'">
+                    <mat-icon (click)="deleteSelectedVectorPath()" class="iconsize-18" matTooltip="Delete section">
+                        delete</mat-icon>
+                    <mat-icon (click)="saveAsSeperateVector()" class="iconsize-18" matTooltip="Create seperate section">
+                        image</mat-icon>
+                </div>
+
                 <div *ngFor="let element of animationarray; let i = index" cdkDrag (click)="onSelectElement(element)">
 
 
@@ -654,6 +669,7 @@
                         </mat-accordion>
 
                     </div>
+
                     <div *ngIf="element.type === 'vector'">
                         <mat-accordion>
                             <mat-expansion-panel>
@@ -699,21 +715,23 @@
                                             <mat-hint>Start</mat-hint>
                                         </mat-form-field> -->
                                         <mat-expansion-panel-header>
-                                            <div *ngIf="vector.src" [inlineSVG]="vector.src" [onSVGLoaded]="previewSVG"
-                                                id="previewbox" class="elementsedit" style="height: 30px; width: auto;">
+                                            <div *ngIf="vector.src || vector.svgcombi !== 'undefined'"
+                                                [inlineSVG]="vector.src" [onSVGLoaded]="previewSVG" id="previewbox"
+                                                class="elementsedit" style="height: 30px; width: auto;">
                                             </div>
                                         </mat-expansion-panel-header>
                                         <div *ngIf="vector.src">
-                                            <div *ngIf="vector.src" [inlineSVG]="vector.src"
-                                                [onSVGLoaded]="previewSVGBig" id="{{vector.idx}}"
+                                            <div *ngIf="vector.src || vector.svgcombi !== 'undefined'"
+                                                [inlineSVG]="vector.src" [onSVGLoaded]="previewSVGBig"
+                                                id="{{vector.idx}}"
                                                 (onSVGInserted)="initVectors($event, i, idx, vector.idx)">
                                             </div>
                                             <mat-icon (click)="vector.src = ''" class="icon-label" class="iconsize-12">
                                                 delete
                                             </mat-icon>
                                         </div>
-                                        <app-vectorupload *ngIf="!vector.src" [account]="Account" [option]="option"
-                                            (imgurl)="setVector($event, i, idx)">
+                                        <app-vectorupload *ngIf="!vector.src || vector.svgcombi === 'undefined'"
+                                            [account]="Account" [option]="option" (imgurl)="setVector($event, i, idx)">
                                         </app-vectorupload>
                                         <mat-icon (click)="deleteVectorSrc(idx, element)" class="icon-label"
                                             class="iconsize-14">
@@ -730,6 +748,10 @@
                                         <mat-icon (click)="editVectorPaths(idx, vector, element)" class="icon-label"
                                             class="iconsize-14" matTooltip="edit vector">
                                             edit
+                                        </mat-icon>
+                                        <mat-icon (click)="saveAsNewVector()" class="icon-label" class="iconsize-14"
+                                            matTooltip="save as new image">
+                                            new
                                         </mat-icon>
 
 
@@ -969,7 +991,8 @@
                         (movingOffset)="onMoving($event, i)" [preventDefaultEvent]="true"
                         [style.transform]="'translate(' + element.posx + 'px, ' + element.posy +'px)'"
                         (rzResizing)="onResizing($event, i)" ngResizable [rzAspectRatio]="true">
-                        <div style="height: 100%; width: 100%;" id="{{element.id}}" [innerHTML]="element.svgcombi">
+                        <div style="height: 100%; width: 100%;" id="{{element.id}}" [innerHTML]="element.svgcombi"
+                            (click)="clickVectorPaths($event)">
                         </div>
 
                         <!-- <div *ngFor="let vectorelement of element.vectors; let iv = index;"                  

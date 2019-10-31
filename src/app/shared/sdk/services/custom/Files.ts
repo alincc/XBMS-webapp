@@ -286,6 +286,54 @@ export class FilesApi extends BaseLoopBackApi {
    *
    * @param {string} companyid 
    *
+   * @param {string} name 
+   *
+   * @param {string} canvas 
+   *
+   * @param {string} images 
+   *
+   * @param {number} duration 
+   *
+   * @param {object} data Request data.
+   *
+   * This method does not accept any data. Supply an empty object.
+   *
+   * @returns {object} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * <em>
+   * (The remote method definition does not provide any description.
+   * This usually means the response is a `Files` object.)
+   * </em>
+   */
+  public creategif(id: any = {}, companyid: any = {}, name: any = {}, canvas: any = {}, images: any = {}, duration: any = {}, customHeaders?: Function): Observable<any> {
+    let _method: string = "POST";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/files/creategif/:id";
+    let _routeParams: any = {
+      id: id
+    };
+    let _postBody: any = {};
+    let _urlParams: any = {};
+    if (typeof companyid !== 'undefined' && companyid !== null) _urlParams.companyid = companyid;
+    if (typeof name !== 'undefined' && name !== null) _urlParams.name = name;
+    if (typeof canvas !== 'undefined' && canvas !== null) _urlParams.canvas = canvas;
+    if (typeof images !== 'undefined' && images !== null) _urlParams.images = images;
+    if (typeof duration !== 'undefined' && duration !== null) _urlParams.duration = duration;
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
+   * <em>
+         * (The remote method definition does not provide any description.)
+         * </em>
+   *
+   * @param {string} id 
+   *
+   * @param {string} companyid 
+   *
    * @param {string} imageurl 
    *
    * @param {string} name 

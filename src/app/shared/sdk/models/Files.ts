@@ -16,6 +16,7 @@ export interface FilesInterface {
   "createdate"?: Date;
   "template"?: any;
   "canvas"?: any;
+  "counter"?: number;
   "id"?: any;
   "filesId"?: any;
   publications?: Publications;
@@ -33,6 +34,7 @@ export class Files implements FilesInterface {
   "createdate": Date;
   "template": any;
   "canvas": any;
+  "counter": number;
   "id": any;
   "filesId": any;
   publications: Publications;
@@ -106,6 +108,10 @@ export class Files implements FilesInterface {
         "canvas": {
           name: 'canvas',
           type: 'any'
+        },
+        "counter": {
+          name: 'counter',
+          type: 'number'
         },
         "id": {
           name: 'id',

@@ -210,7 +210,7 @@ export class VideocreatorComponent implements OnInit {
   public counter = 60;
   public currenttime = 0;
   public animationarray = []; //array with style and position settings;
-  public animationelements = []; //arrat with the actual greensock animations
+  //public animationelements = []; //arrat with the actual greensock animations
   public play = false;
   public menu = new TimelineMax({ paused: true, reversed: true });
   public primairytimeline = new TimelineMax({ paused: true, reversed: true });
@@ -257,6 +257,7 @@ export class VideocreatorComponent implements OnInit {
   private largestwbox;
   public setreplay = false;
   //this.webkitspeech.onresult = ($event) => { this.onresult($event) };
+  public selectedVecPath;
 
   constructor(
     private sanitizer: DomSanitizer,
@@ -272,7 +273,9 @@ export class VideocreatorComponent implements OnInit {
   }
   private myFuncSvg = this.initVectors.bind(this);
 
-  ngOnInit() { }
+  ngOnInit() { 
+
+  }
 
   ngOnChanges(changes: SimpleChanges) {
     //wait for option.id
@@ -280,6 +283,7 @@ export class VideocreatorComponent implements OnInit {
 
     if (currentItem !== undefined) {
       if (currentItem.currentValue.id !== undefined) {
+        this.getEditFile()
       }
     }
   }
@@ -297,15 +301,6 @@ export class VideocreatorComponent implements OnInit {
 
   onSliderChange(e) {
     this.counter = e.value;
-  }
-
-  converttovideo() {
-    if (this.elementname === undefined) { this.elementname = Math.random().toString(36).substring(7); }
-    this.filesApi.createvideo(this.option.id, this.option.companyId,
-      this.elementname, this.canvas, this.animationarray, this.counter)
-      .subscribe(
-        res => { console.log }
-      );
   }
 
   onSelectElement(element): void {
@@ -526,7 +521,8 @@ export class VideocreatorComponent implements OnInit {
       transformOriginX: '50%',
       transformOriginY: '200px'
     }
-    this.selectedelement.animation.push(newanimation)
+    this.selectedelement.animation.push(newanimation);
+    this.detectchange();
   }
 
   deleteEffect(i) {
@@ -551,7 +547,7 @@ export class VideocreatorComponent implements OnInit {
   }
 
   getEditFile() {
-    this.relationsApi.getFiles(this.option.id, { where: { template: { "neq": null } } })
+    this.relationsApi.getFiles(this.option.id, { where: { template: { "neq": null }, type: 'video' } })
       .subscribe((files: Files[]) => {
         this.editablevideos = files;
         //console.log('received files', this.editableimages);
@@ -764,7 +760,7 @@ export class VideocreatorComponent implements OnInit {
 
   }
 
-  addVectorAnimation(element: vectoranimation){
+  addVectorAnimation(element: vectoranimation) {
     let vectanim = [{
       svganimationtype: '',
       drawcolor: 'blue',
@@ -890,7 +886,7 @@ export class VideocreatorComponent implements OnInit {
   }
 
   addNewWhiteboard(): void {
-   
+
     let newelnr;
     if (this.animationarray.length === -1) {
       newelnr = 0 + 'el';
@@ -934,11 +930,11 @@ export class VideocreatorComponent implements OnInit {
       animation: anim,
       id: newelnr
     }
-    if (this.whiteboard === false){
+    if (this.whiteboard === false) {
       this.animationarray.push(whiteboard);
       this.whiteboard = true;
     }
-  
+
     this.detectchange();
     setTimeout(() => {
       let wb = document.getElementById(newelnr);
@@ -954,7 +950,7 @@ export class VideocreatorComponent implements OnInit {
       // cv[index].setAttribute('height', this.canvas.height);
       // // by class canvas_whiteboard incomplete_shapes_canvas_whiteboard
       // }
-      
+
     }, 300) // mininmum needed for dom to process
     //this.addAnimation(newelnr, img);
   }
@@ -1157,7 +1153,7 @@ export class VideocreatorComponent implements OnInit {
   }
 
   deleteitem(i) {
-    if (this.animationarray[i].type === 'whiteboard'){
+    if (this.animationarray[i].type === 'whiteboard') {
       this.whiteboard = false;
     }
     this.animationarray.splice(i, 1);
@@ -1665,11 +1661,121 @@ export class VideocreatorComponent implements OnInit {
     //console.log(p);
     for (let index = 0; index < p.length; index++) {
       console.log(p[index]);
-      p[index].onclick = function() { alert('blah'); };
-      //p[index].setAttribute("onclick","alert('blah');");
+      p[index].onclick = function () { console.log('blah'); };
     }
   }
 
+  clickVectorPaths(e) {
+    console.log(e.target);
+    this.removeVectorPathSelection();
+    this.selectedVecPath = e.target;
+    let style = this.selectedVecPath.getAttribute('style');
+    console.log(style);
+    let newstyle = style + 'outline: 5px dotted green;'
+    this.selectedVecPath.setAttribute('style', newstyle)
+  }
+
+  deleteSelectedVectorPath() {
+    this.removeVectorPathSelection();
+    this.selectedVecPath.remove();
+    this.selectedVecPath = '';
+    let idnew = document.getElementById(this.selectedelement.id); // get document
+    console.log(idnew);
+    let vectstring = idnew.innerHTML;
+    console.log(vectstring)
+    //let newstring = this.selectedelement.svgcombi.changingThisBreaksApplicationSecurity;
+    this.selectedelement.svgcombi = this.sanitizer.bypassSecurityTrustHtml(vectstring);
+    //document.getElementById(this.selectedVecPath).remove();
+  }
+
+  removeVectorPathSelection() {
+    if (this.selectedVecPath) {
+      let revertoldstyle = this.selectedVecPath.getAttribute('style');
+      let oldstyle = revertoldstyle.replace('outline: 5px dotted green;', '');
+      console.log(oldstyle);
+      this.selectedVecPath.setAttribute('style', oldstyle)
+    }
+  }
+
+  saveAsNewVector(element?) {
+    let svgel, src;
+    if (element === undefined){
+      svgel = document.getElementById(this.selectedelement.id).outerHTML;
+      this.selectedelement.src = this.onSVGsave(svgel);
+    } else {
+      svgel = document.getElementById(element.id).outerHTML;
+      element.src = this.onSVGsave(svgel);
+    }
+  }
+
+  combineVectors() {
+    this.animationarray.forEach((element, index) => {
+      if (element.type === 'vector') {
+        if (element.selected === true) {
+          // combineelement
+          // deleteoriginal
+        }
+      }
+    })
+  }
+
+  saveAsSeperateVector() {
+    this.removeVectorPathSelection();
+    let svgel = this.selectedVecPath;
+    let s = new XMLSerializer(); // convert to string
+    let svgstring = s.serializeToString(svgel);
+    //console.log(svgstring);
+    let newsvgarray = [
+      '<svg xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#"' +
+      ' xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg"' +
+      ' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" height="100%" width="100%"' +
+      'id="svg2" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" preserveAspectRatio="none">',
+      svgstring, '</svg>'
+    ]
+    let newsvg = newsvgarray.join('');
+    this.addNewVector(null, this.selectedelement.style.height, this.selectedelement.style.width, newsvg, this.selectedelement.posx, this.selectedelement.posy);
+  }
+
+  onSVGsave(url) {
+    let urluse = BASE_URL + '/api/Containers/' + this.option.id + '/upload';
+    this.uploader = new FileUploader({ url: urluse });
+    let name = Math.random().toString(36).substring(7) + '.svg';
+    let date: number = new Date().getTime();
+    let data = url;
+    let contentType = '';
+    const blob = new Blob([data], { type: contentType });
+    // contents must be an array of strings, each representing a line in the new file
+    let file = new File([blob], name, { type: "image/svg+xml", lastModified: date });
+    let fileItem = new FileItem(this.uploader, file, {});
+    this.uploader.queue.push(fileItem);
+    // fileItem.upload();
+    this.uploader.uploadAll();
+
+    this.uploader.onCompleteItem = (item: any, response: any, status: any, headers: any) => {
+      if (status === 200) {
+        // set download url or actual url for publishing
+        let imgurl = BASE_URL + '/api/Containers/' + this.option.id + '/download/' + name;
+        let setimgurl = 'https://xbmsapi.eu-gb.mybluemix.net/api/Containers/' + this.option.id + '/download/' + name;
+        imgurl = imgurl.replace(/ /g, '-'),
+          // define the file settings
+          this.newFiles.name = name,
+          this.newFiles.url = setimgurl,
+          this.newFiles.createdate = new Date(),
+          this.newFiles.type = 'vector',
+          this.newFiles.companyId = this.Account.companyId,
+          // check if container exists and create
+          this.relationsApi.createFiles(this.option.id, this.newFiles)
+            .subscribe(res => {
+              console.log(res);
+              this.snackBar.open("svg saved", undefined, {
+                duration: 2000,
+                panelClass: 'snackbar-class'
+              });
+              return setimgurl;
+            });
+      }
+    };
+  }
 
   onCanvasSave(e, i) {
     let urluse = BASE_URL + '/api/Containers/' + this.option.id + '/upload';
@@ -1722,7 +1828,10 @@ export class VideocreatorComponent implements OnInit {
                     // set SVG as new element
                     this.addNewVector(resp.url, this.canvas.height, this.canvas.width);
                     // delete whiteboard
-                    console.log(resp);
+                    this.snackBar.open("vector created", undefined, {
+                      duration: 2000,
+                      panelClass: 'snackbar-class'
+                    });
                     this.deleteitem(i);
                     this.whiteboard = false;
                   });
@@ -1744,16 +1853,89 @@ export class VideocreatorComponent implements OnInit {
     this.onshowemoji(i)
   }
 
+  checkSaveVectors(): void {
+    this.animationarray.forEach(el  => {
+      if (el.type === 'vector'){
+        if (el.src === undefined){
+          this.saveAsNewVector(el);
+        }
+      }
+    });
+  }
+
+  saveVideo() {
+    // public animationarray = []; //array with style and position settings;
+    // public animationelements = []; //arrat with the actual greensock animations
+    console.log(this.animationarray); 
+    this.checkSaveVectors()
+    if (this.elementname === undefined) { this.elementname = Math.random().toString(36).substring(7); }
+    let imgurl = BASE_URL + '/api/Containers/' + this.option.id + '/download/' + this.elementname;
+    let setimgurl = 'https://xbmsapi.eu-gb.mybluemix.net/api/Containers/' + this.option.id + '/download/' + this.elementname;
+    imgurl = imgurl.replace(/ /g, '-'),
+      // define the file settings
+      this.newFiles.name = this.elementname;
+      this.newFiles.url = setimgurl;
+      this.newFiles.createdate = new Date();
+      this.newFiles.type = 'video';
+      this.newFiles.companyId = this.Account.companyId;
+      this.newFiles.canvas = [this.canvas];
+      this.newFiles.template =  this.animationarray;
+      this.newFiles.counter = this.counter;
+      this.relationsApi.createFiles(this.option.id, this.newFiles).subscribe(res => {
+        this.snackBar.open("video saved!", undefined, {
+          duration: 2000,
+          panelClass: 'snackbar-class'
+        });
+      }
+      )
+    //this.elementname, this.canvas, this.animationarray, this.counter
+  }
+
+  converttovideo() {
+    this.checkSaveVectors();
+    if (this.elementname === undefined) { this.elementname = Math.random().toString(36).substring(7); }
+    this.filesApi.createvideo(this.option.id, this.option.companyId,
+      this.elementname, this.canvas, this.animationarray, this.counter)
+      .subscribe(
+        res => { console.log(res);
+          this.saveVideo() }
+      );
+  }
+
+  converttogif() {
+    this.checkSaveVectors();
+    if (this.elementname === undefined) { this.elementname = Math.random().toString(36).substring(7); }
+    this.filesApi.creategif(this.option.id, this.option.companyId,
+      this.elementname, this.canvas, this.animationarray, this.counter)
+      .subscribe(
+        res => { console.log
+          this.saveVideo() }
+      );
+  }
+
   resetVideo() {
-
+    this.elementname = '';
+    this.canvas = {
+      width: '600px',
+      height: '500px',
+      'background-color': '#ffffff',
+      'background-image': '',
+      position: 'relative',
+      videourl: '',
+      loop: false
+    }
+    this.animationarray = [];
+    this.counter = 60;
+    this.detectchange();
   }
 
-  newItem() {
-
-  }
 
   loadEditableVideo() {
-
+    this.elementname = this.editablevideo.name;
+    this.canvas = this.editablevideo.canvas;
+    this.animationarray = this.editablevideo.template;
+    this.counter = this.editablevideo.counter;
+    this.detectchange();
   }
 
 }
