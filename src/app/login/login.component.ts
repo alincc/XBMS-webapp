@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import {
   LoopBackConfig,
@@ -10,11 +10,17 @@ import {
   API_VERSION
 } from '../shared/';
 import { DialogsService } from './../dialogsservice/dialogs.service';
+import {Title} from '@angular/platform-browser';
+import {MatSlideToggleChange} from '@angular/material';
+import {MatPasswordStrengthComponent} from '@angular-material-extensions/password-strength';
+ 
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss']
+  styleUrls: ['./login.component.scss'],
+  encapsulation: ViewEncapsulation.None,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LoginComponent implements OnInit {
   public Company: Company = new Company();
@@ -22,6 +28,7 @@ export class LoginComponent implements OnInit {
   public rememberMe: boolean = true;
   public errorMessage: string;
   public responsemessage;
+  
   error = false;
   response = false;
   logintoggle = true;

@@ -99,6 +99,7 @@ import { GestureConfig } from '@angular/material';
 import { VectoruploadComponent, dialogvectorgallerycomponent } from './shared/vectorupload/vectorupload.component';
 import { BackgroundComponent, dialogbackgroundgallerycomponent } from './shared/background/background.component';
 import { TranslationsComponent } from './translations/translations.component';
+import { MatPasswordStrengthModule } from '@angular-material-extensions/password-strength';
 
 declare var Hammer: any;
 @Injectable()
@@ -164,6 +165,7 @@ export class HammerConfig extends GestureConfig  {
   ],
 
   imports: [
+    MatPasswordStrengthModule.forRoot(),
     CanvasWhiteboardModule,
     InlineSVGModule,
     BrowserModule,
@@ -203,7 +205,8 @@ export class HammerConfig extends GestureConfig  {
       libraries: ["places"]
     }),
     SDKBrowserModule.forRoot(),
-    ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })
+    ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
+    MatPasswordStrengthModule
   ],
   providers: [
     PwaService ,

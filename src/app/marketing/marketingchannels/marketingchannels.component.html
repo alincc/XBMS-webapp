@@ -320,6 +320,24 @@
 
       <mat-card *ngIf="twittertoggle">
         <mat-card-content>
+            <mat-toolbar class="titlebox">
+                <div>
+                  <h2>{{selectedChannel.title | uppercase}}</h2>
+                </div>
+                <button mat-icon-button [matMenuTriggerFor]="menucall" class="menu">
+                  <mat-icon>more_vert</mat-icon>
+                </button>
+                <mat-menu #menucall="matMenu">
+                  <button mat-menu-item (click)="openDialogDeleteChannel()">
+                    <mat-icon>delete</mat-icon>
+                    <span>Delete</span>
+                  </button>
+                  <button mat-menu-item (click)="createMailing()">
+                    <mat-icon>note_add</mat-icon>
+                    <span>New</span>
+                  </button>
+                </mat-menu>
+              </mat-toolbar>
           <div fxLayout="column" style="width: 100%">
             <div fxLayout="row" fxLayout.xs="column">
               <div>
@@ -559,6 +577,24 @@
       <!-- Form Facebook_______________________________ -->
       <mat-card *ngIf="facebooktoggle">
         <mat-card-content>
+            <mat-toolbar class="titlebox">
+                <div>
+                  <h2>{{selectedChannel.title | uppercase}}</h2>
+                </div>
+                <button mat-icon-button [matMenuTriggerFor]="menucall" class="menu">
+                  <mat-icon>more_vert</mat-icon>
+                </button>
+                <mat-menu #menucall="matMenu">
+                  <button mat-menu-item (click)="openDialogDeleteChannel()">
+                    <mat-icon>delete</mat-icon>
+                    <span>Delete</span>
+                  </button>
+                  <button mat-menu-item (click)="createMailing()">
+                    <mat-icon>note_add</mat-icon>
+                    <span>New</span>
+                  </button>
+                </mat-menu>
+              </mat-toolbar>
           <div fxLayout="column" style="width: 100%">
             <div fxLayout="row" fxLayout.xs="column">
               <div>
@@ -799,6 +835,24 @@
       <mat-card *ngIf="instagramtoggle">
         <!-- on-focusout="saveChannel()" -->
         <mat-card-content>
+            <mat-toolbar class="titlebox">
+                <div>
+                  <h2>{{selectedChannel.title | uppercase}}</h2>
+                </div>
+                <button mat-icon-button [matMenuTriggerFor]="menucall" class="menu">
+                  <mat-icon>more_vert</mat-icon>
+                </button>
+                <mat-menu #menucall="matMenu">
+                  <button mat-menu-item (click)="openDialogDeleteChannel()">
+                    <mat-icon>delete</mat-icon>
+                    <span>Delete</span>
+                  </button>
+                  <button mat-menu-item (click)="createMailing()">
+                    <mat-icon>note_add</mat-icon>
+                    <span>New</span>
+                  </button>
+                </mat-menu>
+              </mat-toolbar>
           <div fxLayout="column" style="width: 100%">
             <div fxLayout="row" fxLayout.xs="column">
               <div>
@@ -1042,6 +1096,24 @@
       <!-- Form Pinterest_______________________________ -->
       <mat-card *ngIf="pinteresttoggle">
         <mat-card-content>
+            <mat-toolbar class="titlebox">
+                <div>
+                  <h2>{{selectedChannel.title | uppercase}}</h2>
+                </div>
+                <button mat-icon-button [matMenuTriggerFor]="menucall" class="menu">
+                  <mat-icon>more_vert</mat-icon>
+                </button>
+                <mat-menu #menucall="matMenu">
+                  <button mat-menu-item (click)="openDialogDeleteChannel()">
+                    <mat-icon>delete</mat-icon>
+                    <span>Delete</span>
+                  </button>
+                  <button mat-menu-item (click)="createMailing()">
+                    <mat-icon>note_add</mat-icon>
+                    <span>New</span>
+                  </button>
+                </mat-menu>
+              </mat-toolbar>
           <div fxLayout="column" style="width: 100%">
             <div fxLayout="row" fxLayout.xs="column">
               <div>
