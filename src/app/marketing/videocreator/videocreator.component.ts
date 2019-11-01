@@ -22,6 +22,7 @@ import * as normalize from 'normalize-svg-coords';
 const plugins = [DrawSVGPlugin, MorphSVGPlugin, SplitText, physics2D]; //needed for GSAP 
 import { CanvasWhiteboardComponent } from 'ng2-canvas-whiteboard';
 import { fonts } from '../../shared/listsgeneral/fonts';
+import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 
 export class animationtype {
   start_time: number; //delayt
@@ -273,7 +274,7 @@ export class VideocreatorComponent implements OnInit {
   }
   private myFuncSvg = this.initVectors.bind(this);
 
-  ngOnInit() { 
+  ngOnInit() {
 
   }
 
@@ -1697,16 +1698,7 @@ export class VideocreatorComponent implements OnInit {
     }
   }
 
-  saveAsNewVector(element?) {
-    let svgel, src;
-    if (element === undefined){
-      svgel = document.getElementById(this.selectedelement.id).outerHTML;
-      this.selectedelement.src = this.onSVGsave(svgel);
-    } else {
-      svgel = document.getElementById(element.id).outerHTML;
-      element.src = this.onSVGsave(svgel);
-    }
-  }
+
 
   combineVectors() {
     this.animationarray.forEach((element, index) => {
@@ -1719,7 +1711,7 @@ export class VideocreatorComponent implements OnInit {
     })
   }
 
-  saveAsSeperateVector() {
+  saveAsSeperateVector(): any {
     this.removeVectorPathSelection();
     let svgel = this.selectedVecPath;
     let s = new XMLSerializer(); // convert to string
@@ -1736,7 +1728,8 @@ export class VideocreatorComponent implements OnInit {
     this.addNewVector(null, this.selectedelement.style.height, this.selectedelement.style.width, newsvg, this.selectedelement.posx, this.selectedelement.posy);
   }
 
-  onSVGsave(url) {
+  async onSVGsave(url) {
+    return new Promise(async (resolve, reject) => {
     let urluse = BASE_URL + '/api/Containers/' + this.option.id + '/upload';
     this.uploader = new FileUploader({ url: urluse });
     let name = Math.random().toString(36).substring(7) + '.svg';
@@ -1771,10 +1764,11 @@ export class VideocreatorComponent implements OnInit {
                 duration: 2000,
                 panelClass: 'snackbar-class'
               });
-              return setimgurl;
+              resolve(setimgurl);
             });
       }
     };
+  });
   }
 
   onCanvasSave(e, i) {
@@ -1853,63 +1847,97 @@ export class VideocreatorComponent implements OnInit {
     this.onshowemoji(i)
   }
 
-  checkSaveVectors(): void {
-    this.animationarray.forEach(el  => {
-      if (el.type === 'vector'){
-        if (el.src === undefined){
-          this.saveAsNewVector(el);
+  async checkSaveVectors() {
+    return new Promise(async (resolve, reject) => {
+      let i = 0;
+      for (const el of this.animationarray) {
+        if (el.type === 'vector') {
+          let vecan: vectoranimation = el;
+          for (const vector of vecan.vectors){
+          if (vector.src === undefined) {
+            let svgel;
+              svgel = document.getElementById(vector.idx).outerHTML;
+              let srccc = await this.onSVGsave(svgel);
+              vector.src = srccc;
+            // if (el === undefined) {
+            //   svgel = document.getElementById(this.selectedelement.id).outerHTML;
+            // } else {
+            //   svgel = document.getElementById(el.id).outerHTML;
+            //   el.src = await this.onSVGsave(svgel);
+            // }
+          }
         }
-      }
+        }
+        ++i;
+        if (this.animationarray.length === i) {
+          resolve()
+        }
+      };
     });
   }
 
-  saveVideo() {
+  // saveAsNewVector(element?) {
+  //   let svgel, src;
+  //   if (element === undefined) {
+  //     svgel = document.getElementById(this.selectedelement.id).outerHTML;
+  //     this.selectedelement.src = this.onSVGsave(svgel);
+  //   } else {
+  //     svgel = document.getElementById(element.id).outerHTML;
+  //     element.src = this.onSVGsave(svgel);
+  //   }
+  // }
+
+  async saveVideo() {
     // public animationarray = []; //array with style and position settings;
     // public animationelements = []; //arrat with the actual greensock animations
-    console.log(this.animationarray); 
-    this.checkSaveVectors()
+    console.log(this.animationarray);
+    await this.checkSaveVectors();
     if (this.elementname === undefined) { this.elementname = Math.random().toString(36).substring(7); }
     let imgurl = BASE_URL + '/api/Containers/' + this.option.id + '/download/' + this.elementname;
     let setimgurl = 'https://xbmsapi.eu-gb.mybluemix.net/api/Containers/' + this.option.id + '/download/' + this.elementname;
     imgurl = imgurl.replace(/ /g, '-'),
       // define the file settings
       this.newFiles.name = this.elementname;
-      this.newFiles.url = setimgurl;
-      this.newFiles.createdate = new Date();
-      this.newFiles.type = 'video';
-      this.newFiles.companyId = this.Account.companyId;
-      this.newFiles.canvas = [this.canvas];
-      this.newFiles.template =  this.animationarray;
-      this.newFiles.counter = this.counter;
-      this.relationsApi.createFiles(this.option.id, this.newFiles).subscribe(res => {
-        this.snackBar.open("video saved!", undefined, {
-          duration: 2000,
-          panelClass: 'snackbar-class'
-        });
-      }
-      )
+    this.newFiles.url = setimgurl;
+    this.newFiles.createdate = new Date();
+    this.newFiles.type = 'video';
+    this.newFiles.companyId = this.Account.companyId;
+    this.newFiles.canvas = [this.canvas];
+    this.newFiles.template = this.animationarray;
+    this.newFiles.counter = this.counter;
+    this.relationsApi.createFiles(this.option.id, this.newFiles).subscribe(res => {
+      this.snackBar.open("video saved!", undefined, {
+        duration: 2000,
+        panelClass: 'snackbar-class'
+      });
+    }
+    )
     //this.elementname, this.canvas, this.animationarray, this.counter
   }
 
-  converttovideo() {
-    this.checkSaveVectors();
+  async converttovideo() {
+    await this.checkSaveVectors();
     if (this.elementname === undefined) { this.elementname = Math.random().toString(36).substring(7); }
     this.filesApi.createvideo(this.option.id, this.option.companyId,
       this.elementname, this.canvas, this.animationarray, this.counter)
       .subscribe(
-        res => { console.log(res);
-          this.saveVideo() }
+        res => {
+          console.log(res);
+          this.saveVideo()
+        }
       );
   }
 
-  converttogif() {
-    this.checkSaveVectors();
+  async converttogif() {
+    await this.checkSaveVectors();
     if (this.elementname === undefined) { this.elementname = Math.random().toString(36).substring(7); }
     this.filesApi.creategif(this.option.id, this.option.companyId,
       this.elementname, this.canvas, this.animationarray, this.counter)
       .subscribe(
-        res => { console.log
-          this.saveVideo() }
+        res => {
+          console.log
+          this.saveVideo()
+        }
       );
   }
 
@@ -1932,7 +1960,7 @@ export class VideocreatorComponent implements OnInit {
 
   loadEditableVideo() {
     this.elementname = this.editablevideo.name;
-    this.canvas = this.editablevideo.canvas;
+    this.canvas = this.editablevideo.canvas[0];
     this.animationarray = this.editablevideo.template;
     this.counter = this.editablevideo.counter;
     this.detectchange();
