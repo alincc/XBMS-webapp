@@ -570,7 +570,7 @@ export class VideocreatorComponent implements OnInit {
 
   initVectors(e, i, idx, vectorid) {
     return new Promise(async (resolve, reject) => {
-      console.log('set vectors', e, i, idx, vectorid);
+      //console.log('set vectors', e, i, idx, vectorid);
       let vect = this.animationarray[i].vectors[idx].idx;
       let originalsize; // {x: 0, y: 0, width: 1496, height: 1496, zoom: 0.06684491978609626}
       await this.deleteVectorGroup(e);
@@ -654,9 +654,8 @@ export class VideocreatorComponent implements OnInit {
     this.animationarray[i].style.height = e.size.height + 'px';
   }
 
-  addNewVector(src?, height?, width?, svgcombi?, posx?, posy?): void {
+  addNewVector(src?, height?, width?, svgcombi?, posx?, posy?): void { //, originid?
     let svgc = this.sanitizer.bypassSecurityTrustHtml('');
-    if (svgcombi) { svgc = this.sanitizer.bypassSecurityTrustHtml(svgcombi) }
     let newsrc = '';
     let newheight = 'auto';
     let newwidth = 'auto';
@@ -676,6 +675,11 @@ export class VideocreatorComponent implements OnInit {
     }
 
     let vectorid = newelnr + 'vect-' + 1;
+    // if (originid){
+    //   svgcombi = svgcombi.replace(originid, vectorid);
+    //   console.log(originid, vectorid, svgcombi);
+    // }
+    if (svgcombi) { svgc = this.sanitizer.bypassSecurityTrustHtml(svgcombi) }
     //let elname = 'el' + newelnr;
     this.newz = this.newz + 1;
     let anim: animationtype[] = [{
@@ -1699,7 +1703,6 @@ export class VideocreatorComponent implements OnInit {
   }
 
 
-
   combineVectors() {
     this.animationarray.forEach((element, index) => {
       if (element.type === 'vector') {
@@ -1717,58 +1720,71 @@ export class VideocreatorComponent implements OnInit {
     let s = new XMLSerializer(); // convert to string
     let svgstring = s.serializeToString(svgel);
     //console.log(svgstring);
+
+    let newelnr;
+    if (this.animationarray.length === -1) {
+      newelnr = 0 + 'el';
+    } else {
+      newelnr = this.animationarray.length + 'el';
+    }
+
+    let vectorid = newelnr + 'vect-' + 1;
     let newsvgarray = [
       '<svg xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#"' +
       ' xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg"' +
       ' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" height="100%" width="100%"' +
-      'id="svg2" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" preserveAspectRatio="none">',
+      'id="' + vectorid + '" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" preserveAspectRatio="none">',
       svgstring, '</svg>'
     ]
     let newsvg = newsvgarray.join('');
-    this.addNewVector(null, this.selectedelement.style.height, this.selectedelement.style.width, newsvg, this.selectedelement.posx, this.selectedelement.posy);
+    //let originid = this.selectedVecPath.getAttribute('id');
+    this.addNewVector(null, this.selectedelement.style.height, this.selectedelement.style.width, newsvg, this.selectedelement.posx, this.selectedelement.posy); //, originid
+    let i = this.animationarray.length - 1;
+    this.combineSVGs(this.animationarray[i]);
   }
 
-  async onSVGsave(url) {
+  async onSVGsave(url): Promise<string> {
     return new Promise(async (resolve, reject) => {
-    let urluse = BASE_URL + '/api/Containers/' + this.option.id + '/upload';
-    this.uploader = new FileUploader({ url: urluse });
-    let name = Math.random().toString(36).substring(7) + '.svg';
-    let date: number = new Date().getTime();
-    let data = url;
-    let contentType = '';
-    const blob = new Blob([data], { type: contentType });
-    // contents must be an array of strings, each representing a line in the new file
-    let file = new File([blob], name, { type: "image/svg+xml", lastModified: date });
-    let fileItem = new FileItem(this.uploader, file, {});
-    this.uploader.queue.push(fileItem);
-    // fileItem.upload();
-    this.uploader.uploadAll();
+      let urluse = BASE_URL + '/api/Containers/' + this.option.id + '/upload';
+      this.uploader = new FileUploader({ url: urluse });
+      let name = Math.random().toString(36).substring(7) + '.svg';
+      let date: number = new Date().getTime();
+      let data = url;
+      let contentType = '';
+      const blob = new Blob([data], { type: contentType });
+      // contents must be an array of strings, each representing a line in the new file
+      let file = new File([blob], name, { type: "image/svg+xml", lastModified: date });
+      let fileItem = new FileItem(this.uploader, file, {});
+      this.uploader.queue.push(fileItem);
+      // fileItem.upload();
+      this.uploader.uploadAll();
 
-    this.uploader.onCompleteItem = (item: any, response: any, status: any, headers: any) => {
-      if (status === 200) {
-        // set download url or actual url for publishing
-        let imgurl = BASE_URL + '/api/Containers/' + this.option.id + '/download/' + name;
-        let setimgurl = 'https://xbmsapi.eu-gb.mybluemix.net/api/Containers/' + this.option.id + '/download/' + name;
-        imgurl = imgurl.replace(/ /g, '-'),
-          // define the file settings
-          this.newFiles.name = name,
-          this.newFiles.url = setimgurl,
-          this.newFiles.createdate = new Date(),
-          this.newFiles.type = 'vector',
-          this.newFiles.companyId = this.Account.companyId,
-          // check if container exists and create
-          this.relationsApi.createFiles(this.option.id, this.newFiles)
-            .subscribe(res => {
-              console.log(res);
-              this.snackBar.open("svg saved", undefined, {
-                duration: 2000,
-                panelClass: 'snackbar-class'
+      this.uploader.onCompleteItem = (item: any, response: any, status: any, headers: any) => {
+        if (status === 200) {
+          // set download url or actual url for publishing
+          let imgurl = BASE_URL + '/api/Containers/' + this.option.id + '/download/' + name;
+          let setimgurl: string;
+          setimgurl = 'https://xbmsapi.eu-gb.mybluemix.net/api/Containers/' + this.option.id + '/download/' + name;
+          imgurl = imgurl.replace(/ /g, '-'),
+            // define the file settings
+            this.newFiles.name = name,
+            this.newFiles.url = setimgurl,
+            this.newFiles.createdate = new Date(),
+            this.newFiles.type = 'vector',
+            this.newFiles.companyId = this.Account.companyId,
+            // check if container exists and create
+            this.relationsApi.createFiles(this.option.id, this.newFiles)
+              .subscribe(res => {
+                console.log(res);
+                this.snackBar.open("svg saved", undefined, {
+                  duration: 2000,
+                  panelClass: 'snackbar-class'
+                });
+                resolve(setimgurl);
               });
-              resolve(setimgurl);
-            });
-      }
-    };
-  });
+        }
+      };
+    });
   }
 
   onCanvasSave(e, i) {
@@ -1853,20 +1869,11 @@ export class VideocreatorComponent implements OnInit {
       for (const el of this.animationarray) {
         if (el.type === 'vector') {
           let vecan: vectoranimation = el;
-          for (const vector of vecan.vectors){
-          if (vector.src === undefined) {
-            let svgel;
-              svgel = document.getElementById(vector.idx).outerHTML;
-              let srccc = await this.onSVGsave(svgel);
-              vector.src = srccc;
-            // if (el === undefined) {
-            //   svgel = document.getElementById(this.selectedelement.id).outerHTML;
-            // } else {
-            //   svgel = document.getElementById(el.id).outerHTML;
-            //   el.src = await this.onSVGsave(svgel);
-            // }
+          for (const vector of vecan.vectors) {
+            if (vector.src === '') {
+
+            }
           }
-        }
         }
         ++i;
         if (this.animationarray.length === i) {
@@ -1876,22 +1883,20 @@ export class VideocreatorComponent implements OnInit {
     });
   }
 
-  // saveAsNewVector(element?) {
-  //   let svgel, src;
-  //   if (element === undefined) {
-  //     svgel = document.getElementById(this.selectedelement.id).outerHTML;
-  //     this.selectedelement.src = this.onSVGsave(svgel);
-  //   } else {
-  //     svgel = document.getElementById(element.id).outerHTML;
-  //     element.src = this.onSVGsave(svgel);
-  //   }
-  // }
+  saveAsNewVector(element?) {
+    let svgel;
+    if (element === undefined) {
+      svgel = document.getElementById(this.selectedelement.id).outerHTML;
+      this.selectedelement.src = this.onSVGsave(svgel);
+    } else {
+      svgel = document.getElementById(element.id).outerHTML;
+      element.src = this.onSVGsave(svgel);
+    }
+  }
 
   async saveVideo() {
-    // public animationarray = []; //array with style and position settings;
-    // public animationelements = []; //arrat with the actual greensock animations
     console.log(this.animationarray);
-    await this.checkSaveVectors();
+    //await this.checkSaveVectors();
     if (this.elementname === undefined) { this.elementname = Math.random().toString(36).substring(7); }
     let imgurl = BASE_URL + '/api/Containers/' + this.option.id + '/download/' + this.elementname;
     let setimgurl = 'https://xbmsapi.eu-gb.mybluemix.net/api/Containers/' + this.option.id + '/download/' + this.elementname;
@@ -1912,7 +1917,6 @@ export class VideocreatorComponent implements OnInit {
       });
     }
     )
-    //this.elementname, this.canvas, this.animationarray, this.counter
   }
 
   async converttovideo() {
@@ -1956,7 +1960,6 @@ export class VideocreatorComponent implements OnInit {
     this.counter = 60;
     this.detectchange();
   }
-
 
   loadEditableVideo() {
     this.elementname = this.editablevideo.name;
