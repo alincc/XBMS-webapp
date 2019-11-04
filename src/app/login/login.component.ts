@@ -90,8 +90,8 @@ export class LoginComponent implements OnInit {
         // this.getTranslations();
         // this.TranslationApi.    // check payment hook
         this.showconfirmation = true;
-        if (this.selectedAccount.status === 'paid') {
-          // confirm translation assignment
+        if (this.selectedAccount.status ) {
+          // confirm translation assignment === 'paid'
 
           this.register()
           
@@ -108,31 +108,28 @@ export class LoginComponent implements OnInit {
   }
 
   opendialogconfirmpayment() {
-    const amount = this.priceCalculator(),
-      id = this.selectedTranslation.id,
+    //const amount = this.priceCalculator(),
+     let id = this.selectedAccount.id,
       transsubid = Math.floor(Math.random() * 100) + 1,
       date = Math.round(new Date().getTime() / 1000),
-      transid = 'IXT' + date + '-' + transsubid,
-      desctranjob = [],
+      transid = 'IXP' + date + '-' + transsubid,
       currencytra = 'EUR'; // ISO4217
-    let descriptiontra,
-      langdescr;
-    this.Translationjob.forEach(job => { desctranjob.push(job.lc_tgt) })
-    langdescr = desctranjob.join(', ');
-    descriptiontra = 'online Translationid: ' + transid + ' language: ' + descriptiontra;
-    this.selectedTranslation.transid = transid;
+      let descriptiontra = this.selectedplan;
 
     this.dialogsService
-      .confirm('Request Translation', 'Total Amount: €' + amount +
-        ' Are you sure you want to do this? You will be redirected to the payment page')
+      .confirm('Request Translation', 'Total Amount: €' + this.total +
+        ' You will be redirected to the payment page')
       .subscribe(res => {
         // this.selectedOption = res,
         if (res) {
-          this.RelationsApi.updateByIdTranslation(this.option.id, this.selectedTranslation.id, this.selectedTranslation)
+          // create account then == > 
+          this.accountApi.updateAll(this.Account.id, this.selectedAccount.id, this.selectedAccount)
             .subscribe(res => {
-              this.TranslationApi.getpayment(id, transid, amount, currencytra, descriptiontra, langdescr)
+              this.accountApi.getpayment(id, transid, this.total, currencytra, descriptiontra, langdescr)
                 .subscribe((url: string) => {
                   if (url) { window.open(url, '_self') }
+
+                  // returns to account confirm payment is receivd and activy account through email
                 });
             });
         }
@@ -143,11 +140,12 @@ export class LoginComponent implements OnInit {
   register() {
     // this.accountApi.create(this.Account)
     //   .subscribe(res => { 
-    //     this.responsemessage = "An email confirmation has been send",
+         this.responsemessage = "An email confirmation has been send",
     //     this.error = false,
     //     this.registertoggle = false,
     //     this.logintoggle = true,
-    //     this.response = true
+    //     this.response = true;
+      this.selectedAccount = res;
     //   },
     //   error => { this.errorMessage = error, this.error = true }
     // );
@@ -182,6 +180,7 @@ export class LoginComponent implements OnInit {
     this.accountApi.login(this.Account)
       .subscribe(res => {
       this.logininfo = res.user
+      if (this.logininfo.)
             if (this.logininfo.companyId) { this.router.navigate(['/dashboard'])}  
           else this.checkregistercompany()
           },
