@@ -13,7 +13,7 @@ import { DialogsService } from './../dialogsservice/dialogs.service';
 import {Title} from '@angular/platform-browser';
 import {MatSlideToggleChange} from '@angular/material';
 import {MatPasswordStrengthComponent} from '@angular-material-extensions/password-strength';
- 
+import {coerceNumberProperty} from '@angular/cdk/coercion';
 
 @Component({
   selector: 'app-login',
@@ -28,7 +28,8 @@ export class LoginComponent implements OnInit {
   public rememberMe: boolean = true;
   public errorMessage: string;
   public responsemessage;
-  
+  public selectedplan: string;
+  public terms: string;
   error = false;
   response = false;
   logintoggle = true;
@@ -37,7 +38,35 @@ export class LoginComponent implements OnInit {
   responsecount: number;
   public selectedOption = false;
   count: number;
+  planselectiontoggle = false;
 
+  emailcount = 0;
+  extrausers = false;
+  migrationsupport = false;
+  trainingsupport = false;
+  autoTicks = false;
+  showTicks = false;
+  step = 1000;
+  addemails = false;
+  additionalusers = 0;
+  total = 99;
+  onetime = 0;
+  yearly = 0;
+
+
+
+  get tickInterval(): number | 'auto' {
+    return this.showTicks ? (this.autoTicks ? 'auto' : this._tickInterval) : 0;
+  }
+  set tickInterval(value) {
+    this._tickInterval = coerceNumberProperty(value);
+  }
+  private _tickInterval = 1;
+
+  public urlparameter: string;
+  public selectedIndex = 0;
+  public selectedAccount: Account;
+  public showconfirmation = false;
 
   constructor(
     public CompanyApi: CompanyApi,
@@ -50,19 +79,103 @@ export class LoginComponent implements OnInit {
     LoopBackConfig.setApiVersion(API_VERSION);
   }
 
-  ngOnInit(): void { }
+  ngOnInit(): void { 
+    //this.getCurrentUserInfo();
+    this.urlparameter = this.route.snapshot.params['id'];
+    if (this.urlparameter) {
+      this.selectedIndex = 1;
+      this.accountApi.findById(this.urlparameter).subscribe((account: Account) => {
+        this.selectedAccount = account;
+        // this.onSelectTranslation(this.selectedTranslation);
+        // this.getTranslations();
+        // this.TranslationApi.    // check payment hook
+        this.showconfirmation = true;
+        if (this.selectedAccount.status === 'paid') {
+          // confirm translation assignment
+
+          this.register()
+          
+        }
+        
+        // send confirmation email with invoice to adminaddress (add admin address to account profile)
+        
+      })
+    }
+  }
+
+  gotopayment(){
+    
+  }
+
+  opendialogconfirmpayment() {
+    const amount = this.priceCalculator(),
+      id = this.selectedTranslation.id,
+      transsubid = Math.floor(Math.random() * 100) + 1,
+      date = Math.round(new Date().getTime() / 1000),
+      transid = 'IXT' + date + '-' + transsubid,
+      desctranjob = [],
+      currencytra = 'EUR'; // ISO4217
+    let descriptiontra,
+      langdescr;
+    this.Translationjob.forEach(job => { desctranjob.push(job.lc_tgt) })
+    langdescr = desctranjob.join(', ');
+    descriptiontra = 'online Translationid: ' + transid + ' language: ' + descriptiontra;
+    this.selectedTranslation.transid = transid;
+
+    this.dialogsService
+      .confirm('Request Translation', 'Total Amount: €' + amount +
+        ' Are you sure you want to do this? You will be redirected to the payment page')
+      .subscribe(res => {
+        // this.selectedOption = res,
+        if (res) {
+          this.RelationsApi.updateByIdTranslation(this.option.id, this.selectedTranslation.id, this.selectedTranslation)
+            .subscribe(res => {
+              this.TranslationApi.getpayment(id, transid, amount, currencytra, descriptiontra, langdescr)
+                .subscribe((url: string) => {
+                  if (url) { window.open(url, '_self') }
+                });
+            });
+        }
+      });
+    // on confirm payment navigate to payment site
+  }
 
   register() {
-    this.accountApi.create(this.Account)
-      .subscribe(res => { 
-        this.responsemessage = "An email confirmation has been send",
-        this.error = false,
-        this.registertoggle = false,
-        this.logintoggle = true,
-        this.response = true
-      },
-      error => { this.errorMessage = error, this.error = true }
-    );
+    // this.accountApi.create(this.Account)
+    //   .subscribe(res => { 
+    //     this.responsemessage = "An email confirmation has been send",
+    //     this.error = false,
+    //     this.registertoggle = false,
+    //     this.logintoggle = true,
+    //     this.response = true
+    //   },
+    //   error => { this.errorMessage = error, this.error = true }
+    // );
+    this.registertoggle = false;
+    this.planselectiontoggle = true;
+  }
+
+  updateplan(){
+    // console.log(this.selectedplan);
+    let plan = 0;
+    let emails = 0;
+    let users = 0;
+    let training =  0;
+    let migration = 0;
+
+    if (this.trainingsupport){ training =  499; }
+    if (this.migrationsupport){ migration = 999; } 
+    if (this.addemails){ emails = this.emailcount * 5 }
+    if (this.extrausers){ users = this.additionalusers * 10 }
+    if (this.selectedplan === 'standard'){ plan = 49 }
+    if (this.selectedplan === 'agency'){ plan = 99 }
+    if (this.selectedplan === 'enterprise'){ plan = 1199 }
+    this.total =  emails + users + plan;
+
+    if (this.terms === "monthly"){this.yearly = 0}
+    if (this.terms === "yearly"){this.yearly = this.total * 12 * 0.9; this.total = 0}
+    this.onetime = training + migration;
+
   }
 
   login(): void {
@@ -114,9 +227,20 @@ export class LoginComponent implements OnInit {
   }
 
   backtoggle(): void {
-    this.registertoggle = false,
-      this.logintoggle = true,
-      this.response = true
+    if (this.planselectiontoggle === true){
+      this.registertoggle = true;
+      this.logintoggle = false;
+      this.response = true;
+      this.planselectiontoggle = false;
+    }
+    if (this.registertoggle === true){
+      this.registertoggle = false;
+      this.logintoggle = true;
+      this.response = true;
+      this.planselectiontoggle = false;
+    }
+
+
   }
 
 }

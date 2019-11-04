@@ -1,4 +1,23 @@
 <div class="background-container">
+
+      <div *ngIf="showconfirmation">
+          <mat-card>
+              <label *ngIf="selectedAccount.paymentreceived === 'paid'" style="color:green">Payment Received,
+                  invoice send to your email or under your
+                  account under invoices
+              </label>
+              <label *ngIf="selectedAccount.paymentreceived === 'expired'" style="color:red">Payment expired
+                  please
+                  try again</label>
+              <label *ngIf="selectedAccount.paymentreceived === 'failed'" style="color:red">Payment failed
+                  please
+                  try again or use other method of payment
+                  method</label>
+              <label *ngIf="selectedAccount.paymentreceived === 'cancelled'" style="color:red">Payment
+                  cancelled</label>
+          </mat-card>
+      </div>
+
   <div class="logincontainer" *ngIf="logintoggle">
     <section class="mat-typography">
       <h1>Login</h1>
@@ -61,8 +80,7 @@
       <div fxLayout="row">
         <div fxLayout="column">
           <mat-form-field class="form-full-width">
-            <input matInput name="companyname" type="name" [(ngModel)]="Account.companyname"
-              placeholder="Company" />
+            <input matInput name="companyname" type="name" [(ngModel)]="Account.companyname" placeholder="Company" />
           </mat-form-field>
         </div>
       </div>
@@ -89,17 +107,7 @@
           </mat-password-strength>
         </div>
       </div>
-      <div fxLayout="row">
-          <mat-card>
-              <mat-checkbox>Standard Plan</mat-checkbox>
-          </mat-card>
-          <mat-card>
-              <mat-checkbox>Agency Plan</mat-checkbox>
-          </mat-card>
-          <mat-card>
-              <mat-checkbox>Enterprise Plan</mat-checkbox>
-          </mat-card>
-      </div>
+
       <div fxLayout="row">
         <div fxLayout="column" *ngIf="error">
           {{this.errorMessage.message}}
@@ -112,7 +120,251 @@
       </div>
       <br>
       <div fxLayout="row">
-        <button (click)="register()" a mat-raised-button>Register</button>
+        <button (click)="register()" a mat-raised-button>Select plan</button>
+        <button (click)="backtoggle()" a mat-raised-button>Back</button>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="planselectiontoggle" class="selectplancontainer">
+    <section class="mat-typography">
+      <h1>Select Plan</h1>
+    </section>
+    <div class="form-login" cellspacing="0">
+
+      <div fxLayout="row">
+        <mat-button-toggle-group name="plan" [(ngModel)]="selectedplan">
+          <mat-button-toggle value="standard" disabled (change)="updateplan()">
+            Standard Plan(no longer available)
+            <mat-list role="list" disabled="true">
+              <mat-list-item role="listitem">
+                <mat-icon matListIcon>check</mat-icon>1.000 emails/Month
+              </mat-list-item>
+              <mat-list-item role="listitem">
+                <mat-icon matListIcon>check</mat-icon>E-mail/Chat Support
+              </mat-list-item>
+              <mat-list-item role="listitem">
+                <mat-icon matListIcon>check</mat-icon>1 user
+              </mat-list-item>
+              <mat-list-item role="listitem">
+                <mat-icon matListIcon>check</mat-icon>500 MB storage
+              </mat-list-item>
+              <mat-list-item role="listitem">
+                <mat-icon matListIcon>check</mat-icon>Video creator
+              </mat-list-item>
+              <mat-list-item role="listitem">
+                <mat-icon matListIcon>check</mat-icon>GIF creator
+              </mat-list-item>
+              <mat-list-item role="listitem">
+                <mat-icon matListIcon>check</mat-icon>Image creator
+              </mat-list-item>
+              <mat-list-item role="listitem">
+                <mat-icon matListIcon>check</mat-icon>Email creator
+              </mat-list-item>
+              <mat-list-item role="listitem">
+                <mat-icon matListIcon>clear</mat-icon>> 1000 standard graphics
+              </mat-list-item>
+              <mat-list-item role="listitem">
+                <mat-icon matListIcon>clear</mat-icon>Website tracker
+              </mat-list-item>
+              <mat-list-item role="listitem">
+                <mat-icon matListIcon>clear</mat-icon>Social Media Planner
+              </mat-list-item>
+              <mat-list-item role="listitem">
+                <mat-icon matListIcon>clear</mat-icon>CRM
+              </mat-list-item>
+              <mat-list-item role="listitem">
+                <mat-icon matListIcon>clear</mat-icon>Translation service
+              </mat-list-item>
+              <mat-list-item role="listitem">
+                <mat-icon matListIcon>clear</mat-icon>AI text creation service
+              </mat-list-item>
+              <mat-list-item role="listitem">
+                  <mat-icon matListIcon>clear</mat-icon>Work in Teams
+                </mat-list-item>
+              <h2>€49</h2>
+            </mat-list>
+          </mat-button-toggle>
+          <mat-button-toggle value="agency" (change)="updateplan()">
+            Agency Plan
+            <mat-list role="list">
+              <mat-list-item role="listitem">
+                <mat-icon matListIcon>check</mat-icon>10.000 emails/Month
+              </mat-list-item>
+              <mat-list-item role="listitem">
+                <mat-icon matListIcon>check</mat-icon>E-mail/Chat Support
+              </mat-list-item>
+              <mat-list-item role="listitem">
+                <mat-icon matListIcon>check</mat-icon>1 user
+              </mat-list-item>
+              <mat-list-item role="listitem">
+                <mat-icon matListIcon>check</mat-icon>5 GB storage
+              </mat-list-item>
+              <mat-list-item role="listitem">
+                <mat-icon matListIcon>check</mat-icon>Video creator
+              </mat-list-item>
+              <mat-list-item role="listitem">
+                <mat-icon matListIcon>check</mat-icon>GIF creator
+              </mat-list-item>
+              <mat-list-item role="listitem">
+                <mat-icon matListIcon>check</mat-icon>Image creator
+              </mat-list-item>
+              <mat-list-item role="listitem">
+                <mat-icon matListIcon>check</mat-icon>Email creator
+              </mat-list-item>
+              <mat-list-item role="listitem">
+                <mat-icon matListIcon>check</mat-icon>> 1000 standard graphics
+              </mat-list-item>
+              <mat-list-item role="listitem">
+                <mat-icon matListIcon>check</mat-icon>Website tracker
+              </mat-list-item>
+              <mat-list-item role="listitem">
+                <mat-icon matListIcon>check</mat-icon>Social Media Planner
+              </mat-list-item>
+              <mat-list-item role="listitem">
+                <mat-icon matListIcon>check</mat-icon>CRM
+              </mat-list-item>
+              <mat-list-item role="listitem">
+                <mat-icon matListIcon>check</mat-icon>Translation service
+              </mat-list-item>
+              <mat-list-item role="listitem">
+                <mat-icon matListIcon>check</mat-icon>AI text creation service
+              </mat-list-item>
+              <mat-list-item role="listitem">
+                  <mat-icon matListIcon>clear</mat-icon>Work in Teams
+                </mat-list-item>
+              <h2>€99</h2>
+            </mat-list>
+          </mat-button-toggle>
+          <mat-button-toggle value="enterprise" (change)="updateplan()">
+            Enterprise Plan
+            <mat-list role="list">
+              <mat-list-item role="listitem">
+                <mat-icon matListIcon>check</mat-icon>60.000 emails/Month
+              </mat-list-item>
+              <mat-list-item role="listitem">
+                <mat-icon matListIcon>check</mat-icon>Dedicated support engineer 24/7
+              </mat-list-item>
+              <mat-list-item role="listitem">
+                <mat-icon matListIcon>check</mat-icon>10 users
+              </mat-list-item>
+              <mat-list-item role="listitem">
+                <mat-icon matListIcon>check</mat-icon>unlimited storage
+              </mat-list-item>
+              <mat-list-item role="listitem">
+                <mat-icon matListIcon>check</mat-icon>Video creator
+              </mat-list-item>
+              <mat-list-item role="listitem">
+                <mat-icon matListIcon>check</mat-icon>GIF creator
+              </mat-list-item>
+              <mat-list-item role="listitem">
+                <mat-icon matListIcon>check</mat-icon>Image creator
+              </mat-list-item>
+              <mat-list-item role="listitem">
+                <mat-icon matListIcon>check</mat-icon>Email creator
+              </mat-list-item>
+              <mat-list-item role="listitem">
+                <mat-icon matListIcon>check</mat-icon>> 1000 standard graphics
+              </mat-list-item>
+              <mat-list-item role="listitem">
+                <mat-icon matListIcon>check</mat-icon>Website tracker
+              </mat-list-item>
+              <mat-list-item role="listitem">
+                <mat-icon matListIcon>check</mat-icon>Social Media Planner
+              </mat-list-item>
+              <mat-list-item role="listitem">
+                <mat-icon matListIcon>check</mat-icon>CRM
+              </mat-list-item>
+              <mat-list-item role="listitem">
+                <mat-icon matListIcon>check</mat-icon>Translation service
+              </mat-list-item>
+              <mat-list-item role="listitem">
+                <mat-icon matListIcon>check</mat-icon>AI text creation service
+              </mat-list-item>
+              <mat-list-item role="listitem">
+                  <mat-icon matListIcon>check</mat-icon>Work in Teams
+                </mat-list-item>
+              <h2>€1.199</h2>
+            </mat-list>
+          </mat-button-toggle>
+        </mat-button-toggle-group>
+      </div>
+      <br>
+      <div fxLayout="column">
+        <mat-card fxLayout="column">
+          <mat-checkbox [(ngModel)]="addemails" (change)="updateplan()">Add extra emails</mat-checkbox>
+          <mat-slider matTooltip="Add extra email" [(ngModel)]="emailcount" min="1" [tickInterval]="tickInterval"
+            [step]="1" [disabled]="!addemails" max="100" thumbLabel="true" (change)="updateplan()"></mat-slider>
+          <section class="mat-typography">
+            <label>{{emailcount}}</label><label *ngIf="emailcount > 0">000 &nbsp; emails</label>
+          </section>
+        </mat-card>
+      </div>
+      <br>
+      <div fxLayout="column">
+        <mat-card fxLayout="column">
+          <mat-checkbox [(ngModel)]="extrausers" (change)="updateplan()">Add additional users</mat-checkbox>
+          <mat-slider matTooltip="Add extra users" [(ngModel)]="additionalusers" min="1" [tickInterval]="tickInterval"
+            [step]="1" [disabled]="!extrausers" max="100" thumbLabel="true" (change)="updateplan()"></mat-slider>
+          <section class="mat-typography">
+            <label>{{additionalusers}} &nbsp; users €10</label>
+          </section>
+        </mat-card>
+      </div>
+      <br>
+      <div fxLayout="column">
+        <mat-card>
+          <mat-checkbox [(ngModel)]="migrationsupport" (change)="updateplan()">Migration Support €999 </mat-checkbox>
+        </mat-card>
+      </div>
+      <br>
+      <div fxLayout="column">
+        <mat-card>
+          <mat-checkbox [(ngModel)]="trainingsupport" (change)="updateplan()">Training Support €499 </mat-checkbox>
+        </mat-card>
+      </div>
+      <br>
+      <div fxLayout="column">
+        <mat-button-toggle-group name="paymentterm" [(ngModel)]="terms">
+          <mat-button-toggle value="monthly" (change)="updateplan()">Monthly</mat-button-toggle>
+          <mat-button-toggle value="yearly" (change)="updateplan()">Yearly (-10% discount)</mat-button-toggle>
+        </mat-button-toggle-group>
+      </div>
+      <br>
+      <div fxLayout="column">
+        <mat-card fxLayout="row">
+          <label>Total Monthly:
+            &nbsp; {{total | currency:'EUR' }}</label>
+        </mat-card>
+        <br>
+      </div>
+      <div fxLayout="column">
+        <mat-card fxLayout="row">
+          <label>Total Yearly:
+            &nbsp; {{yearly | currency:'EUR' }} </label>
+        </mat-card>
+      </div>
+      <br>
+      <div fxLayout="column">
+        <mat-card fxLayout="row">
+          <label>Total One-time:
+            &nbsp; {{onetime| currency:'EUR' }} </label>
+        </mat-card>
+      </div>
+
+      <div fxLayout="row">
+        <div fxLayout="column" *ngIf="error">
+          {{this.errorMessage.message}}
+        </div>
+      </div>
+      <div fxLayout="row">
+        <div fxLayout="column" *ngIf="response">
+          {{this.responsemessage}}
+        </div>
+      </div>
+      <br>
+      <div fxLayout="row">
+        <button (click)="gotopayment()" a mat-raised-button>Go to payment details</button>
         <button (click)="backtoggle()" a mat-raised-button>Back</button>
       </div>
     </div>
