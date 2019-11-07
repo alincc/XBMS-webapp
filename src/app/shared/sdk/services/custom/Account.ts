@@ -977,6 +977,47 @@ export class AccountApi extends BaseLoopBackApi {
    *
    * @param {string} id 
    *
+   * @param {string} paymentid 
+   *
+   * @param {string} valuetra 
+   *
+   * @param {string} currencytra 
+   *
+   * @param {string} descriptiontra 
+   *
+   * @returns {object} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * <em>
+   * (The remote method definition does not provide any description.
+   * This usually means the response is a `Account` object.)
+   * </em>
+   */
+  public getpayment(id: any = {}, paymentid: any = {}, valuetra: any = {}, currencytra: any = {}, descriptiontra: any = {}, customHeaders?: Function): Observable<any> {
+    let _method: string = "GET";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/accounts/getpayment/:id";
+    let _routeParams: any = {
+      id: id
+    };
+    let _postBody: any = {};
+    let _urlParams: any = {};
+    if (typeof paymentid !== 'undefined' && paymentid !== null) _urlParams.paymentid = paymentid;
+    if (typeof valuetra !== 'undefined' && valuetra !== null) _urlParams.valuetra = valuetra;
+    if (typeof currencytra !== 'undefined' && currencytra !== null) _urlParams.currencytra = currencytra;
+    if (typeof descriptiontra !== 'undefined' && descriptiontra !== null) _urlParams.descriptiontra = descriptiontra;
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
+   * <em>
+         * (The remote method definition does not provide any description.)
+         * </em>
+   *
+   * @param {string} id 
+   *
    * @param {string} data 
    *
    * @param {object} data Request data.

@@ -18,6 +18,10 @@ export interface AccountInterface {
   "standardGa"?: string;
   "lastlogin"?: Date;
   "signature"?: string;
+  "paid"?: string;
+  "term"?: string;
+  "plan"?: string;
+  "paymentid"?: string;
   "realm"?: string;
   "username"?: string;
   "email": string;
@@ -42,6 +46,10 @@ export class Account implements AccountInterface {
   "standardGa": string;
   "lastlogin": Date;
   "signature": string;
+  "paid": string;
+  "term": string;
+  "plan": string;
+  "paymentid": string;
   "realm": string;
   "username": string;
   "email": string;
@@ -129,6 +137,22 @@ export class Account implements AccountInterface {
         },
         "signature": {
           name: 'signature',
+          type: 'string'
+        },
+        "paid": {
+          name: 'paid',
+          type: 'string'
+        },
+        "term": {
+          name: 'term',
+          type: 'string'
+        },
+        "plan": {
+          name: 'plan',
+          type: 'string'
+        },
+        "paymentid": {
+          name: 'paymentid',
           type: 'string'
         },
         "realm": {

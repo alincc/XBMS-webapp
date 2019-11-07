@@ -1,22 +1,22 @@
 <div class="background-container">
 
-      <div *ngIf="showconfirmation">
-          <mat-card>
-              <label *ngIf="selectedAccount.paymentreceived === 'paid'" style="color:green">Payment Received,
-                  invoice send to your email or under your
-                  account under invoices
-              </label>
-              <label *ngIf="selectedAccount.paymentreceived === 'expired'" style="color:red">Payment expired
-                  please
-                  try again</label>
-              <label *ngIf="selectedAccount.paymentreceived === 'failed'" style="color:red">Payment failed
-                  please
-                  try again or use other method of payment
-                  method</label>
-              <label *ngIf="selectedAccount.paymentreceived === 'cancelled'" style="color:red">Payment
-                  cancelled</label>
-          </mat-card>
-      </div>
+  <div *ngIf="showconfirmation">
+    <mat-card>
+      <label *ngIf="selectedAccount.paymentreceived === 'paid'" style="color:green">Payment Received,
+        invoice send to your email or under your
+        account under invoices
+      </label>
+      <label *ngIf="selectedAccount.paymentreceived === 'expired'" style="color:red">Payment expired
+        please
+        try again</label>
+      <label *ngIf="selectedAccount.paymentreceived === 'failed'" style="color:red">Payment failed
+        please
+        try again or use other method of payment
+        method</label>
+      <label *ngIf="selectedAccount.paymentreceived === 'cancelled'" style="color:red">Payment
+        cancelled</label>
+    </mat-card>
+  </div>
 
   <div class="logincontainer" *ngIf="logintoggle">
     <section class="mat-typography">
@@ -47,12 +47,16 @@
       </div>
       <div fxLayout="row">
         <div *ngIf="error" fxLayout="column">
-          {{this.errorMessage.message}}
+          <section class="mat-typography">
+            <label>{{errorMessage.message}}</label>
+          </section>
         </div>
       </div>
       <div fxLayout="row">
         <div fxLayout="column" *ngIf="response">
-          {{this.responsemessage}}
+          <section class="mat-typography">
+            <label>{{responsemessage}}</label>
+          </section>
         </div>
       </div>
       <div fxLayout="row">
@@ -69,61 +73,60 @@
     <section class="mat-typography">
       <h1>Register</h1>
     </section>
-    <div class="form-login" cellspacing="0">
-      <div fxLayout="row">
-        <div fxLayout="column">
-          <mat-form-field class="form-full-width">
-            <input matInput name="username" type="name" [(ngModel)]="Account.username" placeholder="Username" />
-          </mat-form-field>
-        </div>
-      </div>
-      <div fxLayout="row">
-        <div fxLayout="column">
-          <mat-form-field class="form-full-width">
-            <input matInput name="companyname" type="name" [(ngModel)]="Account.companyname" placeholder="Company" />
-          </mat-form-field>
-        </div>
-      </div>
-      <div fxLayout="row">
-        <div fxLayout="column">
-          <mat-form-field class="form-full-width">
-            <input matInput name="email" type="email" [(ngModel)]="Account.email" placeholder="email" />
-          </mat-form-field>
-        </div>
-      </div>
-      <div fxLayout="row">
-        <div fxLayout="column">
-          <!-- <mat-form-field class="form-full-width">
-            <input matInput name="password" type="password" [(ngModel)]="Account.password" placeholder="password" />
-          </mat-form-field> -->
-          <mat-form-field appearance="outline" style="width: 100%" [color]="passwordComponent.color">
-            <mat-label>Password</mat-label>
-            <input matInput #password type="password" required placeholder="Password" [(ngModel)]="Account.password">
-            <mat-hint align="end" aria-live="polite">
-              {{Account.password.length}} / 25
-            </mat-hint>
-          </mat-form-field>
-          <mat-password-strength #passwordComponent [password]="password.value">
-          </mat-password-strength>
-        </div>
-      </div>
-
-      <div fxLayout="row">
-        <div fxLayout="column" *ngIf="error">
-          {{this.errorMessage.message}}
-        </div>
-      </div>
-      <div fxLayout="row">
-        <div fxLayout="column" *ngIf="response">
-          {{this.responsemessage}}
-        </div>
-      </div>
-      <br>
-      <div fxLayout="row">
-        <button (click)="register()" a mat-raised-button>Select plan</button>
-        <button (click)="backtoggle()" a mat-raised-button>Back</button>
+    <div fxLayout="row">
+      <div fxLayout="column">
+        <mat-form-field class="form-full-width">
+          <input matInput name="username" type="name" [(ngModel)]="Account.username" placeholder="Username" />
+        </mat-form-field>
       </div>
     </div>
+    <div fxLayout="row">
+      <div fxLayout="column">
+        <mat-form-field class="form-full-width">
+          <input matInput name="companyname" type="name" [(ngModel)]="Account.companyname" placeholder="Company" />
+        </mat-form-field>
+      </div>
+    </div>
+    <div fxLayout="row">
+      <div fxLayout="column">
+        <mat-form-field class="form-full-width">
+          <input matInput name="email" type="email" [(ngModel)]="Account.email" placeholder="email" />
+        </mat-form-field>
+      </div>
+    </div>
+    <div fxLayout="row">
+      <div fxLayout="column">
+        <mat-form-field appearance="outline" style="width: 100%" [color]="passwordComponent.color">
+          <mat-label>Password</mat-label>
+          <input matInput #password type="password" required placeholder="Password" [(ngModel)]="Account.password">
+          <mat-hint align="end" aria-live="polite">
+            {{Account.password.length}} / 25
+          </mat-hint>
+        </mat-form-field>
+        <mat-password-strength #passwordComponent [password]="password.value">
+        </mat-password-strength>
+      </div>
+    </div>
+    <div fxLayout="row">
+      <div *ngIf="errorMessage" fxLayout="column">
+        <section class="mat-typography">
+          <label>{{errorMessage.message}}</label>
+        </section>
+      </div>
+    </div>
+    <div fxLayout="row">
+      <div fxLayout="column" *ngIf="responsemessage">
+        <section class="mat-typography">
+          <label> {{responsemessage}}</label>
+        </section>
+      </div>
+    </div>
+    <br>
+    <div fxLayout="row">
+      <button (click)="register()" a mat-raised-button>Select plan</button>
+      <button (click)="backtoggle()" a mat-raised-button>Back</button>
+    </div>
+
   </div>
 
   <div *ngIf="planselectiontoggle" class="selectplancontainer">
@@ -131,6 +134,17 @@
       <h1>Select Plan</h1>
     </section>
     <div class="form-login" cellspacing="0">
+
+      <mat-button-toggle-group name="currency" [(ngModel)]="selectedcurrency">
+        <mat-button-toggle value="EUR" (change)="updateplan()">
+          EUR
+        </mat-button-toggle>
+        <mat-button-toggle value="USD" (change)="updateplan()">
+          USD
+          </mat-button-toggle>
+      </mat-button-toggle-group>
+
+
 
       <div fxLayout="row">
         <mat-button-toggle-group name="plan" [(ngModel)]="selectedplan">
@@ -180,9 +194,9 @@
                 <mat-icon matListIcon>clear</mat-icon>AI text creation service
               </mat-list-item>
               <mat-list-item role="listitem">
-                  <mat-icon matListIcon>clear</mat-icon>Work in Teams
-                </mat-list-item>
-              <h2>€49</h2>
+                <mat-icon matListIcon>clear</mat-icon>Work in Teams
+              </mat-list-item>
+              <h2>{{ standard | currency: selectedcurrency}}</h2>
             </mat-list>
           </mat-button-toggle>
           <mat-button-toggle value="agency" (change)="updateplan()">
@@ -231,9 +245,9 @@
                 <mat-icon matListIcon>check</mat-icon>AI text creation service
               </mat-list-item>
               <mat-list-item role="listitem">
-                  <mat-icon matListIcon>clear</mat-icon>Work in Teams
-                </mat-list-item>
-              <h2>€99</h2>
+                <mat-icon matListIcon>clear</mat-icon>Work in Teams
+              </mat-list-item>
+              <h2> {{ agency | currency: selectedcurrency}}</h2>
             </mat-list>
           </mat-button-toggle>
           <mat-button-toggle value="enterprise" (change)="updateplan()">
@@ -282,9 +296,9 @@
                 <mat-icon matListIcon>check</mat-icon>AI text creation service
               </mat-list-item>
               <mat-list-item role="listitem">
-                  <mat-icon matListIcon>check</mat-icon>Work in Teams
-                </mat-list-item>
-              <h2>€1.199</h2>
+                <mat-icon matListIcon>check</mat-icon>Work in Teams
+              </mat-list-item>
+              <h2> {{ enterprise | currency: selectedcurrency}} </h2>
             </mat-list>
           </mat-button-toggle>
         </mat-button-toggle-group>
@@ -307,20 +321,20 @@
           <mat-slider matTooltip="Add extra users" [(ngModel)]="additionalusers" min="1" [tickInterval]="tickInterval"
             [step]="1" [disabled]="!extrausers" max="100" thumbLabel="true" (change)="updateplan()"></mat-slider>
           <section class="mat-typography">
-            <label>{{additionalusers}} &nbsp; users €10</label>
+            <label>{{additionalusers}} &nbsp; users {{user | currency: selectedcurrency}}</label>
           </section>
         </mat-card>
       </div>
       <br>
       <div fxLayout="column">
         <mat-card>
-          <mat-checkbox [(ngModel)]="migrationsupport" (change)="updateplan()">Migration Support €999 </mat-checkbox>
+          <mat-checkbox [(ngModel)]="migrationsupport" (change)="updateplan()">Migration Support {{ migration | currency: selectedcurrency }}</mat-checkbox>
         </mat-card>
       </div>
       <br>
       <div fxLayout="column">
         <mat-card>
-          <mat-checkbox [(ngModel)]="trainingsupport" (change)="updateplan()">Training Support €499 </mat-checkbox>
+          <mat-checkbox [(ngModel)]="trainingsupport" (change)="updateplan()">Training Support {{ training | currency:  selectedcurrency }} </mat-checkbox>
         </mat-card>
       </div>
       <br>
@@ -334,37 +348,41 @@
       <div fxLayout="column">
         <mat-card fxLayout="row">
           <label>Total Monthly:
-            &nbsp; {{total | currency:'EUR' }}</label>
+            &nbsp; {{total | currency: selectedcurrency }}</label>
         </mat-card>
         <br>
       </div>
       <div fxLayout="column">
         <mat-card fxLayout="row">
           <label>Total Yearly:
-            &nbsp; {{yearly | currency:'EUR' }} </label>
+            &nbsp; {{yearly | currency: selectedcurrency }} </label>
         </mat-card>
       </div>
       <br>
       <div fxLayout="column">
         <mat-card fxLayout="row">
           <label>Total One-time:
-            &nbsp; {{onetime| currency:'EUR' }} </label>
+            &nbsp; {{onetime| currency: selectedcurrency }} </label>
         </mat-card>
       </div>
 
       <div fxLayout="row">
         <div fxLayout="column" *ngIf="error">
-          {{this.errorMessage.message}}
+          <section class="mat-typography">
+            <label>{{ errorMessage.message }}</label>
+          </section>
         </div>
       </div>
       <div fxLayout="row">
         <div fxLayout="column" *ngIf="response">
-          {{this.responsemessage}}
+          <section class="mat-typography">
+            <label>{{ responsemessage }}</label>
+          </section>
         </div>
       </div>
       <br>
       <div fxLayout="row">
-        <button (click)="gotopayment()" a mat-raised-button>Go to payment details</button>
+        <button (click)="opendialogconfirmpayment()" a mat-raised-button>Go to payment details</button>
         <button (click)="backtoggle()" a mat-raised-button>Back</button>
       </div>
     </div>

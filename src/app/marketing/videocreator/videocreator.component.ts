@@ -310,7 +310,7 @@ export class VideocreatorComponent implements OnInit {
   }
 
   async detectchange() {
-    console.log('run check', this.animationarray);
+    //console.log('run check', this.animationarray);
     this.animationarray.forEach(elm => {
       if (elm.posx > 0) {
         elm.setpos = { 'x': elm.posx, 'y': elm.posy };
@@ -465,7 +465,7 @@ export class VideocreatorComponent implements OnInit {
 
       for (let i = 0; i < qty; i++) {
         let cln = iset.cloneNode(true);
-        console.log(cln);
+        //console.log(cln);
         let parent = iset.parentElement;
         parent.append(cln);
         //let color = colors[(Math.random() * colors.length) | 0];
@@ -563,7 +563,7 @@ export class VideocreatorComponent implements OnInit {
   }
 
   setVector(event, i, idx): void {
-    console.log(event, i, idx);
+    //console.log(event, i, idx);
     this.animationarray[i].vectors[idx].src = event;
     let vect = this.animationarray[i].vectors[idx].idx;
   }
@@ -596,7 +596,7 @@ export class VideocreatorComponent implements OnInit {
 
   getViewBox(vect) {
     return new Promise((resolve, reject) => {
-      console.log('get/set viewbox')
+      //console.log('get/set viewbox')
       // let set = vect;//document.getElementById(vect);
       let doc = vect; // set.getElementsByTagName('svg');
       if (doc !== undefined) {
@@ -605,7 +605,7 @@ export class VideocreatorComponent implements OnInit {
         }
         doc.setAttribute("id", '3knrk2l');
         let element = SVG.get(doc.id);
-        console.log(element);
+        //console.log(element);
         //element.draggable()
         var box = element.viewbox();
         if (box === undefined) {
@@ -615,7 +615,7 @@ export class VideocreatorComponent implements OnInit {
         //console.log(element.rbox());
         //element.viewbox(bbox.x, bbox.y, bbox.width, bbox.height);
 
-        console.log(box);
+        //console.log(box);
         resolve(box);
       } else {
         resolve();
@@ -625,14 +625,14 @@ export class VideocreatorComponent implements OnInit {
   }
 
   onMovingAnimationEl(event, i, animation) {
-    console.log(event, i, animation);
+    //console.log(event, i, animation);
     animation.start_time = event.x / 10;
     // html (movingOffset)="onMovingAnimationEl($event, i, animation)"
     //  [style.left]="animation.start_time * 10 + 'px'"
   }
 
   onResizeAnimationEl(event, i, animation) {
-    console.log(event, i, animation);
+    //console.log(event, i, animation);
     animation.duration = event.size.width / 10;
     // html (movingOffset)="onMovingAnimationEl($event, i, animation)"
   }
@@ -1255,7 +1255,7 @@ export class VideocreatorComponent implements OnInit {
 
       total.push(startstr);
       let index = 0;
-      //console.log('before vect desc:', element.vectors);
+      // console.log('before vect desc:', element.vectors);
       for (const vect of element.vectors) {
         idnew = document.getElementById(vect.idx); // get document
 
@@ -1267,7 +1267,7 @@ export class VideocreatorComponent implements OnInit {
           vectstring = idnew.childNodes.innerHTML;
         }
         vectstring = await this.deleteMetaSvg(vectstring); //delete background
-        //console.log(vectstring);
+        console.log(vectstring);
         let pathidar;
         let newvectstring;
         pathidar = vectstring.match(/id="(.*?)"/g); //get ids
@@ -1487,7 +1487,7 @@ export class VideocreatorComponent implements OnInit {
       // example originalsize = {x: 0, y: 0, width: 1496, height: 1496, zoom: 0.06684491978609626}
       let idto = idx;
       let p = idto.getElementsByTagName("path");
-      console.log(p);
+      //console.log(p);
       let bxn
       for (let index = 0; index < p.length; index++) {
         let idto2 = document.getElementById(p[index].id);
@@ -1660,22 +1660,22 @@ export class VideocreatorComponent implements OnInit {
   }
 
   editVectorPaths(idx, vector: vectorelement, element: vectoranimation) {
-    console.log(vector, idx, element);
+    //console.log(vector, idx, element);
     let svgel = document.getElementById(vector.idx);
     let p = svgel.getElementsByTagName("path");
     //console.log(p);
     for (let index = 0; index < p.length; index++) {
-      console.log(p[index]);
+      //console.log(p[index]);
       p[index].onclick = function () { console.log('blah'); };
     }
   }
 
   clickVectorPaths(e) {
-    console.log(e.target);
+    //console.log(e.target);
     this.removeVectorPathSelection();
     this.selectedVecPath = e.target;
     let style = this.selectedVecPath.getAttribute('style');
-    console.log(style);
+    //console.log(style);
     let newstyle = style + 'outline: 5px dotted green;'
     this.selectedVecPath.setAttribute('style', newstyle)
   }
@@ -1685,9 +1685,9 @@ export class VideocreatorComponent implements OnInit {
     this.selectedVecPath.remove();
     this.selectedVecPath = '';
     let idnew = document.getElementById(this.selectedelement.id); // get document
-    console.log(idnew);
+    //console.log(idnew);
     let vectstring = idnew.innerHTML;
-    console.log(vectstring)
+    //console.log(vectstring)
     //let newstring = this.selectedelement.svgcombi.changingThisBreaksApplicationSecurity;
     this.selectedelement.svgcombi = this.sanitizer.bypassSecurityTrustHtml(vectstring);
     //document.getElementById(this.selectedVecPath).remove();
@@ -1697,7 +1697,7 @@ export class VideocreatorComponent implements OnInit {
     if (this.selectedVecPath) {
       let revertoldstyle = this.selectedVecPath.getAttribute('style');
       let oldstyle = revertoldstyle.replace('outline: 5px dotted green;', '');
-      console.log(oldstyle);
+      //console.log(oldstyle);
       this.selectedVecPath.setAttribute('style', oldstyle)
     }
   }
@@ -1733,7 +1733,7 @@ export class VideocreatorComponent implements OnInit {
       '<svg xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#"' +
       ' xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg"' +
       ' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" height="100%" width="100%"' +
-      'id="' + vectorid + '" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" preserveAspectRatio="none">',
+      'id="svg2 version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" preserveAspectRatio="none">',
       svgstring, '</svg>'
     ]
     let newsvg = newsvgarray.join('');
@@ -1775,7 +1775,7 @@ export class VideocreatorComponent implements OnInit {
             // check if container exists and create
             this.relationsApi.createFiles(this.option.id, this.newFiles)
               .subscribe(res => {
-                console.log(res);
+                //console.log(res);
                 this.snackBar.open("svg saved", undefined, {
                   duration: 2000,
                   panelClass: 'snackbar-class'
@@ -1830,7 +1830,7 @@ export class VideocreatorComponent implements OnInit {
           this.relationsApi.createFiles(this.option.id, this.newFiles)
             .subscribe(res => {
               // create SVG png
-              console.log(res);
+              //console.log(res);
               setTimeout(() => {
                 this.filesApi.converteps2svg(this.option.id, this.Account.companyId, res.url, name, true)
                   .subscribe(resp => {
@@ -1895,8 +1895,7 @@ export class VideocreatorComponent implements OnInit {
   }
 
   async saveVideo() {
-    console.log(this.animationarray);
-    //await this.checkSaveVectors();
+    //console.log(this.animationarray);
     if (this.elementname === undefined) { this.elementname = Math.random().toString(36).substring(7); }
     let imgurl = BASE_URL + '/api/Containers/' + this.option.id + '/download/' + this.elementname;
     let setimgurl = 'https://xbmsapi.eu-gb.mybluemix.net/api/Containers/' + this.option.id + '/download/' + this.elementname;
@@ -1926,7 +1925,7 @@ export class VideocreatorComponent implements OnInit {
       this.elementname, this.canvas, this.animationarray, this.counter)
       .subscribe(
         res => {
-          console.log(res);
+          //console.log(res);
           this.saveVideo()
         }
       );
@@ -1939,7 +1938,7 @@ export class VideocreatorComponent implements OnInit {
       this.elementname, this.canvas, this.animationarray, this.counter)
       .subscribe(
         res => {
-          console.log
+          //console.log
           this.saveVideo()
         }
       );

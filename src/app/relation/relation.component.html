@@ -289,170 +289,155 @@
         <div *ngIf="selectedCall && !readytosend" on-focusout="saveCall()" ngClass.gt-xs="container-normal"
           ngClass.lt-sm="container-noshow" [class.container-xs-show]="listviewxsshow">
           <mat-card>
-            <mat-card-content>
-              <div fxLayout="column" fxFlex>
-                <div fxFlex="row" fxLayout.xs="column">
-                  <div fxLayout>
-                    <mat-toolbar class="titlebox">
-                      <h2>{{selectedCall.title | uppercase | slice:0:30 }}</h2>
+            <mat-card-content fxLayout="column" fxFlex>
+              <div fxFlex="row" fxLayout.xs="column">
+                <div fxLayout>
+                  <mat-toolbar class="titlebox">
+                    <h2>{{selectedCall.title | uppercase | slice:0:30 }}</h2>
 
-                      <button mat-icon-button [matMenuTriggerFor]="menucall" class="menu">
-                        <mat-icon>more_vert</mat-icon>
-                      </button>
-                      <mat-menu #menucall="matMenu">
-                        <button mat-menu-item (click)="openDialogDeleteCall()">
-                          <mat-icon>delete</mat-icon>
-                          <span>Delete</span>
-                        </button>
-                        <button mat-menu-item (click)="openDialogNewCall()">
-                          <mat-icon>note_add</mat-icon>
-                          <span>New</span>
-                        </button>
-                        <button mat-menu-item (click)="sendMailTo()">
-                          <mat-icon>send</mat-icon>
-                          <span>Reply</span>
-                        </button>
-                      </mat-menu>
-                    </mat-toolbar>
-                  </div>
-                </div>
-                <div fxLayout="row" fxLayout.xs="column">
-                  <div fxFlex colspan="2">
-                    <mat-form-field>
-                      <input matInput [(ngModel)]=selectedCall.title placeholder="Title" class="InputField">
-                    </mat-form-field>
-                  </div>
-                </div>
-                <div fxLayout="row" fxLayout.xs="column">
-                  <div fxFlex>
-                    <mat-form-field>
-                      <input type="text" #attendeeInput (keyup.enter)="addAttendent(attendeeInput.value)"
-                        placeholder="Select Attendee" [(ngModel)]=option matInput [formControl]="myControl"
-                        [matAutocomplete]="auto">
-                      <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
-                        <!-- error changing view from one call to another -->
-                        <div *ngIf="filteredOptions">
-                          <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
-                            {{ option.firstname }} {{ option.lastname }}
-                          </mat-option>
-                        </div>
-                      </mat-autocomplete>
-                    </mat-form-field>
-                  </div>
-                  <div fxFlex *ngIf="attendeelist.lenght > 0">
-                    <div *ngFor="let attendee of attendeelist">
-                      {{attendee.attendent}}
-                      <a mat-mini-fab color="primary">
+                    <button mat-icon-button [matMenuTriggerFor]="menucall" class="menu">
+                      <mat-icon>more_vert</mat-icon>
+                    </button>
+                    <mat-menu #menucall="matMenu">
+                      <button mat-menu-item (click)="openDialogDeleteCall()">
                         <mat-icon>delete</mat-icon>
-                      </a>
-                    </div>
-                  </div>
+                        <span>Delete</span>
+                      </button>
+                      <button mat-menu-item (click)="openDialogNewCall()">
+                        <mat-icon>note_add</mat-icon>
+                        <span>New</span>
+                      </button>
+                      <button mat-menu-item (click)="sendMailTo()">
+                        <mat-icon>send</mat-icon>
+                        <span>Reply</span>
+                      </button>
+                    </mat-menu>
+                  </mat-toolbar>
                 </div>
-                <br>
-                <div fxLayout="row" fxLayout.xs="column">
-                  <div fxFlex>
-                    <mat-select [(ngModel)]=selectedCall.calltype placeholder="calltype" class="InputField">
-                      <mat-option *ngFor="let calltype of calltype" [value]="calltype.value">
-                        {{ calltype.viewValue }}
-                      </mat-option>
-                    </mat-select>
-                  </div>
-                  <div fxFlex>
-                    <mat-datepicker #picker1 class="InputField"></mat-datepicker>
-                    <input [matDatepicker]="myDatepicker1" [(ngModel)]=selectedCall.date placeholder="Call Date">
-                    <mat-datepicker-toggle matSuffix [for]="myDatepicker1"></mat-datepicker-toggle>
-                    <mat-datepicker #myDatepicker1></mat-datepicker>
-                  </div>
+              </div>
+              <div fxLayout="row" fxLayout.xs="column">
+                <div fxFlex>
+                  <mat-form-field>
+                    <input matInput [(ngModel)]=selectedCall.title placeholder="Title" class="InputField">
+                  </mat-form-field>
                 </div>
-                <br>
-                <div fxLayout="row" fxLayout.xs="column">
-                  <div fxFlex>
-                    <a mat-mini-fab matTooltip="Speech to Text recording" color="primary" (click)="activateSpeech()"
-                      [class.speechbutton]="recordactive">
-                      <mat-icon>record_voice_over</mat-icon>
+              </div>
+              <div fxLayout="row" fxLayout.xs="column">
+                <div fxFlex>
+                  <mat-form-field>
+                    <input type="text" #attendeeInput (keyup.enter)="addAttendent(attendeeInput.value)"
+                      placeholder="Select Attendee" [(ngModel)]=option matInput [formControl]="myControl"
+                      [matAutocomplete]="auto">
+                    <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+                      <!-- error changing view from one call to another -->
+                      <div *ngIf="filteredOptions">
+                        <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
+                          {{ option.firstname }} {{ option.lastname }}
+                        </mat-option>
+                      </div>
+                    </mat-autocomplete>
+                  </mat-form-field>
+                </div>
+                <div fxFlex *ngIf="attendeelist.lenght > 0">
+                  <div *ngFor="let attendee of attendeelist">
+                    {{attendee.attendent}}
+                    <a mat-mini-fab color="primary">
+                      <mat-icon>delete</mat-icon>
                     </a>
                   </div>
                 </div>
-                <!-- <div fxLayout="row" fxLayout.xs="column" rowspan="10">
-                  <div fxFlex colspan="2">
-                    <mat-form-field class="content-form">
-                      <textarea matInput class="content-form" #content [(ngModel)]=selectedCall.content placeholder="content">Call Report</textarea>
-                      <mat-hint align="end">{{content.value.length}}</mat-hint>
-                    </mat-form-field>
-                  </div>
-                </div> -->
-                <div fxLayout="row" fxLayout.xs="column">
-                  <div fxFlex>
-                    <mat-form-field>
-                      <input matInput [(ngModel)]=task placeholder="task" class="InputField" (keyup.enter)="addTask()">
-                    </mat-form-field>
-                    <ul *ngFor="let tasklist of tasklist; let i = index">
-                      <div fxFlex>{{tasklist.task}}</div>
-                      <div fxFlex>
-                        <a mat-mini-fab color="primary" (click)="deleteTask(i)">
-                          <mat-icon>delete</mat-icon>
-                        </a>
-                      </div>
-                    </ul>
-                  </div>
-                  <div fxFlex>
-                    <mat-form-field>
-                      <input matInput [(ngModel)]=note placeholder="note" class="InputField" (keyup.enter)="addNote()">
-                    </mat-form-field>
-                    <ul *ngFor="let notes of notes; let i = index">
-                      <div fxFlex>{{notes.note}}</div>
-                      <div fxFlex>
-                        <a mat-mini-fab color="primary" (click)="deleteNote(i)">
-                          <mat-icon>delete</mat-icon>
-                        </a>
-                      </div>
-                    </ul>
-                  </div>
+              </div>
+              <br>
+              <div fxLayout="row" fxLayout.xs="column">
+                <div fxFlex>
+                  <mat-select [(ngModel)]=selectedCall.calltype placeholder="calltype" class="InputField">
+                    <mat-option *ngFor="let calltype of calltype" [value]="calltype.value">
+                      {{ calltype.viewValue }}
+                    </mat-option>
+                  </mat-select>
                 </div>
-                <div fxLayout="row" fxLayout.xs="column">
-                  <div fxFlex>
-                    <mat-checkbox [(ngModel)]=selectedCall.followup>
-                      Follow Up
-                    </mat-checkbox>
-                  </div>
-                  <div fxFlex>
-                    <mat-datepicker #picker></mat-datepicker>
-                    <input [matDatepicker]="myDatepicker" [(ngModel)]=selectedCall.callbackdate
-                      placeholder="Callback Date">
-                    <mat-datepicker-toggle matSuffix [for]="myDatepicker"></mat-datepicker-toggle>
-                    <mat-datepicker #myDatepicker></mat-datepicker>
-                  </div>
+                <div fxFlex>
+                  <mat-datepicker #picker1 class="InputField"></mat-datepicker>
+                  <input [matDatepicker]="myDatepicker1" [(ngModel)]=selectedCall.date placeholder="Call Date">
+                  <mat-datepicker-toggle matSuffix [for]="myDatepicker1"></mat-datepicker-toggle>
+                  <mat-datepicker #myDatepicker1></mat-datepicker>
                 </div>
-                <div fxLayout="row" fxLayout.xs="column">
-                  <mat-checkbox [(ngModel)]=selectedCall.followupdone>
-                    Done
+              </div>
+              <br>
+              <div fxLayout="row" fxLayout.xs="column">
+                <div fxFlex>
+                  <a mat-mini-fab matTooltip="Speech to Text recording" color="primary" (click)="activateSpeech()"
+                    [class.speechbutton]="recordactive">
+                    <mat-icon>record_voice_over</mat-icon>
+                  </a>
+                </div>
+              </div>
+              <div fxLayout="row" fxLayout.xs="column">
+                <div fxFlex>
+                  <mat-form-field>
+                    <input matInput [(ngModel)]=task placeholder="task" class="InputField" (keyup.enter)="addTask()">
+                  </mat-form-field>
+                  <ul *ngFor="let tasklist of tasklist; let i = index">
+                    <div fxFlex>{{tasklist.task}}</div>
+                    <div fxFlex>
+                      <a mat-mini-fab color="primary" (click)="deleteTask(i)">
+                        <mat-icon>delete</mat-icon>
+                      </a>
+                    </div>
+                  </ul>
+                </div>
+                <div fxFlex>
+                  <mat-form-field>
+                    <input matInput [(ngModel)]=note placeholder="note" class="InputField" (keyup.enter)="addNote()">
+                  </mat-form-field>
+                  <ul *ngFor="let notes of notes; let i = index">
+                    <div fxFlex>{{notes.note}}</div>
+                    <div fxFlex>
+                      <a mat-mini-fab color="primary" (click)="deleteNote(i)">
+                        <mat-icon>delete</mat-icon>
+                      </a>
+                    </div>
+                  </ul>
+                </div>
+              </div>
+              <div fxLayout="row" fxLayout.xs="column">
+                <div fxFlex>
+                  <mat-checkbox [(ngModel)]=selectedCall.followup>
+                    Follow Up
                   </mat-checkbox>
                 </div>
-                <div fxLayout="row" fxLayout.xs="column">
-                  <button a mat-raised-button *ngIf="readytosend" (click)="SendMessageDialog()">Edit</button>
+                <div fxFlex>
+                  <mat-datepicker #picker></mat-datepicker>
+                  <input [matDatepicker]="myDatepicker" [(ngModel)]=selectedCall.callbackdate
+                    placeholder="Callback Date">
+                  <mat-datepicker-toggle matSuffix [for]="myDatepicker"></mat-datepicker-toggle>
+                  <mat-datepicker #myDatepicker></mat-datepicker>
                 </div>
+              </div>
+              <div fxLayout="row" fxLayout.xs="column">
+                <mat-checkbox [(ngModel)]=selectedCall.followupdone>
+                  Done
+                </mat-checkbox>
+              </div>
+              <div fxLayout="row" fxLayout.xs="column">
+                <button a mat-raised-button *ngIf="readytosend" (click)="SendMessageDialog()">Edit</button>
+              </div>
 
+              <div fxLayout="row" fxLayout.xs="column">
                 <mat-form-field *ngIf="!selectedCall.html">
                   <textarea matInput #content [(ngModel)]=selectedCall.content style="min-height: 300px;"
                     placeholder="content">Call Report</textarea>
                   <mat-hint align="end">{{content.value.length}}</mat-hint>
                 </mat-form-field>
-
-                <div fxLayout="row" fxLayout.xs="column" rowspan="10" *ngIf="selectedCall.html">
-                  <div fxFlex colspan="2">
-                    <div class="content-form"
-                      style="border-style: solid; border-width: 1px; border-color: lightgray; padding: 5px;"
-                      [innerHTML]="selectedCall.html"></div>
-                  </div>
-                </div>
-                <div fxLayout="row" fxLayout.xs="column">
-                  <button a mat-raised-button (click)="saveCall()">Save</button>
-                  <button a mat-raised-button (click)="replyNewMessage()">Reply</button>
-                </div>
-
               </div>
 
-
+              <div fxLayout="row" *ngIf="selectedCall.html">
+                  <div style="max-width: 600px" [innerHTML]="selectedCall.html"></div>
+              </div>
+              <div fxLayout="row" fxLayout.xs="column">
+                <button a mat-raised-button (click)="saveCall()">Save</button>
+                <button a mat-raised-button (click)="replyNewMessage()">Reply</button>
+              </div>
             </mat-card-content>
           </mat-card>
         </div>
@@ -462,7 +447,7 @@
           <mat-card>
             <mat-card-content fxLayout="column">
 
-              <div fxLayout="column" fxFlex class="callstable">
+              <div fxLayout="column" fxFlex>
 
                 <div fxLayout="row" fxLayout.xs="column">
                   <div fxFlex>
@@ -551,23 +536,21 @@
                   </div>
                 </div>
 
-                <div fxLayout="row" fxLayout.xs="column" *ngIf="!selectedCall.html" rowspan="10">
-                  <div fxFlex colspan="2">
+                <div fxLayout="row" fxLayout.xs="column" *ngIf="!selectedCall.html">
+                  <div fxFlex>
                     <div style="border-style: solid; border-width: 1px; border-color: lightgray; padding: 5px;">
-                      <mat-form-field class="content-form">
-                        <textarea matInput class="content-form" #content [(ngModel)]=selectedCall.content
+                      <mat-form-field>
+                        <textarea matInput #content [(ngModel)]=selectedCall.content
                           placeholder="content">Call Report</textarea>
                         <mat-hint align="end">{{content.value.length}}</mat-hint>
                       </mat-form-field>
                     </div>
                   </div>
                 </div>
-                <div fxLayout="row" fxLayout.xs="column" rowspan="10" *ngIf="selectedCall.html">
-                  <div fxFlex colspan="2">
-                    <div class="content-form"
-                      style="border-style: solid; border-width: 1px; border-color: lightgray; padding: 5px;"
-                      [innerHTML]="selectedCall.html"></div>
-                  </div>
+                <div fxLayout="row" fxLayout.xs="column" *ngIf="selectedCall.html">
+                 
+                    <div style="max-width: 600px" [innerHTML]="selectedCall.html"></div>
+                 
                 </div>
                 <div fxLayout="row" fxLayout.xs="column">
                   <button a mat-raised-button (click)="SendMessageDialog()">Edit</button>
@@ -617,7 +600,7 @@
               <div>
                 <div fxLayout="column" class="form-full-width" cellspacing="0">
                   <div fxLayout="row" fxLayout.xs="column">
-                    <div fxFlex colspan="2">
+                    <div fxFlex>
                       <mat-toolbar class="titlebox">
                         <div>
                           <h2>{{selectedContactperson.firstname | uppercase}} {{selectedContactperson.lastname |
