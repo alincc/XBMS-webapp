@@ -459,6 +459,126 @@ export class AccountApi extends BaseLoopBackApi {
   }
 
   /**
+   * Fetches hasOne relation subscription.
+   *
+   * @param {any} id account id
+   *
+   * @param {boolean} refresh 
+   *
+   * @returns {object} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * <em>
+   * (The remote method definition does not provide any description.
+   * This usually means the response is a `Account` object.)
+   * </em>
+   */
+  public getSubscription(id: any, refresh: any = {}, customHeaders?: Function): Observable<any> {
+    let _method: string = "GET";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/accounts/:id/subscription";
+    let _routeParams: any = {
+      id: id
+    };
+    let _postBody: any = {};
+    let _urlParams: any = {};
+    if (typeof refresh !== 'undefined' && refresh !== null) _urlParams.refresh = refresh;
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
+   * Creates a new instance in subscription of this model.
+   *
+   * @param {any} id account id
+   *
+   * @param {object} data Request data.
+   *
+   * This method expects a subset of model properties as request parameters.
+   *
+   * @returns {object} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * <em>
+   * (The remote method definition does not provide any description.
+   * This usually means the response is a `Account` object.)
+   * </em>
+   */
+  public createSubscription(id: any, data: any = {}, customHeaders?: Function): Observable<any> {
+    let _method: string = "POST";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/accounts/:id/subscription";
+    let _routeParams: any = {
+      id: id
+    };
+    let _postBody: any = {
+      data: data
+    };
+    let _urlParams: any = {};
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
+   * Update subscription of this model.
+   *
+   * @param {any} id account id
+   *
+   * @param {object} data Request data.
+   *
+   * This method expects a subset of model properties as request parameters.
+   *
+   * @returns {object} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * <em>
+   * (The remote method definition does not provide any description.
+   * This usually means the response is a `Account` object.)
+   * </em>
+   */
+  public updateSubscription(id: any, data: any = {}, customHeaders?: Function): Observable<any> {
+    let _method: string = "PUT";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/accounts/:id/subscription";
+    let _routeParams: any = {
+      id: id
+    };
+    let _postBody: any = {
+      data: data
+    };
+    let _urlParams: any = {};
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
+   * Deletes subscription of this model.
+   *
+   * @param {any} id account id
+   *
+   * @returns {object} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * This method returns no data.
+   */
+  public destroySubscription(id: any, customHeaders?: Function): Observable<any> {
+    let _method: string = "DELETE";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/accounts/:id/subscription";
+    let _routeParams: any = {
+      id: id
+    };
+    let _postBody: any = {};
+    let _urlParams: any = {};
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
    * Queries accessTokens of account.
    *
    * @param {any} id account id
@@ -985,6 +1105,10 @@ export class AccountApi extends BaseLoopBackApi {
    *
    * @param {string} descriptiontra 
    *
+   * @param {string} companyname 
+   *
+   * @param {string} email 
+   *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
    *   from the server.
@@ -994,7 +1118,7 @@ export class AccountApi extends BaseLoopBackApi {
    * This usually means the response is a `Account` object.)
    * </em>
    */
-  public getpayment(id: any = {}, paymentid: any = {}, valuetra: any = {}, currencytra: any = {}, descriptiontra: any = {}, customHeaders?: Function): Observable<any> {
+  public getpayment(id: any = {}, paymentid: any = {}, valuetra: any = {}, currencytra: any = {}, descriptiontra: any = {}, companyname: any = {}, email: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
     "/accounts/getpayment/:id";
@@ -1007,6 +1131,8 @@ export class AccountApi extends BaseLoopBackApi {
     if (typeof valuetra !== 'undefined' && valuetra !== null) _urlParams.valuetra = valuetra;
     if (typeof currencytra !== 'undefined' && currencytra !== null) _urlParams.currencytra = currencytra;
     if (typeof descriptiontra !== 'undefined' && descriptiontra !== null) _urlParams.descriptiontra = descriptiontra;
+    if (typeof companyname !== 'undefined' && companyname !== null) _urlParams.companyname = companyname;
+    if (typeof email !== 'undefined' && email !== null) _urlParams.email = email;
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
     return result;
   }
@@ -1102,6 +1228,39 @@ export class AccountApi extends BaseLoopBackApi {
     let _method: string = "POST";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
     "/accounts/:id/emailhandler";
+    let _routeParams: any = {
+      id: id
+    };
+    let _postBody: any = {
+      data: data
+    };
+    let _urlParams: any = {};
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
+   * Creates a new instance in subscription of this model.
+   *
+   * @param {any} id account id
+   *
+   * @param {object} data Request data.
+   *
+   * This method expects a subset of model properties as request parameters.
+   *
+   * @returns {object[]} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * <em>
+   * (The remote method definition does not provide any description.
+   * This usually means the response is a `Account` object.)
+   * </em>
+   */
+  public createManySubscription(id: any, data: any[] = [], customHeaders?: Function): Observable<any> {
+    let _method: string = "POST";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/accounts/:id/subscription";
     let _routeParams: any = {
       id: id
     };

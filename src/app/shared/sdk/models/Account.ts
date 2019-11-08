@@ -18,10 +18,6 @@ export interface AccountInterface {
   "standardGa"?: string;
   "lastlogin"?: Date;
   "signature"?: string;
-  "paid"?: string;
-  "term"?: string;
-  "plan"?: string;
-  "paymentid"?: string;
   "realm"?: string;
   "username"?: string;
   "email": string;
@@ -32,6 +28,7 @@ export interface AccountInterface {
   company?: Company;
   unsortedcalls?: Unsortedcalls[];
   emailhandler?: Emailhandler;
+  subscription?: any;
 }
 
 export class Account implements AccountInterface {
@@ -46,10 +43,6 @@ export class Account implements AccountInterface {
   "standardGa": string;
   "lastlogin": Date;
   "signature": string;
-  "paid": string;
-  "term": string;
-  "plan": string;
-  "paymentid": string;
   "realm": string;
   "username": string;
   "email": string;
@@ -60,6 +53,7 @@ export class Account implements AccountInterface {
   company: Company;
   unsortedcalls: Unsortedcalls[];
   emailhandler: Emailhandler;
+  subscription: any;
   constructor(data?: AccountInterface) {
     Object.assign(this, data);
   }
@@ -139,22 +133,6 @@ export class Account implements AccountInterface {
           name: 'signature',
           type: 'string'
         },
-        "paid": {
-          name: 'paid',
-          type: 'string'
-        },
-        "term": {
-          name: 'term',
-          type: 'string'
-        },
-        "plan": {
-          name: 'plan',
-          type: 'string'
-        },
-        "paymentid": {
-          name: 'paymentid',
-          type: 'string'
-        },
         "realm": {
           name: 'realm',
           type: 'string'
@@ -209,6 +187,14 @@ export class Account implements AccountInterface {
           name: 'emailhandler',
           type: 'Emailhandler',
           model: 'Emailhandler',
+          relationType: 'hasOne',
+                  keyFrom: 'id',
+          keyTo: 'accountId'
+        },
+        subscription: {
+          name: 'subscription',
+          type: 'any',
+          model: '',
           relationType: 'hasOne',
                   keyFrom: 'id',
           keyTo: 'accountId'

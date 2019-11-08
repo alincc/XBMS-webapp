@@ -73,7 +73,6 @@ export class LoginComponent implements OnInit {
 
   public urlparameter: string;
   public selectedIndex = 0;
-  public selectedAccount: Account;
   public showconfirmation = false;
 
   constructor(
@@ -92,56 +91,54 @@ export class LoginComponent implements OnInit {
     this.urlparameter = this.route.snapshot.params['id'];
     if (this.urlparameter) {
       this.selectedIndex = 1;
-      this.accountApi.findById(this.urlparameter).subscribe((account: Account) => {
-        this.selectedAccount = account;
-        this.showconfirmation = true;
-        if (this.selectedAccount.paid) {
-          // confirm translation assignment === 'paid'
-
-          this.register()
-
+      this.accountApi.count({where: {id: this.urlparameter, paid: true}}).subscribe(rescount => {
+        if (rescount.count > 0) {
+          this.showconfirmation = true;
         }
-
         // send confirmation email with invoice to adminaddress (add admin address to account profile)
-
       })
     }
   }
 
-  gotopayment() {
-
-  }
+  // gotopayment() {
+  // }
 
   opendialogconfirmpayment() {
     //const amount = this.priceCalculator(),
-    //let id = this.selectedAccount.id,
+    //let id = this.Account.id,
     let id = 'test',
       transsubid = Math.floor(Math.random() * 100) + 1,
       date = Math.round(new Date().getTime() / 1000),
       transid = 'IXP' + date + '-' + transsubid,
-      currencytra = 'EUR', // ISO4217
+      currencytra = this.selectedcurrency, // ISO4217
       descriptiontra = this.selectedplan;
-      
+
       let recurrence = true;
       if (this.terms === "monthly") { recurrence = true; }
       if (this.terms === "yearly") { recurrence = false; }
 
     this.dialogsService
-      .confirm('Request Payment', 'Total Amount: €' + this.total +
+      .confirm('Request Payment', 'Total Monthly : ' + this.selectedcurrency + ' ' + this.total +
         ' You will be redirected to the payment page')
       .subscribe(res => {
         // this.selectedOption = res,
         if (res) {
           // create account then == > 
-          // this.Account.id, this.selectedAccount.id, 
-          this.accountApi.upsert(this.selectedAccount)
-            .subscribe(res => {
-              this.accountApi.getpayment(id, transid, this.total, currencytra, descriptiontra)
+          // this.Account.id, this.Account.id, 
+
+          //this.accountApi.upsert(this.Account)
+            //.subscribe(res => {
+              this.Account.companyname = 'test';
+              this.Account.email = 'test@email.com';
+
+              this.accountApi.getpayment(id, transid, this.total, currencytra, descriptiontra, 
+                'test', 'test@email.com', this.terms, this.selectedplan,
+                this.trainingsupport, this.migrationsupport, this.emailcount, this.additionalusers)
                 .subscribe((url: string) => {
                   if (url) { window.open(url, '_self') }
                   // returns to account confirm payment is receivd and activy account through email
                 });
-            });
+            //});
         }
       });
     // on confirm payment navigate to payment site
@@ -153,7 +150,7 @@ export class LoginComponent implements OnInit {
     //     console.log(res);
     //     this.responsemessage = res,
         //this.responsemessage = "An email confirmation has been send",
-         // this.selectedAccount = res;
+         // this.Account = res;
           this.registertoggle = false;
           this.planselectiontoggle = true;
       // },
@@ -180,7 +177,6 @@ export class LoginComponent implements OnInit {
     this.userprice = 10;
     this.emailprice = 5;
     
-
     if (this.selectedcurrency === 'USD'){
       this.emailprice = this.emailprice * curex;
       this.userprice = this.userprice * curex;

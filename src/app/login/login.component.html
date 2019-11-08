@@ -2,11 +2,13 @@
 
   <div *ngIf="showconfirmation">
     <mat-card>
-      <label *ngIf="selectedAccount.paymentreceived === 'paid'" style="color:green">Payment Received,
+        <label style="color:green">Payment approved, please check your mailbox to activate your account and login.
+          </label>
+      <!-- <label *ngIf="selectedAccount.paymentreceived === 'paid'" style="color:green">Payment Received,
         invoice send to your email or under your
         account under invoices
-      </label>
-      <label *ngIf="selectedAccount.paymentreceived === 'expired'" style="color:red">Payment expired
+      </label> -->
+      <!-- <label *ngIf="selectedAccount.paymentreceived === 'expired'" style="color:red">Payment expired
         please
         try again</label>
       <label *ngIf="selectedAccount.paymentreceived === 'failed'" style="color:red">Payment failed
@@ -14,7 +16,7 @@
         try again or use other method of payment
         method</label>
       <label *ngIf="selectedAccount.paymentreceived === 'cancelled'" style="color:red">Payment
-        cancelled</label>
+        cancelled</label> -->
     </mat-card>
   </div>
 
