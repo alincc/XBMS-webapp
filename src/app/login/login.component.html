@@ -48,7 +48,7 @@
         </div>
       </div>
       <div fxLayout="row">
-        <div *ngIf="error" fxLayout="column">
+        <div *ngIf="errorMessage" fxLayout="column">
           <section class="mat-typography">
             <label>{{errorMessage.message}}</label>
           </section>

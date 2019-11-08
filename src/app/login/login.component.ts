@@ -29,7 +29,7 @@ export class LoginComponent implements OnInit {
   public errorMessage: string;
   public responsemessage;
   public selectedplan: string;
-  public terms: string;
+  public terms = 'monthly';
   error = false;
   response = false;
   logintoggle = true;
@@ -113,35 +113,28 @@ export class LoginComponent implements OnInit {
       currencytra = this.selectedcurrency, // ISO4217
       descriptiontra = this.selectedplan;
 
-      let recurrence = true;
-      if (this.terms === "monthly") { recurrence = true; }
-      if (this.terms === "yearly") { recurrence = false; }
+      // let recurrence = true;
+      // if (this.terms === "monthly") { recurrence = true; }
+      // if (this.terms === "yearly") { recurrence = false; }
 
     this.dialogsService
       .confirm('Request Payment', 'Total Monthly : ' + this.selectedcurrency + ' ' + this.total +
         ' You will be redirected to the payment page')
       .subscribe(res => {
-        // this.selectedOption = res,
         if (res) {
-          // create account then == > 
-          // this.Account.id, this.Account.id, 
 
-          //this.accountApi.upsert(this.Account)
-            //.subscribe(res => {
               this.Account.companyname = 'test';
               this.Account.email = 'test@email.com';
 
               this.accountApi.getpayment(id, transid, this.total, currencytra, descriptiontra, 
-                'test', 'test@email.com', this.terms, this.selectedplan,
+                'test', 'test@email.com', this.selectedplan, this.terms,
                 this.trainingsupport, this.migrationsupport, this.emailcount, this.additionalusers)
                 .subscribe((url: string) => {
                   if (url) { window.open(url, '_self') }
                   // returns to account confirm payment is receivd and activy account through email
                 });
-            //});
         }
       });
-    // on confirm payment navigate to payment site
   }
 
   register() {
@@ -213,11 +206,9 @@ export class LoginComponent implements OnInit {
     this.accountApi.login(this.Account)
       .subscribe(res => {
         this.logininfo = res.user
-        //if (this.logininfo.paid) {
           if (this.logininfo.companyId) { this.router.navigate(['/dashboard']) }
           else this.checkregistercompany();
-        //}
-      }, error => { this.errorMessage = error, this.error = true }
+      }, error => { this.errorMessage = error.message, this.error = true }
       );
   }
 

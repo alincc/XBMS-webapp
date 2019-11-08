@@ -34,9 +34,6 @@ export interface CompanyInterface {
   "companysecondarycolor"?: string;
   "companyfont"?: string;
   "companywebsite"?: string;
-  "subscription"?: string;
-  "paid"?: boolean;
-  "subdate"?: Date;
   "id"?: any;
   relations?: Relations[];
   googleanalytics?: Googleanalytics[];
@@ -48,6 +45,7 @@ export interface CompanyInterface {
   files?: Files[];
   emailhandler?: Emailhandler[];
   logger?: Logger[];
+  subscription?: any;
 }
 
 export class Company implements CompanyInterface {
@@ -71,9 +69,6 @@ export class Company implements CompanyInterface {
   "companysecondarycolor": string;
   "companyfont": string;
   "companywebsite": string;
-  "subscription": string;
-  "paid": boolean;
-  "subdate": Date;
   "id": any;
   relations: Relations[];
   googleanalytics: Googleanalytics[];
@@ -85,6 +80,7 @@ export class Company implements CompanyInterface {
   files: Files[];
   emailhandler: Emailhandler[];
   logger: Logger[];
+  subscription: any;
   constructor(data?: CompanyInterface) {
     Object.assign(this, data);
   }
@@ -198,18 +194,6 @@ export class Company implements CompanyInterface {
           name: 'companywebsite',
           type: 'string'
         },
-        "subscription": {
-          name: 'subscription',
-          type: 'string'
-        },
-        "paid": {
-          name: 'paid',
-          type: 'boolean'
-        },
-        "subdate": {
-          name: 'subdate',
-          type: 'Date'
-        },
         "id": {
           name: 'id',
           type: 'any'
@@ -295,6 +279,14 @@ export class Company implements CompanyInterface {
           type: 'Logger[]',
           model: 'Logger',
           relationType: 'hasMany',
+                  keyFrom: 'id',
+          keyTo: 'companyId'
+        },
+        subscription: {
+          name: 'subscription',
+          type: 'any',
+          model: '',
+          relationType: 'hasOne',
                   keyFrom: 'id',
           keyTo: 'companyId'
         },

@@ -1111,7 +1111,7 @@ export class AccountApi extends BaseLoopBackApi {
    *
    * @param {string} plan 
    *
-   * @param {string} term 
+   * @param {string} terms 
    *
    * @param {string} trainingsupport 
    *
@@ -1130,7 +1130,7 @@ export class AccountApi extends BaseLoopBackApi {
    * This usually means the response is a `Account` object.)
    * </em>
    */
-  public getpayment(id: any = {}, paymentid: any = {}, valuetra: any = {}, currencytra: any = {}, descriptiontra: any = {}, companyname: any = {}, email: any = {}, plan: any = {}, term: any = {}, trainingsupport: any = {}, migrationsupport: any = {}, emailcount: any = {}, additionalusers: any = {}, customHeaders?: Function): Observable<any> {
+  public getpayment(id: any = {}, paymentid: any = {}, valuetra: any = {}, currencytra: any = {}, descriptiontra: any = {}, companyname: any = {}, email: any = {}, plan: any = {}, terms: any = {}, trainingsupport: any = {}, migrationsupport: any = {}, emailcount: any = {}, additionalusers: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
     "/accounts/getpayment/:id";
@@ -1146,7 +1146,7 @@ export class AccountApi extends BaseLoopBackApi {
     if (typeof companyname !== 'undefined' && companyname !== null) _urlParams.companyname = companyname;
     if (typeof email !== 'undefined' && email !== null) _urlParams.email = email;
     if (typeof plan !== 'undefined' && plan !== null) _urlParams.plan = plan;
-    if (typeof term !== 'undefined' && term !== null) _urlParams.term = term;
+    if (typeof terms !== 'undefined' && terms !== null) _urlParams.terms = terms;
     if (typeof trainingsupport !== 'undefined' && trainingsupport !== null) _urlParams.trainingsupport = trainingsupport;
     if (typeof migrationsupport !== 'undefined' && migrationsupport !== null) _urlParams.migrationsupport = migrationsupport;
     if (typeof emailcount !== 'undefined' && emailcount !== null) _urlParams.emailcount = emailcount;
@@ -1187,6 +1187,111 @@ export class AccountApi extends BaseLoopBackApi {
     let _postBody: any = {};
     let _urlParams: any = {};
     if (typeof data !== 'undefined' && data !== null) _urlParams.data = data;
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
+   * <em>
+         * (The remote method definition does not provide any description.)
+         * </em>
+   *
+   * @param {string} id 
+   *
+   * @param {string} data 
+   *
+   * @param {object} data Request data.
+   *
+   * This method does not accept any data. Supply an empty object.
+   *
+   * @returns {object} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * <em>
+   * (The remote method definition does not provide any description.
+   * This usually means the response is a `Account` object.)
+   * </em>
+   */
+  public confirmsubscription(id: any = {}, data: any = {}, customHeaders?: Function): Observable<any> {
+    let _method: string = "POST";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/accounts/confirmsubscription/:id";
+    let _routeParams: any = {
+      id: id
+    };
+    let _postBody: any = {};
+    let _urlParams: any = {};
+    if (typeof data !== 'undefined' && data !== null) _urlParams.data = data;
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
+   * <em>
+         * (The remote method definition does not provide any description.)
+         * </em>
+   *
+   * @param {string} id 
+   *
+   * @param {string} data 
+   *
+   * @param {object} data Request data.
+   *
+   * This method does not accept any data. Supply an empty object.
+   *
+   * @returns {object} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * <em>
+   * (The remote method definition does not provide any description.
+   * This usually means the response is a `Account` object.)
+   * </em>
+   */
+  public confirmonepayment(id: any = {}, data: any = {}, customHeaders?: Function): Observable<any> {
+    let _method: string = "POST";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/accounts/confirmonepayment/:id";
+    let _routeParams: any = {
+      id: id
+    };
+    let _postBody: any = {};
+    let _urlParams: any = {};
+    if (typeof data !== 'undefined' && data !== null) _urlParams.data = data;
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
+   * <em>
+         * (The remote method definition does not provide any description.)
+         * </em>
+   *
+   * @param {string} id 
+   *
+   * @param {object} data Request data.
+   *
+   * This method does not accept any data. Supply an empty object.
+   *
+   * @returns {object} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * <em>
+   * (The remote method definition does not provide any description.
+   * This usually means the response is a `Account` object.)
+   * </em>
+   */
+  public getsub(id: any = {}, customHeaders?: Function): Observable<any> {
+    let _method: string = "POST";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/accounts/getsub/:id";
+    let _routeParams: any = {
+      id: id
+    };
+    let _postBody: any = {};
+    let _urlParams: any = {};
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
     return result;
   }
