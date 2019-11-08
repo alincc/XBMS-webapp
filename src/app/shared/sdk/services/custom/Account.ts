@@ -1109,6 +1109,18 @@ export class AccountApi extends BaseLoopBackApi {
    *
    * @param {string} email 
    *
+   * @param {string} plan 
+   *
+   * @param {string} term 
+   *
+   * @param {string} trainingsupport 
+   *
+   * @param {string} migrationsupport 
+   *
+   * @param {string} emailcount 
+   *
+   * @param {string} additionalusers 
+   *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
    *   from the server.
@@ -1118,7 +1130,7 @@ export class AccountApi extends BaseLoopBackApi {
    * This usually means the response is a `Account` object.)
    * </em>
    */
-  public getpayment(id: any = {}, paymentid: any = {}, valuetra: any = {}, currencytra: any = {}, descriptiontra: any = {}, companyname: any = {}, email: any = {}, customHeaders?: Function): Observable<any> {
+  public getpayment(id: any = {}, paymentid: any = {}, valuetra: any = {}, currencytra: any = {}, descriptiontra: any = {}, companyname: any = {}, email: any = {}, plan: any = {}, term: any = {}, trainingsupport: any = {}, migrationsupport: any = {}, emailcount: any = {}, additionalusers: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
     "/accounts/getpayment/:id";
@@ -1133,6 +1145,12 @@ export class AccountApi extends BaseLoopBackApi {
     if (typeof descriptiontra !== 'undefined' && descriptiontra !== null) _urlParams.descriptiontra = descriptiontra;
     if (typeof companyname !== 'undefined' && companyname !== null) _urlParams.companyname = companyname;
     if (typeof email !== 'undefined' && email !== null) _urlParams.email = email;
+    if (typeof plan !== 'undefined' && plan !== null) _urlParams.plan = plan;
+    if (typeof term !== 'undefined' && term !== null) _urlParams.term = term;
+    if (typeof trainingsupport !== 'undefined' && trainingsupport !== null) _urlParams.trainingsupport = trainingsupport;
+    if (typeof migrationsupport !== 'undefined' && migrationsupport !== null) _urlParams.migrationsupport = migrationsupport;
+    if (typeof emailcount !== 'undefined' && emailcount !== null) _urlParams.emailcount = emailcount;
+    if (typeof additionalusers !== 'undefined' && additionalusers !== null) _urlParams.additionalusers = additionalusers;
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
     return result;
   }
