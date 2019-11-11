@@ -10,11 +10,9 @@ import {
   API_VERSION
 } from '../shared/';
 import { DialogsService } from './../dialogsservice/dialogs.service';
-import { Title } from '@angular/platform-browser';
-import { MatSlideToggleChange } from '@angular/material';
-import { MatPasswordStrengthComponent } from '@angular-material-extensions/password-strength';
 import { coerceNumberProperty } from '@angular/cdk/coercion';
 
+ 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -39,6 +37,7 @@ export class LoginComponent implements OnInit {
   public selectedOption = false;
   count: number;
   planselectiontoggle = false;
+  password;
 
   emailcount = 0;
   extrausers = false;
@@ -60,7 +59,8 @@ export class LoginComponent implements OnInit {
   standard = 49;
   agency = 99;
   enterprise = 1199;
-
+  passwordstrenght = 0;
+  registerbutton = false;
 
 
   get tickInterval(): number | 'auto' {
@@ -70,7 +70,6 @@ export class LoginComponent implements OnInit {
     this._tickInterval = coerceNumberProperty(value);
   }
   private _tickInterval = 1;
-
   public urlparameter: string;
   public selectedIndex = 0;
   public showconfirmation = false;
@@ -78,7 +77,6 @@ export class LoginComponent implements OnInit {
   constructor(
     public CompanyApi: CompanyApi,
     public dialogsService: DialogsService,
-    //public auth: LoopBackAuth,
     public route: ActivatedRoute,
     public router: Router,
     public accountApi: AccountApi) {
@@ -89,19 +87,33 @@ export class LoginComponent implements OnInit {
   ngOnInit(): void {
     //this.getCurrentUserInfo();
     this.urlparameter = this.route.snapshot.params['id'];
+    console.log(this.urlparameter);
     if (this.urlparameter) {
       this.selectedIndex = 1;
+       // send confirmation email with invoice to adminaddress (add admin address to account profile)
       this.accountApi.count({where: {id: this.urlparameter, paid: true}}).subscribe(rescount => {
         if (rescount.count > 0) {
           this.showconfirmation = true;
         }
-        // send confirmation email with invoice to adminaddress (add admin address to account profile)
-      })
+      });
     }
+    let uid = this.route.snapshot.params['uid'];
+    let redirect = this.route.snapshot.params['redirect']
+
   }
 
-  // gotopayment() {
-  // }
+  onStrengthChanged(e){
+    this.passwordstrenght = e;
+    this.checkall();
+  }
+
+  checkall(){
+    if (this.passwordstrenght > 60 && this.Account.companyname.length > 2 && 
+      this.Account.email.length > 2  && this.Account.username.length > 2 ){
+        this.registerbutton = true;
+      } else {this.registerbutton = false}
+
+  }
 
   opendialogconfirmpayment() {
     //const amount = this.priceCalculator(),
@@ -122,12 +134,9 @@ export class LoginComponent implements OnInit {
         ' You will be redirected to the payment page')
       .subscribe(res => {
         if (res) {
-
-              this.Account.companyname = 'test';
-              this.Account.email = 'test@email.com';
-
               this.accountApi.getpayment(id, transid, this.total, currencytra, descriptiontra, 
-                'test', 'test@email.com', this.selectedplan, this.terms,
+                //'test', 'test@email.com', this.selectedplan, this.terms,
+                this.Account.companyname, this.Account.email, this.selectedplan, this.terms,
                 this.trainingsupport, this.migrationsupport, this.emailcount, this.additionalusers)
                 .subscribe((url: string) => {
                   if (url) { window.open(url, '_self') }
@@ -138,22 +147,21 @@ export class LoginComponent implements OnInit {
   }
 
   register() {
-    // this.accountApi.create(this.Account)
-    //   .subscribe(res => {
-    //     console.log(res);
-    //     this.responsemessage = res,
-        //this.responsemessage = "An email confirmation has been send",
-         // this.Account = res;
-          this.registertoggle = false;
-          this.planselectiontoggle = true;
-      // },
-      //   error => { this.errorMessage = error, this.error = true }
-      // );
-
-    //     this.error = false,
-    //     this.registertoggle = false,
-    //     this.logintoggle = true,
-    //     this.response = true;
+    this.planselectiontoggle = true,
+    this.registertoggle = false,
+    this.logintoggle = false,
+    this.error = false,
+    this.response = false;
+     this.accountApi.create(this.Account)
+       .subscribe(res => {
+         console.log(res);
+        //this.responsemessage = "An email confirmation has been send", this.responsemessage = res,
+       },
+         error => { this.errorMessage = error, this.error = true 
+           this.registertoggle = true;
+           this.planselectiontoggle = false;
+        }
+     );
   }
 
   updateplan() {
