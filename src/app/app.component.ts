@@ -10,7 +10,7 @@ import {
 } from './shared/';
 import { DomSanitizer } from '@angular/platform-browser';
 import { MatIconRegistry } from '@angular/material';
-import { Router } from '@angular/router';
+import { Router, RoutesRecognized } from '@angular/router';
 import { map, distinctUntilChanged, share, filter, throttleTime, pairwise } from 'rxjs/operators';
 import { fromEvent, Observable } from 'rxjs';
 import { PwaService } from './pwa.service';
@@ -22,6 +22,7 @@ import {
   API_VERSION,
   LoopBackConfig
 } from './shared/';
+import { ActivatedRoute, UrlSegment } from '@angular/router';
 
 
 enum VisibilityState {
@@ -54,7 +55,7 @@ export class AppComponent implements AfterViewInit {
   public showmessages = false;
   public messagecount: number;
   public logger: Logger[];
-
+  private routeData;
   // listenFunc will hold the function returned by "renderer.listen"
   listenFunc: Function;
 
@@ -69,19 +70,15 @@ export class AppComponent implements AfterViewInit {
     elementRef: ElementRef,
     private renderer: Renderer2,
     public router: Router,
+    private route:ActivatedRoute,
     public accountApi: AccountApi,
     private iconRegistry: MatIconRegistry,
     private sanitizer: DomSanitizer,
     private swUpdate: SwUpdate) {
-    // swUpdate.available.subscribe(event => {
-    //   if (askUserToUpdate()) {
-    //     window.location.reload();
-    //   }
-    // });
     this.addIcons();
     LoopBackConfig.setBaseURL(BASE_URL);
     LoopBackConfig.setApiVersion(API_VERSION);
-    this.getLogs();
+   
 
     this.realTime.onReady().subscribe(() => console.log('ready'))
     this.realTime.IO.emit('hello', 'world');
@@ -129,6 +126,13 @@ export class AppComponent implements AfterViewInit {
   private isVisible = false;
 
   ngAfterViewInit() {
+ 
+    let loc = window.location.pathname;
+    let locindex = loc.indexOf('/login')
+    if (locindex === -1){
+      this.getLogs();
+    }
+
     const scroll$ = fromEvent(window, 'scroll').pipe(
       throttleTime(10),
       map(() => window.pageYOffset),

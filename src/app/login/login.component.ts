@@ -86,20 +86,19 @@ export class LoginComponent implements OnInit {
 
   ngOnInit(): void {
     //this.getCurrentUserInfo();
-    this.urlparameter = this.route.snapshot.params['id'];
+    this.urlparameter = this.route.snapshot.queryParamMap.get("id")
     console.log(this.urlparameter);
-    if (this.urlparameter) {
-      this.selectedIndex = 1;
-       // send confirmation email with invoice to adminaddress (add admin address to account profile)
-      this.accountApi.count({where: {id: this.urlparameter, paid: true}}).subscribe(rescount => {
-        if (rescount.count > 0) {
-          this.showconfirmation = true;
-        }
-      });
-    }
-    let uid = this.route.snapshot.params['uid'];
-    let redirect = this.route.snapshot.params['redirect']
 
+    // if (this.urlparameter) {
+    //   this.selectedIndex = 1;
+    //    // send confirmation email with invoice to adminaddress (add admin address to account profile)
+    //   this.accountApi.count({where: {id: this.urlparameter, paid: true}}).subscribe(rescount => {
+    //     console.log(rescount);
+    //     if (rescount.count > 0) {
+    //       this.showconfirmation = true;
+    //     }
+    //   });
+    // }
   }
 
   onStrengthChanged(e){
@@ -117,25 +116,18 @@ export class LoginComponent implements OnInit {
 
   opendialogconfirmpayment() {
     //const amount = this.priceCalculator(),
-    //let id = this.Account.id,
-    let id = 'test',
-      transsubid = Math.floor(Math.random() * 100) + 1,
+    let transsubid = Math.floor(Math.random() * 100) + 1,
       date = Math.round(new Date().getTime() / 1000),
       transid = 'IXP' + date + '-' + transsubid,
       currencytra = this.selectedcurrency, // ISO4217
       descriptiontra = this.selectedplan;
 
-      // let recurrence = true;
-      // if (this.terms === "monthly") { recurrence = true; }
-      // if (this.terms === "yearly") { recurrence = false; }
-
     this.dialogsService
       .confirm('Request Payment', 'Total Monthly : ' + this.selectedcurrency + ' ' + this.total +
-        ' You will be redirected to the payment page')
+        ' You will be redirected to the payment page, to approve payment')
       .subscribe(res => {
         if (res) {
-              this.accountApi.getpayment(id, transid, this.total, currencytra, descriptiontra, 
-                //'test', 'test@email.com', this.selectedplan, this.terms,
+              this.accountApi.getpayment(this.Account.id, transid, this.total, currencytra, descriptiontra, 
                 this.Account.companyname, this.Account.email, this.selectedplan, this.terms,
                 this.trainingsupport, this.migrationsupport, this.emailcount, this.additionalusers)
                 .subscribe((url: string) => {
@@ -153,8 +145,9 @@ export class LoginComponent implements OnInit {
     this.error = false,
     this.response = false;
      this.accountApi.create(this.Account)
-       .subscribe(res => {
-         console.log(res);
+       .subscribe((account: Account) => {
+         console.log(account);
+         this.Account = account; 
         //this.responsemessage = "An email confirmation has been send", this.responsemessage = res,
        },
          error => { this.errorMessage = error, this.error = true 
@@ -165,7 +158,7 @@ export class LoginComponent implements OnInit {
   }
 
   updateplan() {
-    // console.log(this.selectedplan);
+    console.log(this.emailcount, this.additionalusers);
     let plan = 0;
     let emails = 0;
     let users = 0;
@@ -213,10 +206,16 @@ export class LoginComponent implements OnInit {
   login(): void {
     this.accountApi.login(this.Account)
       .subscribe(res => {
+        console.log(res);
         this.logininfo = res.user
           if (this.logininfo.companyId) { this.router.navigate(['/dashboard']) }
           else this.checkregistercompany();
-      }, error => { this.errorMessage = error.message, this.error = true }
+      }, error => { this.errorMessage = error, this.error = true,
+
+        setTimeout(() => this.logintoggle = false);
+        setTimeout(() => this.logintoggle = true);
+      
+      }
       );
   }
 
