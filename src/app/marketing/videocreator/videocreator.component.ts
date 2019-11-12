@@ -1350,17 +1350,11 @@ export class VideocreatorComponent implements OnInit {
               // await this.setMorphAni(fromexvac, resettovec, animation);
               this.primairytimeline.to(fromexvac, animation.duration, { morphSVG: resettovec }, animation.start_time);
 
-              // hide the paths that are not connected to another path form svg 2 
-              // this.primairytimeline.set(fromexvac, { opacity: 0 }, 0);
-              // this.primairytimeline.to(fromexvac, animation.duration, { opacity: 1 }, animation.start_time);
             }
             ++exti
           }
         }
-
-
       }
-
       ++i1;
       ++set2;
     }
@@ -1375,16 +1369,7 @@ export class VideocreatorComponent implements OnInit {
         longestEl = longestEl;
       }
     };
-
   }
-
-
-
-  // tl.staggerFromTo(shapes, 1, {drawSVG:"100%"}, {drawSVG:"50% 50%"}, 0.1)
-  // .fromTo(shapes, 0.1, {drawSVG:"0%"}, {drawSVG:"10%", immediateRender:false}, "+=0.1")
-  // .staggerTo(shapes, 1, {drawSVG:"90% 100%"}, 0.5)
-  // .to(shapes, 1, {rotation:360, scale:0.5, drawSVG:"100%", stroke:"white", strokeWidth:6, transformOrigin:"50% 50%"})
-  // .staggerTo(shapes, 0.5, {stroke:"red", scale:1.5, opacity:0}, 0.2)
 
   setDrawAni(from, animation: vectoranimationtype) {
     let animationdrawto = animation.fillleft + ' ' + animation.fillright;
@@ -1438,7 +1423,6 @@ export class VideocreatorComponent implements OnInit {
       element.svgcombi = this.sanitizer.bypassSecurityTrustHtml(newsvgs);
       //console.log('BG deleted', newsvgs, element);
     } else { console.log('bg not found') }
-
 
   }
 
@@ -1637,6 +1621,15 @@ export class VideocreatorComponent implements OnInit {
       }
       resolve();
     });
+  }
+
+  deleteWhitespaceSVG(): void {
+    var element = document.getElementById(this.selectedelement.id);
+    var svg = element.getElementsByTagName("svg")[0];
+    var bbox = svg.getBBox();
+    var viewBox = [bbox.x, bbox.y, bbox.width, bbox.height].join(" ");
+    svg.setAttribute("viewBox", viewBox);
+   // prompt("Copy to clipboard: Ctrl+C, Enter", svg.outerHTML);
   }
 
   seperatePaths(idx, vector: vectorelement, element: vectoranimation) {

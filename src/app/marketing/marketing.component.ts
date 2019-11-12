@@ -307,12 +307,12 @@ export class MarketingComponent implements OnInit {
               this.RelationsApi.findById(this.Account.standardrelation)
                 .subscribe(rel => {
                   this.onSelectRelation(rel, null),
-                  this.CompanyApi.findById(this.Account.companyId)
-                  .subscribe((company: Company) => {
-                    this.company = company;
-                    //this.getTranslations();
-                    //console.log(this.company);
-                  });
+                    this.CompanyApi.findById(this.Account.companyId)
+                      .subscribe((company: Company) => {
+                        this.company = company;
+                        //this.getTranslations();
+                        //console.log(this.company);
+                      });
                 })
             }
             this.getrelationsEntry()
@@ -352,7 +352,7 @@ export class MarketingComponent implements OnInit {
         order: 'relationname ASC'
       })
       .subscribe((Relations: Relations[]) => {
-      this.filteredRelations = Relations
+        this.filteredRelations = Relations
         //console.log(this.filteredRelations)
       });
   }
@@ -375,7 +375,7 @@ export class MarketingComponent implements OnInit {
   // select relation --> get info for all tabs
   onSelectRelation(option, i): void {
     this.option = option;
-    this.SelectedRelation = option; 
+    this.SelectedRelation = option;
     this.getMailing();
     this.getMailinglist();
     this.getMailingCampaign();
@@ -497,7 +497,7 @@ export class MarketingComponent implements OnInit {
 
   onSelectMailingList(mailinglist: Mailinglist): void {
     // this.uploaderContent.subscription.unsubscribe();
-    if (this.selectedMailingList) {this.saveMailingList();}
+    if (this.selectedMailingList) { this.saveMailingList(); }
     this.maillist1 = [];
     this.maillist = [];
     this.mailinglistdetails = [];
@@ -539,10 +539,10 @@ export class MarketingComponent implements OnInit {
   randomizeMailing(): void {
     this.randomService.openDialog(
       this.option.id, this.Account.companyId, this.selectedMailing, this.Mailinglist, this.Marketingplannerevents, this.Mailing)
-      if (this.randomService.ready === true) {
-        this.openSnackBar('Scheduled');
-      }
-      // console.log(this.selectedMailing)
+    if (this.randomService.ready === true) {
+      this.openSnackBar('Scheduled');
+    }
+    // console.log(this.selectedMailing)
   }
 
 
@@ -563,7 +563,7 @@ export class MarketingComponent implements OnInit {
   createMailing(): void {
     this.RelationsApi.createMailing(this.option.id,
       { subject: 'new', relationname: this.option.relationname, companyId: this.option.companyId })
-      .subscribe(res => {  this.onSelectMailing(res), this.getMailing(); });
+      .subscribe(res => { this.onSelectMailing(res), this.getMailing(); });
   }
 
   editMailing(): void {
@@ -577,8 +577,8 @@ export class MarketingComponent implements OnInit {
     this.selectedMailing.templatearray = this.copyfrommailing.templatearray;
     this.selectedMailing.columnStyle = this.copyfrommailing.columnStyle;
     this.selectedMailing.relationname = this.copyfrommailing.relationname,
-    this.selectedMailing.preview = this.copyfrommailing.preview,
-    this.selectedMailing.companyId = this.copyfrommailing.companyId
+      this.selectedMailing.preview = this.copyfrommailing.preview,
+      this.selectedMailing.companyId = this.Account.companyId
   }
 
   sendMailing(): void {
@@ -587,18 +587,18 @@ export class MarketingComponent implements OnInit {
     const mailtolist = [];
     let tolist = '';
 
-        // join multiple lists
+    // join multiple lists
     this.selectedMailing.selectedlists.forEach(list => {
-          mailtolist.push(list.listname)
-      })
+      mailtolist.push(list.listname)
+    })
 
     this.selectedMailing.mailinglist.forEach(listitem => {
-        mailtolist.push(listitem.mailgunid);
-        const checkpos = mailtolist.indexOf(listitem.listname);
-        console.log(checkpos);
-        if (checkpos !== -1 ){
-          mailtolist.splice(checkpos, 1);
-        }
+      mailtolist.push(listitem.mailgunid);
+      const checkpos = mailtolist.indexOf(listitem.listname);
+      console.log(checkpos);
+      if (checkpos !== -1) {
+        mailtolist.splice(checkpos, 1);
+      }
     });
 
     console.log(mailtolist);
@@ -618,7 +618,7 @@ export class MarketingComponent implements OnInit {
         }, err => this.response = err);
   }
 
-  
+
   swiperight(e) {
     this.listviewxsshow = true;
   }
@@ -650,9 +650,9 @@ export class MarketingComponent implements OnInit {
       Object.keys(this.selectedMailing.selectedlists).forEach(key => {
         const value = this.selectedMailing.selectedlists[key];
         // console.log(this.selectedMailing.selectedlists);
-        if (value.listname){
+        if (value.listname) {
           this.selectedItems.push(value.listname);
-        } else {this.selectedItems.push(value)}
+        } else { this.selectedItems.push(value) }
       })
     }
     this.prepareFilterMaillist(); // quick selection list
@@ -684,23 +684,23 @@ export class MarketingComponent implements OnInit {
   };
 
   addTextMailing(): void {
-      if (this.selectedMailing.html === undefined){
-        this.selectedMailing.html = this.Account.signature; 
+    if (this.selectedMailing.html === undefined) {
+      this.selectedMailing.html = this.Account.signature;
+    }
+    console.log(this.selectedMailing.html);
+    const dialogRef = this.dialog.open(TextEditorDialog, {
+      width: '800px',
+      data: this.selectedMailing.html, // changingThisBreaksApplicationSecurity,
+      id: this.option.id
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result !== undefined) {
+        if (result.length > 0) {
+          this.selectedMailing.html = result
+        };  // this.sanitizer.bypassSecurityTrustHtml(result);
       }
-      console.log(this.selectedMailing.html);
-      const dialogRef = this.dialog.open(TextEditorDialog, {
-        width: '800px',
-        data: this.selectedMailing.html, // changingThisBreaksApplicationSecurity,
-        id: this.option.id
-      });
-  
-      dialogRef.afterClosed().subscribe(result => {
-        if (result !== undefined) {
-          if (result.length > 0) {
-            this.selectedMailing.html = result
-          };  // this.sanitizer.bypassSecurityTrustHtml(result);
-        }
-      });
+    });
 
   }
 
@@ -721,48 +721,16 @@ export class MarketingComponent implements OnInit {
     if (this.selectedMailing.time == null) {
       this.time = moment().format('hh:mm')
       this.selectedMailing.time = this.time;
-      this.selectedMailing.companyId = this.option.companyId;
+      this.selectedMailing.companyId = this.Account.companyId;
     }
 
     this.selectedMailing.date = this.timeconv.convertTime(this.selectedMailing.date, this.selectedMailing.time, this.selectedMailing.timezone);
-
-    // this.selectedMailing.selectedlists = [];
-
-    // // set mailinglists from dropdown
-    // if (this.mailingaddress.id) {
-    //   this.selectedMailing.mailinglistId = [];
-    //   // this.MailingApi.linkMailinglist(this.selectedMailing.id, this.mailingaddress.id).subscribe()
-    //   this.selectedMailing.mailinglistId.push(this.mailingaddress.id), // set mailinlist id for relation.
-    //     this.selectedMailing.to = this.mailingaddress.mailgunid,
-    //     this.selectedMailing.selectedlists.push(this.mailingaddress);
-
-    //   this.RelationsApi.updateByIdMailing(this.option.id, this.selectedMailing.id, this.selectedMailing)
-    //     .subscribe(res => {
-    //       this.getMailing()
-    //       if (message !== undefined) { this.openSnackBar('message saved') }
-    //     });
-    // }
-
-    // no mailinglist but seperate email
-  //   else if (this.mailingaddress !== undefined) { // email address not list
-  //     this.selectedMailing.mailinglistId = []; // reset if still existing
-
-  //     if (this.mailingaddress.listname === undefined) {
-  //       this.selectedMailing.selectedlists = [{ listname: this.mailingaddress }]
-  //     }
-
-  //     else { this.selectedMailing.selectedlists = [this.mailingaddress] } // same here
-
-  //     this.selectedMailing.to = this.selectedMailing.selectedlists[0].listname;
-       this.RelationsApi.updateByIdMailing(this.option.id, this.selectedMailing.id, this.selectedMailing)
-         .subscribe(res => {
-           this.getMailing()
-         if (message !== undefined) { this.openSnackBar('message saved') }
-         });
-  //   }
-  //   // nothing filled in
-  //   else { this.openSnackBar('Please input Email or Mailinglist') }
- }
+    this.RelationsApi.updateByIdMailing(this.option.id, this.selectedMailing.id, this.selectedMailing)
+      .subscribe(res => {
+        this.getMailing()
+        if (message !== undefined) { this.openSnackBar('message saved') }
+      });
+  }
 
   setFilterMailing(): void {
     this.filteredmailinglist = this.myAddressListControl.valueChanges
@@ -906,14 +874,14 @@ export class MarketingComponent implements OnInit {
 
   // search mailing subject only
   public searchGoMailingList(): void {
-    
-    this.RelationsApi.getMailinglist(this.option.id, 
+
+    this.RelationsApi.getMailinglist(this.option.id,
       {
         where:
         {
-          or: [{ "listname":  {"regexp": this.searchboxMailinglist + '/i'} },
-          { "categorie": {"regexp": this.searchboxMailinglist + '/i'} },
-          { "location": {"regexp": this.searchboxMailinglist + '/i'} }
+          or: [{ "listname": { "regexp": this.searchboxMailinglist + '/i' } },
+          { "categorie": { "regexp": this.searchboxMailinglist + '/i' } },
+          { "location": { "regexp": this.searchboxMailinglist + '/i' } }
           ]
         },
         order: 'relationname ASC',
@@ -942,7 +910,7 @@ export class MarketingComponent implements OnInit {
     this.uploaderContent.next(JSON.stringify(result.payload));
     this.maillist1 = result.payload[0];
 
-  //  this.headers.push(Object.keys(this.maillist1[0])[0]);
+    //  this.headers.push(Object.keys(this.maillist1[0])[0]);
 
 
     let i = 0;
@@ -956,8 +924,8 @@ export class MarketingComponent implements OnInit {
 
   }
 
-   // set variable and upload + save reference in Publications
-   setupload(name): void {
+  // set variable and upload + save reference in Publications
+  setupload(name): void {
     // this.uploader.clearQueue(),
     // this.newURL = undefined,
     // this.newURL = BASE_URL + '/api/Containers/' + this.option.id + '/upload',
@@ -965,17 +933,19 @@ export class MarketingComponent implements OnInit {
     this.uploader.uploadAll();
     // define the file settings
     this.newFiles.name = name;
-      this.newFiles.url = BASE_URL + "/api/Containers/" + this.option.id + "/download/" + name;
-      this.newFiles.createdate = new Date();
-      this.newFiles.type = "general";
-      this.newFiles.companyId = this.Account.companyId;
+    this.newFiles.url = BASE_URL + "/api/Containers/" + this.option.id + "/download/" + name;
+    this.newFiles.createdate = new Date();
+    this.newFiles.type = "general";
+    this.newFiles.companyId = this.Account.companyId;
   }
 
   uploadFilelarge(): void {
-      this.RelationsApi.createFiles(this.option.id, this.newFiles)
-        .subscribe(res => { this.MailinglistApi.addlargelist(this.option.id, this.Account.companyId, this.newFiles.url)
-        .subscribe(res1 => {this.openSnackBar(res1), this.uploader.clearQueue()})}
-        );
+    this.RelationsApi.createFiles(this.option.id, this.newFiles)
+      .subscribe(res => {
+        this.MailinglistApi.addlargelist(this.option.id, this.Account.companyId, this.newFiles.url)
+        .subscribe(res1 => { this.openSnackBar(res1), this.uploader.clearQueue() })
+      }
+      );
   }
 
   public openmailinglistwebsite(i): void {
@@ -1092,13 +1062,13 @@ export class MarketingComponent implements OnInit {
 
   public togglemultiplelist(): void {
     this.uploader.clearQueue(),
-    this.newURL = undefined,
-    this.newURL = BASE_URL + '/api/Containers/' + this.option.id + '/upload',
-    this.uploader.setOptions({ url: this.newURL }),
-    this.uploader.uploadAll();
-    if (this.toggleuploadlist === true){
+      this.newURL = undefined,
+      this.newURL = BASE_URL + '/api/Containers/' + this.option.id + '/upload',
+      this.uploader.setOptions({ url: this.newURL }),
+      this.uploader.uploadAll();
+    if (this.toggleuploadlist === true) {
       this.toggleuploadlist = false
-    } else { this.toggleuploadlist = true}
+    } else { this.toggleuploadlist = true }
   }
 
   public uploadMultipleList(uploadlistId): void {
@@ -1316,9 +1286,10 @@ export class MarketingComponent implements OnInit {
           this.goalStartsAll = this.Googleanalyticsreturn[3];
           this.pageview = this.Googleanalyticsreturn[2];
         } else { this.avgTimeOnPage = 'No Data to show' };
-        if (!data){this.openSnackBar('No website statistics found, try back later');
-      }
-      }) 
+        if (!data) {
+          this.openSnackBar('No website statistics found, try back later');
+        }
+      })
   }
 
   public getAnalytics() {
@@ -1358,7 +1329,7 @@ export class MarketingComponent implements OnInit {
           relation: 'mailinglist', // include the owner object
         },
         where:
-         { "name":  {"regexp": this.searchboxCampaign + '/i'} },
+          { "name": { "regexp": this.searchboxCampaign + '/i' } },
         order: 'title ASC',
         limit: 20
       })
@@ -1405,8 +1376,8 @@ export class MarketingComponent implements OnInit {
     // this.CampaignMailing[i].templatearray = this.copyfrommailing.templatearray;
     // this.CampaignMailing[i].columnStyle = this.copyfrommailing.columnStyle;
     this.CampaignMailing[i].relationname = this.copyfrommailing.relationname,
-    this.CampaignMailing[i].preview = this.copyfrommailing.preview,
-    this.CampaignMailing[i].companyId = this.copyfrommailing.companyId
+      this.CampaignMailing[i].preview = this.copyfrommailing.preview,
+      this.CampaignMailing[i].companyId = this.copyfrommailing.companyId
   }
 
   public showTemplatePreview(): void {
@@ -1475,10 +1446,9 @@ export class MarketingComponent implements OnInit {
 
 
   // chipinput for mailings
-  @ViewChild('chipInput', {static: false}) chipInput: MatInput;
-  @ViewChild("maileditor", {static: false}) maileditor;
+  @ViewChild('chipInput', { static: false }) chipInput: MatInput;
+  @ViewChild("maileditor", { static: false }) maileditor;
 
-  
 
   selectedItems: string[] = [];
   filteredItems: Observable<any[]>;
@@ -1526,17 +1496,17 @@ export class MarketingComponent implements OnInit {
     this.selectedMarketingplannerevents.mailinglist.splice(i);
     this.saveMailingCampaign('saved');
   }
-  
 
-  
+
+
   // removes the items based on its name
   onRemoveItemsMailing(itemName: string, i): void {
     this.selectedItems = this.selectedItems.filter((name: string) => name !== itemName);
     this.itemsData = this.selectedItems;
     this.chipInput['nativeElement'].blur();
     //check name and remove from all lists
-    this.selectedMailing.mailinglist.forEach((list, index)=> {
-      if (list.listname === itemName){
+    this.selectedMailing.mailinglist.forEach((list, index) => {
+      if (list.listname === itemName) {
         console.log(index, 'index')
         this.selectedMailing.mailinglist.splice(index, 1);
         this.selectedMailing.mailinglistId.splice(index, 1);
@@ -1590,14 +1560,14 @@ export class MarketingComponent implements OnInit {
     //   this.selectedMailing.mailinglistId.push(t.id);
     //   this.selectedMailing.mailinglist.push(listn);
     // } else {
-      // if items already present then items will not be added to the array
-      // stringfying the array to find names similiar
-      const selectMailingStr = JSON.stringify(this.selectedItems);
-      if (selectMailingStr.indexOf(t.listname) === -1) {
-        this.selectedItems.push(t.listname);
-        this.selectedMailing.mailinglistId.push(t.id);
-        this.selectedMailing.mailinglist.push(t);
-        this.selectedMailing.selectedlists.push(t.listname);
+    // if items already present then items will not be added to the array
+    // stringfying the array to find names similiar
+    const selectMailingStr = JSON.stringify(this.selectedItems);
+    if (selectMailingStr.indexOf(t.listname) === -1) {
+      this.selectedItems.push(t.listname);
+      this.selectedMailing.mailinglistId.push(t.id);
+      this.selectedMailing.mailinglist.push(t);
+      this.selectedMailing.selectedlists.push(t.listname);
       //}
     };
 
@@ -1608,7 +1578,7 @@ export class MarketingComponent implements OnInit {
   }
 
 
-  onAddItemManual($event){
+  onAddItemManual($event) {
     console.log($event)
     if (this.selectedMailing.mailinglist === undefined) {
       this.selectedMailing.mailinglist = [];
@@ -1633,12 +1603,12 @@ export class MarketingComponent implements OnInit {
     }
     setTimeout(() => {
       if (this.toggleCampaignMailing[i] === true) { this.toggleCampaignMailing[i] = false } else { this.toggleCampaignMailing[i] = true; }
-     }, 500);
+    }, 500);
   }
 
   toggleToFullText(i): void {
     if (this.toggleshorttext[i] === false) {
-    this.toggleshorttext[i] = true;
+      this.toggleshorttext[i] = true;
     } else { this.toggleshorttext[i] = false }
   }
 
@@ -1648,6 +1618,7 @@ export class MarketingComponent implements OnInit {
     this.CampaignMailing.forEach((mailElement: Mailing) => {
       mailElement.text = this.onChangeHtml(mailElement.html); // convert to text
       mailElement.relationsId = this.option.id;
+      mailElement.companyId = this.Account.companyId;
       // dats is set on select
       if (mailElement.date == null) {
         this.date = moment().format();
@@ -1776,7 +1747,6 @@ export class MarketingComponent implements OnInit {
     else {
       this.CampaignMailing.forEach(mailingElement => {
         if (mailingElement.selectedlists == undefined) { mailingElement.selectedlists = [] }
-
         // check opened or clicked list only (listname = open/clicked + id)
         if (mailingElement.toopened === true) {
           if (this.selectedMarketingplannerevents.mailinglist.length > 1) {
@@ -1787,7 +1757,6 @@ export class MarketingComponent implements OnInit {
             tolist = mailtolist.join(', ')
           } else { console.log(tolist), tolist = 'open' + tolist }
         }
-
         if (mailingElement.toclicked === true) {
           if (this.selectedMarketingplannerevents.mailinglist.length > 1) {
             this.selectedMarketingplannerevents.mailinglist.forEach(list => {
@@ -1797,9 +1766,9 @@ export class MarketingComponent implements OnInit {
             tolist = mailtolist.join(', ')
           } else { tolist = 'clicked' + tolist }
         }
-
         mailingElement.to = tolist;
         mailingElement.scheduled = true;
+        mailingElement.companyId = this.Account.companyId;
         mailingElement.selectedlists = this.selectedMarketingplannerevents.mailinglist;
       })
     }

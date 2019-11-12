@@ -58,7 +58,7 @@ export class LoginComponent implements OnInit {
   userprice = 10;
   standard = 49;
   agency = 99;
-  enterprise = 1199;
+  enterprise = 499;
   passwordstrenght = 0;
   registerbutton = false;
 
