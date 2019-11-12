@@ -110,8 +110,9 @@ export class vectoranimation {
   animation: animationtype[];
   vectors: vectorelement[];
   vectoranimation: vectoranimationtype[];
-  svgcombi: SafeHtml;
+  svgcombi: string;
   selected: boolean;
+  morph: boolean;
 }
 
 export class vectorelement {
@@ -119,7 +120,7 @@ export class vectorelement {
   src: string;
   duration: number;
   start_time: number;
-  pathids: [];
+  pathids: string[];
   easetype: any;
   fromto: string;
 }
@@ -259,6 +260,8 @@ export class VideocreatorComponent implements OnInit {
   public setreplay = false;
   //this.webkitspeech.onresult = ($event) => { this.onresult($event) };
   public selectedVecPath;
+  public selectmultiplepaths = false;
+  public selectedVecPathmultiple = [];
 
   constructor(
     private sanitizer: DomSanitizer,
@@ -305,12 +308,23 @@ export class VideocreatorComponent implements OnInit {
   }
 
   onSelectElement(element): void {
+    //this.detectchange();
     this.selectedelement = element;
     //console.log(this.selectedelement);
   }
 
+  detectMorph(value) {
+    console.log(value)
+    if (value === 'morph') {
+      this.selectedelement.morph = true;
+    }
+  }
+
+
+
   async detectchange() {
-    //console.log('run check', this.animationarray);
+
+    console.log('run check', this.animationarray);
     this.animationarray.forEach(elm => {
       if (elm.posx > 0) {
         elm.setpos = { 'x': elm.posx, 'y': elm.posy };
@@ -524,6 +538,7 @@ export class VideocreatorComponent implements OnInit {
     }
     this.selectedelement.animation.push(newanimation);
     this.detectchange();
+    //console.log(this.selectedelement);
   }
 
   deleteEffect(i) {
@@ -544,6 +559,34 @@ export class VideocreatorComponent implements OnInit {
   copyElement(i, element) {
     const curel = element;
     let newElement = JSON.parse(JSON.stringify(curel));
+    // redo all ids 
+
+    let newelnr = this.animationarray.length + 'el';
+    newElement.id = newelnr;
+
+    if (element.type === 'vector') {
+      let newVectorElement: vectoranimation = newElement;
+      let i = 0;
+      newVectorElement.vectors.forEach(vector => {
+        let addnr = i + 1
+        let idnr = newElement.id + 'vec-' + addnr;
+        vector.idx = idnr;
+
+        this.renumberSvgIds(newVectorElement.svgcombi, vector.idx, vector.pathids).then(newvectstring => {
+          let pathidar = newvectstring.match(/id="(.*?)"/g); //get ids
+          //console.log( newvectstring);
+          this.cleantags(pathidar).then(paths => {
+            vector.pathids = [];
+            paths.forEach((newpat: string) => {
+              vector.pathids.push(newpat);
+            })
+          });
+        }
+
+        );
+      })
+    }
+
     this.animationarray.push(newElement);
   }
 
@@ -569,16 +612,18 @@ export class VideocreatorComponent implements OnInit {
   }
 
   initVectors(e, i, idx, vectorid) {
-    return new Promise(async (resolve, reject) => {
-      //console.log('set vectors', e, i, idx, vectorid);
-      let vect = this.animationarray[i].vectors[idx].idx;
-      let originalsize; // {x: 0, y: 0, width: 1496, height: 1496, zoom: 0.06684491978609626}
-      await this.deleteVectorGroup(e);
-      originalsize = await this.getViewBox(e);
-      await this.normalizepath(e, originalsize);
-      await this.combineSVGs(this.animationarray[i]);
-      resolve();
-    })
+    if (this.animationarray[i].svgcombi === '' || this.animationarray[i].morph) {
+      return new Promise(async (resolve, reject) => {
+        //console.log('set vectors', e, i, idx, vectorid);
+        let vect = this.animationarray[i].vectors[idx].idx;
+        let originalsize; // {x: 0, y: 0, width: 1496, height: 1496, zoom: 0.06684491978609626}
+        await this.deleteVectorGroup(e);
+        originalsize = await this.getViewBox(e);
+        await this.normalizepath(e, originalsize);
+        await this.combineSVGs(this.animationarray[i]);
+        resolve();
+      })
+    }
   }
 
 
@@ -629,12 +674,14 @@ export class VideocreatorComponent implements OnInit {
     animation.start_time = event.x / 10;
     // html (movingOffset)="onMovingAnimationEl($event, i, animation)"
     //  [style.left]="animation.start_time * 10 + 'px'"
+    //this.detectchange();
   }
 
   onResizeAnimationEl(event, i, animation) {
     //console.log(event, i, animation);
     animation.duration = event.size.width / 10;
     // html (movingOffset)="onMovingAnimationEl($event, i, animation)"
+    //this.detectchange();
   }
 
   onMovingTimeline(event, i) {
@@ -655,7 +702,7 @@ export class VideocreatorComponent implements OnInit {
   }
 
   addNewVector(src?, height?, width?, svgcombi?, posx?, posy?): void { //, originid?
-    let svgc = this.sanitizer.bypassSecurityTrustHtml('');
+    let svgc = '';
     let newsrc = '';
     let newheight = 'auto';
     let newwidth = 'auto';
@@ -679,7 +726,7 @@ export class VideocreatorComponent implements OnInit {
     //   svgcombi = svgcombi.replace(originid, vectorid);
     //   console.log(originid, vectorid, svgcombi);
     // }
-    if (svgcombi) { svgc = this.sanitizer.bypassSecurityTrustHtml(svgcombi) }
+    if (svgcombi) { svgc = svgcombi }
     //let elname = 'el' + newelnr;
     this.newz = this.newz + 1;
     let anim: animationtype[] = [{
@@ -752,7 +799,8 @@ export class VideocreatorComponent implements OnInit {
       vectors: vectors,
       svgcombi: svgc,
       vectoranimation: vectanim,
-      selected: false
+      selected: false,
+      morph: false
       // from, 4, {drawSVG:0, repeat:10, yoyo:true}, 4)
     }
     //console.log(vector);
@@ -789,6 +837,8 @@ export class VideocreatorComponent implements OnInit {
   deleteVectorAnimation(iv) {
     this.selectedelement.vectoranimation.splice(iv, 1);
   }
+
+
 
 
   addNewImage(): void {
@@ -941,6 +991,7 @@ export class VideocreatorComponent implements OnInit {
     }
 
     this.detectchange();
+
     setTimeout(() => {
       let wb = document.getElementById(newelnr);
       // let cv = wb.getElementsByClassName('canvas');
@@ -1025,6 +1076,10 @@ export class VideocreatorComponent implements OnInit {
     this.animationarray.push(txt);
     this.detectchange();
     //this.addAnimation(newelnr, txt);
+  }
+
+  deleteTextAnimation(iv) {
+    this.selectedelement.splittextanimation.splice(iv, 1);
   }
 
 
@@ -1267,7 +1322,7 @@ export class VideocreatorComponent implements OnInit {
           vectstring = idnew.childNodes.innerHTML;
         }
         vectstring = await this.deleteMetaSvg(vectstring); //delete background
-        console.log(vectstring);
+        //console.log(vectstring);
         let pathidar;
         let newvectstring;
         pathidar = vectstring.match(/id="(.*?)"/g); //get ids
@@ -1286,7 +1341,7 @@ export class VideocreatorComponent implements OnInit {
       total.push('</svg>');
       let childrenst = total.join('');
       //console.log(childrenst);
-      element.svgcombi = this.sanitizer.bypassSecurityTrustHtml(childrenst);
+      element.svgcombi = childrenst;
       resolve();
     });
   }
@@ -1313,6 +1368,7 @@ export class VideocreatorComponent implements OnInit {
     let set2 = 1;
 
     for (const vector of vectors) {
+
       if (i1 < vectors.length - 1) {
         let fintime = animation.start_time + animation.duration;
         let set2length = vectors[set2].pathids.length;
@@ -1323,9 +1379,10 @@ export class VideocreatorComponent implements OnInit {
           if (i2 >= set2length) {  // if there more parths in vector 2 then 1
             this.primairytimeline.to(fromvac, 1, { opacity: 0 }, animation.start_time);
           } else {
-
+            //console.log(vectors, set2, i2)
             let pathid2 = vectors[set2].pathids[i2];
             let tovec = document.getElementById(pathid2); //get element
+            //console.log(tovec);
             // hidden is needed for the morph animation but we also need to show the original on finish 
             // opacity can make it appear more gratually which visibility can not
             this.primairytimeline.set(tovec, { opacity: 0 }, 0);
@@ -1410,7 +1467,7 @@ export class VideocreatorComponent implements OnInit {
     let newsvgs;
     let pathid = element.vectors[idx].pathids[0];
     element.vectors[idx].pathids.splice(0, 1);
-    let svgstring = element.svgcombi.changingThisBreaksApplicationSecurity;
+    let svgstring = element.svgcombi;
     let n, l;
     let nstring = '<path id="' + pathid;
     n = svgstring.indexOf(nstring)
@@ -1420,32 +1477,14 @@ export class VideocreatorComponent implements OnInit {
     if (n !== -1) {
       let x = svgstring.substring(n, l);
       newsvgs = svgstring.replace(x, '');
-      element.svgcombi = this.sanitizer.bypassSecurityTrustHtml(newsvgs);
+      element.svgcombi = newsvgs;
       //console.log('BG deleted', newsvgs, element);
     } else { console.log('bg not found') }
 
   }
 
-  // setSvgOpacity(element) {
-  //   console.log('opacity', element);
-  //   if (element.hideimage === false ){
-  //     element.hideimage = true;
-  //   } else {element.hideimage = false}
-  //   let svgstring = element.svgcombi.changingThisBreaksApplicationSecurity;
-  //   if (element.hideimage === true) {
-  //     let newstring = svgstring.replace(/fill-opacity: 0/g, 'fill-opacity: 1');
-  //     newstring = newstring.replace(/fill-opacity:0/g, 'fill-opacity:1');
-  //     element.svgcombi = this.sanitizer.bypassSecurityTrustHtml(newstring);
-  //   } 
-  //   if (element.hideimage === false) {
-  //     let newstring = svgstring.replace(/fill-opacity: 1/g, 'fill-opacity: 0');
-  //     newstring = newstring.replace(/fill-opacity:1/g, 'fill-opacity:0');
-  //     element.svgcombi = this.sanitizer.bypassSecurityTrustHtml(newstring);
-  //   }
-  // }
-
   async setMorphAni(from, to, animation: animationtype) {
-    // console.log(from, to, animation);
+    //console.log(from, to, animation);
     let ease = this.selectEaseType(animation.easetype);
     let fintime = animation.start_time + animation.duration;
     let fromset = {}
@@ -1629,7 +1668,8 @@ export class VideocreatorComponent implements OnInit {
     var bbox = svg.getBBox();
     var viewBox = [bbox.x, bbox.y, bbox.width, bbox.height].join(" ");
     svg.setAttribute("viewBox", viewBox);
-   // prompt("Copy to clipboard: Ctrl+C, Enter", svg.outerHTML);
+    this.selectedelement.svgcombi = svg.outerHTML;
+    // prompt("Copy to clipboard: Ctrl+C, Enter", svg.outerHTML);
   }
 
   seperatePaths(idx, vector: vectorelement, element: vectoranimation) {
@@ -1652,39 +1692,100 @@ export class VideocreatorComponent implements OnInit {
     this.detectchange();
   }
 
-  editVectorPaths(idx, vector: vectorelement, element: vectoranimation) {
+  selectMultiplePaths() {
     //console.log(vector, idx, element);
-    let svgel = document.getElementById(vector.idx);
-    let p = svgel.getElementsByTagName("path");
-    //console.log(p);
-    for (let index = 0; index < p.length; index++) {
-      //console.log(p[index]);
-      p[index].onclick = function () { console.log('blah'); };
+    if (this.selectmultiplepaths === false){
+      this.removeVectorPathMultiSelection()} else {
+      this.selectedVecPathmultiple.push(this.selectedVecPath);
     }
   }
 
   clickVectorPaths(e) {
     //console.log(e.target);
-    this.removeVectorPathSelection();
-    this.selectedVecPath = e.target;
-    let style = this.selectedVecPath.getAttribute('style');
-    //console.log(style);
-    let newstyle = style + 'outline: 5px dotted green;'
-    this.selectedVecPath.setAttribute('style', newstyle)
+    if (this.selectmultiplepaths === false){
+      this.removeVectorPathSelection();
+      this.selectedVecPath = e.target;
+      let style = this.selectedVecPath.getAttribute('style');
+      let newstyle = style + 'outline: 5px dotted green;';
+      this.selectedVecPath.setAttribute('style', newstyle);
+    }
+
+    if (this.selectmultiplepaths === true){
+      // check if already selected 
+      let exist = this.selectedVecPathmultiple.indexOf(e.target);
+      if (exist !== -1){
+        // remove if exist 
+        let revertoldstyle = e.target.getAttribute('style');
+        let oldstyle = revertoldstyle.replace('outline: 5px dotted green;', '');
+        //console.log(oldstyle);
+        e.target.setAttribute('style', oldstyle);
+        this.selectedVecPathmultiple.splice(exist, 1);
+      } else {
+      // if not exists
+      let style = e.target.getAttribute('style');
+      let newstyle = style + 'outline: 5px dotted green;';
+      e.target.setAttribute('style', newstyle);
+      this.selectedVecPathmultiple.push(e.target);
+      }
+
+
+    }
   }
 
   deleteSelectedVectorPath() {
-    this.removeVectorPathSelection();
-    this.selectedVecPath.remove();
-    this.selectedVecPath = '';
-    let idnew = document.getElementById(this.selectedelement.id); // get document
-    //console.log(idnew);
-    let vectstring = idnew.innerHTML;
-    //console.log(vectstring)
-    //let newstring = this.selectedelement.svgcombi.changingThisBreaksApplicationSecurity;
-    this.selectedelement.svgcombi = this.sanitizer.bypassSecurityTrustHtml(vectstring);
-    //document.getElementById(this.selectedVecPath).remove();
+    // delete from pathids
+    if (this.selectmultiplepaths){
+      this.selectedVecPathmultiple.forEach(selectionvecpath => {
+        this.selectedelement.vectors.forEach(element => {
+          let index = element.pathids.indexOf(selectionvecpath.id);
+          if (index > -1) {
+            element.pathids.splice(index, 1);
+          }
+        });
+        // delete actual path and save 
+        this.removeVectorPathMultiSelection();
+        selectionvecpath.remove();
+        selectionvecpath = '';
+        let idnew = document.getElementById(this.selectedelement.id); // get document
+        let vectstring = idnew.innerHTML;
+        this.selectedelement.svgcombi = vectstring;
+      })
+    } else {
+      this.selectedelement.vectors.forEach(element => {
+        let index = element.pathids.indexOf(this.selectedVecPath.id);
+        if (index > -1) {
+          element.pathids.splice(index, 1);
+        }
+      });
+      // delete actual path and save 
+      this.removeVectorPathSelection();
+      this.selectedVecPath.remove();
+      this.selectedVecPath = '';
+      let idnew = document.getElementById(this.selectedelement.id); // get document
+      let vectstring = idnew.innerHTML;
+      this.selectedelement.svgcombi = vectstring;
+    }
   }
+
+  removeVectorPathMultiSelection() {
+    let i = 0;
+    let avele = this.selectedVecPathmultiple.length -1;
+    if (this.selectedVecPathmultiple.length > 0) {
+      this.selectedVecPathmultiple.forEach(path => {
+        let revertoldstyle = path.getAttribute('style');
+        let oldstyle = revertoldstyle.replace('outline: 5px dotted green;', '');
+        //console.log(oldstyle);
+        path.setAttribute('style', oldstyle);
+        //console.log(i, avele);
+        if (i === avele){
+          //this.selectedVecPathmultiple = [];
+        }
+        ++i;
+      });
+
+    }
+  }
+
 
   removeVectorPathSelection() {
     if (this.selectedVecPath) {
@@ -1694,7 +1795,6 @@ export class VideocreatorComponent implements OnInit {
       this.selectedVecPath.setAttribute('style', oldstyle)
     }
   }
-
 
   combineVectors() {
     this.animationarray.forEach((element, index) => {
@@ -1708,12 +1808,42 @@ export class VideocreatorComponent implements OnInit {
   }
 
   saveAsSeperateVector(): any {
-    this.removeVectorPathSelection();
-    let svgel = this.selectedVecPath;
-    let s = new XMLSerializer(); // convert to string
-    let svgstring = s.serializeToString(svgel);
-    //console.log(svgstring);
+    let svgstring;
 
+    if (this.selectmultiplepaths){
+      this.removeVectorPathMultiSelection();
+      let svgarray = [];
+      let i = 0;
+      let arraylenght = this.selectedVecPathmultiple.length -1;
+      this.selectedVecPathmultiple.forEach(element => {
+        console.log(element);
+        let svgel = element;
+        let s = new XMLSerializer(); // convert to string
+         svgarray.push(s.serializeToString(svgel));
+         console.log(i, arraylenght);
+        if (i === arraylenght){
+          svgstring = svgarray.join('');
+          console.log(svgstring, svgarray);
+          this.createnewsvg(svgstring)
+        }
+         ++i
+      });
+
+    } else {
+      this.removeVectorPathSelection();
+      let svgel = this.selectedVecPath;
+      let s = new XMLSerializer(); // convert to string
+      svgstring = s.serializeToString(svgel);
+      this.createnewsvg(svgstring);
+    }
+
+
+  }
+
+  createnewsvg(svgstring){
+    console.log('start new svg')
+
+    //console.log(svgstring);
     let newelnr;
     if (this.animationarray.length === -1) {
       newelnr = 0 + 'el';
@@ -1726,7 +1856,7 @@ export class VideocreatorComponent implements OnInit {
       '<svg xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#"' +
       ' xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg"' +
       ' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" height="100%" width="100%"' +
-      'id="svg2 version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" preserveAspectRatio="none">',
+      'id="svg2" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" preserveAspectRatio="none">',
       svgstring, '</svg>'
     ]
     let newsvg = newsvgarray.join('');
@@ -1734,6 +1864,8 @@ export class VideocreatorComponent implements OnInit {
     this.addNewVector(null, this.selectedelement.style.height, this.selectedelement.style.width, newsvg, this.selectedelement.posx, this.selectedelement.posy); //, originid
     let i = this.animationarray.length - 1;
     this.combineSVGs(this.animationarray[i]);
+    if (this.selectmultiplepaths){this.selectedVecPathmultiple = [];}
+
   }
 
   async onSVGsave(url): Promise<string> {
@@ -1751,7 +1883,6 @@ export class VideocreatorComponent implements OnInit {
       this.uploader.queue.push(fileItem);
       // fileItem.upload();
       this.uploader.uploadAll();
-
       this.uploader.onCompleteItem = (item: any, response: any, status: any, headers: any) => {
         if (status === 200) {
           // set download url or actual url for publishing
@@ -1856,25 +1987,24 @@ export class VideocreatorComponent implements OnInit {
     this.onshowemoji(i)
   }
 
-  async checkSaveVectors() {
-    return new Promise(async (resolve, reject) => {
-      let i = 0;
-      for (const el of this.animationarray) {
-        if (el.type === 'vector') {
-          let vecan: vectoranimation = el;
-          for (const vector of vecan.vectors) {
-            if (vector.src === '') {
-
-            }
-          }
-        }
-        ++i;
-        if (this.animationarray.length === i) {
-          resolve()
-        }
-      };
-    });
-  }
+  // async checkSaveVectors() {
+  //   return new Promise(async (resolve, reject) => {
+  //     let i = 0;
+  //     for (const el of this.animationarray) {
+  //       if (el.type === 'vector') {
+  //         let vecan: vectoranimation = el;
+  //         for (const vector of vecan.vectors) {
+  //           if (vector.src === '') {
+  //           }
+  //         }
+  //       }
+  //       ++i;
+  //       if (this.animationarray.length === i) {
+  //         resolve()
+  //       }
+  //     };
+  //   });
+  // }
 
   saveAsNewVector(element?) {
     let svgel;
@@ -1912,7 +2042,7 @@ export class VideocreatorComponent implements OnInit {
   }
 
   async converttovideo() {
-    await this.checkSaveVectors();
+    //await this.checkSaveVectors();
     if (this.elementname === undefined) { this.elementname = Math.random().toString(36).substring(7); }
     this.filesApi.createvideo(this.option.id, this.option.companyId,
       this.elementname, this.canvas, this.animationarray, this.counter)
@@ -1925,7 +2055,7 @@ export class VideocreatorComponent implements OnInit {
   }
 
   async converttogif() {
-    await this.checkSaveVectors();
+    //await this.checkSaveVectors();
     if (this.elementname === undefined) { this.elementname = Math.random().toString(36).substring(7); }
     this.filesApi.creategif(this.option.id, this.option.companyId,
       this.elementname, this.canvas, this.animationarray, this.counter)
@@ -1959,6 +2089,8 @@ export class VideocreatorComponent implements OnInit {
     this.animationarray = this.editablevideo.template;
     this.counter = this.editablevideo.counter;
     this.detectchange();
+
+    console.log(this.animationarray);
   }
 
 }
