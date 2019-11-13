@@ -1300,6 +1300,14 @@ export class VideocreatorComponent implements OnInit {
     this.combineSVGs(element);
   }
 
+  async combineSVG2(element){
+    //vectstring = await this.deleteMetaSvg(vectstring); //delete background
+
+    // get paths array
+    
+    // for each path set new id 
+  }
+
   async combineSVGs(element) {
     return new Promise(async (resolve, reject) => {
       let idnew;
@@ -1318,22 +1326,26 @@ export class VideocreatorComponent implements OnInit {
 
         let vectstring;
         console.log(idnew); // check null ref error
-        if (idnew.childNodes[0] !== null) {
+        if (idnew === null){
+          vectstring = element.svgcombi;
+        } else if (idnew.childNodes[0] !== null) {
           vectstring = idnew.childNodes[0].innerHTML;
         } else {
           vectstring = idnew.childNodes.innerHTML;
         }
-        vectstring = await this.deleteMetaSvg(vectstring); //delete background
-        //console.log(vectstring);
+
+        console.log(vectstring);
+        //vectstring = await this.deleteMetaSvg(vectstring); //delete background
+        
         let pathidar;
         let newvectstring;
         pathidar = vectstring.match(/id="(.*?)"/g); //get ids
         newvectstring = await this.grabPaths(vectstring, pathidar);
         pathidar = newvectstring.match(/id="(.*?)"/g); //get ids
-        //console.log( newvectstring);
+        console.log( newvectstring, pathidar);
         newvectstring = await this.renumberSvgIds(newvectstring, vect.idx, pathidar); // set ids
         pathidar = newvectstring.match(/id="(.*?)"/g); //get ids
-        //console.log( newvectstring);
+        console.log( newvectstring);
         pathidar = await this.cleantags(pathidar);
         console.log(pathidar);
         element.vectors[index].pathids = pathidar;

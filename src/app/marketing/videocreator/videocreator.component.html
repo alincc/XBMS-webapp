@@ -715,23 +715,20 @@
                                             class="elementsedit" style="height: 30px; width: auto;">
                                         </div>
                                     </mat-expansion-panel-header>
-                                    <div *ngIf="vector.src || vector.svgcombi">
-                                        <!-- (onSVGInserted)="initVectors($event, i, idx, vector.idx)" -->
-                                        <div *ngIf="vector.src !== '' || element.svgcombi !== ''"
-                                            [inlineSVG]="vector.src" [onSVGLoaded]="previewSVGBig" id="{{vector.idx}}"
-                                            (onSVGInserted)="initVectors($event, i, idx, vector.idx)">
-                                        </div>
-                                        <div *ngIf="element.svgcombi.length > 0"
-                                        style="width: 100px; height: 100px;"
-                                            [innerHTML]="element.svgcombi  | safeHtml" id="{{vector.idx}}" 
-                                            (onSVGInserted)="initVectors($event, i, idx, vector.idx)">
-                                        </div>
-                                        <mat-icon (click)="vector.src = ''" class="icon-label" class="iconsize-12">
-                                            delete
-                                        </mat-icon>
+
+                                    <!-- (onSVGInserted)="initVectors($event, i, idx, vector.idx)" -->
+                                    <div *ngIf="vector.src" [inlineSVG]="vector.src" [onSVGLoaded]="previewSVGBig"
+                                        id="{{vector.idx}}" (onSVGInserted)="initVectors($event, i, idx, vector.idx)">
                                     </div>
-                                    <app-vectorupload *ngIf="vector.src === '' && element.svgcombi === ''" [account]="Account" [option]="option"
-                                        (imgurl)="setVector($event, i, idx)">
+                                    <div style="width: 100px; height: 100px;" [innerHTML]="element.svgcombi  | safeHtml"
+                                        id="{{vector.idx}}">
+                                    </div>
+                                    <mat-icon (click)="vector.src = ''" class="icon-label" class="iconsize-12">
+                                        delete
+                                    </mat-icon>
+
+                                    <app-vectorupload *ngIf="!vector.src && !element.svgcombi" [account]="Account"
+                                        [option]="option" (imgurl)="setVector($event, i, idx)">
                                     </app-vectorupload>
                                     <mat-icon (click)="deleteVectorSrc(idx, element)" class="icon-label"
                                         class="iconsize-14">
