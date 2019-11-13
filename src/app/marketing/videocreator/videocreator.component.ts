@@ -805,12 +805,14 @@ export class VideocreatorComponent implements OnInit {
     }
     //console.log(vector);
     this.animationarray.push(vector);
+
     if (!svgcombi) {
-      this.detectchange();
+      this.detectchange(); // detect change when seperating entire svg 
     } else {
-
+      let i = this.animationarray.length - 1;
+      this.combineSVGs(this.animationarray[i]);
     }
-
+  
   }
 
   addVectorAnimation(element: vectoranimation) {
@@ -1310,12 +1312,12 @@ export class VideocreatorComponent implements OnInit {
 
       total.push(startstr);
       let index = 0;
-      // console.log('before vect desc:', element.vectors);
+      console.log('before vect desc:', element.vectors);
       for (const vect of element.vectors) {
         idnew = document.getElementById(vect.idx); // get document
 
         let vectstring;
-        //console.log(idnew); // check null ref error
+        console.log(idnew); // check null ref error
         if (idnew.childNodes[0] !== null) {
           vectstring = idnew.childNodes[0].innerHTML;
         } else {
@@ -1333,7 +1335,7 @@ export class VideocreatorComponent implements OnInit {
         pathidar = newvectstring.match(/id="(.*?)"/g); //get ids
         //console.log( newvectstring);
         pathidar = await this.cleantags(pathidar);
-        //console.log(pathidar);
+        console.log(pathidar);
         element.vectors[index].pathids = pathidar;
         total.push(newvectstring);
         ++index;
@@ -1816,14 +1818,14 @@ export class VideocreatorComponent implements OnInit {
       let i = 0;
       let arraylenght = this.selectedVecPathmultiple.length -1;
       this.selectedVecPathmultiple.forEach(element => {
-        console.log(element);
+        //console.log(element);
         let svgel = element;
         let s = new XMLSerializer(); // convert to string
          svgarray.push(s.serializeToString(svgel));
-         console.log(i, arraylenght);
+         //console.log(i, arraylenght);
         if (i === arraylenght){
           svgstring = svgarray.join('');
-          console.log(svgstring, svgarray);
+          //console.log(svgstring, svgarray);
           this.createnewsvg(svgstring)
         }
          ++i
@@ -1861,9 +1863,8 @@ export class VideocreatorComponent implements OnInit {
     ]
     let newsvg = newsvgarray.join('');
     //let originid = this.selectedVecPath.getAttribute('id');
+
     this.addNewVector(null, this.selectedelement.style.height, this.selectedelement.style.width, newsvg, this.selectedelement.posx, this.selectedelement.posy); //, originid
-    let i = this.animationarray.length - 1;
-    this.combineSVGs(this.animationarray[i]);
     if (this.selectmultiplepaths){this.selectedVecPathmultiple = [];}
 
   }
