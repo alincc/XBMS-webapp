@@ -35,7 +35,7 @@
 </div>
 
 
-<div *ngIf="selectedVecPath && selectedelement.type === 'vector'" class="vectorcontrols"  fxLayout="column">
+<div *ngIf="selectedVecPath && selectedelement.type === 'vector'" class="vectorcontrols" fxLayout="column">
     <mat-icon (click)="deleteSelectedVectorPath()" class="iconsize-18" matTooltip="Delete section">
         delete</mat-icon>
     <mat-icon (click)="saveAsSeperateVector()" class="iconsize-18" matTooltip="Create seperate section">
@@ -715,17 +715,22 @@
                                             class="elementsedit" style="height: 30px; width: auto;">
                                         </div>
                                     </mat-expansion-panel-header>
-                                    <div *ngIf="vector.src">
+                                    <div *ngIf="vector.src || vector.svgcombi">
                                         <!-- (onSVGInserted)="initVectors($event, i, idx, vector.idx)" -->
-                                        <div *ngIf="vector.src || vector.svgcombi !== 'undefined'"
+                                        <div *ngIf="vector.src !== '' || element.svgcombi !== ''"
                                             [inlineSVG]="vector.src" [onSVGLoaded]="previewSVGBig" id="{{vector.idx}}"
+                                            (onSVGInserted)="initVectors($event, i, idx, vector.idx)">
+                                        </div>
+                                        <div *ngIf="element.svgcombi.length > 0"
+                                        style="width: 100px; height: 100px;"
+                                            [innerHTML]="element.svgcombi  | safeHtml" id="{{vector.idx}}" 
                                             (onSVGInserted)="initVectors($event, i, idx, vector.idx)">
                                         </div>
                                         <mat-icon (click)="vector.src = ''" class="icon-label" class="iconsize-12">
                                             delete
                                         </mat-icon>
                                     </div>
-                                    <app-vectorupload *ngIf="vector.src === ''" [account]="Account" [option]="option"
+                                    <app-vectorupload *ngIf="vector.src === '' && element.svgcombi === ''" [account]="Account" [option]="option"
                                         (imgurl)="setVector($event, i, idx)">
                                     </app-vectorupload>
                                     <mat-icon (click)="deleteVectorSrc(idx, element)" class="icon-label"
@@ -978,14 +983,6 @@
                         <div style="height: 100%; width: 100%;" [innerHTML]="element.svgcombi  | safeHtml"
                             (click)="clickVectorPaths($event)">
                         </div>
-
-                        <!-- <div *ngFor="let vectorelement of element.vectors; let iv = index;"                  
-                    [style.width]="element.style.width" [style.height]="element.style.height">
-                        <div [style.width]="element.style.width" [style.height]="element.style.height"
-                         id="{{vectorelement.idx}}"   [style.width]="1000px" [style.height]="1000px"
-                        [inlineSVG]="vectorelement.src" [onSVGLoaded]="handleSVG">
-                        </div> -->
-                        <!-- </div>   [position]="element.setpos" -->
                     </div>
                     <canvas-whiteboard *ngIf="whiteboard === true" id="{{element.id}}" #canvasWhiteboard
                         [drawButtonClass]="'drawButtonClass'" [drawButtonText]="'Draw'" [ngStyle]="element.style"
