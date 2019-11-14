@@ -701,7 +701,7 @@ export class VideocreatorComponent implements OnInit {
     this.animationarray[i].style.height = e.size.height + 'px';
   }
 
-  addNewVector(src?, height?, width?, svgcombi?, posx?, posy?): void { //, originid?
+  addNewVector(src?, height?, width?, svgcombi?, posx?, posy?, pathidar?): void { //, originid?
     let svgc = '';
     let newsrc = '';
     let newheight = 'auto';
@@ -774,7 +774,7 @@ export class VideocreatorComponent implements OnInit {
       idx: vectorid,
       duration: 1,
       start_time: undefined,
-      pathids: [],
+      pathids: pathidar,
       easetype: 'bounce',
       fromto: 'to'
     }]
@@ -810,7 +810,7 @@ export class VideocreatorComponent implements OnInit {
       this.detectchange(); // detect change when seperating entire svg 
     } else {
       let i = this.animationarray.length - 1;
-      this.combineSVGs(this.animationarray[i]);
+      //this.combineSVGs(this.animationarray[i]);
     }
   
   }
@@ -1811,22 +1811,39 @@ export class VideocreatorComponent implements OnInit {
 
   saveAsSeperateVector(): any {
     let svgstring;
+    let pathidar = [];
 
     if (this.selectmultiplepaths){
       this.removeVectorPathMultiSelection();
       let svgarray = [];
+      
       let i = 0;
       let arraylenght = this.selectedVecPathmultiple.length -1;
       this.selectedVecPathmultiple.forEach(element => {
         //console.log(element);
+
+
+        let idx= this.animationarray.length + 1 ;
+        let ind = i + 1;
+        let newid = idx + 'elvect-' + ind;
+
+
+
+        let oldid = element.getAttribute('id');
+        console.log('old & new', oldid, newid);
         let svgel = element;
         let s = new XMLSerializer(); // convert to string
-         svgarray.push(s.serializeToString(svgel));
+        let stringend = s.serializeToString(svgel);
+      
+        let finalstring = stringend.replace(oldid, newid);
+         svgarray.push(finalstring);
+         pathidar.push(newid);
+         console.log(finalstring, pathidar);
          //console.log(i, arraylenght);
         if (i === arraylenght){
           svgstring = svgarray.join('');
           //console.log(svgstring, svgarray);
-          this.createnewsvg(svgstring)
+          this.createnewsvg(svgstring, pathidar)
         }
          ++i
       });
@@ -1834,26 +1851,36 @@ export class VideocreatorComponent implements OnInit {
     } else {
       this.removeVectorPathSelection();
       let svgel = this.selectedVecPath;
+      let oldid = svgel.getAttribute('id');
       let s = new XMLSerializer(); // convert to string
       svgstring = s.serializeToString(svgel);
-      this.createnewsvg(svgstring);
+
+      let idx= this.animationarray.length + 1 ;
+      let ind = 0 + 1;
+      let newid = idx + 'elvect-' + ind;
+
+      svgstring.replace(oldid, newid);
+      pathidar.push(newid);
+      this.createnewsvg(svgstring, pathidar);
     }
 
 
   }
 
-  createnewsvg(svgstring){
+  createnewsvg(svgstring, pathidar){
     console.log('start new svg')
 
     //console.log(svgstring);
-    let newelnr;
-    if (this.animationarray.length === -1) {
-      newelnr = 0 + 'el';
-    } else {
-      newelnr = this.animationarray.length + 'el';
-    }
+    // let newelnr;
+    // if (this.animationarray.length === -1) {
+    //   newelnr = 0 + 'el';
+    // } else {
+    //   newelnr = this.animationarray.length + 'el';
+    // }
 
-    let vectorid = newelnr + 'vect-' + 1;
+    // let vectorid = newelnr + 'vect-' + 1;
+
+    
     let newsvgarray = [
       '<svg xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#"' +
       ' xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg"' +
@@ -1864,7 +1891,7 @@ export class VideocreatorComponent implements OnInit {
     let newsvg = newsvgarray.join('');
     //let originid = this.selectedVecPath.getAttribute('id');
 
-    this.addNewVector(null, this.selectedelement.style.height, this.selectedelement.style.width, newsvg, this.selectedelement.posx, this.selectedelement.posy); //, originid
+    this.addNewVector(null, this.selectedelement.style.height, this.selectedelement.style.width, newsvg, this.selectedelement.posx, this.selectedelement.posy, pathidar); //, originid
     if (this.selectmultiplepaths){this.selectedVecPathmultiple = [];}
 
   }
