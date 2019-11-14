@@ -35,19 +35,7 @@
 </div>
 
 
-<div *ngIf="selectedVecPath && selectedelement.type === 'vector'" class="vectorcontrols" fxLayout="column">
-    <mat-icon (click)="deleteSelectedVectorPath()" class="iconsize-18" matTooltip="Delete section">
-        delete</mat-icon>
-    <mat-icon (click)="saveAsSeperateVector()" class="iconsize-18" matTooltip="Create seperate section">
-        image</mat-icon>
-    <mat-icon (click)="saveAsNewVector()" class="icon-label" class="iconsize-18" matTooltip="save to file as new image">
-        save
-    </mat-icon>
-    <mat-icon (click)="deleteWhitespaceSVG()" class="icon-label" class="iconsize-18" matTooltip="delete whitespace">
-        check_box_outline_blank
-    </mat-icon>
-    <mat-checkbox [(ngModel)]="selectmultiplepaths" (change)="selectMultiplePaths()"></mat-checkbox>
-</div>
+
 
 
 <div class="videocontrols">
@@ -715,6 +703,7 @@
                                             class="elementsedit" style="height: 30px; width: auto;">
                                         </div>
                                     </mat-expansion-panel-header>
+<<<<<<< HEAD
 
                                     <!-- (onSVGInserted)="initVectors($event, i, idx, vector.idx)" -->
                                     <div *ngIf="vector.src" [inlineSVG]="vector.src" [onSVGLoaded]="previewSVGBig"
@@ -729,6 +718,24 @@
 
                                     <app-vectorupload *ngIf="!vector.src && !element.svgcombi" [account]="Account"
                                         [option]="option" (imgurl)="setVector($event, i, idx)">
+=======
+                                    <div *ngIf="vector.src || vector.svgcombi">
+                                        <!-- (onSVGInserted)="initVectors($event, i, idx, vector.idx)" -->
+                                        <div *ngIf="vector.src !== '' || element.svgcombi !== ''"
+                                            [inlineSVG]="vector.src" [onSVGLoaded]="previewSVGBig" id="{{vector.idx}}"
+                                            (onSVGInserted)="initVectors($event, i, idx, vector.idx)">
+                                        </div>
+                                        <div *ngIf="element.svgcombi.length > 0" style="width: 100px; height: 100px;"
+                                            [innerHTML]="element.svgcombi  | safeHtml" id="{{vector.idx}}"
+                                            (onSVGInserted)="initVectors($event, i, idx, vector.idx)">
+                                        </div>
+                                        <mat-icon (click)="vector.src = ''" class="icon-label" class="iconsize-12">
+                                            delete
+                                        </mat-icon>
+                                    </div>
+                                    <app-vectorupload *ngIf="vector.src === '' && element.svgcombi === ''"
+                                        [account]="Account" [option]="option" (imgurl)="setVector($event, i, idx)">
+>>>>>>> dd6dd83e9eeaa976b585ca4285a5133e1af3d7bf
                                     </app-vectorupload>
                                     <mat-icon (click)="deleteVectorSrc(idx, element)" class="icon-label"
                                         class="iconsize-14">
@@ -937,7 +944,29 @@
     </div>
 
     <div ngClass.gt-xs="container-normal" ngClass.lt-sm="container-noshow" [class.container-xs-show]="listviewxsshow"
-        fxLayout="row" fxLayoutAlign="start">
+        fxLayout="row" fxLayoutAlign="start" class="vectorcontrols"> 
+        <div *ngIf="selectedVecPath && selectedelement.type === 'vector'" fxLayout="row">
+                <mat-icon (click)="deleteSelectedVectorPath()" class="iconsize-18"
+                    matTooltip="Delete section">
+                    delete</mat-icon>
+                <mat-icon (click)="deleteWhitespaceSVG()" class="icon-label" class="iconsize-18"
+                    matTooltip="delete whitespace">
+                    check_box_outline_blank
+                </mat-icon>
+                <mat-icon (click)="saveAsSeperateVector()" class="iconsize-18"
+                    matTooltip="Create seperate section">
+                    image</mat-icon>
+                <mat-icon (click)="saveAsNewVector()" class="icon-label" class="iconsize-18"
+                    matTooltip="save to file as new image">
+                    save
+                </mat-icon>
+                <mat-icon (click)="removeVectorPathMultiSelection()" (click)="removeVectorPathSelection()"
+                class="icon-label" class="iconsize-18" matTooltip="save to file as new image">
+                    indeterminate_check_box
+                </mat-icon>
+                <mat-checkbox [(ngModel)]="selectmultiplepaths" matTooltip="selected multiple sections"
+                    (change)="selectMultiplePaths()"></mat-checkbox>
+            </div>
         <div *ngIf="changevideo" [ngStyle]="canvas" style="border: 1px solid grey; overflow:hidden;">
             <video *ngIf="canvas.videourl" preload="auto" class="video-background" no-controls [src]="canvas.videourl"
                 #videoPlayer>
@@ -980,6 +1009,7 @@
                         <div style="height: 100%; width: 100%;" [innerHTML]="element.svgcombi  | safeHtml"
                             (click)="clickVectorPaths($event)">
                         </div>
+                       
                     </div>
                     <canvas-whiteboard *ngIf="whiteboard === true" id="{{element.id}}" #canvasWhiteboard
                         [drawButtonClass]="'drawButtonClass'" [drawButtonText]="'Draw'" [ngStyle]="element.style"
