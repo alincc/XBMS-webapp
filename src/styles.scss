@@ -65,20 +65,29 @@ body{
     width: 100%;
    }
 
-.titlebox{
-
-}
 
 .snow {
   width: 10px;
   height: 10px; 
   background-color: white;
   border-radius: 50%;
+}
+
+
+.leaves {
+  width: 10px;
+  height: 10px; 
+  background-color: brown;
   //position: absolute;
   //background: url(http://www.clipartqueen.com/image-files/red-lobed-fall-clipart-leaf.png);
   //background-size: 100% 100%;
 }
 
+.rain {
+  width: 2px;
+  height: 30px; 
+  background-color: lightblue;
+}
 
 
   // .mat-form-field{
