@@ -711,6 +711,26 @@ export class VideocreatorComponent implements OnInit {
     if (element.shape === 'square') {
       element.style['border-radius'] = '0%';
     }
+
+    if (element.shape === 'triangle') {
+      element.style = {
+        'width': 0,
+        'height': 0,
+        'border-left': ' 50% solid transparent',
+        'border-right': '50% solid transparent',
+        'border-bottom': '100% solid black'
+      }
+    }
+
+    if (element.shape === 'triangle') {
+      element.style = {
+        'width': 0,
+        'height': 0,
+        'border-left': ' 50% solid transparent',
+        'border-right': '50% solid transparent',
+        'border-top': '100% solid black'
+      }
+    }
   }
 
   addNewVector(src?, height?, width?, svgcombi?, posx?, posy?, pathidar?): void { //, originid?
@@ -1461,33 +1481,44 @@ export class VideocreatorComponent implements OnInit {
   }
 
   addSnowEffect() {
-    TweenLite.set("#snowcontainer",{perspective:600})
+    TweenLite.set("#snowcontainer", { perspective: 600 })
     TweenLite.set("img", { xPercent: "-50%", yPercent: "-50%" })
 
     let total = 30;
     let container = document.getElementById("snowcontainer");
-    let w = window.innerWidth; 
+    let w = window.innerWidth;
     let h = container.offsetHeight;
-    
+
     // let canvasposL = w * 0.2; 
     // let canvasposR = canvasposL + container.offsetWidth;
     let canvasposL = 0;
     let canvasposR = container.offsetWidth;
- 
+
     for (let i = 0; i < total; i++) {
       var Div = document.createElement('div');
       console.log(this.R(canvasposL, canvasposR));
       TweenLite.set(Div, { attr: { class: 'snow' }, x: this.R(canvasposL, canvasposR), y: this.R(-200, -150), z: this.R(-10, 200) });
       container.appendChild(Div);
-      this.animm(Div, h);
+      this.animsnow(Div, h);
     }
   }
 
-  animm(elm, h) {
+  animsnow(elm, h) {
     this.primairytimeline.to(elm, this.R(6, 15), { y: h + 100, ease: Linear.easeNone, repeat: -1 }, 0);
     this.primairytimeline.to(elm, this.R(4, 8), { x: '+=100', rotationZ: this.R(0, 180), repeat: -1, yoyo: true, ease: Sine.easeInOut }, 0);
     this.primairytimeline.to(elm, this.R(2, 8), { rotationX: this.R(0, 360), rotationY: this.R(0, 360), repeat: -1, yoyo: true, ease: Sine.easeInOut }, 0);
   };
+
+  // element, time(speed), 
+  animrain(elm, h) {
+    this.primairytimeline.to(elm, this.R(2, 8), { y: h + 100, ease: Linear.easeNone, repeat: -1 }, 0);
+    //this.primairytimeline.to(elm, this.R(4, 8), { x: '+=100', rotationZ: this.R(0, 180), repeat: -1, yoyo: true, ease: Sine.easeInOut }, 0);
+    //this.primairytimeline.to(elm, this.R(2, 8), { rotationX: this.R(0, 360), rotationY: this.R(0, 360), repeat: -1, yoyo: true, ease: Sine.easeInOut }, 0);
+  };
+
+  animleaves(elm, h){
+    
+  }
 
   R(min, max) { return min + Math.random() * (max - min) };
 
