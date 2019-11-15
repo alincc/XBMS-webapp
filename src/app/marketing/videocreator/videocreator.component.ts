@@ -237,7 +237,8 @@ export class VideocreatorComponent implements OnInit {
     'background-image': '',
     position: 'relative',
     videourl: '',
-    loop: false
+    loop: false,
+    weather: ''
   }
   public moveitem = false;
   public selectedImage: imageanimation;
@@ -332,7 +333,10 @@ export class VideocreatorComponent implements OnInit {
       if (elm.posx > 0) {
         elm.setpos = { 'x': elm.posx, 'y': elm.posy };
       }
-    })
+    });
+
+
+
     // force dom update
     this.changenow = false;
     setTimeout(() => { this.changenow = true; return });
@@ -358,6 +362,8 @@ export class VideocreatorComponent implements OnInit {
         this.addEffect(elm); //normal animatoin
       })
     );
+
+
   }
 
   createSplitText(elm: textanimation, textani: splittexttype) {
@@ -517,6 +523,10 @@ export class VideocreatorComponent implements OnInit {
     element.animation.forEach(animationsection => {
       this.addAnimation(id, animationsection);
     });
+    if (this.canvas.weather !== '') {
+      //console.log('add weather')
+      this.addWeatherEffect();
+    }
   }
 
   addNewEffect(element): void {
@@ -1480,45 +1490,73 @@ export class VideocreatorComponent implements OnInit {
     };
   }
 
-  addSnowEffect() {
-    TweenLite.set("#snowcontainer", { perspective: 600 })
+  addWeatherEffect() {
+    console.log(this.canvas.weather);
+    let type = this.canvas.weather;
+    TweenLite.set("#weathercontainer", { perspective: 600 })
     TweenLite.set("img", { xPercent: "-50%", yPercent: "-50%" })
 
+    let classtype;
     let total = 30;
-    let container = document.getElementById("snowcontainer");
+    if (type === 'snow') { total = 60 }
+    if (type === 'rain') { total = 60 }
+    if (type === 'leaves') { total = 50 }
+    let container = document.getElementById("weathercontainer");
     let w = window.innerWidth;
     let h = container.offsetHeight;
 
-    // let canvasposL = w * 0.2; 
-    // let canvasposR = canvasposL + container.offsetWidth;
+    let LeafL = window.innerHeight;
+    let LeafR = window.innerWidth;
+
     let canvasposL = 0;
     let canvasposR = container.offsetWidth;
 
+    let heightani = h * -1;
+    let heightanibottom = heightani - 100; // total area from above the square to lower edge
+    let heightanitop = heightanibottom * 2;
+
+    console.log(heightanibottom, heightanitop); 
+
     for (let i = 0; i < total; i++) {
       var Div = document.createElement('div');
-      console.log(this.R(canvasposL, canvasposR));
-      TweenLite.set(Div, { attr: { class: 'snow' }, x: this.R(canvasposL, canvasposR), y: this.R(-200, -150), z: this.R(-10, 200) });
+
+      if (type === 'snow') {
+        TweenLite.set(Div, { attr: { class: 'snow' }, x: this.R(0, canvasposR), y: this.R(h, heightanitop), z: this.R(-200, 200), rotationZ: this.R(0, 180), rotationX: this.R(0, 360) });
+      }
+      if (type === 'rain') {
+        TweenLite.set(Div, { attr: { class: 'rain' }, x: this.R(0, canvasposR), y: this.R(heightanibottom, heightanitop), z: this.R(-200, 200), rotation: "-20_short", });
+      }
+      if (type === 'leaves') {
+        classtype = 'leaves' + Math.floor(this.R(1, 4));
+        TweenLite.set(Div, { attr: { class: classtype }, x: this.R(0, canvasposR), y: this.R(h, heightanitop), z: this.R(-200, 200), rotationZ: this.R(0, 180), rotationX: this.R(0, 360) });
+      }
+
       container.appendChild(Div);
-      this.animsnow(Div, h);
+      if (type === 'snow') { this.animsnow(Div, h); }
+      if (type === 'rain') { this.animrain(Div, h); }
+      if (type === 'leaves') { this.animleaves(Div, h); }
+
     }
   }
 
   animsnow(elm, h) {
-    this.primairytimeline.to(elm, this.R(6, 15), { y: h + 100, ease: Linear.easeNone, repeat: -1 }, 0);
-    this.primairytimeline.to(elm, this.R(4, 8), { x: '+=100', rotationZ: this.R(0, 180), repeat: -1, yoyo: true, ease: Sine.easeInOut }, 0);
+    this.primairytimeline.to(elm, this.R(15, 30), { y: h + 100, ease: Linear.easeNone, repeat: -1 }, 0);
+    this.primairytimeline.to(elm, this.R(8, 8), { x: '+=100', rotationZ: this.R(0, 180), repeat: -1, yoyo: true, ease: Sine.easeInOut }, 0);
     this.primairytimeline.to(elm, this.R(2, 8), { rotationX: this.R(0, 360), rotationY: this.R(0, 360), repeat: -1, yoyo: true, ease: Sine.easeInOut }, 0);
   };
 
   // element, time(speed), 
   animrain(elm, h) {
-    this.primairytimeline.to(elm, this.R(2, 8), { y: h + 100, ease: Linear.easeNone, repeat: -1 }, 0);
-    //this.primairytimeline.to(elm, this.R(4, 8), { x: '+=100', rotationZ: this.R(0, 180), repeat: -1, yoyo: true, ease: Sine.easeInOut }, 0);
-    //this.primairytimeline.to(elm, this.R(2, 8), { rotationX: this.R(0, 360), rotationY: this.R(0, 360), repeat: -1, yoyo: true, ease: Sine.easeInOut }, 0);
+    this.primairytimeline.to(elm, this.R(2, 4), { y: h, x: '+=100', ease: Linear.easeNone, repeat: -1  }, 0);
   };
 
-  animleaves(elm, h){
-    
+  animleaves(elm, h) {
+    this.primairytimeline.to(elm, this.R(20, 30), { y: h + 100, ease: Linear.easeNone, repeat: -1, delay: 0 }, 0 );
+    this.primairytimeline.to(elm, this.R(4, 8), { x: '+=100', rotationZ: this.R(0, 180), repeat: -1, yoyo: true, ease: Sine.easeInOut }, 0);
+    this.primairytimeline.to(elm, this.R(2, 8), { rotationX: this.R(0, 360), rotationY: this.R(0, 360), repeat: -1, yoyo: true, ease: Sine.easeInOut, delay: 0 }, 0);
   }
+
+
 
   R(min, max) { return min + Math.random() * (max - min) };
 
@@ -2168,7 +2206,8 @@ export class VideocreatorComponent implements OnInit {
       'background-image': '',
       position: 'relative',
       videourl: '',
-      loop: false
+      loop: false,
+      weather: ''
     }
     this.animationarray = [];
     this.counter = 60;

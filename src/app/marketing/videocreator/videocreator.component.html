@@ -119,9 +119,18 @@
 
                 <mat-slide-toggle fxFlex *ngIf="canvas.videourl" [(ngModel)]="canvas.loop">Loop</mat-slide-toggle>
 
-                <button mat-mini-fab color="primary" (click)="addSnowEffect()">
+                <mat-form-field>
+                    <mat-select [(value)]="canvas.weather" (selectionChange)="detectchange()"  placeholder="Select weather">
+                        <mat-option value="">None</mat-option>
+                        <mat-option value="rain">Rain</mat-option>
+                        <mat-option value="snow">Snow</mat-option>
+                        <mat-option value="leaves">Leaves</mat-option>
+                    </mat-select>
+                </mat-form-field>
+
+                <!-- <button mat-mini-fab color="primary" (click)="addSnowEffect()">
                     <mat-icon>grain</mat-icon>
-                </button>
+                </button> -->
             </div>
 
         </mat-expansion-panel>
@@ -679,23 +688,7 @@
                             </mat-panel-title>
                         </mat-expansion-panel-header>
                         <div *ngIf="element.type === 'vector'">
-                            <mat-form-field style="max-width: 46px;">
-                                <input (change)="detectchange()" [(ngModel)]="element.posy" type="number" matInput>
-                                <mat-hint>Y |</mat-hint>
-                            </mat-form-field>
-                            <mat-form-field style="max-width: 46px;">
-                                <input (change)="detectchange()" [(ngModel)]="element.posx" type="number" matInput>
-                                <mat-hint>X -</mat-hint>
-                            </mat-form-field>
-                            <mat-form-field style="max-width: 46px;">
-                                <input (change)="detectchange()" [(ngModel)]="element.height" matInput>
-                                <mat-hint>Y |</mat-hint>
-                            </mat-form-field>
-                            <mat-form-field style="max-width: 46px;">
-                                <input (change)="detectchange()" [(ngModel)]="element.width" matInput>
-                                <mat-hint>X -</mat-hint>
-                            </mat-form-field>
-                            Vector images
+
                             <div *ngFor="let vector of element.vectors; let idx = index;">
                                 <mat-expansion-panel *ngIf="element.morph">
                                     <!-- <mat-form-field style="max-width: 46px;">
@@ -753,6 +746,22 @@
                                         class="iconsize-14" matTooltip="Seperate images parts">
                                         tab_unselected
                                     </mat-icon>
+                                    <mat-form-field style="max-width: 46px;">
+                                            <input (change)="detectchange()" [(ngModel)]="element.posy" type="number" matInput>
+                                            <mat-hint>Y |</mat-hint>
+                                        </mat-form-field>
+                                        <mat-form-field style="max-width: 46px;">
+                                            <input (change)="detectchange()" [(ngModel)]="element.posx" type="number" matInput>
+                                            <mat-hint>X -</mat-hint>
+                                        </mat-form-field>
+                                        <mat-form-field style="max-width: 46px;">
+                                            <input (change)="detectchange()" [(ngModel)]="element.height" matInput>
+                                            <mat-hint>Y |</mat-hint>
+                                        </mat-form-field>
+                                        <mat-form-field style="max-width: 46px;">
+                                            <input (change)="detectchange()" [(ngModel)]="element.width" matInput>
+                                            <mat-hint>X -</mat-hint>
+                                        </mat-form-field>
                                 </div>
                             </div>
                             <button mat-mini-fab *ngIf="element.morph" class="addbutton" matTooltip="Add vector"
@@ -985,7 +994,7 @@
                 style="overflow: hidden; background-color: transparent;">
                 <div *ngFor="let element of animationarray; let i = index" (click)="onSelectElement(element)"
                     style="background-color: transparent; overflow: hidden;" >
-                    <div style="height: 100%; width: 100%; position: absolute; z-index: 100" id="snowcontainer"></div>
+                    <div style="height: 100%; width: 100%; position: absolute; z-index: 100; pointer-events: none;" id="weathercontainer"></div>
 
                     <div *ngIf="element.type === 'image'" id="{{element.id}}" style="overflow: hidden;" ngDraggable
                         [ngStyle]="element.style" [style.width]="element.style.width"

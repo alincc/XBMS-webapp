@@ -74,18 +74,42 @@ body{
 }
 
 
-.leaves {
-  width: 10px;
-  height: 10px; 
-  background-color: brown;
-  //position: absolute;
-  //background: url(http://www.clipartqueen.com/image-files/red-lobed-fall-clipart-leaf.png);
-  //background-size: 100% 100%;
+.leaves1 {
+  width: 20px;
+  height: 20px; 
+  position: absolute;
+  background: url(assets/icons/AUTUMNLEAF-1.png);
+  background-size: 100% 100%;
 }
+
+.leaves2 {
+  width: 35px;
+  height: 35px; 
+  position: absolute;
+  background: url(assets/icons/AUTUMNLEAF-12.png);
+  background-size: 100% 100%;
+}
+
+.leaves3 {
+  width: 35px;
+  height: 35px; 
+  position: absolute;
+  background: url(assets/icons/AUTUMNLEAF-14.png);
+  background-size: 100% 100%;
+}
+
+.leaves3 {
+  width: 35px;
+  height: 35px; 
+  position: absolute;
+  background: url(assets/icons/AUTUMNLEAF-13.png);
+  background-size: 100% 100%;
+}
+
 
 .rain {
   width: 2px;
-  height: 30px; 
+  height: 25px; 
   background-color: lightblue;
 }
 
