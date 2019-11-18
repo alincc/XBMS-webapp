@@ -28,6 +28,7 @@ export interface CompanyInterface {
   "billingzipcode"?: string;
   "billingstateprov"?: string;
   "billingcontact"?: string;
+  "vatnr"?: string;
   "billingemail"?: string;
   "phonenumber"?: string;
   "companyprimairycolor"?: string;
@@ -63,6 +64,7 @@ export class Company implements CompanyInterface {
   "billingzipcode": string;
   "billingstateprov": string;
   "billingcontact": string;
+  "vatnr": string;
   "billingemail": string;
   "phonenumber": string;
   "companyprimairycolor": string;
@@ -168,6 +170,10 @@ export class Company implements CompanyInterface {
         },
         "billingcontact": {
           name: 'billingcontact',
+          type: 'string'
+        },
+        "vatnr": {
+          name: 'vatnr',
           type: 'string'
         },
         "billingemail": {

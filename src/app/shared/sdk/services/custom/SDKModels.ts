@@ -31,9 +31,6 @@ import { Translationjob } from '../../models/Translationjob';
 import { Facebook } from '../../models/Facebook';
 import { Adwords } from '../../models/Adwords';
 import { Websitetracker } from '../../models/Websitetracker';
-import { Ipcheckermodel } from '../../models/Ipcheckermodel';
-import { Ipcheckermodelarin } from '../../models/Ipcheckermodelarin';
-import { Ipcheckergeolocation } from '../../models/Ipcheckergeolocation';
 import { Logger } from '../../models/Logger';
 import { Crawlweb } from '../../models/Crawlweb';
 import { Articlereposter } from '../../models/Articlereposter';
@@ -76,9 +73,6 @@ export class SDKModels {
     Facebook: Facebook,
     Adwords: Adwords,
     Websitetracker: Websitetracker,
-    Ipcheckermodel: Ipcheckermodel,
-    Ipcheckermodelarin: Ipcheckermodelarin,
-    Ipcheckergeolocation: Ipcheckergeolocation,
     Logger: Logger,
     Crawlweb: Crawlweb,
     Articlereposter: Articlereposter,

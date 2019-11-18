@@ -505,7 +505,7 @@
                 <mat-accordion cdkDropList (cdkDropListDropped)="drop($event)">
                     <mat-expansion-panel *ngFor="let element of animationarray; let i = index" cdkDrag
                         (click)="onSelectElement(element)">
-                        <mat-expansion-panel-header *ngIf="element.type === 'image'">
+                        <mat-expansion-panel-header *ngIf="element.type === 'image'" cdkDragHandle>
                             <mat-panel-title>
                                 <img *ngIf="element.src" src={{element.src}} class="elementsedit"
                                     style="height: 30px; width: auto;">
@@ -535,7 +535,7 @@
                                 (imgurl)="setImage($event, i)">
                             </app-fileupload>
                         </div>
-                        <mat-expansion-panel-header *ngIf="element.type === 'text'">
+                        <mat-expansion-panel-header *ngIf="element.type === 'text'" cdkDragHandle>
                             <mat-panel-title>
                                 <label>{{element.content}}</label>
                                 <mat-icon (click)="deleteitem(i)" class="iconsize-12">delete</mat-icon>
@@ -613,7 +613,7 @@
 
 
                         </div>
-                        <mat-expansion-panel-header *ngIf="element.type === 'shape'">
+                        <mat-expansion-panel-header *ngIf="element.type === 'shape'" cdkDragHandle>
                             <mat-panel-title>
                                 <div style="height: 30px; width: 30px"
                                     [style.background-color]="element.style['background-color']"></div>
@@ -645,7 +645,7 @@
                                     [cpPresetColors]="[option.companyprimairycolor, option.companysecondarycolor, company.companyprimairycolor, company.companysecondarycolor]">
                             </div>
                         </div>
-                        <mat-expansion-panel-header *ngIf="element.type === 'whiteboard'">
+                        <mat-expansion-panel-header *ngIf="element.type === 'whiteboard'" cdkDragHandle>
                             <mat-panel-title>
                                 <div style="height: 30px; width: 30px"
                                     [style.background-color]="element.style['background-color']"></div>
@@ -671,7 +671,7 @@
                                     [cpPresetColors]="[option.companyprimairycolor, option.companysecondarycolor, company.companyprimairycolor, company.companysecondarycolor]">
                             </div>
                         </div>
-                        <mat-expansion-panel-header *ngIf="element.type === 'vector'">
+                        <mat-expansion-panel-header *ngIf="element.type === 'vector'" cdkDragHandle>
                             <mat-panel-title>
                                 <mat-checkbox color="primary" [(ngModel)]="element.selected"></mat-checkbox>
                                 <!-- <div *ngIf="element.svgcombi" [innerHTML]="element.svgcombi | safeHtml"

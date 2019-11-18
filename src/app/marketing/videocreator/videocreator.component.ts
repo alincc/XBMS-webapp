@@ -2173,9 +2173,11 @@ export class VideocreatorComponent implements OnInit {
 
   async converttovideo() {
     //await this.checkSaveVectors();
+    var myJSON = JSON.stringify(this.animationarray);
+    //var aniarray = encodeURIComponent(myJSON);
     if (this.elementname === undefined) { this.elementname = Math.random().toString(36).substring(7); }
     this.filesApi.createvideo(this.option.id, this.option.companyId,
-      this.elementname, this.canvas, this.animationarray, this.counter)
+      this.elementname, this.canvas, myJSON, this.counter)
       .subscribe(
         res => {
           //console.log(res);

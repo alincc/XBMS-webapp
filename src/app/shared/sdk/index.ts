@@ -79,9 +79,6 @@ import { TranslationjobApi } from './services/custom/Translationjob';
 import { FacebookApi } from './services/custom/Facebook';
 import { AdwordsApi } from './services/custom/Adwords';
 import { WebsitetrackerApi } from './services/custom/Websitetracker';
-import { IpcheckermodelApi } from './services/custom/Ipcheckermodel';
-import { IpcheckermodelarinApi } from './services/custom/Ipcheckermodelarin';
-import { IpcheckergeolocationApi } from './services/custom/Ipcheckergeolocation';
 import { LoggerApi } from './services/custom/Logger';
 import { CrawlwebApi } from './services/custom/Crawlweb';
 import { ArticlereposterApi } from './services/custom/Articlereposter';
@@ -147,9 +144,6 @@ export class SDKBrowserModule {
         FacebookApi,
         AdwordsApi,
         WebsitetrackerApi,
-        IpcheckermodelApi,
-        IpcheckermodelarinApi,
-        IpcheckergeolocationApi,
         LoggerApi,
         CrawlwebApi,
         ArticlereposterApi,
