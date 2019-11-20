@@ -1953,12 +1953,9 @@ export class VideocreatorComponent implements OnInit {
       this.selectedVecPathmultiple.forEach(element => {
         //console.log(element);
 
-
         let idx = this.animationarray.length + 1;
         let ind = i + 1;
         let newid = idx + 'elvect-' + ind;
-
-
 
         let oldid = element.getAttribute('id');
         console.log('old & new', oldid, newid);
@@ -2172,8 +2169,9 @@ export class VideocreatorComponent implements OnInit {
   }
 
   async converttovideo() {
-    //await this.checkSaveVectors();
-    var myJSON = JSON.stringify(this.animationarray);
+   // let myJSON = await this.jsonVectors();
+    let array = this.animationarray;
+    let myJSON = JSON.stringify(array);
     //var aniarray = encodeURIComponent(myJSON);
     if (this.elementname === undefined) { this.elementname = Math.random().toString(36).substring(7); }
     this.filesApi.createvideo(this.option.id, this.option.companyId,
@@ -2184,6 +2182,16 @@ export class VideocreatorComponent implements OnInit {
           this.saveVideo()
         }
       );
+  }
+
+  async jsonVectors(){
+    let newanimationarray = JSON.parse(JSON.stringify(this.animationarray));
+    for (let index = 0; index < newanimationarray.length; index++) {
+        if (newanimationarray[index].type === 'vector'){
+          newanimationarray[index].svgcombi = JSON.stringify(newanimationarray[index].svgcombi);
+          return newanimationarray
+        }
+    }
   }
 
   async converttogif() {
