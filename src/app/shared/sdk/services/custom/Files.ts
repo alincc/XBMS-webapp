@@ -291,13 +291,11 @@ export class FilesApi extends BaseLoopBackApi {
    *
    * @param {string} canvas 
    *
-   * @param {string} images 
-   *
    * @param {number} duration 
    *
    * @param {object} data Request data.
    *
-   * This method does not accept any data. Supply an empty object.
+   *  - `images` – `{string}` - 
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -315,12 +313,15 @@ export class FilesApi extends BaseLoopBackApi {
     let _routeParams: any = {
       id: id
     };
-    let _postBody: any = {};
+    let _postBody: any = {
+      data: {
+        images: images
+      }
+    };
     let _urlParams: any = {};
     if (typeof companyid !== 'undefined' && companyid !== null) _urlParams.companyid = companyid;
     if (typeof name !== 'undefined' && name !== null) _urlParams.name = name;
     if (typeof canvas !== 'undefined' && canvas !== null) _urlParams.canvas = canvas;
-    if (typeof images !== 'undefined' && images !== null) _urlParams.images = images;
     if (typeof duration !== 'undefined' && duration !== null) _urlParams.duration = duration;
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
     return result;
