@@ -135,6 +135,7 @@ export class shapeanimation {
     'background-color': string;
     opacity: 1;
     'border-radius': string;
+    class: string;
   };
   src: string;
   posx: number;
@@ -312,6 +313,11 @@ export class VideocreatorComponent implements OnInit {
 
   onSelectElement(element): void {
     //this.detectchange();
+    if (element !== this.selectedelement) {
+      this.removeVectorPathSelection();
+      this.removeVectorPathMultiSelection();
+    }
+
     this.selectedelement = element;
     //console.log(this.selectedelement);
   }
@@ -334,9 +340,6 @@ export class VideocreatorComponent implements OnInit {
         elm.setpos = { 'x': elm.posx, 'y': elm.posy };
       }
     });
-
-
-
     // force dom update
     this.changenow = false;
     setTimeout(() => { this.changenow = true; return });
@@ -432,7 +435,7 @@ export class VideocreatorComponent implements OnInit {
       case 'slowmotion':
         ease = SlowMo.ease.config(0.7, 0.7, false)
       default:
-        ease = Bounce.easeOut;
+        ease = '';
     }
     return ease
   }
@@ -461,7 +464,7 @@ export class VideocreatorComponent implements OnInit {
       aniset = { rotation: rotationcycle, ease: ease, transformOrigin: orgin }
     }
     if (anitype === 'translate') {
-      aniset = { rotation: '30', ease: ease }
+      aniset = { rotation: '360', ease: ease }
     }
     if (anitype === 'scale') {
       aniset = { scale: scalesize, ease: ease }
@@ -533,18 +536,18 @@ export class VideocreatorComponent implements OnInit {
     let newanimation: animationtype = {
       start_time: 0, //delayt
       end_time: 10,
-      anim_type: 'rotation',
-      duration: 2.5,
+      anim_type: 'scale',
+      duration: 0.5,
       ease: '',
       posx: this.selectedelement.posx,
       posy: this.selectedelement.posy,
-      rotationcycle: 30,
+      rotationcycle: 360,
       travellocX: this.selectedelement.posy + 300,
       travellocY: this.selectedelement.posx,
-      scalesize: 0.5,
+      scalesize: 0.8,
       skewY: 50,
       skewX: 50,
-      easetype: 'bounce',
+      easetype: 'elastic',
       fromto: 'from',
       transformOriginX: '50%',
       transformOriginY: '200px'
@@ -703,7 +706,6 @@ export class VideocreatorComponent implements OnInit {
     // console.log(this.currenttime); 
   }
 
-
   onMoving(event, i) {
     this.animationarray[i].posy = event.y;
     this.animationarray[i].posx = event.x;
@@ -732,14 +734,9 @@ export class VideocreatorComponent implements OnInit {
       }
     }
 
-    if (element.shape === 'triangle') {
-      element.style = {
-        'width': 0,
-        'height': 0,
-        'border-left': ' 50% solid transparent',
-        'border-right': '50% solid transparent',
-        'border-top': '100% solid black'
-      }
+    if (element.shape === 'heart') {
+      element.style.class = 'heart'
+      element.style.opacity = 0;
     }
   }
 
@@ -779,14 +776,14 @@ export class VideocreatorComponent implements OnInit {
       ease: '',
       posx: 0,
       posy: 0,
-      rotationcycle: 30,
+      rotationcycle: 360,
       travellocX: 300,
       travellocY: 0,
-      scalesize: 0.5,
+      scalesize: 0.8,
       skewY: 50,
       skewX: 50,
       easetype: '',
-      fromto: 'to',
+      fromto: 'from',
       transformOriginX: '50%',
       transformOriginY: '200px'
     }];
@@ -817,7 +814,7 @@ export class VideocreatorComponent implements OnInit {
       duration: 1,
       start_time: undefined,
       pathids: pathidar,
-      easetype: 'bounce',
+      easetype: 'elastic',
       fromto: 'to'
     }]
     let vector: vectoranimation = {
@@ -897,19 +894,19 @@ export class VideocreatorComponent implements OnInit {
     let anim: animationtype[] = [{
       start_time: 0, //delayt
       end_time: 10,
-      anim_type: 'rotation',
+      anim_type: 'scale',
       duration: 2.5,
       ease: '',
       posx: 0,
       posy: 0,
-      rotationcycle: 30,
+      rotationcycle: 360,
       travellocX: 300,
       travellocY: 0,
-      scalesize: 0.5,
+      scalesize: 0.8,
       skewY: 50,
       skewX: 50,
-      easetype: Bounce.easeOut,
-      fromto: 'to',
+      easetype: 'elastic',
+      fromto: 'from',
       transformOriginX: '50%',
       transformOriginY: '200px'
     }];
@@ -924,8 +921,8 @@ export class VideocreatorComponent implements OnInit {
         //transform : 'translate(10px, 10px)'
       },
       src: '',
-      posx: 50,
-      posy: 50,
+      posx: 0,
+      posy: 0,
       setpos: { 'x': 0, 'y': 0 },
       animation: anim,
       id: newelnr
@@ -946,19 +943,19 @@ export class VideocreatorComponent implements OnInit {
     let anim: animationtype[] = [{
       start_time: 0, //delayt
       end_time: 10,
-      anim_type: 'rotation',
+      anim_type: 'scale',
       duration: 2.5,
       ease: '',
       posx: 0,
       posy: 0,
-      rotationcycle: 30,
+      rotationcycle: 360,
       travellocX: 300,
       travellocY: 0,
-      scalesize: 0.5,
+      scalesize: 0.8,
       skewY: 50,
       skewX: 50,
-      easetype: 'bounce',
-      fromto: 'to',
+      easetype: 'elastic',
+      fromto: 'from',
       transformOriginX: '50%',
       transformOriginY: '200px'
     }];
@@ -971,7 +968,8 @@ export class VideocreatorComponent implements OnInit {
         position: 'absolute',
         'background-color': '#000000',
         opacity: 1,
-        'border-radius': '0%'
+        'border-radius': '0%',
+        class: ''
       },
       src: '',
       posx: 50,
@@ -998,19 +996,19 @@ export class VideocreatorComponent implements OnInit {
     let anim: animationtype[] = [{
       start_time: 0, //delayt
       end_time: 10,
-      anim_type: 'rotation',
+      anim_type: 'scale',
       duration: 2.5,
       ease: '',
       posx: 0,
       posy: 0,
-      rotationcycle: 30,
+      rotationcycle: 360,
       travellocX: 300,
       travellocY: 0,
-      scalesize: 0.5,
+      scalesize: 0.8,
       skewY: 50,
       skewX: 50,
-      easetype: 'bounce',
-      fromto: 'to',
+      easetype: 'elastic',
+      fromto: 'from',
       transformOriginX: '50%',
       transformOriginY: '200px'
     }];
@@ -1069,19 +1067,19 @@ export class VideocreatorComponent implements OnInit {
     let anim: animationtype[] = [{
       start_time: 0, //delayt
       end_time: 10,
-      anim_type: 'rotation',
+      anim_type: 'scale',
       duration: 2.5,
       ease: '',
       posx: 0,
       posy: 0,
-      rotationcycle: 30,
+      rotationcycle: 360,
       travellocX: 300,
       travellocY: 0,
-      scalesize: 0.5,
+      scalesize: 0.8,
       skewY: 50,
       skewX: 50,
-      easetype: 'bounce',
-      fromto: 'to',
+      easetype: 'elastic',
+      fromto: 'from',
       transformOriginX: '50%',
       transformOriginY: '200px'
     }];
@@ -1135,14 +1133,14 @@ export class VideocreatorComponent implements OnInit {
   }
 
   playFunc() {
-    // this.detectchange();
-    console.log('play');
-    //this.progressbarline.play();
-
-    // clean up for play
-    this.selectedVecPath = false;
     this.removeVectorPathMultiSelection();
     this.removeVectorPathSelection();
+    this.detectchange();
+    console.log('play');
+    //this.progressbarline.play();
+    // clean up for play
+    this.selectedVecPath = false;
+
 
     setTimeout(() => {
 
@@ -1317,7 +1315,7 @@ export class VideocreatorComponent implements OnInit {
       duration: 1,
       start_time: undefined,
       pathids: [],
-      easetype: 'bounce',
+      easetype: 'elastic',
       fromto: 'to'
     }
     this.animationarray[i].vectors.push(newVector);
@@ -1515,7 +1513,7 @@ export class VideocreatorComponent implements OnInit {
     let heightanibottom = heightani - 100; // total area from above the square to lower edge
     let heightanitop = heightanibottom * 2;
 
-    console.log(heightanibottom, heightanitop); 
+    console.log(heightanibottom, heightanitop);
 
     for (let i = 0; i < total; i++) {
       var Div = document.createElement('div');
@@ -1547,11 +1545,11 @@ export class VideocreatorComponent implements OnInit {
 
   // element, time(speed), 
   animrain(elm, h) {
-    this.primairytimeline.to(elm, this.R(2, 4), { y: h, x: '+=100', ease: Linear.easeNone, repeat: -1  }, 0);
+    this.primairytimeline.to(elm, this.R(2, 4), { y: h, x: '+=100', ease: Linear.easeNone, repeat: -1 }, 0);
   };
 
   animleaves(elm, h) {
-    this.primairytimeline.to(elm, this.R(20, 30), { y: h + 100, ease: Linear.easeNone, repeat: -1, delay: 0 }, 0 );
+    this.primairytimeline.to(elm, this.R(20, 30), { y: h + 100, ease: Linear.easeNone, repeat: -1, delay: 0 }, 0);
     this.primairytimeline.to(elm, this.R(4, 8), { x: '+=100', rotationZ: this.R(0, 180), repeat: -1, yoyo: true, ease: Sine.easeInOut }, 0);
     this.primairytimeline.to(elm, this.R(2, 8), { rotationX: this.R(0, 360), rotationY: this.R(0, 360), repeat: -1, yoyo: true, ease: Sine.easeInOut, delay: 0 }, 0);
   }
@@ -1834,14 +1832,19 @@ export class VideocreatorComponent implements OnInit {
   }
 
   clickVectorPaths(e) {
-    console.log(e);
+    //console.log(e);
     if (e.target.localName !== 'svg') {
+
       if (this.selectmultiplepaths === false) {
-        this.removeVectorPathSelection();
-        this.selectedVecPath = e.target;
-        let style = this.selectedVecPath.getAttribute('style');
-        let newstyle = style + '; outline: 5px dotted green;';
-        this.selectedVecPath.setAttribute('style', newstyle);
+        if (this.selectedVecPath === e.target) {
+          this.removeVectorPathSelection();
+        } else {
+          this.removeVectorPathSelection();
+          this.selectedVecPath = e.target;
+          let style = this.selectedVecPath.getAttribute('style');
+          let newstyle = style + '; outline: 5px dotted green;';
+          this.selectedVecPath.setAttribute('style', newstyle);
+        }
       }
 
       if (this.selectmultiplepaths === true) {
@@ -2146,6 +2149,7 @@ export class VideocreatorComponent implements OnInit {
 
   async saveVideo() {
     //console.log(this.animationarray);
+
     if (this.elementname === undefined) { this.elementname = Math.random().toString(36).substring(7); }
     let imgurl = BASE_URL + '/api/Containers/' + this.option.id + '/download/' + this.elementname;
     let setimgurl = 'https://xbmsapi.eu-gb.mybluemix.net/api/Containers/' + this.option.id + '/download/' + this.elementname;
@@ -2159,17 +2163,30 @@ export class VideocreatorComponent implements OnInit {
     this.newFiles.canvas = [this.canvas];
     this.newFiles.template = this.animationarray;
     this.newFiles.counter = this.counter;
-    this.relationsApi.createFiles(this.option.id, this.newFiles).subscribe(res => {
-      this.snackBar.open("video saved!", undefined, {
-        duration: 2000,
-        panelClass: 'snackbar-class'
+
+    if (this.newFiles.id) {
+      this.relationsApi.upsert(this.newFiles).subscribe(res => {
+        this.snackBar.open("video saved!", undefined, {
+          duration: 2000,
+          panelClass: 'snackbar-class'
+        });
+      });
+    } else {
+      this.relationsApi.createFiles(this.option.id, this.newFiles).subscribe(res => {
+        this.snackBar.open("video saved!", undefined, {
+          duration: 2000,
+          panelClass: 'snackbar-class'
+        });
       });
     }
-    )
+
+
   }
 
   async converttovideo() {
-   // let myJSON = await this.jsonVectors();
+    // let myJSON = await this.jsonVectors();
+    this.removeVectorPathSelection();
+    this.removeVectorPathMultiSelection();
     let array = this.animationarray;
     let myJSON = JSON.stringify(array);
     //var aniarray = encodeURIComponent(myJSON);
@@ -2184,28 +2201,35 @@ export class VideocreatorComponent implements OnInit {
       );
   }
 
-  async jsonVectors(){
+  async jsonVectors() {
     let newanimationarray = JSON.parse(JSON.stringify(this.animationarray));
     for (let index = 0; index < newanimationarray.length; index++) {
-        if (newanimationarray[index].type === 'vector'){
-          newanimationarray[index].svgcombi = JSON.stringify(newanimationarray[index].svgcombi);
-          return newanimationarray
-        }
+      if (newanimationarray[index].type === 'vector') {
+        newanimationarray[index].svgcombi = JSON.stringify(newanimationarray[index].svgcombi);
+        return newanimationarray
+      }
     }
   }
 
+
   async converttogif() {
-    //await this.checkSaveVectors();
+    this.removeVectorPathSelection();
+    this.removeVectorPathMultiSelection();
+    // let myJSON = await this.jsonVectors();
+    let array = this.animationarray;
+    let myJSON = JSON.stringify(array);
+    //var aniarray = encodeURIComponent(myJSON);
     if (this.elementname === undefined) { this.elementname = Math.random().toString(36).substring(7); }
     this.filesApi.creategif(this.option.id, this.option.companyId,
-      this.elementname, this.canvas, this.animationarray, this.counter)
+      this.elementname, this.canvas, myJSON, this.counter)
       .subscribe(
         res => {
-          //console.log
+          //console.log(res);
           this.saveVideo()
         }
       );
   }
+
 
   resetVideo() {
     this.elementname = '';
@@ -2225,6 +2249,7 @@ export class VideocreatorComponent implements OnInit {
   }
 
   loadEditableVideo() {
+    this.newFiles = this.editablevideo;
     this.elementname = this.editablevideo.name;
     this.canvas = this.editablevideo.canvas[0];
     this.animationarray = this.editablevideo.template;

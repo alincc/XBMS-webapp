@@ -120,7 +120,8 @@
                 <mat-slide-toggle fxFlex *ngIf="canvas.videourl" [(ngModel)]="canvas.loop">Loop</mat-slide-toggle>
 
                 <mat-form-field>
-                    <mat-select [(value)]="canvas.weather" (selectionChange)="detectchange()"  placeholder="Select weather">
+                    <mat-select [(value)]="canvas.weather" (selectionChange)="detectchange()"
+                        placeholder="Select weather">
                         <mat-option value="">None</mat-option>
                         <mat-option value="rain">Rain</mat-option>
                         <mat-option value="snow">Snow</mat-option>
@@ -187,6 +188,7 @@
                         </mat-form-field>
                         <mat-form-field>
                             <mat-select [(value)]="animation.easetype" (selectionChange)="detectchange()">
+                                <mat-option value="">None</mat-option>
                                 <mat-option value="linear">Linear</mat-option>
                                 <mat-option value="bounce">Bounce</mat-option>
                                 <mat-option value="elastic">Elastic</mat-option>
@@ -316,7 +318,8 @@
                         </mat-form-field>
                         <mat-form-field>
                             <mat-select [(value)]="vectoranimation.svganimationtype" (selectionChange)="detectchange()"
-                                (selectionChange)="detectMorph(vectoranimation.svganimationtype)">
+                                (selectionChange)="detectMorph(vectoranimation.svganimationtype)"  placeholder="Animation">
+                                <mat-option value="">None</mat-option>
                                 <mat-option value="draw">Draw</mat-option>
                                 <mat-option value="morph">Morph</mat-option>
                             </mat-select>
@@ -325,7 +328,9 @@
                         <!-- (click)="setSvgOpacity(selectedelement, idx)" -->
                         <div *ngIf="vectoranimation.svganimationtype">
                             <mat-form-field>
-                                <mat-select [(value)]="vectoranimation.easetype" (selectionChange)="detectchange()">
+                                <mat-select [(value)]="vectoranimation.easetype" (selectionChange)="detectchange()"
+                                    placeholder="Animation">
+                                    <mat-option value="">None</mat-option>
                                     <mat-option value="linear">Linear</mat-option>
                                     <mat-option value="bounce">Bounce</mat-option>
                                     <mat-option value="elastic">Elastic</mat-option>
@@ -440,7 +445,9 @@
                             <mat-hint>Start</mat-hint>
                         </mat-form-field>
                         <mat-form-field>
-                            <mat-select [(value)]="textanimation.textanimationtype" (selectionChange)="detectchange()">
+                            <mat-select [(value)]="textanimation.textanimationtype" (selectionChange)="detectchange()"
+                                placeholder="Animation">
+                                <mat-option value="chars">By character</mat-option>
                                 <mat-option value="chars">By character</mat-option>
                                 <mat-option value="words">By word</mat-option>
                                 <mat-option value="lines">By line</mat-option>
@@ -448,7 +455,9 @@
                             </mat-select>
                         </mat-form-field>
                         <mat-form-field>
-                            <mat-select [(value)]="textanimation.easetype" (selectionChange)="detectchange()">
+                            <mat-select [(value)]="textanimation.easetype" (selectionChange)="detectchange()"
+                                placeholder="Animation">
+                                <mat-option value="">None</mat-option>
                                 <mat-option value="linear">Linear</mat-option>
                                 <mat-option value="bounce">Bounce</mat-option>
                                 <mat-option value="elastic">Elastic</mat-option>
@@ -628,6 +637,8 @@
                                 <mat-select [(value)]="element.shape" (selectionChange)="onChangeShape(element)">
                                     <mat-option value="square">Square</mat-option>
                                     <mat-option value="round">Round</mat-option>
+                                    <mat-option value="heart">Heart</mat-option>
+                                    <mat-option value="triangle">Triangle</mat-option>
                                 </mat-select>
                             </mat-form-field>
                             <mat-form-field style="max-width: 46px;">
@@ -747,21 +758,23 @@
                                         tab_unselected
                                     </mat-icon>
                                     <mat-form-field style="max-width: 46px;">
-                                            <input (change)="detectchange()" [(ngModel)]="element.posy" type="number" matInput>
-                                            <mat-hint>Y |</mat-hint>
-                                        </mat-form-field>
-                                        <mat-form-field style="max-width: 46px;">
-                                            <input (change)="detectchange()" [(ngModel)]="element.posx" type="number" matInput>
-                                            <mat-hint>X -</mat-hint>
-                                        </mat-form-field>
-                                        <mat-form-field style="max-width: 46px;">
-                                            <input (change)="detectchange()" [(ngModel)]="element.height" matInput>
-                                            <mat-hint>Y |</mat-hint>
-                                        </mat-form-field>
-                                        <mat-form-field style="max-width: 46px;">
-                                            <input (change)="detectchange()" [(ngModel)]="element.width" matInput>
-                                            <mat-hint>X -</mat-hint>
-                                        </mat-form-field>
+                                        <input (change)="detectchange()" [(ngModel)]="element.posy" type="number"
+                                            matInput>
+                                        <mat-hint>Y |</mat-hint>
+                                    </mat-form-field>
+                                    <mat-form-field style="max-width: 46px;">
+                                        <input (change)="detectchange()" [(ngModel)]="element.posx" type="number"
+                                            matInput>
+                                        <mat-hint>X -</mat-hint>
+                                    </mat-form-field>
+                                    <mat-form-field style="max-width: 46px;">
+                                        <input (change)="detectchange()" [(ngModel)]="element.height" matInput>
+                                        <mat-hint>Y |</mat-hint>
+                                    </mat-form-field>
+                                    <mat-form-field style="max-width: 46px;">
+                                        <input (change)="detectchange()" [(ngModel)]="element.width" matInput>
+                                        <mat-hint>X -</mat-hint>
+                                    </mat-form-field>
                                 </div>
                             </div>
                             <button mat-mini-fab *ngIf="element.morph" class="addbutton" matTooltip="Add vector"
@@ -957,7 +970,7 @@
     <div ngClass.gt-xs="container-normal" ngClass.lt-sm="container-noshow" [class.container-xs-show]="listviewxsshow"
         fxLayout="row" fxLayoutAlign="start">
 
-        <div *ngIf="changevideo" [ngStyle]="canvas" style="border: 1px solid grey; overflow:hidden;" >
+        <div *ngIf="changevideo" [ngStyle]="canvas" style="border: 1px solid grey; overflow:hidden;">
 
 
             <div *ngIf="selectedVecPath && selectedelement.type === 'vector'" fxLayout="row" class="vectorcontrols">
@@ -993,8 +1006,9 @@
                 [style.background-image]="canvas['background-image']"
                 style="overflow: hidden; background-color: transparent;">
                 <div *ngFor="let element of animationarray; let i = index" (click)="onSelectElement(element)"
-                    style="background-color: transparent; overflow: hidden;" >
-                    <div style="height: 100%; width: 100%; position: absolute; z-index: 100; pointer-events: none;" id="weathercontainer"></div>
+                    style="background-color: transparent; overflow: hidden;">
+                    <div style="height: 100%; width: 100%; position: absolute; z-index: 100; pointer-events: none;"
+                        id="weathercontainer"></div>
 
                     <div *ngIf="element.type === 'image'" id="{{element.id}}" style="overflow: hidden;" ngDraggable
                         [ngStyle]="element.style" [style.width]="element.style.width"
@@ -1014,7 +1028,7 @@
                         (movingOffset)="onMoving($event, i)" [preventDefaultEvent]="true"
                         [style.transform]="'translate(' + element.posx + 'px, ' + element.posy +'px)'"
                         (rzResizing)="onResizing($event, i)" ngResizable [rzAspectRatio]="false"
-                        [ngStyle]="element.style">
+                        [ngStyle]="element.style" [className]="element.style.class">
                     </div>
                     <div *ngIf="element.type === 'vector'" style="overflow: hidden;" [style.width]="element.style.width"
                         [style.height]="element.style.height" ngDraggable [ngStyle]="element.style"
