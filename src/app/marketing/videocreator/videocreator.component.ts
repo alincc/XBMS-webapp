@@ -42,6 +42,8 @@ export class animationtype {
   fromto: string;
   transformOriginX: string;
   transformOriginY: string;
+  repeat: number;
+  yoyo: boolean;
 }
 
 export class vectoranimationtype {
@@ -446,7 +448,7 @@ export class VideocreatorComponent implements OnInit {
     setTimeout(() => this.changevideo = true);
   }
 
-  addAnimation(iset, element: animationtype) {
+  addAnimation(iset, element: animationtype, elementA) {
     let duration = element.duration;
     let startime = element.start_time
     let anitype = element.anim_type;
@@ -459,15 +461,16 @@ export class VideocreatorComponent implements OnInit {
     let aniset;
 
     let ease = this.selectEaseType(element.easetype);
+    let repeat = element.repeat;
     if (anitype === 'rotation') {
       let orgin = element.transformOriginX + ' ' + element.transformOriginY
-      aniset = { rotation: rotationcycle, ease: ease, transformOrigin: orgin }
+      aniset = { rotation: rotationcycle, ease: ease, transformOrigin: orgin, repeat:repeat, yoyo: element.yoyo }
     }
-    if (anitype === 'translate') {
-      aniset = { rotation: '360', ease: ease }
-    }
+    // if (anitype === 'translate') {
+    //   aniset = { rotation: '360', ease: ease, repeat:repeat }
+    // }
     if (anitype === 'scale') {
-      aniset = { scale: scalesize, ease: ease }
+      aniset = { scale: scalesize, ease: ease, repeat:repeat, yoyo: element.yoyo }
     }
     if (anitype === 'appear') {
       this.selectedelement.style.opacity = 0;
@@ -477,19 +480,36 @@ export class VideocreatorComponent implements OnInit {
       aniset = { opacity: 0 }, { opacity: 1 };
     }
     if (anitype === 'move') {
-      aniset = { y: element.travellocY, x: element.travellocX, ease: ease }
+      aniset = { y: element.travellocY, x: element.travellocX, ease: ease, repeat:repeat, yoyo: element.yoyo }
     }
     if (anitype === 'skew') {
-      aniset = { skewY: skewY, skewX: skewX, ease: ease }
+      aniset = { skewY: skewY, skewX: skewX, ease: ease, repeat:repeat, yoyo: element.yoyo }
     }
     if (anitype === 'fountain') {
       //let dots = this.primairytimeline;
       var dots = new TimelineLite()
       let qty = 80;
-      let duration = 2.5;
+      let duration = element.duration;
       let colors = ["#91e600", "#84d100", "#73b403", "#528003"];
 
       for (let i = 0; i < qty; i++) {
+        let height = parseInt(this.canvas.height, 10);
+        let width = parseInt(this.canvas.width, 10);
+        let distanceH = height - elementA.posy;
+        let distanceW = width - elementA.posx;
+        let H, W;
+
+        if (distanceH < elementA.posy){
+          H = distanceH;
+        } else {
+          H = elementA.posy;
+        }
+
+        if (distanceW < elementA.posx){
+          W = distanceW;
+        } else {
+          W = elementA.posx;
+        }
         let cln = iset.cloneNode(true);
         //console.log(cln);
         let parent = iset.parentElement;
@@ -497,10 +517,10 @@ export class VideocreatorComponent implements OnInit {
         //let color = colors[(Math.random() * colors.length) | 0];
         let delay = Math.random() * duration;
         if (element.fromto === 'from') {
-          this.primairytimeline.from(cln, duration, { physics2D: { velocity: Math.random() * 400 + 150, angle: Math.random() * 40 + 250, gravity: 500 } }, delay);
+          this.primairytimeline.from(cln, duration, { physics2D: { velocity: Math.random() * W, angle: Math.random() * 40 + 250, gravity: H, repeat:repeat, yoyo: element.yoyo } }, delay);
         }
         if (element.fromto === 'to') {
-          this.primairytimeline.to(cln, duration, { physics2D: { velocity: Math.random() * 400 + 150, angle: Math.random() * 40 + 250, gravity: 500 } }, delay);
+          this.primairytimeline.to(cln, duration, { physics2D: { velocity: Math.random() * W, angle: Math.random() * 40 + 250, gravity: H, repeat:repeat, yoyo: element.yoyo } }, delay);
         }
 
       }
@@ -524,7 +544,7 @@ export class VideocreatorComponent implements OnInit {
   addEffect(element): void {
     let id = document.getElementById(element.id);
     element.animation.forEach(animationsection => {
-      this.addAnimation(id, animationsection);
+      this.addAnimation(id, animationsection, element);
     });
     if (this.canvas.weather !== '') {
       //console.log('add weather')
@@ -550,7 +570,9 @@ export class VideocreatorComponent implements OnInit {
       easetype: 'elastic',
       fromto: 'from',
       transformOriginX: '50%',
-      transformOriginY: '200px'
+      transformOriginY: '200px',
+      repeat: 1,
+      yoyo: false
     }
     this.selectedelement.animation.push(newanimation);
     this.detectchange();
@@ -717,27 +739,30 @@ export class VideocreatorComponent implements OnInit {
   }
 
   onChangeShape(element) {
+    element.style['border-radius'] = '';
+    element.style.class = '';
+    
     if (element.shape === 'round') {
       element.style['border-radius'] = '50%';
     }
-    if (element.shape === 'square') {
-      element.style['border-radius'] = '0%';
-    }
+    // if (element.shape === 'square') {
+    //   element.style['border-radius'] = '0%';
+    // }
 
-    if (element.shape === 'triangle') {
-      element.style = {
-        'width': 0,
-        'height': 0,
-        'border-left': ' 50% solid transparent',
-        'border-right': '50% solid transparent',
-        'border-bottom': '100% solid black'
-      }
-    }
+    // if (element.shape === 'triangle') {
+    //   element.style.class = 'triangle'
+    // }
 
     if (element.shape === 'heart') {
       element.style.class = 'heart'
-      element.style.opacity = 0;
+      element.style['background-color'] = 'rgba(0, 0, 0, 0)';
     }
+
+    if (element.shape === 'star') {
+      element.style.class = 'star-six'
+      element.style['background-color'] = 'rgba(0, 0, 0, 0)';
+    }
+    this.detectchange();
   }
 
   addNewVector(src?, height?, width?, svgcombi?, posx?, posy?, pathidar?): void { //, originid?
@@ -785,7 +810,9 @@ export class VideocreatorComponent implements OnInit {
       easetype: '',
       fromto: 'from',
       transformOriginX: '50%',
-      transformOriginY: '200px'
+      transformOriginY: '200px',
+      repeat: 1,
+      yoyo: false
     }];
     // only add if new svg not split from 
     if (!svgcombi) {
@@ -908,7 +935,9 @@ export class VideocreatorComponent implements OnInit {
       easetype: 'elastic',
       fromto: 'from',
       transformOriginX: '50%',
-      transformOriginY: '200px'
+      transformOriginY: '200px',
+      repeat: 1,
+      yoyo: false
     }];
     let img: imageanimation = {
       type: 'image',
@@ -929,7 +958,6 @@ export class VideocreatorComponent implements OnInit {
     }
     this.animationarray.push(img);
     this.detectchange();
-    //this.addAnimation(newelnr, img);
   }
 
   addNewShape(): void {
@@ -957,7 +985,9 @@ export class VideocreatorComponent implements OnInit {
       easetype: 'elastic',
       fromto: 'from',
       transformOriginX: '50%',
-      transformOriginY: '200px'
+      transformOriginY: '200px',
+      repeat: 1,
+      yoyo: false
     }];
     let img: shapeanimation = {
       type: 'shape',
@@ -981,7 +1011,7 @@ export class VideocreatorComponent implements OnInit {
     }
     this.animationarray.push(img);
     this.detectchange();
-    //this.addAnimation(newelnr, img);
+
   }
 
   addNewWhiteboard(): void {
@@ -1010,7 +1040,9 @@ export class VideocreatorComponent implements OnInit {
       easetype: 'elastic',
       fromto: 'from',
       transformOriginX: '50%',
-      transformOriginY: '200px'
+      transformOriginY: '200px',
+      repeat: 1,
+      yoyo: false
     }];
     let whiteboard: whiteboardanimation = {
       type: 'whiteboard',
@@ -1052,7 +1084,7 @@ export class VideocreatorComponent implements OnInit {
       // }
 
     }, 300) // mininmum needed for dom to process
-    //this.addAnimation(newelnr, img);
+
   }
 
   addNewText(): void {
@@ -1081,7 +1113,9 @@ export class VideocreatorComponent implements OnInit {
       easetype: 'elastic',
       fromto: 'from',
       transformOriginX: '50%',
-      transformOriginY: '200px'
+      transformOriginY: '200px',
+      repeat: 1,
+      yoyo: false
     }];
     let splittext: splittexttype[] = [{
       textanimationtype: '',
@@ -1119,7 +1153,7 @@ export class VideocreatorComponent implements OnInit {
     }
     this.animationarray.push(txt);
     this.detectchange();
-    //this.addAnimation(newelnr, txt);
+ 
   }
 
   deleteTextAnimation(iv) {
