@@ -1,58 +1,62 @@
 /*!
- * VERSION: 0.2.1
- * DATE: 2018-08-27
- * UPDATES AND DOCS AT: http://greensock.com
+ * CustomWiggle 3.0.0
+ * https://greensock.com
  *
- * @license Copyright (c) 2008-2019, GreenSock. All rights reserved.
- * This work is subject to the terms at http://greensock.com/standard-license or for
- * Club GreenSock members, the software agreement that was issued with your membership.
- *
+ * @license Copyright 2008-2019, GreenSock. All rights reserved.
+ * Subject to the terms at https://greensock.com/standard-license or for
+ * Club GreenSock members, the agreement issued with that membership.
  * @author: Jack Doyle, jack@greensock.com
- **/
+*/
 /* eslint-disable */
 
-import { _gsScope, globals, Ease } from "gsap/TweenLite.js";
-import CustomEase from "./CustomEase.js";
-
-_gsScope._gsDefine("easing.CustomWiggle", ["easing.CustomEase", "easing.Ease"], function() {
-
-
-		var eases = {
-				easeOut: new CustomEase("", "M0,1,C0.7,1,0.6,0,1,0"),
-				easeInOut: new CustomEase("", "M0,0,C0.104,0,0.242,1,0.444,1,0.644,1,0.608,0,1,0"),
-				anticipate: new CustomEase("", "M0,0,C0,0.222,0.024,0.386,0.06,0.402,0.181,0.455,0.647,0.646,0.7,0.67,0.9,0.76,1,0.846,1,1"),
-				uniform: new CustomEase("", "M0,0,C0,0.95,0.01,1,0.01,1,0.01,1,1,1,1,1,1,1,1,0.01,1,0")
-			},
-			_linearEase = new CustomEase(), //linear
-			_parseEase = function(ease, invertNonCustomEases) {
-				ease = ease.getRatio ? ease : Ease.map[ease] || new CustomEase("", ease);
-				return (ease.rawBezier || !invertNonCustomEases) ? ease : {getRatio:function(n) { return 1 - ease.getRatio(n); }};
-			},
-
-
-			CustomWiggle = function(id, vars) {
-				this.vars = vars || {};
-				CustomEase.call(this, id);
-				this.update(this.vars);
-			},
-			p;
-
-		CustomWiggle.prototype = p = new CustomEase();
-		p.constructor = CustomWiggle;
-
-		p.update = function(vars) {
-			vars = vars || this.vars;
-			var wiggles = (vars.wiggles || 10) | 0,
-				inc = 1 / wiggles,
-				x = inc / 2,
-				anticipate = (vars.type === "anticipate"),
-				yEase = eases[vars.type] || eases.easeOut,
-				xEase = _linearEase,
-				rnd = 1000,
-				nextX, nextY, angle, handleX, handleY, easedX, y, path, i;
+let gsap, _coreInitted, createCustomEase,
+	_getGSAP = () => gsap || (typeof(window) !== "undefined" && (gsap = window.gsap) && gsap.registerPlugin && gsap),
+	_eases = {
+		easeOut: "M0,1,C0.7,1,0.6,0,1,0",
+		easeInOut: "M0,0,C0.1,0,0.24,1,0.444,1,0.644,1,0.6,0,1,0",
+		anticipate: "M0,0,C0,0.222,0.024,0.386,0,0.4,0.18,0.455,0.65,0.646,0.7,0.67,0.9,0.76,1,0.846,1,1",
+		uniform: "M0,0,C0,0.95,0,1,0,1,0,1,1,1,1,1,1,1,1,0,1,0"
+	},
+	_linearEase = p => p,
+	_initCore = required => {
+		if (!_coreInitted) {
+			gsap = _getGSAP();
+			createCustomEase = gsap && gsap.parseEase("_CE");
+			if (createCustomEase) {
+				for (let p in _eases) {
+					_eases[p] = createCustomEase("", _eases[p]);
+				}
+				_coreInitted = 1;
+				_create("wiggle").config = vars => typeof(vars) === "object" ? _create("", vars) : _create("wiggle(" + vars + ")", {wiggles:+vars});
+			} else {
+				required && console.warn("Please gsap.registerPlugin(CustomEase, CustomWiggle)");
+			}
+		}
+	},
+	_parseEase = (ease, invertNonCustomEases) => {
+		if (typeof(ease) !== "function") {
+			ease = gsap.parseEase(ease) || createCustomEase("", ease);
+		}
+		return (ease.custom || !invertNonCustomEases) ? ease : p => 1 - ease(p);
+	},
+	_bonusValidated = 1, //<name>CustomWiggle</name>
+	_create = (id, vars) => {
+		if (!_coreInitted) {
+			_initCore(1);
+		}
+		vars = vars || {};
+		let wiggles = (vars.wiggles || 10) | 0,
+			inc = 1 / wiggles,
+			x = inc / 2,
+			anticipate = (vars.type === "anticipate"),
+			yEase = _eases[vars.type] || _eases.easeOut,
+			xEase = _linearEase,
+			rnd = 1000,
+			nextX, nextY, angle, handleX, handleY, easedX, y, path, i;
+		if (_bonusValidated) {
 			if (anticipate) { //the anticipate ease is actually applied on the x-axis (timing) and uses easeOut for amplitude.
 				xEase = yEase;
-				yEase = eases.easeOut;
+				yEase = _eases.easeOut;
 			}
 			if (vars.timingEase) {
 				xEase = _parseEase(vars.timingEase);
@@ -60,18 +64,18 @@ _gsScope._gsDefine("easing.CustomWiggle", ["easing.CustomEase", "easing.Ease"], 
 			if (vars.amplitudeEase) {
 				yEase = _parseEase(vars.amplitudeEase, true);
 			}
-			easedX = xEase.getRatio(x);
-			y = anticipate ? -yEase.getRatio(x) : yEase.getRatio(x);
+			easedX = xEase(x);
+			y = anticipate ? -yEase(x) : yEase(x);
 			path = [0, 0, easedX / 4, 0, easedX / 2, y, easedX, y];
 
 			if (vars.type === "random") { //if we just select random values on the y-axis and plug them into the "normal" algorithm, since the control points are always straight horizontal, it creates a bit of a slowdown at each anchor which just didn't seem as desirable, so we switched to an algorithm that bends the control points to be more in line with their context.
 				path.length = 4;
-				nextX = xEase.getRatio(inc);
+				nextX = xEase(inc);
 				nextY = Math.random() * 2 - 1;
 				for (i = 2; i < wiggles; i++) {
 					x = nextX;
 					y = nextY;
-					nextX = xEase.getRatio(inc * i);
+					nextX = xEase(inc * i);
 					nextY = Math.random() * 2 - 1;
 					angle = Math.atan2(nextY - path[path.length - 3], nextX - path[path.length - 4]);
 					handleX = Math.cos(angle) * inc;
@@ -81,33 +85,42 @@ _gsScope._gsDefine("easing.CustomWiggle", ["easing.CustomEase", "easing.Ease"], 
 				path.push(nextX, 0, 1, 0);
 			} else {
 				for (i = 1; i < wiggles; i++) {
-					path.push(xEase.getRatio(x + inc / 2), y);
+					path.push(xEase(x + inc / 2), y);
 					x += inc;
-					y = ((y > 0) ? -1 : 1) * (yEase.getRatio(i * inc));
-					easedX = xEase.getRatio(x);
-					path.push(xEase.getRatio(x - inc / 2), y, easedX, y);
+					y = ((y > 0) ? -1 : 1) * (yEase(i * inc));
+					easedX = xEase(x);
+					path.push(xEase(x - inc / 2), y, easedX, y);
 				}
-				path.push(xEase.getRatio(x + inc / 4), y, xEase.getRatio(x + inc / 4), 0, 1, 0);
+				path.push(xEase(x + inc / 4), y, xEase(x + inc / 4), 0, 1, 0);
 			}
 			i = path.length;
 			while (--i > -1) {
-				path[i] = ((path[i] * rnd) | 0) / rnd; //round values to avoid odd strings for super tiny values
+				path[i] = ~~(path[i] * rnd) / rnd; //round values to avoid odd strings for super tiny values
 			}
 			path[2] = "C" + path[2];
-			this.setData("M" + path.join(","));
-		};
+			return createCustomEase(id, "M" + path.join(","));
+		}
+	};
 
-		CustomWiggle.create = function (id, vars) {
-			return new CustomWiggle(id, vars);
-		};
+export class CustomWiggle {
 
-		CustomWiggle.version = "0.2.1";
-		CustomWiggle.eases = eases;
+	constructor(id, vars) {
+		this.ease = _create(id, vars);
+	}
 
-		return CustomWiggle;
+	static create(id, vars) {
+		return _create(id, vars);
+	}
 
-	}, true);
+	static register(core) {
+		gsap = core;
+		_initCore();
+	}
 
+}
 
-export var CustomWiggle = globals.CustomWiggle;
+_getGSAP() && gsap.registerPlugin(CustomWiggle);
+
+CustomWiggle.version = "3.0.0";
+
 export { CustomWiggle as default };

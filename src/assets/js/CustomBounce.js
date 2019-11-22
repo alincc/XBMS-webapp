@@ -1,50 +1,44 @@
 /*!
- * VERSION: 0.2.1
- * DATE: 2018-08-27
- * UPDATES AND DOCS AT: http://greensock.com
+ * CustomBounce 3.0.0
+ * https://greensock.com
  *
- * @license Copyright (c) 2008-2019, GreenSock. All rights reserved.
- * This work is subject to the terms at http://greensock.com/standard-license or for
- * Club GreenSock members, the software agreement that was issued with your membership.
- *
+ * @license Copyright 2008-2019, GreenSock. All rights reserved.
+ * Subject to the terms at https://greensock.com/standard-license or for
+ * Club GreenSock members, the agreement issued with that membership.
  * @author: Jack Doyle, jack@greensock.com
- **/
+*/
 /* eslint-disable */
 
-import { _gsScope, globals } from "gsap/TweenLite.js";
-import CustomEase from "./CustomEase.js";
-
-_gsScope._gsDefine("easing.CustomBounce", ["easing.CustomEase"], function() {
-
-
-		var _normalizeX = function (a) { //scales all the x values in an array [x, y, x, y...] AND rounds them to the closest hundredth (decimal)
-				var l = a.length,
-					s = 1 / a[l - 2],
-					rnd = 1000,
-					i;
-				for (i = 2; i < l; i += 2) {
-					a[i] = ((a[i] * s * rnd) | 0) / rnd;
-				}
-				a[l - 2] = 1; //in case there are any rounding errors. x should always end at 1.
-			},
-
-			CustomBounce = function(id, vars) {
-				this.vars = vars = vars || {};
-				if (vars.squash) {
-					this.squash = new CustomEase(vars.squashID || (id + "-squash"));
-				}
-				CustomEase.call(this, id);
-				this.bounce = this;
-				this.update(vars);
-			},
-			p;
-
-		CustomBounce.prototype = p = new CustomEase();
-		p.constructor = CustomBounce;
-
-		p.update = function(vars) {
-			vars = vars || this.vars;
-			var max = 0.999,
+let gsap, _coreInitted, createCustomEase,
+	_getGSAP = () => gsap || (typeof(window) !== "undefined" && (gsap = window.gsap) && gsap.registerPlugin && gsap),
+	_initCore = required => {
+		gsap = _getGSAP();
+		createCustomEase = gsap && gsap.parseEase("_CE");
+		if (createCustomEase) {
+			_coreInitted = 1;
+			gsap.parseEase("bounce").config = vars => typeof(vars) === "object" ? _create("", vars) : _create("bounce(" + vars + ")", {strength:+vars});
+		} else {
+			required && console.warn("Please gsap.registerPlugin(CustomEase, CustomBounce)");
+		}
+	},
+	_normalizeX = a => { //scales all the x values in an array [x, y, x, y...] AND rounds them to the closest hundredth (decimal)
+		let l = a.length,
+			s = 1 / a[l - 2],
+			rnd = 1000,
+			i;
+		for (i = 2; i < l; i += 2) {
+			a[i] = ~~(a[i] * s * rnd) / rnd;
+		}
+		a[l - 2] = 1; //in case there are any rounding errors. x should always end at 1.
+	},
+	_bonusValidated = 1, //<name>CustomBounce</name>
+	_create = (id, vars) => {
+		if (!_coreInitted) {
+			_initCore(1);
+		}
+		vars = vars || {};
+		if (_bonusValidated) {
+			let max = 0.999,
 				decay = Math.min(max, vars.strength || 0.7),  // Math.min(0.999, 1 - 0.3 / (vars.strength || 1)),
 				decayX = decay,
 				gap = (vars.squash || 0) / 100,
@@ -104,7 +98,7 @@ _gsScope._gsDefine("easing.CustomBounce", ["easing.CustomEase"], function() {
 				}
 			}
 
-			if (vars.endAtStart) {
+			if (vars.endAtStart && vars.endAtStart !== "false") {
 				x = -0.1;
 				path.unshift(x, 1, x, 1, -0.07, 0);
 				if (originalGap) {
@@ -122,31 +116,36 @@ _gsScope._gsDefine("easing.CustomBounce", ["easing.CustomEase"], function() {
 					path[i+1] = 1 - path[i+1];
 				}
 			}
-
 			if (gap) {
 				_normalizeX(squashPath);
 				squashPath[2] = "C" + squashPath[2];
-				if (!this.squash) {
-					this.squash = new CustomEase(vars.squashID || (this.id + "-squash"));
-				}
-				this.squash.setData("M" + squashPath.join(","));
+				createCustomEase(vars.squashID || (id + "-squash"), "M" + squashPath.join(","));
 			}
-
 			_normalizeX(path);
 			path[2] = "C" + path[2];
-			return this.setData("M" + path.join(","));
-		};
+			return createCustomEase(id, "M" + path.join(","));
+		}
+	};
 
-		CustomBounce.create = function(id, vars) {
-			return new CustomBounce(id, vars);
-		};
+export class CustomBounce {
 
-		CustomBounce.version = "0.2.1";
+	constructor(id, vars) {
+		this.ease = _create(id, vars);
+	}
 
-		return CustomBounce;
+	static create(id, vars) {
+		return _create(id, vars);
+	}
 
-	}, true);
+	static register(core) {
+		gsap = core;
+		_initCore();
+	}
 
+}
 
-export var CustomBounce = globals.CustomBounce;
+_getGSAP() && gsap.registerPlugin(CustomBounce);
+
+CustomBounce.version = "3.0.0";
+
 export { CustomBounce as default };

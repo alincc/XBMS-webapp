@@ -9,6 +9,7 @@ import { MediaObserver, MediaChange } from '@angular/flex-layout';
 import { TimelineMax, TweenLite, Power0 } from 'gsap';
 import * as MorphSVGPlugin from '../../../assets/js/MorphSVGPlugin';
 import * as DrawSVGPlugin from '../../../assets/js/DrawSVGPlugin';
+import * as MotionPathPlugin from '../../../assets/js/MotionPathPlugin';
 import * as SplitText from '../../../assets/js/SplitText';
 import * as physicsProps from '../../../assets/js/PhysicsPropsPlugin'
 import * as physics2D from '../../../assets/js/Physics2DPlugin'
@@ -19,7 +20,7 @@ declare const SVG: any;
 import '@svgdotjs/svg.draggable.js'
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import * as normalize from 'normalize-svg-coords';
-const plugins = [DrawSVGPlugin, MorphSVGPlugin, SplitText, physics2D]; //needed for GSAP 
+const plugins = [DrawSVGPlugin, MorphSVGPlugin, SplitText, physics2D, MotionPathPlugin]; //needed for GSAP 
 import { CanvasWhiteboardComponent } from 'ng2-canvas-whiteboard';
 import { fonts } from '../../shared/listsgeneral/fonts';
 import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
@@ -464,13 +465,13 @@ export class VideocreatorComponent implements OnInit {
     let repeat = element.repeat;
     if (anitype === 'rotation') {
       let orgin = element.transformOriginX + ' ' + element.transformOriginY
-      aniset = { rotation: rotationcycle, ease: ease, transformOrigin: orgin, repeat:repeat, yoyo: element.yoyo }
+      aniset = { rotation: rotationcycle, ease: ease, transformOrigin: orgin, repeat: repeat, yoyo: element.yoyo }
     }
     // if (anitype === 'translate') {
     //   aniset = { rotation: '360', ease: ease, repeat:repeat }
     // }
     if (anitype === 'scale') {
-      aniset = { scale: scalesize, ease: ease, repeat:repeat, yoyo: element.yoyo }
+      aniset = { scale: scalesize, ease: ease, repeat: repeat, yoyo: element.yoyo }
     }
     if (anitype === 'appear') {
       this.selectedelement.style.opacity = 0;
@@ -480,10 +481,10 @@ export class VideocreatorComponent implements OnInit {
       aniset = { opacity: 0 }, { opacity: 1 };
     }
     if (anitype === 'move') {
-      aniset = { y: element.travellocY, x: element.travellocX, ease: ease, repeat:repeat, yoyo: element.yoyo }
+      aniset = { y: element.travellocY, x: element.travellocX, ease: ease, repeat: repeat, yoyo: element.yoyo }
     }
     if (anitype === 'skew') {
-      aniset = { skewY: skewY, skewX: skewX, ease: ease, repeat:repeat, yoyo: element.yoyo }
+      aniset = { skewY: skewY, skewX: skewX, ease: ease, repeat: repeat, yoyo: element.yoyo }
     }
     if (anitype === 'fountain') {
       //let dots = this.primairytimeline;
@@ -499,13 +500,13 @@ export class VideocreatorComponent implements OnInit {
         let distanceW = width - elementA.posx;
         let H, W;
 
-        if (distanceH < elementA.posy){
+        if (distanceH < elementA.posy) {
           H = distanceH;
         } else {
           H = elementA.posy;
         }
 
-        if (distanceW < elementA.posx){
+        if (distanceW < elementA.posx) {
           W = distanceW;
         } else {
           W = elementA.posx;
@@ -517,13 +518,36 @@ export class VideocreatorComponent implements OnInit {
         //let color = colors[(Math.random() * colors.length) | 0];
         let delay = Math.random() * duration;
         if (element.fromto === 'from') {
-          this.primairytimeline.from(cln, duration, { physics2D: { velocity: Math.random() * W, angle: Math.random() * 40 + 250, gravity: H, repeat:repeat, yoyo: element.yoyo } }, delay);
+          this.primairytimeline.from(cln, duration, { physics2D: { velocity: Math.random() * W, angle: Math.random() * 40 + 250, gravity: H, repeat: repeat, yoyo: element.yoyo } }, delay);
         }
         if (element.fromto === 'to') {
-          this.primairytimeline.to(cln, duration, { physics2D: { velocity: Math.random() * W, angle: Math.random() * 40 + 250, gravity: H, repeat:repeat, yoyo: element.yoyo } }, delay);
+          this.primairytimeline.to(cln, duration, { physics2D: { velocity: Math.random() * W, angle: Math.random() * 40 + 250, gravity: H, repeat: repeat, yoyo: element.yoyo } }, delay);
         }
 
       }
+    }
+
+    if (anitype === 'followminions') {
+
+      for (let i = 0; i < 30; i++) {
+        //start creature animation every 0.12 seconds
+        let cln = iset.cloneNode(true);
+        //console.log(cln);
+        let parent = iset.parentElement;
+        parent.append(cln);
+        this.primairytimeline.to(cln, duration, { 
+          bezier: {
+            type: "soft",
+            values: [{ setX: 150, setY: 300 }, { setX: 300, setY: -10 }, { setX: 500 + Math.random() * 100, setY: 320 * Math.random() + 50 }, { setX: 650, setY: 320 * Math.random() + 50 }, { setX: 900, setY: -80 }],
+            //autoRotate needs to know how to adjust x/y/rotation so we pass in the names of the apporpriate KineticJS methods
+            autoRotate: ["setX", "setY", "setRotationDeg"]
+          },
+          ease: Linear.easeNone, autoCSS: false,
+            // repeat: repeat, 
+            // yoyo: element.yoyo 
+          }, i * 0.17);
+      }
+
     }
 
 
@@ -537,6 +561,8 @@ export class VideocreatorComponent implements OnInit {
         this.primairytimeline.to(iset, duration, aniset, startime);
       }
     }
+
+
 
   }
 
@@ -741,7 +767,7 @@ export class VideocreatorComponent implements OnInit {
   onChangeShape(element) {
     element.style['border-radius'] = '';
     element.style.class = '';
-    
+
     if (element.shape === 'round') {
       element.style['border-radius'] = '50%';
     }
@@ -1153,7 +1179,7 @@ export class VideocreatorComponent implements OnInit {
     }
     this.animationarray.push(txt);
     this.detectchange();
- 
+
   }
 
   deleteTextAnimation(iv) {
