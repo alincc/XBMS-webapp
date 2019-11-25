@@ -38,21 +38,21 @@
 
 
 
-<div class="videocontrols">
+<div class="videocontrols" fxLayout="column">
     <div fxLayout="row" fxLayoutGap="4px">
-        <button mat-mini-fab color="primary" (click)="playFunc()" fxFlex>
+        <button mat-mini-fab color="primary" (click)="playFunc()">
             <mat-icon>play_circle_outline</mat-icon>
         </button>
-        <button mat-mini-fab color="primary" (click)="stopFunc()" fxFlex>
+        <button mat-mini-fab color="primary" (click)="stopFunc()">
             <mat-icon>stop</mat-icon>
         </button>
-        <button mat-mini-fab color="primary" (click)="pauseFunc()" fxFlex>
+        <button mat-mini-fab color="primary" (click)="pauseFunc()">
             <mat-icon>pause_circle_outline</mat-icon>
         </button>
-        <button mat-mini-fab color="primary" (click)="reverseFunc()" fxFlex>
+        <button mat-mini-fab color="primary" (click)="reverseFunc()">
             <mat-icon>fast_rewind</mat-icon>
         </button>
-        <button mat-mini-fab color="primary" (click)="fastforwardFunc()" fxFlex>
+        <button mat-mini-fab color="primary" (click)="fastforwardFunc()">
             <mat-icon>fast_forward</mat-icon>
         </button>
         <mat-icon *ngIf="setreplay === false" color="primary" (click)="setReplay()">replay</mat-icon>
@@ -65,6 +65,17 @@
             tickInterval="1" min="1" max="600"></mat-slider>
         <label>{{counter}} &nbsp; sec</label>
     </div>
+    <div fxLayout="row">
+        <label>{{ currenttime | number : '1.2-2'}}</label>
+        <div class="timelinesmall-container" [style.width]="'200px'">
+            <div class="timelinesmall-active" [style.width]="counter + 'px'" #timelinebound id="timelinebound">
+                <div class="timelinesmall-setter" [style.transform]="'translate(' + currenttime + 'px, 0px)'"
+                    [inBounds]="true" [bounds]="timelinebound" [lockAxis]="'y'" ngDraggable
+                    (movingOffset)="onMovingTimeline($event, i, animation)" [scale]="'1'"></div>
+            </div>
+        </div>
+    </div>
+
 </div>
 
 <div style="width: 100%; margin: 10px 0px 10px 0px;" (swipeleft)="swipeleft($event)" (swiperight)="swiperight($event)"
@@ -177,11 +188,11 @@
                         <mat-form-field>
                             <mat-select [(value)]="animation.anim_type" (selectionChange)="detectchange()">
                                 <mat-option value="rotation">Rotate</mat-option>
-                                <mat-option value="translate">Translate</mat-option>
+                                <!-- <mat-option value="translate">Translate</mat-option> -->
                                 <mat-option value="scale">Scale</mat-option>
                                 <mat-option value="skew">Skew</mat-option>
                                 <mat-option value="appear">Appear</mat-option>
-                                <mat-option value="disappear">Disappear</mat-option>
+                                <!-- <mat-option value="disappear">Disappear</mat-option> -->
                                 <mat-option value="move">Move</mat-option>
                                 <mat-option value="fountain">Fountain</mat-option>
                                 <mat-option value="followminions">Minions</mat-option>

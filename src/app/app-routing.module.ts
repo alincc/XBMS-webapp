@@ -11,7 +11,6 @@ import { LoginComponent } from './login/login.component';
 import { ReturnpageComponent } from './returnpage/returnpage.component';
 import { MarketingplannerComponent } from './marketingplanner/marketingplanner.component'
 import { LinkedinComponent } from './shared/linkedin/linkedin.component';
-import { RequestobjectComponent } from './marketing/videocreator/requestobject/requestobject.component';
 import { TranslationsComponent } from './translations/translations.component'
 
 const routes: Routes = [
@@ -85,10 +84,6 @@ const routes: Routes = [
   {
     path: 'returnpage', component: ReturnpageComponent
     , canActivate: [AuthGuard]
-  },
-
-  { // node request hmtl5 to video
-    path: 'videorequestobject/:videoobject/:canvas', component: RequestobjectComponent 
   },
 
   {

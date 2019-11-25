@@ -84,7 +84,6 @@ import { HammerGestureConfig, HAMMER_GESTURE_CONFIG } from '@angular/platform-br
 import { CalendarModule, DateAdapter } from 'angular-calendar';
 import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
 import { VideocreatorComponent } from './marketing/videocreator/videocreator.component';
-import { RequestobjectComponent } from './marketing/videocreator/requestobject/requestobject.component';
 import { InlineSVGModule } from 'ng-inline-svg';
 import { CanvasWhiteboardModule } from 'ng2-canvas-whiteboard';
 //disable pinch and rotate to scroll swip check the hammerjs doc for future fix
@@ -146,7 +145,6 @@ export class HammerConfig extends GestureConfig  {
     ImagecreatorComponent,
     VideouploadComponent,
     VideocreatorComponent,
-    RequestobjectComponent,
     VectoruploadComponent,
     BackgroundComponent,
     TranslationsComponent

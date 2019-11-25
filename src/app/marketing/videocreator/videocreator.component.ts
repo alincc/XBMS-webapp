@@ -6,24 +6,20 @@ import {
 } from '../../shared';
 import { Subscription } from 'rxjs';
 import { MediaObserver, MediaChange } from '@angular/flex-layout';
-import { TimelineMax, TweenLite, Power0 } from 'gsap';
-import * as MorphSVGPlugin from '../../../assets/js/MorphSVGPlugin';
-import * as DrawSVGPlugin from '../../../assets/js/DrawSVGPlugin';
-import * as MotionPathPlugin from '../../../assets/js/MotionPathPlugin';
-import * as SplitText from '../../../assets/js/SplitText';
-import * as physicsProps from '../../../assets/js/PhysicsPropsPlugin'
-import * as physics2D from '../../../assets/js/Physics2DPlugin'
-import { TimelineLite, Back, Power1, SlowMo, Elastic, Bounce, Circ, Sine, Power3, Linear } from 'gsap';
+import { gsap } from 'gsap/all';
+import { Physics2DPlugin, SplitText, DrawSVGPlugin, MorphSVGPlugin, MotionPathPlugin } from 'gsap/all';
+gsap.registerPlugin(Physics2DPlugin, SplitText, DrawSVGPlugin, MorphSVGPlugin, MotionPathPlugin);
 import { FileUploader, FileItem } from 'ng2-file-upload';
 import { MatSnackBar, AnimationDurations } from '@angular/material';
 declare const SVG: any;
 import '@svgdotjs/svg.draggable.js'
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import * as normalize from 'normalize-svg-coords';
-const plugins = [DrawSVGPlugin, MorphSVGPlugin, SplitText, physics2D, MotionPathPlugin]; //needed for GSAP 
+const plugins = [DrawSVGPlugin, MorphSVGPlugin, SplitText, Physics2DPlugin, MotionPathPlugin]; //needed for GSAP 
 import { CanvasWhiteboardComponent } from 'ng2-canvas-whiteboard';
 import { fonts } from '../../shared/listsgeneral/fonts';
 import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
+import { duration } from 'moment';
 
 export class animationtype {
   start_time: number; //delayt
@@ -220,9 +216,9 @@ export class VideocreatorComponent implements OnInit {
   public animationarray = []; //array with style and position settings;
   //public animationelements = []; //arrat with the actual greensock animations
   public play = false;
-  public menu = new TimelineMax({ paused: true, reversed: true });
-  public primairytimeline = new TimelineMax({ paused: true, reversed: true });
-  private progressbarline = new TimelineMax({ paused: true, reversed: true });
+  //public menu = gsap.timeline({ paused: true, reversed: true });
+  public primairytimeline = gsap.timeline({ paused: true, reversed: true });
+  //private progressbarline = gsap.timeline({ paused: true, reversed: true });
   public whiteboard = false;
   public listviewxsshow = false;
   public showprogressbar = false;
@@ -337,6 +333,7 @@ export class VideocreatorComponent implements OnInit {
   }
 
   async detectchange() {
+    //this.primairytimeline.clear();
     console.log('run check', this.animationarray);
     this.animationarray.forEach(elm => {
       if (elm.posx > 0) {
@@ -375,7 +372,7 @@ export class VideocreatorComponent implements OnInit {
   createSplitText(elm: textanimation, textani: splittexttype) {
     let splittextwhere = textani.textanimationtype;
     let id = document.getElementById(elm.id);
-    let splitText = new SplitText.SplitText(id, { type: textani.textanimationtype })
+    let splitText = new SplitText(id, { type: textani.textanimationtype })
     let toset = {
       y: 100,
       autoAlpha: 0
@@ -390,23 +387,13 @@ export class VideocreatorComponent implements OnInit {
     if (textani.textanimationtype === 'lines') { setto = line; lenghtarr = line.length }
     let dura = textani.duration / lenghtarr;
     // stagger durationis for each stag (word line character etc.. )
-    // this.primairytimeline.to(splitText.chars, textani.duration, toset, textani.start_time);
-    //this.primairytimeline.staggerTo(setto, 1, { opacity:0, cycle:{ y:[20, -20], rotationX:[-90, 90]} }, 0.01, "erase+=1.5");
-
-    //{physicsProps:{
-    //  x:{velocity:100, acceleration:200},
-    //  y:{velocity:-200, friction:0.1}
-
-    //{physics2D:{
-    //  velocity:300, angle:-60, acceleration:50, accelerationAngle:18}}
 
     let ease = this.selectEaseType(textani.easetype);
-
     if (textani.fromto === 'from') {
-      this.primairytimeline.staggerFrom(setto, textani.duration, { x: textani.y, y: textani.x, autoAlpha: 0, ease: ease }, 0.1, textani.start_time)
+      this.primairytimeline.from(setto, { duration: textani.duration, x: textani.y, y: textani.x, autoAlpha: 0, ease: ease, stagger: 0.1, delay: textani.start_time }, 0)
     }
     if (textani.fromto === 'to') {
-      this.primairytimeline.staggerTo(setto, textani.duration, { x: textani.y, y: textani.x, autoAlpha: 0, ease: ease }, 0.1, textani.start_time)
+      this.primairytimeline.to(setto, { duration: textani.duration, x: textani.y, y: textani.x, autoAlpha: 0, ease: ease, stagger: 0.1, delay: textani.start_time }, 0)
     }
 
   }
@@ -415,28 +402,28 @@ export class VideocreatorComponent implements OnInit {
     let ease;
     switch (type) {
       case 'bounce':
-        ease = Bounce.easeOut;
+        ease = 'bounce.out';
         break;
       case 'elastic':
-        ease = Elastic.easeOut.config(1, 0.3)
+        ease = 'elastic.out(1, 0.3)'
         break;
       case 'circle':
-        ease = Circ.easeOut
+        ease = 'circ.out'
         break;
       case 'sine':
-        ease = Sine.easeOut
+        ease = 'sine.out'
         break;
       case 'over':
-        ease = Back.easeOut.config(1.7)
+        ease = 'back.out(1.7)'
         break;
       case 'linear':
-        ease = Power3.easeOut
+        ease = 'power3.out'
         break;
       case 'easy':
-        ease = Power0.easeOut
+        ease = 'power0.out'
         break;
       case 'slowmotion':
-        ease = SlowMo.ease.config(0.7, 0.7, false)
+        ease = 'slow(0.7, 0.7, false)'
       default:
         ease = '';
     }
@@ -451,48 +438,55 @@ export class VideocreatorComponent implements OnInit {
 
   addAnimation(iset, element: animationtype, elementA) {
     let duration = element.duration;
-    let startime = element.start_time
+    let startime = element.start_time;
     let anitype = element.anim_type;
     let rotationcycle = element.rotationcycle;
     let scalesize = element.scalesize;
     let skewY = element.skewY;
     let skewX = element.skewX;
-    //let travellocY = element.posy;
-    //let travellocX = element.posx;
     let aniset;
 
     let ease = this.selectEaseType(element.easetype);
     let repeat = element.repeat;
     if (anitype === 'rotation') {
       let orgin = element.transformOriginX + ' ' + element.transformOriginY
-      aniset = { rotation: rotationcycle, ease: ease, transformOrigin: orgin, repeat: repeat, yoyo: element.yoyo }
+      aniset = { duration: duration,  rotation: rotationcycle, 
+        ease: ease, transformOrigin: orgin, 
+        repeat: repeat, yoyo: element.yoyo }
     }
-    // if (anitype === 'translate') {
-    //   aniset = { rotation: '360', ease: ease, repeat:repeat }
-    // }
     if (anitype === 'scale') {
-      aniset = { scale: scalesize, ease: ease, repeat: repeat, yoyo: element.yoyo }
+      aniset = { duration: duration,
+        scale: scalesize, ease: ease, repeat: repeat, yoyo: element.yoyo }
     }
     if (anitype === 'appear') {
       this.selectedelement.style.opacity = 0;
-      aniset = { opacity: 1 };
+      aniset = { duration: duration,  opacity: 1 };
     }
-    if (anitype === 'disappear') {
-      aniset = { opacity: 0 }, { opacity: 1 };
-    }
+    // if (anitype === 'disappear') {
+    //   aniset = { duration: duration,  opacity: 0 }, { opacity: 1 };
+    // }
     if (anitype === 'move') {
-      aniset = { y: element.travellocY, x: element.travellocX, ease: ease, repeat: repeat, yoyo: element.yoyo }
+      aniset = { duration: duration,  
+        y: element.travellocY, x: element.travellocX, ease: ease, repeat: repeat, yoyo: element.yoyo }
     }
     if (anitype === 'skew') {
-      aniset = { skewY: skewY, skewX: skewX, ease: ease, repeat: repeat, yoyo: element.yoyo }
+      aniset = { duration: duration, 
+        skewY: skewY, skewX: skewX, ease: ease, repeat: repeat, yoyo: element.yoyo }
     }
-    if (anitype === 'fountain') {
-      //let dots = this.primairytimeline;
-      var dots = new TimelineLite()
-      let qty = 80;
-      let duration = element.duration;
-      let colors = ["#91e600", "#84d100", "#73b403", "#528003"];
 
+    if (anitype !== 'fountain') {
+      console.log(iset, aniset, startime);
+      if (element.fromto === 'from') {
+        this.primairytimeline.from(iset, aniset, startime);
+      }
+      if (element.fromto === 'to') {
+        this.primairytimeline.to(iset, aniset, startime);
+      }
+    }
+
+    if (anitype === 'fountain') {
+      let qty = 80;
+      //let colors = ["#91e600", "#84d100", "#73b403", "#528003"];
       for (let i = 0; i < qty; i++) {
         let height = parseInt(this.canvas.height, 10);
         let width = parseInt(this.canvas.width, 10);
@@ -512,58 +506,44 @@ export class VideocreatorComponent implements OnInit {
           W = elementA.posx;
         }
         let cln = iset.cloneNode(true);
-        //console.log(cln);
+        // console.log(cln);
         let parent = iset.parentElement;
         parent.append(cln);
         //let color = colors[(Math.random() * colors.length) | 0];
         let delay = Math.random() * duration;
         if (element.fromto === 'from') {
-          this.primairytimeline.from(cln, duration, { physics2D: { velocity: Math.random() * W, angle: Math.random() * 40 + 250, gravity: H, repeat: repeat, yoyo: element.yoyo } }, delay);
+          this.primairytimeline.from(cln, { duration: duration, delay: delay, repeat: repeat, yoyo: element.yoyo,
+            physics2D: { velocity: Math.random() * W, angle: Math.random() * 40 + 250, gravity: H } }, startime);
         }
         if (element.fromto === 'to') {
-          this.primairytimeline.to(cln, duration, { physics2D: { velocity: Math.random() * W, angle: Math.random() * 40 + 250, gravity: H, repeat: repeat, yoyo: element.yoyo } }, delay);
+          this.primairytimeline.to(cln, { duration: duration, delay: delay, repeat: repeat, yoyo: element.yoyo,
+            physics2D: { velocity: Math.random() * W, angle: Math.random() * 40 + 250, gravity: H } }, startime);
+            
         }
-
       }
     }
 
     if (anitype === 'followminions') {
-
       for (let i = 0; i < 30; i++) {
         //start creature animation every 0.12 seconds
         let cln = iset.cloneNode(true);
         //console.log(cln);
         let parent = iset.parentElement;
         parent.append(cln);
-        this.primairytimeline.to(cln, duration, { 
-          bezier: {
-            type: "soft",
-            values: [{ setX: 150, setY: 300 }, { setX: 300, setY: -10 }, { setX: 500 + Math.random() * 100, setY: 320 * Math.random() + 50 }, { setX: 650, setY: 320 * Math.random() + 50 }, { setX: 900, setY: -80 }],
-            //autoRotate needs to know how to adjust x/y/rotation so we pass in the names of the apporpriate KineticJS methods
-            autoRotate: ["setX", "setY", "setRotationDeg"]
-          },
-          ease: Linear.easeNone, autoCSS: false,
-            // repeat: repeat, 
-            // yoyo: element.yoyo 
-          }, i * 0.17);
-      }
-
-    }
-
-
-    if (anitype !== 'fountain') {
-
-      if (element.fromto === 'from') {
-        this.primairytimeline.from(iset, duration, aniset, startime);
-      }
-
-      if (element.fromto === 'to') {
-        this.primairytimeline.to(iset, duration, aniset, startime);
+        this.primairytimeline.to(cln, 
+          {
+            duration: duration,
+            setX: 150, setY: 300,
+            // { setX: 300, setY: -10 },
+            // { setX: 500 + Math.random() * 100, setY: 320 * Math.random() + 50 },
+            // { setX: 650, setY: 320 * Math.random() + 50 }, { setX: 900, setY: -80 },
+            ease: 'linear', autoCSS: false,
+            repeat: repeat,
+            yoyo: element.yoyo,
+            delay: i * 0.17
+          });
       }
     }
-
-
-
   }
 
 
@@ -594,10 +574,10 @@ export class VideocreatorComponent implements OnInit {
       skewY: 50,
       skewX: 50,
       easetype: 'elastic',
-      fromto: 'from',
+      fromto: 'to',
       transformOriginX: '50%',
-      transformOriginY: '200px',
-      repeat: 1,
+      transformOriginY: '50%',
+      repeat: 0,
       yoyo: false
     }
     this.selectedelement.animation.push(newanimation);
@@ -834,10 +814,10 @@ export class VideocreatorComponent implements OnInit {
       skewY: 50,
       skewX: 50,
       easetype: '',
-      fromto: 'from',
+      fromto: 'to',
       transformOriginX: '50%',
-      transformOriginY: '200px',
-      repeat: 1,
+      transformOriginY: '50%',
+      repeat: 0,
       yoyo: false
     }];
     // only add if new svg not split from 
@@ -959,10 +939,10 @@ export class VideocreatorComponent implements OnInit {
       skewY: 50,
       skewX: 50,
       easetype: 'elastic',
-      fromto: 'from',
+      fromto: 'to',
       transformOriginX: '50%',
-      transformOriginY: '200px',
-      repeat: 1,
+      transformOriginY: '50%',
+      repeat: 0,
       yoyo: false
     }];
     let img: imageanimation = {
@@ -1009,10 +989,10 @@ export class VideocreatorComponent implements OnInit {
       skewY: 50,
       skewX: 50,
       easetype: 'elastic',
-      fromto: 'from',
+      fromto: 'to',
       transformOriginX: '50%',
-      transformOriginY: '200px',
-      repeat: 1,
+      transformOriginY: '50%',
+      repeat: 0,
       yoyo: false
     }];
     let img: shapeanimation = {
@@ -1064,10 +1044,10 @@ export class VideocreatorComponent implements OnInit {
       skewY: 50,
       skewX: 50,
       easetype: 'elastic',
-      fromto: 'from',
+      fromto: 'to',
       transformOriginX: '50%',
-      transformOriginY: '200px',
-      repeat: 1,
+      transformOriginY: '50%',
+      repeat: 0,
       yoyo: false
     }];
     let whiteboard: whiteboardanimation = {
@@ -1137,10 +1117,10 @@ export class VideocreatorComponent implements OnInit {
       skewY: 50,
       skewX: 50,
       easetype: 'elastic',
-      fromto: 'from',
+      fromto: 'to',
       transformOriginX: '50%',
-      transformOriginY: '200px',
-      repeat: 1,
+      transformOriginY: '50%',
+      repeat: 0,
       yoyo: false
     }];
     let splittext: splittexttype[] = [{
@@ -1151,7 +1131,7 @@ export class VideocreatorComponent implements OnInit {
       duration: 2.5,
       x: 0,
       y: 100,
-      fromto: 'from',
+      fromto: 'to',
       easetype: 'bounce'
     }]
     let txt: textanimation = {
@@ -1186,21 +1166,20 @@ export class VideocreatorComponent implements OnInit {
     this.selectedelement.splittextanimation.splice(iv, 1);
   }
 
-
-  menuClick() {
-    this.menu.reversed() ? this.menu.play() : this.menu.reverse();
-    return //console.log('clicked');
-  }
-
   playFunc() {
+    console.log(this.primairytimeline);
     this.removeVectorPathMultiSelection();
     this.removeVectorPathSelection();
-    this.detectchange();
-    console.log('play');
+
+    if (this.currenttime === 0){
+      this.detectchange();
+    }
+    
+    console.log('play', this.primairytimeline.time());
     //this.progressbarline.play();
     // clean up for play
     this.selectedVecPath = false;
-
+    clearTimeout(this.t); //to make sure there is no second loop
 
     setTimeout(() => {
 
@@ -1210,8 +1189,11 @@ export class VideocreatorComponent implements OnInit {
       if (this.canvas.loop) {
         this.videoPlayer.loop = true;
       }
-      this.primairytimeline.play(this.currenttime);
-      clearTimeout(this.t); //to make sure there is no second loop
+      if (this.currenttime === 0){
+        this.primairytimeline.play(0);
+      } else {
+        this.primairytimeline.resume();
+      }
       this.t = setInterval(() => { this.incrementSeconds() }, 100);
     }, 300);
   }
@@ -1226,20 +1208,15 @@ export class VideocreatorComponent implements OnInit {
     }
 
     this.currenttime = 0;
+    this.primairytimeline.restart();
     this.primairytimeline.pause();
-    this.primairytimeline.progress(0);
+    //this.primairytimeline.progress(0);
     this.primairytimeline.timeScale(1);
+
     if (this.canvas.videourl) {
       this.videoPlayer.pause();
       this.videoPlayer.currentTime = 0;
     }
-
-    // console.log(this.currenttime);
-    // this.detectchange();
-    //this.progressbarline.reverse();
-    //this.primairytimeline.reverse();
-    //this.progressbar.reversed() ?
-    //this.progressbarline.progress(0);
   }
 
   pauseFunc() {
@@ -1259,6 +1236,8 @@ export class VideocreatorComponent implements OnInit {
   }
 
   reverseFunc() {
+    clearTimeout(this.t);
+    this.t = setInterval(() => { this.deleteSeconds() }, 100);
     this.primairytimeline.reverse();
     if (this.canvas.videourl) {
       this.videoPlayer.playbackRate = 1.0;
@@ -1279,6 +1258,12 @@ export class VideocreatorComponent implements OnInit {
         this.currenttime = 0;
         this.playFunc()
       }
+    }
+  }
+
+  deleteSeconds(){
+    if (this.currenttime > 0 ){
+      this.currenttime = this.currenttime - 0.1;
     }
   }
 
@@ -1497,7 +1482,7 @@ export class VideocreatorComponent implements OnInit {
           let fromvac = document.getElementById(pathid);
 
           if (i2 >= set2length) {  // if there more parths in vector 2 then 1
-            this.primairytimeline.to(fromvac, 1, { opacity: 0 }, animation.start_time);
+            this.primairytimeline.to(fromvac,{ duration: 1, opacity: 0, delay: animation.start_time} );
           } else {
             //console.log(vectors, set2, i2)
             let pathid2 = vectors[set2].pathids[i2];
@@ -1506,9 +1491,9 @@ export class VideocreatorComponent implements OnInit {
             // hidden is needed for the morph animation but we also need to show the original on finish 
             // opacity can make it appear more gratually which visibility can not
             this.primairytimeline.set(tovec, { opacity: 0 }, 0);
-            this.primairytimeline.to(tovec, 1, { opacity: 1 }, fintime);
+            this.primairytimeline.to(tovec, { duration: 1, opacity: 1, delay: fintime });
             this.primairytimeline.set(tovec, { visibility: 'hidden' }, 0);
-            this.primairytimeline.set(tovec, { visibility: 'visible' }, fintime);
+            this.primairytimeline.set(tovec, { visibility: 'visible', delay: fintime});
 
             await this.setMorphAni(fromvac, tovec, animation);
           }
@@ -1525,7 +1510,7 @@ export class VideocreatorComponent implements OnInit {
               let resetindex = exti - vector.pathids.length;
               let resettovec = document.getElementById(vectors[set2].pathids[resetindex]);
               // await this.setMorphAni(fromexvac, resettovec, animation);
-              this.primairytimeline.to(fromexvac, animation.duration, { morphSVG: resettovec }, animation.start_time);
+              this.primairytimeline.to(fromexvac, { duration: animation.duration, morphSVG: resettovec, delay: animation.start_time });
 
             }
             ++exti
@@ -1551,8 +1536,8 @@ export class VideocreatorComponent implements OnInit {
   addWeatherEffect() {
     console.log(this.canvas.weather);
     let type = this.canvas.weather;
-    TweenLite.set("#weathercontainer", { perspective: 600 })
-    TweenLite.set("img", { xPercent: "-50%", yPercent: "-50%" })
+    gsap.set("#weathercontainer", { perspective: 600 })
+    gsap.set("img", { xPercent: "-50%", yPercent: "-50%" })
 
     let classtype;
     let total = 30;
@@ -1573,20 +1558,20 @@ export class VideocreatorComponent implements OnInit {
     let heightanibottom = heightani - 100; // total area from above the square to lower edge
     let heightanitop = heightanibottom * 2;
 
-    console.log(heightanibottom, heightanitop);
+    //console.log(heightanibottom, heightanitop);
 
     for (let i = 0; i < total; i++) {
       var Div = document.createElement('div');
 
       if (type === 'snow') {
-        TweenLite.set(Div, { attr: { class: 'snow' }, x: this.R(0, canvasposR), y: this.R(h, heightanitop), z: this.R(-200, 200), rotationZ: this.R(0, 180), rotationX: this.R(0, 360) });
+        gsap.set(Div, { attr: { class: 'snow' }, x: this.R(0, canvasposR), y: this.R(h, heightanitop), z: this.R(-200, 200), rotationZ: this.R(0, 180), rotationX: this.R(0, 360) });
       }
       if (type === 'rain') {
-        TweenLite.set(Div, { attr: { class: 'rain' }, x: this.R(0, canvasposR), y: this.R(heightanibottom, heightanitop), z: this.R(-200, 200), rotation: "-20_short", });
+        gsap.set(Div, { attr: { class: 'rain' }, x: this.R(0, canvasposR), y: this.R(heightanibottom, heightanitop), z: this.R(-200, 200), rotation: "-20_short", });
       }
       if (type === 'leaves') {
         classtype = 'leaves' + Math.floor(this.R(1, 4));
-        TweenLite.set(Div, { attr: { class: classtype }, x: this.R(0, canvasposR), y: this.R(h, heightanitop), z: this.R(-200, 200), rotationZ: this.R(0, 180), rotationX: this.R(0, 360) });
+        gsap.set(Div, { attr: { class: classtype }, x: this.R(0, canvasposR), y: this.R(h, heightanitop), z: this.R(-200, 200), rotationZ: this.R(0, 180), rotationX: this.R(0, 360) });
       }
 
       container.appendChild(Div);
@@ -1598,20 +1583,20 @@ export class VideocreatorComponent implements OnInit {
   }
 
   animsnow(elm, h) {
-    this.primairytimeline.to(elm, this.R(15, 30), { y: h + 100, ease: Linear.easeNone, repeat: -1 }, 0);
-    this.primairytimeline.to(elm, this.R(8, 8), { x: '+=100', rotationZ: this.R(0, 180), repeat: -1, yoyo: true, ease: Sine.easeInOut }, 0);
-    this.primairytimeline.to(elm, this.R(2, 8), { rotationX: this.R(0, 360), rotationY: this.R(0, 360), repeat: -1, yoyo: true, ease: Sine.easeInOut }, 0);
+    this.primairytimeline.to(elm, { duration: this.R(15, 30), y: h + 100, ease: 'linear.none', repeat: -1, delay: 0 }, 0);
+    this.primairytimeline.to(elm, { duration: this.R(8, 8), x: '+=100', rotationZ: this.R(0, 180), repeat: -1, yoyo: true, ease: 'sine.out', delay: 0 }, 0);
+    this.primairytimeline.to(elm, { duration: this.R(2, 8), rotationX: this.R(0, 360), rotationY: this.R(0, 360), repeat: -1, yoyo: true, ease: 'sine.out', delay: 0 }, 0);
   };
 
   // element, time(speed), 
   animrain(elm, h) {
-    this.primairytimeline.to(elm, this.R(2, 4), { y: h, x: '+=100', ease: Linear.easeNone, repeat: -1 }, 0);
+    this.primairytimeline.to(elm, { duration: this.R(2, 4), y: h, x: '+=100', ease: 'linear.none', repeat: -1, delay: 0 }, 0);
   };
 
   animleaves(elm, h) {
-    this.primairytimeline.to(elm, this.R(20, 30), { y: h + 100, ease: Linear.easeNone, repeat: -1, delay: 0 }, 0);
-    this.primairytimeline.to(elm, this.R(4, 8), { x: '+=100', rotationZ: this.R(0, 180), repeat: -1, yoyo: true, ease: Sine.easeInOut }, 0);
-    this.primairytimeline.to(elm, this.R(2, 8), { rotationX: this.R(0, 360), rotationY: this.R(0, 360), repeat: -1, yoyo: true, ease: Sine.easeInOut, delay: 0 }, 0);
+    this.primairytimeline.to(elm, { duration: this.R(20, 30), y: h + 100, ease: 'linear.none', repeat: -1, delay: 0 }, 0);
+    this.primairytimeline.to(elm, { duration: this.R(4, 8), x: '+=100', rotationZ: this.R(0, 180), repeat: -1, yoyo: true, ease: 'sine.out', delay: 0}, 0);
+    this.primairytimeline.to(elm, { duration: this.R(2, 8), rotationX: this.R(0, 360), rotationY: this.R(0, 360), repeat: -1, yoyo: true, ease: 'sine.out', delay: 0 }, 0);
   }
 
 
@@ -1622,7 +1607,8 @@ export class VideocreatorComponent implements OnInit {
     let animationdrawto = animation.fillleft + ' ' + animation.fillright;
     let animationdrawfrom = animation.drawleft + ' ' + animation.drawright;
     let hideelement = 0;
-    let ease = animation.easetype;
+    //let ease = animation.easetype;
+    let ease = this.selectEaseType(animation.easetype);
 
     if (animation.hideimage === true) {
       hideelement = 0;
@@ -1630,6 +1616,7 @@ export class VideocreatorComponent implements OnInit {
 
     let fromset =
     {
+      duration: animation.duration,
       drawSVG: animationdrawfrom,
       repeat: animation.repeat,
       stroke: animation.drawcolor,
@@ -1645,7 +1632,7 @@ export class VideocreatorComponent implements OnInit {
       // delay: animation.start_time
     };
 
-    this.primairytimeline.fromTo(from, animation.duration, fromset, toset, animation.start_time);
+    this.primairytimeline.fromTo(from, fromset, toset, animation.start_time);
     // this.primairytimeline.to(from, animation.duration, 
     // {rotation:360, scale:0.5, drawSVG:"100%", 
     // stroke:"white", strokeWidth:6, transformOrigin:"50% 50%"})
@@ -1688,10 +1675,10 @@ export class VideocreatorComponent implements OnInit {
     };
 
     // this.primairytimeline.fromTo(from, animation.duration, toset, animation.start_time);
-    this.primairytimeline.to(from, animation.duration, { morphSVG: to, ease: ease }, animation.start_time);
-    this.primairytimeline.to(to, 1, { opacity: 1 }, fintime);
-    this.primairytimeline.to(from, 1, { opacity: 0 }, fintime);
-    // this.primairytimeline.to(to, animation.duration, {opacity}, animation.start_time);
+    this.primairytimeline.to(from,  { duration: animation.duration, morphSVG: to, ease: ease, delay: animation.start_time });
+    this.primairytimeline.to(to, { duration: 1, opacity: 1, delay: fintime });
+    this.primairytimeline.to(from, { duration: 1, opacity: 0, delay: fintime });
+    // this.primairytimeline.to(to, animation.duration, {opacity, delay: }, animation.start_time);
     return
   }
 
