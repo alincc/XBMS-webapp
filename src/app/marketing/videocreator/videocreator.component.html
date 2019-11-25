@@ -232,8 +232,7 @@
                                 (change)="detectchange()">
                             <mat-hint>repeat</mat-hint>
                         </mat-form-field>
-                        <mat-slide-toggle matTooltip="Reset when repeated" [(ngModel)]="animation.yoyo" fxFlex
-                            (change)="detectchange()">Fluent</mat-slide-toggle>
+                        <mat-checkbox [(ngModel)]="animation.yoyo" (change)="detectchange()" matTooltip="Reset when repeated">Fluent</mat-checkbox>
                         <div *ngIf="animation.anim_type === 'rotation'">
                             <mat-form-field style="max-width: 46px;">
                                 <input [(ngModel)]="animation.rotationcycle" type="number" step="0.1" min="0" matInput
@@ -290,6 +289,7 @@
                             </mat-form-field>
                             <button mat-button
                                 (click)="animation.travellocY = selectedelement.posy; animation.travellocX = selectedelement.posx">Reset</button>
+                            <button mat-button (click)="editMotionPath()">Edit path</button>
                         </div>
                     </div>
                 </mat-expansion-panel>
@@ -1029,6 +1029,13 @@
             <div *ngIf="canvas.videourl === ''" class="image-background"
                 [style.background-image]="canvas['background-image']"></div>
 
+            <!-- <svg id="motionPath" viewBox="-20 0 557 190" class="path-edit">
+                <path id="path"
+                    d="M9,100c0,0,18.53-41.58,49.91-65.11c30-22.5,65.81-24.88,77.39-24.88c33.87,0,57.55,11.71,77.05,28.47c23.09,19.85,40.33,46.79,61.71,69.77c24.09,25.89,53.44,46.75,102.37,46.75c22.23,0,40.62-2.83,55.84-7.43c27.97-8.45,44.21-22.88,54.78-36.7c14.35-18.75,16.43-36.37,16.43-36.37" />
+            </svg> -->
+
+            <div *ngIf="editpath" class="path-edit" [innerHTML]="selectedelement.motionpath  | safeHtml"></div>
+
             <div *ngIf="animationarray.length > 0 && changenow" #myBounds id="myBounds"
                 [style.background-image]="canvas['background-image']"
                 style="overflow: hidden; background-color: transparent;">
@@ -1037,7 +1044,7 @@
                     <div style="height: 100%; width: 100%; position: absolute; z-index: 100; pointer-events: none;"
                         id="weathercontainer"></div>
 
-                    <div *ngIf="element.type === 'image'" id="{{element.id}}" style="overflow: hidden;" ngDraggable
+                    <div *ngIf="element.type === 'image'" id="{{element.id}}"  [attr.id]="element.id" style="overflow: hidden;" ngDraggable
                         [ngStyle]="element.style" [style.width]="element.style.width"
                         [style.height]="element.style.height" (movingOffset)="onMoving($event, i)"
                         [preventDefaultEvent]="true"
@@ -1072,9 +1079,10 @@
                         [clearButtonClass]="'clearButtonClass'" [clearButtonText]="'Clear'" [undoButtonText]="'Undo'"
                         [undoButtonEnabled]="true" [redoButtonText]="'Redo'" [redoButtonEnabled]="true"
                         [colorPickerEnabled]="true" [saveDataButtonEnabled]="true" [saveDataButtonText]="'Save'"
-                        [lineWidth]="1" [strokeColor]="'rgb(0,0,0)'" [shouldDownloadDrawing]="false"
+                        [lineWidth]="2" [strokeColor]="'rgb(0,0,0)'" [shouldDownloadDrawing]="false"
                         (onSave)="onCanvasSave($event, i)">
                     </canvas-whiteboard>
+
                 </div>
             </div>
         </div>

@@ -63,6 +63,17 @@
 }
 
 
+.path-edit { /* class name used in javascript too */
+  width: 100%; /* width needs to be set to 100% */
+  height: 100%; /* height needs to be set to 100% */
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 1000;
+  background-size: cover;
+}
+
+
 
 .timeline-container {
   background-color: gainsboro;
@@ -152,4 +163,20 @@
   left: 0;
   transform: rotate(45deg);
   transform-origin: 100% 100%;
+}
+
+#motionPath {
+  overflow: visible;
+  height: 100%;
+  max-width: 100%;
+  z-index: 10000;
+}
+
+#motionPath path {
+  stroke-width: 2;
+  stroke: gray;
+}
+
+#motionPath .astronaut {
+  visibility: hidden;
 }

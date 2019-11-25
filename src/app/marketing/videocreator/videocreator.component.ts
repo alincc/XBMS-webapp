@@ -6,16 +6,16 @@ import {
 } from '../../shared';
 import { Subscription } from 'rxjs';
 import { MediaObserver, MediaChange } from '@angular/flex-layout';
-import { gsap } from 'gsap/all';
-import { Physics2DPlugin, SplitText, DrawSVGPlugin, MorphSVGPlugin, MotionPathPlugin } from 'gsap/all';
-gsap.registerPlugin(Physics2DPlugin, SplitText, DrawSVGPlugin, MorphSVGPlugin, MotionPathPlugin);
+import { gsap } from 'assets/js/all';
+import { Physics2DPlugin, SplitText, DrawSVGPlugin, MorphSVGPlugin, MotionPathPlugin, MotionPathHelper } from 'assets/js/all';
+gsap.registerPlugin(Physics2DPlugin, SplitText, DrawSVGPlugin, MorphSVGPlugin, MotionPathPlugin, MotionPathHelper);
 import { FileUploader, FileItem } from 'ng2-file-upload';
 import { MatSnackBar, AnimationDurations } from '@angular/material';
 declare const SVG: any;
 import '@svgdotjs/svg.draggable.js'
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import * as normalize from 'normalize-svg-coords';
-const plugins = [DrawSVGPlugin, MorphSVGPlugin, SplitText, Physics2DPlugin, MotionPathPlugin]; //needed for GSAP 
+const plugins = [DrawSVGPlugin, MorphSVGPlugin, SplitText, Physics2DPlugin, MotionPathPlugin, MotionPathHelper]; //needed for GSAP 
 import { CanvasWhiteboardComponent } from 'ng2-canvas-whiteboard';
 import { fonts } from '../../shared/listsgeneral/fonts';
 import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
@@ -88,6 +88,7 @@ export class imageanimation {
   setpos: object;
   id: string;
   animation: animationtype[];
+  motionpath: string;
 }
 
 export class vectoranimation {
@@ -112,6 +113,7 @@ export class vectoranimation {
   svgcombi: string;
   selected: boolean;
   morph: boolean;
+  motionpath: string;
 }
 
 export class vectorelement {
@@ -143,6 +145,8 @@ export class shapeanimation {
   id: string;
   shape: string;
   animation: animationtype[];
+  motioncor: string;
+  motionpath: string;
 }
 
 export class whiteboardanimation {
@@ -184,6 +188,7 @@ export class textanimation {
   id: string;
   splittextanimation: splittexttype[];
   animation: animationtype[];
+  motionpath: string;
 }
 
 @Component({
@@ -265,6 +270,7 @@ export class VideocreatorComponent implements OnInit {
   public selectedVecPath;
   public selectmultiplepaths = false;
   public selectedVecPathmultiple = [];
+  public editpath = false;
 
   constructor(
     private sanitizer: DomSanitizer,
@@ -282,6 +288,7 @@ export class VideocreatorComponent implements OnInit {
 
   ngOnInit() {
 
+
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -293,6 +300,41 @@ export class VideocreatorComponent implements OnInit {
         this.getEditFile()
       }
     }
+  }
+
+  editMotionPath() {
+    this.editpath = true; 
+    this.setMotionPath(this.selectedelement.id);
+    let docset = document.getElementById(this.selectedelement.id);
+    //let docset = document.getElementsByClassName("astronaut");
+    console.log(docset);
+  }
+
+  setMotionPath(id){
+    let time = 0;
+    if (this.editpath){
+      time = 300;
+    }
+    setTimeout(() => {
+    //let docset = document.getElementsByClassName("astronaut");
+    let docset = document.getElementById(id);
+    let svgset = document.getElementById(id +'p');
+    //let p = docset.getElementsByTagName("path");
+    console.log(docset, svgset);
+    //this.primairytimeline.set(docset, {xPercent: -50, yPercent: -50, transformOrigin: "50% 50%", scale: 0.5, autoAlpha: 1});
+    this.primairytimeline.to(docset, {
+      duration: 5, 
+      ease: "power1.inOut",
+      immediateRender: true,
+      motionPath: {
+        path: svgset, //'id + p'
+        autoRotate: 90
+      }
+    }, 0);
+    if (this.editpath){
+      MotionPathHelper.create(docset);
+    }
+  }, time);
   }
 
   formatLabel(value: number | null) {
@@ -319,6 +361,13 @@ export class VideocreatorComponent implements OnInit {
 
     this.selectedelement = element;
     //console.log(this.selectedelement);
+   this.editpath = false;
+  //  this.selectedelement.animations.forEach(ani => {
+  //     if (ani.anim_type === 'move'){
+  //       console.log(ani.anim_type);
+  //       this.editpath = true;
+  //     }
+  //   });
   }
 
   detectMorph(value) {
@@ -335,7 +384,7 @@ export class VideocreatorComponent implements OnInit {
   async detectchange() {
     //this.primairytimeline.clear();
     console.log('run check', this.animationarray);
-    this.animationarray.forEach(elm => {
+        this.animationarray.forEach(elm => {
       if (elm.posx > 0) {
         elm.setpos = { 'x': elm.posx, 'y': elm.posy };
       }
@@ -466,9 +515,18 @@ export class VideocreatorComponent implements OnInit {
     //   aniset = { duration: duration,  opacity: 0 }, { opacity: 1 };
     // }
     if (anitype === 'move') {
-      aniset = { duration: duration,  
-        y: element.travellocY, x: element.travellocX, ease: ease, repeat: repeat, yoyo: element.yoyo }
+      // aniset = { duration: duration,  
+      //   y: element.travellocY, x: element.travellocX, ease: ease, repeat: repeat, yoyo: element.yoyo }
+      //this.setMotionPath(elementA.id);
+      let svgset = document.getElementById(elementA.id +'p');
+      aniset = { 
+        ease: ease, repeat: repeat, yoyo: element.yoyo,
+        motionPath: {
+        path: svgset, //'id + p'
+        autoRotate: 90
+      }}
     }
+
     if (anitype === 'skew') {
       aniset = { duration: duration, 
         skewY: skewY, skewX: skewX, ease: ease, repeat: repeat, yoyo: element.yoyo }
@@ -872,7 +930,10 @@ export class VideocreatorComponent implements OnInit {
       svgcombi: svgc,
       vectoranimation: vectanim,
       selected: false,
-      morph: false
+      morph: false,
+      motioncor: 'd="M9,100c0,0,18.53-41.58,49.91-65.11c30-22.5,65.81-24.88,77.39-24.88c33.87,0,57.55,11.71,77.05,28.47c23.09,19.85,40.33,46.79,61.71,69.77c24.09,25.89,53.44,46.75,102.37,46.75c22.23,0,40.62-2.83,55.84-7.43c27.97-8.45,44.21-22.88,54.78-36.7c14.35-18.75,16.43-36.37,16.43-36.37",
+      motionpath: '<svg id="'+ vectorid +'mp" viewBox="-20 0 557 190" class="path-edit"><path id="'+ vectorid +'p" '+
+                    'd="M9,100c0,0,18.53-41.58,49.91-65.11c30-22.5,65.81-24.88,77.39-24.88c33.87,0,57.55,11.71,77.05,28.47c23.09,19.85,40.33,46.79,61.71,69.77c24.09,25.89,53.44,46.75,102.37,46.75c22.23,0,40.62-2.83,55.84-7.43c27.97-8.45,44.21-22.88,54.78-36.7c14.35-18.75,16.43-36.37,16.43-36.37" /></svg>',
       // from, 4, {drawSVG:0, repeat:10, yoyo:true}, 4)
     }
     //console.log(vector);
@@ -960,7 +1021,9 @@ export class VideocreatorComponent implements OnInit {
       posy: 0,
       setpos: { 'x': 0, 'y': 0 },
       animation: anim,
-      id: newelnr
+      id: newelnr,
+      motionpath: '<svg id="'+ newelnr +'mp" viewBox="-20 0 557 190" class="path-edit"><path id="'+ newelnr +'p" '+
+      'd="M9,100c0,0,18.53-41.58,49.91-65.11c30-22.5,65.81-24.88,77.39-24.88c33.87,0,57.55,11.71,77.05,28.47c23.09,19.85,40.33,46.79,61.71,69.77c24.09,25.89,53.44,46.75,102.37,46.75c22.23,0,40.62-2.83,55.84-7.43c27.97-8.45,44.21-22.88,54.78-36.7c14.35-18.75,16.43-36.37,16.43-36.37" /></svg>',
     }
     this.animationarray.push(img);
     this.detectchange();
@@ -1013,7 +1076,10 @@ export class VideocreatorComponent implements OnInit {
       setpos: { 'x': 0, 'y': 0 },
       animation: anim,
       id: newelnr,
-      shape: 'square'
+      shape: 'square',
+      motionpath: '<svg id="'+ newelnr +'mp" viewBox="-20 0 557 190" class="path-edit"><path id="'+ newelnr +'p" '+
+      'd="M9,100c0,0,18.53-41.58,49.91-65.11c30-22.5,65.81-24.88,77.39-24.88c33.87,0,57.55,11.71,77.05,28.47c23.09,19.85,40.33,46.79,61.71,69.77c24.09,25.89,53.44,46.75,102.37,46.75c22.23,0,40.62-2.83,55.84-7.43c27.97-8.45,44.21-22.88,54.78-36.7c14.35-18.75,16.43-36.37,16.43-36.37" /></svg>',
+
     }
     this.animationarray.push(img);
     this.detectchange();
@@ -1155,7 +1221,10 @@ export class VideocreatorComponent implements OnInit {
       setpos: { 'x': 0, 'y': 0 },
       animation: anim,
       id: newelnr,
-      splittextanimation: splittext
+      splittextanimation: splittext,
+      motionpath: '<svg id="'+ newelnr +'mp" viewBox="-20 0 557 190" class="path-edit"><path id="'+ newelnr +'p" '+
+      'd="M9,100c0,0,18.53-41.58,49.91-65.11c30-22.5,65.81-24.88,77.39-24.88c33.87,0,57.55,11.71,77.05,28.47c23.09,19.85,40.33,46.79,61.71,69.77c24.09,25.89,53.44,46.75,102.37,46.75c22.23,0,40.62-2.83,55.84-7.43c27.97-8.45,44.21-22.88,54.78-36.7c14.35-18.75,16.43-36.37,16.43-36.37" /></svg>',
+
     }
     this.animationarray.push(txt);
     this.detectchange();
