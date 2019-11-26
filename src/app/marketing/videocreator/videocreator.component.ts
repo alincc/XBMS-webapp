@@ -361,8 +361,9 @@ export class VideocreatorComponent implements OnInit {
       if (element !== this.selectedelement) {
         this.removeVectorPathSelection();
         this.removeVectorPathMultiSelection();
-        this.saveNewMotionPath(this.selectedelement);
-        this.editpath = false;
+
+        //this.saveNewMotionPath(this.selectedelement);
+        
       }
     } else {
       this.selectedelement = element;
@@ -378,6 +379,7 @@ export class VideocreatorComponent implements OnInit {
     console.log(newsvgpath);
     //this.selectedelement = element;
     console.log(MotionPathPlugin.getRawPath(svgpath));
+    this.editpath = false;
   }
 
   detectMorph(value) {
