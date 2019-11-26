@@ -88,6 +88,7 @@ export class imageanimation {
   setpos: object;
   id: string;
   animation: animationtype[];
+  motioncor: string;
   motionpath: string;
 }
 
@@ -113,6 +114,7 @@ export class vectoranimation {
   svgcombi: string;
   selected: boolean;
   morph: boolean;
+  motioncor: string;
   motionpath: string;
 }
 
@@ -188,6 +190,7 @@ export class textanimation {
   id: string;
   splittextanimation: splittexttype[];
   animation: animationtype[];
+  motioncor: string;
   motionpath: string;
 }
 
@@ -303,38 +306,38 @@ export class VideocreatorComponent implements OnInit {
   }
 
   editMotionPath() {
-    this.editpath = true; 
+    this.editpath = true;
     this.setMotionPath(this.selectedelement.id);
     let docset = document.getElementById(this.selectedelement.id);
     //let docset = document.getElementsByClassName("astronaut");
-    console.log(docset);
+    //console.log(docset);
   }
 
-  setMotionPath(id){
+  setMotionPath(id) {
     let time = 0;
-    if (this.editpath){
+    if (this.editpath) {
       time = 300;
     }
     setTimeout(() => {
-    //let docset = document.getElementsByClassName("astronaut");
-    let docset = document.getElementById(id);
-    let svgset = document.getElementById(id +'p');
-    //let p = docset.getElementsByTagName("path");
-    console.log(docset, svgset);
-    //this.primairytimeline.set(docset, {xPercent: -50, yPercent: -50, transformOrigin: "50% 50%", scale: 0.5, autoAlpha: 1});
-    this.primairytimeline.to(docset, {
-      duration: 5, 
-      ease: "power1.inOut",
-      immediateRender: true,
-      motionPath: {
-        path: svgset, //'id + p'
-        autoRotate: 90
+      //let docset = document.getElementsByClassName("astronaut");
+      let docset = document.getElementById(id);
+      let svgset = document.getElementById(id + 'p');
+      //let p = docset.getElementsByTagName("path");
+      //console.log(docset, svgset);
+      //this.primairytimeline.set(docset, {xPercent: -50, yPercent: -50, transformOrigin: "50% 50%", scale: 0.5, autoAlpha: 1});
+      this.primairytimeline.to(docset, {
+        duration: 5,
+        ease: "power1.inOut",
+        immediateRender: true,
+        motionPath: {
+          path: svgset, //'id + p'
+          autoRotate: 90
+        }
+      }, 0);
+      if (this.editpath) {
+        MotionPathHelper.create(docset);
       }
-    }, 0);
-    if (this.editpath){
-      MotionPathHelper.create(docset);
-    }
-  }, time);
+    }, time);
   }
 
   formatLabel(value: number | null) {
@@ -354,20 +357,27 @@ export class VideocreatorComponent implements OnInit {
 
   onSelectElement(element): void {
     //this.detectchange();
-    if (element !== this.selectedelement) {
-      this.removeVectorPathSelection();
-      this.removeVectorPathMultiSelection();
+    if (this.selectedelement) {
+      if (element !== this.selectedelement) {
+        this.removeVectorPathSelection();
+        this.removeVectorPathMultiSelection();
+        this.saveNewMotionPath(this.selectedelement);
+        this.editpath = false;
+      }
+    } else {
+      this.selectedelement = element;
     }
+  }
 
-    this.selectedelement = element;
-    //console.log(this.selectedelement);
-   this.editpath = false;
-  //  this.selectedelement.animations.forEach(ani => {
-  //     if (ani.anim_type === 'move'){
-  //       console.log(ani.anim_type);
-  //       this.editpath = true;
-  //     }
-  //   });
+  saveNewMotionPath(element) {
+    let svgpath = document.getElementById(this.selectedelement.id + 'p');
+    let s = new XMLSerializer(); // convert to string
+    let svgstring = s.serializeToString(svgpath);
+    let newsvgpath = '<svg id="' + this.selectedelement.id + 'mp" viewBox="-20 0 557 190" class="path-edit">'+svgstring+'</svg>';
+    this.selectedelement.motionpath = newsvgpath;
+    console.log(newsvgpath);
+    //this.selectedelement = element;
+    console.log(MotionPathPlugin.getRawPath(svgpath));
   }
 
   detectMorph(value) {
@@ -384,7 +394,7 @@ export class VideocreatorComponent implements OnInit {
   async detectchange() {
     //this.primairytimeline.clear();
     console.log('run check', this.animationarray);
-        this.animationarray.forEach(elm => {
+    this.animationarray.forEach(elm => {
       if (elm.posx > 0) {
         elm.setpos = { 'x': elm.posx, 'y': elm.posy };
       }
@@ -499,17 +509,21 @@ export class VideocreatorComponent implements OnInit {
     let repeat = element.repeat;
     if (anitype === 'rotation') {
       let orgin = element.transformOriginX + ' ' + element.transformOriginY
-      aniset = { duration: duration,  rotation: rotationcycle, 
-        ease: ease, transformOrigin: orgin, 
-        repeat: repeat, yoyo: element.yoyo }
+      aniset = {
+        duration: duration, rotation: rotationcycle,
+        ease: ease, transformOrigin: orgin,
+        repeat: repeat, yoyo: element.yoyo
+      }
     }
     if (anitype === 'scale') {
-      aniset = { duration: duration,
-        scale: scalesize, ease: ease, repeat: repeat, yoyo: element.yoyo }
+      aniset = {
+        duration: duration,
+        scale: scalesize, ease: ease, repeat: repeat, yoyo: element.yoyo
+      }
     }
     if (anitype === 'appear') {
       this.selectedelement.style.opacity = 0;
-      aniset = { duration: duration,  opacity: 1 };
+      aniset = { duration: duration, opacity: 1 };
     }
     // if (anitype === 'disappear') {
     //   aniset = { duration: duration,  opacity: 0 }, { opacity: 1 };
@@ -518,22 +532,26 @@ export class VideocreatorComponent implements OnInit {
       // aniset = { duration: duration,  
       //   y: element.travellocY, x: element.travellocX, ease: ease, repeat: repeat, yoyo: element.yoyo }
       //this.setMotionPath(elementA.id);
-      let svgset = document.getElementById(elementA.id +'p');
-      aniset = { 
+      let svgset = document.getElementById(elementA.id + 'p');
+      aniset = {
         ease: ease, repeat: repeat, yoyo: element.yoyo,
         motionPath: {
-        path: svgset, //'id + p'
-        autoRotate: 90
-      }}
+          path: svgset, //'id + p'
+          autoRotate: 90,
+          immediateRender: true
+        }
+      }
     }
 
     if (anitype === 'skew') {
-      aniset = { duration: duration, 
-        skewY: skewY, skewX: skewX, ease: ease, repeat: repeat, yoyo: element.yoyo }
+      aniset = {
+        duration: duration,
+        skewY: skewY, skewX: skewX, ease: ease, repeat: repeat, yoyo: element.yoyo
+      }
     }
 
     if (anitype !== 'fountain') {
-      console.log(iset, aniset, startime);
+      //console.log(iset, aniset, startime);
       if (element.fromto === 'from') {
         this.primairytimeline.from(iset, aniset, startime);
       }
@@ -570,13 +588,17 @@ export class VideocreatorComponent implements OnInit {
         //let color = colors[(Math.random() * colors.length) | 0];
         let delay = Math.random() * duration;
         if (element.fromto === 'from') {
-          this.primairytimeline.from(cln, { duration: duration, delay: delay, repeat: repeat, yoyo: element.yoyo,
-            physics2D: { velocity: Math.random() * W, angle: Math.random() * 40 + 250, gravity: H } }, startime);
+          this.primairytimeline.from(cln, {
+            duration: duration, delay: delay, repeat: repeat, yoyo: element.yoyo,
+            physics2D: { velocity: Math.random() * W, angle: Math.random() * 40 + 250, gravity: H }
+          }, startime);
         }
         if (element.fromto === 'to') {
-          this.primairytimeline.to(cln, { duration: duration, delay: delay, repeat: repeat, yoyo: element.yoyo,
-            physics2D: { velocity: Math.random() * W, angle: Math.random() * 40 + 250, gravity: H } }, startime);
-            
+          this.primairytimeline.to(cln, {
+            duration: duration, delay: delay, repeat: repeat, yoyo: element.yoyo,
+            physics2D: { velocity: Math.random() * W, angle: Math.random() * 40 + 250, gravity: H }
+          }, startime);
+
         }
       }
     }
@@ -588,7 +610,7 @@ export class VideocreatorComponent implements OnInit {
         //console.log(cln);
         let parent = iset.parentElement;
         parent.append(cln);
-        this.primairytimeline.to(cln, 
+        this.primairytimeline.to(cln,
           {
             duration: duration,
             setX: 150, setY: 300,
@@ -820,6 +842,7 @@ export class VideocreatorComponent implements OnInit {
     if (element.shape === 'heart') {
       element.style.class = 'heart'
       element.style['background-color'] = 'rgba(0, 0, 0, 0)';
+      element.style.width = element.style.height;
     }
 
     if (element.shape === 'star') {
@@ -931,9 +954,9 @@ export class VideocreatorComponent implements OnInit {
       vectoranimation: vectanim,
       selected: false,
       morph: false,
-      motioncor: 'd="M9,100c0,0,18.53-41.58,49.91-65.11c30-22.5,65.81-24.88,77.39-24.88c33.87,0,57.55,11.71,77.05,28.47c23.09,19.85,40.33,46.79,61.71,69.77c24.09,25.89,53.44,46.75,102.37,46.75c22.23,0,40.62-2.83,55.84-7.43c27.97-8.45,44.21-22.88,54.78-36.7c14.35-18.75,16.43-36.37,16.43-36.37",
-      motionpath: '<svg id="'+ vectorid +'mp" viewBox="-20 0 557 190" class="path-edit"><path id="'+ vectorid +'p" '+
-                    'd="M9,100c0,0,18.53-41.58,49.91-65.11c30-22.5,65.81-24.88,77.39-24.88c33.87,0,57.55,11.71,77.05,28.47c23.09,19.85,40.33,46.79,61.71,69.77c24.09,25.89,53.44,46.75,102.37,46.75c22.23,0,40.62-2.83,55.84-7.43c27.97-8.45,44.21-22.88,54.78-36.7c14.35-18.75,16.43-36.37,16.43-36.37" /></svg>',
+      motioncor: 'path: d="M9,100c0,0,18.53-41.58,49.91-65.11c30-22.5,65.81-24.88,77.39-24.88c33.87,0,57.55,11.71,77.05,28.47c23.09,19.85,40.33,46.79,61.71,69.77c24.09,25.89,53.44,46.75,102.37,46.75c22.23,0,40.62-2.83,55.84-7.43c27.97-8.45,44.21-22.88,54.78-36.7c14.35-18.75,16.43-36.37,16.43-36.37"',
+      motionpath: '<svg id="' + vectorid + 'mp" viewBox="-20 0 557 190" class="path-edit"><path id="' + vectorid + 'p" style="opacity: 0;"' +
+        'd="M9,100c0,0,18.53-41.58,49.91-65.11c30-22.5,65.81-24.88,77.39-24.88c33.87,0,57.55,11.71,77.05,28.47c23.09,19.85,40.33,46.79,61.71,69.77c24.09,25.89,53.44,46.75,102.37,46.75c22.23,0,40.62-2.83,55.84-7.43c27.97-8.45,44.21-22.88,54.78-36.7c14.35-18.75,16.43-36.37,16.43-36.37" /></svg>',
       // from, 4, {drawSVG:0, repeat:10, yoyo:true}, 4)
     }
     //console.log(vector);
@@ -1022,8 +1045,9 @@ export class VideocreatorComponent implements OnInit {
       setpos: { 'x': 0, 'y': 0 },
       animation: anim,
       id: newelnr,
-      motionpath: '<svg id="'+ newelnr +'mp" viewBox="-20 0 557 190" class="path-edit"><path id="'+ newelnr +'p" '+
-      'd="M9,100c0,0,18.53-41.58,49.91-65.11c30-22.5,65.81-24.88,77.39-24.88c33.87,0,57.55,11.71,77.05,28.47c23.09,19.85,40.33,46.79,61.71,69.77c24.09,25.89,53.44,46.75,102.37,46.75c22.23,0,40.62-2.83,55.84-7.43c27.97-8.45,44.21-22.88,54.78-36.7c14.35-18.75,16.43-36.37,16.43-36.37" /></svg>',
+      motioncor: 'path: d="M9,100c0,0,18.53-41.58,49.91-65.11c30-22.5,65.81-24.88,77.39-24.88c33.87,0,57.55,11.71,77.05,28.47c23.09,19.85,40.33,46.79,61.71,69.77c24.09,25.89,53.44,46.75,102.37,46.75c22.23,0,40.62-2.83,55.84-7.43c27.97-8.45,44.21-22.88,54.78-36.7c14.35-18.75,16.43-36.37,16.43-36.37"',
+      motionpath: '<svg id="' + newelnr + 'mp"viewBox="-20 0 557 190" class="path-edit"><path id="' + newelnr + 'p" style="opacity: 0;"' +
+        'd="M9,100c0,0,18.53-41.58,49.91-65.11c30-22.5,65.81-24.88,77.39-24.88c33.87,0,57.55,11.71,77.05,28.47c23.09,19.85,40.33,46.79,61.71,69.77c24.09,25.89,53.44,46.75,102.37,46.75c22.23,0,40.62-2.83,55.84-7.43c27.97-8.45,44.21-22.88,54.78-36.7c14.35-18.75,16.43-36.37,16.43-36.37" /></svg>',
     }
     this.animationarray.push(img);
     this.detectchange();
@@ -1077,8 +1101,9 @@ export class VideocreatorComponent implements OnInit {
       animation: anim,
       id: newelnr,
       shape: 'square',
-      motionpath: '<svg id="'+ newelnr +'mp" viewBox="-20 0 557 190" class="path-edit"><path id="'+ newelnr +'p" '+
-      'd="M9,100c0,0,18.53-41.58,49.91-65.11c30-22.5,65.81-24.88,77.39-24.88c33.87,0,57.55,11.71,77.05,28.47c23.09,19.85,40.33,46.79,61.71,69.77c24.09,25.89,53.44,46.75,102.37,46.75c22.23,0,40.62-2.83,55.84-7.43c27.97-8.45,44.21-22.88,54.78-36.7c14.35-18.75,16.43-36.37,16.43-36.37" /></svg>',
+      motioncor: 'path: d="M9,100c0,0,18.53-41.58,49.91-65.11c30-22.5,65.81-24.88,77.39-24.88c33.87,0,57.55,11.71,77.05,28.47c23.09,19.85,40.33,46.79,61.71,69.77c24.09,25.89,53.44,46.75,102.37,46.75c22.23,0,40.62-2.83,55.84-7.43c27.97-8.45,44.21-22.88,54.78-36.7c14.35-18.75,16.43-36.37,16.43-36.37"',
+      motionpath: '<svg id="' + newelnr + 'mp" viewBox="-20 0 557 190" class="path-edit"><path id="' + newelnr + 'p" style="opacity: 0;"' +
+        'd="M9,100c0,0,18.53-41.58,49.91-65.11c30-22.5,65.81-24.88,77.39-24.88c33.87,0,57.55,11.71,77.05,28.47c23.09,19.85,40.33,46.79,61.71,69.77c24.09,25.89,53.44,46.75,102.37,46.75c22.23,0,40.62-2.83,55.84-7.43c27.97-8.45,44.21-22.88,54.78-36.7c14.35-18.75,16.43-36.37,16.43-36.37" /></svg>',
 
     }
     this.animationarray.push(img);
@@ -1222,8 +1247,9 @@ export class VideocreatorComponent implements OnInit {
       animation: anim,
       id: newelnr,
       splittextanimation: splittext,
-      motionpath: '<svg id="'+ newelnr +'mp" viewBox="-20 0 557 190" class="path-edit"><path id="'+ newelnr +'p" '+
-      'd="M9,100c0,0,18.53-41.58,49.91-65.11c30-22.5,65.81-24.88,77.39-24.88c33.87,0,57.55,11.71,77.05,28.47c23.09,19.85,40.33,46.79,61.71,69.77c24.09,25.89,53.44,46.75,102.37,46.75c22.23,0,40.62-2.83,55.84-7.43c27.97-8.45,44.21-22.88,54.78-36.7c14.35-18.75,16.43-36.37,16.43-36.37" /></svg>',
+      motioncor: 'path: d="M9,100c0,0,18.53-41.58,49.91-65.11c30-22.5,65.81-24.88,77.39-24.88c33.87,0,57.55,11.71,77.05,28.47c23.09,19.85,40.33,46.79,61.71,69.77c24.09,25.89,53.44,46.75,102.37,46.75c22.23,0,40.62-2.83,55.84-7.43c27.97-8.45,44.21-22.88,54.78-36.7c14.35-18.75,16.43-36.37,16.43-36.37"',
+      motionpath: '<svg id="' + newelnr + 'mp" viewBox="-20 0 557 190" class="path-edit"><path id="' + newelnr + 'p" style="opacity: 0;" ' +
+        'd="M9,100c0,0,18.53-41.58,49.91-65.11c30-22.5,65.81-24.88,77.39-24.88c33.87,0,57.55,11.71,77.05,28.47c23.09,19.85,40.33,46.79,61.71,69.77c24.09,25.89,53.44,46.75,102.37,46.75c22.23,0,40.62-2.83,55.84-7.43c27.97-8.45,44.21-22.88,54.78-36.7c14.35-18.75,16.43-36.37,16.43-36.37" /></svg>',
 
     }
     this.animationarray.push(txt);
@@ -1240,10 +1266,10 @@ export class VideocreatorComponent implements OnInit {
     this.removeVectorPathMultiSelection();
     this.removeVectorPathSelection();
 
-    if (this.currenttime === 0){
+    if (this.currenttime === 0) {
       this.detectchange();
     }
-    
+
     console.log('play', this.primairytimeline.time());
     //this.progressbarline.play();
     // clean up for play
@@ -1258,7 +1284,7 @@ export class VideocreatorComponent implements OnInit {
       if (this.canvas.loop) {
         this.videoPlayer.loop = true;
       }
-      if (this.currenttime === 0){
+      if (this.currenttime === 0) {
         this.primairytimeline.play(0);
       } else {
         this.primairytimeline.resume();
@@ -1330,8 +1356,8 @@ export class VideocreatorComponent implements OnInit {
     }
   }
 
-  deleteSeconds(){
-    if (this.currenttime > 0 ){
+  deleteSeconds() {
+    if (this.currenttime > 0) {
       this.currenttime = this.currenttime - 0.1;
     }
   }
@@ -1551,7 +1577,7 @@ export class VideocreatorComponent implements OnInit {
           let fromvac = document.getElementById(pathid);
 
           if (i2 >= set2length) {  // if there more parths in vector 2 then 1
-            this.primairytimeline.to(fromvac,{ duration: 1, opacity: 0, delay: animation.start_time} );
+            this.primairytimeline.to(fromvac, { duration: 1, opacity: 0, delay: animation.start_time });
           } else {
             //console.log(vectors, set2, i2)
             let pathid2 = vectors[set2].pathids[i2];
@@ -1562,7 +1588,7 @@ export class VideocreatorComponent implements OnInit {
             this.primairytimeline.set(tovec, { opacity: 0 }, 0);
             this.primairytimeline.to(tovec, { duration: 1, opacity: 1, delay: fintime });
             this.primairytimeline.set(tovec, { visibility: 'hidden' }, 0);
-            this.primairytimeline.set(tovec, { visibility: 'visible', delay: fintime});
+            this.primairytimeline.set(tovec, { visibility: 'visible', delay: fintime });
 
             await this.setMorphAni(fromvac, tovec, animation);
           }
@@ -1664,7 +1690,7 @@ export class VideocreatorComponent implements OnInit {
 
   animleaves(elm, h) {
     this.primairytimeline.to(elm, { duration: this.R(20, 30), y: h + 100, ease: 'linear.none', repeat: -1, delay: 0 }, 0);
-    this.primairytimeline.to(elm, { duration: this.R(4, 8), x: '+=100', rotationZ: this.R(0, 180), repeat: -1, yoyo: true, ease: 'sine.out', delay: 0}, 0);
+    this.primairytimeline.to(elm, { duration: this.R(4, 8), x: '+=100', rotationZ: this.R(0, 180), repeat: -1, yoyo: true, ease: 'sine.out', delay: 0 }, 0);
     this.primairytimeline.to(elm, { duration: this.R(2, 8), rotationX: this.R(0, 360), rotationY: this.R(0, 360), repeat: -1, yoyo: true, ease: 'sine.out', delay: 0 }, 0);
   }
 
@@ -1744,7 +1770,7 @@ export class VideocreatorComponent implements OnInit {
     };
 
     // this.primairytimeline.fromTo(from, animation.duration, toset, animation.start_time);
-    this.primairytimeline.to(from,  { duration: animation.duration, morphSVG: to, ease: ease, delay: animation.start_time });
+    this.primairytimeline.to(from, { duration: animation.duration, morphSVG: to, ease: ease, delay: animation.start_time });
     this.primairytimeline.to(to, { duration: 1, opacity: 1, delay: fintime });
     this.primairytimeline.to(from, { duration: 1, opacity: 0, delay: fintime });
     // this.primairytimeline.to(to, animation.duration, {opacity, delay: }, animation.start_time);
