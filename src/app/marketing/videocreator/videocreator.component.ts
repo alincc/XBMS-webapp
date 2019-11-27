@@ -449,8 +449,7 @@ export class VideocreatorComponent implements OnInit {
         }
         this.addEffect(elm); //normal animatoin
       })
-    }
-    );
+    });
 
 
   }
@@ -1013,7 +1012,7 @@ export class VideocreatorComponent implements OnInit {
       morph: false,
       transform: '',
       //motioncor: 'path: d="M9,100c0,0,18.53-41.58,49.91-65.11c30-22.5,65.81-24.88,77.39-24.88c33.87,0,57.55,11.71,77.05,28.47c23.09,19.85,40.33,46.79,61.71,69.77c24.09,25.89,53.44,46.75,102.37,46.75c22.23,0,40.62-2.83,55.84-7.43c27.97-8.45,44.21-22.88,54.78-36.7c14.35-18.75,16.43-36.37,16.43-36.37"',
-      motionpath: '<svg id="' + vectorid + 'mp" viewBox="-20 0 557 190" class="path-edit"><path id="' + vectorid + 'p" style="opacity: 0;"' +
+      motionpath: '<svg id="' + newelnr + 'mp" viewBox="-20 0 557 190" class="path-edit"><path id="' + newelnr + 'p" style="opacity: 0;"' +
         ' d="M9,100c0,0,18.53-41.58,49.91-65.11c30-22.5,65.81-24.88,77.39-24.88c33.87,0,57.55,11.71,77.05,28.47c23.09,19.85,40.33,46.79,61.71,69.77c24.09,25.89,53.44,46.75,102.37,46.75c22.23,0,40.62-2.83,55.84-7.43c27.97-8.45,44.21-22.88,54.78-36.7c14.35-18.75,16.43-36.37,16.43-36.37" /></svg>',
       // from, 4, {drawSVG:0, repeat:10, yoyo:true}, 4)
 
@@ -1647,7 +1646,7 @@ export class VideocreatorComponent implements OnInit {
           let fromvac = document.getElementById(pathid);
 
           if (i2 >= set2length) {  // if there more parths in vector 2 then 1
-            this.primairytimeline.to(fromvac, { duration: 1, opacity: 0, delay: animation.start_time });
+            this.primairytimeline.to(fromvac, { opacity: 0 },  animation.start_time);
           } else {
             //console.log(vectors, set2, i2)
             let pathid2 = vectors[set2].pathids[i2];
@@ -1655,10 +1654,10 @@ export class VideocreatorComponent implements OnInit {
             //console.log(tovec);
             // hidden is needed for the morph animation but we also need to show the original on finish 
             // opacity can make it appear more gratually which visibility can not
-            this.primairytimeline.set(tovec, { opacity: 0 }, 0);
-            this.primairytimeline.to(tovec, { duration: 1, opacity: 1, delay: fintime });
+            this.primairytimeline.set(tovec, { opacity: 0 });
+            this.primairytimeline.to(tovec, { duration: 1, opacity: 1 },  fintime);
             this.primairytimeline.set(tovec, { visibility: 'hidden' }, 0);
-            this.primairytimeline.set(tovec, { visibility: 'visible', delay: fintime });
+            this.primairytimeline.set(tovec, { visibility: 'visible' }, fintime);
 
             await this.setMorphAni(fromvac, tovec, animation);
           }
@@ -1675,7 +1674,7 @@ export class VideocreatorComponent implements OnInit {
               let resetindex = exti - vector.pathids.length;
               let resettovec = document.getElementById(vectors[set2].pathids[resetindex]);
               // await this.setMorphAni(fromexvac, resettovec, animation);
-              this.primairytimeline.to(fromexvac, { duration: animation.duration, morphSVG: resettovec, delay: animation.start_time });
+              this.primairytimeline.to(fromexvac, { duration: animation.duration, morphSVG: resettovec  }, animation.start_time);
 
             }
             ++exti
@@ -1840,9 +1839,9 @@ export class VideocreatorComponent implements OnInit {
     };
 
     // this.primairytimeline.fromTo(from, animation.duration, toset, animation.start_time);
-    this.primairytimeline.to(from, { duration: animation.duration, morphSVG: to, ease: ease, delay: animation.start_time });
-    this.primairytimeline.to(to, { duration: 1, opacity: 1, delay: fintime });
-    this.primairytimeline.to(from, { duration: 1, opacity: 0, delay: fintime });
+    this.primairytimeline.to(from, { duration: animation.duration, morphSVG: to, ease: ease }, animation.start_time);
+    this.primairytimeline.to(to, { duration: 1, opacity: 1,  }, fintime);
+    this.primairytimeline.to(from, { duration: 1, opacity: 0  }, fintime);
     // this.primairytimeline.to(to, animation.duration, {opacity, delay: }, animation.start_time);
     return
   }
