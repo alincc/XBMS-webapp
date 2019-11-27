@@ -174,7 +174,7 @@
 
                                     <div class="timeline-currentelement" ngDraggable [scale]="'1'"
                                         (movingOffset)="onMovingAnimationEl($event, i, animation)"
-                                        [bounds]="timelinebound" [inBounds]="true" [lockAxis]="'y'"
+                                        [bounds]="timelinebound" [inBounds]="false" [lockAxis]="'y'"
                                         [preventDefaultEvent]="true" ngResizable rzContainment="#timelinebound"
                                         [rzHandles]="'e, w'" (rzResizing)="onResizeAnimationEl($event, i, animation)"
                                         [style.width]="animation.duration * 10 + 'px'">
@@ -1047,7 +1047,7 @@
                     style="background-color: transparent; overflow: hidden;">
 
                     <div *ngIf="element.motionpath" class="path-edit" [innerHTML]="element.motionpath | safeHtml"
-                
+                    [style.width]="canvas.width" [style.height]="canvas.height" 
                     [ngStyle]="{'z-index':editpath === true ? 1000 : -1 }"></div>
 
                     <div style="height: 100%; width: 100%; position: absolute; z-index: 100; pointer-events: none;"
