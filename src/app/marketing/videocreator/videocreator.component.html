@@ -71,7 +71,7 @@
             <div class="timelinesmall-active" [style.width]="counter + 'px'" #timelinebound id="timelinebound">
                 <div class="timelinesmall-setter" [style.transform]="'translate(' + currenttime + 'px, 0px)'"
                     [inBounds]="true" [bounds]="timelinebound" [lockAxis]="'y'" ngDraggable
-                    (movingOffset)="onMovingTimeline($event, i, animation)" [scale]="'1'"></div>
+                     [scale]="'1'"></div>
             </div>
         </div>
     </div>
@@ -174,8 +174,8 @@
 
                                     <div class="timeline-currentelement" ngDraggable [scale]="'1'"
                                         (movingOffset)="onMovingAnimationEl($event, i, animation)"
-                                        [bounds]="timelinebound" [inBounds]="false" [lockAxis]="'y'"
-                                        [preventDefaultEvent]="true" ngResizable rzContainment="#timelinebound"
+                                        [lockAxis]="'y'"
+                                        [preventDefaultEvent]="true" ngResizable 
                                         [rzHandles]="'e, w'" (rzResizing)="onResizeAnimationEl($event, i, animation)"
                                         [style.width]="animation.duration * 10 + 'px'">
                                     </div>
@@ -232,7 +232,8 @@
                                 (change)="detectchange()">
                             <mat-hint>repeat</mat-hint>
                         </mat-form-field>
-                        <mat-checkbox [(ngModel)]="animation.yoyo" (change)="detectchange()" matTooltip="Reset when repeated">Fluent</mat-checkbox>
+                        <mat-checkbox [(ngModel)]="animation.yoyo" (change)="detectchange()"
+                            matTooltip="Reset when repeated">Fluent</mat-checkbox>
                         <div *ngIf="animation.anim_type === 'rotation'">
                             <mat-form-field style="max-width: 46px;">
                                 <input [(ngModel)]="animation.rotationcycle" type="number" step="0.1" min="0" matInput
@@ -290,8 +291,23 @@
                             <button mat-button
                                 (click)="animation.travellocY = selectedelement.posy; animation.travellocX = selectedelement.posx">Reset</button>
                             <button mat-button (click)="editMotionPath()">Edit path</button>
-                            <button mat-button (click)="saveNewMotionPath(selectedelement)">Save path</button>
-                            
+                            <button mat-button (click)="saveNewMotionPath()">Save path</button>
+
+                        </div> 
+
+                        <div *ngIf="animation.anim_type === 'followminions'">
+                            <mat-form-field style="max-width: 46px;">
+                                <input [(ngModel)]="animation.travellocY" type="number" matInput>
+                                <mat-hint>Y-axe</mat-hint>
+                            </mat-form-field>
+                            <mat-form-field style="max-width: 46px;">
+                                <input [(ngModel)]="animation.travellocX" type="number" matInput>
+                                <mat-hint>X-axe</mat-hint>
+                            </mat-form-field>
+                            <button mat-button
+                                (click)="animation.travellocY = selectedelement.posy; animation.travellocX = selectedelement.posx">Reset</button>
+                            <button mat-button (click)="editMotionPath()">Edit path</button>
+                            <button mat-button (click)="saveNewMotionPath()">Save path</button>
                         </div>
                     </div>
                 </mat-expansion-panel>
@@ -1039,6 +1055,9 @@
                 </svg> -->
 
 
+            <div style="height: 100%; width: 100%; position: absolute; z-index: 100; pointer-events: none;"
+                id="weathercontainer"></div>
+
 
             <div *ngIf="animationarray.length > 0 && changenow" #myBounds id="myBounds"
                 [style.background-image]="canvas['background-image']"
@@ -1047,16 +1066,13 @@
                     style="background-color: transparent; overflow: hidden;">
 
                     <div *ngIf="element.motionpath" class="path-edit" [innerHTML]="element.motionpath | safeHtml"
-                    [style.width]="canvas.width" [style.height]="canvas.height" 
-                    [ngStyle]="{'z-index':editpath === true ? 1000 : -1 }"></div>
+                        [style.width]="canvas.width" [style.height]="canvas.height"
+                        [ngStyle]="{'z-index':editpath === true && element === selectedelement ? 1000 : -1 }"></div>
 
-                    <div style="height: 100%; width: 100%; position: absolute; z-index: 100; pointer-events: none;"
-                        id="weathercontainer"></div>
-
-                    <div *ngIf="element.type === 'image'" id="{{element.id}}"  [attr.id]="element.id" style="overflow: hidden;" ngDraggable
-                        [ngStyle]="element.style" [style.width]="element.style.width"
-                        [style.height]="element.style.height" (movingOffset)="onMoving($event, i)"
-                        [preventDefaultEvent]="true"
+                    <div *ngIf="element.type === 'image'" id="{{element.id}}" [attr.id]="element.id"
+                        style="overflow: hidden;" ngDraggable [ngStyle]="element.style"
+                        [style.width]="element.style.width" [style.height]="element.style.height"
+                        (movingOffset)="onMoving($event, i)" [preventDefaultEvent]="true"
                         [style.transform]="'translate(' + element.posx + 'px, ' + element.posy +'px)'"
                         (rzResizing)="onResizing($event, i)" ngResizable [rzAspectRatio]="true">
                         <img *ngIf="element.src" style="width: 100%; height: 100%;" src={{element.src}}>

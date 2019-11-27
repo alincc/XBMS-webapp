@@ -88,8 +88,9 @@ export class imageanimation {
   setpos: object;
   id: string;
   animation: animationtype[];
-  motioncor: string;
+  // motioncor: string;
   motionpath: string;
+  transform: string;
 }
 
 export class vectoranimation {
@@ -114,8 +115,9 @@ export class vectoranimation {
   svgcombi: string;
   selected: boolean;
   morph: boolean;
-  motioncor: string;
+  // motioncor: string;
   motionpath: string;
+  transform: string;
 }
 
 export class vectorelement {
@@ -147,8 +149,9 @@ export class shapeanimation {
   id: string;
   shape: string;
   animation: animationtype[];
-  motioncor: string;
+  //motioncor: string;
   motionpath: string;
+  transform: string;
 }
 
 export class whiteboardanimation {
@@ -190,8 +193,9 @@ export class textanimation {
   id: string;
   splittextanimation: splittexttype[];
   animation: animationtype[];
-  motioncor: string;
+  //motioncor: string;
   motionpath: string;
+  transform: string;
 }
 
 @Component({
@@ -358,8 +362,8 @@ export class VideocreatorComponent implements OnInit {
   onSelectElement(element): void {
     //this.detectchange();
     if (this.selectedelement) {
-      if (element !== this.selectedelement) {
-        this.saveNewMotionPath(this.selectedelement);
+      if (element !== this.selectedelement && this.editpath === false) {
+        // this.saveNewMotionPath(this.selectedelement);
         this.removeVectorPathSelection();
         this.removeVectorPathMultiSelection();
         this.selectedelement = element;
@@ -369,21 +373,34 @@ export class VideocreatorComponent implements OnInit {
     }
   }
 
-  saveNewMotionPath(element) {
+  saveNewMotionPath() {
+    let newpath;
     let svgpath = document.getElementById(this.selectedelement.id + 'p');
-    let s = new XMLSerializer(); // convert to string
-    let svgstring = s.serializeToString(svgpath);
-    let newsvgpath = '<svg id="' + this.selectedelement.id + 'mp" viewBox="-20 0 557 190" class="path-edit">'+svgstring+'</svg>';
+    let rawpath = MotionPathPlugin.getRawPath(svgpath);
+    let svgtrans = svgpath.getAttribute('transform');
+    console.log(svgtrans);
+
+    if (svgtrans !== null && svgtrans !== 'matrix(1 0 0 1 0 0)') {
+      svgtrans = svgtrans.replace('matrix(', '');
+      svgtrans = svgtrans.replace(')', '');
+      let svgtransarray = svgtrans.split(' ').map(Number);
+      rawpath = MotionPathPlugin.transformRawPath(rawpath, svgtransarray[0], svgtransarray[1], svgtransarray[2], svgtransarray[3], svgtransarray[4], svgtransarray[5]);
+    }
+
+    if (rawpath === undefined) {
+      newpath = 'M9,100 C9,100 27.53,58.42 58.91,34.89';
+    } else {
+      newpath = MotionPathPlugin.rawPathToString(rawpath);
+    }
+
+    let newsvgpath = '<svg id="' + this.selectedelement.id + 'mp" viewBox="-20 0 557 190" class="path-edit"><path id="' + this.selectedelement.id + 'p" style="opacity: 0; " d="' + newpath + '" /></svg>';
     this.selectedelement.motionpath = newsvgpath;
-    console.log(newsvgpath);
-    //this.selectedelement = element;
-    console.log(MotionPathPlugin.getRawPath(svgpath));
     this.editpath = false;
     this.detectchange();
   }
 
   detectMorph(value) {
-    console.log(value)
+    //console.log(value)
     if (value === 'morph') {
       this.selectedelement.morph = true;
     } else {
@@ -396,6 +413,9 @@ export class VideocreatorComponent implements OnInit {
   async detectchange() {
     //this.primairytimeline.clear();
     console.log('run check', this.animationarray);
+    if (this.editpath === true) {
+      this.saveNewMotionPath();
+    }
     this.animationarray.forEach(elm => {
       if (elm.posx > 0) {
         elm.setpos = { 'x': elm.posx, 'y': elm.posy };
@@ -405,7 +425,11 @@ export class VideocreatorComponent implements OnInit {
     this.changenow = false;
     setTimeout(() => { this.changenow = true; return });
     // wait for dom update to finish otherwise it will create the effects on the old dom
-    setTimeout(() =>
+    setTimeout(() => {
+      if (this.canvas.weather !== '') {
+        //console.log('add weather')
+        this.addWeatherEffect();
+      }
       this.animationarray.forEach(elm => {
         if (elm.type === 'vector') { //vector animation
           setTimeout(() => {
@@ -425,6 +449,7 @@ export class VideocreatorComponent implements OnInit {
         }
         this.addEffect(elm); //normal animatoin
       })
+    }
     );
 
 
@@ -537,7 +562,9 @@ export class VideocreatorComponent implements OnInit {
       let svgset = document.getElementById(elementA.id + 'p');
       aniset = {
         duration: duration,
-        ease: ease, repeat: repeat, yoyo: element.yoyo,
+        ease: ease,
+        repeat: repeat,
+        yoyo: element.yoyo,
         motionPath: {
           path: svgset, //'id + p'
           autoRotate: 90,
@@ -553,7 +580,7 @@ export class VideocreatorComponent implements OnInit {
       }
     }
 
-    if (anitype !== 'fountain') {
+    if (anitype !== 'fountain' && anitype !== 'followminions') {
       //console.log(iset, aniset, startime);
       if (element.fromto === 'from') {
         this.primairytimeline.from(iset, aniset, startime);
@@ -607,24 +634,53 @@ export class VideocreatorComponent implements OnInit {
     }
 
     if (anitype === 'followminions') {
-      for (let i = 0; i < 30; i++) {
+      let minions = 20;
+      let seperation = 0.17;
+      let svgset2 = document.getElementById(elementA.id + 'p');
+
+      this.primairytimeline.to(iset,
+        {
+          duration: duration,
+          ease: ease, repeat: repeat, yoyo: element.yoyo, delay: seperation,
+          motionPath: {
+            path: svgset2, //'id + p'
+            autoRotate: 90,
+            //immediateRender: true
+          }
+        }, startime);
+
+      for (let i = 0; i < minions; i++) {
         //start creature animation every 0.12 seconds
         let cln = iset.cloneNode(true);
         //console.log(cln);
         let parent = iset.parentElement;
         parent.append(cln);
-        this.primairytimeline.to(cln,
-          {
-            duration: duration,
-            setX: 150, setY: 300,
-            // { setX: 300, setY: -10 },
-            // { setX: 500 + Math.random() * 100, setY: 320 * Math.random() + 50 },
-            // { setX: 650, setY: 320 * Math.random() + 50 }, { setX: 900, setY: -80 },
-            ease: 'linear', autoCSS: false,
-            repeat: repeat,
-            yoyo: element.yoyo,
-            delay: i * 0.17
-          });
+
+        if (element.fromto === 'from') {
+          this.primairytimeline.to(cln,
+            {
+              duration: duration,
+              ease: ease, repeat: repeat, yoyo: element.yoyo, delay: i+1 * 0.17,
+              motionPath: {
+                path: svgset2, //'id + p'
+                autoRotate: 90,
+                //immediateRender: true
+              }
+            }, startime);
+        }
+
+        if (element.fromto === 'to') {
+          this.primairytimeline.to(cln,
+            {
+              duration: duration,
+              ease: ease, repeat: repeat, yoyo: element.yoyo, delay: i * 0.17,
+              motionPath: {
+                path: svgset2, //'id + p'
+                autoRotate: 90,
+                //immediateRender: true
+              }
+            }, startime);
+        }
       }
     }
   }
@@ -635,10 +691,7 @@ export class VideocreatorComponent implements OnInit {
     element.animation.forEach(animationsection => {
       this.addAnimation(id, animationsection, element);
     });
-    if (this.canvas.weather !== '') {
-      //console.log('add weather')
-      this.addWeatherEffect();
-    }
+
   }
 
   addNewEffect(element): void {
@@ -715,6 +768,7 @@ export class VideocreatorComponent implements OnInit {
     }
 
     this.animationarray.push(newElement);
+    this.selectedelement = newElement;
   }
 
   getEditFile() {
@@ -957,13 +1011,16 @@ export class VideocreatorComponent implements OnInit {
       vectoranimation: vectanim,
       selected: false,
       morph: false,
-      motioncor: 'path: d="M9,100c0,0,18.53-41.58,49.91-65.11c30-22.5,65.81-24.88,77.39-24.88c33.87,0,57.55,11.71,77.05,28.47c23.09,19.85,40.33,46.79,61.71,69.77c24.09,25.89,53.44,46.75,102.37,46.75c22.23,0,40.62-2.83,55.84-7.43c27.97-8.45,44.21-22.88,54.78-36.7c14.35-18.75,16.43-36.37,16.43-36.37"',
+      transform: '',
+      //motioncor: 'path: d="M9,100c0,0,18.53-41.58,49.91-65.11c30-22.5,65.81-24.88,77.39-24.88c33.87,0,57.55,11.71,77.05,28.47c23.09,19.85,40.33,46.79,61.71,69.77c24.09,25.89,53.44,46.75,102.37,46.75c22.23,0,40.62-2.83,55.84-7.43c27.97-8.45,44.21-22.88,54.78-36.7c14.35-18.75,16.43-36.37,16.43-36.37"',
       motionpath: '<svg id="' + vectorid + 'mp" viewBox="-20 0 557 190" class="path-edit"><path id="' + vectorid + 'p" style="opacity: 0;"' +
-        'd="M9,100c0,0,18.53-41.58,49.91-65.11c30-22.5,65.81-24.88,77.39-24.88c33.87,0,57.55,11.71,77.05,28.47c23.09,19.85,40.33,46.79,61.71,69.77c24.09,25.89,53.44,46.75,102.37,46.75c22.23,0,40.62-2.83,55.84-7.43c27.97-8.45,44.21-22.88,54.78-36.7c14.35-18.75,16.43-36.37,16.43-36.37" /></svg>',
+        ' d="M9,100c0,0,18.53-41.58,49.91-65.11c30-22.5,65.81-24.88,77.39-24.88c33.87,0,57.55,11.71,77.05,28.47c23.09,19.85,40.33,46.79,61.71,69.77c24.09,25.89,53.44,46.75,102.37,46.75c22.23,0,40.62-2.83,55.84-7.43c27.97-8.45,44.21-22.88,54.78-36.7c14.35-18.75,16.43-36.37,16.43-36.37" /></svg>',
       // from, 4, {drawSVG:0, repeat:10, yoyo:true}, 4)
+
     }
     //console.log(vector);
     this.animationarray.push(vector);
+    this.selectedelement = vector;
 
     if (!svgcombi) {
       this.detectchange(); // detect change when seperating entire svg 
@@ -1048,11 +1105,13 @@ export class VideocreatorComponent implements OnInit {
       setpos: { 'x': 0, 'y': 0 },
       animation: anim,
       id: newelnr,
-      motioncor: 'path: d="M9,100c0,0,18.53-41.58,49.91-65.11c30-22.5,65.81-24.88,77.39-24.88c33.87,0,57.55,11.71,77.05,28.47c23.09,19.85,40.33,46.79,61.71,69.77c24.09,25.89,53.44,46.75,102.37,46.75c22.23,0,40.62-2.83,55.84-7.43c27.97-8.45,44.21-22.88,54.78-36.7c14.35-18.75,16.43-36.37,16.43-36.37"',
+      transform: '',
+      //motioncor: 'path: d="M9,100c0,0,18.53-41.58,49.91-65.11c30-22.5,65.81-24.88,77.39-24.88c33.87,0,57.55,11.71,77.05,28.47c23.09,19.85,40.33,46.79,61.71,69.77c24.09,25.89,53.44,46.75,102.37,46.75c22.23,0,40.62-2.83,55.84-7.43c27.97-8.45,44.21-22.88,54.78-36.7c14.35-18.75,16.43-36.37,16.43-36.37"',
       motionpath: '<svg id="' + newelnr + 'mp" viewBox="-20 0 557 190" class="path-edit"><path id="' + newelnr + 'p" style="opacity: 0;"' +
-        'd="M9,100c0,0,18.53-41.58,49.91-65.11c30-22.5,65.81-24.88,77.39-24.88c33.87,0,57.55,11.71,77.05,28.47c23.09,19.85,40.33,46.79,61.71,69.77c24.09,25.89,53.44,46.75,102.37,46.75c22.23,0,40.62-2.83,55.84-7.43c27.97-8.45,44.21-22.88,54.78-36.7c14.35-18.75,16.43-36.37,16.43-36.37" /></svg>',
+        ' d="M9,100c0,0,18.53-41.58,49.91-65.11c30-22.5,65.81-24.88,77.39-24.88c33.87,0,57.55,11.71,77.05,28.47c23.09,19.85,40.33,46.79,61.71,69.77c24.09,25.89,53.44,46.75,102.37,46.75c22.23,0,40.62-2.83,55.84-7.43c27.97-8.45,44.21-22.88,54.78-36.7c14.35-18.75,16.43-36.37,16.43-36.37" /></svg>',
     }
     this.animationarray.push(img);
+    this.selectedelement = img;
     this.detectchange();
   }
 
@@ -1104,12 +1163,14 @@ export class VideocreatorComponent implements OnInit {
       animation: anim,
       id: newelnr,
       shape: 'square',
-      motioncor: 'path: d="M9,100c0,0,18.53-41.58,49.91-65.11c30-22.5,65.81-24.88,77.39-24.88c33.87,0,57.55,11.71,77.05,28.47c23.09,19.85,40.33,46.79,61.71,69.77c24.09,25.89,53.44,46.75,102.37,46.75c22.23,0,40.62-2.83,55.84-7.43c27.97-8.45,44.21-22.88,54.78-36.7c14.35-18.75,16.43-36.37,16.43-36.37"',
+      transform: '',
+      //motioncor: 'path: d="M9,100c0,0,18.53-41.58,49.91-65.11c30-22.5,65.81-24.88,77.39-24.88c33.87,0,57.55,11.71,77.05,28.47c23.09,19.85,40.33,46.79,61.71,69.77c24.09,25.89,53.44,46.75,102.37,46.75c22.23,0,40.62-2.83,55.84-7.43c27.97-8.45,44.21-22.88,54.78-36.7c14.35-18.75,16.43-36.37,16.43-36.37"',
       motionpath: '<svg id="' + newelnr + 'mp" viewBox="-20 0 557 190" class="path-edit"><path id="' + newelnr + 'p" style="opacity: 0;"' +
-        'd="M9,100c0,0,18.53-41.58,49.91-65.11c30-22.5,65.81-24.88,77.39-24.88c33.87,0,57.55,11.71,77.05,28.47c23.09,19.85,40.33,46.79,61.71,69.77c24.09,25.89,53.44,46.75,102.37,46.75c22.23,0,40.62-2.83,55.84-7.43c27.97-8.45,44.21-22.88,54.78-36.7c14.35-18.75,16.43-36.37,16.43-36.37" /></svg>',
+        ' d="M9,100c0,0,18.53-41.58,49.91-65.11c30-22.5,65.81-24.88,77.39-24.88c33.87,0,57.55,11.71,77.05,28.47c23.09,19.85,40.33,46.79,61.71,69.77c24.09,25.89,53.44,46.75,102.37,46.75c22.23,0,40.62-2.83,55.84-7.43c27.97-8.45,44.21-22.88,54.78-36.7c14.35-18.75,16.43-36.37,16.43-36.37" /></svg>',
 
     }
     this.animationarray.push(img);
+    this.selectedelement = img;
     this.detectchange();
 
   }
@@ -1250,12 +1311,14 @@ export class VideocreatorComponent implements OnInit {
       animation: anim,
       id: newelnr,
       splittextanimation: splittext,
-      motioncor: 'path: d="M9,100c0,0,18.53-41.58,49.91-65.11c30-22.5,65.81-24.88,77.39-24.88c33.87,0,57.55,11.71,77.05,28.47c23.09,19.85,40.33,46.79,61.71,69.77c24.09,25.89,53.44,46.75,102.37,46.75c22.23,0,40.62-2.83,55.84-7.43c27.97-8.45,44.21-22.88,54.78-36.7c14.35-18.75,16.43-36.37,16.43-36.37"',
+      transform: '',
+      // motioncor: 'path: d="M9,100c0,0,18.53-41.58,49.91-65.11c30-22.5,65.81-24.88,77.39-24.88c33.87,0,57.55,11.71,77.05,28.47c23.09,19.85,40.33,46.79,61.71,69.77c24.09,25.89,53.44,46.75,102.37,46.75c22.23,0,40.62-2.83,55.84-7.43c27.97-8.45,44.21-22.88,54.78-36.7c14.35-18.75,16.43-36.37,16.43-36.37"',
       motionpath: '<svg id="' + newelnr + 'mp" viewBox="-20 0 557 190" class="path-edit"><path id="' + newelnr + 'p" style="opacity: 0;" ' +
-        'd="M9,100c0,0,18.53-41.58,49.91-65.11c30-22.5,65.81-24.88,77.39-24.88c33.87,0,57.55,11.71,77.05,28.47c23.09,19.85,40.33,46.79,61.71,69.77c24.09,25.89,53.44,46.75,102.37,46.75c22.23,0,40.62-2.83,55.84-7.43c27.97-8.45,44.21-22.88,54.78-36.7c14.35-18.75,16.43-36.37,16.43-36.37" /></svg>',
+        ' d="M9,100c0,0,18.53-41.58,49.91-65.11c30-22.5,65.81-24.88,77.39-24.88c33.87,0,57.55,11.71,77.05,28.47c23.09,19.85,40.33,46.79,61.71,69.77c24.09,25.89,53.44,46.75,102.37,46.75c22.23,0,40.62-2.83,55.84-7.43c27.97-8.45,44.21-22.88,54.78-36.7c14.35-18.75,16.43-36.37,16.43-36.37" /></svg>',
 
     }
     this.animationarray.push(txt);
+    this.selectedelement = txt;
     this.detectchange();
 
   }
@@ -1265,7 +1328,8 @@ export class VideocreatorComponent implements OnInit {
   }
 
   playFunc() {
-    console.log(this.primairytimeline);
+    //console.log(this.primairytimeline);
+    this.saveNewMotionPath();
     this.editpath = false;
     this.removeVectorPathMultiSelection();
     this.removeVectorPathSelection();
@@ -1316,6 +1380,7 @@ export class VideocreatorComponent implements OnInit {
       this.videoPlayer.pause();
       this.videoPlayer.currentTime = 0;
     }
+    this.detectchange();
   }
 
   pauseFunc() {
@@ -1410,6 +1475,7 @@ export class VideocreatorComponent implements OnInit {
       this.whiteboard = false;
     }
     this.animationarray.splice(i, 1);
+    this.selectedelement = undefined;
   }
 
   swiperight(e) {
