@@ -287,7 +287,11 @@
                             <mat-form-field style="max-width: 46px;">
                                 <input [(ngModel)]="animation.travellocX" type="number" matInput>
                                 <mat-hint>X-axe</mat-hint>
-                            </mat-form-field>
+                            </mat-form-field> 
+                            <mat-form-field style="max-width: 46px;">
+                                    <input [(ngModel)]="selectedelement.motionrotation" type="number" matInput>
+                                    <mat-hint>Motion direction</mat-hint>
+                                </mat-form-field> 
                             <button mat-button
                                 (click)="animation.travellocY = selectedelement.posy; animation.travellocX = selectedelement.posx">Reset</button>
                             <button mat-button (click)="editMotionPath()">Edit path</button>
