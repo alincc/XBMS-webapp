@@ -69,8 +69,10 @@ import {DragDropModule} from '@angular/cdk/drag-drop';
 import { ColorPickerModule } from 'ngx-color-picker';
 import { FileuploadComponent, dialoggallerycomponent } from './shared/fileupload/fileupload.component';
 import { VideouploadComponent, dialogvideogallerycomponent } from './shared/videoupload/videoupload.component';
+import { AudiouploadComponent, dialogaudiogallerycomponent } from './shared/audioupload/audioupload.component';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { SafeHtml } from './pipe/safehtmlpipe.component';
+import { FileName } from './pipe/filenamepipe.component';
 import { MarketingpromotionsComponent } from './marketing/marketingpromotions/marketingpromotions.component';
 import { MarketingpublicationsComponent } from './marketing/marketingpublications/marketingpublications.component';
 import { ImagecreatorComponent } from './marketing/imagecreator/imagecreator.component';
@@ -79,7 +81,7 @@ import { VgCoreModule } from 'videogular2/compiled/core';
 import { VgControlsModule } from 'videogular2/compiled/controls';
 import { VgOverlayPlayModule } from 'videogular2/compiled/overlay-play';
 import { VgBufferingModule } from 'videogular2/compiled/buffering';
-import {MatBottomSheetModule} from '@angular/material/bottom-sheet';
+import { MatBottomSheetModule } from '@angular/material/bottom-sheet';
 import { HammerGestureConfig, HAMMER_GESTURE_CONFIG } from '@angular/platform-browser';
 import { CalendarModule, DateAdapter } from 'angular-calendar';
 import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
@@ -135,15 +137,18 @@ export class HammerConfig extends GestureConfig  {
     FileuploadComponent,
     dialoggallerycomponent,
     dialogvideogallerycomponent,
+    dialogaudiogallerycomponent,
     dialogvectorgallerycomponent,
     dialogbackgroundgallerycomponent,
     TextEditorDialog,
     WordpressUploadDialogComponent,
     SafeHtml,
+    FileName,
     MarketingpromotionsComponent,
     MarketingpublicationsComponent,
     ImagecreatorComponent,
     VideouploadComponent,
+    AudiouploadComponent,
     VideocreatorComponent,
     VectoruploadComponent,
     BackgroundComponent,
@@ -154,6 +159,7 @@ export class HammerConfig extends GestureConfig  {
     BottomSheetLogOverview,
     dialoggallerycomponent,
     dialogvideogallerycomponent,
+    dialogaudiogallerycomponent,
     dialogvectorgallerycomponent,
     dialogbackgroundgallerycomponent,
     ConfirmDialog,

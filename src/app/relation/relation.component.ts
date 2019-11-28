@@ -950,6 +950,7 @@ export class RelationComponent implements OnInit {
   }
 
   onselectfile(file): void {
+    this.selectedfile = undefined;
     this.selectedfile = file;
   }
 

@@ -70,8 +70,7 @@
         <div class="timelinesmall-container" [style.width]="'200px'">
             <div class="timelinesmall-active" [style.width]="counter + 'px'" #timelinebound id="timelinebound">
                 <div class="timelinesmall-setter" [style.transform]="'translate(' + currenttime + 'px, 0px)'"
-                    [inBounds]="true" [bounds]="timelinebound" [lockAxis]="'y'" ngDraggable
-                     [scale]="'1'"></div>
+                    [inBounds]="true" [bounds]="timelinebound" [lockAxis]="'y'" ngDraggable [scale]="'1'"></div>
             </div>
         </div>
     </div>
@@ -101,27 +100,49 @@
                     <label matSuffix>px</label>
                 </mat-form-field>
 
+
                 <mat-form-field fxFlex>
                     <input (change)="onchangevideo()" [(ngModel)]="canvas.height" type="text" matInput
                         placeholder="height">
                     <label matSuffix>px</label>
                 </mat-form-field>
 
-                <app-videoupload *ngIf="!canvas.videourl" [account]="Account" [option]="option"
-                    (imgurl)="setVideo($event)">
-                </app-videoupload>
+                <div>
+                    <app-videoupload *ngIf="!canvas.videourl" [account]="Account" [option]="option"
+                        (imgurl)="setVideo($event)">
+                    </app-videoupload>
+                    <mat-icon *ngIf="canvas.videourl" matTooltip="delete video" (click)="canvas.videourl = ''"
+                        class="iconsize-10">delete
+                    </mat-icon>
+                    <label *ngIf="canvas.videourl">{{ canvas.videourl | fileName }}</label>
+                </div>
 
-                <app-background *ngIf="!canvas.videourl" [account]="Account" [option]="option"
-                    (imgurl)="setBackground($event)">
-                </app-background>
+                <div>
+                    <app-audioupload *ngIf="!canvas.audio" [account]="Account" [option]="option"
+                        (imgurl)="setAudioCanvas($event)">
+                    </app-audioupload>
+                    <mat-icon *ngIf="canvas.audio" matTooltip="delete audio" (click)="canvas.audio = ''"
+                        class="iconsize-10">delete
+                    </mat-icon>
+                    <label *ngIf="canvas.audio">{{ canvas.audio | fileName }}</label>
+                </div>
 
+                <div>
+                    <app-background *ngIf="!canvas.videourl || !canvas['background-image']" [account]="Account"
+                        [option]="option" (imgurl)="setBackground($event)">
+                    </app-background>
+                    <mat-icon *ngIf="canvas['background-image']" (click)="canvas['background-image'] = ''"
+                        class="iconsize-10">delete
+                    </mat-icon>
+                    <label *ngIf="canvas['background-image']">{{ canvas['background-image'] | fileName }}</label>
+                </div>
                 <!-- <video *ngIf="canvas.videourl" fxFlex style="width: 200px; height: 200px;"
                     src={{canvas.videourl}}></video> -->
 
-                <mat-form-field fxFlex *ngIf="canvas.videourl">
+                <!-- <mat-form-field fxFlex *ngIf="canvas.videourl">
                     <input (change)="onchangevideo()" [(ngModel)]="canvas.videourl" type="text" matInput
                         placeholder="height">
-                </mat-form-field>
+                </mat-form-field> -->
 
                 <input fxFlex style="width: 150px; height: 30px;" [style.background]="canvas['background-color']"
                     [cpToggle]="false" [(colorPicker)]="canvas['background-color']" [cpPosition]="'bottom'"
@@ -173,10 +194,9 @@
                                         (movingOffset)="onMovingTimeline($event, i, animation)" [scale]="'1'"></div>
 
                                     <div class="timeline-currentelement" ngDraggable [scale]="'1'"
-                                        (movingOffset)="onMovingAnimationEl($event, i, animation)"
-                                        [lockAxis]="'y'"
-                                        [preventDefaultEvent]="true" ngResizable 
-                                        [rzHandles]="'e, w'" (rzResizing)="onResizeAnimationEl($event, i, animation)"
+                                        (movingOffset)="onMovingAnimationEl($event, i, animation)" [lockAxis]="'y'"
+                                        [preventDefaultEvent]="true" ngResizable [rzHandles]="'e, w'"
+                                        (rzResizing)="onResizeAnimationEl($event, i, animation)"
                                         [style.width]="animation.duration * 10 + 'px'">
                                     </div>
                                 </div>
@@ -287,17 +307,17 @@
                             <mat-form-field style="max-width: 46px;">
                                 <input [(ngModel)]="animation.travellocX" type="number" matInput>
                                 <mat-hint>X-axe</mat-hint>
-                            </mat-form-field> 
+                            </mat-form-field>
                             <mat-form-field style="max-width: 46px;">
-                                    <input [(ngModel)]="selectedelement.motionrotation" type="number" matInput>
-                                    <mat-hint>Motion direction</mat-hint>
-                                </mat-form-field> 
+                                <input [(ngModel)]="selectedelement.motionrotation" type="number" matInput>
+                                <mat-hint>Motion direction</mat-hint>
+                            </mat-form-field>
                             <button mat-button
                                 (click)="animation.travellocY = selectedelement.posy; animation.travellocX = selectedelement.posx">Reset</button>
                             <button mat-button (click)="editMotionPath()">Edit path</button>
                             <button mat-button (click)="saveNewMotionPath()">Save path</button>
 
-                        </div> 
+                        </div>
 
                         <div *ngIf="animation.anim_type === 'followminions'">
                             <mat-form-field style="max-width: 46px;">
@@ -313,6 +333,15 @@
                             <button mat-button (click)="editMotionPath()">Edit path</button>
                             <button mat-button (click)="saveNewMotionPath()">Save path</button>
                         </div>
+                        <div>
+                            <app-audioupload *ngIf="!selectedelement.audioeffectsrc" [account]="Account"
+                                [option]="option" (imgurl)="setAudio($event)">
+                            </app-audioupload>
+                            <label *ngIf="selectedelement.audioeffectsrc">{{selectedelement.audioeffectsrc}}</label>
+                            <mat-icon (click)="selectedelement.audioeffectsrc = ''" class="iconsize-10">delete
+                            </mat-icon>
+                        </div>
+
                     </div>
                 </mat-expansion-panel>
             </mat-accordion>
@@ -1048,6 +1077,10 @@
                 #videoPlayer>
             </video>
 
+            <audio *ngIf="canvas.audio" [attr.id]="'canvassound'">
+                <source type="audio/mp3" [src]="canvas.audio">
+            </audio>
+
             <div *ngIf="canvas.videourl === ''" class="image-background"
                 [style.background-image]="canvas['background-image']"></div>
 
@@ -1111,6 +1144,9 @@
                         (onSave)="onCanvasSave($event, i)">
                     </canvas-whiteboard>
 
+                    <audio *ngIf="element.audioeffectsrc" [attr.id]="element.id + 's'">
+                        <source type="audio/mp3" [src]="element.audioeffectsrc">
+                    </audio>
                 </div>
             </div>
         </div>

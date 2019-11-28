@@ -20,6 +20,7 @@ import { CanvasWhiteboardComponent } from 'ng2-canvas-whiteboard';
 import { fonts } from '../../shared/listsgeneral/fonts';
 import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 import { duration } from 'moment';
+import { viewClassName } from '@angular/compiler';
 
 export class animationtype {
   start_time: number; //delayt
@@ -41,6 +42,7 @@ export class animationtype {
   transformOriginY: string;
   repeat: number;
   yoyo: boolean;
+  audioeffectsrc: string;
 }
 
 export class vectoranimationtype {
@@ -254,7 +256,8 @@ export class VideocreatorComponent implements OnInit {
     position: 'relative',
     videourl: '',
     loop: false,
-    weather: ''
+    weather: '',
+    audio: ''
   }
   public moveitem = false;
   public selectedImage: imageanimation;
@@ -525,9 +528,36 @@ export class VideocreatorComponent implements OnInit {
     setTimeout(() => this.changevideo = true);
   }
 
+  onchangeaudio() {
+    // ?? 
+  }
+
+  playSound(id, src, loop) {
+    let audio = document.getElementById(id) as HTMLAudioElement;
+    audio.play();
+    audio.loop = loop;
+  }
+
+  pauseSound(id, src) {
+    let audio = document.getElementById(id) as HTMLAudioElement;
+    audio.pause();
+  }
+
+  stopSound(id, src){
+    let audio = document.getElementById(id) as HTMLAudioElement;
+    audio.currentTime = 0;
+    audio.pause();
+  }
+
+  seekSound(id, src, time){
+    let audio = document.getElementById(id) as HTMLAudioElement;
+    audio.currentTime = time;
+  }
+
+
   addAnimation(iset, element: animationtype, elementA) {
     let duration = element.duration;
-    let startime = element.start_time;
+    let starttime = element.start_time;
     let anitype = element.anim_type;
     let rotationcycle = element.rotationcycle;
     let scalesize = element.scalesize;
@@ -537,6 +567,12 @@ export class VideocreatorComponent implements OnInit {
 
     let ease = this.selectEaseType(element.easetype);
     let repeat = element.repeat;
+
+    if (elementA.audioeffectsrc) {
+      this.primairytimeline.call(this.playSound, [this.selectedelement.id +'s', elementA.audioeffectsrc, false], starttime);
+      this.primairytimeline.eventCallback("onInterrupt", this.pauseSound, [this.selectedelement.id, elementA.audioeffectsrc]);
+    }
+
     if (anitype === 'rotation') {
       let orgin = element.transformOriginX + ' ' + element.transformOriginY
       aniset = {
@@ -584,12 +620,12 @@ export class VideocreatorComponent implements OnInit {
     }
 
     if (anitype !== 'fountain' && anitype !== 'followminions') {
-      //console.log(iset, aniset, startime);
+      //console.log(iset, aniset, starttime);
       if (element.fromto === 'from') {
-        this.primairytimeline.from(iset, aniset, startime);
+        this.primairytimeline.from(iset, aniset, starttime);
       }
       if (element.fromto === 'to') {
-        this.primairytimeline.to(iset, aniset, startime);
+        this.primairytimeline.to(iset, aniset, starttime);
       }
     }
 
@@ -624,13 +660,13 @@ export class VideocreatorComponent implements OnInit {
           this.primairytimeline.from(cln, {
             duration: duration, delay: delay, repeat: repeat, yoyo: element.yoyo,
             physics2D: { velocity: Math.random() * W, angle: Math.random() * 40 + 250, gravity: H }
-          }, startime);
+          }, starttime);
         }
         if (element.fromto === 'to') {
           this.primairytimeline.to(cln, {
             duration: duration, delay: delay, repeat: repeat, yoyo: element.yoyo,
             physics2D: { velocity: Math.random() * W, angle: Math.random() * 40 + 250, gravity: H }
-          }, startime);
+          }, starttime);
 
         }
       }
@@ -650,7 +686,7 @@ export class VideocreatorComponent implements OnInit {
             autoRotate: 90,
             //immediateRender: true
           }
-        }, startime);
+        }, starttime);
 
       for (let i = 0; i < minions; i++) {
         //start creature animation every 0.12 seconds
@@ -663,13 +699,13 @@ export class VideocreatorComponent implements OnInit {
           this.primairytimeline.to(cln,
             {
               duration: duration,
-              ease: ease, repeat: repeat, yoyo: element.yoyo, delay: i+1 * 0.17,
+              ease: ease, repeat: repeat, yoyo: element.yoyo, delay: i + 1 * 0.17,
               motionPath: {
                 path: svgset2, //'id + p'
                 autoRotate: 90,
                 //immediateRender: true
               }
-            }, startime);
+            }, starttime);
         }
 
         if (element.fromto === 'to') {
@@ -682,11 +718,13 @@ export class VideocreatorComponent implements OnInit {
                 autoRotate: 90,
                 //immediateRender: true
               }
-            }, startime);
+            }, starttime);
         }
       }
     }
+
   }
+
 
 
   addEffect(element): void {
@@ -717,7 +755,8 @@ export class VideocreatorComponent implements OnInit {
       transformOriginX: '50%',
       transformOriginY: '50%',
       repeat: 0,
-      yoyo: false
+      yoyo: false,
+      audioeffectsrc: ''
     }
     this.selectedelement.animation.push(newanimation);
     this.detectchange();
@@ -959,7 +998,8 @@ export class VideocreatorComponent implements OnInit {
       transformOriginX: '50%',
       transformOriginY: '50%',
       repeat: 0,
-      yoyo: false
+      yoyo: false,
+      audioeffectsrc: ''
     }];
     // only add if new svg not split from 
     if (!svgcombi) {
@@ -1020,7 +1060,7 @@ export class VideocreatorComponent implements OnInit {
       motionpath: '<svg id="' + newelnr + 'mp" viewBox="-20 0 557 190" class="path-edit"><path id="' + newelnr + 'p" style="opacity: 0;"' +
         ' d="M9,100c0,0,18.53-41.58,49.91-65.11c30-22.5,65.81-24.88,77.39-24.88c33.87,0,57.55,11.71,77.05,28.47c23.09,19.85,40.33,46.79,61.71,69.77c24.09,25.89,53.44,46.75,102.37,46.75c22.23,0,40.62-2.83,55.84-7.43c27.97-8.45,44.21-22.88,54.78-36.7c14.35-18.75,16.43-36.37,16.43-36.37" /></svg>',
       // from, 4, {drawSVG:0, repeat:10, yoyo:true}, 4)
-      
+
     }
     //console.log(vector);
     this.animationarray.push(vector);
@@ -1091,7 +1131,8 @@ export class VideocreatorComponent implements OnInit {
       transformOriginX: '50%',
       transformOriginY: '50%',
       repeat: 0,
-      yoyo: false
+      yoyo: false,
+      audioeffectsrc: ''
     }];
     let img: imageanimation = {
       type: 'image',
@@ -1147,7 +1188,8 @@ export class VideocreatorComponent implements OnInit {
       transformOriginX: '50%',
       transformOriginY: '50%',
       repeat: 0,
-      yoyo: false
+      yoyo: false,
+      audioeffectsrc: ''
     }];
     let img: shapeanimation = {
       type: 'shape',
@@ -1209,7 +1251,8 @@ export class VideocreatorComponent implements OnInit {
       transformOriginX: '50%',
       transformOriginY: '50%',
       repeat: 0,
-      yoyo: false
+      yoyo: false,
+      audioeffectsrc: ''
     }];
     let whiteboard: whiteboardanimation = {
       type: 'whiteboard',
@@ -1282,7 +1325,8 @@ export class VideocreatorComponent implements OnInit {
       transformOriginX: '50%',
       transformOriginY: '50%',
       repeat: 0,
-      yoyo: false
+      yoyo: false,
+      audioeffectsrc: ''
     }];
     let splittext: splittexttype[] = [{
       textanimationtype: '',
@@ -1345,6 +1389,11 @@ export class VideocreatorComponent implements OnInit {
       this.detectchange();
     }
 
+    if (this.canvas.audio){
+      this.playSound('canvassound', null, this.canvas.loop);
+      this.primairytimeline.eventCallback("onComplete", this.stopSound, [this.selectedelement.id, null]);
+    }
+
     console.log('play', this.primairytimeline.time());
     //this.progressbarline.play();
     // clean up for play
@@ -1388,6 +1437,9 @@ export class VideocreatorComponent implements OnInit {
       this.videoPlayer.currentTime = 0;
     }
     this.detectchange();
+    if (this.canvas.audio){
+      this.stopSound('canvassound', null);
+    }
   }
 
   pauseFunc() {
@@ -1396,6 +1448,10 @@ export class VideocreatorComponent implements OnInit {
       this.videoPlayer.pause();
     }
     clearTimeout(this.t);
+
+    if (this.canvas.audio){
+      this.pauseSound('canvassound', null);
+    }
   }
 
   setReplay() {
@@ -1496,6 +1552,17 @@ export class VideocreatorComponent implements OnInit {
   setVideo(event) {
     this.canvas.videourl = event;
     this.onchangevideo();
+  }
+
+  setAudio(event) {
+    console.log('audio file', event)
+    this.selectedelement.audioeffectsrc = event;
+    // delete this.onchangeaudio();
+  }
+
+  setAudioCanvas(event) {
+    console.log('audio canvas file', event)
+    this.canvas.audio = event;
   }
 
   setBackground(event) {
@@ -1654,7 +1721,7 @@ export class VideocreatorComponent implements OnInit {
           let fromvac = document.getElementById(pathid);
 
           if (i2 >= set2length) {  // if there more parths in vector 2 then 1
-            this.primairytimeline.to(fromvac, { opacity: 0 },  animation.start_time);
+            this.primairytimeline.to(fromvac, { opacity: 0 }, animation.start_time);
           } else {
             //console.log(vectors, set2, i2)
             let pathid2 = vectors[set2].pathids[i2];
@@ -1663,7 +1730,7 @@ export class VideocreatorComponent implements OnInit {
             // hidden is needed for the morph animation but we also need to show the original on finish 
             // opacity can make it appear more gratually which visibility can not
             this.primairytimeline.set(tovec, { opacity: 0 });
-            this.primairytimeline.to(tovec, { duration: 1, opacity: 1 },  fintime);
+            this.primairytimeline.to(tovec, { duration: 1, opacity: 1 }, fintime);
             this.primairytimeline.set(tovec, { visibility: 'hidden' }, 0);
             this.primairytimeline.set(tovec, { visibility: 'visible' }, fintime);
 
@@ -1682,7 +1749,7 @@ export class VideocreatorComponent implements OnInit {
               let resetindex = exti - vector.pathids.length;
               let resettovec = document.getElementById(vectors[set2].pathids[resetindex]);
               // await this.setMorphAni(fromexvac, resettovec, animation);
-              this.primairytimeline.to(fromexvac, { duration: animation.duration, morphSVG: resettovec  }, animation.start_time);
+              this.primairytimeline.to(fromexvac, { duration: animation.duration, morphSVG: resettovec }, animation.start_time);
 
             }
             ++exti
@@ -1848,8 +1915,8 @@ export class VideocreatorComponent implements OnInit {
 
     // this.primairytimeline.fromTo(from, animation.duration, toset, animation.start_time);
     this.primairytimeline.to(from, { duration: animation.duration, morphSVG: to, ease: ease }, animation.start_time);
-    this.primairytimeline.to(to, { duration: 1, opacity: 1,  }, fintime);
-    this.primairytimeline.to(from, { duration: 1, opacity: 0  }, fintime);
+    this.primairytimeline.to(to, { duration: 1, opacity: 1, }, fintime);
+    this.primairytimeline.to(from, { duration: 1, opacity: 0 }, fintime);
     // this.primairytimeline.to(to, animation.duration, {opacity, delay: }, animation.start_time);
     return
   }
@@ -2382,9 +2449,10 @@ export class VideocreatorComponent implements OnInit {
     this.newFiles.canvas = [this.canvas];
     this.newFiles.template = this.animationarray;
     this.newFiles.counter = this.counter;
+    this.newFiles.companyId = this.Account.companyId;
 
     if (this.newFiles.id) {
-      this.relationsApi.upsert(this.newFiles).subscribe(res => {
+      this.relationsApi.updateByIdFiles(this.newFiles.relationsId, this.newFiles.id, this.newFiles).subscribe(res => {
         this.snackBar.open("video saved!", undefined, {
           duration: 2000,
           panelClass: 'snackbar-class'
@@ -2460,7 +2528,8 @@ export class VideocreatorComponent implements OnInit {
       position: 'relative',
       videourl: '',
       loop: false,
-      weather: ''
+      weather: '',
+      audio: ''
     }
     this.animationarray = [];
     this.counter = 60;
@@ -2475,7 +2544,7 @@ export class VideocreatorComponent implements OnInit {
     this.counter = this.editablevideo.counter;
     this.detectchange();
 
-    console.log(this.animationarray);
+    console.log(this.newFiles);
   }
 
 }
