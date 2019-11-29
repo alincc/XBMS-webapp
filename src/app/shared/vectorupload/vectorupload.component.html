@@ -1,7 +1,13 @@
-<div class="picture-container">
+<div class="picture-container" fxLaout="row">
     <button matTooltip="Open gallery" class="deletepicture" mat-mini-fab color="primary" (click)="onOpenGallery()">
         <mat-icon>wallpaper</mat-icon>
     </button>
+    <mat-expansion-panel *ngIf="showdropbox">
+            <mat-expansion-panel-header>
+                <mat-panel-title>
+                    upload Image/Vector
+                </mat-panel-title>
+            </mat-expansion-panel-header>
     <div *ngIf="showdropbox">
         <div ng2FileDrop #fileInput [ngClass]="{'drop-zone-over': hasBaseDropZoneOver}"
             (fileOver)="fileOverBase($event)" [uploader]="uploader" class="drop-zone" (onFileDrop)="dropped($event)">
@@ -91,5 +97,5 @@
         </div>
 
     </div>
-
+</mat-expansion-panel>
 </div>

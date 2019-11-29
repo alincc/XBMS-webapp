@@ -392,6 +392,7 @@ export class VideocreatorComponent implements OnInit {
       svgtrans = svgtrans.replace(')', '');
       let svgtransarray = svgtrans.split(' ').map(Number);
       rawpath = MotionPathPlugin.transformRawPath(rawpath, svgtransarray[0], svgtransarray[1], svgtransarray[2], svgtransarray[3], svgtransarray[4], svgtransarray[5]);
+    
     }
 
     if (rawpath === undefined) {
@@ -558,6 +559,7 @@ export class VideocreatorComponent implements OnInit {
   addAnimation(iset, element: animationtype, elementA) {
     let duration = element.duration;
     let starttime = element.start_time;
+    let endtime = element.end_time;
     let anitype = element.anim_type;
     let rotationcycle = element.rotationcycle;
     let scalesize = element.scalesize;
@@ -570,6 +572,7 @@ export class VideocreatorComponent implements OnInit {
 
     if (elementA.audioeffectsrc) {
       this.primairytimeline.call(this.playSound, [this.selectedelement.id +'s', elementA.audioeffectsrc, false], starttime);
+      this.primairytimeline.call(this.stopSound, [this.selectedelement.id +'s', elementA.audioeffectsrc, false], endtime);
       this.primairytimeline.eventCallback("onInterrupt", this.pauseSound, [this.selectedelement.id, elementA.audioeffectsrc]);
     }
 
@@ -1776,7 +1779,7 @@ export class VideocreatorComponent implements OnInit {
     console.log(this.canvas.weather);
     let type = this.canvas.weather;
     gsap.set("#weathercontainer", { perspective: 600 })
-    gsap.set("img", { xPercent: "-50%", yPercent: "-50%" })
+    // gsap.set("img", { xPercent: "-50%", yPercent: "-50%" })
 
     let classtype;
     let total = 30;
@@ -1784,6 +1787,7 @@ export class VideocreatorComponent implements OnInit {
     if (type === 'rain') { total = 60 }
     if (type === 'leaves') { total = 30 }
     let container = document.getElementById("weathercontainer");
+    // container.removeChild   ---> ??
     let w = window.innerWidth;
     let h = container.offsetHeight;
 

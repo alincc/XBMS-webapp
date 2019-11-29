@@ -175,8 +175,8 @@
 
     <div *ngIf="selectedelement" fxLayout="column">
         <div *ngFor="let animation of selectedelement.animation; let i = index;">
-            <mat-accordion>
-                <mat-expansion-panel>
+            <mat-accordion style="width: 100%">
+                <mat-expansion-panel >
                     <mat-expansion-panel-header>
                         <mat-panel-title>
                             <label style="width: 300px;">{{animation.anim_type}}</label>
@@ -203,7 +203,7 @@
                             </div>
                         </mat-panel-title>
                     </mat-expansion-panel-header>
-                    <div fxLayout="row">
+                    <div fxLayout="row wrap" fxLayoutGap="20px">
                         <!-- <label>Effects &nbsp;</label> -->
                         <mat-form-field>
                             <mat-select [(value)]="animation.anim_type" (selectionChange)="detectchange()">
@@ -338,7 +338,7 @@
                                 [option]="option" (imgurl)="setAudio($event)">
                             </app-audioupload>
                             <label *ngIf="selectedelement.audioeffectsrc">{{selectedelement.audioeffectsrc}}</label>
-                            <mat-icon (click)="selectedelement.audioeffectsrc = ''" class="iconsize-10">delete
+                            <mat-icon *ngIf="selectedelement.audioeffectsrc" (click)="selectedelement.audioeffectsrc = ''" class="iconsize-10">delete
                             </mat-icon>
                         </div>
 
@@ -688,13 +688,13 @@
                                     <mat-button-toggle fxFlex (click)="setitalic(element)" value="italic">Italic
                                     </mat-button-toggle>
                                 </div>
-
                             </div>
-
-
                         </div>
                         <mat-expansion-panel-header *ngIf="element.type === 'shape'" cdkDragHandle>
                             <mat-panel-title>
+                                <div [style.width]="50px" [style.height]="50px"
+                                    [ngStyle]="element.style" [className]="element.style.class">
+                                </div>
                                 <div style="height: 30px; width: 30px"
                                     [style.background-color]="element.style['background-color']"></div>
                                 <mat-icon (click)="deleteitem(i)" class="iconsize-12">delete</mat-icon>

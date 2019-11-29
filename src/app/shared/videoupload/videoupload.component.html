@@ -1,5 +1,14 @@
-<div class="picture-container">
+<div class="picture-container" fxLayout="row">
+        <button matTooltip="Open gallery" class="deletepicture" mat-mini-fab color="primary" (click)="onOpenGallery()">
+                <mat-icon>ondemand_video</mat-icon>
+            </button>
     <div *ngIf="showdropbox">
+            <mat-expansion-panel>
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>
+                            upload video
+                        </mat-panel-title>
+                    </mat-expansion-panel-header>
         <div ng2FileDrop [ngClass]="{'drop-zone-over': hasBaseDropZoneOver}" (fileOver)="fileOverBase($event)"
             [uploader]="uploader" class="drop-zone">
             Drop video here
@@ -44,9 +53,7 @@
 
         </div>
 
-
+        </mat-expansion-panel>
     </div>
-    <button matTooltip="Open gallery" class="deletepicture" mat-mini-fab color="primary" (click)="onOpenGallery()">
-        <mat-icon>ondemand_video</mat-icon>
-    </button>
+
 </div>
