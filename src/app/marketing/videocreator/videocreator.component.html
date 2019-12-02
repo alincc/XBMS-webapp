@@ -176,7 +176,7 @@
     <div *ngIf="selectedelement" fxLayout="column">
         <div *ngFor="let animation of selectedelement.animation; let i = index;">
             <mat-accordion style="width: 100%">
-                <mat-expansion-panel >
+                <mat-expansion-panel>
                     <mat-expansion-panel-header>
                         <mat-panel-title>
                             <label style="width: 300px;">{{animation.anim_type}}</label>
@@ -275,6 +275,7 @@
                                 <mat-hint>Scale</mat-hint>
                             </mat-form-field>
                         </div>
+
                         <div *ngIf="animation.anim_type === 'bounce'">
                             <mat-form-field style="max-width: 46px;">
                                 <input [(ngModel)]="animation.travellocY" type="number" matInput>
@@ -287,6 +288,7 @@
                             <button mat-button
                                 (click)="animation.travellocY = selectedelement.posy; animation.travellocX = selectedelement.posx">Reset</button>
                         </div>
+
                         <div *ngIf="animation.anim_type === 'skew'">
                             <mat-form-field style="max-width: 46px;">
                                 <input [(ngModel)]="animation.skewY" type="number" matInput>
@@ -299,6 +301,7 @@
                             <button mat-button
                                 (click)="animation.travellocY = selectedelement.posy; animation.travellocX = selectedelement.posx">Reset</button>
                         </div>
+
                         <div *ngIf="animation.anim_type === 'move'">
                             <mat-form-field style="max-width: 46px;">
                                 <input [(ngModel)]="animation.travellocY" type="number" matInput>
@@ -316,7 +319,6 @@
                                 (click)="animation.travellocY = selectedelement.posy; animation.travellocX = selectedelement.posx">Reset</button>
                             <button mat-button (click)="editMotionPath()">Edit path</button>
                             <button mat-button (click)="saveNewMotionPath()">Save path</button>
-
                         </div>
 
                         <div *ngIf="animation.anim_type === 'followminions'">
@@ -328,20 +330,21 @@
                                 <input [(ngModel)]="animation.travellocX" type="number" matInput>
                                 <mat-hint>X-axe</mat-hint>
                             </mat-form-field>
-                            <button mat-button
-                                (click)="animation.travellocY = selectedelement.posy; animation.travellocX = selectedelement.posx">Reset</button>
-                            <button mat-button (click)="editMotionPath()">Edit path</button>
-                            <button mat-button (click)="saveNewMotionPath()">Save path</button>
-                        </div>
-                        <div>
-                            <app-audioupload *ngIf="!selectedelement.audioeffectsrc" [account]="Account"
-                                [option]="option" (imgurl)="setAudio($event)">
-                            </app-audioupload>
-                            <label *ngIf="selectedelement.audioeffectsrc">{{selectedelement.audioeffectsrc}}</label>
-                            <mat-icon *ngIf="selectedelement.audioeffectsrc" (click)="selectedelement.audioeffectsrc = ''" class="iconsize-10">delete
-                            </mat-icon>
                         </div>
 
+                        <div>
+                            <app-audioupload *ngIf="!animation.audioeffectsrc" [account]="Account" [option]="option"
+                                (imgurl)="setAudio($event, animation)">
+                            </app-audioupload>
+                            <label *ngIf="animation.audioeffectsrc">{{ animation.audioeffectsrc | fileName }}</label>
+                            <mat-icon *ngIf="animation.audioeffectsrc" (click)="animation.audioeffectsrc = ''"
+                                class="iconsize-10">delete
+                            </mat-icon>
+                        </div>
+                        <button mat-button
+                            (click)="animation.travellocY = selectedelement.posy; animation.travellocX = selectedelement.posx">Reset</button>
+                        <button mat-button (click)="editMotionPath()">Edit path</button>
+                        <button mat-button (click)="saveNewMotionPath()">Save path</button>
                     </div>
                 </mat-expansion-panel>
             </mat-accordion>
@@ -692,8 +695,8 @@
                         </div>
                         <mat-expansion-panel-header *ngIf="element.type === 'shape'" cdkDragHandle>
                             <mat-panel-title>
-                                <div [style.width]="50px" [style.height]="50px"
-                                    [ngStyle]="element.style" [className]="element.style.class">
+                                <div [style.width]="'50px'" [style.height]="'50px'" [ngStyle]="element.style"
+                                    [className]="element.style.class">
                                 </div>
                                 <div style="height: 30px; width: 30px"
                                     [style.background-color]="element.style['background-color']"></div>
@@ -1144,9 +1147,12 @@
                         (onSave)="onCanvasSave($event, i)">
                     </canvas-whiteboard>
 
-                    <audio *ngIf="element.audioeffectsrc" [attr.id]="element.id + 's'">
-                        <source type="audio/mp3" [src]="element.audioeffectsrc">
-                    </audio>
+                    <!-- not visible object to connect sound to  -->
+                    <div *ngFor="let part of element.animation; let i = index;">
+                        <audio *ngIf="part.audioeffectsrc" [attr.id]="element.id + i + 's'">
+                            <source type="audio/mp3" [src]="part.audioeffectsrc">
+                        </audio>
+                    </div>
                 </div>
             </div>
         </div>

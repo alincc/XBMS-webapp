@@ -420,6 +420,8 @@ export class VideocreatorComponent implements OnInit {
 
   async detectchange() {
     //this.primairytimeline.clear();
+    this.primairytimeline = gsap.timeline({ paused: true, reversed: true });
+    
     console.log('run check', this.animationarray);
     if (this.editpath === true) {
       this.saveNewMotionPath();
@@ -535,17 +537,20 @@ export class VideocreatorComponent implements OnInit {
 
   playSound(id, src, loop) {
     let audio = document.getElementById(id) as HTMLAudioElement;
+    console.log(id, audio);
     audio.play();
     audio.loop = loop;
   }
 
   pauseSound(id, src) {
     let audio = document.getElementById(id) as HTMLAudioElement;
+    console.log(audio);
     audio.pause();
   }
 
   stopSound(id, src){
     let audio = document.getElementById(id) as HTMLAudioElement;
+    console.log(audio);
     audio.currentTime = 0;
     audio.pause();
   }
@@ -556,7 +561,7 @@ export class VideocreatorComponent implements OnInit {
   }
 
 
-  addAnimation(iset, element: animationtype, elementA) {
+  addAnimation(iset, element: animationtype, elementA, i) {
     let duration = element.duration;
     let starttime = element.start_time;
     let endtime = element.end_time;
@@ -570,10 +575,10 @@ export class VideocreatorComponent implements OnInit {
     let ease = this.selectEaseType(element.easetype);
     let repeat = element.repeat;
 
-    if (elementA.audioeffectsrc) {
-      this.primairytimeline.call(this.playSound, [this.selectedelement.id +'s', elementA.audioeffectsrc, false], starttime);
-      this.primairytimeline.call(this.stopSound, [this.selectedelement.id +'s', elementA.audioeffectsrc, false], endtime);
-      this.primairytimeline.eventCallback("onInterrupt", this.pauseSound, [this.selectedelement.id, elementA.audioeffectsrc]);
+    if (element.audioeffectsrc !== '') {
+      this.primairytimeline.call(this.playSound, [elementA.id + i + 's', element.audioeffectsrc, false], starttime);
+      this.primairytimeline.call(this.stopSound, [elementA.id + i + 's', element.audioeffectsrc, false], endtime);
+      this.primairytimeline.eventCallback("onInterrupt", this.pauseSound, [elementA.id + i + 's', element.audioeffectsrc]);
     }
 
     if (anitype === 'rotation') {
@@ -732,8 +737,10 @@ export class VideocreatorComponent implements OnInit {
 
   addEffect(element): void {
     let id = document.getElementById(element.id);
+    let i = 0;
     element.animation.forEach(animationsection => {
-      this.addAnimation(id, animationsection, element);
+      this.addAnimation(id, animationsection, element, i);
+      ++i;
     });
 
   }
@@ -1421,6 +1428,7 @@ export class VideocreatorComponent implements OnInit {
   }
 
   stopFunc() {
+    
     console.log('stop')
     //clearTimeout(this.t);
 
@@ -1557,9 +1565,9 @@ export class VideocreatorComponent implements OnInit {
     this.onchangevideo();
   }
 
-  setAudio(event) {
-    console.log('audio file', event)
-    this.selectedelement.audioeffectsrc = event;
+  setAudio(event, animation) {
+    console.log('audio file', event, animation)
+    animation.audioeffectsrc = event;
     // delete this.onchangeaudio();
   }
 
