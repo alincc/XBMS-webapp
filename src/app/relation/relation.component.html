@@ -784,7 +784,7 @@
               </div>
               <vg-player *ngIf="selectedfile.type === 'marketing-video' || selectedfile.type === 'video'"
                 style="max-width: 600px;">
-                <video [vgMedia]="media" #media id="singleVideo" preload="auto" controls style="max-width: 600px;">
+                <video *ngIf="selectedfile.url" [vgMedia]="media" #media id="singleVideo" preload="auto" controls style="max-width: 600px;">
                   <source [src]="selectedfile.url" type="video/mp4">
                 </video>
               </vg-player>

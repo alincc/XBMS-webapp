@@ -951,7 +951,9 @@ export class RelationComponent implements OnInit {
 
   onselectfile(file): void {
     this.selectedfile = undefined;
+    setTimeout(() => {
     this.selectedfile = file;
+    }, 100)
   }
 
   dialogDeleteFile(Files: Files): void {
