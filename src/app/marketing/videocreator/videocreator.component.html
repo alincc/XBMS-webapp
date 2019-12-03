@@ -1099,7 +1099,7 @@
                 id="weathercontainer"></div>
 
 
-            <div *ngIf="animationarray.length > 0 && changenow" #myBounds id="myBounds"
+            <div *ngIf="animationarray && changenow" #myBounds id="myBounds"
                 [style.background-image]="canvas['background-image']"
                 style="overflow: hidden; background-color: transparent;">
                 <div *ngFor="let element of animationarray; let i = index" (click)="onSelectElement(element)"

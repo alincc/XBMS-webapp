@@ -392,7 +392,6 @@ export class VideocreatorComponent implements OnInit {
       svgtrans = svgtrans.replace(')', '');
       let svgtransarray = svgtrans.split(' ').map(Number);
       rawpath = MotionPathPlugin.transformRawPath(rawpath, svgtransarray[0], svgtransarray[1], svgtransarray[2], svgtransarray[3], svgtransarray[4], svgtransarray[5]);
-    
     }
 
     if (rawpath === undefined) {
@@ -421,7 +420,7 @@ export class VideocreatorComponent implements OnInit {
   async detectchange() {
     //this.primairytimeline.clear();
     this.primairytimeline = gsap.timeline({ paused: true, reversed: true });
-    
+
     console.log('run check', this.animationarray);
     if (this.editpath === true) {
       this.saveNewMotionPath();
@@ -548,14 +547,14 @@ export class VideocreatorComponent implements OnInit {
     audio.pause();
   }
 
-  stopSound(id, src){
+  stopSound(id, src) {
     let audio = document.getElementById(id) as HTMLAudioElement;
     console.log(audio);
     audio.currentTime = 0;
     audio.pause();
   }
 
-  seekSound(id, src, time){
+  seekSound(id, src, time) {
     let audio = document.getElementById(id) as HTMLAudioElement;
     audio.currentTime = time;
   }
@@ -827,21 +826,19 @@ export class VideocreatorComponent implements OnInit {
     this.relationsApi.getFiles(this.option.id, { where: { template: { "neq": null }, type: 'video' } })
       .subscribe((files: Files[]) => {
         this.editablevideos = files;
-        //console.log('received files', this.editableimages);
       });
   }
 
   setImage(event, i): void {
     setTimeout(() => {
       this.animationarray[i].src = event;
-      //else new file not uploaded yet  
     }, 500);
   }
 
   setVector(event, i, idx): void {
-    //console.log(event, i, idx);
-    this.animationarray[i].vectors[idx].src = event;
-    let vect = this.animationarray[i].vectors[idx].idx;
+    setTimeout(() => {
+      this.animationarray[i].vectors[idx].src = event;
+    }, 500);
   }
 
   initVectors(e, i, idx, vectorid) {
@@ -852,8 +849,9 @@ export class VideocreatorComponent implements OnInit {
         let originalsize; // {x: 0, y: 0, width: 1496, height: 1496, zoom: 0.06684491978609626}
         await this.deleteVectorGroup(e);
         originalsize = await this.getViewBox(e);
+        console.log(e);
         await this.normalizepath(e, originalsize);
-        await this.combineSVGs(this.animationarray[i]);
+        await this.combineSVGs(this.animationarray[i], e);
         resolve();
       })
     }
@@ -883,7 +881,7 @@ export class VideocreatorComponent implements OnInit {
         }
         doc.setAttribute("id", '3knrk2l');
         let element = SVG.get(doc.id);
-        //console.log(element);
+        console.log(element);
         //element.draggable()
         var box = element.viewbox();
         if (box === undefined) {
@@ -1080,7 +1078,6 @@ export class VideocreatorComponent implements OnInit {
       this.detectchange(); // detect change when seperating entire svg 
     } else {
       let i = this.animationarray.length - 1;
-      //this.combineSVGs(this.animationarray[i]);
     }
 
   }
@@ -1399,7 +1396,7 @@ export class VideocreatorComponent implements OnInit {
       this.detectchange();
     }
 
-    if (this.canvas.audio){
+    if (this.canvas.audio) {
       this.playSound('canvassound', null, this.canvas.loop);
       this.primairytimeline.eventCallback("onComplete", this.stopSound, [this.selectedelement.id, null]);
     }
@@ -1428,7 +1425,7 @@ export class VideocreatorComponent implements OnInit {
   }
 
   stopFunc() {
-    
+
     console.log('stop')
     //clearTimeout(this.t);
 
@@ -1448,7 +1445,7 @@ export class VideocreatorComponent implements OnInit {
       this.videoPlayer.currentTime = 0;
     }
     this.detectchange();
-    if (this.canvas.audio){
+    if (this.canvas.audio) {
       this.stopSound('canvassound', null);
     }
   }
@@ -1460,7 +1457,7 @@ export class VideocreatorComponent implements OnInit {
     }
     clearTimeout(this.t);
 
-    if (this.canvas.audio){
+    if (this.canvas.audio) {
       this.pauseSound('canvassound', null);
     }
   }
@@ -1548,8 +1545,11 @@ export class VideocreatorComponent implements OnInit {
     if (this.animationarray[i].type === 'whiteboard') {
       this.whiteboard = false;
     }
+    this.removeVectorPathMultiSelection();
+    this.removeVectorPathSelection()
     this.animationarray.splice(i, 1);
-    this.selectedelement = undefined;
+    this.selectedelement = '';
+    //console.log(this.animationarray);
   }
 
   swiperight(e) {
@@ -1642,29 +1642,44 @@ export class VideocreatorComponent implements OnInit {
     this.combineSVGs(element);
   }
 
-  async combineSVG2(element) {
-    //vectstring = await this.deleteMetaSvg(vectstring); //delete background
 
-    // get paths array
-
-    // for each path set new id 
-  }
-
-  async combineSVGs(element) {
+  async combineSVGs(element, e?) {
     return new Promise(async (resolve, reject) => {
       let idnew;
       let total = [];
-      let startstr = '<svg xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#"' +
+      let h = 500, w = 500;
+      let startstr;
+      startstr = '<svg xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#"' +
         ' xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg"' +
-        ' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" height="100%" width="100%"' +
+        ' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + h + ' ' + w + '" height="100%" width="100%"' +
         'id="svg2" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" preserveAspectRatio="none">';
       //console.log('morph added to vector');
-
       total.push(startstr);
+
       let index = 0;
       //console.log('before vect desc:', element.vectors);
+
       for (const vect of element.vectors) {
         idnew = document.getElementById(vect.idx); // get document
+        console.log(e);
+        if (e) {
+          let originalsize = await this.getViewBox(e);
+          console.log(originalsize);
+          if (originalsize) {
+            h = originalsize['width']; // * newscale1;
+            w = originalsize['height']; // * newscale1;
+
+            startstr = '<svg xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#"' +
+              ' xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg"' +
+              ' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + h + ' ' + w + '" height="100%" width="100%"' +
+              'id="svg2" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" preserveAspectRatio="none">';
+            //console.log('morph added to vector');
+            total[0] = startstr;
+
+
+          }
+        }
+
 
         let vectstring;
         //console.log(idnew); // check null ref error
@@ -1786,25 +1801,24 @@ export class VideocreatorComponent implements OnInit {
   addWeatherEffect() {
     console.log(this.canvas.weather);
     let type = this.canvas.weather;
-    gsap.set("#weathercontainer", { perspective: 600 })
+    // gsap.set("#weathercontainer", { perspective: 600 })
     // gsap.set("img", { xPercent: "-50%", yPercent: "-50%" })
 
     let classtype;
     let total = 30;
     if (type === 'snow') { total = 60 }
     if (type === 'rain') { total = 60 }
-    if (type === 'leaves') { total = 30 }
+    if (type === 'leaves') { total = 50 }
     let container = document.getElementById("weathercontainer");
     // container.removeChild   ---> ??
+    container.innerHTML = '';
+
     let w = window.innerWidth;
     let h = container.offsetHeight;
-
     let LeafL = window.innerHeight;
     let LeafR = window.innerWidth;
-
     let canvasposL = 0;
     let canvasposR = container.offsetWidth;
-
     let heightani = h * -1;
     let heightanibottom = heightani - 100; // total area from above the square to lower edge
     let heightanitop = heightanibottom * 2;
@@ -1813,7 +1827,6 @@ export class VideocreatorComponent implements OnInit {
 
     for (let i = 0; i < total; i++) {
       var Div = document.createElement('div');
-
       if (type === 'snow') {
         gsap.set(Div, { attr: { class: 'snow' }, x: this.R(0, canvasposR), y: this.R(h, heightanitop), z: this.R(-200, 200), rotationZ: this.R(0, 180), rotationX: this.R(0, 360) });
       }
@@ -1829,7 +1842,6 @@ export class VideocreatorComponent implements OnInit {
       if (type === 'snow') { this.animsnow(Div, h); }
       if (type === 'rain') { this.animrain(Div, h); }
       if (type === 'leaves') { this.animleaves(Div, h); }
-
     }
   }
 
@@ -1938,61 +1950,40 @@ export class VideocreatorComponent implements OnInit {
       // example originalsize = {x: 0, y: 0, width: 1496, height: 1496, zoom: 0.06684491978609626}
       let idto = idx;
       let p = idto.getElementsByTagName("path");
-      //console.log(p);
-      let bxn
       for (let index = 0; index < p.length; index++) {
-        let idto2 = document.getElementById(p[index].id);
-        //console.log(idto2);
-        let transf = p[index].getAttribute("transform");
-        //let transf = window.getComputedStyle(p[index]).transform;
-        //console.log(transf);
-        if (transf !== null) {
-          //transf = transf.toString(); //.replace('matrix(');
-          //console.log(transf);
-          transf = transf.replace('matrix(', '');
-          transf = transf.replace(')', '');
-          bxn = transf.split(',');
-          //console.log(bxn);
-          if (bxn[0] !== '1' || bxn[0] === undefined) {
-
-            let topangle;
-
-            if (originalsize.width > originalsize.height) {
-              topangle = 500 / originalsize.width
-            } else {
-              topangle = 500 / originalsize.height
-            }
-
-            // let newscale1 = originalsize.width - 500;
-            let newscale1 = 500 / originalsize.width;
-            newscale1 = newscale1 * bxn[0];
-            // let newscale2 = originalsize.width - 500;
-            let newscale2 = 500 / originalsize.width;
-            newscale2 = newscale2 * bxn[3];
-
-            const matrix = 'matrix(' + newscale1 + ',' + bxn[1] + ',' + bxn[2] + ',' + newscale2 + ',' + bxn[4] + ',' + 500
-              + ')';
-            const scale = 'scale(' + bxn[0] + ')';
-            //p[index].removeAttribute("transform");
-            p[index].setAttribute("transform", matrix);
-
-            if (p[index].id === '') {
-              p[index].setAttribute("id", "child-" + index);
-            }
-            const h = originalsize.width; // * newscale1;
-            const w = originalsize.height; // * newscale1;
-            //console.log(p[index].attributes['d'].value);
-            const normalizedPath = normalize({
-              //viewBox: '0 0 ' + w + ' ' + h,
-              viewBox: '0 0 500 500',
-              path: p[index].attributes['d'].value,//'M150.883 169.12c11.06-.887 20.275-7.079 24.422-17.256',
-              min: 0,
-              max: 500, // * (1 + newscale1),
-              asList: false
-            });
-            p[index].setAttribute("d", normalizedPath);
+    
+          if (p[index].id === '') {
+            p[index].setAttribute("id", "child-" + index);
           }
-        }
+
+          // const normalizedPath = normalize({
+          //   //viewBox: '0 0 ' + h + ' ' + w,
+          //   //viewBox: '0 0 500 500',
+          //   path: p[index].attributes['d'].value,//'M150.883 169.12c11.06-.887 20.275-7.079 24.422-17.256',
+          //   //min: 0,
+          //   //max: 500, // * (1 + newscale1),
+          //   asList: false
+          // });
+
+          //p[index].setAttribute("d", normalizedPath);
+
+          let transf = p[index].getAttribute("transform");
+          let svgtrans = transf.replace(/,/g,' ');
+          let rawpath; // = MotionPathPlugin.getRawPath(idto);
+          let oripath = p[index].attributes['d'].value;
+         
+          console.log(svgtrans);
+
+          if (svgtrans !== null && svgtrans !== 'matrix(1 0 0 1 0 0)' && oripath !== 'M 0,0 H 8000 V 6000 H 0 Z' && oripath !== 'M 11220,0 H 0 V 11220 H 11220 V 0') {
+            svgtrans = svgtrans.replace('matrix(', '');
+            svgtrans = svgtrans.replace(')', '');
+            let svgtransarray = svgtrans.split(' ').map(Number);
+            console.log (oripath, svgtransarray[0], svgtransarray[1], svgtransarray[2], svgtransarray[3], svgtransarray[4], svgtransarray[5]);
+            rawpath = MotionPathPlugin.transformRawPath(oripath, svgtransarray[0], svgtransarray[1], svgtransarray[2], svgtransarray[3], svgtransarray[4], svgtransarray[5]);
+            p[index].setAttribute("d", rawpath);
+            p[index].setAttribute("transform", '');
+          }
+        
         resolve();
       }
     });
@@ -2066,6 +2057,8 @@ export class VideocreatorComponent implements OnInit {
 
   deleteVectorGroup(idx) {
     return new Promise(async (resolve, reject) => {
+
+      MorphSVGPlugin.convertToPath("circle, rect, ellipse, line, polygon, polyline");
       // this works don't ask why
       let groupElement;
       let idto = idx; //document.getElementById(idx);
@@ -2086,6 +2079,55 @@ export class VideocreatorComponent implements OnInit {
       for (let index = 0; index < p.length; index++) {
         p[index].setAttribute("id", "child-" + index);
       }
+
+      // let c;
+      // c = idto.getElementsByTagName("circle");
+      // for (let index = 0; index < c.length; index++) {
+      //   let newpath = MorphSVGPlugin.convertToPath(c[index]);
+      //   newpath = newpath[0]
+      //   console.log(newpath);
+      //   c[index].remove();
+      //   newpath.id = "child-" + index;
+      //   idto.appendChild(newpath);
+      // }
+
+      // let e;
+      // e = idto.getElementsByTagName("ellipse");
+      // for (let index = 0; index < e.length; index++) {
+      //   let newpath  = MorphSVGPlugin.convertToPath(e[index]);
+      //   newpath = newpath[0]
+      //   console.log(newpath);
+      //   e[index].remove();
+      //   newpath.id = "child-" + index;
+      //   idto.appendChild(newpath);
+      //   // e[index].setAttribute("id", "child-" + index);
+      // }
+
+      // let r;
+      // r = idto.getElementsByTagName("rect");
+      // for (let index = 0; index < r.length; index++) {
+      //   let newpath  = MorphSVGPlugin.convertToPath(r[index]);
+      //   newpath = newpath[0]
+      //   console.log(newpath);
+      //   r[index].remove();
+      //   newpath.id = "child-" + index;
+      //   idto.appendChild(newpath);
+      //   // e[index].setAttribute("id", "child-" + index);
+      // }
+
+      // let l;
+      // l = idto.getElementsByTagName("line");
+      // for (let index = 0; index < l.length; index++) {
+      //   let newpath  = MorphSVGPlugin.convertToPath(l[index]);
+      //   newpath = newpath[0]
+      //   console.log(newpath);
+      //   l[index].remove();
+      //   newpath.id = "child-" + index;
+      //   idto.appendChild(newpath);
+      //   // e[index].setAttribute("id", "child-" + index);
+      // }
+
+
       resolve();
     });
   }
@@ -2097,6 +2139,8 @@ export class VideocreatorComponent implements OnInit {
     var viewBox = [bbox.x, bbox.y, bbox.width, bbox.height].join(" ");
     svg.setAttribute("viewBox", viewBox);
     this.selectedelement.svgcombi = svg.outerHTML;
+    this.removeVectorPathSelection()
+    this.removeVectorPathMultiSelection();
     // prompt("Copy to clipboard: Ctrl+C, Enter", svg.outerHTML);
   }
 
@@ -2125,6 +2169,7 @@ export class VideocreatorComponent implements OnInit {
     if (this.selectmultiplepaths === false) {
       this.removeVectorPathMultiSelection()
     } else {
+      this.selectmultiplepaths === true;
       this.selectedVecPathmultiple.push(this.selectedVecPath);
     }
   }
@@ -2139,28 +2184,22 @@ export class VideocreatorComponent implements OnInit {
         } else {
           this.removeVectorPathSelection();
           this.selectedVecPath = e.target;
-          let style = this.selectedVecPath.getAttribute('style');
-          let newstyle = style + '; outline: 5px dotted green;';
-          this.selectedVecPath.setAttribute('style', newstyle);
+          this.selectedVecPath.style.outline = '5vw dotted green';
         }
       }
-
       if (this.selectmultiplepaths === true) {
+        this.selectedVecPath = e.target; // keep is connected to the ng view
         // check if already selected 
         let exist = this.selectedVecPathmultiple.indexOf(e.target);
+        console.log(exist, e.target);
         if (exist !== -1) {
-          // remove if exist 
-          let revertoldstyle = e.target.getAttribute('style');
-          let oldstyle = revertoldstyle.replace('; outline: 5px dotted green;', '');
-          //console.log(oldstyle);
-          e.target.setAttribute('style', oldstyle);
+          e.target.style.outline = null;
           this.selectedVecPathmultiple.splice(exist, 1);
         } else {
           // if not exists
-          let style = e.target.getAttribute('style');
-          let newstyle = style + '; outline: 5px dotted green;';
-          e.target.setAttribute('style', newstyle);
+          e.target.style.outline = '5vw dotted green';
           this.selectedVecPathmultiple.push(e.target);
+          console.log(this.selectedVecPathmultiple);
         }
       }
     }
@@ -2192,29 +2231,20 @@ export class VideocreatorComponent implements OnInit {
         }
       });
       // delete actual path and save 
-      this.removeVectorPathSelection();
       this.selectedVecPath.remove();
       this.selectedVecPath = '';
       let idnew = document.getElementById(this.selectedelement.id); // get document
       let vectstring = idnew.innerHTML;
       this.selectedelement.svgcombi = vectstring;
+      this.removeVectorPathSelection();
     }
   }
 
   removeVectorPathMultiSelection() {
-    let i = 0;
-    let avele = this.selectedVecPathmultiple.length - 1;
     if (this.selectedVecPathmultiple.length > 0) {
-      this.selectedVecPathmultiple.forEach(path => {
-        let revertoldstyle = path.getAttribute('style');
-        let oldstyle = revertoldstyle.replace('; outline: 5px dotted green;', '');
-        //console.log(oldstyle);
-        path.setAttribute('style', oldstyle);
-        //console.log(i, avele);
-        if (i === avele) {
-          //this.selectedVecPathmultiple = [];
-        }
-        ++i;
+      this.selectedVecPathmultiple.forEach((path, index) => {
+        path.style.outline = null;
+        this.selectedVecPathmultiple.splice(index, 1)
       });
 
     }
@@ -2223,10 +2253,12 @@ export class VideocreatorComponent implements OnInit {
 
   removeVectorPathSelection() {
     if (this.selectedVecPath) {
-      let revertoldstyle = this.selectedVecPath.getAttribute('style');
-      let oldstyle = revertoldstyle.replace('; outline: 5px dotted green;', '');
+      this.selectedVecPath.style.outline = null;
+      this.selectedVecPath = null;
+      //let revertoldstyle = this.selectedVecPath.getAttribute('style');
+      //let oldstyle = revertoldstyle.replace('; outline: 5vw dotted green;', '');
       //console.log(oldstyle);
-      this.selectedVecPath.setAttribute('style', oldstyle)
+      //this.selectedVecPath.setAttribute('style', oldstyle)
     }
   }
 
@@ -2241,44 +2273,43 @@ export class VideocreatorComponent implements OnInit {
     })
   }
 
+
   saveAsSeperateVector(): any {
     let svgstring;
     let pathidar = [];
 
     if (this.selectmultiplepaths) {
-      this.removeVectorPathMultiSelection();
+      // this.removeVectorPathMultiSelection();
       let svgarray = [];
-
       let i = 0;
       let arraylenght = this.selectedVecPathmultiple.length - 1;
       this.selectedVecPathmultiple.forEach(element => {
         //console.log(element);
-
         let idx = this.animationarray.length + 1;
         let ind = i + 1;
         let newid = idx + 'elvect-' + ind;
-
         let oldid = element.getAttribute('id');
-        console.log('old & new', oldid, newid);
+        //console.log('old & new', oldid, newid);
         let svgel = element;
         let s = new XMLSerializer(); // convert to string
         let stringend = s.serializeToString(svgel);
-
-        let finalstring = stringend.replace(oldid, newid);
+        let cleanstring = stringend.replace('outline: green dotted 5vw;', '');
+        let finalstring = cleanstring.replace(oldid, newid);
         svgarray.push(finalstring);
         pathidar.push(newid);
-        console.log(finalstring, pathidar);
+        //console.log(finalstring, pathidar);
         //console.log(i, arraylenght);
         if (i === arraylenght) {
           svgstring = svgarray.join('');
           //console.log(svgstring, svgarray);
-          this.createnewsvg(svgstring, pathidar)
+          this.createnewsvg(svgstring, pathidar);
+          this.removeVectorPathMultiSelection();
         }
         ++i
       });
 
     } else {
-      this.removeVectorPathSelection();
+      // this.removeVectorPathSelection(); 
       let svgel = this.selectedVecPath;
       let oldid = svgel.getAttribute('id');
       let s = new XMLSerializer(); // convert to string
@@ -2287,10 +2318,11 @@ export class VideocreatorComponent implements OnInit {
       let ind = 0 + 1;
       let newid = idx + 'elvect-' + ind;
       let finalstring = svgstring.replace(oldid, newid);
-
-      svgstring.replace(oldid, newid);
+      let cleanstring = finalstring.replace('outline: green dotted 5vw;', '');
+      cleanstring.replace(oldid, newid);
       pathidar.push(newid);
-      this.createnewsvg(svgstring, pathidar);
+      this.createnewsvg(cleanstring, pathidar);
+      this.removeVectorPathSelection();
     }
 
 
