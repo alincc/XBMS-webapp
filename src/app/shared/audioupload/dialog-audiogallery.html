@@ -13,30 +13,27 @@
 
   <div *ngIf="group.value == 'standardaudio'" class="gallery" fxFlex="80%" fxLayout="row wrap">
     <div *ngFor="let audio of stockaudio; let i = index" fxFlex>
-      <div fxLayout="column" [class.selected]="audio.url === data.selected" (click)="selectedimage(audio.url)">
-          <button a mat-raised-button (click)="selectedimage(audio.url)"
-          [class.selected]="audio.url === data.selected"><mat-icon>sound</mat-icon> {{audio.name}}</button>
-          <!-- <audio width="100" height="100" fxFlex  preload="auto">
-            <source fxFlex src={{audio.fileimage}} type="audio/mp4">
-          </audio> -->
-          <!-- <label>{{audio.name}}</label> -->
-          <!-- <img src={{audio.fileimage}} class="image" (click)="selectedimage(audio.url)"
-          [class.selected]="audio.url === data.selected"/> -->
+      <div fxLayout="column"  (click)="selectedimage(audio.url)">
+        <button a mat-raised-button (click)="selectedimage(audio.url)" [class.selected]="audio.url === data.selected">
+          <mat-icon>sound</mat-icon> {{audio.name}}
+        </button>
+        <audio controls style="margin: 10px" preload="none">
+          <source src={{audio.url}} type="audio/mp3">
+        </audio>
+        <!-- <mat-basic-audio-player [audioUrl]="audio.url" [title]="audio.name" [autoPlay]="false" muted="muted"
+          [displayTitle]="false" [displayVolumeControls]="false"></mat-basic-audio-player> [class.selected]="audio.url === data.selected" -->
         </div>
     </div>
   </div>
 
   <div *ngIf="group.value == 'audioeffects'" class="gallery" fxFlex="80%" fxLayout="row wrap">
     <div *ngFor="let audio of stockaudioeffects; let i = index" fxFlex>
-      <div fxLayout="column" [class.selected]="audio.url === data.selected" (click)="selectedimage(audio.url)">
+      <div fxLayout="column" (click)="selectedimage(audio.url)">
           <button a mat-raised-button (click)="selectedimage(audio.url)"
           [class.selected]="audio.url === data.selected"><mat-icon>sound</mat-icon> {{audio.name}}</button>
-          <!-- <audio width="100" height="100" fxFlex  preload="auto">
-            <source fxFlex src={{audio.fileimage}} type="audio/mp4">
-          </audio> -->
-          <!-- <label>{{audio.name}}</label> -->
-          <!-- <img src={{audio.fileimage}} class="image" (click)="selectedimage(audio.url)"
-          [class.selected]="audio.url === data.selected"/> -->
+          <audio controls style="margin: 10px" preload="none">
+            <source src={{audio.url}} type="audio/mp3">
+          </audio>
         </div>
     </div>
   </div>

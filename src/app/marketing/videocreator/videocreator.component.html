@@ -1071,6 +1071,8 @@
                     class="icon-label" class="iconsize-18" matTooltip="Remove selection">
                     indeterminate_check_box
                 </mat-icon>
+                <mat-checkbox [(ngModel)]="dragselectvectpath" matTooltip="drag selection tool"
+                (change)="selectMultiplePaths()"></mat-checkbox>
                 <mat-checkbox [(ngModel)]="selectmultiplepaths" matTooltip="selected multiple sections"
                     (change)="selectMultiplePaths()"></mat-checkbox>
             </div>

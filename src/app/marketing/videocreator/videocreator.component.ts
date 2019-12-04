@@ -15,12 +15,12 @@ declare const SVG: any;
 import '@svgdotjs/svg.draggable.js'
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 // import * as normalize from 'normalize-svg-coords';
-const plugins = [DrawSVGPlugin, MorphSVGPlugin, SplitText, Physics2DPlugin, MotionPathPlugin, MotionPathHelper]; //needed for GSAP 
+const plugins = [DrawSVGPlugin, MorphSVGPlugin, SplitText, Physics2DPlugin, MotionPathPlugin, MotionPathHelper]; //needed for GSAP
 import { CanvasWhiteboardComponent } from 'ng2-canvas-whiteboard';
 import { fonts } from '../../shared/listsgeneral/fonts';
 import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 import { duration } from 'moment';
-import { viewClassName } from '@angular/compiler';
+import { viewClassName, HtmlTagDefinition } from '@angular/compiler';
 
 export class animationtype {
   start_time: number; //delayt
@@ -286,6 +286,19 @@ export class VideocreatorComponent implements OnInit {
   public selectedVecPathmultiple = [];
   public editpath = false;
 
+  public firstvectpathcorner: {
+    width : undefined,
+    height : undefined
+  }
+
+  public secondvectpathcorner: {
+    width : undefined,
+    height : undefined
+  }
+
+  public dragselectvectpath = false;
+
+
   constructor(
     private sanitizer: DomSanitizer,
     private relationsApi: RelationsApi,
@@ -385,7 +398,7 @@ export class VideocreatorComponent implements OnInit {
     let svgpath = document.getElementById(this.selectedelement.id + 'p');
     let rawpath = MotionPathPlugin.getRawPath(svgpath);
     let svgtrans = svgpath.getAttribute('transform');
-    console.log(svgtrans);
+    console.log(svgtrans, rawpath);
 
     if (svgtrans !== null && svgtrans !== 'matrix(1 0 0 1 0 0)') {
       svgtrans = svgtrans.replace('matrix(', '');
@@ -398,6 +411,7 @@ export class VideocreatorComponent implements OnInit {
       newpath = 'M9,100 C9,100 27.53,58.42 58.91,34.89';
     } else {
       newpath = MotionPathPlugin.rawPathToString(rawpath);
+      console.log(newpath);
     }
 
     let newsvgpath = '<svg id="' + this.selectedelement.id + 'mp" viewBox="-20 0 557 190" class="path-edit"><path id="' + this.selectedelement.id + 'p" style="opacity: 0; " d="' + newpath + '" /></svg>';
@@ -531,7 +545,7 @@ export class VideocreatorComponent implements OnInit {
   }
 
   onchangeaudio() {
-    // ?? 
+    // ??
   }
 
   playSound(id, src, loop) {
@@ -602,7 +616,7 @@ export class VideocreatorComponent implements OnInit {
     //   aniset = { duration: duration,  opacity: 0 }, { opacity: 1 };
     // }
     if (anitype === 'move') {
-      // aniset = { duration: duration,  
+      // aniset = { duration: duration,
       //   y: element.travellocY, x: element.travellocX, ease: ease, repeat: repeat, yoyo: element.yoyo }
       //this.setMotionPath(elementA.id);
       let svgset = document.getElementById(elementA.id + 'p');
@@ -773,7 +787,7 @@ export class VideocreatorComponent implements OnInit {
   }
 
   deleteEffect(i) {
-    //reset opacity 
+    //reset opacity
     if (this.selectedelement.animation[i].anim_type === 'appear') {
       this.selectedelement.style.opacity = 1;
       // console.log('delete opacity')
@@ -790,7 +804,7 @@ export class VideocreatorComponent implements OnInit {
   copyElement(i, element) {
     const curel = element;
     let newElement = JSON.parse(JSON.stringify(curel));
-    // redo all ids 
+    // redo all ids
 
     let newelnr = this.animationarray.length + 'el';
     newElement.id = newelnr;
@@ -916,9 +930,9 @@ export class VideocreatorComponent implements OnInit {
   }
 
   onMovingTimeline(event, i) {
-    // console.log(i); 
+    // console.log(i);
     this.currenttime = event.x / 10;
-    // console.log(this.currenttime); 
+    // console.log(this.currenttime);
   }
 
   onMoving(event, i) {
@@ -1009,7 +1023,7 @@ export class VideocreatorComponent implements OnInit {
       yoyo: false,
       audioeffectsrc: ''
     }];
-    // only add if new svg not split from 
+    // only add if new svg not split from
     if (!svgcombi) {
       vectanim = [{
         svganimationtype: '',
@@ -1029,7 +1043,7 @@ export class VideocreatorComponent implements OnInit {
         fromto: 'to'
       }]
     }
-    // do not add animation from beginning with morph SVG's 
+    // do not add animation from beginning with morph SVG's
     let vectors: vectorelement[] = [{
       src: newsrc,
       idx: vectorid,
@@ -1075,7 +1089,7 @@ export class VideocreatorComponent implements OnInit {
     this.selectedelement = vector;
 
     if (!svgcombi) {
-      this.detectchange(); // detect change when seperating entire svg 
+      this.detectchange(); // detect change when seperating entire svg
     } else {
       let i = this.animationarray.length - 1;
     }
@@ -1722,7 +1736,7 @@ export class VideocreatorComponent implements OnInit {
 
   async createMorph(element: vectoranimation, animation: animationtype) {
     // create vector animation foreach path vector 1 to 2, 2 to 3 etc..
-    // add appear and dissapear effect for if the paths are uneven 
+    // add appear and dissapear effect for if the paths are uneven
 
     let vectors: vectorelement[];
     vectors = element.vectors;
@@ -1747,7 +1761,7 @@ export class VideocreatorComponent implements OnInit {
             let pathid2 = vectors[set2].pathids[i2];
             let tovec = document.getElementById(pathid2); //get element
             //console.log(tovec);
-            // hidden is needed for the morph animation but we also need to show the original on finish 
+            // hidden is needed for the morph animation but we also need to show the original on finish
             // opacity can make it appear more gratually which visibility can not
             this.primairytimeline.set(tovec, { opacity: 0 });
             this.primairytimeline.to(tovec, { duration: 1, opacity: 1 }, fintime);
@@ -1759,13 +1773,13 @@ export class VideocreatorComponent implements OnInit {
           ++i2;
         }
 
-        if (set2length > vector.pathids.length) { // for if there paths in vector 1 then 2 
+        if (set2length > vector.pathids.length) { // for if there paths in vector 1 then 2
           let exti = 0
           for (const extrvect of vectors[set2].pathids) {
             if (exti > vector.pathids.length - 1) {
               let fromexvac = document.getElementById(extrvect);
 
-              // reset connected to another path from svg 2 
+              // reset connected to another path from svg 2
               let resetindex = exti - vector.pathids.length;
               let resettovec = document.getElementById(vectors[set2].pathids[resetindex]);
               // await this.setMorphAni(fromexvac, resettovec, animation);
@@ -1845,7 +1859,7 @@ export class VideocreatorComponent implements OnInit {
     this.primairytimeline.to(elm, { duration: this.R(2, 8), rotationX: this.R(0, 360), rotationY: this.R(0, 360), repeat: -1, yoyo: true, ease: 'sine.out', delay: 0 }, 0);
   };
 
-  // element, time(speed), 
+  // element, time(speed),
   animrain(elm, h) {
     this.primairytimeline.to(elm, { duration: this.R(2, 4), y: h, x: '+=100', ease: 'linear.none', repeat: -1, delay: 0 }, 0);
   };
@@ -1890,8 +1904,8 @@ export class VideocreatorComponent implements OnInit {
     };
 
     this.primairytimeline.fromTo(from, fromset, toset, animation.start_time);
-    // this.primairytimeline.to(from, animation.duration, 
-    // {rotation:360, scale:0.5, drawSVG:"100%", 
+    // this.primairytimeline.to(from, animation.duration,
+    // {rotation:360, scale:0.5, drawSVG:"100%",
     // stroke:"white", strokeWidth:6, transformOrigin:"50% 50%"})
     return
   }
@@ -1950,32 +1964,30 @@ export class VideocreatorComponent implements OnInit {
           p[index].setAttribute("id", "child-" + index);
         }
 
-        // const normalizedPath = normalize({
-        //   //viewBox: '0 0 ' + h + ' ' + w,
-        //   //viewBox: '0 0 500 500',
-        //   path: p[index].attributes['d'].value,//'M150.883 169.12c11.06-.887 20.275-7.079 24.422-17.256',
-        //   //min: 0,
-        //   //max: 500, // * (1 + newscale1),
-        //   asList: false
-        // });
-
-        //p[index].setAttribute("d", normalizedPath);
-
-        let transf = p[index].getAttribute("transform");
+        let transf = p[index].getAttribute('transform');
         if (transf){
+        console.log(transf);
         let svgtrans = transf.replace(/,/g, ' ');
         let rawpath; // = MotionPathPlugin.getRawPath(idto);
-        let oripath = p[index].attributes['d'].value;
+        let oripath = MotionPathPlugin.getRawPath(p[index]); //p[index].attributes['d'].value;
+        oripath =  MotionPathPlugin.rawPathToString(oripath);
+        console.log(oripath, svgtrans);
 
-        //console.log(svgtrans);
+        // m 5333.91,1077.5 h 106.23 v 408.648 h -106.23 z
+        //oripath = oripath.replace('z', '');
 
-        if (svgtrans !== null && svgtrans !== 'matrix(1 0 0 1 0 0)'
-          && oripath !== 'M 0,0 H 8000 V 6000 H 0 Z'
-          && oripath !== 'M 11220,0 H 0 V 11220 H 11220 V 0') {
+        // matrix(1 0 0 1 -122.546 163.395)
+        // matrix(0.13333332737286877,0,0,-0.13333332737286877,0,1040)
+        //
+
+        if (svgtrans !== null && svgtrans !== 'matrix(1 0 0 1 0 0)') {
           svgtrans = svgtrans.replace('matrix(', '');
           svgtrans = svgtrans.replace(')', '');
           let svgtransarray = svgtrans.split(' ').map(Number);
-          //console.log (oripath, svgtransarray[0], svgtransarray[1], svgtransarray[2], svgtransarray[3], svgtransarray[4], svgtransarray[5]);
+          // svgtransarray.forEach((value, index) => {
+          //   svgtransarray[index] = Math.round(value);
+          // })
+          console.log (oripath, svgtransarray[0], svgtransarray[1], svgtransarray[2], svgtransarray[3], svgtransarray[4], svgtransarray[5]);
           rawpath = MotionPathPlugin.transformRawPath(oripath, svgtransarray[0], svgtransarray[1], svgtransarray[2], svgtransarray[3], svgtransarray[4], svgtransarray[5]);
           p[index].setAttribute("d", rawpath);
           p[index].setAttribute("transform", '');
@@ -1989,7 +2001,7 @@ export class VideocreatorComponent implements OnInit {
 
 
   async renumberSvgIds(svgstring, idx, pathidar) {
-    // string startin with id="path14" id vect id + indexnr 
+    // string startin with id="path14" id vect id + indexnr
     let newsvgstring = svgstring;
     let index = 0;
     //let final;
@@ -2109,7 +2121,7 @@ export class VideocreatorComponent implements OnInit {
         h = originalsize['width']; // * newscale1;
         w = originalsize['height']; // * newscale1;
       }
-  
+
       let newsvgarray = [
         '<svg xmlns="http://www.w3.org/2000/svg" ' +
         'viewBox="0 0 ' + h + ' ' + w + '" height="100%" width="100%"' +
@@ -2134,35 +2146,62 @@ export class VideocreatorComponent implements OnInit {
     }
   }
 
-  clickVectorPaths(e) {
-    //console.log(e);
-    if (e.target.localName !== 'svg') {
+  selectPathSelectionBox(){
+    let svg = document.getElementById(this.selectedelement.id);
+    let p = svg.getElementsByTagName('path');
+    for (let i = 0; i < p.length; i++) {
+     //let posstring = MotionPathPlugin.rawPathToString(p[i].attributes['d'].value);
+     let posstring = p[i].getBBox();
+     console.log(posstring);
 
-      if (this.selectmultiplepaths === false) {
-        if (this.selectedVecPath === e.target) {
-          this.removeVectorPathSelection();
-        } else {
-          this.removeVectorPathSelection();
-          this.selectedVecPath = e.target;
-          this.selectedVecPath.style.outline = '5vw dotted green';
-        }
+    }
+  }
+
+
+  clickVectorPaths(e) {
+    console.log(e);
+    if (this.dragselectvectpath === true){
+      if (this.firstvectpathcorner.width !== undefined && this.secondvectpathcorner.width !== undefined){
+        this.firstvectpathcorner = undefined;
+        this.secondvectpathcorner = undefined;
       }
-      if (this.selectmultiplepaths === true) {
-        this.selectedVecPath = e.target; // keep is connected to the ng view
-        // check if already selected 
-        let exist = this.selectedVecPathmultiple.indexOf(e.target);
-        console.log(exist, e.target);
-        if (exist !== -1) {
-          e.target.style.outline = null;
-          this.selectedVecPathmultiple.splice(exist, 1);
-        } else {
-          // if not exists
-          e.target.style.outline = '5vw dotted green';
-          this.selectedVecPathmultiple.push(e.target);
-          console.log(this.selectedVecPathmultiple);
+      if (this.firstvectpathcorner.width === undefined){
+        this.firstvectpathcorner.width = e.pageX;
+        this.firstvectpathcorner.height = e.pageY;
+      } else {
+        this.secondvectpathcorner.width = e.pageX;
+        this.secondvectpathcorner.height = e.pageY;
+        this.selectPathSelectionBox();
+      }
+    } else {
+      if (e.target.localName !== 'svg') {
+        if (this.selectmultiplepaths === false) {
+          if (this.selectedVecPath === e.target) {
+            this.removeVectorPathSelection();
+          } else {
+            this.removeVectorPathSelection();
+            this.selectedVecPath = e.target;
+            this.selectedVecPath.style.outline = '5vw dotted green';
+          }
+        }
+        if (this.selectmultiplepaths === true) {
+          this.selectedVecPath = e.target; // keep is connected to the ng view
+          // check if already selected
+          let exist = this.selectedVecPathmultiple.indexOf(e.target);
+          console.log(exist, e.target);
+          if (exist !== -1) {
+            e.target.style.outline = null;
+            this.selectedVecPathmultiple.splice(exist, 1);
+          } else {
+            // if not exists
+            e.target.style.outline = '5vw dotted green';
+            this.selectedVecPathmultiple.push(e.target);
+            console.log(this.selectedVecPathmultiple);
+          }
         }
       }
     }
+
   }
 
   deleteSelectedVectorPath() {
@@ -2175,7 +2214,7 @@ export class VideocreatorComponent implements OnInit {
             element.pathids.splice(index, 1);
           }
         });
-        // delete actual path and save 
+        // delete actual path and save
         this.removeVectorPathMultiSelection();
         selectionvecpath.remove();
         selectionvecpath = '';
@@ -2190,7 +2229,7 @@ export class VideocreatorComponent implements OnInit {
           element.pathids.splice(index, 1);
         }
       });
-      // delete actual path and save 
+      // delete actual path and save
       this.selectedVecPath.remove();
       this.selectedVecPath = '';
       let idnew = document.getElementById(this.selectedelement.id); // get document
@@ -2269,7 +2308,7 @@ export class VideocreatorComponent implements OnInit {
       });
 
     } else {
-      // this.removeVectorPathSelection(); 
+      // this.removeVectorPathSelection();
       let svgel = this.selectedVecPath;
       let oldid = svgel.getAttribute('id');
       let s = new XMLSerializer(); // convert to string
@@ -2403,7 +2442,7 @@ export class VideocreatorComponent implements OnInit {
               setTimeout(() => {
                 this.filesApi.converteps2svg(this.option.id, this.Account.companyId, res.url, name, true)
                   .subscribe(resp => {
-                    //this.setimage(res.url) 
+                    //this.setimage(res.url)
                     // set SVG as new element
                     this.addNewVector(resp.url, this.canvas.height, this.canvas.width);
                     // delete whiteboard

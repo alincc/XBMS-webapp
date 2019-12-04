@@ -202,8 +202,9 @@ export class dialogaudiogallerycomponent implements OnInit {
       const iconurl = element;
       //const previewurl = element + '#t=0.5';
       const filename = iconurl.replace(/^.*[\\\/]/, '');
-      const ext = filename.substr(filename.lastIndexOf('.') + 1);
-      const url = iconurl;
+      filename.split('.').slice(0, -1).join('.')
+      //const ext = filename.substr(filename.lastIndexOf('.') + 1);
+      //const url = iconurl;
      // const fileimage = url.replace(ext, 'jpg');
       this.stockaudio.push({
         url: iconurl, 
@@ -215,7 +216,8 @@ export class dialogaudiogallerycomponent implements OnInit {
 
     this.stockaudioeffectarr.forEach(element => {
       const iconurl = element;
-      const filename = iconurl.replace(/^.*[\\\/]/, '');
+      let filename = iconurl.replace(/^.*[\\\/]/, '');
+      filename.split('.').slice(0, -1).join('.')
       //const ext = filename.substr(filename.lastIndexOf('.') + 1);
       //const url = iconurl;
       this.stockaudioeffects.push({
