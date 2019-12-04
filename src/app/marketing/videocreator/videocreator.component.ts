@@ -14,7 +14,7 @@ import { MatSnackBar, AnimationDurations } from '@angular/material';
 declare const SVG: any;
 import '@svgdotjs/svg.draggable.js'
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
-import * as normalize from 'normalize-svg-coords';
+// import * as normalize from 'normalize-svg-coords';
 const plugins = [DrawSVGPlugin, MorphSVGPlugin, SplitText, Physics2DPlugin, MotionPathPlugin, MotionPathHelper]; //needed for GSAP 
 import { CanvasWhiteboardComponent } from 'ng2-canvas-whiteboard';
 import { fonts } from '../../shared/listsgeneral/fonts';
@@ -1649,9 +1649,8 @@ export class VideocreatorComponent implements OnInit {
       let total = [];
       let h = 500, w = 500;
       let startstr;
-      startstr = '<svg xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#"' +
-        ' xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg"' +
-        ' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + h + ' ' + w + '" height="100%" width="100%"' +
+      startstr = '<svg xmlns="http://www.w3.org/2000/svg" ' +
+        'viewBox="0 0 ' + h + ' ' + w + '" height="100%" width="100%"' +
         'id="svg2" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" preserveAspectRatio="none">';
       //console.log('morph added to vector');
       total.push(startstr);
@@ -1668,15 +1667,10 @@ export class VideocreatorComponent implements OnInit {
           if (originalsize) {
             h = originalsize['width']; // * newscale1;
             w = originalsize['height']; // * newscale1;
-
-            startstr = '<svg xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#"' +
-              ' xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg"' +
-              ' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + h + ' ' + w + '" height="100%" width="100%"' +
+            startstr = '<svg xmlns="http://www.w3.org/2000/svg" ' +
+              'viewBox="0 0 ' + h + ' ' + w + '" height="100%" width="100%"' +
               'id="svg2" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" preserveAspectRatio="none">';
-            //console.log('morph added to vector');
             total[0] = startstr;
-
-
           }
         }
 
@@ -1951,39 +1945,43 @@ export class VideocreatorComponent implements OnInit {
       let idto = idx;
       let p = idto.getElementsByTagName("path");
       for (let index = 0; index < p.length; index++) {
-    
-          if (p[index].id === '') {
-            p[index].setAttribute("id", "child-" + index);
-          }
 
-          // const normalizedPath = normalize({
-          //   //viewBox: '0 0 ' + h + ' ' + w,
-          //   //viewBox: '0 0 500 500',
-          //   path: p[index].attributes['d'].value,//'M150.883 169.12c11.06-.887 20.275-7.079 24.422-17.256',
-          //   //min: 0,
-          //   //max: 500, // * (1 + newscale1),
-          //   asList: false
-          // });
+        if (p[index].id === '') {
+          p[index].setAttribute("id", "child-" + index);
+        }
 
-          //p[index].setAttribute("d", normalizedPath);
+        // const normalizedPath = normalize({
+        //   //viewBox: '0 0 ' + h + ' ' + w,
+        //   //viewBox: '0 0 500 500',
+        //   path: p[index].attributes['d'].value,//'M150.883 169.12c11.06-.887 20.275-7.079 24.422-17.256',
+        //   //min: 0,
+        //   //max: 500, // * (1 + newscale1),
+        //   asList: false
+        // });
 
-          let transf = p[index].getAttribute("transform");
-          let svgtrans = transf.replace(/,/g,' ');
-          let rawpath; // = MotionPathPlugin.getRawPath(idto);
-          let oripath = p[index].attributes['d'].value;
-         
-          console.log(svgtrans);
+        //p[index].setAttribute("d", normalizedPath);
 
-          if (svgtrans !== null && svgtrans !== 'matrix(1 0 0 1 0 0)' && oripath !== 'M 0,0 H 8000 V 6000 H 0 Z' && oripath !== 'M 11220,0 H 0 V 11220 H 11220 V 0') {
-            svgtrans = svgtrans.replace('matrix(', '');
-            svgtrans = svgtrans.replace(')', '');
-            let svgtransarray = svgtrans.split(' ').map(Number);
-            console.log (oripath, svgtransarray[0], svgtransarray[1], svgtransarray[2], svgtransarray[3], svgtransarray[4], svgtransarray[5]);
-            rawpath = MotionPathPlugin.transformRawPath(oripath, svgtransarray[0], svgtransarray[1], svgtransarray[2], svgtransarray[3], svgtransarray[4], svgtransarray[5]);
-            p[index].setAttribute("d", rawpath);
-            p[index].setAttribute("transform", '');
-          }
-        
+        let transf = p[index].getAttribute("transform");
+        if (transf){
+        let svgtrans = transf.replace(/,/g, ' ');
+        let rawpath; // = MotionPathPlugin.getRawPath(idto);
+        let oripath = p[index].attributes['d'].value;
+
+        //console.log(svgtrans);
+
+        if (svgtrans !== null && svgtrans !== 'matrix(1 0 0 1 0 0)'
+          && oripath !== 'M 0,0 H 8000 V 6000 H 0 Z'
+          && oripath !== 'M 11220,0 H 0 V 11220 H 11220 V 0') {
+          svgtrans = svgtrans.replace('matrix(', '');
+          svgtrans = svgtrans.replace(')', '');
+          let svgtransarray = svgtrans.split(' ').map(Number);
+          //console.log (oripath, svgtransarray[0], svgtransarray[1], svgtransarray[2], svgtransarray[3], svgtransarray[4], svgtransarray[5]);
+          rawpath = MotionPathPlugin.transformRawPath(oripath, svgtransarray[0], svgtransarray[1], svgtransarray[2], svgtransarray[3], svgtransarray[4], svgtransarray[5]);
+          p[index].setAttribute("d", rawpath);
+          p[index].setAttribute("transform", '');
+        }
+      }
+
         resolve();
       }
     });
@@ -2058,6 +2056,7 @@ export class VideocreatorComponent implements OnInit {
   deleteVectorGroup(idx) {
     return new Promise(async (resolve, reject) => {
 
+      // convert all svgs and all other then paths
       MorphSVGPlugin.convertToPath("circle, rect, ellipse, line, polygon, polyline");
       // this works don't ask why
       let groupElement;
@@ -2079,55 +2078,6 @@ export class VideocreatorComponent implements OnInit {
       for (let index = 0; index < p.length; index++) {
         p[index].setAttribute("id", "child-" + index);
       }
-
-      // let c;
-      // c = idto.getElementsByTagName("circle");
-      // for (let index = 0; index < c.length; index++) {
-      //   let newpath = MorphSVGPlugin.convertToPath(c[index]);
-      //   newpath = newpath[0]
-      //   console.log(newpath);
-      //   c[index].remove();
-      //   newpath.id = "child-" + index;
-      //   idto.appendChild(newpath);
-      // }
-
-      // let e;
-      // e = idto.getElementsByTagName("ellipse");
-      // for (let index = 0; index < e.length; index++) {
-      //   let newpath  = MorphSVGPlugin.convertToPath(e[index]);
-      //   newpath = newpath[0]
-      //   console.log(newpath);
-      //   e[index].remove();
-      //   newpath.id = "child-" + index;
-      //   idto.appendChild(newpath);
-      //   // e[index].setAttribute("id", "child-" + index);
-      // }
-
-      // let r;
-      // r = idto.getElementsByTagName("rect");
-      // for (let index = 0; index < r.length; index++) {
-      //   let newpath  = MorphSVGPlugin.convertToPath(r[index]);
-      //   newpath = newpath[0]
-      //   console.log(newpath);
-      //   r[index].remove();
-      //   newpath.id = "child-" + index;
-      //   idto.appendChild(newpath);
-      //   // e[index].setAttribute("id", "child-" + index);
-      // }
-
-      // let l;
-      // l = idto.getElementsByTagName("line");
-      // for (let index = 0; index < l.length; index++) {
-      //   let newpath  = MorphSVGPlugin.convertToPath(l[index]);
-      //   newpath = newpath[0]
-      //   console.log(newpath);
-      //   l[index].remove();
-      //   newpath.id = "child-" + index;
-      //   idto.appendChild(newpath);
-      //   // e[index].setAttribute("id", "child-" + index);
-      // }
-
-
       resolve();
     });
   }
@@ -2144,19 +2094,29 @@ export class VideocreatorComponent implements OnInit {
     // prompt("Copy to clipboard: Ctrl+C, Enter", svg.outerHTML);
   }
 
-  seperatePaths(idx, vector: vectorelement, element: vectoranimation) {
+  async seperatePaths(idx, vector: vectorelement, element: vectoranimation) {
     vector.pathids.forEach(pid => {
       let svgel = document.getElementById(pid);
       let s = new XMLSerializer(); // convert to string
       let svgstring = s.serializeToString(svgel);
       //console.log(svgstring);
+      let elev = document.getElementById(this.selectedelement.id);
+
+      let h = 500, w = 500;
+      let originalsize = this.getViewBox(elev);
+      console.log(originalsize);
+      if (originalsize) {
+        h = originalsize['width']; // * newscale1;
+        w = originalsize['height']; // * newscale1;
+      }
+  
       let newsvgarray = [
-        '<svg xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#"' +
-        ' xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg"' +
-        ' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" height="100%" width="100%"' +
+        '<svg xmlns="http://www.w3.org/2000/svg" ' +
+        'viewBox="0 0 ' + h + ' ' + w + '" height="100%" width="100%"' +
         'id="svg2" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" preserveAspectRatio="none">',
         svgstring, '</svg>'
       ]
+
       let newsvg = newsvgarray.join('');
       this.addNewVector(null, element.style.height, element.style.width, newsvg, element.posx, element.posy);
     });
@@ -2328,13 +2288,20 @@ export class VideocreatorComponent implements OnInit {
 
   }
 
-  createnewsvg(svgstring, pathidar) {
+  async createnewsvg(svgstring, pathidar) {
     console.log('start new svg')
+    let h = 500, w = 500;
+    let element = document.getElementById(this.selectedelement.id);
+    let originalsize = await this.getViewBox(element);
+    console.log(originalsize);
+    if (originalsize) {
+      h = originalsize['width']; // * newscale1;
+      w = originalsize['height']; // * newscale1;
+    }
 
     let newsvgarray = [
-      '<svg xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#"' +
-      ' xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg"' +
-      ' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" height="100%" width="100%"' +
+      '<svg xmlns="http://www.w3.org/2000/svg" ' +
+      'viewBox="0 0 ' + h + ' ' + w + '" height="100%" width="100%"' +
       'id="svg2" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" preserveAspectRatio="none">',
       svgstring, '</svg>'
     ]
