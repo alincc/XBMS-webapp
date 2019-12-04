@@ -1998,11 +1998,9 @@ export class VideocreatorComponent implements OnInit {
         //   p[index].setAttribute("transform", '');
         // }
 
-        // SVGElement.prototype.getTransformToElement = 
-        // SVGElement.prototype.getTransformToElement || function(elem)
-        // { 
-        //   return elem.getScreenCTM().inverse().multiply(this.getScreenCTM()); 
-        // };
+        SVGElement.prototype.getTransformToElement = SVGElement.prototype.getTransformToElement || function(elem){ 
+          return elem.getScreenCTM().inverse().multiply(this.getScreenCTM()); 
+        };
 
       }
 
