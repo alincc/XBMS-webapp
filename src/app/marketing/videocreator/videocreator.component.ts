@@ -459,7 +459,11 @@ export class VideocreatorComponent implements OnInit {
             // add vector efffects
             elm.vectoranimation.forEach(vecani => {
               if (vecani.svganimationtype === 'draw') { this.drawVector(elm, vecani) }
-              if (vecani.svganimationtype === 'morph') { this.createMorph(elm, vecani) }
+              if (vecani.svganimationtype === 'morph') {
+                if (elm.vectors.length > 1) {
+                  this.createMorph(elm, vecani)
+                }
+              }
             });
           }, 300) // mininmum needed for dom to process
         }
@@ -864,7 +868,6 @@ export class VideocreatorComponent implements OnInit {
         await this.deleteVectorGroup(e);
         originalsize = await this.getViewBox(e);
         console.log(e);
-        // await this.normalizepath(e, originalsize);
         await this.combineSVGs(this.animationarray[i], e);
         resolve();
       })
@@ -1732,114 +1735,65 @@ export class VideocreatorComponent implements OnInit {
     let vectors: vectorelement[];
     vectors = element.vectors;
 
-
-    let getview = document.getElementById(vectors[0].idx);
-    let viewbox = getview.getAttribute('viewbox');
+    let getview = document.getElementById(element.id);
+    let svgview = getview.getElementsByTagName('svg');
+    let viewbox = svgview[0].getAttribute("viewBox");
     let ease = this.selectEaseType(animation.easetype);
-    
-    //let longestarray = vectors.reduce((p, c, i, a) => a[p].length > c.length ? p : i, 0);
-    let i1 = 0;
-    let fromvector = vectors[i1];
-    let tovector = vectors[i1 + 1];
 
-    if (fromvector.pathids.length < tovector.pathids.length){
-      for (let i2 = 0; i2 < fromvector.pathids.length; i2++) {
 
-        
-        let d = toel.attributes['d'].value;
-        let newpath = await this.normalizepath(d, viewbox) as string;
-        toel.setAttribute("d", newpath);
+    for (let i1 = 0; i1 < vectors.length -1; i1++) {
+
+      let fromvector = vectors[i1];
+      let tovector = vectors[i1 + 1];
+      let fintime = animation.start_time + animation.duration;
+      let starttime = animation.start_time * i1 + 1;
+      //console.log(fromvector.pathids)
+
+      if (vectors[i1].pathids.length < vectors[i1 + 1].pathids.length) {
+        for (let ix = 0; ix < vectors[1].pathids.length; ix++) {
+          //console.log(ix);
+          if (ix > vectors[0].pathids.length) {
+            let topathid = vectors[1].pathids[ix];
+            let toel = document.getElementById(topathid);
+            let d = toel.attributes['d'].value;
+            let newpath = await this.normalizepath(d, viewbox) as string;
+            toel.setAttribute("d", newpath);
+            this.primairytimeline.set(toel, { opacity: 0 }, 0);
+            this.primairytimeline.fromTo(toel, { opacity: 0 }, { duration: 3, opacity: 1 }, fintime-1); 
+          }
+        }
       }
-    }
 
-    for (i1 < vectors.length; i1++;) {
       for (let i2 = 0; i2 < fromvector.pathids.length; i2++) {
-        if (i2 <= tovector.pathids.length) {
+        // vector 1 is eqeal or smaller then vector 2 
+        //console.log(i2);
+        if (i2 < tovector.pathids.length) {
           let frompathid = fromvector.pathids[i2];
           let topathid = tovector.pathids[i2];
           let fromel = document.getElementById(frompathid);
           let toel = document.getElementById(topathid);
-          this.primairytimeline.to(fromel, { duration: animation.duration, morphSVG: toel, ease: ease }, animation.start_time);
-          this.primairytimeline.set(topathid, { opacity: 0 });
-          this.primairytimeline.to(topathid, { duration: 1, opacity: 1 }, animation.end_time - 1);
-          this.primairytimeline.set(topathid, { visibility: 'hidden' }, 0);
-          this.primairytimeline.set(topathid, { visibility: 'visible' }, animation.end_time - 1);
+          //console.log('smaller vector', toel);
+          this.primairytimeline.to(fromel, { duration: animation.duration, morphSVG: toel, ease: ease }, starttime);
+          this.primairytimeline.fromTo(toel, { opacity: 0 }, { duration: 3, opacity: 1 }, fintime-1);
+          this.primairytimeline.to(fromel, { duration: 1, opacity: 0 }, fintime);
 
           let d = toel.attributes['d'].value;
           let newpath = await this.normalizepath(d, viewbox) as string;
           toel.setAttribute("d", newpath);
-        }
-
-        if (i2 > tovector.pathids.length) {
+        } else { // (i2 > tovector.pathids.length)
+          // vector 1 is larger then vector 2
           let frompathid = fromvector.pathids[i2];
-          let topathid = tovector.pathids[i2 - tovector.pathids.length];
+          let sindex = Math.floor(Math.random() *  tovector.pathids.length); //connect to random paths;
+          let topathid = tovector.pathids[sindex];
           let fromel = document.getElementById(frompathid);
           let toel = document.getElementById(topathid);
-          this.primairytimeline.to(fromel, { duration: animation.duration, morphSVG: toel, ease: ease }, animation.start_time);
-          this.primairytimeline.set(topathid, { opacity: 0 });
-          this.primairytimeline.to(topathid, { duration: 1, opacity: 1 }, animation.end_time - 1);
-          this.primairytimeline.set(topathid, { visibility: 'hidden' }, 0);
-          this.primairytimeline.set(topathid, { visibility: 'visible' }, animation.end_time - 1);
+          //console.log('bigger vector', toel, sindex);
+          this.primairytimeline.to(fromel, { duration: animation.duration, morphSVG: toel, ease: ease }, starttime);
+          this.primairytimeline.fromTo(toel, { opacity: 0 }, { duration: 3, opacity: 1 }, fintime-1);
+          this.primairytimeline.to(fromel, { duration: 1, opacity: 0 }, fintime);
         }
       }
     }
-
-    // for (let i1 = 0; i1 < vectors.length; i1++) {
-    //   let vector = vectors[i1];
-
-    //   if (i1 < vectors.length - 1) {
-    //     let fintime = animation.start_time + animation.duration;
-    //     //let set2length = vectors[set2].pathids.length;
-
-    //     for (let i2 = 0; i2 < vector.pathids.length; i2++) {
-    //       //for (const pathid of vector.pathids) {
-    //       let pathid = vector.pathids[i2];
-    //       let fromvac = document.getElementById(pathid);
-
-    //       if (i1 > 0) {
-    //         let d = fromvac.attributes['d'].value;
-    //         let newpath = await this.normalizepath(d, viewbox) as string;
-    //         fromvac.setAttribute("d", newpath);
-    //       }
-
-    //       if (i2 >= set2length) {  // if there more parths in vector 2 then 1
-    //         this.primairytimeline.to(fromvac, { opacity: 0 }, animation.start_time);
-    //       } else {
-    //         //console.log(vectors, set2, i2)
-    //         let pathid2 = vectors[set2].pathids[i2];
-    //         let tovec = document.getElementById(pathid2); //get element
-    //         //console.log(tovec);
-    //         // hidden is needed for the morph animation but we also need to show the original on finish
-    //         // opacity can make it appear more gratually which visibility can not
-    //         this.primairytimeline.set(tovec, { opacity: 0 });
-    //         this.primairytimeline.to(tovec, { duration: 1, opacity: 1 }, fintime - 1);
-    //         this.primairytimeline.set(tovec, { visibility: 'hidden' }, 0);
-    //         this.primairytimeline.set(tovec, { visibility: 'visible' }, fintime - 1);
-
-    //         await this.setMorphAni(fromvac, tovec, animation);
-    //       }
-    //     }
-
-    //     if (set2length > vector.pathids.length) { // for if there more paths in vector 1 then 2
-    //       // let exti = 0
-
-    //       for (let set2 = 0; set2 < vectors[i1].pathids.length; set2++) {
-    //         let extrvect = vectors[i1].pathids[set2];
-    //         if (exti > vector.pathids.length - 1) {
-    //           let fromexvac = document.getElementById(extrvect);
-
-    //           // reset connected to another path from svg 2
-    //           let resetindex = exti - vector.pathids.length;
-    //           let resettovec = document.getElementById(vectors[set2].pathids[resetindex]);
-    //           // await this.setMorphAni(fromexvac, resettovec, animation);
-    //           this.primairytimeline.to(fromexvac, { duration: animation.duration, morphSVG: resettovec }, animation.start_time);
-
-    //         }
-    //         // ++exti
-    //       }
-    //     }
-    //   }
-    // }
   }
 
   async getLargestSvgPath(vector) {
@@ -1856,8 +1810,6 @@ export class VideocreatorComponent implements OnInit {
   addWeatherEffect() {
     console.log(this.canvas.weather);
     let type = this.canvas.weather;
-    // gsap.set("#weathercontainer", { perspective: 600 })
-    // gsap.set("img", { xPercent: "-50%", yPercent: "-50%" })
 
     let classtype;
     let total = 30;
@@ -1951,9 +1903,7 @@ export class VideocreatorComponent implements OnInit {
     };
 
     this.primairytimeline.fromTo(from, fromset, toset, animation.start_time);
-    // this.primairytimeline.to(from, animation.duration,
-    // {rotation:360, scale:0.5, drawSVG:"100%",
-    // stroke:"white", strokeWidth:6, transformOrigin:"50% 50%"})
+
     return
   }
 
@@ -1978,87 +1928,24 @@ export class VideocreatorComponent implements OnInit {
 
   }
 
-  async setMorphAni(from, to, animation: animationtype) {
-    //console.log(from, to, animation);
-    let ease = this.selectEaseType(animation.easetype);
-    let fintime = animation.start_time + animation.duration;
-    let fromset = {}
-    let toset = {
-      morphSVG: {
-        shape: to,
-        type: "rotational",
-        origin: "20% 60%"
-      },
-      ease: ease
-    };
-
-    // this.primairytimeline.fromTo(from, animation.duration, toset, animation.start_time);
-    this.primairytimeline.to(from, { duration: animation.duration, morphSVG: to, ease: ease }, animation.start_time);
-    this.primairytimeline.to(to, { duration: 1, opacity: 1, }, fintime);
-    this.primairytimeline.to(from, { duration: 1, opacity: 0 }, fintime);
-    // this.primairytimeline.to(to, animation.duration, {opacity, delay: }, animation.start_time);
-    return
-  }
-
-  // async normalizepath(idx, originalsize) {
-  //   return new Promise((resolve, reject) => {
-  //     // example originalsize = {x: 0, y: 0, width: 1496, height: 1496, zoom: 0.06684491978609626}
-  //     let idto = idx;
-  //     let p = idto.getElementsByTagName("path");
-
-  //     for (let index = 0; index < p.length; index++) {
-
-  //       if (p[index].id === '') {
-  //         p[index].setAttribute("id", "child-" + index);
-  //       }
-
-  //       let transf = p[index].getAttribute('transform');
-  //       if (transf){
-  //       console.log(transf);
-  //       let svgtrans = transf.replace(/,/g, ' ');
-  //       let rawpath; // = MotionPathPlugin.getRawPath(idto);
-  //       let oripath = MotionPathPlugin.getRawPath(p[index]); //p[index].attributes['d'].value;
-  //       oripath =  MotionPathPlugin.rawPathToString(oripath);
-  //       console.log(oripath, svgtrans);
-  //       p[index].setAttribute("transform", '');
-  //       // m 5333.91,1077.5 h 106.23 v 408.648 h -106.23 z
-  //       //oripath = oripath.replace('z', '');
-
-  //       // matrix(1 0 0 1 -122.546 163.395)
-  //       // matrix(0.13333332737286877,0,0,-0.13333332737286877,0,1040)
-  //       //
-
-  //       if (svgtrans !== null && svgtrans !== 'matrix(1 0 0 1 0 0)') {
-  //         svgtrans = svgtrans.replace('matrix(', '');
-  //         svgtrans = svgtrans.replace(')', '');
-  //         let svgtransarray = svgtrans.split(' ').map(Number);
-  //         // svgtransarray.forEach((value, index) => {
-  //         //   svgtransarray[index] = Math.round(value);
-  //         // })
-  //         console.log (oripath, svgtransarray[0], svgtransarray[1], svgtransarray[2], svgtransarray[3], svgtransarray[4], svgtransarray[5]);
-  //         rawpath = MotionPathPlugin.transformRawPath(oripath, svgtransarray[0], svgtransarray[1], svgtransarray[2], svgtransarray[3], svgtransarray[4], svgtransarray[5]);
-  //         p[index].setAttribute("d", rawpath);
-  //         p[index].setAttribute("transform", '');
-  //       }
-
-  //     }
-
-  //       resolve();
-  //     }
-  //   });
-  // }
 
   async normalizepath(path, viewbox) {
     return new Promise((resolve, reject) => {
+      let viewset = viewbox.split(' ').map(Number);
+      //console.log(path, viewbox, viewset);
+      let max = viewset[3];
+      if (viewset[2] > viewset[3]){
+        max = viewset[2]
+      }
       const normalizedPath = normalize({
         viewBox: viewbox,
         path: path,
         min: 0,
-        max: 1,
+        max: max,
         asList: false
       })
 
-      console.log(normalizedPath)
+      resolve(normalizedPath)
     })
   }
 
