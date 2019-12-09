@@ -1776,6 +1776,9 @@ export class VideocreatorComponent implements OnInit {
           let fromel = document.getElementById(frompathid);
           let toel = document.getElementById(topathid);
           //console.log('smaller vector', toel);
+          let styleto = getComputedStyle(toel).transform;
+          console.log(styleto);
+          this.primairytimeline.to(fromel, { duration: animation.duration, styleto, ease: ease }, starttime);
           this.primairytimeline.to(fromel, { duration: animation.duration, morphSVG: toel, ease: ease }, starttime);
           this.primairytimeline.fromTo(toel, { opacity: 0 }, { duration: 3, opacity: 1 }, fintime - 1);
           this.primairytimeline.to(fromel, { duration: 1, opacity: 0 }, fintime);
@@ -1792,6 +1795,9 @@ export class VideocreatorComponent implements OnInit {
           let fromel = document.getElementById(frompathid);
           let toel = document.getElementById(topathid);
           //console.log('bigger vector', toel, sindex);
+          let styleto = getComputedStyle(toel).transform;
+          console.log(styleto);
+          this.primairytimeline.to(fromel, { duration: animation.duration, styleto, ease: ease }, starttime);
           this.primairytimeline.to(fromel, { duration: animation.duration, morphSVG: toel, ease: ease }, starttime);
           this.primairytimeline.fromTo(toel, { opacity: 0 }, { duration: 3, opacity: 1 }, fintime - 1);
           this.primairytimeline.to(fromel, { duration: 1, opacity: 0 }, fintime);
@@ -2070,7 +2076,7 @@ export class VideocreatorComponent implements OnInit {
         // get original style
         let style = getComputedStyle(p[index]).transform;
 
-        console.log(adh, adw, newtranssize);
+        //console.log(adh, adw, newtranssize);
         // combine all transformations
         let r1 = Rematrix.translate(adh, adw);
         let r2 = Rematrix.scale(newtranssize);
