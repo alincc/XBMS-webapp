@@ -22,6 +22,7 @@ import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 import { duration } from 'moment';
 import { viewClassName, HtmlTagDefinition } from '@angular/compiler';
 import * as Rematrix from 'rematrix';
+import { consoleTestResultHandler } from 'tslint/lib/test';
 
 export class animationtype {
   start_time: number; //delayt
@@ -133,6 +134,7 @@ export class vectorelement {
   pathids: string[];
   easetype: any;
   fromto: string;
+  scale: number;
 }
 
 export class shapeanimation {
@@ -869,7 +871,8 @@ export class VideocreatorComponent implements OnInit {
         let originalsize = await this.getViewBox(e);
         let newarray = newsizestring.split(' ');
         let newsize = { x: newarray[0], y: newarray[1], width: newarray[2], height: newarray[3] }
-        await this.deleteVectorGroup(e, originalsize, newsize);
+        let newtranssize = await this.deleteVectorGroup(e, originalsize, newsize);
+        this.animationarray[i].vectors[idx].scale = newtranssize; 
         await this.combineSVGs(this.animationarray[i], e);
         resolve();
       })
@@ -1047,7 +1050,8 @@ export class VideocreatorComponent implements OnInit {
       start_time: undefined,
       pathids: pathidar,
       easetype: 'elastic',
-      fromto: 'to'
+      fromto: 'to',
+      scale: 0
     }]
     let vector: vectoranimation = {
       type: 'vector',
@@ -1621,7 +1625,8 @@ export class VideocreatorComponent implements OnInit {
       start_time: undefined,
       pathids: [],
       easetype: 'elastic',
-      fromto: 'to'
+      fromto: 'to',
+      scale: 0
     }
     this.animationarray[i].vectors.push(newVector);
   }
@@ -1778,19 +1783,24 @@ export class VideocreatorComponent implements OnInit {
           //console.log('smaller vector', toel);
           //let styleto = getComputedStyle(toel);//.transform
 
-          // let styleto = toel.getAttribute('style'); 
-          // console.log(styleto);
-          // let styletoarray = styleto.split('; ');
-          // let newstring = styletoarray[styletoarray.length-1];
-          // newstring = newstring.replace('transform:', '');
-          // newstring = newstring.replace(';', '');
-          // console.log(newstring, styletoarray);
-          //MorphSVGPlugin.pathDataToBezier(toel, {matrix: [0.7071, 0.7071, -0.7071, 0.7071, 200, 0]});
-          // this.primairytimeline.to(fromel, { duration: animation.duration, transform: newstring, ease: ease }, animation.duration / 2);
+          let styleto = toel.getAttribute('style'); 
+          console.log(styleto);
+          let styletoarray = styleto.split('; ');
+          let newstring = styletoarray[styletoarray.length-1];
+          newstring = newstring.replace('transform:', '');
+          newstring = newstring.replace(';', '');
+          newstring = newstring.replace(' ', '');
+          console.log(newstring, styletoarray);
+
+          
+          console.log(tovector.scale);
+          //this.primairytimeline.to(toel, { duration: animation.duration, scale: tovector.scale, ease: ease }, animation.duration / 2);
+          //this.primairytimeline.to(fromel, { duration: animation.duration, scale: tovector.scale,  ease: ease }, animation.duration / 2);
+          this.primairytimeline.call(this.setScale, [fromel, newstring], animation.duration / 2);
 
           this.primairytimeline.to(fromel, { duration: animation.duration, morphSVG: toel, ease: ease }, starttime);
-          this.primairytimeline.fromTo(toel, { opacity: 0 }, { duration: 3, opacity: 1 }, fintime - 1);
-          this.primairytimeline.to(fromel, { duration: 1, opacity: 0 }, fintime);
+          //this.primairytimeline.fromTo(toel, { opacity: 0 }, { duration: 3, opacity: 1 }, fintime - 1);
+          //this.primairytimeline.to(fromel, { duration: 1, opacity: 0 }, fintime);
 
           //let d = toel.attributes['d'].value;
           //let newpath = 
@@ -1806,22 +1816,34 @@ export class VideocreatorComponent implements OnInit {
           //console.log('bigger vector', toel, sindex);
           //let styleto = getComputedStyle(toel).transform
 
-          // let styleto = toel.getAttribute('style'); 
-          // console.log(styleto);
-          // let styletoarray = styleto.split('; ');
-          // let newstring = styletoarray[styletoarray.length-1];
-          // newstring = newstring.replace('transform:', '');
-          // newstring = newstring.replace(';', '');
-          // console.log(newstring, styletoarray);
+          let styleto = toel.getAttribute('style'); 
+          console.log(styleto);
+          let styletoarray = styleto.split('; ');
+          let newstring = styletoarray[styletoarray.length-1];
+          newstring = newstring.replace('transform:', '');
+          newstring = newstring.replace(';', '');
+          newstring = newstring.replace(' ', '');
+          console.log(newstring, styletoarray);
           //this.primairytimeline.to(fromel, { duration: animation.duration, transform: newstring, ease: ease }, animation.duration / 2);
-          MorphSVGPlugin.pathDataToBezier(toel, { matrix: [0.7071, 0.7071, -0.7071, 0.7071, 200, 0] });
+
+          console.log(tovector.scale);
+          //this.primairytimeline.to(fromel, { duration: animation.duration, scale: tovector.scale,  ease: ease }, animation.duration / 2);
+          this.primairytimeline.call(this.setScale, [fromel, newstring], animation.duration / 2);
+          //this.primairytimeline.to(toel, { duration: animation.duration, scale: tovector.scale, ease: ease }, animation.duration / 2);
+          //this.primairytimeline.to(fromel, { duration: animation.duration, scale: tovector.scale, ease: ease }, animation.duration / 2);
+
 
           this.primairytimeline.to(fromel, { duration: animation.duration, morphSVG: toel, ease: ease }, starttime);
-          this.primairytimeline.fromTo(toel, { opacity: 0 }, { duration: 3, opacity: 1 }, fintime - 1);
-          this.primairytimeline.to(fromel, { duration: 1, opacity: 0 }, fintime);
+          //this.primairytimeline.fromTo(toel, { opacity: 0 }, { duration: 3, opacity: 1 }, fintime - 1);
+          //this.primairytimeline.to(fromel, { duration: 1, opacity: 0 }, fintime);
         }
       }
     }
+  }
+
+  setScale(fromel, newstring){
+    console.log(fromel, newstring);
+    fromel.style.setAttribute('transform', newstring)
   }
 
   async getLargestSvgPath(vector) {
@@ -2054,7 +2076,7 @@ export class VideocreatorComponent implements OnInit {
     return new Promise(async (resolve, reject) => {
       // convert all svgs and all other then paths (website wide)
       MorphSVGPlugin.convertToPath("circle, rect, ellipse, line, polygon, polyline");
-
+      let scale;
       let groupElement;
       let idto = idx; //document.getElementById(idx);
       let g;
@@ -2070,7 +2092,6 @@ export class VideocreatorComponent implements OnInit {
       }
 
       let p;
-
       p = idto.getElementsByTagName("path");
       for (let index = 0; index < p.length; index++) {
         p[index].setAttribute("id", "child-" + index);
@@ -2080,11 +2101,20 @@ export class VideocreatorComponent implements OnInit {
         // transform to size
         let newtranssize;
         if (newsize.height < newsize.width) {
-          newtranssize = originalsize.height / newsize.height;
+          if (newsize < originalsize){
+            newtranssize = newsize.height / originalsize.height;
+          } else {
+            newtranssize = originalsize.height / newsize.height;
+          }
         } else {
-          newtranssize = originalsize.width / newsize.width;
+          if (newsize < originalsize){
+            newtranssize = newsize.width / originalsize.width;
+          } else {
+            newtranssize = originalsize.width / newsize.width;
+          }
         }
 
+        scale = newtranssize; //newsize.height /originalsize.height; 
         // center new object
         let h = (newsize.height - bbox.height) / 2;
         let w = (newsize.width - bbox.width) / 2;
@@ -2093,10 +2123,11 @@ export class VideocreatorComponent implements OnInit {
 
         // get original style
         let style = getComputedStyle(p[index]).transform;
+       
 
 
 
-        this.primairytimeline.set(p[index], { scale: newtranssize });
+        //this.primairytimeline.set(p[index], { scale: newtranssize });
 
         // //let svgpath = p[index];
         // let rawpath = MotionPathPlugin.getRawPath(p[index]);
@@ -2111,17 +2142,19 @@ export class VideocreatorComponent implements OnInit {
         // let svgtransarray = svgtrans.split(' ').map(Number);
         // let newpath = MotionPathPlugin.transformRawPath(rawpath, svgtransarray[0], svgtransarray[1], svgtransarray[2], svgtransarray[3], svgtransarray[4], svgtransarray[5]);
         // console.log(newpath);
-
-        console.log(adh, adw, newtranssize);
+        //scale = newtranssize;
+        console.log(style, newtranssize);
+        
         // combine all transformations
-        let r1 = Rematrix.translate(adh, adw);
+        let r1 = Rematrix.translate(0, 0);
         let r2 = Rematrix.scale(newtranssize);
         let transform = Rematrix.fromString(style);
         let product = [r2, transform].reduce(Rematrix.multiply);
         p[index].style.transform = Rematrix.toString(product);
+        p[index].removeAttribute("transform");
 
       }
-      resolve();
+      resolve(scale);
     });
   }
 
