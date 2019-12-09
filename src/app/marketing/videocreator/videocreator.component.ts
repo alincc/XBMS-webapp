@@ -14,13 +14,14 @@ import { MatSnackBar, AnimationDurations } from '@angular/material';
 declare const SVG: any;
 import '@svgdotjs/svg.draggable.js'
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
-import * as normalize from 'normalize-svg-coords';
+// import * as normalize from 'normalize-svg-coords';
 const plugins = [DrawSVGPlugin, MorphSVGPlugin, SplitText, Physics2DPlugin, MotionPathPlugin, MotionPathHelper]; //needed for GSAP
 import { CanvasWhiteboardComponent } from 'ng2-canvas-whiteboard';
 import { fonts } from '../../shared/listsgeneral/fonts';
 import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 import { duration } from 'moment';
 import { viewClassName, HtmlTagDefinition } from '@angular/compiler';
+import * as Rematrix from 'rematrix';
 
 export class animationtype {
   start_time: number; //delayt
@@ -297,6 +298,7 @@ export class VideocreatorComponent implements OnInit {
   }
 
   public dragselectvectpath = false;
+  public standardvector;
 
 
   constructor(
@@ -860,18 +862,18 @@ export class VideocreatorComponent implements OnInit {
   }
 
   initVectors(e, i, idx, vectorid) {
+
     if (this.animationarray[i].svgcombi === '' || this.animationarray[i].morph) {
       return new Promise(async (resolve, reject) => {
-        //console.log('set vectors', e, i, idx, vectorid);
-        let vect = this.animationarray[i].vectors[idx].idx;
-        let originalsize; // {x: 0, y: 0, width: 1496, height: 1496, zoom: 0.06684491978609626}
-        await this.deleteVectorGroup(e);
-        originalsize = await this.getViewBox(e);
-        console.log(e);
+        let newsizestring = e.getAttribute('viewBox');
+        let originalsize = await this.getViewBox(e);
+        let newarray = newsizestring.split(' ');
+        let newsize = {x: newarray[0], y: newarray[1], width: newarray[2], height: newarray[3]}
+        await this.deleteVectorGroup(e, originalsize, newsize);
         await this.combineSVGs(this.animationarray[i], e);
         resolve();
       })
-    }
+    } 
   }
 
 
@@ -895,7 +897,7 @@ export class VideocreatorComponent implements OnInit {
       if (doc !== undefined) {
         doc.setAttribute("id", '3knrk2l');
         let element = SVG.get(doc.id);
-        console.log(element);
+        //console.log(element);
         var box = element.viewbox();
         if (box === undefined) {
           box.viewbox(0, 0, 500, 500)
@@ -1668,10 +1670,10 @@ export class VideocreatorComponent implements OnInit {
 
       for (const vect of element.vectors) {
         idnew = document.getElementById(vect.idx); // get document
-        console.log(e);
+        //console.log(e);
         if (e) {
           let originalsize = await this.getViewBox(e);
-          console.log(originalsize);
+          //console.log(originalsize);
           if (originalsize) {
             h = originalsize['width']; // * newscale1;
             w = originalsize['height']; // * newscale1;
@@ -1741,7 +1743,7 @@ export class VideocreatorComponent implements OnInit {
     let ease = this.selectEaseType(animation.easetype);
 
 
-    for (let i1 = 0; i1 < vectors.length -1; i1++) {
+    for (let i1 = 0; i1 < vectors.length - 1; i1++) {
 
       let fromvector = vectors[i1];
       let tovector = vectors[i1 + 1];
@@ -1755,11 +1757,12 @@ export class VideocreatorComponent implements OnInit {
           if (ix > vectors[0].pathids.length) {
             let topathid = vectors[1].pathids[ix];
             let toel = document.getElementById(topathid);
-            let d = toel.attributes['d'].value;
-            let newpath = await this.normalizepath(d, viewbox) as string;
-            toel.setAttribute("d", newpath);
+            //let d = toel.attributes['d'].value;
+            //let newpath = 
+            //await this.normalizepath(topathid, viewbox); // as string;
+            //toel.setAttribute("d", newpath);
             this.primairytimeline.set(toel, { opacity: 0 }, 0);
-            this.primairytimeline.fromTo(toel, { opacity: 0 }, { duration: 3, opacity: 1 }, fintime-1); 
+            this.primairytimeline.fromTo(toel, { opacity: 0 }, { duration: 3, opacity: 1 }, fintime - 1);
           }
         }
       }
@@ -1774,22 +1777,23 @@ export class VideocreatorComponent implements OnInit {
           let toel = document.getElementById(topathid);
           //console.log('smaller vector', toel);
           this.primairytimeline.to(fromel, { duration: animation.duration, morphSVG: toel, ease: ease }, starttime);
-          this.primairytimeline.fromTo(toel, { opacity: 0 }, { duration: 3, opacity: 1 }, fintime-1);
+          this.primairytimeline.fromTo(toel, { opacity: 0 }, { duration: 3, opacity: 1 }, fintime - 1);
           this.primairytimeline.to(fromel, { duration: 1, opacity: 0 }, fintime);
 
-          let d = toel.attributes['d'].value;
-          let newpath = await this.normalizepath(d, viewbox) as string;
-          toel.setAttribute("d", newpath);
+          //let d = toel.attributes['d'].value;
+          //let newpath = 
+          //await this.normalizepath(topathid, viewbox); // as string;
+          //toel.setAttribute("d", newpath);
         } else { // (i2 > tovector.pathids.length)
           // vector 1 is larger then vector 2
           let frompathid = fromvector.pathids[i2];
-          let sindex = Math.floor(Math.random() *  tovector.pathids.length); //connect to random paths;
+          let sindex = Math.floor(Math.random() * tovector.pathids.length); //connect to random paths;
           let topathid = tovector.pathids[sindex];
           let fromel = document.getElementById(frompathid);
           let toel = document.getElementById(topathid);
           //console.log('bigger vector', toel, sindex);
           this.primairytimeline.to(fromel, { duration: animation.duration, morphSVG: toel, ease: ease }, starttime);
-          this.primairytimeline.fromTo(toel, { opacity: 0 }, { duration: 3, opacity: 1 }, fintime-1);
+          this.primairytimeline.fromTo(toel, { opacity: 0 }, { duration: 3, opacity: 1 }, fintime - 1);
           this.primairytimeline.to(fromel, { duration: 1, opacity: 0 }, fintime);
         }
       }
@@ -1929,23 +1933,29 @@ export class VideocreatorComponent implements OnInit {
   }
 
 
-  async normalizepath(path, viewbox) {
+  async normalizepath(id, viewbox) {
     return new Promise((resolve, reject) => {
       let viewset = viewbox.split(' ').map(Number);
-      //console.log(path, viewbox, viewset);
-      let max = viewset[3];
-      if (viewset[2] > viewset[3]){
-        max = viewset[2]
-      }
-      const normalizedPath = normalize({
-        viewBox: viewbox,
-        path: path,
-        min: 0,
-        max: max,
-        asList: false
-      })
 
-      resolve(normalizedPath)
+      var element = document.getElementById(this.selectedelement.id);
+      var svg = element.getElementsByTagName("svg")[0];
+      var path = svg.getElementsByTagName("path");
+
+     
+      var bbox = svg.getBBox();
+      console.log(bbox, viewbox);
+
+      let h = (viewbox[2] - bbox.height) / 2
+      let w = (viewbox[3] - bbox.width) / 2
+
+      let adh = h - bbox.x;
+      let adw = w = bbox.y;
+    
+      //let transform = newset.getAttribute('transform');
+      //console.log(adh, adw,  transform);
+      //newset.setAttribute('transform', 'translate('+adh+', '+adw+')')
+
+      resolve() // normalizedPath
     })
   }
 
@@ -2016,12 +2026,11 @@ export class VideocreatorComponent implements OnInit {
   }
 
 
-  deleteVectorGroup(idx) {
-    return new Promise(async (resolve, reject) => {
-
-      // convert all svgs and all other then paths
+  deleteVectorGroup(idx, originalsize, newsize) {
+    return new Promise(async (resolve, reject) => {      
+      // convert all svgs and all other then paths (website wide)
       MorphSVGPlugin.convertToPath("circle, rect, ellipse, line, polygon, polyline");
-      // this works don't ask why
+
       let groupElement;
       let idto = idx; //document.getElementById(idx);
       let g;
@@ -2037,9 +2046,38 @@ export class VideocreatorComponent implements OnInit {
       }
 
       let p;
+
       p = idto.getElementsByTagName("path");
       for (let index = 0; index < p.length; index++) {
         p[index].setAttribute("id", "child-" + index);
+
+        const bbox =  p[index].getBBox();
+
+        // transform to size
+        let newtranssize;
+        if (newsize.height < newsize.width){
+          newtranssize = originalsize.height / newsize.height;
+        } else {
+          newtranssize = originalsize.width / newsize.width;
+        }
+        
+        // center new object
+        let h = (newsize.height - bbox.height) / 2;
+        let w = (newsize.width - bbox.width) / 2;
+        let adh = h - bbox.y;
+        let adw = w - bbox.x;
+
+        // get original style
+        let style = getComputedStyle(p[index]).transform;
+
+        console.log(adh, adw, newtranssize);
+        // combine all transformations
+        let r1 = Rematrix.translate(adh, adw);
+        let r2 = Rematrix.scale(newtranssize);
+        let transform = Rematrix.fromString(style);
+        let product = [r2, transform].reduce(Rematrix.multiply);
+        p[index].style.transform = Rematrix.toString(product);
+
       }
       resolve();
     });

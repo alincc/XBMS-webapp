@@ -791,11 +791,11 @@
                                         <mat-form-field style="max-width: 46px;">
                                             <input [(ngModel)]="vector.start_time" type="number" step="0.1" min="0"
                                                 matInput>
-                                            <mat-hint>Start</mat-hint>
+                                            <mat-hint>Start</mat-hint> "element.id + i + 's'"
                                         </mat-form-field> -->
                                     <mat-expansion-panel-header>
                                         <div *ngIf="vector.src || vector.svgcombi !== 'undefined'"
-                                            [inlineSVG]="vector.src" [onSVGLoaded]="previewSVG" id="previewbox"
+                                        [attr.id]="'previewbox' + idx" [inlineSVG]="vector.src" [onSVGLoaded]="previewSVG"
                                             class="elementsedit" style="height: 30px; width: auto;">
                                         </div>
                                     </mat-expansion-panel-header>
