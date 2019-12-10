@@ -557,6 +557,7 @@ export function getPositionOnPath(rawPath, progress, includeAngle, point) {
 
 //applies a matrix transform to RawPath (or a segment in a RawPath) and returns whatever was passed in (it transforms the values in the array(s), not a copy).
 export function transformRawPath(rawPath, a, b, c, d, tx, ty) {
+	//console.log(rawPath, a, b, c, d, tx, ty)
 	let j = rawPath.length,
 		segment, l, i, x, y;
 	while (--j > -1) {
@@ -567,6 +568,7 @@ export function transformRawPath(rawPath, a, b, c, d, tx, ty) {
 			y = segment[i+1];
 			segment[i] = x * a + y * c + tx;
 			segment[i+1] = x * b + y * d + ty;
+			//console.log(segment[i]);
 		}
 	}
 	rawPath._dirty = 1;
