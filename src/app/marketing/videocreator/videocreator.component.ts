@@ -7,15 +7,15 @@ import {
 import { Subscription } from 'rxjs';
 import { MediaObserver, MediaChange } from '@angular/flex-layout';
 import { gsap } from 'assets/js/all';
-import { Physics2DPlugin, SplitText, DrawSVGPlugin, MorphSVGPlugin, MotionPathPlugin, MotionPathHelper } from 'assets/js/all';
-gsap.registerPlugin(Physics2DPlugin, SplitText, DrawSVGPlugin, MorphSVGPlugin, MotionPathPlugin, MotionPathHelper);
+import { Physics2DPlugin, InertiaPlugin, SplitText, DrawSVGPlugin, MorphSVGPlugin, MotionPathPlugin, MotionPathHelper, Draggable } from 'assets/js/all';
+gsap.registerPlugin(Physics2DPlugin, Draggable, InertiaPlugin, SplitText, DrawSVGPlugin, MorphSVGPlugin, MotionPathPlugin, MotionPathHelper);
 import { FileUploader, FileItem } from 'ng2-file-upload';
 import { MatSnackBar, AnimationDurations } from '@angular/material';
 declare const SVG: any;
 import '@svgdotjs/svg.draggable.js'
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import * as normalize from 'normalize-svg-coords';
-const plugins = [DrawSVGPlugin, MorphSVGPlugin, SplitText, Physics2DPlugin, MotionPathPlugin, MotionPathHelper]; //needed for GSAP
+const plugins = [Draggable, InertiaPlugin, DrawSVGPlugin, MorphSVGPlugin, SplitText, Physics2DPlugin, MotionPathPlugin, MotionPathHelper]; //needed for GSAP
 import { CanvasWhiteboardComponent } from 'ng2-canvas-whiteboard';
 import { fonts } from '../../shared/listsgeneral/fonts';
 import * as Rematrix from 'rematrix';
@@ -452,10 +452,12 @@ export class VideocreatorComponent implements OnInit {
       if (this.canvas.weather !== '') {
         //console.log('add weather')
         this.addWeatherEffect();
+        
       }
       this.animationarray.forEach(elm => {
         if (elm.type === 'vector') { //vector animation
           setTimeout(() => {
+            this.createRotate(elm);
             // add vector efffects
             elm.vectoranimation.forEach(vecani => {
               if (vecani.svganimationtype === 'draw') { this.drawVector(elm, vecani) }
@@ -475,6 +477,7 @@ export class VideocreatorComponent implements OnInit {
           }, 300) // mininmum needed for dom to process
         }
         this.addEffect(elm); //normal animatoin
+        
       })
     });
 
@@ -1773,19 +1776,6 @@ export class VideocreatorComponent implements OnInit {
           let topathid = tovector.pathids[i2];
           let fromel = document.getElementById(frompathid);
           let toel = document.getElementById(topathid);
-          //console.log('smaller vector', toel);
-          //let styleto = getComputedStyle(toel);//.transform
-
-          let styleto = toel.getAttribute('style');
-          let styletoarray = styleto.split('; ');
-          let newstring = styletoarray[styletoarray.length - 1];
-          newstring = newstring.replace('transform:', '');
-          newstring = newstring.replace(';', '');
-          newstring = newstring.replace(' ', '');
-          //console.log(newstring, styletoarray);
-          //console.log(Math.round(tovector.scale * 10) / 10);
-          //this.primairytimeline.call(this.setScale, [fromel, newstring], starttime);
-          //this.primairytimeline.to(fromel, { duration: animation.duration, scale: 1.1, ease: ease }, fintime);
 
           this.primairytimeline.to(fromel, { duration: animation.duration, morphSVG:{
             shape: toel,
@@ -1804,20 +1794,6 @@ export class VideocreatorComponent implements OnInit {
           let toel = document.getElementById(topathid);
           //console.log('bigger vector', toel, sindex);
 
-          //let styleto = getComputedStyle(toel).transform
-          let styleto = toel.getAttribute('style');
-          //console.log(styleto);
-          let styletoarray = styleto.split('; ');
-          let newstring = styletoarray[styletoarray.length - 1];
-          newstring = newstring.replace('transform:', '');
-          newstring = newstring.replace(';', '');
-          newstring = newstring.replace(' ', '');
-          //console.log(newstring, styletoarray);
-          //console.log(Math.round(tovector.scale * 10));
-          //this.primairytimeline.to(fromel, { duration: animation.duration, scale: 2, ease: ease }, starttime);
-          //this.primairytimeline.call(this.setScale, [fromel, newstring], starttime );
-
-          // this.primairytimeline.to(fromel, { duration: animation.duration, morphSVG: toel, ease: ease }, starttime);
           this.primairytimeline.to(fromel, { duration: animation.duration, morphSVG:{
             shape: toel,
             type:"rotational",
@@ -2095,12 +2071,11 @@ export class VideocreatorComponent implements OnInit {
         }
       }
 
-      let p;
-      p = idto.getElementsByTagName("path");
+      let p = idto.getElementsByTagName("path");
       for (let index = 0; index < p.length; index++) {
         p[index].setAttribute("id", "child-" + index);
         const bbox = p[index].getBBox();
-        let max;
+
         // transform to size
         let newtranssize;
         if (newsize.height < newsize.width) {
@@ -2118,50 +2093,41 @@ export class VideocreatorComponent implements OnInit {
         }
 
         scale = newtranssize; //newsize.height /originalsize.height; 
+        console.log(newtranssize);
         // center new object
         let h = (newsize.height - bbox.height) / 2;
         let w = (newsize.width - bbox.width) / 2;
         let adh = h - bbox.y;
         let adw = w - bbox.x;
 
-
         let rawpath = MotionPathPlugin.getRawPath(p[index]);
-        
-
-
+        let testpath;
           // get original style
           let style = getComputedStyle(p[index]).transform;
-          // combine all transformations
-          // let r1 = Rematrix.translate(0, 0);
-          // let r2 = Rematrix.scale(newtranssize);
-          // let transform = Rematrix.fromString(style);
-          // let product = [r2, transform].reduce(Rematrix.multiply);
-          //p[index].style.transform = Rematrix.toString(product);
-         
-          //console.log(MotionPathPlugin.getGlobalMatrix(p[index]))
-          //console.log(product)
+          if (style){
+            style = style.replace('matrix(', '');
+            style = style.replace(')', '');
+            style = style.replace(/,/g, '');
+            let svgtransarray = style.split(' ').map(Number);
+            testpath = MotionPathPlugin.transformRawPath(rawpath, svgtransarray[0], svgtransarray[1], svgtransarray[2], svgtransarray[3], svgtransarray[4], svgtransarray[5]);
+          } else {
+            testpath = rawpath;
+          }
 
-          // let nix = MotionPathPlugin.getGlobalMatrix(p[index]);
-          // let matrix = [nix[0], nix[1], nix[4], nix[5], nix[12], nix[13]];
-          // this.transformPath(rawpath, matrix, p[index]);
-
-          style = style.replace('matrix(', '');
-          style = style.replace(')', '');
-          style = style.replace(/,/g, '');
-          let svgtransarray = style.split(' ').map(Number);
-
-          let testpath = MotionPathPlugin.transformRawPath(rawpath, svgtransarray[0], svgtransarray[1], svgtransarray[2], svgtransarray[3], svgtransarray[4], svgtransarray[5]);
           let testpath2 = MotionPathPlugin.transformRawPath(testpath, newtranssize, 0, 0, newtranssize, 0, 0);
-        
           let stringpath = MotionPathPlugin.rawPathToString(testpath2);
-          console.log(stringpath, stringpath, style, svgtransarray);
           p[index].removeAttribute("transform");
           p[index].setAttribute('d', stringpath);
-
 
         }
         resolve(scale);
       });
+  }
+
+  createRotate(idel){
+    //Draggable.create(idel, {type: "rotation", inertia: true, trigger:"#rotatehandle"});
+    //Draggable.create(idel, {type: "rotation"});
+    Draggable.create("#rotatehandle", {type: "rotation", inertia: true});
   }
 
   deleteWhitespaceSVG(): void {

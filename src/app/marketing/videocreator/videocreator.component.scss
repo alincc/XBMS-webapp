@@ -5,17 +5,8 @@
     background-color: greenyellow;
 }
 
-// svg { display: block; float: left; }
-
-// path {
-//   stroke:red;
-//   stroke-width:4px;
-//   fill:papayawhip;
-// }
 
 .savetobutton {
-    // margin-left: 70%;
-    // margin-top: 40%;
     bottom: 40px;
     right: 50px;
     position: fixed;
@@ -172,4 +163,16 @@
 
 #motionPath .astronaut {
   visibility: hidden;
+}
+
+.rotatehandle {
+  border-radius: 50% 50% 50% 50%;
+  background-color: #2208ec;
+  width: 10px;
+  height: 10px;
+  position: absolute;
+  bottom: 0px;
+  right: 0px;
+  margin: -20px;
+  // pointer-events: none;
 }
