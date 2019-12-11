@@ -19,6 +19,7 @@ const plugins = [Draggable, InertiaPlugin, DrawSVGPlugin, MorphSVGPlugin, SplitT
 import { CanvasWhiteboardComponent } from 'ng2-canvas-whiteboard';
 import { fonts } from '../../shared/listsgeneral/fonts';
 import * as Rematrix from 'rematrix';
+import { AST_DWLoop } from 'terser';
 
 export class animationtype {
   start_time: number; //delayt
@@ -92,6 +93,7 @@ export class imageanimation {
   motionpath: string;
   transform: string;
   motionrotation: number;
+ rotation: number;
 }
 
 export class vectoranimation {
@@ -120,6 +122,7 @@ export class vectoranimation {
   motionpath: string;
   transform: string;
   motionrotation: number;
+ rotation: number;
 }
 
 export class vectorelement {
@@ -156,6 +159,7 @@ export class shapeanimation {
   motionpath: string;
   transform: string;
   motionrotation: number;
+ rotation: number;
 }
 
 export class whiteboardanimation {
@@ -201,6 +205,7 @@ export class textanimation {
   motionpath: string;
   transform: string;
   motionrotation: number;
+ rotation: number;
 }
 
 @Component({
@@ -449,6 +454,7 @@ export class VideocreatorComponent implements OnInit {
     setTimeout(() => { this.changenow = true; return });
     // wait for dom update to finish otherwise it will create the effects on the old dom
     setTimeout(() => {
+      
       if (this.canvas.weather !== '') {
         //console.log('add weather')
         this.addWeatherEffect();
@@ -457,7 +463,7 @@ export class VideocreatorComponent implements OnInit {
       this.animationarray.forEach(elm => {
         if (elm.type === 'vector') { //vector animation
           setTimeout(() => {
-            this.createRotate(elm);
+          
             // add vector efffects
             elm.vectoranimation.forEach(vecani => {
               if (vecani.svganimationtype === 'draw') { this.drawVector(elm, vecani) }
@@ -477,7 +483,7 @@ export class VideocreatorComponent implements OnInit {
           }, 300) // mininmum needed for dom to process
         }
         this.addEffect(elm); //normal animatoin
-        
+        this.createRotate(elm);
       })
     });
 
@@ -936,6 +942,7 @@ export class VideocreatorComponent implements OnInit {
   onMoving(event, i) {
     this.animationarray[i].posy = event.y;
     this.animationarray[i].posx = event.x;
+    //this.animationarray[i].style.transform = 'translate(' + event.x + 'px, ' + event.y +'px) rotate(' + this.animationarray[i].rotation + 'deg)';
   }
 
   onResizing(e, i) {
@@ -1061,7 +1068,7 @@ export class VideocreatorComponent implements OnInit {
         position: 'absolute',
         opacity: 1,
         'stroke-width': '',
-        stroke: ''
+        stroke: '',
         //transform : 'translate(10px, 10px)'
       },
       src: '',
@@ -1076,11 +1083,13 @@ export class VideocreatorComponent implements OnInit {
       selected: false,
       morph: false,
       transform: '',
+      rotation: 0,
       motionrotation: 0,
       //motioncor: 'path: d="M9,100c0,0,18.53-41.58,49.91-65.11c30-22.5,65.81-24.88,77.39-24.88c33.87,0,57.55,11.71,77.05,28.47c23.09,19.85,40.33,46.79,61.71,69.77c24.09,25.89,53.44,46.75,102.37,46.75c22.23,0,40.62-2.83,55.84-7.43c27.97-8.45,44.21-22.88,54.78-36.7c14.35-18.75,16.43-36.37,16.43-36.37"',
       motionpath: '<svg id="' + newelnr + 'mp" viewBox="-20 0 557 190" class="path-edit"><path id="' + newelnr + 'p" style="opacity: 0;"' +
         ' d="M9,100c0,0,18.53-41.58,49.91-65.11c30-22.5,65.81-24.88,77.39-24.88c33.87,0,57.55,11.71,77.05,28.47c23.09,19.85,40.33,46.79,61.71,69.77c24.09,25.89,53.44,46.75,102.37,46.75c22.23,0,40.62-2.83,55.84-7.43c27.97-8.45,44.21-22.88,54.78-36.7c14.35-18.75,16.43-36.37,16.43-36.37" /></svg>',
       // from, 4, {drawSVG:0, repeat:10, yoyo:true}, 4)
+      
 
     }
     //console.log(vector);
@@ -1161,7 +1170,7 @@ export class VideocreatorComponent implements OnInit {
         width: "auto",
         height: "auto",
         position: 'absolute',
-        opacity: 1
+        opacity: 1,
         //transform : 'translate(10px, 10px)'
       },
       src: '',
@@ -1171,6 +1180,7 @@ export class VideocreatorComponent implements OnInit {
       animation: anim,
       id: newelnr,
       transform: '',
+      rotation: 0,
       motionrotation: 0,
       //motioncor: 'path: d="M9,100c0,0,18.53-41.58,49.91-65.11c30-22.5,65.81-24.88,77.39-24.88c33.87,0,57.55,11.71,77.05,28.47c23.09,19.85,40.33,46.79,61.71,69.77c24.09,25.89,53.44,46.75,102.37,46.75c22.23,0,40.62-2.83,55.84-7.43c27.97-8.45,44.21-22.88,54.78-36.7c14.35-18.75,16.43-36.37,16.43-36.37"',
       motionpath: '<svg id="' + newelnr + 'mp" viewBox="-20 0 557 190" class="path-edit"><path id="' + newelnr + 'p" style="opacity: 0;"' +
@@ -1221,7 +1231,7 @@ export class VideocreatorComponent implements OnInit {
         'background-color': '#000000',
         opacity: 1,
         'border-radius': '0%',
-        class: ''
+        class: '',
       },
       src: '',
       posx: 50,
@@ -1231,6 +1241,7 @@ export class VideocreatorComponent implements OnInit {
       id: newelnr,
       shape: 'square',
       transform: '',
+      rotation: 0,
       motionrotation: 0,
       //motioncor: 'path: d="M9,100c0,0,18.53-41.58,49.91-65.11c30-22.5,65.81-24.88,77.39-24.88c33.87,0,57.55,11.71,77.05,28.47c23.09,19.85,40.33,46.79,61.71,69.77c24.09,25.89,53.44,46.75,102.37,46.75c22.23,0,40.62-2.83,55.84-7.43c27.97-8.45,44.21-22.88,54.78-36.7c14.35-18.75,16.43-36.37,16.43-36.37"',
       motionpath: '<svg id="' + newelnr + 'mp" viewBox="-20 0 557 190" class="path-edit"><path id="' + newelnr + 'p" style="opacity: 0;"' +
@@ -1282,7 +1293,7 @@ export class VideocreatorComponent implements OnInit {
         height: this.canvas.height,
         position: '',
         'background-color': '',
-        opacity: 1
+        opacity: 1,
       },
       src: '',
       posx: 0,
@@ -1371,7 +1382,7 @@ export class VideocreatorComponent implements OnInit {
         'font-style': '',
         'font-weight': '',
         opacity: 1,
-        padding: '15px' //neccarry to get all fonts
+        padding: '15px', //neccarry to get all fonts,
         //transform : 'translate(10px, 10px)'
       },
       content: 'write here',
@@ -1382,6 +1393,7 @@ export class VideocreatorComponent implements OnInit {
       id: newelnr,
       splittextanimation: splittext,
       transform: '',
+      rotation: 0,
       motionrotation: 0,
       // motioncor: 'path: d="M9,100c0,0,18.53-41.58,49.91-65.11c30-22.5,65.81-24.88,77.39-24.88c33.87,0,57.55,11.71,77.05,28.47c23.09,19.85,40.33,46.79,61.71,69.77c24.09,25.89,53.44,46.75,102.37,46.75c22.23,0,40.62-2.83,55.84-7.43c27.97-8.45,44.21-22.88,54.78-36.7c14.35-18.75,16.43-36.37,16.43-36.37"',
       motionpath: '<svg id="' + newelnr + 'mp" viewBox="-20 0 557 190" class="path-edit"><path id="' + newelnr + 'p" style="opacity: 0;" ' +
@@ -2078,6 +2090,7 @@ export class VideocreatorComponent implements OnInit {
 
         // transform to size
         let newtranssize;
+        console.log(newsize, originalsize, bbox);
         if (newsize.height < newsize.width) {
           if (newsize < originalsize) {
             newtranssize = newsize.height / originalsize.height;
@@ -2092,6 +2105,8 @@ export class VideocreatorComponent implements OnInit {
           }
         }
 
+        if (originalsize.zoom){newtranssize = newtranssize * (1 /  originalsize.zoom)}
+
         scale = newtranssize; //newsize.height /originalsize.height; 
         console.log(newtranssize);
         // center new object
@@ -2104,17 +2119,20 @@ export class VideocreatorComponent implements OnInit {
         let testpath;
           // get original style
           let style = getComputedStyle(p[index]).transform;
-          if (style){
+          if (style !== 'none'){
             style = style.replace('matrix(', '');
             style = style.replace(')', '');
             style = style.replace(/,/g, '');
             let svgtransarray = style.split(' ').map(Number);
+            console.log('matrix yes', style)
             testpath = MotionPathPlugin.transformRawPath(rawpath, svgtransarray[0], svgtransarray[1], svgtransarray[2], svgtransarray[3], svgtransarray[4], svgtransarray[5]);
           } else {
             testpath = rawpath;
+            console.log('matrix no', newtranssize)
           }
 
           let testpath2 = MotionPathPlugin.transformRawPath(testpath, newtranssize, 0, 0, newtranssize, 0, 0);
+          console.log(testpath2);
           let stringpath = MotionPathPlugin.rawPathToString(testpath2);
           p[index].removeAttribute("transform");
           p[index].setAttribute('d', stringpath);
@@ -2125,9 +2143,18 @@ export class VideocreatorComponent implements OnInit {
   }
 
   createRotate(idel){
-    //Draggable.create(idel, {type: "rotation", inertia: true, trigger:"#rotatehandle"});
-    //Draggable.create(idel, {type: "rotation"});
-    Draggable.create("#rotatehandle", {type: "rotation", inertia: true});
+    let element = document.getElementById(idel.id);
+    let handle = document.getElementById(idel.id + 'rotatehandle');
+    Draggable.create(element, {
+      type: "rotation", 
+      trigger: handle,
+      onDragEndParams: [idel],
+      onDragEnd:
+      function(idl) {
+        idl.rotation = this.rotation;
+        //console.log("drag ended", idl, this.rotation);
+      }
+    });
   }
 
   deleteWhitespaceSVG(): void {

@@ -1115,34 +1115,35 @@
                          ngDraggable [ngStyle]="element.style"
                         [style.width]="element.style.width" [style.height]="element.style.height"
                         (movingOffset)="onMoving($event, i)" [preventDefaultEvent]="true"
-                        [style.transform]="'translate(' + element.posx + 'px, ' + element.posy +'px)'"
+                        [style.transform]="'translate(' + element.posx + 'px, ' + element.posy +'px) rotate(' + element.rotation + 'deg)' | safe: 'style'"
                         (rzResizing)="onResizing($event, i)" ngResizable [rzAspectRatio]="true">
                         <img *ngIf="element.src" style="width: 100%; height: 100%;" src={{element.src}}>
-                        <div class="rotatehandle" #rotatehandle></div>
+                        <mat-icon class="iconsize-4"  class="rotatehandle" #rotatehandle [attr.id]="element.id + 'rotatehandle'">replay</mat-icon>
                     </div>
                     <label ngResizable *ngIf="element.type === 'text'" id="{{element.id}}" [attr.id]="element.id"
                         ngDraggable (movingOffset)="onMoving($event, i)"
-                        [style.transform]="'translate(' + element.posx + 'px, ' + element.posy +'px)'"
+                        [style.transform]="'translate(' + element.posx + 'px, ' + element.posy +'px) rotate(' + element.rotation + 'deg)' | safe: 'style'"
                         (rzResizing)="onResizing($event, i)" [ngStyle]="element.style"
                         [rzAspectRatio]="false">{{element.content}}
-                        <div class="rotatehandle" #rotatehandle></div></label>
+                        <mat-icon class="iconsize-4"  class="rotatehandle" #rotatehandle [attr.id]="element.id + 'rotatehandle'">replay</mat-icon>
+                        </label>
                     <div *ngIf="element.type === 'shape'" id="{{element.id}}" ngDraggable
                         [style.width]="element.style.width" [style.height]="element.style.height"
                         (movingOffset)="onMoving($event, i)" [preventDefaultEvent]="true"
-                        [style.transform]="'translate(' + element.posx + 'px, ' + element.posy +'px)'"
+                        [style.transform]="'translate(' + element.posx + 'px, ' + element.posy +'px) rotate(' + element.rotation + 'deg)' | safe: 'style'"
                         (rzResizing)="onResizing($event, i)" ngResizable [rzAspectRatio]="element.shape === 'heart'"
                         [ngStyle]="element.style" [className]="element.style.class">
-                        <div class="rotatehandle" #rotatehandle id="rotatehandle"  [ngDraggable]=false></div>
+                        <mat-icon class="iconsize-4"  class="rotatehandle" #rotatehandle [attr.id]="element.id + 'rotatehandle'">replay</mat-icon>
                     </div>
                     <div *ngIf="element.type === 'vector'" [style.width]="element.style.width"
                         [style.height]="element.style.height" ngDraggable [ngStyle]="element.style"
                         (movingOffset)="onMoving($event, i)" [preventDefaultEvent]="true"
-                        [style.transform]="'translate(' + element.posx + 'px, ' + element.posy +'px)'"
+                        [style.transform]="'translate(' + element.posx + 'px, ' + element.posy +'px) rotate(' + element.rotation + 'deg)' | safe: 'style'"
                         (rzResizing)="onResizing($event, i)" ngResizable [rzAspectRatio]="false" id="{{element.id}}">
-                        <div style="height: 100%; width: 100%;" [innerHTML]="element.svgcombi  | safeHtml"
+                        <div style="height: 100%; width: 100%;" [innerHTML]="element.svgcombi | safeHtml"
                             (click)="clickVectorPaths($event)">
                         </div>
-                        <div class="rotatehandle" #rotatehandle id="rotatehandle"></div>
+                        <mat-icon class="iconsize-4"  class="rotatehandle" #rotatehandle  [attr.id]="element.id + 'rotatehandle'">replay</mat-icon>
                     </div>
                     <canvas-whiteboard *ngIf="whiteboard === true" id="{{element.id}}" #canvasWhiteboard
                         [drawButtonClass]="'drawButtonClass'" [drawButtonText]="'Draw'" [ngStyle]="element.style"

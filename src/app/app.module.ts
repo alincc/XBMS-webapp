@@ -72,6 +72,7 @@ import { VideouploadComponent, dialogvideogallerycomponent } from './shared/vide
 import { AudiouploadComponent, dialogaudiogallerycomponent } from './shared/audioupload/audioupload.component';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { SafeHtml } from './pipe/safehtmlpipe.component';
+import { SafePipe } from './pipe/safepipe.component';
 import { FileName } from './pipe/filenamepipe.component';
 import { MarketingpromotionsComponent } from './marketing/marketingpromotions/marketingpromotions.component';
 import { MarketingpublicationsComponent } from './marketing/marketingpublications/marketingpublications.component';
@@ -143,6 +144,7 @@ export class HammerConfig extends GestureConfig  {
     TextEditorDialog,
     WordpressUploadDialogComponent,
     SafeHtml,
+    SafePipe,
     FileName,
     MarketingpromotionsComponent,
     MarketingpublicationsComponent,
