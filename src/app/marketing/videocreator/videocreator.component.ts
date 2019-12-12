@@ -20,6 +20,7 @@ import { CanvasWhiteboardComponent } from 'ng2-canvas-whiteboard';
 import { fonts } from '../../shared/listsgeneral/fonts';
 import * as Rematrix from 'rematrix';
 import { AST_DWLoop } from 'terser';
+import { transform } from 'regexp-tree';
 
 export class animationtype {
   start_time: number; //delayt
@@ -93,7 +94,7 @@ export class imageanimation {
   motionpath: string;
   transform: string;
   motionrotation: number;
- rotation: number;
+  rotation: number;
 }
 
 export class vectoranimation {
@@ -122,7 +123,7 @@ export class vectoranimation {
   motionpath: string;
   transform: string;
   motionrotation: number;
- rotation: number;
+  rotation: number;
 }
 
 export class vectorelement {
@@ -159,7 +160,7 @@ export class shapeanimation {
   motionpath: string;
   transform: string;
   motionrotation: number;
- rotation: number;
+  rotation: number;
 }
 
 export class whiteboardanimation {
@@ -205,7 +206,7 @@ export class textanimation {
   motionpath: string;
   transform: string;
   motionrotation: number;
- rotation: number;
+  rotation: number;
 }
 
 @Component({
@@ -316,7 +317,7 @@ export class VideocreatorComponent implements OnInit {
       this.activeMediaQuery = change;
     });
   }
-  private myFuncSvg = this.initVectors.bind(this);
+  //private myFuncSvg = this.initVectors.bind(this);
 
   ngOnInit() {
 
@@ -454,16 +455,16 @@ export class VideocreatorComponent implements OnInit {
     setTimeout(() => { this.changenow = true; return });
     // wait for dom update to finish otherwise it will create the effects on the old dom
     setTimeout(() => {
-      
+
       if (this.canvas.weather !== '') {
         //console.log('add weather')
         this.addWeatherEffect();
-        
+
       }
       this.animationarray.forEach(elm => {
         if (elm.type === 'vector') { //vector animation
           setTimeout(() => {
-          
+
             // add vector efffects
             elm.vectoranimation.forEach(vecani => {
               if (vecani.svganimationtype === 'draw') { this.drawVector(elm, vecani) }
@@ -868,18 +869,38 @@ export class VideocreatorComponent implements OnInit {
     }, 500);
   }
 
-  initVectors(e, i, idx, vectorid) {
-
+  async initVectors(e, i, idx, vectorid) {
+    console.log(e, i, idx, vectorid);
     if (this.animationarray[i].svgcombi === '' || this.animationarray[i].morph) {
       return new Promise(async (resolve, reject) => {
+
+        // convert all svgs and all other then paths (website wide)
+        await MorphSVGPlugin.convertToPath("circle, rect, ellipse, line, polygon, polyline");
+
+        let getview = document.getElementById('previewbox0');
+        let originalsize;
         let newsizestring = e.getAttribute('viewBox');
-        let originalsize = await this.getViewBox(e);
         let newarray = newsizestring.split(' ');
         let newsize = { x: newarray[0], y: newarray[1], width: newarray[2], height: newarray[3] }
-        let newtranssize = await this.deleteVectorGroup(e, originalsize, newsize);
-        this.animationarray[i].vectors[idx].scale = newtranssize;
-        await this.combineSVGs(this.animationarray[i], e);
+
+        if (getview !== null) {
+          let svgview = getview.getElementsByTagName('svg');
+          let originalsizestring = svgview[0].getAttribute("viewBox");
+          let origarray = originalsizestring.split(' ');
+          originalsize = { x: origarray[0], y: origarray[1], width: origarray[2], height: origarray[3] }
+        } else {
+          originalsize = newsize;
+        }
+
+        await this.deleteVectorGroup(vectorid);
+        console.log("vector groups deleted");
+        await this.resizeVector(originalsize, newsize, idx, vectorid);
+        console.log("vector resized");
+        await this.combineSVGs(this.animationarray[i], originalsize);
+        console.log("vectors combined");
         resolve();
+
+
       })
     }
   }
@@ -897,24 +918,20 @@ export class VideocreatorComponent implements OnInit {
   }
 
 
-  getViewBox(vect) {
+  getViewBox(vectid) {
     return new Promise((resolve, reject) => {
-      //console.log('get/set viewbox')
-      // let set = vect;//document.getElementById(vect);
-      let doc = vect; // set.getElementsByTagName('svg');
-      if (doc !== undefined) {
-        doc.setAttribute("id", '3knrk2l');
-        let element = SVG.get(doc.id);
-        //console.log(element);
-        var box = element.viewbox();
-        if (box === undefined) {
-          box.viewbox(0, 0, 500, 500)
-        }
-        resolve(box);
-      } else {
-        resolve();
-      }
 
+      let getview = document.getElementById(vectid);
+      if (getview !== null) {
+        let svgview = getview.getElementsByTagName('svg');
+        let originalsizestring = svgview[0].getAttribute("viewBox");
+        let origarray = originalsizestring.split(' ');
+        let originalsize = { x: origarray[0], y: origarray[1], width: origarray[2], height: origarray[3] }
+        resolve(originalsize);
+      } else {
+        let originalsize = { x: 0, y: 0, width: 500, height: 500 }
+        resolve(originalsize);
+      }
     });
   }
 
@@ -1089,7 +1106,7 @@ export class VideocreatorComponent implements OnInit {
       motionpath: '<svg id="' + newelnr + 'mp" viewBox="-20 0 557 190" class="path-edit"><path id="' + newelnr + 'p" style="opacity: 0;"' +
         ' d="M9,100c0,0,18.53-41.58,49.91-65.11c30-22.5,65.81-24.88,77.39-24.88c33.87,0,57.55,11.71,77.05,28.47c23.09,19.85,40.33,46.79,61.71,69.77c24.09,25.89,53.44,46.75,102.37,46.75c22.23,0,40.62-2.83,55.84-7.43c27.97-8.45,44.21-22.88,54.78-36.7c14.35-18.75,16.43-36.37,16.43-36.37" /></svg>',
       // from, 4, {drawSVG:0, repeat:10, yoyo:true}, 4)
-      
+
 
     }
     //console.log(vector);
@@ -1669,12 +1686,18 @@ export class VideocreatorComponent implements OnInit {
   }
 
 
-  async combineSVGs(element, e?) {
+  async combineSVGs(element, newsize?) {
     return new Promise(async (resolve, reject) => {
       let idnew;
       let total = [];
       let h = 500, w = 500;
       let startstr;
+      let originalsize = newsize; //await this.getViewBox('previewbox0');
+      //console.log(originalsize);
+      if (originalsize) {
+        h = originalsize['width']; // * newscale1;
+        w = originalsize['height']; // * newscale1;
+      }
       startstr = '<svg xmlns="http://www.w3.org/2000/svg" ' +
         'viewBox="0 0 ' + h + ' ' + w + '" height="100%" width="100%"' +
         'id="svg2" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" preserveAspectRatio="none">';
@@ -1686,23 +1709,8 @@ export class VideocreatorComponent implements OnInit {
 
       for (const vect of element.vectors) {
         idnew = document.getElementById(vect.idx); // get document
-        //console.log(e);
-        if (e) {
-          let originalsize = await this.getViewBox(e);
-          //console.log(originalsize);
-          if (originalsize) {
-            h = originalsize['width']; // * newscale1;
-            w = originalsize['height']; // * newscale1;
-            startstr = '<svg xmlns="http://www.w3.org/2000/svg" ' +
-              'viewBox="0 0 ' + h + ' ' + w + '" height="100%" width="100%"' +
-              'id="svg2" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" preserveAspectRatio="none">';
-            total[0] = startstr;
-          }
-        }
-
 
         let vectstring;
-        //console.log(idnew); // check null ref error
         if (idnew === null) {
           vectstring = element.svgcombi;
         } else if (idnew.childNodes[0] !== null) {
@@ -1710,8 +1718,6 @@ export class VideocreatorComponent implements OnInit {
         } else {
           vectstring = idnew.childNodes.innerHTML;
         }
-
-        //console.log(vectstring);
 
         let pathidar;
         let newvectstring;
@@ -1753,9 +1759,9 @@ export class VideocreatorComponent implements OnInit {
     let vectors: vectorelement[];
     vectors = element.vectors;
 
-    let getview = document.getElementById(element.id);
-    let svgview = getview.getElementsByTagName('svg');
-    let viewbox = svgview[0].getAttribute("viewBox");
+    // let getview = document.getElementById(element.id);
+    // let svgview = getview.getElementsByTagName('svg');
+    // let viewbox = svgview[0].getAttribute("viewBox");
     let ease = this.selectEaseType(animation.easetype);
 
 
@@ -1763,8 +1769,9 @@ export class VideocreatorComponent implements OnInit {
 
       let fromvector = vectors[i1];
       let tovector = vectors[i1 + 1];
-      let fintime = animation.start_time + animation.duration;
-      let starttime = animation.start_time * i1 + 1;
+      let fintime = animation.start_time + animation.duration + (animation.duration *i1 );
+      let fintimehalf = animation.start_time + (animation.duration / 2) + (animation.duration *i1 );
+      let starttime = animation.start_time + (animation.duration *i1 );
       //console.log(fromvector.pathids)
 
       if (vectors[i1].pathids.length < vectors[i1 + 1].pathids.length) {
@@ -1775,13 +1782,13 @@ export class VideocreatorComponent implements OnInit {
             let toel = document.getElementById(topathid);
 
             this.primairytimeline.set(toel, { opacity: 0 }, 0);
-            this.primairytimeline.fromTo(toel, { opacity: 0 }, { duration: 3, opacity: 1 }, fintime - 1);
+            this.primairytimeline.fromTo(toel, { opacity: 0 }, { duration: fintimehalf, opacity: 1 }, fintime - 1);
           }
         }
       }
 
       for (let i2 = 0; i2 < fromvector.pathids.length; i2++) {
-        // vector 1 is eqeal or smaller then vector 2 
+        // vector 1 is eqeal or smaller then vector 2
         //console.log(i2);
         if (i2 < tovector.pathids.length) {
           let frompathid = fromvector.pathids[i2];
@@ -1789,12 +1796,14 @@ export class VideocreatorComponent implements OnInit {
           let fromel = document.getElementById(frompathid);
           let toel = document.getElementById(topathid);
 
-          this.primairytimeline.to(fromel, { duration: animation.duration, morphSVG:{
-            shape: toel,
-            type:"rotational",
-            origin:"50% 50%" //or "20% 60%,35% 90%" if there are different values for the start and end shapes.
-        }, ease: ease }, starttime);
-          this.primairytimeline.fromTo(toel, { opacity: 0 }, { duration: 3, opacity: 1 }, fintime - 1);
+          this.primairytimeline.to(fromel, {
+            duration: animation.duration, morphSVG: {
+              shape: toel,
+              type: "rotational",
+              origin: "50% 50%" //or "20% 60%,35% 90%" if there are different values for the start and end shapes.
+            }, ease: ease
+          }, starttime);
+          this.primairytimeline.fromTo(toel, { opacity: 0 }, { duration: fintimehalf, opacity: 1 }, fintime - 1);
           this.primairytimeline.to(fromel, { duration: 1, opacity: 0 }, fintime);
 
         } else { // (i2 > tovector.pathids.length)
@@ -1806,34 +1815,21 @@ export class VideocreatorComponent implements OnInit {
           let toel = document.getElementById(topathid);
           //console.log('bigger vector', toel, sindex);
 
-          this.primairytimeline.to(fromel, { duration: animation.duration, morphSVG:{
-            shape: toel,
-            type:"rotational",
-            origin:"50% 50%" //or "20% 60%,35% 90%" if there are different values for the start and end shapes.
-        }, ease: ease }, starttime);
-          this.primairytimeline.fromTo(toel, { opacity: 0 }, { duration: 3, opacity: 1 }, fintime - 1);
+          this.primairytimeline.to(fromel, {
+            duration: animation.duration, morphSVG: {
+              shape: toel,
+              type: "rotational",
+              origin: "50% 50%" //or "20% 60%,35% 90%" if there are different values for the start and end shapes.
+            }, ease: ease
+          }, starttime);
+          this.primairytimeline.fromTo(toel, { opacity: 0 }, { duration: fintimehalf, opacity: 1 }, fintime - 1);
           this.primairytimeline.to(fromel, { duration: 1, opacity: 0 }, fintime);
         }
       }
     }
   }
 
-  setScale(fromel, newstring) {
-    console.log(fromel, newstring);
-    //fromel.style.setAttribute('transform', newstring)
-    fromel.style.transform = newstring;
-  }
 
-  async getLargestSvgPath(vector) {
-    let longestEl = document.getElementById(vector[0]);
-    let longestElD = longestEl['d'].length
-    for (const element of vector) {
-      let el = document.getElementById(element);
-      if (el['d'].length > longestEl) {
-        longestEl = longestEl;
-      }
-    };
-  }
 
   addWeatherEffect() {
     console.log(this.canvas.weather);
@@ -1962,14 +1958,14 @@ export class VideocreatorComponent implements OnInit {
       let h = viewbox.height * scale;
       let w = viewbox.width * scale;
       const normalizedPath = normalize({
-        viewBox: '0 0 '+ h + ' ' + w,
+        viewBox: '0 0 ' + h + ' ' + w,
         path: path,
         min: 0,
         max: h,
         asList: false
       })
-       
-      //console.log(normalizedPath) 
+
+      //console.log(normalizedPath)
 
       resolve(normalizedPath) // normalizedPath
     })
@@ -2041,97 +2037,94 @@ export class VideocreatorComponent implements OnInit {
     })
   }
 
-  async deleteVectorGroup(idx, originalsize, newsize) {
+  async deleteVectorGroup(id) {
     return new Promise(async (resolve, reject) => {
-      // convert all svgs and all other then paths (website wide)
-      MorphSVGPlugin.convertToPath("circle, rect, ellipse, line, polygon, polyline");
-      let scale;
       let groupElement;
-      let idto = idx; //document.getElementById(idx);
-      let g;
-      g = idto.getElementsByTagName("g");
+      let e = document.getElementById(id); 
+      let g = e.getElementsByTagName("g");
+      console.log(g)
       for (let index = 0; index < g.length; index++) {  // ---> g.length
-        g[index].setAttribute("id", idx + index + 'g');
-        let sg = idx + index + 'g';
+        g[index].setAttribute("id", id + index + 'g');
+        let sg = id + index + 'g';
         groupElement = SVG.get(sg);
         if (typeof groupElement.ungroup === "function") {
           //console.log('found g id', groupElement);
           groupElement.ungroup(groupElement.parent());
         }
       }
-
-      let p = idto.getElementsByTagName("path");
-      for (let index = 0; index < p.length; index++) {
-        p[index].setAttribute("id", "child-" + index);
-        const bbox = p[index].getBBox();
-
-        // transform to size
-        let newtranssize;
-        console.log(newsize, originalsize, bbox);
-        if (newsize.height < newsize.width) {
-          if (newsize < originalsize) {
-            newtranssize = newsize.height / originalsize.height;
-          } else {
-            newtranssize = originalsize.height / newsize.height;
-          }
-        } else {
-          if (newsize < originalsize) {
-            newtranssize = newsize.width / originalsize.width;
-          } else {
-            newtranssize = originalsize.width / newsize.width;
-          }
-        }
-
-       // if (originalsize.zoom){newtranssize = newtranssize * (1 /  originalsize.zoom)}
-
-        scale = Number((newtranssize).toFixed(8)); // 
-        //newtranssize.toFixed(8);//newtranssize; //newsize.height /originalsize.height; 
-        console.log(scale);
-        // center new object
-        let h = (newsize.height - bbox.height) / 2;
-        let w = (newsize.width - bbox.width) / 2;
-        let adh = h - bbox.y;
-        let adw = w - bbox.x;
-
-        let rawpath = MotionPathPlugin.getRawPath(p[index]);
-        let testpath;
-          // get original style
-          let style = getComputedStyle(p[index]).transform;
-          if (style !== 'none'){
-            style = style.replace('matrix(', '');
-            style = style.replace(')', '');
-            style = style.replace(/,/g, '');
-            let svgtransarray = style.split(' ').map(Number);
-            //console.log('matrix yes', style)
-            testpath = MotionPathPlugin.transformRawPath(rawpath, svgtransarray[0], svgtransarray[1], svgtransarray[2], svgtransarray[3], svgtransarray[4], svgtransarray[5]);
-          } else {
-            testpath = rawpath;
-            //console.log('matrix no', scale)
-          }
-
-          let testpath2 = MotionPathPlugin.transformRawPath(testpath, scale, 0, 0, scale, 0, 0);
-          //console.log(testpath2);
-          let stringpath = MotionPathPlugin.rawPathToString(testpath2);
-          p[index].removeAttribute("transform");
-          p[index].setAttribute('d', stringpath);
-
-        }
-        resolve(scale);
-      });
+      resolve();
+    })
   }
 
-  createRotate(idel){
+  async resizeVector(originalsize, newsize, i, id) {
+    return new Promise(async (resolve, reject) => {
+      let e = document.getElementById(id); 
+
+      // transform to size
+      let scale;
+      let newtranssize;
+      //console.log(newsize, originalsize, bbox);
+      if (newsize.height < newsize.width) {
+        if (newsize < originalsize) {
+          newtranssize = newsize.height / originalsize.height;
+        } else {
+          newtranssize = originalsize.height / newsize.height;
+        }
+      } else {
+        if (newsize < originalsize) {
+          newtranssize = newsize.width / originalsize.width;
+        } else {
+          newtranssize = originalsize.width / newsize.width;
+        }
+      }
+
+      scale = Number((newtranssize).toFixed(8));
+      let p = e.getElementsByTagName("path");
+      for (let index = 0; index < p.length; index++) {
+
+        p[index].setAttribute("id", "child-" + index + i); // keep in case there is no ID set
+        let rawpath = await MotionPathPlugin.getRawPath(p[index]);
+        let svgsizearray = [scale, 0, 0, scale, 0, 0]
+        let newmatrix;
+        let transf = p[index].getAttribute('transform');
+
+        if (transf !== null) {
+          let style = transf;
+          style = style.replace('matrix(', '');
+          style = style.replace('matrix(', '');
+          style = style.replace(')', '');
+          style = style.replace(/,/g, ' ');
+          newmatrix = style.split(' ').map(Number);
+
+          let testpath2 = await MotionPathPlugin.transformRawPath(rawpath, newmatrix[0], newmatrix[1], newmatrix[2], newmatrix[3], newmatrix[4], newmatrix[5]);
+          let testpath3 = await MotionPathPlugin.transformRawPath(testpath2, svgsizearray[0], svgsizearray[1], svgsizearray[2], svgsizearray[3], svgsizearray[4], svgsizearray[5]);
+          let stringpath = await MotionPathPlugin.rawPathToString(testpath3);
+          p[index].setAttribute('d', stringpath);
+          p[index].removeAttribute("transform");
+
+        } else {
+          let testpath3 = await MotionPathPlugin.transformRawPath(rawpath, svgsizearray[0], svgsizearray[1], svgsizearray[2], svgsizearray[3], svgsizearray[4], svgsizearray[5]);
+          let stringpath = await MotionPathPlugin.rawPathToString(testpath3);
+          p[index].setAttribute('d', stringpath);
+          p[index].removeAttribute("transform");
+        }
+      }
+      resolve();
+    });
+  }
+
+  createRotate(idel) {
     let element = document.getElementById(idel.id);
     let handle = document.getElementById(idel.id + 'rotatehandle');
     Draggable.create(element, {
-      type: "rotation", 
+      type: "rotation",
       trigger: handle,
       onDragEndParams: [idel],
       onDragEnd:
-      function(idl) {
-        idl.rotation = this.rotation;
-        //console.log("drag ended", idl, this.rotation);
-      }
+        function (idl) {
+          idl.rotation = this.rotation;
+          //console.log("drag ended", idl, this.rotation);
+        }
     });
   }
 
@@ -2156,7 +2149,7 @@ export class VideocreatorComponent implements OnInit {
       let elev = document.getElementById(this.selectedelement.id);
 
       let h = 500, w = 500;
-      let originalsize = this.getViewBox(elev);
+      let originalsize = this.getViewBox(this.selectedelement.id);
       console.log(originalsize);
       if (originalsize) {
         h = originalsize['width']; // * newscale1;
@@ -2302,18 +2295,6 @@ export class VideocreatorComponent implements OnInit {
     }
   }
 
-  combineVectors() {
-    this.animationarray.forEach((element, index) => {
-      if (element.type === 'vector') {
-        if (element.selected === true) {
-          // combineelement
-          // deleteoriginal
-        }
-      }
-    })
-  }
-
-
   saveAsSeperateVector(): any {
     let svgstring;
     let pathidar = [];
@@ -2372,7 +2353,7 @@ export class VideocreatorComponent implements OnInit {
     console.log('start new svg')
     let h = 500, w = 500;
     let element = document.getElementById(this.selectedelement.id);
-    let originalsize = await this.getViewBox(element);
+    let originalsize = await this.getViewBox(this.selectedelement.id);
     console.log(originalsize);
     if (originalsize) {
       h = originalsize['width']; // * newscale1;

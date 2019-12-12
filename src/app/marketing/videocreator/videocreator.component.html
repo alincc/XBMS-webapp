@@ -765,9 +765,7 @@
                         </div>
                         <mat-expansion-panel-header *ngIf="element.type === 'vector'" cdkDragHandle>
                             <mat-panel-title>
-                                <mat-checkbox color="primary" [(ngModel)]="element.selected"></mat-checkbox>
-                                <!-- <div *ngIf="element.svgcombi" [innerHTML]="element.svgcombi | safeHtml"
-                                    class="elementsedit" style="height: 30px; width: 30px;"></div> -->
+                                <!-- <mat-checkbox color="primary" [(ngModel)]="element.selected"></mat-checkbox> -->
                                 <div *ngIf="element.vectors[0].src" [inlineSVG]="element.vectors[0].src"
                                     [onSVGLoaded]="previewSVG" id="previewbox" class="elementsedit"
                                     style="height: 30px; width: auto;">
@@ -783,29 +781,18 @@
 
                             <div *ngFor="let vector of element.vectors; let idx = index;">
                                 <mat-expansion-panel *ngIf="element.morph">
-                                    <!-- <mat-form-field style="max-width: 46px;">
-                                            <input [(ngModel)]="vector.duration" type="number" step="0.1" min="0"
-                                                matInput>
-                                            <mat-hint>Duration</mat-hint>
-                                        </mat-form-field>
-                                        <mat-form-field style="max-width: 46px;">
-                                            <input [(ngModel)]="vector.start_time" type="number" step="0.1" min="0"
-                                                matInput>
-                                            <mat-hint>Start</mat-hint> "element.id + i + 's'"
-                                        </mat-form-field> -->
+
                                     <mat-expansion-panel-header>
                                         <div *ngIf="vector.src || vector.svgcombi !== 'undefined'"
-                                        [attr.id]="'previewbox' + idx" [inlineSVG]="vector.src" [onSVGLoaded]="previewSVG"
-                                            class="elementsedit" style="height: 30px; width: auto;">
+                                            [attr.id]="'previewbox' + idx" [inlineSVG]="vector.src"
+                                            [onSVGLoaded]="previewSVG" class="elementsedit"
+                                            style="height: 30px; width: auto;">
                                         </div>
                                     </mat-expansion-panel-header>
 
-                                    <div *ngIf="vector.src" [inlineSVG]="vector.src" [onSVGLoaded]="previewSVGBig"
+                                    <div *ngIf="vector.src" [inlineSVG]="vector.src" style="width: 100px; height: 200px;"
                                         id="{{vector.idx}}" (onSVGInserted)="initVectors($event, i, idx, vector.idx)">
                                     </div>
-                                    <!-- <div *ngIf="!vector.src" [innerHTML]="element.svgcombi  | safeHtml"
-                                        id="{{vector.idx}}">
-                                    </div> -->
                                     <app-vectorupload *ngIf="!vector.src" [account]="Account" [option]="option"
                                         (imgurl)="setVector($event, i, idx)">
                                     </app-vectorupload>
@@ -820,11 +807,9 @@
                                     </mat-icon>
                                 </mat-expansion-panel>
                                 <div *ngIf="!element.morph">
-                                    <div *ngIf="vector.src" [inlineSVG]="vector.src" [onSVGLoaded]="previewSVGBig"
-                                        id="{{vector.idx}}" (onSVGInserted)="initVectors($event, i, idx, vector.idx)">
-                                    </div>
-                                    <div *ngIf="!vector.src" [innerHTML]="element.svgcombi  | safeHtml"
-                                        id="{{vector.idx}}">
+                                    <div *ngIf="vector.src" [inlineSVG]="vector.src" 
+                                        [attr.id]="vector.idx" [onSVGLoaded]="previewSVGBig"
+                                        (onSVGInserted)="initVectors($event, i, idx, vector.idx)">
                                     </div>
                                     <app-vectorupload *ngIf="!vector.src && !element.svgcombi" [account]="Account"
                                         [option]="option" (imgurl)="setVector($event, i, idx)">
@@ -1072,7 +1057,7 @@
                     indeterminate_check_box
                 </mat-icon>
                 <mat-checkbox [(ngModel)]="dragselectvectpath" matTooltip="drag selection tool"
-                (change)="selectMultiplePaths()"></mat-checkbox>
+                    (change)="selectMultiplePaths()"></mat-checkbox>
                 <mat-checkbox [(ngModel)]="selectmultiplepaths" matTooltip="selected multiple sections"
                     (change)="selectMultiplePaths()"></mat-checkbox>
             </div>
@@ -1111,29 +1096,32 @@
                         [style.width]="canvas.width" [style.height]="canvas.height"
                         [ngStyle]="{'z-index':editpath === true && element === selectedelement ? 1000 : -1 }">
                     </div>
-                    <div *ngIf="element.type === 'image'" id="{{element.id}}" [attr.id]="element.id"
-                         ngDraggable [ngStyle]="element.style"
-                        [style.width]="element.style.width" [style.height]="element.style.height"
-                        (movingOffset)="onMoving($event, i)" [preventDefaultEvent]="true"
+                    <div *ngIf="element.type === 'image'" id="{{element.id}}" [attr.id]="element.id" ngDraggable
+                        [ngStyle]="element.style" [style.width]="element.style.width"
+                        [style.height]="element.style.height" (movingOffset)="onMoving($event, i)"
+                        [preventDefaultEvent]="true"
                         [style.transform]="'translate(' + element.posx + 'px, ' + element.posy +'px) rotate(' + element.rotation + 'deg)' | safe: 'style'"
                         (rzResizing)="onResizing($event, i)" ngResizable [rzAspectRatio]="true">
                         <img *ngIf="element.src" style="width: 100%; height: 100%;" src={{element.src}}>
-                        <mat-icon class="iconsize-4"  class="rotatehandle" #rotatehandle [attr.id]="element.id + 'rotatehandle'">replay</mat-icon>
+                        <mat-icon class="iconsize-4" class="rotatehandle" #rotatehandle
+                            [attr.id]="element.id + 'rotatehandle'">replay</mat-icon>
                     </div>
                     <label ngResizable *ngIf="element.type === 'text'" id="{{element.id}}" [attr.id]="element.id"
                         ngDraggable (movingOffset)="onMoving($event, i)"
                         [style.transform]="'translate(' + element.posx + 'px, ' + element.posy +'px) rotate(' + element.rotation + 'deg)' | safe: 'style'"
                         (rzResizing)="onResizing($event, i)" [ngStyle]="element.style"
                         [rzAspectRatio]="false">{{element.content}}
-                        <mat-icon class="iconsize-4"  class="rotatehandle" #rotatehandle [attr.id]="element.id + 'rotatehandle'">replay</mat-icon>
-                        </label>
+                        <mat-icon class="iconsize-4" class="rotatehandle" #rotatehandle
+                            [attr.id]="element.id + 'rotatehandle'">replay</mat-icon>
+                    </label>
                     <div *ngIf="element.type === 'shape'" id="{{element.id}}" ngDraggable
                         [style.width]="element.style.width" [style.height]="element.style.height"
                         (movingOffset)="onMoving($event, i)" [preventDefaultEvent]="true"
                         [style.transform]="'translate(' + element.posx + 'px, ' + element.posy +'px) rotate(' + element.rotation + 'deg)' | safe: 'style'"
                         (rzResizing)="onResizing($event, i)" ngResizable [rzAspectRatio]="element.shape === 'heart'"
                         [ngStyle]="element.style" [className]="element.style.class">
-                        <mat-icon class="iconsize-4"  class="rotatehandle" #rotatehandle [attr.id]="element.id + 'rotatehandle'">replay</mat-icon>
+                        <mat-icon class="iconsize-4" class="rotatehandle" #rotatehandle
+                            [attr.id]="element.id + 'rotatehandle'">replay</mat-icon>
                     </div>
                     <div *ngIf="element.type === 'vector'" [style.width]="element.style.width"
                         [style.height]="element.style.height" ngDraggable [ngStyle]="element.style"
@@ -1143,7 +1131,8 @@
                         <div style="height: 100%; width: 100%;" [innerHTML]="element.svgcombi | safeHtml"
                             (click)="clickVectorPaths($event)">
                         </div>
-                        <mat-icon class="iconsize-4"  class="rotatehandle" #rotatehandle  [attr.id]="element.id + 'rotatehandle'">replay</mat-icon>
+                        <mat-icon class="iconsize-4" class="rotatehandle" #rotatehandle
+                            [attr.id]="element.id + 'rotatehandle'">replay</mat-icon>
                     </div>
                     <canvas-whiteboard *ngIf="whiteboard === true" id="{{element.id}}" #canvasWhiteboard
                         [drawButtonClass]="'drawButtonClass'" [drawButtonText]="'Draw'" [ngStyle]="element.style"
