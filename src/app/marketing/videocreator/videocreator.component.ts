@@ -2041,30 +2041,7 @@ export class VideocreatorComponent implements OnInit {
     })
   }
 
-  transformPath(path, matrix, newpath) {
-    // MotionPathPlugin.getGlobalMatrix
-    // MorphSVGPlugin.pathDataToBezier
-    //var bezier = MorphSVGPlugin.pathDataToBezier(path.getAttribute("d"))[0],
-    var bezier = path[0], //grabs the first sement in the <path>, converts it to absolute Cubic Bezier data and returns it as an array of x/y coordinates like [x, y, x, y, x, y]
-      a = matrix[0],
-      b = matrix[1],
-      c = matrix[2],
-      d = matrix[3],
-      tx = matrix[4],
-      ty = matrix[5],
-      rnd = 100000, //for rounding, to avoid floating point issues.
-      x, y, i;
-    for (i = 0; i < bezier.length; i += 2) {
-      x = bezier[i];
-      y = bezier[i + 1];
-      bezier[i] = ((((x * a + y * c + tx) * rnd) | 0) / rnd);
-      bezier[i + 1] = ((((x * b + y * d + ty) * rnd) | 0) / rnd);
-    }
-    newpath.setAttribute("d", "M" + bezier.shift() + "," + bezier.shift() + " C" + bezier.join(","));
-  }
-
-
-  deleteVectorGroup(idx, originalsize, newsize) {
+  async deleteVectorGroup(idx, originalsize, newsize) {
     return new Promise(async (resolve, reject) => {
       // convert all svgs and all other then paths (website wide)
       MorphSVGPlugin.convertToPath("circle, rect, ellipse, line, polygon, polyline");
@@ -2105,10 +2082,11 @@ export class VideocreatorComponent implements OnInit {
           }
         }
 
-        if (originalsize.zoom){newtranssize = newtranssize * (1 /  originalsize.zoom)}
+       // if (originalsize.zoom){newtranssize = newtranssize * (1 /  originalsize.zoom)}
 
-        scale = newtranssize; //newsize.height /originalsize.height; 
-        console.log(newtranssize);
+        scale = Number((newtranssize).toFixed(8)); // 
+        //newtranssize.toFixed(8);//newtranssize; //newsize.height /originalsize.height; 
+        console.log(scale);
         // center new object
         let h = (newsize.height - bbox.height) / 2;
         let w = (newsize.width - bbox.width) / 2;
@@ -2124,15 +2102,15 @@ export class VideocreatorComponent implements OnInit {
             style = style.replace(')', '');
             style = style.replace(/,/g, '');
             let svgtransarray = style.split(' ').map(Number);
-            console.log('matrix yes', style)
+            //console.log('matrix yes', style)
             testpath = MotionPathPlugin.transformRawPath(rawpath, svgtransarray[0], svgtransarray[1], svgtransarray[2], svgtransarray[3], svgtransarray[4], svgtransarray[5]);
           } else {
             testpath = rawpath;
-            console.log('matrix no', newtranssize)
+            //console.log('matrix no', scale)
           }
 
-          let testpath2 = MotionPathPlugin.transformRawPath(testpath, newtranssize, 0, 0, newtranssize, 0, 0);
-          console.log(testpath2);
+          let testpath2 = MotionPathPlugin.transformRawPath(testpath, scale, 0, 0, scale, 0, 0);
+          //console.log(testpath2);
           let stringpath = MotionPathPlugin.rawPathToString(testpath2);
           p[index].removeAttribute("transform");
           p[index].setAttribute('d', stringpath);
