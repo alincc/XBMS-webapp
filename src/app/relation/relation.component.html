@@ -788,7 +788,8 @@
                   <source [src]="selectedfile.url" type="video/mp4">
                 </video>
               </vg-player>
-              <img *ngIf="selectedfile.type === 'gif' || selectedfile.type === 'jpeg' || selectedfile.type === 'png' || selectedfile.type === 'image'" src={{selectedfile.url}}>
+              <img *ngIf="selectedfile.type === 'gif' || selectedfile.type === 'jpeg' || selectedfile.type === 'png' || selectedfile.type === 'image'" 
+              src={{selectedfile.url}} style="width: 400px; height: auto;">
               <div *ngIf="selectedfile.type === 'vector'" [inlineSVG]="selectedfile.url"></div>
             </mat-card-content>
           </mat-card>

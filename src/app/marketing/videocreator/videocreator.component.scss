@@ -5,6 +5,10 @@
     background-color: greenyellow;
 }
 
+.selected {
+  background-color: lightblue;
+}
+
 
 .savetobutton {
     bottom: 40px;
@@ -172,3 +176,6 @@
   margin: -20px;
   // pointer-events: none;
 }
+
+
+
