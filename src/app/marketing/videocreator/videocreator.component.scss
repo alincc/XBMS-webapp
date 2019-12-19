@@ -178,4 +178,21 @@
 }
 
 
+.data-selected{
+  content: "";
+  
+}
+
+.data-selected::after{
+  background-color: #0000ff;
+  fill: #0000ff;
+}
+
+
+.svg-drag-select-area-overlay {
+  border: 1px dotted gray;
+  background-color: rgba(255,255,255,.4);
+  z-index: 100000;
+}
+
 

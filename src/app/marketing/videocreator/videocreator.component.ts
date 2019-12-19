@@ -304,7 +304,8 @@ export class VideocreatorComponent implements OnInit {
 
   public dragselectvectpath = false;
   public standardvector;
-
+  public dragselectiontrue = false;
+  cancelDragSelect?: () => void;
 
 
   
@@ -2192,6 +2193,9 @@ export class VideocreatorComponent implements OnInit {
 
   selectMultiplePaths() {
     //console.log(vector, idx, element);
+    this.dragselectvectpath = false;
+    this.dragselectiontrue = false;
+    this.cancelDragSelect();
     if (this.selectmultiplepaths === false) {
       this.removeVectorPathMultiSelection()
     } else {
@@ -2210,11 +2214,11 @@ export class VideocreatorComponent implements OnInit {
   }
 
   clickVectorPaths(e) {
-    console.log('clickVectorPaths', this.dragselectvectpath);
+    console.log('clickVectorPaths', this.dragselectvectpath, this.dragselectiontrue);
 
-    if (this.dragselectvectpath) {
+    if (this.dragselectvectpath === true && this.dragselectiontrue === false) {
       this.dragSelect(this.selectedelement.id);
-    } else {
+    } else if (this.dragselectiontrue === false){
       if (e.target.localName !== 'svg') {
         if (this.selectmultiplepaths === false) {
           if (this.selectedVecPath === e.target) {
@@ -2247,6 +2251,7 @@ export class VideocreatorComponent implements OnInit {
 
   deleteSelectedVectorPath() {
     // delete from pathids
+    this.dragselectiontrue = false;
     if (this.selectmultiplepaths) {
       this.selectedVecPathmultiple.forEach(selectionvecpath => {
         this.selectedelement.vectors.forEach(element => {
@@ -2281,6 +2286,7 @@ export class VideocreatorComponent implements OnInit {
   }
 
   removeVectorPathMultiSelection() {
+    this.dragselectiontrue = false;
     if (this.selectedVecPathmultiple.length > 0) {
       this.selectedVecPathmultiple.forEach((path, index) => {
         path.style.outline = null;
@@ -2292,6 +2298,7 @@ export class VideocreatorComponent implements OnInit {
 
 
   removeVectorPathSelection() {
+    this.dragselectiontrue = false;
     if (this.selectedVecPath) {
       this.selectedVecPath.style.outline = null;
       this.selectedVecPath = null;
@@ -2306,8 +2313,9 @@ export class VideocreatorComponent implements OnInit {
     let svgstring;
     let pathidar = [];
 
-    if (this.selectmultiplepaths) {
+    if (this.selectmultiplepaths || this.dragselectvectpath) {
       // this.removeVectorPathMultiSelection();
+      console.log('seperate multipaths', this.selectedVecPathmultiple)
       let svgarray = [];
       let i = 0;
       let arraylenght = this.selectedVecPathmultiple.length - 1;
@@ -2620,7 +2628,7 @@ export class VideocreatorComponent implements OnInit {
     //https://github.com/luncheon/svg-drag-select
 
     dragSelect(id){
-      
+      this.dragselectiontrue = true;
       let svgel = document.getElementById(id);
       let svgset = svgel.getElementsByTagName("svg")[0];
 
@@ -2630,15 +2638,18 @@ export class VideocreatorComponent implements OnInit {
         referenceElement: null,  
         selector: "enclosure",
         onSelectionStart({svg, pointerEvent, cancel}){
+          console.log('selection start', pointerEvent)
+          this.cancelDragSelect = cancel;
           if (pointerEvent.button !== 0) {
             cancel()
             return
           }
-          const selectedElements = svg.querySelectorAll('[data-selected]')
+          const selectedElements = svg.querySelectorAll('[data-selected]');
+        
           for (let i = 0; i < selectedElements.length; i++) {
-            selectedElements[i].removeAttribute('data-selected')
+            selectedElements[i].removeAttribute('data-selected');
+            selectedElements[i].removeAttribute('class')
           }
-          console.log(selectedElements);
         },
 
         onSelectionChange({
@@ -2649,16 +2660,26 @@ export class VideocreatorComponent implements OnInit {
           newlySelectedElements,    // `selectedElements - previousSelectedElements`
           newlyDeselectedElements,  // `previousSelectedElements - selectedElements`
         }) {
+          console.log('selection change')
           // for example: toggle "data-selected" attribute
           newlyDeselectedElements.forEach(element => element.removeAttribute('data-selected'))
           newlySelectedElements.forEach(element => element.setAttribute('data-selected', ''))
+
+          newlySelectedElements.forEach(element => {
+            let elclass = element.getAnimations('class');
+            element.addAttribute('class', 'data-selected')
+          });
+          
         },
 
         onSelectionEnd({
           svg,                     
           pointerEvent,             
           selectedElements,         
-        }) {},
+        }) {
+          this.selectedVecPathmultiple = selectedElements;
+          console.log('end drag', this.selectedVecPathmultiple);
+        },
 
       })
     }
