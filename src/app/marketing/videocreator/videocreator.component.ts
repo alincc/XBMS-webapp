@@ -7,20 +7,20 @@ import {
 import { Subscription } from 'rxjs';
 import { MediaObserver, MediaChange } from '@angular/flex-layout';
 import { gsap } from 'assets/js/all';
-import { Physics2DPlugin, InertiaPlugin, SplitText, DrawSVGPlugin, MorphSVGPlugin, MotionPathPlugin, MotionPathHelper, Draggable } from 'assets/js/all';
-gsap.registerPlugin(Physics2DPlugin, Draggable, InertiaPlugin, SplitText, DrawSVGPlugin, MorphSVGPlugin, MotionPathPlugin, MotionPathHelper);
+import { Physics2DPlugin, InertiaPlugin, ScrambleTextPlugin, SplitText, DrawSVGPlugin, MorphSVGPlugin, MotionPathPlugin, MotionPathHelper, Draggable } from 'assets/js/all';
+gsap.registerPlugin(Physics2DPlugin, Draggable, InertiaPlugin, ScrambleTextPlugin, SplitText, DrawSVGPlugin, MorphSVGPlugin, MotionPathPlugin, MotionPathHelper);
 import { FileUploader, FileItem } from 'ng2-file-upload';
 import { MatSnackBar, AnimationDurations } from '@angular/material';
 declare const SVG: any;
 import '@svgdotjs/svg.draggable.js'
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import * as normalize from 'normalize-svg-coords';
-const plugins = [Draggable, InertiaPlugin, DrawSVGPlugin, MorphSVGPlugin, SplitText, Physics2DPlugin, MotionPathPlugin, MotionPathHelper]; //needed for GSAP
+const plugins = [Draggable, InertiaPlugin, DrawSVGPlugin, MorphSVGPlugin,  ScrambleTextPlugin, SplitText, Physics2DPlugin, MotionPathPlugin, MotionPathHelper]; //needed for GSAP
 import { CanvasWhiteboardComponent } from 'ng2-canvas-whiteboard';
 import { fonts } from '../../shared/listsgeneral/fonts';
-import * as Rematrix from 'rematrix';
-import { AST_DWLoop } from 'terser';
-import { transform } from 'regexp-tree';
+// import * as Rematrix from 'rematrix';
+// import { AST_DWLoop } from 'terser';
+// import { transform } from 'regexp-tree';
 import svgDragSelect from "svg-drag-select"
 
 export class animationtype {
@@ -305,10 +305,11 @@ export class VideocreatorComponent implements OnInit {
   public dragselectvectpath = false;
   public standardvector;
   public dragselectiontrue = false;
-  cancelDragSelect?: () => void;
+  public cancelDragSelect?: () => void;
+  public dragAreaOverlay;
 
 
-  
+
 
   constructor(
     private sanitizer: DomSanitizer,
@@ -325,7 +326,7 @@ export class VideocreatorComponent implements OnInit {
   }
   //private myFuncSvg = this.initVectors.bind(this);
 
-  ngOnInit() {}
+  ngOnInit() { }
 
   ngOnChanges(changes: SimpleChanges) {
     //wait for option.id
@@ -337,7 +338,7 @@ export class VideocreatorComponent implements OnInit {
       }
     }
   }
-    
+
 
   editMotionPath() {
     this.editpath = true;
@@ -408,7 +409,7 @@ export class VideocreatorComponent implements OnInit {
     let svgpath = document.getElementById(this.selectedelement.id + 'p');
     let rawpath = MotionPathPlugin.getRawPath(svgpath);
     let svgtrans = svgpath.getAttribute('transform');
-    console.log(svgtrans, rawpath);
+    //console.log(svgtrans, rawpath);
 
     if (svgtrans !== null && svgtrans !== 'matrix(1 0 0 1 0 0)') {
       svgtrans = svgtrans.replace('matrix(', '');
@@ -421,7 +422,7 @@ export class VideocreatorComponent implements OnInit {
       newpath = 'M9,100 C9,100 27.53,58.42 58.91,34.89';
     } else {
       newpath = MotionPathPlugin.rawPathToString(rawpath);
-      console.log(newpath);
+      //console.log(newpath);
     }
 
     let newsvgpath = '<svg id="' + this.selectedelement.id + 'mp" viewBox="-20 0 557 190" class="path-edit"><path id="' + this.selectedelement.id + 'p" style="opacity: 0; " d="' + newpath + '" /></svg>';
@@ -490,11 +491,14 @@ export class VideocreatorComponent implements OnInit {
         this.createRotate(elm);
       })
     });
-
-
   }
 
   createSplitText(elm: textanimation, textani: splittexttype) {
+
+    // if (textani.textanimationtype === 'scamble'){
+    //   this.primairytimeline.to(setto, {duration: 1, scrambleText: elm.content}); 
+    // }
+
     let splittextwhere = textani.textanimationtype;
     let id = document.getElementById(elm.id);
     let splitText = new SplitText(id, { type: textani.textanimationtype })
@@ -806,7 +810,7 @@ export class VideocreatorComponent implements OnInit {
   deleteEffect(i) {
     //reset opacity
     if (this.selectedelement.animation[i].anim_type === 'appear') {
-      this.selectedelement.style.opacity = 1;
+      //this.selectedelement.style.opacity = 1;
       // console.log('delete opacity')
     }
     this.selectedelement.animation.splice(i, 1);
@@ -884,13 +888,13 @@ export class VideocreatorComponent implements OnInit {
         // convert all svgs and all other then paths (website wide)
         await MorphSVGPlugin.convertToPath("circle, rect, ellipse, line, polygon, polyline");
 
-        if (this.animationarray[i].morph){
-         getview = document.getElementById('previewbox0');
+        if (this.animationarray[i].morph) {
+          getview = document.getElementById('previewbox0');
         } else {
           getview = document.getElementById('previewbox' + i);
         }
 
-        if (newsizestring !== null){
+        if (newsizestring !== null) {
           let newarray = newsizestring.split(' ');
           newsize = { x: newarray[0], y: newarray[1], width: newarray[2], height: newarray[3] }
         } else {
@@ -974,9 +978,15 @@ export class VideocreatorComponent implements OnInit {
   }
 
   onMoving(event, i) {
-    this.animationarray[i].posy = event.y;
-    this.animationarray[i].posx = event.x;
-    //this.animationarray[i].style.transform = 'translate(' + event.x + 'px, ' + event.y +'px) rotate(' + this.animationarray[i].rotation + 'deg)';
+    let idel = this.animationarray[i]
+    idel.posy = event.y;
+    idel.posx = event.x;
+    //this.createRotate(this.animationarray[i]);
+    let element = document.getElementById(idel.id);
+    gsap.set(element, {
+      x: idel.posX,
+      y: idel.posY
+    });
   }
 
   onResizing(e, i) {
@@ -2142,7 +2152,6 @@ export class VideocreatorComponent implements OnInit {
       onDragEnd:
         function (idl) {
           idl.rotation = this.rotation;
-          //console.log("drag ended", idl, this.rotation);
         }
     });
   }
@@ -2159,9 +2168,6 @@ export class VideocreatorComponent implements OnInit {
       svg.setAttribute("viewBox", viewBox);
       this.selectedelement.svgcombi = svg.outerHTML;
     }, 1000);
-    //this.removeVectorPathSelection();
-    //this.removeVectorPathMultiSelection();
-    // prompt("Copy to clipboard: Ctrl+C, Enter", svg.outerHTML);
   }
 
   async seperatePaths(idx, vector: vectorelement, element: vectoranimation) {
@@ -2214,11 +2220,11 @@ export class VideocreatorComponent implements OnInit {
   }
 
   clickVectorPaths(e) {
-    console.log('clickVectorPaths', this.dragselectvectpath, this.dragselectiontrue);
+    //console.log('clickVectorPaths', this.dragselectvectpath, this.dragselectiontrue);
 
     if (this.dragselectvectpath === true && this.dragselectiontrue === false) {
       this.dragSelect(this.selectedelement.id);
-    } else if (this.dragselectiontrue === false){
+    } else if (this.dragselectiontrue === false) {
       if (e.target.localName !== 'svg') {
         if (this.selectmultiplepaths === false) {
           if (this.selectedVecPath === e.target) {
@@ -2226,7 +2232,8 @@ export class VideocreatorComponent implements OnInit {
           } else {
             this.removeVectorPathSelection();
             this.selectedVecPath = e.target;
-            this.selectedVecPath.style.outline = '1px dotted green';
+            this.setPathSelClass(e.target);
+            // this.selectedVecPath.style.outline = '1px dotted green';
           }
         }
         if (this.selectmultiplepaths === true) {
@@ -2236,10 +2243,12 @@ export class VideocreatorComponent implements OnInit {
           //console.log(exist, e.target);
           if (exist !== -1) {
             e.target.style.outline = null;
+            this.deletePathSelClass(e.target); 
             this.selectedVecPathmultiple.splice(exist, 1);
           } else {
             // if not exists
-            e.target.style.outline = '1px dotted green';
+            //e.target.style.outline = '1px dotted green';
+            this.setPathSelClass(e.target);
             this.selectedVecPathmultiple.push(e.target);
             //console.log(this.selectedVecPathmultiple);
           }
@@ -2251,8 +2260,12 @@ export class VideocreatorComponent implements OnInit {
 
   deleteSelectedVectorPath() {
     // delete from pathids
-    this.dragselectiontrue = false;
-    if (this.selectmultiplepaths) {
+    if (this.dragselectiontrue){
+      this.cancelDragSelect();
+      this.dragselectiontrue = false;
+    }
+    if (this.selectmultiplepaths || this.dragselectvectpath) {
+      if (this.dragselectvectpath){this.cancelDragSelect;}
       this.selectedVecPathmultiple.forEach(selectionvecpath => {
         this.selectedelement.vectors.forEach(element => {
           let index = element.pathids.indexOf(selectionvecpath.id);
@@ -2286,30 +2299,36 @@ export class VideocreatorComponent implements OnInit {
   }
 
   removeVectorPathMultiSelection() {
-    this.dragselectiontrue = false;
+    if (this.dragselectiontrue){
+      this.cancelDragSelect();
+      this.dragselectiontrue = false;
+    }
     if (this.selectedVecPathmultiple.length > 0) {
       this.selectedVecPathmultiple.forEach((path, index) => {
-        path.style.outline = null;
+        //path.style.outline = null;
+        this.deletePathSelClass(path)
         this.selectedVecPathmultiple.splice(index, 1)
       });
-
     }
   }
 
 
   removeVectorPathSelection() {
-    this.dragselectiontrue = false;
+    if (this.dragselectiontrue){
+      this.cancelDragSelect();
+      this.dragselectiontrue = false;
+    }
     if (this.selectedVecPath) {
-      this.selectedVecPath.style.outline = null;
+      this.deletePathSelClass(this.selectedVecPath)
       this.selectedVecPath = null;
-      //let revertoldstyle = this.selectedVecPath.getAttribute('style');
-      //let oldstyle = revertoldstyle.replace('; outline: 5vw dotted green;', '');
-      //console.log(oldstyle);
-      //this.selectedVecPath.setAttribute('style', oldstyle)
     }
   }
 
   saveAsSeperateVector(): any {
+    if (this.dragselectiontrue){
+      this.cancelDragSelect();
+      this.dragselectiontrue = false;
+    }
     let svgstring;
     let pathidar = [];
 
@@ -2326,10 +2345,12 @@ export class VideocreatorComponent implements OnInit {
         let newid = idx + 'elvect-' + ind;
         let oldid = element.getAttribute('id');
         let svgel = element;
+        this.deletePathSelClass(svgel);
         let s = new XMLSerializer(); // convert to string
         let stringend = s.serializeToString(svgel);
-        let cleanstring = stringend.replace('outline: 1px dotted green;', '');
-        let finalstring = cleanstring.replace(oldid, newid);
+        //let cleanstring = stringend.replace('outline: 1px dotted green;', '');
+
+        let finalstring = stringend.replace(oldid, newid);
         svgarray.push(finalstring);
         pathidar.push(newid);
         if (i === arraylenght) {
@@ -2342,6 +2363,7 @@ export class VideocreatorComponent implements OnInit {
 
     } else {
       let svgel = this.selectedVecPath;
+      this.deletePathSelClass(svgel);
       let oldid = svgel.getAttribute('id');
       let s = new XMLSerializer(); // convert to string
       svgstring = s.serializeToString(svgel);
@@ -2349,10 +2371,10 @@ export class VideocreatorComponent implements OnInit {
       let ind = 0 + 1;
       let newid = idx + 'elvect-' + ind;
       let finalstring = svgstring.replace(oldid, newid);
-      let cleanstring = finalstring.replace('outline: 1px dotted green;', '');
-      cleanstring.replace(oldid, newid);
+     // let cleanstring = finalstring.replace('outline: 1px dotted green;', '');
+      finalstring.replace(oldid, newid);
       pathidar.push(newid);
-      this.createnewsvg(cleanstring, pathidar);
+      this.createnewsvg(finalstring, pathidar);
       this.removeVectorPathSelection();
     }
   }
@@ -2581,16 +2603,13 @@ export class VideocreatorComponent implements OnInit {
   async converttogif() {
     this.removeVectorPathSelection();
     this.removeVectorPathMultiSelection();
-    // let myJSON = await this.jsonVectors();
     let array = this.animationarray;
     let myJSON = JSON.stringify(array);
-    //var aniarray = encodeURIComponent(myJSON);
     if (this.elementname === undefined) { this.elementname = Math.random().toString(36).substring(7); }
     this.filesApi.creategif(this.option.id, this.option.companyId,
       this.elementname, this.canvas, myJSON, this.counter)
       .subscribe(
         res => {
-          //console.log(res);
           this.saveVideo()
         }
       );
@@ -2621,67 +2640,93 @@ export class VideocreatorComponent implements OnInit {
     this.animationarray = this.editablevideo.template;
     this.counter = this.editablevideo.counter;
     this.detectchange();
-
-    console.log(this.newFiles);
   }
 
-    //https://github.com/luncheon/svg-drag-select
+  //https://github.com/luncheon/svg-drag-select
+  dragSelect(id) {
+    this.dragselectiontrue = true;
+    let svgel = document.getElementById(id);
+    let svgset = svgel.getElementsByTagName("svg")[0];
 
-    dragSelect(id){
-      this.dragselectiontrue = true;
-      let svgel = document.getElementById(id);
-      let svgset = svgel.getElementsByTagName("svg")[0];
+    const {
+      cancel,           // cleanup funciton. please call `cancel()` when the select-on-drag behavior is no longer needed.
+      dragAreaOverlay,
+    } = svgDragSelect({
+      svg: svgset,
+      referenceElement: null,
+      selector: "enclosure",
+      onSelectionStart({ svg, pointerEvent, cancel }) {
+        if (pointerEvent.button !== 0) {
+          cancel()
+          return
+        }
+        const selectedElements = svg.querySelectorAll('[data-selected]');
+        for (let i = 0; i < selectedElements.length; i++) {
+          selectedElements[i].removeAttribute('data-selected');
+          let elclass = selectedElements[i].getAttribute('class');
+          elclass = elclass.replace('data-selected', '')
+          selectedElements[i].setAttribute('class', elclass);
+        }
+      },
 
-      console.log('drag', svgset);
-      svgDragSelect({
-        svg: svgset,
-        referenceElement: null,  
-        selector: "enclosure",
-        onSelectionStart({svg, pointerEvent, cancel}){
-          console.log('selection start', pointerEvent)
-          this.cancelDragSelect = cancel;
-          if (pointerEvent.button !== 0) {
-            cancel()
-            return
+      onSelectionChange({
+        newlySelectedElements,    // `selectedElements - previousSelectedElements`
+        newlyDeselectedElements,  // `previousSelectedElements - selectedElements`
+      }) {
+        newlyDeselectedElements.forEach(element => {
+          element.removeAttribute('data-selected')
+          let elclass = element.getAttribute('class');
+          //console.log(elclass);
+          elclass = elclass.replace('data-selected', '')
+          element.setAttribute('class', elclass);
+        });
+        newlySelectedElements.forEach(element => {
+          element.setAttribute('data-selected', '');
+          let elclass = element.getAttribute('class');
+          if (elclass !== null) {
+            element.setAttribute('class', 'data-selected ' + elclass);
+          } else {
+            element.setAttribute('class', 'data-selected')
           }
-          const selectedElements = svg.querySelectorAll('[data-selected]');
-        
-          for (let i = 0; i < selectedElements.length; i++) {
-            selectedElements[i].removeAttribute('data-selected');
-            selectedElements[i].removeAttribute('class')
-          }
-        },
+        });
+      },
 
-        onSelectionChange({
-          svg,                      
-          pointerEvent,             
-          selectedElements,         // selected element array.
-          previousSelectedElements, // previous selected element array.
-          newlySelectedElements,    // `selectedElements - previousSelectedElements`
-          newlyDeselectedElements,  // `previousSelectedElements - selectedElements`
-        }) {
-          console.log('selection change')
-          // for example: toggle "data-selected" attribute
-          newlyDeselectedElements.forEach(element => element.removeAttribute('data-selected'))
-          newlySelectedElements.forEach(element => element.setAttribute('data-selected', ''))
+      onSelectionEnd: event =>  {
+        this.selectedVecPathmultiple = [];
+        event.selectedElements.forEach(el => {
+          this.selectedVecPathmultiple.push(el);
+        });
+      } 
+    });
 
-          newlySelectedElements.forEach(element => {
-            let elclass = element.getAnimations('class');
-            element.addAttribute('class', 'data-selected')
-          });
-          
-        },
+    this.cancelDragSelect = cancel;
+    this.dragAreaOverlay = dragAreaOverlay;
+  }
 
-        onSelectionEnd({
-          svg,                     
-          pointerEvent,             
-          selectedElements,         
-        }) {
-          this.selectedVecPathmultiple = selectedElements;
-          console.log('end drag', this.selectedVecPathmultiple);
-        },
-
-      })
+  setDragSelect() {
+    if (this.dragselectvectpath === false){
+      this.cancelDragSelect;
     }
+  }
+
+  setPathSelClass(element){
+    let elclass = element.getAttribute('class');
+    if (elclass !== null) {
+      element.setAttribute('class', 'data-selected ' + elclass);
+    } else {
+      element.setAttribute('class', 'data-selected')
+    }
+  }
+
+  deletePathSelClass(element){
+    this.dragselectiontrue = false;
+    this.dragselectvectpath = false;
+    let elclass = element.getAttribute('class');
+    if (elclass !== null){
+      elclass = elclass.replace('data-selected', '')
+      element.setAttribute('class', elclass);
+    }
+
+  }
 
 }

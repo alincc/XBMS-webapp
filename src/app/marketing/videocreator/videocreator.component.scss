@@ -174,19 +174,25 @@
   bottom: 0px;
   right: 0px;
   margin: -20px;
-  // pointer-events: none;
+  opacity: 0.1;
+  
+}
+
+.rotatehandle:hover{
+  opacity: 1;
 }
 
 
 .data-selected{
-  content: "";
+  background-color: #0000ff;
+  fill: lightblue;
   
 }
 
-.data-selected::after{
-  background-color: #0000ff;
-  fill: #0000ff;
-}
+// .data-selected::after{
+//   background-color: #0000ff;
+//   fill: #0000ff;
+// }
 
 
 .svg-drag-select-area-overlay {
