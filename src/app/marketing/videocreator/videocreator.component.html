@@ -565,10 +565,44 @@
         </div>
 
         <div *ngIf="selectedelement.type === 'chart'" fxLayout="column">
-                <mat-form-field>
-                        <mat-select [(value)]="selectedelement.lineChartOptions.animation.easing" (selectionChange)="detectchange()"
-                            placeholder="Animation">
-                            <mat-option value="">None</mat-option>
+
+            <mat-accordion>
+                <mat-expansion-panel>
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>
+                            Charts
+                            <div class="timeline-container" [style.width]="'6000px'">
+                                <div class="timeline-active" [style.width]="counter * 10 + 'px'" #timelinebound
+                                    id="timelinebound">
+                                    <div class="timeline-setter"
+                                        [style.transform]="'translate(' + currenttime * 10 + 'px, 0px)'"
+                                        [inBounds]="true" [bounds]="timelinebound" [lockAxis]="'y'" ngDraggable
+                                        (movingOffset)="onMovingTimeline($event, i, animation)">
+                                    </div>
+                                    <div class="timeline-currentelement" ngDraggable
+                                        (movingOffset)="onMovingAnimationChart($event, i, selectedelement)"
+                                        [bounds]="timelinebound" [inBounds]="true" [lockAxis]="'y'" ngResizable
+                                        rzContainment="#timelinebound" [rzHandles]="'e, w'"
+                                        (rzResizing)="onResizeAnimationChart($event, iv, selectedelement)"
+                                        [style.width]="selectedelement.lineChartOptions.animation.duration / 100 + 'px'">
+                                    </div>
+                                </div>
+                            </div>
+
+                        </mat-panel-title>
+                    </mat-expansion-panel-header>
+                    <mat-form-field style="max-width: 100px;" *ngIf="selectedelement.lineChartOptions.animation">
+                        <input [(ngModel)]="selectedelement.lineChartOptions.animation.duration" type="number"
+                            step="1" min="0" matInput>
+                        <mat-hint>Duration</mat-hint>
+                    </mat-form-field>
+                    <mat-form-field style="max-width: 46px;">
+                        <input [(ngModel)]="selectedelement.start_time" type="number" step="0.1" min="0" matInput>
+                        <mat-hint>Start</mat-hint>
+                    </mat-form-field>
+                    <mat-form-field *ngIf="selectedelement.lineChartOptions.animation">
+                        <mat-select [(value)]="selectedelement.lineChartOptions.animation.easing"
+                            (selectionChange)="detectchange()" placeholder="Animation">
                             <mat-option value="linear">Linear</mat-option>
                             <mat-option value="easeInCubic">easeInCubic</mat-option>
                             <mat-option value="easeInQuart">easeInQuart</mat-option>
@@ -576,21 +610,12 @@
                             <mat-option value="easeInElastic">easeInElastic</mat-option>
                             <mat-option value="easeInBounce">easeInBounce</mat-option>
                             <mat-option value="easeOutSine">easeOutSine</mat-option>
-                            <mat-option value="easeInOutQuin">easeInOutQuin</mat-option>
+                            <mat-option value="easeInOutCirc">easeInOutCirc</mat-option>
                         </mat-select>
                     </mat-form-field>
-                    <mat-form-field style="max-width: 46px;">
-                            <input [(ngModel)]="selectedelement.lineChartOptions.animation.duration" type="number" step="1" min="0" matInput>
-                            <mat-hint>Duration</mat-hint>
-                        </mat-form-field>
-            <!-- <mat-accordion>
-                <mat-expansion-panel>
-                    <mat-expansion-panel-header>
-                        <mat-panel-title>
-                        </mat-panel-title>
-                    </mat-expansion-panel-header>
+
                 </mat-expansion-panel>
-            </mat-accordion> -->
+            </mat-accordion>
         </div>
 
     </div>
@@ -1166,9 +1191,9 @@
                         [style.transform]="'translate(' + element.posx + 'px, ' + element.posy +'px) rotate(' + element.rotation + 'deg)' | safe: 'style'"
                         (rzResizing)="onResizing($event, i)" ngResizable [rzAspectRatio]="false" id="{{element.id}}">
                         <canvas baseChart width="element.style.width" height="element.style.height"
-                            [datasets]="element.data" [labels]="element.label" [colors]="element.colors"
+                            [datasets]="element.productiondata" [labels]="element.label" [colors]="element.colors"
                             [legend]="element.legend" [options]="element.lineChartOptions"
-                            [chartType]="element.charttype" [plugins]="lineChartPlugins" [attr.id]="'graph' + i">
+                            [chartType]="element.charttype" [plugins]="lineChartPlugins" [attr.id]="'chart' + element.id">
                         </canvas>
                         <mat-icon class="iconsize-4" class="rotatehandle" #rotatehandle
                             [attr.id]="element.id + 'rotatehandle'">replay</mat-icon>

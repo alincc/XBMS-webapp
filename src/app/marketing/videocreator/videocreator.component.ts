@@ -19,11 +19,12 @@ const plugins = [Draggable, InertiaPlugin, DrawSVGPlugin, MorphSVGPlugin, Scramb
 import { CanvasWhiteboardComponent } from 'ng2-canvas-whiteboard';
 import { fonts } from '../../shared/listsgeneral/fonts';
 import svgDragSelect from "svg-drag-select";
-import { ChartDataSets, ChartOptions } from 'chart.js';
+import { ChartDataSets, ChartOptions, Chart } from 'chart.js';
 import { Color, BaseChartDirective, Label } from 'ng2-charts';
 
 export class chart {
   type: 'chart';
+  start_time: number;
   charttype: string;
   src: string;
   posx: number;
@@ -37,6 +38,7 @@ export class chart {
   rotation: number;
   label: Label[] = [];
   data: ChartDataSets[];
+  productiondata: ChartDataSets[];
   //options: 
   colors: Color[] = [
     { // grey
@@ -78,6 +80,8 @@ export class chart {
             color: 'rgba(255,0,0,0.3)',
           },
           ticks: {
+            suggestedMin: 0,
+            suggestedMax: 100,
             fontColor: 'blue',
           }
         }
@@ -564,6 +568,15 @@ export class VideocreatorComponent implements OnInit {
     for (let i = 0; i < this.animationarray.length; i++) {
       const elm = this.animationarray[i];
 
+      if (elm.type === 'chart'){
+        // let chart = document.getElementById('chart' + elm.id) as unknown; 
+        elm.productiondata = [
+          { data: [0, 0, 0], label: 'Series A' },
+          { data: [0, 0, 0], label: 'Series B' }
+        ];
+        this.primairytimeline.call(this.setChartData, [elm], elm.start_time);
+      }
+
       if (elm.type === 'vector') { //vector animation
         for (let i2 = 0; i2 < elm.vectoranimation.length; i2++) {
           const vecani = elm.vectoranimation[i2];
@@ -587,6 +600,10 @@ export class VideocreatorComponent implements OnInit {
       this.createRotate(elm);
     }
 
+  }
+
+  setChartData(elm){
+    elm.productiondata = elm.data;
   }
 
   createSplitText(elm: textanimation, textani: splittexttype) {
@@ -1061,6 +1078,14 @@ export class VideocreatorComponent implements OnInit {
     });
   }
 
+  onMovingAnimationChart(event, i, selectedelement){
+    selectedelement.start_time = event.x / 10;
+  }
+
+  onResizeAnimationChart(event, iv, selectedelement){
+    selectedelement.lineChartOptions.animation.duration = event.size.width * 100;
+  }
+
   onMovingAnimationEl(event, i, animation) {
     animation.start_time = event.x / 10;
   }
@@ -1420,6 +1445,8 @@ export class VideocreatorComponent implements OnInit {
             },
             ticks: {
               fontColor: 'black',
+              suggestedMin: 0,
+              suggestedMax: 100,
             }
           }
         ]
@@ -1448,6 +1475,7 @@ export class VideocreatorComponent implements OnInit {
       audioeffectsrc: ''
     }];
     let chart: chart = {
+      start_time: 0,
       type: 'chart',
       src: '',
       charttype: 'line',
@@ -1456,6 +1484,10 @@ export class VideocreatorComponent implements OnInit {
       data: [
         { data: [65, 59, 40], label: 'Series A' },
         { data: [28, 27, 90], label: 'Series B' }
+      ],
+      productiondata: [
+        { data: [0, 0, 0], label: 'Series A' },
+        { data: [0, 0, 0], label: 'Series B' }
       ],
       //options: 
       colors: colorset,
@@ -2036,7 +2068,7 @@ export class VideocreatorComponent implements OnInit {
     if (type === 'rain') { total = 60 }
     if (type === 'leaves') { total = 50 }
     if (type === 'sun') { total = 90 } // also depends on the angle 90 degrees
-    if (type === 'clouds') { total = 10 }
+    if (type === 'clouds') { total = 20 }
     let container = document.getElementById("weathercontainer");
     // container.removeChild   ---> ??
     container.innerHTML = '';
@@ -2875,9 +2907,9 @@ export class VideocreatorComponent implements OnInit {
 
   }
 
-
   addcell(i, i1, i2): void {
     this.animationarray[i].data[i1].data.push(0);
+    this.animationarray[i].productiondata[i1].data.push(0);
   }
 
   addLabel(i, i1): void {
@@ -2886,6 +2918,7 @@ export class VideocreatorComponent implements OnInit {
 
   addgraph(i, i1): void {
     this.animationarray[i].data.push({ data: [0, 0, 0], labels: 'new label' });
+    this.animationarray[i].productiondata.push({ data: [0, 0, 0], labels: 'new label' });
     this.animationarray[i].colors.push(
       { // grey
         backgroundColor: '#232222',
@@ -2899,16 +2932,29 @@ export class VideocreatorComponent implements OnInit {
   deletegraph(i): void {
     let del = this.animationarray[i].data.length - 1;
     this.animationarray[i].data.splice(del, 1);
+    this.animationarray[i].productiondata.splice(del, 1);
     this.detectchange();
   }
 
   detectchangerowcell(i, i1, i2, cell): void {
     this.animationarray[i].data[i1].data[i2] = cell;
-    this.detectchange();
+    let max = Math.max(... this.animationarray[i].data[i1]);
+    let min = Math.min(... this.animationarray[i].data[i1]);
+    if ( max < cell){
+      this.animationarray[i].lineChartOptions.scales.yAxes[0].ticks.suggestedMax = cell;
+      this.animationarray[i].lineChartOptions.scales.yAxes[0].ticks.suggestedMin = min;
+    }
+    if ( min > cell){
+      this.animationarray[i].lineChartOptions.scales.yAxes[0].ticks.suggestedMin = cell;
+      this.animationarray[i].lineChartOptions.scales.yAxes[0].ticks.suggestedMax = max; // throws error if not
+    }
+    //this.animationarray[i].productiondata[i1].data[i2] = 0;
+   this.detectchange();
   }
 
   detectchangerowlabel(i, i1, labelnew): void {
     this.animationarray[i].data[i1].label = labelnew;
+    this.animationarray[i].productiondata[i].label = labelnew;
     this.detectchange();
   }
 
@@ -2931,6 +2977,7 @@ export class VideocreatorComponent implements OnInit {
   deletecell(i, i1) {
     let del = this.animationarray[i].data[i1].data.length - 1;
     this.animationarray[i].data[i1].data.splice(del, 1);
+    this.animationarray[i].productiondata[i1].data.splice(del, 1);
     this.detectchange();
   }
 
