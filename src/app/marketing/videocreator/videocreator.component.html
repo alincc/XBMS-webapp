@@ -77,8 +77,7 @@
 
 </div>
 
-<div style="width: 100%; margin: 10px 0px 10px 0px;" (swipeleft)="swipeleft($event)" (swiperight)="swiperight($event)"
-    *ngIf="animationarray.length > 0">
+<div style="width: 100%; margin: 10px 0px 10px 0px;" (swipeleft)="swipeleft($event)" (swiperight)="swiperight($event)">
 
     <mat-accordion style="width: 100%">
         <mat-expansion-panel>
@@ -788,33 +787,7 @@
                                         [cpPresetColors]="[option.companyprimairycolor, option.companysecondarycolor, company.companyprimairycolor, company.companysecondarycolor]">
                                 </div> -->
                         </div>
-                        <mat-expansion-panel-header *ngIf="element.type === 'whiteboard'" cdkDragHandle
-                            [class.selected]="element === selectedelement">
-                            <mat-panel-title>
-                                <div style="height: 30px; width: 30px"
-                                    [style.background-color]="element.style['background-color']"></div>
-                                <mat-icon (click)="deleteitem(i)" class="iconsize-12">delete</mat-icon>
-                                <mat-icon (click)="copyElement(i, element)" matTooltip="Duplicate effect"
-                                    class="iconsize-10">
-                                    filter_none</mat-icon>
-                            </mat-panel-title>
-                        </mat-expansion-panel-header>
-                        <div *ngIf="element.type === 'whiteboard'">
-                            <mat-form-field style="max-width: 46px;">
-                                <input (change)="detectchange()" [(ngModel)]="element.posy" type="number" matInput>
-                                <mat-hint>Y |</mat-hint>
-                            </mat-form-field>
-                            <mat-form-field style="max-width: 46px;">
-                                <input (change)="detectchange()" [(ngModel)]="element.posx" type="number" matInput>
-                                <mat-hint>X -</mat-hint>
-                            </mat-form-field>
-                            <div fxLayout="column">
-                                <input style="width: 230px;" [style.background]="element.style['background-color']"
-                                    [(colorPicker)]="element.style['background-color']"
-                                    (colorPickerChange)="detectchange()" [cpPresetLabel]="'Company colors'"
-                                    [cpPresetColors]="[option.companyprimairycolor, option.companysecondarycolor, company.companyprimairycolor, company.companysecondarycolor]">
-                            </div>
-                        </div>
+
                         <mat-expansion-panel-header *ngIf="element.type === 'vector'" cdkDragHandle
                             [class.selected]="element === selectedelement">
                             <mat-panel-title>
@@ -823,7 +796,8 @@
                                     [onSVGLoaded]="previewSVG" id="previewbox" class="elementsedit"
                                     style="height: 30px; width: auto;">
                                 </div>
-                                <div *ngIf="!element.vectors[0].src" [innerHTML]="element.svgcombi  | safeHtml">
+                                <div *ngIf="!element.vectors[0].src" [innerHTML]="element.svgcombi  | safeHtml"
+                                    id="previewbox" style="height: 30px; width: 30px;">
                                 </div>
                                 <mat-icon (click)="deleteitem(i)" class="iconsize-12">delete</mat-icon>
                                 <mat-icon (click)="copyElement(i, element)" matTooltip="Duplicate element"
@@ -861,10 +835,19 @@
                                     </mat-icon>
                                 </mat-expansion-panel>
                                 <div *ngIf="!element.morph">
-                                    <div *ngIf="vector.src" [inlineSVG]="vector.src" [attr.id]="vector.idx"
-                                        [onSVGLoaded]="previewSVGBig"
+                                    <div *ngIf="vector.src" [inlineSVG]="vector.src" [onSVGLoaded]="previewSVGBig"
                                         (onSVGInserted)="initVectors($event, i, idx, vector.idx)">
                                     </div>
+                                    <!-- <div *ngIf="vector.svgcombi" [inlineSVG]="vector.svgcombi" [attr.id]="vector.idx"
+                                        [onSVGLoaded]="previewSVGBig"
+                                        (onSVGInserted)="initVectors($event, i, idx, vector.idx)">
+                                    </div> -->
+
+                                    <div *ngIf="element.svgcombi" style="height: 100px; width: 100px;"
+                                        [innerHTML]="element.svgcombi | safeHtml" (click)="clickVectorPaths($event)"
+                                        (onSVGInserted)="initVectors($event, i, idx, vector.idx)">
+                                    </div>
+
                                     <app-vectorupload *ngIf="!vector.src && !element.svgcombi" [account]="Account"
                                         [option]="option" (imgurl)="setVector($event, i, idx)">
                                     </app-vectorupload>
@@ -1109,6 +1092,46 @@
                         </div>
                     </mat-expansion-panel>
                 </mat-accordion>
+
+                <mat-accordion *ngIf="whiteboard === true">
+                    <mat-expansion-panel [expanded]="true">
+                        <mat-expansion-panel-header>
+                            <mat-panel-title>
+                                Draw
+                            </mat-panel-title>
+                        </mat-expansion-panel-header>
+                        <div fxLayout="column">
+                            <div fxLayout="column">
+                                <input style="width: 230px;" [style.background]="whiteboardcolor"
+                                    [(colorPicker)]="whiteboardcolor" [cpPresetLabel]="'Company colors'"
+                                    [cpPresetColors]="[option.companyprimairycolor, option.companysecondarycolor, company.companyprimairycolor, company.companysecondarycolor]">
+                            </div>
+                            <mat-form-field style="max-width: 46px;">
+                                <input [(ngModel)]="whiteboardstokewidth" type="number" matInput placeholder="Stroke">
+                            </mat-form-field>
+
+                            <mat-form-field>
+                                <mat-select [(value)]="whiteboardsmoothing" placeholder="Smoothness">
+                                    <mat-option value="1">1 - No smoothing</mat-option>
+                                    <mat-option value="4">4 - Sharp curves</mat-option>
+                                    <mat-option value="8">8 - Smooth curves</mat-option>
+                                    <mat-option value="12">12 - Very smooth curves</mat-option>
+                                    <mat-option value="16">16 - Super smooth curves</mat-option>
+                                    <mat-option value="20">20 - Hyper smooth curves</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+
+                            <button mat-mini-fab matTooltip="Save image" (click)="savewhiteboard()" color="primary">
+                                <mat-icon>save</mat-icon>
+                            </button>
+                            <button mat-mini-fab matTooltip="Delete image" (click)="deletewhiteboard()" color="primary">
+                                <mat-icon>delete</mat-icon>
+                            </button>
+                        </div>
+
+                    </mat-expansion-panel>
+                </mat-accordion>
+
             </div>
             <div fxLayout="row wrap" fxLayout.xs="column">
                 <button mat-mini-fab class="addbutton" matTooltip="Add image" (click)="addNewImage()" color="primary">
@@ -1180,14 +1203,10 @@
             <div style="height: 100%; width: 100%; position: absolute; z-index: 100; pointer-events: none;"
                 id="weathercontainer"></div>
 
-            <canvas-whiteboard *ngIf="whiteboard === true"  #canvasWhiteboard
-                [drawButtonClass]="'drawButtonClass'" [drawButtonText]="'Draw'" 
-                style="height: 100%; width: 100%; position: absolute; z-index: 100;"
-                [clearButtonClass]="'clearButtonClass'" [clearButtonText]="'Clear'" [undoButtonText]="'Undo'"
-                [undoButtonEnabled]="true" [redoButtonText]="'Redo'" [redoButtonEnabled]="true"
-                [colorPickerEnabled]="true" [saveDataButtonEnabled]="true" [saveDataButtonText]="'Save'" [lineWidth]="2"
-                [strokeColor]="'rgb(0,0,0)'" [shouldDownloadDrawing]="false" (onSave)="onCanvasSave($event, null)">
-            </canvas-whiteboard>
+            <div *ngIf="whiteboard === true" class="whiteboard">
+                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1"
+                    id="svgElement" width="100%" height="100%" viewBox="0 0 500 500"></svg>
+            </div>
 
             <div *ngIf="animationarray && changenow" #myBounds id="myBounds"
                 [style.background-image]="canvas['background-image']"

@@ -16,7 +16,7 @@ import '@svgdotjs/svg.draggable.js'
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import * as normalize from 'normalize-svg-coords';
 const plugins = [Draggable, InertiaPlugin, DrawSVGPlugin, MorphSVGPlugin, ScrambleTextPlugin, SplitText, Physics2DPlugin, MotionPathPlugin, MotionPathHelper]; //needed for GSAP
-import { CanvasWhiteboardComponent } from 'ng2-canvas-whiteboard';
+//import { CanvasWhiteboardComponent } from 'ng2-canvas-whiteboard';
 import { fonts } from '../../shared/listsgeneral/fonts';
 import svgDragSelect from "svg-drag-select";
 import { ChartDataSets, ChartOptions, Chart } from 'chart.js';
@@ -68,9 +68,9 @@ export class chart {
       duration: 1000,
       easing: 'easeInQuad'
     },
-     scales: {
+    scales: {
       // We use this empty structure as a placeholder for dynamic theming.
-      xAxes:[
+      xAxes: [
         {
           gridLines: {
             color: 'rgba(255,0,0,0.3)',
@@ -242,23 +242,23 @@ export class shapeanimation {
   rotation: number;
 }
 
-export class whiteboardanimation {
-  type: 'whiteboard';
-  style: {
-    'z-index': number,
-    width: string;
-    height: string;
-    position: string;
-    'background-color': string;
-    opacity: 1;
-  };
-  src: string;
-  posx: number;
-  posy: number;
-  setpos: object;
-  id: string;
-  animation: animationtype[];
-}
+// export class whiteboardanimation {
+//   type: 'whiteboard';
+//   style: {
+//     'z-index': number,
+//     width: string;
+//     height: string;
+//     position: string;
+//     'background-color': string;
+//     opacity: 1;
+//   };
+//   src: string;
+//   posx: number;
+//   posy: number;
+//   setpos: object;
+//   id: string;
+//   animation: animationtype[];
+// }
 
 export class textanimation {
   content: string;
@@ -292,7 +292,7 @@ export class textanimation {
   selector: 'app-videocreator',
   templateUrl: './videocreator.component.html',
   styleUrls: ['./videocreator.component.scss'],
-  viewProviders: [CanvasWhiteboardComponent]
+  //viewProviders: [CanvasWhiteboardComponent]
 })
 
 export class VideocreatorComponent implements OnInit {
@@ -312,6 +312,10 @@ export class VideocreatorComponent implements OnInit {
     }
   }
 
+  public whiteboard = false;
+  public whiteboardcolor = "#000";
+  public whiteboardstokewidth = 2;
+  public whiteboardsmoothing = 8;
   public cropimages = false;
   public t;
   public counter = 60;
@@ -322,7 +326,7 @@ export class VideocreatorComponent implements OnInit {
   //public menu = gsap.timeline({ paused: true, reversed: true });
   public primairytimeline = gsap.timeline({ paused: true, reversed: true });
   //private progressbarline = gsap.timeline({ paused: true, reversed: true });
-  public whiteboard = false;
+
   public listviewxsshow = false;
   public showprogressbar = false;
   public uploader: FileUploader;
@@ -405,7 +409,9 @@ export class VideocreatorComponent implements OnInit {
   }
   //private myFuncSvg = this.initVectors.bind(this);
 
-  ngOnInit() { }
+  ngOnInit() { 
+    //this.addNewShape();
+  }
 
   ngOnChanges(changes: SimpleChanges) {
     //wait for option.id
@@ -444,6 +450,8 @@ export class VideocreatorComponent implements OnInit {
 
   onSelectElement(element): void {
     // manual close editpath to prevent interuptions in path
+    
+    if (this.whiteboard){ this.deletewhiteboard()}
     if (this.editpath === false) {
       if (this.selectedelement) {
         if (element !== this.selectedelement) {
@@ -564,6 +572,7 @@ export class VideocreatorComponent implements OnInit {
   }
 
   async detectchange() {
+    if (this.whiteboard){ this.deletewhiteboard()}
     //this.primairytimeline.clear();
     this.primairytimeline = gsap.timeline({ paused: true, reversed: true });
     console.log('run check', this.animationarray);
@@ -580,7 +589,7 @@ export class VideocreatorComponent implements OnInit {
     for (let i = 0; i < this.animationarray.length; i++) {
       const elm = this.animationarray[i];
 
-      if (elm.type === 'chart'){
+      if (elm.type === 'chart') {
         // let chart = document.getElementById('chart' + elm.id) as unknown; 
         elm.productiondata = [
           { data: [0, 0, 0], label: 'Series A' },
@@ -614,7 +623,7 @@ export class VideocreatorComponent implements OnInit {
 
   }
 
-  setChartData(elm){
+  setChartData(elm) {
     elm.productiondata = elm.data;
   }
 
@@ -916,6 +925,7 @@ export class VideocreatorComponent implements OnInit {
   }
 
   addNewEffect(element): void {
+    if (this.whiteboard){ this.deletewhiteboard()}
     let newanimation: animationtype = {
       start_time: 0, //delayt
       end_time: 10,
@@ -1062,8 +1072,10 @@ export class VideocreatorComponent implements OnInit {
 
       if (vector.vectors.length > 0) {
         let list = vector.vectors[0].pathids;
+        let vecttmp = document.getElementById(vector.id);
+        let vect = vecttmp.getElementsByTagName('svg')[0];
         for (const pathid of list) {
-          let fromvac = document.getElementById(pathid);
+          let fromvac = vect.getElementById(pathid);
           this.setDrawAni(fromvac, animation);
         }
         resolve();
@@ -1090,11 +1102,11 @@ export class VideocreatorComponent implements OnInit {
     });
   }
 
-  onMovingAnimationChart(event, i, selectedelement){
+  onMovingAnimationChart(event, i, selectedelement) {
     selectedelement.start_time = event.x / 10;
   }
 
-  onResizeAnimationChart(event, iv, selectedelement){
+  onResizeAnimationChart(event, iv, selectedelement) {
     selectedelement.lineChartOptions.animation.duration = event.size.width * 100;
   }
 
@@ -1294,6 +1306,7 @@ export class VideocreatorComponent implements OnInit {
   }
 
   addNewImage(): void {
+    if (this.whiteboard){ this.deletewhiteboard()}
     let newelnr;
     if (this.animationarray.length === -1) {
       newelnr = 0 + 'el';
@@ -1350,6 +1363,7 @@ export class VideocreatorComponent implements OnInit {
   }
 
   addNewShape(): void {
+    if (this.whiteboard){ this.deletewhiteboard()}
     let newelnr;
     if (this.animationarray.length === -1) {
       newelnr = 0 + 'el';
@@ -1412,6 +1426,7 @@ export class VideocreatorComponent implements OnInit {
   }
 
   addNewChart(): void {
+    if (this.whiteboard){ this.deletewhiteboard()}
     let newelnr;
     if (this.animationarray.length === -1) {
       newelnr = 0 + 'el';
@@ -1446,7 +1461,7 @@ export class VideocreatorComponent implements OnInit {
       },
       scales: {
         // We use this empty structure as a placeholder for dynamic theming.
-        xAxes:[
+        xAxes: [
           {
             gridLines: {
               color: 'rgba(0,0,0,0.3)',
@@ -1539,72 +1554,160 @@ export class VideocreatorComponent implements OnInit {
   }
 
   addNewWhiteboard(): void {
-    // let newelnr;
-    // if (this.animationarray.length === -1) {
-    //   newelnr = 0 + 'el';
-    // } else {
-    //   newelnr = this.animationarray.length + 'el';
-    // }
-    // this.newz = this.newz + 1;
-    // let anim: animationtype[] = [{
-    //   start_time: 0, //delayt
-    //   end_time: 10,
-    //   anim_type: 'scale',
-    //   duration: 3,
-    //   ease: '',
-    //   posx: 0,
-    //   posy: 0,
-    //   rotationcycle: 360,
-    //   travellocX: 300,
-    //   travellocY: 0,
-    //   scalesize: 0.8,
-    //   skewY: 50,
-    //   skewX: 50,
-    //   easetype: 'elastic',
-    //   fromto: 'to',
-    //   transformOriginX: '50%',
-    //   transformOriginY: '50%',
-    //   repeat: 0,
-    //   yoyo: false,
-    //   audioeffectsrc: ''
-    // }];
-    // let whiteboard: whiteboardanimation = {
-    //   type: 'whiteboard',
-    //   style: {
-    //     'z-index': 100,
-    //     width: this.canvas.width,
-    //     height: this.canvas.height,
-    //     position: '',
-    //     'background-color': '',
-    //     opacity: 1,
-    //   },
-    //   src: '',
-    //   posx: 0,
-    //   posy: 0,
-    //   setpos: { 'x': 0, 'y': 0 },
-    //   animation: anim,
-    //   id: newelnr
-    // }
     if (this.whiteboard === false) {
-      //this.animationarray.push(whiteboard);
       this.whiteboard = true;
+      this.selectedelement = ''; 
+      window.scrollTo(0, 0);
+  
+    setTimeout(() => {
+      //  https://stackoverflow.com/questions/40324313/svg-smooth-freehand-drawing
+      var bufferSize;
+      //var bs;
+
+      var svgElement = document.getElementById("svgElement");
+      //console.log(svgElement);
+      var rect = svgElement.getBoundingClientRect();
+      var path = null;
+      var strPath;
+      var buffer = []; // Contains the last positions of the mouse cursor
+
+      let w = this.canvas.width.replace('px', '');
+      let h = this.canvas.height.replace('px', '');
+      let newview = '0 0 ' + w + ' ' + h;
+      svgElement.setAttribute('viewBox', newview);
+
+      svgElement.addEventListener("mousedown", (e) => {
+        //bs = document.getElementById("cmbBufferSize") as unknown;
+        bufferSize = this.whiteboardsmoothing;
+        path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        path.setAttribute("fill", "none");
+        path.setAttribute("stroke", this.whiteboardcolor);
+        path.setAttribute("stroke-width", this.whiteboardstokewidth);
+        buffer = [];
+        var pt = getMousePosition(e);
+        appendToBuffer(pt);
+        strPath = "M" + pt.x + " " + pt.y;
+        path.setAttribute("d", strPath);
+        svgElement.appendChild(path);
+      });
+
+      svgElement.addEventListener("mousemove", function (e) {
+        if (path) {
+          appendToBuffer(getMousePosition(e));
+          updateSvgPath();
+        }
+      });
+
+      svgElement.addEventListener("mouseup", function () {
+        if (path) {
+          path = null;
+        }
+      });
+
+      var getMousePosition = function (e) {
+        return {
+          x: e.pageX - rect.left,
+          y: e.pageY - rect.top
+        }
+      };
+
+      var appendToBuffer = function (pt) {
+        buffer.push(pt);
+        while (buffer.length > bufferSize) {
+          buffer.shift();
+        }
+      };
+
+      // Calculate the average point, starting at offset in the buffer
+      var getAveragePoint = function (offset) {
+        var len = buffer.length;
+        if (len % 2 === 1 || len >= bufferSize) {
+          var totalX = 0;
+          var totalY = 0;
+          var pt, i;
+          var count = 0;
+          for (i = offset; i < len; i++) {
+            count++;
+            pt = buffer[i];
+            totalX += pt.x;
+            totalY += pt.y;
+          }
+          return {
+            x: totalX / count,
+            y: totalY / count
+          }
+        }
+        return null;
+      };
+
+      var updateSvgPath = function () {
+        var pt = getAveragePoint(0);
+        var pl = svgElement.getElementsByTagName('path').length;
+
+        if (pt) {
+          // Get the smoothed part of the path that will not change
+          strPath += " L" + pt.x + " " + pt.y;
+
+          // Get the last part of the path (close to the current mouse position)
+          // This part will change if the mouse moves again
+          var tmpPath = "";
+          for (var offset = 2; offset < buffer.length; offset += 2) {
+            pt = getAveragePoint(offset);
+            tmpPath += " L" + pt.x + " " + pt.y;
+          }
+
+          // Set the complete current path coordinates
+          path.setAttribute("d", strPath + tmpPath);
+          path.setAttribute("id", pl + 1);
+        }
+      };
+    }, 300) // mininmum needed for dom to process
+  }
+  }
+
+  async savewhiteboard() {
+    var svgElement = document.getElementById("svgElement");
+    let newsvg = svgElement.outerHTML;
+    let newelnr;
+    if (this.animationarray.length === -1) {
+      newelnr = 0; //+ 'el';
+    } else {
+      newelnr = this.animationarray.length;// + 'el';
     }
 
-    //this.detectchange();
+    // rename ids 
+    let pathidar = svgElement.innerHTML.match(/id="(.*?)"/g); //get ids
+    let idnr = newelnr + 'vec-' + 1;
+    let newvectstring = await this.renumberSvgIds(newsvg, idnr, pathidar);
+    let pathidarfinal = newvectstring.match(/id="(.*?)"/g); //get ids
 
-    setTimeout(() => {
-      //let wb = document.getElementById(newelnr);
-      let cv1 = document.getElementsByClassName('canvas_whiteboard');
-      let cv2 = document.getElementsByClassName('incomplete_shapes_canvas_whiteboard');
-      cv1[0].setAttribute('width', this.canvas.width);
-      cv1[0].setAttribute('height', this.canvas.height);
-      cv2[0].setAttribute('width', this.canvas.width);
-      cv2[0].setAttribute('height', this.canvas.height);
-    }, 300) // mininmum needed for dom to process
+    newvectstring = newvectstring.replace(pathidarfinal[0], 'id=svgDraw')
+    pathidarfinal.splice(0, 1);
 
+    for (let i = 0; i < pathidarfinal.length; i++) {
+      pathidarfinal[i] = pathidarfinal[i].replace('id=', '');
+      pathidarfinal[i] = pathidarfinal[i].replace(/"/g, '')
+    }
+
+    this.addNewVector(
+      null,
+      this.canvas.height,
+      this.canvas.width,
+      newvectstring,
+      0, 0, pathidarfinal);
+
+    this.deletewhiteboard()
+  }
+
+  deletewhiteboard() {
+    var svgElement = document.getElementById("svgElement");
+    var new_element = svgElement.cloneNode(true);
+    svgElement.parentNode.replaceChild(new_element, svgElement);
+    this.whiteboard = false;
   }
 
   addNewText(): void {
+    if (this.whiteboard){ this.deletewhiteboard()}
     let newelnr;
     if (this.animationarray.length === -1) {
       newelnr = 0; //+ 'el';
@@ -2087,7 +2190,7 @@ export class VideocreatorComponent implements OnInit {
     let type = this.canvas.weather;
     let classtype;
     let total = 30;
-   
+
     if (type === 'snow') { total = 60 }
     if (type === 'rain') { total = 60 }
     if (type === 'leaves') { total = 50 }
@@ -2144,7 +2247,7 @@ export class VideocreatorComponent implements OnInit {
         gsap.set(Div, { attr: { class: 'sunray' }, x: w + 10, y: -10, rotation: i + "_short", });
         this.animsun(Div, ya, xa);
       }
-     
+
 
       container.appendChild(Div);
     }
@@ -2155,7 +2258,7 @@ export class VideocreatorComponent implements OnInit {
   }
 
   animclouds(elm, h, w) {
-    this.primairytimeline.to(elm, { duration: 15,  x: '+=200', ease: 'linear.none', repeat: -1, delay: 0 }, 0);
+    this.primairytimeline.to(elm, { duration: 15, x: '+=200', ease: 'linear.none', repeat: -1, delay: 0 }, 0);
   } // y: h, '+=' + w
 
   animsnow(elm, h) {
@@ -2371,7 +2474,7 @@ export class VideocreatorComponent implements OnInit {
       var element = document.getElementById(this.selectedelement.id);
       var svg = element.getElementsByTagName("svg")[0];
       var bbox = svg.getBBox();
-      var viewBox = [bbox.x, bbox.y, bbox.width, bbox.height].join(" ");
+      var viewBox = [bbox.x - 5, bbox.y - 5, bbox.width + 10, bbox.height + 10].join(" ");
       svg.setAttribute("viewBox", viewBox);
       this.selectedelement.svgcombi = svg.outerHTML;
     }, 1000);
@@ -2646,69 +2749,69 @@ export class VideocreatorComponent implements OnInit {
     });
   }
 
-  onCanvasSave(e, i) {
-    let urluse = BASE_URL + '/api/Containers/' + this.option.id + '/upload';
-    this.uploader = new FileUploader({ url: urluse });
-    let name = Math.random().toString(36).substring(7) + '.png';
-    let date: number = new Date().getTime();
-    let data = e.replace('data:image/png;base64,', '');
-    let b64Data, contentType = '', sliceSize = 512;
-    b64Data = data;
-    const byteCharacters = atob(b64Data);
-    const byteArrays = [];
-    for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
-      const slice = byteCharacters.slice(offset, offset + sliceSize);
-      const byteNumbers = new Array(slice.length);
-      for (let i = 0; i < slice.length; i++) {
-        byteNumbers[i] = slice.charCodeAt(i);
-      }
-      const byteArray = new Uint8Array(byteNumbers);
-      byteArrays.push(byteArray);
-    }
-    const blob = new Blob(byteArrays, { type: contentType });
-    // contents must be an array of strings, each representing a line in the new file
-    let file = new File([blob], name, { type: "image/png", lastModified: date });
-    let fileItem = new FileItem(this.uploader, file, {});
-    this.uploader.queue.push(fileItem);
-    // fileItem.upload();
-    this.uploader.uploadAll();
+  // onCanvasSave(e, i) {
+  //   let urluse = BASE_URL + '/api/Containers/' + this.option.id + '/upload';
+  //   this.uploader = new FileUploader({ url: urluse });
+  //   let name = Math.random().toString(36).substring(7) + '.png';
+  //   let date: number = new Date().getTime();
+  //   let data = e.replace('data:image/png;base64,', '');
+  //   let b64Data, contentType = '', sliceSize = 512;
+  //   b64Data = data;
+  //   const byteCharacters = atob(b64Data);
+  //   const byteArrays = [];
+  //   for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+  //     const slice = byteCharacters.slice(offset, offset + sliceSize);
+  //     const byteNumbers = new Array(slice.length);
+  //     for (let i = 0; i < slice.length; i++) {
+  //       byteNumbers[i] = slice.charCodeAt(i);
+  //     }
+  //     const byteArray = new Uint8Array(byteNumbers);
+  //     byteArrays.push(byteArray);
+  //   }
+  //   const blob = new Blob(byteArrays, { type: contentType });
+  //   // contents must be an array of strings, each representing a line in the new file
+  //   let file = new File([blob], name, { type: "image/png", lastModified: date });
+  //   let fileItem = new FileItem(this.uploader, file, {});
+  //   this.uploader.queue.push(fileItem);
+  //   // fileItem.upload();
+  //   this.uploader.uploadAll();
 
-    this.uploader.onCompleteItem = (item: any, response: any, status: any, headers: any) => {
-      if (status === 200) {
-        // set download url or actual url for publishing
-        let imgurl = BASE_URL + '/api/Containers/' + this.option.id + '/download/' + name;
-        let setimgurl = 'https://xbmsapi.eu-gb.mybluemix.net/api/Containers/' + this.option.id + '/download/' + name;
-        imgurl = imgurl.replace(/ /g, '-'),
-          // define the file settings
-          this.newFiles.name = name,
-          this.newFiles.url = setimgurl,
-          this.newFiles.createdate = new Date(),
-          this.newFiles.type = 'tmp',
-          this.newFiles.companyId = this.Account.companyId,
-          // check if container exists and create
-          this.relationsApi.createFiles(this.option.id, this.newFiles)
-            .subscribe(res => {
-              // create SVG png
-              //console.log(res);
-              setTimeout(() => {
-                this.filesApi.converteps2svg(this.option.id, this.Account.companyId, res.url, name, true)
-                  .subscribe(resp => {
-                    //this.setimage(res.url)
-                    // set SVG as new element
-                    this.addNewVector(resp.url, this.canvas.height, this.canvas.width);
-                    // delete whiteboard
-                    this.snackBar.open("vector created", undefined, {
-                      duration: 2000,
-                      panelClass: 'snackbar-class'
-                    });
-                    //this.deleteitem(i);
-                    this.whiteboard = false;
-                  });
-              }, 300);
-            });
-      }
-    };
-  }
+  //   this.uploader.onCompleteItem = (item: any, response: any, status: any, headers: any) => {
+  //     if (status === 200) {
+  //       // set download url or actual url for publishing
+  //       let imgurl = BASE_URL + '/api/Containers/' + this.option.id + '/download/' + name;
+  //       let setimgurl = 'https://xbmsapi.eu-gb.mybluemix.net/api/Containers/' + this.option.id + '/download/' + name;
+  //       imgurl = imgurl.replace(/ /g, '-'),
+  //         // define the file settings
+  //         this.newFiles.name = name,
+  //         this.newFiles.url = setimgurl,
+  //         this.newFiles.createdate = new Date(),
+  //         this.newFiles.type = 'tmp',
+  //         this.newFiles.companyId = this.Account.companyId,
+  //         // check if container exists and create
+  //         this.relationsApi.createFiles(this.option.id, this.newFiles)
+  //           .subscribe(res => {
+  //             // create SVG png
+  //             //console.log(res);
+  //             setTimeout(() => {
+  //               this.filesApi.converteps2svg(this.option.id, this.Account.companyId, res.url, name, true)
+  //                 .subscribe(resp => {
+  //                   //this.setimage(res.url)
+  //                   // set SVG as new element
+  //                   this.addNewVector(resp.url, this.canvas.height, this.canvas.width);
+  //                   // delete whiteboard
+  //                   this.snackBar.open("vector created", undefined, {
+  //                     duration: 2000,
+  //                     panelClass: 'snackbar-class'
+  //                   });
+  //                   //this.deleteitem(i);
+  //                   this.whiteboard = false;
+  //                 });
+  //             }, 300);
+  //           });
+  //     }
+  //   };
+  // }
 
   onshowemoji(i) {
     if (this.showemoji) { this.showemoji = false } else {
@@ -2964,16 +3067,16 @@ export class VideocreatorComponent implements OnInit {
     this.animationarray[i].data[i1].data[i2] = cell;
     let max = Math.max(... this.animationarray[i].data[i1]);
     let min = Math.min(... this.animationarray[i].data[i1]);
-    if ( max < cell){
+    if (max < cell) {
       this.animationarray[i].lineChartOptions.scales.yAxes[0].ticks.suggestedMax = cell;
       this.animationarray[i].lineChartOptions.scales.yAxes[0].ticks.suggestedMin = min;
     }
-    if ( min > cell){
+    if (min > cell) {
       this.animationarray[i].lineChartOptions.scales.yAxes[0].ticks.suggestedMin = cell;
       this.animationarray[i].lineChartOptions.scales.yAxes[0].ticks.suggestedMax = max; // throws error if not
     }
     //this.animationarray[i].productiondata[i1].data[i2] = 0;
-   this.detectchange();
+    this.detectchange();
   }
 
   detectchangerowlabel(i, i1, labelnew): void {
@@ -3007,21 +3110,21 @@ export class VideocreatorComponent implements OnInit {
 
   imageChangedEvent: any = '';
   croppedImage: any = '';
-  
+
   fileChangeEvent(event: any): void {
-      this.imageChangedEvent = event;
+    this.imageChangedEvent = event;
   }
   imageCropped(event: ImageCroppedEvent) {
-      this.croppedImage = event.base64;
+    this.croppedImage = event.base64;
   }
   imageLoaded() {
-      // show cropper
+    // show cropper
   }
   cropperReady() {
-      // cropper ready
+    // cropper ready
   }
   loadImageFailed() {
-      // show message
+    // show message
   }
 
 }
