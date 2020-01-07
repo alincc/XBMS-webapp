@@ -155,9 +155,6 @@
                     </mat-select>
                 </mat-form-field>
 
-                <!-- <button mat-mini-fab color="primary" (click)="addSnowEffect()">
-                    <mat-icon>grain</mat-icon>
-                </button> -->
             </div>
 
         </mat-expansion-panel>
@@ -592,8 +589,8 @@
                         </mat-panel-title>
                     </mat-expansion-panel-header>
                     <mat-form-field style="max-width: 100px;" *ngIf="selectedelement.lineChartOptions.animation">
-                        <input [(ngModel)]="selectedelement.lineChartOptions.animation.duration" type="number"
-                            step="1" min="0" matInput>
+                        <input [(ngModel)]="selectedelement.lineChartOptions.animation.duration" type="number" step="1"
+                            min="0" matInput>
                         <mat-hint>Duration</mat-hint>
                     </mat-form-field>
                     <mat-form-field style="max-width: 46px;">
@@ -651,7 +648,8 @@
                             </mat-panel-title>
                         </mat-expansion-panel-header>
                         <div *ngIf="element.type === 'image'">
-
+                            <mat-checkbox [(ngModel)]="cropimages" (change)="detectchange()"
+                                matTooltip="Crop image to size">Crop</mat-checkbox>
                             <mat-form-field style="max-width: 46px;">
                                 <input (change)="detectchange()" [(ngModel)]="element.posy" type="number" matInput>
                                 <mat-hint>Y |</mat-hint>
@@ -1054,6 +1052,52 @@
                                             (click)="element.lineChartOptions.scales.xAxes[0].ticks.fontColor = ''">
                                             delete
                                         </mat-icon>
+                                        <mat-form-field>
+                                            <mat-label>Select font lables</mat-label>
+                                            <mat-select [(value)]="element.lineChartOptions.legend.labels.fontFamily"
+                                                (selectionChange)="detectchange()">
+                                                <mat-option *ngFor="let font of Fonts" [value]="font.value">
+                                                    <label [style.font-family]="font.value">{{font.name}}</label>
+                                                </mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                        <mat-form-field>
+                                            <mat-label>Select font X-axe</mat-label>
+                                            <mat-select
+                                                [(value)]="element.lineChartOptions.scales.xAxes[0].ticks.fontFamily"
+                                                (selectionChange)="detectchange()">
+                                                <mat-option *ngFor="let font of Fonts" [value]="font.value">
+                                                    <label [style.font-family]="font.value">{{font.name}}</label>
+                                                </mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                        <mat-form-field>
+                                            <mat-label>Select font Y-axe</mat-label>
+                                            <mat-select
+                                                [(value)]="element.lineChartOptions.scales.yAxes[0].ticks.fontFamily"
+                                                (selectionChange)="detectchange()">
+                                                <mat-option *ngFor="let font of Fonts" [value]="font.value">
+                                                    <label [style.font-family]="font.value">{{font.name}}</label>
+                                                </mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                        <mat-form-field style="max-width: 46px;">
+                                            <input (change)="detectchange()"
+                                                [(ngModel)]="element.lineChartOptions.legend.labels.fontSize" matInput>
+                                            <mat-hint>Label -</mat-hint>
+                                        </mat-form-field>
+                                        <mat-form-field style="max-width: 46px;">
+                                            <input (change)="detectchange()"
+                                                [(ngModel)]="element.lineChartOptions.scales.yAxes[0].ticks.fontSize"
+                                                matInput>
+                                            <mat-hint>X -</mat-hint>
+                                        </mat-form-field>
+                                        <mat-form-field style="max-width: 46px;">
+                                            <input (change)="detectchange()"
+                                                [(ngModel)]="element.lineChartOptions.scales.xAxes[0].ticks.fontSize"
+                                                matInput>
+                                            <mat-hint>Y -</mat-hint>
+                                        </mat-form-field>
                                     </div>
                                 </mat-expansion-panel>
                             </mat-accordion>
@@ -1067,7 +1111,7 @@
                 </mat-accordion>
             </div>
             <div fxLayout="row wrap" fxLayout.xs="column">
-                <button mat-mini-fab class="addbutton" matTooltip="Add element" (click)="addNewImage()" color="primary">
+                <button mat-mini-fab class="addbutton" matTooltip="Add image" (click)="addNewImage()" color="primary">
                     <mat-icon>image</mat-icon>
                 </button>
                 <button mat-mini-fab class="addbutton" matTooltip="Add text" (click)="addNewText()" color="primary">
@@ -1136,6 +1180,14 @@
             <div style="height: 100%; width: 100%; position: absolute; z-index: 100; pointer-events: none;"
                 id="weathercontainer"></div>
 
+            <canvas-whiteboard *ngIf="whiteboard === true"  #canvasWhiteboard
+                [drawButtonClass]="'drawButtonClass'" [drawButtonText]="'Draw'" 
+                style="height: 100%; width: 100%; position: absolute; z-index: 100;"
+                [clearButtonClass]="'clearButtonClass'" [clearButtonText]="'Clear'" [undoButtonText]="'Undo'"
+                [undoButtonEnabled]="true" [redoButtonText]="'Redo'" [redoButtonEnabled]="true"
+                [colorPickerEnabled]="true" [saveDataButtonEnabled]="true" [saveDataButtonText]="'Save'" [lineWidth]="2"
+                [strokeColor]="'rgb(0,0,0)'" [shouldDownloadDrawing]="false" (onSave)="onCanvasSave($event, null)">
+            </canvas-whiteboard>
 
             <div *ngIf="animationarray && changenow" #myBounds id="myBounds"
                 [style.background-image]="canvas['background-image']"
@@ -1154,6 +1206,12 @@
                         [style.transform]="'translate(' + element.posx + 'px, ' + element.posy +'px) rotate(' + element.rotation + 'deg)' | safe: 'style'"
                         (rzResizing)="onResizing($event, i)" ngResizable [rzAspectRatio]="true">
                         <img *ngIf="element.src" style="width: 100%; height: 100%;" src={{element.src}}>
+
+                        <image-cropper *ngIf="cropimages" [imageChangedEvent]="imageChangedEvent"
+                            [maintainAspectRatio]="true" [aspectRatio]="4 / 3" [resizeToWidth]="128" format="png"
+                            (imageCropped)="imageCropped($event)" (imageLoaded)="imageLoaded()"
+                            (cropperReady)="cropperReady()" (loadImageFailed)="loadImageFailed()">
+                        </image-cropper>
                         <mat-icon class="iconsize-4" class="rotatehandle" #rotatehandle
                             [attr.id]="element.id + 'rotatehandle'">replay</mat-icon>
                     </div>
@@ -1193,19 +1251,13 @@
                         <canvas baseChart width="element.style.width" height="element.style.height"
                             [datasets]="element.productiondata" [labels]="element.label" [colors]="element.colors"
                             [legend]="element.legend" [options]="element.lineChartOptions"
-                            [chartType]="element.charttype" [plugins]="lineChartPlugins" [attr.id]="'chart' + element.id">
+                            [chartType]="element.charttype" [plugins]="lineChartPlugins"
+                            [attr.id]="'chart' + element.id">
                         </canvas>
                         <mat-icon class="iconsize-4" class="rotatehandle" #rotatehandle
                             [attr.id]="element.id + 'rotatehandle'">replay</mat-icon>
                     </div>
-                    <canvas-whiteboard *ngIf="whiteboard === true" id="{{element.id}}" #canvasWhiteboard
-                        [drawButtonClass]="'drawButtonClass'" [drawButtonText]="'Draw'" [ngStyle]="element.style"
-                        [clearButtonClass]="'clearButtonClass'" [clearButtonText]="'Clear'" [undoButtonText]="'Undo'"
-                        [undoButtonEnabled]="true" [redoButtonText]="'Redo'" [redoButtonEnabled]="true"
-                        [colorPickerEnabled]="true" [saveDataButtonEnabled]="true" [saveDataButtonText]="'Save'"
-                        [lineWidth]="2" [strokeColor]="'rgb(0,0,0)'" [shouldDownloadDrawing]="false"
-                        (onSave)="onCanvasSave($event, i)">
-                    </canvas-whiteboard>
+
                     <!-- style="overflow: hidden;"  -->
                     <!-- not visible object to connect sound to  -->
                     <div *ngFor="let part of element.animation; let i = index;">

@@ -102,6 +102,7 @@ import { VectoruploadComponent, dialogvectorgallerycomponent } from './shared/ve
 import { BackgroundComponent, dialogbackgroundgallerycomponent } from './shared/background/background.component';
 import { TranslationsComponent } from './translations/translations.component';
 import { MatPasswordStrengthModule } from '@angular-material-extensions/password-strength';
+import { ImageCropperModule } from 'ngx-image-cropper';
 
 declare var Hammer: any;
 @Injectable()
@@ -172,6 +173,7 @@ export class HammerConfig extends GestureConfig  {
 
   imports: [
     MatPasswordStrengthModule.forRoot(),
+    ImageCropperModule,
     CanvasWhiteboardModule,
     InlineSVGModule,
     BrowserModule,

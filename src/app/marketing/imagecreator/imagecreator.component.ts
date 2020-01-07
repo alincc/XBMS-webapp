@@ -15,6 +15,7 @@ import { MediaObserver, MediaChange } from '@angular/flex-layout';
 //import * as pluginAnnotations from 'chartjs-plugin-annotation';
 import {Subscription} from 'rxjs';
 import { fonts } from '../../shared/listsgeneral/fonts';
+import { ImageCroppedEvent } from 'ngx-image-cropper';
 
 export class image {
   type: 'image';
@@ -591,6 +592,25 @@ export class ImagecreatorComponent implements OnInit {
 
   swipeleft(e) {
     this.listviewxsshow = false;
+  }
+
+  imageChangedEvent: any = '';
+  croppedImage: any = '';
+  
+  fileChangeEvent(event: any): void {
+      this.imageChangedEvent = event;
+  }
+  imageCropped(event: ImageCroppedEvent) {
+      this.croppedImage = event.base64;
+  }
+  imageLoaded() {
+      // show cropper
+  }
+  cropperReady() {
+      // cropper ready
+  }
+  loadImageFailed() {
+      // show message
   }
 
 

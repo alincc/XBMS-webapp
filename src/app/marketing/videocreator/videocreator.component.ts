@@ -21,6 +21,7 @@ import { fonts } from '../../shared/listsgeneral/fonts';
 import svgDragSelect from "svg-drag-select";
 import { ChartDataSets, ChartOptions, Chart } from 'chart.js';
 import { Color, BaseChartDirective, Label } from 'ng2-charts';
+import { ImageCroppedEvent } from 'ngx-image-cropper';
 
 export class chart {
   type: 'chart';
@@ -57,6 +58,12 @@ export class chart {
     opacity: 1;
   }
   lineChartOptions: ChartOptions = {
+    legend: {
+      labels: {
+        fontFamily: 'Open Sans',
+        fontSize: 14,
+      }
+    },
     animation: {
       duration: 1000,
       easing: 'easeInQuad'
@@ -70,6 +77,8 @@ export class chart {
           },
           ticks: {
             fontColor: 'blue',
+            fontSize: 12,
+            fontFamily: 'Open Sans',
           }
         }
       ],
@@ -83,6 +92,8 @@ export class chart {
             suggestedMin: 0,
             suggestedMax: 100,
             fontColor: 'blue',
+            fontSize: 12,
+            fontFamily: 'Open Sans',
           }
         }
       ]
@@ -301,6 +312,7 @@ export class VideocreatorComponent implements OnInit {
     }
   }
 
+  public cropimages = false;
   public t;
   public counter = 60;
   public currenttime = 0;
@@ -1034,11 +1046,11 @@ export class VideocreatorComponent implements OnInit {
         }
 
         await this.deleteVectorGroup(vectorid);
-        console.log("vector groups deleted");
+        //console.log("vector groups deleted");
         await this.resizeVector(originalsize, newsize, idx, vectorid);
-        console.log("vector resized");
+        //console.log("vector resized");
         await this.combineSVGs(this.animationarray[i], originalsize);
-        console.log("vectors combined");
+        //console.log("vectors combined");
         resolve();
       })
     }
@@ -1422,6 +1434,12 @@ export class VideocreatorComponent implements OnInit {
       }
     ];
     let lineChartOptions: ChartOptions = {
+      legend: {
+        labels: {
+          fontFamily: 'Open Sans',
+          fontSize: 14
+        }
+      },
       animation: {
         duration: 1000,
         easing: 'easeInQuad'
@@ -1435,6 +1453,10 @@ export class VideocreatorComponent implements OnInit {
             },
             ticks: {
               fontColor: 'black',
+              fontFamily: 'Open Sans',
+              fontSize: 12,
+              suggestedMin: 0,
+              suggestedMax: 100,
             }
           }
         ],
@@ -1445,6 +1467,8 @@ export class VideocreatorComponent implements OnInit {
             },
             ticks: {
               fontColor: 'black',
+              fontFamily: 'Open Sans',
+              fontSize: 12,
               suggestedMin: 0,
               suggestedMax: 100,
             }
@@ -1515,63 +1539,63 @@ export class VideocreatorComponent implements OnInit {
   }
 
   addNewWhiteboard(): void {
-    let newelnr;
-    if (this.animationarray.length === -1) {
-      newelnr = 0 + 'el';
-    } else {
-      newelnr = this.animationarray.length + 'el';
-    }
-    this.newz = this.newz + 1;
-    let anim: animationtype[] = [{
-      start_time: 0, //delayt
-      end_time: 10,
-      anim_type: 'scale',
-      duration: 3,
-      ease: '',
-      posx: 0,
-      posy: 0,
-      rotationcycle: 360,
-      travellocX: 300,
-      travellocY: 0,
-      scalesize: 0.8,
-      skewY: 50,
-      skewX: 50,
-      easetype: 'elastic',
-      fromto: 'to',
-      transformOriginX: '50%',
-      transformOriginY: '50%',
-      repeat: 0,
-      yoyo: false,
-      audioeffectsrc: ''
-    }];
-    let whiteboard: whiteboardanimation = {
-      type: 'whiteboard',
-      style: {
-        'z-index': 100,
-        width: this.canvas.width,
-        height: this.canvas.height,
-        position: '',
-        'background-color': '',
-        opacity: 1,
-      },
-      src: '',
-      posx: 0,
-      posy: 0,
-      setpos: { 'x': 0, 'y': 0 },
-      animation: anim,
-      id: newelnr
-    }
+    // let newelnr;
+    // if (this.animationarray.length === -1) {
+    //   newelnr = 0 + 'el';
+    // } else {
+    //   newelnr = this.animationarray.length + 'el';
+    // }
+    // this.newz = this.newz + 1;
+    // let anim: animationtype[] = [{
+    //   start_time: 0, //delayt
+    //   end_time: 10,
+    //   anim_type: 'scale',
+    //   duration: 3,
+    //   ease: '',
+    //   posx: 0,
+    //   posy: 0,
+    //   rotationcycle: 360,
+    //   travellocX: 300,
+    //   travellocY: 0,
+    //   scalesize: 0.8,
+    //   skewY: 50,
+    //   skewX: 50,
+    //   easetype: 'elastic',
+    //   fromto: 'to',
+    //   transformOriginX: '50%',
+    //   transformOriginY: '50%',
+    //   repeat: 0,
+    //   yoyo: false,
+    //   audioeffectsrc: ''
+    // }];
+    // let whiteboard: whiteboardanimation = {
+    //   type: 'whiteboard',
+    //   style: {
+    //     'z-index': 100,
+    //     width: this.canvas.width,
+    //     height: this.canvas.height,
+    //     position: '',
+    //     'background-color': '',
+    //     opacity: 1,
+    //   },
+    //   src: '',
+    //   posx: 0,
+    //   posy: 0,
+    //   setpos: { 'x': 0, 'y': 0 },
+    //   animation: anim,
+    //   id: newelnr
+    // }
     if (this.whiteboard === false) {
-      this.animationarray.push(whiteboard);
+      //this.animationarray.push(whiteboard);
       this.whiteboard = true;
     }
 
-    this.detectchange();
+    //this.detectchange();
 
     setTimeout(() => {
-      let wb = document.getElementById(newelnr);
-      let cv1 = wb.getElementsByClassName('canvas_whiteboard');
-      let cv2 = wb.getElementsByClassName('incomplete_shapes_canvas_whiteboard');
+      //let wb = document.getElementById(newelnr);
+      let cv1 = document.getElementsByClassName('canvas_whiteboard');
+      let cv2 = document.getElementsByClassName('incomplete_shapes_canvas_whiteboard');
       cv1[0].setAttribute('width', this.canvas.width);
       cv1[0].setAttribute('height', this.canvas.height);
       cv2[0].setAttribute('width', this.canvas.width);
@@ -2677,7 +2701,7 @@ export class VideocreatorComponent implements OnInit {
                       duration: 2000,
                       panelClass: 'snackbar-class'
                     });
-                    this.deleteitem(i);
+                    //this.deleteitem(i);
                     this.whiteboard = false;
                   });
               }, 300);
@@ -2979,6 +3003,25 @@ export class VideocreatorComponent implements OnInit {
     this.animationarray[i].data[i1].data.splice(del, 1);
     this.animationarray[i].productiondata[i1].data.splice(del, 1);
     this.detectchange();
+  }
+
+  imageChangedEvent: any = '';
+  croppedImage: any = '';
+  
+  fileChangeEvent(event: any): void {
+      this.imageChangedEvent = event;
+  }
+  imageCropped(event: ImageCroppedEvent) {
+      this.croppedImage = event.base64;
+  }
+  imageLoaded() {
+      // show cropper
+  }
+  cropperReady() {
+      // cropper ready
+  }
+  loadImageFailed() {
+      // show message
   }
 
 }
