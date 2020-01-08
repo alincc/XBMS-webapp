@@ -23,6 +23,7 @@ import { ChartDataSets, ChartOptions, Chart } from 'chart.js';
 import { Color, BaseChartDirective, Label } from 'ng2-charts';
 import { ImageCroppedEvent } from 'ngx-image-cropper';
 
+
 export class chart {
   type: 'chart';
   start_time: number;
@@ -169,11 +170,15 @@ export class imageanimation {
   setpos: object;
   id: string;
   animation: animationtype[];
-  // motioncor: string;
   motionpath: string;
   transform: string;
   motionrotation: number;
   rotation: number;
+}
+
+export class vectorcombinator {
+  type: 'vectorcombi';
+  vectors: vectoranimation[];
 }
 
 export class vectoranimation {
@@ -198,7 +203,6 @@ export class vectoranimation {
   svgcombi: string;
   selected: boolean;
   morph: boolean;
-  // motioncor: string;
   motionpath: string;
   transform: string;
   motionrotation: number;
@@ -235,30 +239,11 @@ export class shapeanimation {
   id: string;
   shape: string;
   animation: animationtype[];
-  //motioncor: string;
   motionpath: string;
   transform: string;
   motionrotation: number;
   rotation: number;
 }
-
-// export class whiteboardanimation {
-//   type: 'whiteboard';
-//   style: {
-//     'z-index': number,
-//     width: string;
-//     height: string;
-//     position: string;
-//     'background-color': string;
-//     opacity: 1;
-//   };
-//   src: string;
-//   posx: number;
-//   posy: number;
-//   setpos: object;
-//   id: string;
-//   animation: animationtype[];
-// }
 
 export class textanimation {
   content: string;
@@ -281,7 +266,6 @@ export class textanimation {
   id: string;
   splittextanimation: splittexttype[];
   animation: animationtype[];
-  //motioncor: string;
   motionpath: string;
   transform: string;
   motionrotation: number;
@@ -291,14 +275,12 @@ export class textanimation {
 @Component({
   selector: 'app-videocreator',
   templateUrl: './videocreator.component.html',
-  styleUrls: ['./videocreator.component.scss'],
-  //viewProviders: [CanvasWhiteboardComponent]
+  styleUrls: ['./videocreator.component.scss']
 })
 
 export class VideocreatorComponent implements OnInit {
 
   @ViewChild('progressbar', { static: false }) progressbar: ElementRef;
-
   @Input() Account: Account = new Account();
   @Input() SelectedRelation: Relations;
   @Input() option: Relations = new Relations();
@@ -317,16 +299,12 @@ export class VideocreatorComponent implements OnInit {
   public whiteboardstokewidth = 2;
   public whiteboardsmoothing = 8;
   public cropimages = false;
-  public t;
+  public t; // actual counter
   public counter = 60;
   public currenttime = 0;
   public animationarray = []; //array with style and position settings;
-  //public animationelements = []; //arrat with the actual greensock animations
   public play = false;
-  //public menu = gsap.timeline({ paused: true, reversed: true });
-  public primairytimeline = gsap.timeline({ paused: true, reversed: true });
-  //private progressbarline = gsap.timeline({ paused: true, reversed: true });
-
+  public primairytimeline = gsap.timeline({ paused: true, reversed: true }); //gsap timeline control
   public listviewxsshow = false;
   public showprogressbar = false;
   public uploader: FileUploader;
@@ -369,12 +347,10 @@ export class VideocreatorComponent implements OnInit {
   private largesthbox;
   private largestwbox;
   public setreplay = false;
-  //this.webkitspeech.onresult = ($event) => { this.onresult($event) };
   public selectedVecPath;
   public selectmultiplepaths = false;
   public selectedVecPathmultiple = [];
   public editpath = false;
-  //public svgDragSelect: svgDragSelect;
   public firstvectpathcorner: {
     width: undefined,
     height: undefined
@@ -391,9 +367,6 @@ export class VideocreatorComponent implements OnInit {
   public cancelDragSelect?: () => void;
   public dragAreaOverlay;
 
-
-
-
   constructor(
     private sanitizer: DomSanitizer,
     private relationsApi: RelationsApi,
@@ -407,7 +380,6 @@ export class VideocreatorComponent implements OnInit {
       this.activeMediaQuery = change;
     });
   }
-  //private myFuncSvg = this.initVectors.bind(this);
 
   ngOnInit() { 
     //this.addNewShape();
@@ -424,14 +396,11 @@ export class VideocreatorComponent implements OnInit {
     }
   }
 
-
   editMotionPath(animation) {
     this.editpath = true;
     this.setMotionPath(this.selectedelement.id, this.selectedelement, animation);
     //let docset = document.getElementById(this.selectedelement.id);
   }
-
-
 
   formatLabel(value: number | null) {
     if (!value) {
@@ -450,7 +419,6 @@ export class VideocreatorComponent implements OnInit {
 
   onSelectElement(element): void {
     // manual close editpath to prevent interuptions in path
-    
     if (this.whiteboard){ this.deletewhiteboard()}
     if (this.editpath === false) {
       if (this.selectedelement) {
@@ -487,13 +455,7 @@ export class VideocreatorComponent implements OnInit {
       }
     });
 
-
-
-    // gsap.set(svgpath, { x: element.posx, y: element.posy });
-
     MotionPathHelper.create(docset, { x: element.posx, y: element.posy });
-
-    //await new Promise(resolve => setTimeout(resolve, 300));
     const patheditor = document.getElementsByClassName('path-editor'); // path-editor
     const patheditorsel = document.getElementsByClassName('path-editor-selection'); // path-editor
 
@@ -542,11 +504,9 @@ export class VideocreatorComponent implements OnInit {
     }
 
     newpath = MotionPathPlugin.rawPathToString(rawpath);
-
     let w = this.canvas.width.replace('px', '');
     let h = this.canvas.height.replace('px', '');
     let newview = '0 0 ' + w + ' ' + h;
-
     let newsvgpath = '<svg id="' + this.selectedelement.id + 'mp" viewBox="' + newview + '" class="path-edit"><path id="' + this.selectedelement.id + 'p" style="opacity: 0; " d="' + newpath + '" /></svg>';
     this.selectedelement.motionpath = newsvgpath;
     this.editpath = false;
@@ -573,7 +533,6 @@ export class VideocreatorComponent implements OnInit {
 
   async detectchange() {
     if (this.whiteboard){ this.deletewhiteboard()}
-    //this.primairytimeline.clear();
     this.primairytimeline = gsap.timeline({ paused: true, reversed: true });
     console.log('run check', this.animationarray);
     if (this.editpath === true) {
@@ -590,7 +549,6 @@ export class VideocreatorComponent implements OnInit {
       const elm = this.animationarray[i];
 
       if (elm.type === 'chart') {
-        // let chart = document.getElementById('chart' + elm.id) as unknown; 
         elm.productiondata = [
           { data: [0, 0, 0], label: 'Series A' },
           { data: [0, 0, 0], label: 'Series B' }
@@ -909,10 +867,7 @@ export class VideocreatorComponent implements OnInit {
         }
       }
     }
-
   }
-
-
 
   addEffect(element): void {
     let id = document.getElementById(element.id);
@@ -957,7 +912,6 @@ export class VideocreatorComponent implements OnInit {
     //reset opacity
     if (this.selectedelement.animation[i].anim_type === 'appear') {
       this.selectedelement.style.opacity = 1;
-      // console.log('delete opacity')
     }
     this.selectedelement.animation.splice(i, 1);
   }
@@ -1164,6 +1118,14 @@ export class VideocreatorComponent implements OnInit {
       element.style['background-color'] = 'rgba(0, 0, 0, 0)';
     }
     this.detectchange();
+  }
+
+  addNewVectorCombi(){
+    let newvectorcombi: vectorcombinator  = {
+      type: 'vectorcombi',
+      vectors: []
+    }
+    this.animationarray.push(newvectorcombi);
   }
 
   addNewVector(src?, height?, width?, svgcombi?, posx?, posy?, pathidar?): void { //, originid?
@@ -1534,7 +1496,7 @@ export class VideocreatorComponent implements OnInit {
       style: {
         'z-index': this.newz,
         width: '400px',
-        height: '400px',
+        height: '220px',
         position: 'absolute',
         opacity: 1
       },
@@ -1562,10 +1524,7 @@ export class VideocreatorComponent implements OnInit {
     setTimeout(() => {
       //  https://stackoverflow.com/questions/40324313/svg-smooth-freehand-drawing
       var bufferSize;
-      //var bs;
-
       var svgElement = document.getElementById("svgElement");
-      //console.log(svgElement);
       var rect = svgElement.getBoundingClientRect();
       var path = null;
       var strPath;
@@ -1680,7 +1639,6 @@ export class VideocreatorComponent implements OnInit {
     let idnr = newelnr + 'vec-' + 1;
     let newvectstring = await this.renumberSvgIds(newsvg, idnr, pathidar);
     let pathidarfinal = newvectstring.match(/id="(.*?)"/g); //get ids
-
     newvectstring = newvectstring.replace(pathidarfinal[0], 'id=svgDraw')
     pathidarfinal.splice(0, 1);
 
@@ -2030,11 +1988,10 @@ export class VideocreatorComponent implements OnInit {
   async combineSVGs(element, newsize?) {
     return new Promise(async (resolve, reject) => {
       let idnew;
-      let total = [];
+      let total = []; // array to combine all parts
       let h = 500, w = 500, x = 0, y = 0;
       let startstr;
-      let originalsize = newsize; //await this.getViewBox('previewbox0');
-      //console.log(originalsize);
+      let originalsize = newsize; // get original viewbox
       if (originalsize) {
         x = originalsize['x'];
         y = originalsize['y'];
@@ -2044,11 +2001,9 @@ export class VideocreatorComponent implements OnInit {
       startstr = '<svg xmlns="http://www.w3.org/2000/svg" ' +
         'viewBox="' + x + ' ' + y + ' ' + h + ' ' + w + '" height="100%" width="100%"' +
         'id="svg2" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" preserveAspectRatio="none">';
-      //console.log('morph added to vector');
       total.push(startstr);
 
       let index = 0;
-      //console.log('before vect desc:', element.vectors);
 
       for (const vect of element.vectors) {
         idnew = document.getElementById(vect.idx); // get document
@@ -2081,7 +2036,6 @@ export class VideocreatorComponent implements OnInit {
       }
       total.push('</svg>');
       let childrenst = total.join('');
-      //console.log(childrenst);
       element.svgcombi = childrenst;
       resolve();
     });
@@ -2147,7 +2101,6 @@ export class VideocreatorComponent implements OnInit {
 
       for (let i2 = 0; i2 < fromvector.pathids.length; i2++) {
         // vector 1 is eqeal or smaller then vector 2
-        //console.log(i2+1, fromvector.pathids.length);
         if (i2 < tovector.pathids.length) {
           let frompathid = fromvector.pathids[i2];
           let topathid = tovector.pathids[i2];
@@ -2171,7 +2124,7 @@ export class VideocreatorComponent implements OnInit {
           let topathid = tovector.pathids[sindex];
           let fromel = document.getElementById(frompathid);
           let toel = document.getElementById(topathid);
-          //console.log('bigger vector', toel, sindex);
+
           this.primairytimeline.to(fromel, {
             duration: animation.duration, morphSVG: {
               shape: toel,
@@ -2194,7 +2147,7 @@ export class VideocreatorComponent implements OnInit {
     if (type === 'snow') { total = 60 }
     if (type === 'rain') { total = 60 }
     if (type === 'leaves') { total = 50 }
-    if (type === 'sun') { total = 90 } // also depends on the angle 90 degrees
+    if (type === 'sun') { total = 90 } // also depends on the angle this case is 90 degrees
     if (type === 'clouds') { total = 20 }
     let container = document.getElementById("weathercontainer");
     // container.removeChild   ---> ??
@@ -2210,8 +2163,6 @@ export class VideocreatorComponent implements OnInit {
     let heightanibottom = heightani - 100; // total area from above the square to lower edge
     let heightanitop = heightanibottom * 2;
     let widthaniside = (w * -1) * 2;
-
-    //console.log(w, h);
 
     if (type === 'sun') {
       let sun = document.createElement('div');
