@@ -26,6 +26,7 @@ import { ImageCroppedEvent } from 'ngx-image-cropper';
 
 export class chart {
   type: 'chart';
+  groupmember: false;
   start_time: number;
   charttype: string;
   src: string;
@@ -157,6 +158,7 @@ export class splittexttype {
 
 export class imageanimation {
   type: 'image';
+  groupmember: false;
   style: {
     'z-index': number,
     width: string;
@@ -178,10 +180,28 @@ export class imageanimation {
 
 export class vectorcombinator {
   type: 'vectorcombi';
+  groupmember: false;
   vectors: vectoranimation[];
+  animation: animationtype[];
+  style: {
+    'z-index': number,
+    // width: string;
+    // height: string;
+    position: 'absolute';
+    opacity: 1;
+  }
+  posx: number;
+  posy: number;
+  setpos: object;
+  id: string;
+  motionpath: string;
+  transform: string;
+  motionrotation: number;
+  rotation: number;
 }
 
 export class vectoranimation {
+  groupmember: false;
   type: 'vector';
   style: {
     'z-index': number,
@@ -222,6 +242,7 @@ export class vectorelement {
 
 export class shapeanimation {
   type: 'shape';
+  groupmember: false;
   style: {
     'z-index': number,
     width: string;
@@ -247,6 +268,7 @@ export class shapeanimation {
 
 export class textanimation {
   content: string;
+  groupmember: false;
   type: 'text';
   style: {
     'z-index': number,
@@ -447,11 +469,12 @@ export class VideocreatorComponent implements OnInit {
       ease: ease,
       repeat: animation.repeat,
       yoyo: element.yoyo,
-      //immediateRender: true,
+      immediateRender: true,
       motionPath: {
         path: svgpath,
+        //path: "M9,100 C9,100 27.53,58.42 58.91,34.89 88.91,12.39 124.72,10.01 136.3,10.01 170.17,10.01 193.85,21.72 213.35,38.48 236.44,58.33 253.68,85.27 275.06,108.25 299.15,134.14 328.5,155 377.43,155 399.66,155 418.05,152.17 433.27,147.57 461.24,139.12 477.48,124.69 488.05,110.87 502.4,92.12 504.48,74.5 504.48,74.5",
         autoRotate: animation.rotationcycle,
-        align: 'self'
+        //align: 'self'
       }
     });
 
@@ -486,7 +509,7 @@ export class VideocreatorComponent implements OnInit {
     let rawpath = MotionPathPlugin.getRawPath(svgpath);
     let svgtrans = svgpath.getAttribute('transform');
     let svgtransarray;
-    console.log(svgtrans, rawpath);
+    //console.log(svgtrans, rawpath);
 
     if (rawpath === undefined) {
       newpath = 'M14.458,42.741 C14.458,42.741 99.23,1.66 113.885,59.179 129.808,121.664 221.46,50.536 230.889,43.457 ';
@@ -500,7 +523,7 @@ export class VideocreatorComponent implements OnInit {
 
       this.selectedelement.posx = svgtransarray[4];
       this.selectedelement.posy = svgtransarray[5];
-      console.log(this.selectedelement);
+      // console.log(this.selectedelement);
     }
 
     newpath = MotionPathPlugin.rawPathToString(rawpath);
@@ -510,6 +533,7 @@ export class VideocreatorComponent implements OnInit {
     let newsvgpath = '<svg id="' + this.selectedelement.id + 'mp" viewBox="' + newview + '" class="path-edit"><path id="' + this.selectedelement.id + 'p" style="opacity: 0; " d="' + newpath + '" /></svg>';
     this.selectedelement.motionpath = newsvgpath;
     this.editpath = false;
+    this.stopFunc();
   }
 
   resetPath() {
@@ -576,7 +600,10 @@ export class VideocreatorComponent implements OnInit {
       }
 
       this.addEffect(elm); //normal animatoin
-      this.createRotate(elm);
+     
+      if (elm.type !== 'vectorcombi') {
+        this.createRotate(elm);
+      }
     }
 
   }
@@ -1121,11 +1148,58 @@ export class VideocreatorComponent implements OnInit {
   }
 
   addNewVectorCombi(){
+    this.newz = this.newz + 1;
+    let newelnr;
+    if (this.animationarray.length === -1) {
+      newelnr = 0 + 'el';
+    } else {
+      newelnr = this.animationarray.length + 'el';
+    }
     let newvectorcombi: vectorcombinator  = {
       type: 'vectorcombi',
-      vectors: []
+      groupmember: false,
+      vectors: [],
+      animation: [],
+      style: {
+        'z-index': this.newz,
+        // width: string;
+        // height: string;
+        position: 'absolute',
+        opacity: 1
+      },
+      posx: 0,
+      posy: 0,
+      setpos: {},
+      id: newelnr,
+      transform: '',
+      rotation: 0,
+      motionrotation: 0,
+      motionpath: '<svg id="' + newelnr + 'mp" viewBox="0 0 600 500" class="path-edit"><path id="' + newelnr + 'p" style="opacity: 0;"' +
+        ' d="M14.458,42.741 C14.458,42.741 99.23,1.66 113.885,59.179 129.808,121.664 221.46,50.536 230.889,43.457 " /></svg>',
     }
     this.animationarray.push(newvectorcombi);
+  }
+
+  addTooVectorCombi(value){
+
+    console.log(value);
+  }
+
+  async dropVectorGroup(value, element){
+    let newel = value.value;
+    let found = false;
+    newel.groupmember = true;
+    for ( let i = 0; i > element.vectors.lenght; i++){
+      if ( JSON.stringify(element.vectors[i]) === JSON.stringify(newel)){
+        found = true;
+      }
+    }
+
+    if (found === false && newel.type === 'vector'){
+      element.vectors.push(newel);
+    }
+    
+    console.log(element, newel, found);
   }
 
   addNewVector(src?, height?, width?, svgcombi?, posx?, posy?, pathidar?): void { //, originid?
@@ -1206,6 +1280,7 @@ export class VideocreatorComponent implements OnInit {
     }]
     let vector: vectoranimation = {
       type: 'vector',
+      groupmember: false,
       style: {
         'z-index': this.newz,
         width: newwidth,
@@ -1300,6 +1375,7 @@ export class VideocreatorComponent implements OnInit {
     }];
     let img: imageanimation = {
       type: 'image',
+      groupmember: false,
       style: {
         'z-index': this.newz,
         width: "auto",
@@ -1356,6 +1432,7 @@ export class VideocreatorComponent implements OnInit {
       audioeffectsrc: ''
     }];
     let img: shapeanimation = {
+      groupmember: false,
       type: 'shape',
       style: {
         'z-index': this.newz,
@@ -1476,6 +1553,7 @@ export class VideocreatorComponent implements OnInit {
       audioeffectsrc: ''
     }];
     let chart: chart = {
+      groupmember: false,
       start_time: 0,
       type: 'chart',
       src: '',
@@ -1709,6 +1787,7 @@ export class VideocreatorComponent implements OnInit {
     }]
     let txt: textanimation = {
       type: 'text',
+      groupmember: false,
       style: {
         'z-index': this.newz,
         width: "auto",

@@ -1,0 +1,108 @@
+<mat-expansion-panel-header *ngIf="element.type === 'vector'" cdkDragHandle
+[class.selected]="element === selectedelement">
+<mat-panel-title>
+    <!-- <mat-checkbox color="primary" [(ngModel)]="element.selected"></mat-checkbox> -->
+    <div *ngIf="element.vectors[0].src" [inlineSVG]="element.vectors[0].src"
+        [onSVGLoaded]="previewSVG" id="previewbox" class="elementsedit"
+        style="height: 30px; width: auto;">
+    </div>
+    <div *ngIf="!element.vectors[0].src"
+        [innerHTML]="element.svgcombi  | safeHtml" id="previewbox"
+        style="height: 30px; width: 30px;">
+    </div>
+    <mat-icon (click)="deleteitem(i)" class="iconsize-12">delete</mat-icon>
+    <mat-icon (click)="copyElement(i, element)"
+        matTooltip="Duplicate element" class="iconsize-10">filter_none
+    </mat-icon>
+</mat-panel-title>
+</mat-expansion-panel-header>
+<div *ngIf="element.type === 'vector'">
+
+<div *ngFor="let vector of element.vectors; let idx = index;">
+    <mat-expansion-panel *ngIf="element.morph">
+
+        <mat-expansion-panel-header>
+            <div *ngIf="vector.src || vector.svgcombi !== 'undefined'"
+                [attr.id]="'previewbox' + idx" [inlineSVG]="vector.src"
+                [onSVGLoaded]="previewSVG" class="elementsedit"
+                style="height: 30px; width: auto;">
+            </div>
+        </mat-expansion-panel-header>
+
+        <div *ngIf="vector.src" [inlineSVG]="vector.src"
+            style="width: 100px; height: 200px;" id="{{vector.idx}}"
+            (onSVGInserted)="initVectors($event, i, idx, vector.idx)">
+        </div>
+        <app-vectorupload *ngIf="!vector.src" [account]="Account"
+            [option]="option" (imgurl)="setVector($event, i, idx)">
+        </app-vectorupload>
+        <mat-icon (click)="deleteVectorSrc(idx, element)" class="icon-label"
+            class="iconsize-14" (click)="removeVectorPathMultiSelection()"
+            (click)="removeVectorPathSelection()">
+            delete
+        </mat-icon>
+        <mat-icon (click)="seperatePaths(idx, vector, element)"
+            class="icon-label" class="iconsize-14"
+            matTooltip="Seperate images parts">
+            tab_unselected
+        </mat-icon>
+    </mat-expansion-panel>
+    <div *ngIf="!element.morph">
+        <div *ngIf="vector.src" [inlineSVG]="vector.src"
+            [onSVGLoaded]="previewSVGBig"
+            (onSVGInserted)="initVectors($event, i, idx, vector.idx)"
+            [attr.id]="vector.idx" style="height: 100px; width: 100px;">
+        </div>
+        <!-- <div *ngIf="vector.svgcombi" [inlineSVG]="vector.svgcombi" [attr.id]="vector.idx"
+    [onSVGLoaded]="previewSVGBig"
+    (onSVGInserted)="initVectors($event, i, idx, vector.idx)">
+</div> -->
+
+        <div *ngIf="!vector.src" style="height: 100px; width: 100px;"
+            [attr.id]="vector.idx" [innerHTML]="element.svgcombi | safeHtml"
+            (click)="clickVectorPaths($event)"
+            (onSVGInserted)="initVectors($event, i, idx, vector.idx)">
+        </div>
+
+        <app-vectorupload *ngIf="!vector.src && !element.svgcombi"
+            [account]="Account" [option]="option"
+            (imgurl)="setVector($event, i, idx)">
+        </app-vectorupload>
+        <mat-icon (click)="deleteVectorSrc(idx, element)" class="icon-label"
+            class="iconsize-14" (click)="removeVectorPathMultiSelection()"
+            (click)="removeVectorPathSelection()">
+            delete
+        </mat-icon>
+        <mat-icon (click)="seperatePaths(idx, vector, element)"
+            class="icon-label" class="iconsize-14"
+            matTooltip="Seperate images parts">
+            tab_unselected
+        </mat-icon>
+        <mat-form-field style="max-width: 46px;">
+            <input (change)="detectchange()" [(ngModel)]="element.posy"
+                type="number" matInput>
+            <mat-hint>Y |</mat-hint>
+        </mat-form-field>
+        <mat-form-field style="max-width: 46px;">
+            <input (change)="detectchange()" [(ngModel)]="element.posx"
+                type="number" matInput>
+            <mat-hint>X -</mat-hint>
+        </mat-form-field>
+        <mat-form-field style="max-width: 46px;">
+            <input (change)="detectchange()" [(ngModel)]="element.height"
+                matInput>
+            <mat-hint>Y |</mat-hint>
+        </mat-form-field>
+        <mat-form-field style="max-width: 46px;">
+            <input (change)="detectchange()" [(ngModel)]="element.width"
+                matInput>
+            <mat-hint>X -</mat-hint>
+        </mat-form-field>
+    </div>
+</div>
+<button mat-mini-fab *ngIf="element.morph" class="addbutton"
+    matTooltip="Add vector" (click)="addNewVectorSrc(i, element)"
+    color="primary">
+    <mat-icon>add</mat-icon>
+</button>
+</div>
