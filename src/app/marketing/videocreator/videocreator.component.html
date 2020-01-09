@@ -801,8 +801,8 @@
                         </div>
 
 
-                        <mat-expansion-panel-header *ngIf="element.type === 'vector' && !element.groupmember" cdkDragHandle
-                            [class.selected]="element === selectedelement">
+                        <mat-expansion-panel-header *ngIf="element.type === 'vector' && !element.groupmember"
+                            cdkDragHandle [class.selected]="element === selectedelement">
                             <mat-panel-title>
                                 <!-- <mat-checkbox color="primary" [(ngModel)]="element.selected"></mat-checkbox> -->
                                 <div *ngIf="element.vectors[0].src" [inlineSVG]="element.vectors[0].src"
@@ -910,13 +910,13 @@
                             [class.selected]="element === selectedelement" cdkDropList
                             (cdkDropListDropped)="dropVectorGroup($event)">
                             <div fxLayout="row">
-                                <label>Animation Groups </label> 
+                                <label>Animation Groups </label>
                                 <label [innerHTML]="element.vectors.length"></label>
                             </div>
                         </mat-expansion-panel-header>
                         <mat-form-field>
                             <mat-label>Add element</mat-label>
-                            <mat-select (selectionChange)="dropVectorGroup($event, element)">
+                            <mat-select (selectionChange)="dropVectorGroup($event, element, i)">
                                 <mat-option *ngFor="let potpart of animationarray" [value]="potpart">
                                     <div *ngIf="potpart.svgcombi" [innerHTML]="potpart.svgcombi  | safeHtml"
                                         style="height: 20px; width: 20px;">
@@ -927,115 +927,112 @@
                         <div *ngIf="element.type === 'vectorcombi'" cdkDragHandle>
                             <mat-accordion>
                                 <mat-expansion-panel *ngFor="let part of element.vectors">
-                                        <mat-expansion-panel-header *ngIf="part.type === 'vector'" cdkDragHandle
-                                            [class.selected]="element === selectedelement">
-                                            <mat-panel-title>
-                                                <!-- <mat-checkbox color="primary" [(ngModel)]="part.selected"></mat-checkbox> -->
-                                                <div *ngIf="part.vectors[0].src" [inlineSVG]="part.vectors[0].src"
-                                                    [onSVGLoaded]="previewSVG" id="previewbox" class="elementsedit"
-                                                    style="height: 30px; width: auto;">
+                                    <mat-expansion-panel-header *ngIf="part.type === 'vector'" cdkDragHandle
+                                        [class.selected]="element === selectedelement">
+                                        <mat-panel-title>
+                                            <!-- <mat-checkbox color="primary" [(ngModel)]="part.selected"></mat-checkbox> -->
+                                            <div *ngIf="part.vectors[0].src" [inlineSVG]="part.vectors[0].src"
+                                                [onSVGLoaded]="previewSVG" id="previewbox" class="elementsedit"
+                                                style="height: 30px; width: auto;">
+                                            </div>
+                                            <div *ngIf="!part.vectors[0].src" [innerHTML]="part.svgcombi  | safeHtml"
+                                                id="previewbox" style="height: 30px; width: 30px;">
+                                            </div>
+                                            <mat-icon (click)="deleteitem(i)" class="iconsize-12">delete</mat-icon>
+                                            <mat-icon (click)="copyElement(i, element)" matTooltip="Duplicate element"
+                                                class="iconsize-10">filter_none
+                                            </mat-icon>
+                                        </mat-panel-title>
+                                    </mat-expansion-panel-header>
+                                    <div *ngIf="part.type === 'vector'">
+
+                                        <div *ngFor="let vector of part.vectors; let idx = index;">
+                                            <mat-expansion-panel *ngIf="part.morph">
+
+                                                <mat-expansion-panel-header>
+                                                    <div *ngIf="vector.src || vector.svgcombi !== 'undefined'"
+                                                        [attr.id]="'previewbox' + idx" [inlineSVG]="vector.src"
+                                                        [onSVGLoaded]="previewSVG" class="elementsedit"
+                                                        style="height: 30px; width: auto;">
+                                                    </div>
+                                                </mat-expansion-panel-header>
+
+                                                <div *ngIf="vector.src" [inlineSVG]="vector.src"
+                                                    style="width: 100px; height: 200px;" id="{{vector.idx}}"
+                                                    (onSVGInserted)="initVectors($event, i, idx, vector.idx)">
                                                 </div>
-                                                <div *ngIf="!part.vectors[0].src"
-                                                    [innerHTML]="part.svgcombi  | safeHtml" id="previewbox"
-                                                    style="height: 30px; width: 30px;">
-                                                </div>
-                                                <mat-icon (click)="deleteitem(i)" class="iconsize-12">delete</mat-icon>
-                                                <mat-icon (click)="copyElement(i, element)"
-                                                    matTooltip="Duplicate element" class="iconsize-10">filter_none
+                                                <app-vectorupload *ngIf="!vector.src" [account]="Account"
+                                                    [option]="option" (imgurl)="setVector($event, i, idx)">
+                                                </app-vectorupload>
+                                                <mat-icon (click)="deleteVectorSrc(idx, element)" class="icon-label"
+                                                    class="iconsize-14" (click)="removeVectorPathMultiSelection()"
+                                                    (click)="removeVectorPathSelection()">
+                                                    delete
                                                 </mat-icon>
-                                            </mat-panel-title>
-                                        </mat-expansion-panel-header>
-                                        <div *ngIf="part.type === 'vector'">
-
-                                            <div *ngFor="let vector of part.vectors; let idx = index;">
-                                                <mat-expansion-panel *ngIf="part.morph">
-
-                                                    <mat-expansion-panel-header>
-                                                        <div *ngIf="vector.src || vector.svgcombi !== 'undefined'"
-                                                            [attr.id]="'previewbox' + idx" [inlineSVG]="vector.src"
-                                                            [onSVGLoaded]="previewSVG" class="elementsedit"
-                                                            style="height: 30px; width: auto;">
-                                                        </div>
-                                                    </mat-expansion-panel-header>
-
-                                                    <div *ngIf="vector.src" [inlineSVG]="vector.src"
-                                                        style="width: 100px; height: 200px;" id="{{vector.idx}}"
-                                                        (onSVGInserted)="initVectors($event, i, idx, vector.idx)">
-                                                    </div>
-                                                    <app-vectorupload *ngIf="!vector.src" [account]="Account"
-                                                        [option]="option" (imgurl)="setVector($event, i, idx)">
-                                                    </app-vectorupload>
-                                                    <mat-icon (click)="deleteVectorSrc(idx, element)" class="icon-label"
-                                                        class="iconsize-14" (click)="removeVectorPathMultiSelection()"
-                                                        (click)="removeVectorPathSelection()">
-                                                        delete
-                                                    </mat-icon>
-                                                    <mat-icon (click)="seperatePaths(idx, vector, element)"
-                                                        class="icon-label" class="iconsize-14"
-                                                        matTooltip="Seperate images parts">
-                                                        tab_unselected
-                                                    </mat-icon>
-                                                </mat-expansion-panel>
-                                                <div *ngIf="!part.morph">
-                                                    <div *ngIf="vector.src" [inlineSVG]="vector.src"
-                                                        [onSVGLoaded]="previewSVGBig"
-                                                        (onSVGInserted)="initVectors($event, i, idx, vector.idx)"
-                                                        [attr.id]="vector.idx" style="height: 100px; width: 100px;">
-                                                    </div>
-                                                    <!-- <div *ngIf="vector.svgcombi" [inlineSVG]="vector.svgcombi" [attr.id]="vector.idx"
+                                                <mat-icon (click)="seperatePaths(idx, vector, element)"
+                                                    class="icon-label" class="iconsize-14"
+                                                    matTooltip="Seperate images parts">
+                                                    tab_unselected
+                                                </mat-icon>
+                                            </mat-expansion-panel>
+                                            <div *ngIf="!part.morph">
+                                                <div *ngIf="vector.src" [inlineSVG]="vector.src"
+                                                    [onSVGLoaded]="previewSVGBig"
+                                                    (onSVGInserted)="initVectors($event, i, idx, vector.idx)"
+                                                    [attr.id]="vector.idx" style="height: 100px; width: 100px;">
+                                                </div>
+                                                <!-- <div *ngIf="vector.svgcombi" [inlineSVG]="vector.svgcombi" [attr.id]="vector.idx"
                                                 [onSVGLoaded]="previewSVGBig"
                                                 (onSVGInserted)="initVectors($event, i, idx, vector.idx)">
                                             </div> -->
 
-                                                    <div *ngIf="!vector.src" style="height: 100px; width: 100px;"
-                                                        [attr.id]="vector.idx" [innerHTML]="part.svgcombi | safeHtml"
-                                                        (click)="clickVectorPaths($event)"
-                                                        (onSVGInserted)="initVectors($event, i, idx, vector.idx)">
-                                                    </div>
-
-                                                    <app-vectorupload *ngIf="!vector.src && !part.svgcombi"
-                                                        [account]="Account" [option]="option"
-                                                        (imgurl)="setVector($event, i, idx)">
-                                                    </app-vectorupload>
-                                                    <mat-icon (click)="deleteVectorSrc(idx, element)" class="icon-label"
-                                                        class="iconsize-14" (click)="removeVectorPathMultiSelection()"
-                                                        (click)="removeVectorPathSelection()">
-                                                        delete
-                                                    </mat-icon>
-                                                    <mat-icon (click)="seperatePaths(idx, vector, element)"
-                                                        class="icon-label" class="iconsize-14"
-                                                        matTooltip="Seperate images parts">
-                                                        tab_unselected
-                                                    </mat-icon>
-                                                    <mat-form-field style="max-width: 46px;">
-                                                        <input (change)="detectchange()" [(ngModel)]="part.posy"
-                                                            type="number" matInput>
-                                                        <mat-hint>Y |</mat-hint>
-                                                    </mat-form-field>
-                                                    <mat-form-field style="max-width: 46px;">
-                                                        <input (change)="detectchange()" [(ngModel)]="part.posx"
-                                                            type="number" matInput>
-                                                        <mat-hint>X -</mat-hint>
-                                                    </mat-form-field>
-                                                    <mat-form-field style="max-width: 46px;">
-                                                        <input (change)="detectchange()" [(ngModel)]="part.height"
-                                                            matInput>
-                                                        <mat-hint>Y |</mat-hint>
-                                                    </mat-form-field>
-                                                    <mat-form-field style="max-width: 46px;">
-                                                        <input (change)="detectchange()" [(ngModel)]="part.width"
-                                                            matInput>
-                                                        <mat-hint>X -</mat-hint>
-                                                    </mat-form-field>
+                                                <div *ngIf="!vector.src" style="height: 100px; width: 100px;"
+                                                    [attr.id]="vector.idx" [innerHTML]="part.svgcombi | safeHtml"
+                                                    (click)="clickVectorPaths($event)"
+                                                    (onSVGInserted)="initVectors($event, i, idx, vector.idx)">
                                                 </div>
+
+                                                <app-vectorupload *ngIf="!vector.src && !part.svgcombi"
+                                                    [account]="Account" [option]="option"
+                                                    (imgurl)="setVector($event, i, idx)">
+                                                </app-vectorupload>
+                                                <mat-icon (click)="deleteVectorSrc(idx, element)" class="icon-label"
+                                                    class="iconsize-14" (click)="removeVectorPathMultiSelection()"
+                                                    (click)="removeVectorPathSelection()">
+                                                    delete
+                                                </mat-icon>
+                                                <mat-icon (click)="seperatePaths(idx, vector, element)"
+                                                    class="icon-label" class="iconsize-14"
+                                                    matTooltip="Seperate images parts">
+                                                    tab_unselected
+                                                </mat-icon>
+                                                <mat-form-field style="max-width: 46px;">
+                                                    <input (change)="detectchange()" [(ngModel)]="part.posy"
+                                                        type="number" matInput>
+                                                    <mat-hint>Y |</mat-hint>
+                                                </mat-form-field>
+                                                <mat-form-field style="max-width: 46px;">
+                                                    <input (change)="detectchange()" [(ngModel)]="part.posx"
+                                                        type="number" matInput>
+                                                    <mat-hint>X -</mat-hint>
+                                                </mat-form-field>
+                                                <mat-form-field style="max-width: 46px;">
+                                                    <input (change)="detectchange()" [(ngModel)]="part.height" matInput>
+                                                    <mat-hint>Y |</mat-hint>
+                                                </mat-form-field>
+                                                <mat-form-field style="max-width: 46px;">
+                                                    <input (change)="detectchange()" [(ngModel)]="part.width" matInput>
+                                                    <mat-hint>X -</mat-hint>
+                                                </mat-form-field>
                                             </div>
-                                            <button mat-mini-fab *ngIf="part.morph" class="addbutton"
-                                                matTooltip="Add vector" (click)="addNewVectorSrc(i, element)"
-                                                color="primary">
-                                                <mat-icon>add</mat-icon>
-                                            </button>
                                         </div>
-                                   
+                                        <button mat-mini-fab *ngIf="part.morph" class="addbutton"
+                                            matTooltip="Add vector" (click)="addNewVectorSrc(i, element)"
+                                            color="primary">
+                                            <mat-icon>add</mat-icon>
+                                        </button>
+                                    </div>
+
                                 </mat-expansion-panel>
                             </mat-accordion>
                         </div>
@@ -1416,17 +1413,7 @@
                         <mat-icon class="iconsize-4" class="rotatehandle" #rotatehandle
                             [attr.id]="element.id + 'rotatehandle'">replay</mat-icon>
                     </div>
-                    <div *ngIf="element.type === 'vector'" [style.width]="element.style.width"
-                        [style.height]="element.style.height" [ngDraggable]="dragselectvectpath ===  false"
-                        [ngStyle]="element.style" (movingOffset)="onMoving($event, i)" [preventDefaultEvent]="true"
-                        [style.transform]="'translate(' + element.posx + 'px, ' + element.posy +'px) rotate(' + element.rotation + 'deg)' | safe: 'style'"
-                        (rzResizing)="onResizing($event, i)" ngResizable [rzAspectRatio]="false" id="{{element.id}}">
-                        <div style="height: 100%; width: 100%;" [innerHTML]="element.svgcombi | safeHtml"
-                            (click)="clickVectorPaths($event)">
-                        </div>
-                        <mat-icon class="iconsize-4" class="rotatehandle" #rotatehandle
-                            [attr.id]="element.id + 'rotatehandle'">replay</mat-icon>
-                    </div>
+
                     <div *ngIf="element.type === 'chart'" [style.width]="element.style.width"
                         [style.height]="element.style.height" [ngDraggable]="dragselectvectpath ===  false"
                         [ngStyle]="element.style" (movingOffset)="onMoving($event, i)" [preventDefaultEvent]="true"
@@ -1441,6 +1428,36 @@
                         <mat-icon class="iconsize-4" class="rotatehandle" #rotatehandle
                             [attr.id]="element.id + 'rotatehandle'">replay</mat-icon>
                     </div>
+                    <div *ngIf="element.type === 'vector' && !element.groupmember" [style.width]="element.style.width"
+                        [style.height]="element.style.height" [ngDraggable]="dragselectvectpath ===  false"
+                        [ngStyle]="element.style" (movingOffset)="onMoving($event, i)" [preventDefaultEvent]="true"
+                        [style.transform]="'translate(' + element.posx + 'px, ' + element.posy +'px) rotate(' + element.rotation + 'deg)' | safe: 'style'"
+                        (rzResizing)="onResizing($event, i)" ngResizable [rzAspectRatio]="false" id="{{element.id}}">
+                        <div style="height: 100%; width: 100%;" [innerHTML]="element.svgcombi | safeHtml"
+                            (click)="clickVectorPaths($event)">
+                        </div>
+                        <mat-icon class="iconsize-4" class="rotatehandle" #rotatehandle
+                            [attr.id]="element.id + 'rotatehandle'">replay</mat-icon>
+                    </div>
+                    <div *ngIf="element.type === 'vectorcombi'" class="vectorcombi" [style.width]="element.style.width"
+                        [style.height]="element.style.height" [ngDraggable]="dragselectvectpath ===  false"
+                        [ngStyle]="element.style" (movingOffset)="onMoving($event, i)" [preventDefaultEvent]="true"
+                        [style.transform]="'translate(' + element.posx + 'px, ' + element.posy +'px) rotate(' + element.rotation + 'deg)' | safe: 'style'"
+                         id="{{element.id}}">
+                        <div *ngFor="let part of element.vectors" [style.width]="part.style.width"
+                            [style.height]="part.style.height" [ngDraggable]="dragselectvectpath ===  false && vectorcombiedit"
+                            [ngStyle]="part.style" (movingOffset)="onMoving($event, i)" [preventDefaultEvent]="true"
+                            [style.transform]="'translate(' + part.posx + 'px, ' + part.posy +'px) rotate(' + part.rotation + 'deg)' | safe: 'style'"
+                            (rzResizing)="onResizing($event, i)" [ngResizable]="vectorcombiedit" [rzAspectRatio]="false"
+                            id="{{part.id}}">
+                            <div style="height: 100%; width: 100%;" [innerHTML]="part.svgcombi | safeHtml"
+                                (click)="clickVectorPaths($event)">
+                            </div>
+                            <mat-icon *ngIf="vectorcombiedit" class="iconsize-4" class="rotatehandle" #rotatehandle
+                                [attr.id]="part.id + 'rotatehandle'">replay</mat-icon>
+                        </div>
+                    </div>
+
 
                     <!-- style="overflow: hidden;"  -->
                     <!-- not visible object to connect sound to  -->
