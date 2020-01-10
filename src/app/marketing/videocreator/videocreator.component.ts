@@ -185,8 +185,8 @@ export class vectorcombinator {
   animation: animationtype[];
   style: {
     'z-index': number,
-     width: string;
-     height: string;
+    width: string;
+    height: string;
     position: 'absolute';
     opacity: 1;
   }
@@ -454,6 +454,7 @@ export class VideocreatorComponent implements OnInit {
         this.selectedelement = element;
       }
     }
+    this.vectorcombiedit = false;
   }
 
   async setMotionPath(id, element, animation) {
@@ -601,10 +602,7 @@ export class VideocreatorComponent implements OnInit {
       }
 
       this.addEffect(elm); //normal animatoin
-
-      if (elm.type !== 'vectorcombi') {
-        this.createRotate(elm);
-      }
+      this.createRotate(elm);
     }
 
   }
@@ -772,9 +770,10 @@ export class VideocreatorComponent implements OnInit {
     if (anitype === 'appear') {
       // elementA.style.opacity = 0;
       // this.primairytimeline.set(iset, {opacity: 0});
-      aniset = { 
-        duration: duration, 
-        autoAlpha:1, ease: ease, repeat: repeat, yoyo: element.yoyo };
+      aniset = {
+        duration: duration,
+        autoAlpha: 1, ease: ease, repeat: repeat, yoyo: element.yoyo
+      };
     }
 
     if (anitype === 'move') {
@@ -1107,8 +1106,9 @@ export class VideocreatorComponent implements OnInit {
     this.currenttime = event.x / 10;
   }
 
-  onMoving(event, i) {
-    let idel = this.animationarray[i]
+  onMoving(event, i, idy?) {
+    let idel = this.animationarray[i];
+    if (idy) { idel = idel.vectors[idy] }
     idel.posy = event.y;
     idel.posx = event.x;
     let element = document.getElementById(idel.id);
@@ -1116,7 +1116,10 @@ export class VideocreatorComponent implements OnInit {
       x: idel.posX,
       y: idel.posY
     });
+    if (idy) { this.onSetCombiBox(i) }
   }
+
+
 
   async onMovingCombi(i) {
 
@@ -1130,17 +1133,19 @@ export class VideocreatorComponent implements OnInit {
     let y = vectors[0].posy;
     let widthcalc = parseInt(vectors[0].style.width, 10) + x;
     let heightcalc = parseInt(vectors[0].style.height, 10) + y;
-    for (let k = 1; k > vectors.length; k++){
+    for (let k = 1; k < vectors.length; k++) {
 
       let width = parseInt(vectors[k].style.width, 10)
       let height = parseInt(vectors[k].style.height, 10)
-      if (vectors[k].posx < x){x = vectors[k].posx;}
-      if (vectors[k].posy < y){y = vectors[k].posy;}
-      if (width + x > widthcalc){widthcalc = width + x;}
-      if (height + y > heightcalc){heightcalc = height + y;}
+      if (vectors[k].posx < x) { x = vectors[k].posx; }
+      if (vectors[k].posy < y) { y = vectors[k].posy; }
+      if (width + vectors[k].posx > widthcalc) { widthcalc = width + vectors[k].posx }
+      if (height + vectors[k].posy > heightcalc) { heightcalc = height + vectors[k].posy }
     }
-    vectorcombi.style.width = widthcalc + 'px';
-    vectorcombi.style.height = heightcalc + 'px'; 
+    let widthcalcfin = widthcalc - x;
+    let heightcalcfin = heightcalc - y;
+    vectorcombi.style.width = widthcalcfin + 'px';
+    vectorcombi.style.height = heightcalcfin + 'px';
   }
 
   onResizing(e, i) {
@@ -1216,20 +1221,22 @@ export class VideocreatorComponent implements OnInit {
 
   async dropVectorGroup(value, element, i) {
     let newel = value.value;
-    let found = false;
-    newel.groupmember = true;
-    for (let i = 0; i > element.vectors.lenght; i++) {
-      if (JSON.stringify(element.vectors[i]) === JSON.stringify(newel)) {
-        found = true;
+    if (newel.type === 'vector') {
+      let found = false;
+      newel.groupmember = true;
+      for (let i = 0; i > element.vectors.lenght; i++) {
+        if (JSON.stringify(element.vectors[i]) === JSON.stringify(newel)) {
+          found = true;
+        }
       }
-    }
 
-    if (found === false && newel.type === 'vector') {
-      element.vectors.push(newel);
-    }
+      if (found === false) {
+        element.vectors.push(newel);
+      }
 
-    console.log(element, newel, found);
-    this.onSetCombiBox(i)
+      //console.log(element, newel, found);
+      this.onSetCombiBox(i)
+    }
   }
 
   addNewVector(src?, height?, width?, svgcombi?, posx?, posy?, pathidar?): void { //, originid?
@@ -1853,10 +1860,18 @@ export class VideocreatorComponent implements OnInit {
     this.selectedelement.splittextanimation.splice(iv, 1);
   }
 
+  vectorcombieditSet(i) {
+    this.animationarray[i].vectors.forEach(element => {
+      this.createRotate(element);
+    });
+  }
+
   async playFunc() {
     console.log('play', this.primairytimeline.time());
+    // clean up edits 
     this.removeVectorPathMultiSelection();
     this.removeVectorPathSelection();
+    this.vectorcombiedit = false;
     if (this.currenttime === 0) { this.detectchange() }
     if (this.canvas.audio) {
       this.playSound('canvassound', null, this.canvas.loop);
@@ -2005,6 +2020,18 @@ export class VideocreatorComponent implements OnInit {
     this.selectedelement = '';
   }
 
+  deletevcgroup(i) {
+    this.animationarray[i].vectors.forEach(element => {
+      element.groupmember = false;
+    });
+    this.animationarray.splice(i, 1);
+  }
+
+  deleteitemvcgroup(i, idy) {
+    this.animationarray[i].vectors[idy].groupmember = false;
+    this.animationarray[i].vectors.splice(idy, 1)
+  }
+
   swiperight(e) {
     this.listviewxsshow = true;
   }
@@ -2122,6 +2149,8 @@ export class VideocreatorComponent implements OnInit {
         if (stylstr.length > 0) {
           total.push(stylstr[0].outerHTML);
         }
+
+        console.log(idnew);
 
         let vectstring;
         if (idnew === null) {
@@ -2826,11 +2855,16 @@ export class VideocreatorComponent implements OnInit {
     this.removeVectorPathMultiSelection();
     let svgel;
     if (element === undefined) {
-      svgel = document.getElementById(this.selectedelement.id).outerHTML;
-      this.selectedelement.src = this.onSVGsave(svgel);
+      let sv
+      svgel = document.getElementById(this.selectedelement.id);
+      let svg = svgel.getElementsByTagName('svg')[0].outerHTML;
+      this.selectedelement.src = this.onSVGsave(svg);
+      console.log(svg)
     } else {
-      svgel = document.getElementById(element.id).outerHTML;
-      element.src = this.onSVGsave(svgel);
+      svgel = document.getElementById(element.id);
+      let svg = svgel.getElementsByTagName('svg')[0].outerHTML;
+      element.src = this.onSVGsave(svg);
+      console.log(svg)
     }
   }
 

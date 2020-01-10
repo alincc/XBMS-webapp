@@ -790,8 +790,11 @@
               </vg-player>
               <img *ngIf="selectedfile.type !== 'marketing-video' || selectedfile.type !== 'video' || selectedfile.type !== 'vector' "
               src={{selectedfile.url}} style="width: 400px; height: auto;">
-              <div *ngIf="selectedfile.type === 'vector'" [inlineSVG]="selectedfile.url"></div>
+              <div  style="width: 400px; height: 400px;" *ngIf="selectedfile.type === 'vector'" [inlineSVG]="selectedfile.url"></div>
             </mat-card-content>
+            <button mat-button (click)="window.location.href = selectedfile.url">
+                      <mat-icon>file_download</mat-icon>Download
+                    </button>
           </mat-card>
           <div class="left-upload-block">
             <h3>Select files</h3>

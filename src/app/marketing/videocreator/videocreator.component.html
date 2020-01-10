@@ -854,19 +854,18 @@
                                         style="height: 100px; width: 100px;">
                                     </div>
                                     <!-- <div *ngIf="vector.svgcombi" [inlineSVG]="vector.svgcombi" [attr.id]="vector.idx"
-    [onSVGLoaded]="previewSVGBig"
-    (onSVGInserted)="initVectors($event, i, idx, vector.idx)">
-</div> -->
-
-                                    <div *ngIf="!vector.src" style="height: 100px; width: 100px;" [attr.id]="vector.idx"
-                                        [innerHTML]="element.svgcombi | safeHtml" (click)="clickVectorPaths($event)"
+                                         [onSVGLoaded]="previewSVGBig"
+                                            (onSVGInserted)="initVectors($event, i, idx, vector.idx)">
+                                            </div> -->
+                                    <div *ngIf="!vector.src && element.svgcombi" style="height: 100px; width: 100px;"
+                                        [attr.id]="vector.idx" [innerHTML]="element.svgcombi | safeHtml"
+                                        (click)="clickVectorPaths($event)"
                                         (onSVGInserted)="initVectors($event, i, idx, vector.idx)">
                                     </div>
-
                                     <app-vectorupload *ngIf="!vector.src && !element.svgcombi" [account]="Account"
                                         [option]="option" (imgurl)="setVector($event, i, idx)">
                                     </app-vectorupload>
-                                    <mat-icon (click)="deleteVectorSrc(idx, element)" class="icon-label"
+                                    <!-- <mat-icon (click)="deleteVectorSrc(idx, element)" class="icon-label"
                                         class="iconsize-14" (click)="removeVectorPathMultiSelection()"
                                         (click)="removeVectorPathSelection()">
                                         delete
@@ -874,7 +873,7 @@
                                     <mat-icon (click)="seperatePaths(idx, vector, element)" class="icon-label"
                                         class="iconsize-14" matTooltip="Seperate images parts">
                                         tab_unselected
-                                    </mat-icon>
+                                    </mat-icon> -->
                                     <mat-form-field style="max-width: 46px;">
                                         <input (change)="detectchange()" [(ngModel)]="element.posy" type="number"
                                             matInput>
@@ -910,9 +909,10 @@
                             [class.selected]="element === selectedelement" cdkDropList
                             (cdkDropListDropped)="dropVectorGroup($event)">
                             <div fxLayout="row">
-                                <label>Animation Groups </label>
+                                <label>Animation group</label> &nbsp;
                                 <label [innerHTML]="element.vectors.length"></label>
                             </div>
+                            <mat-icon (click)="deletevcgroup(i)" class="iconsize-12">delete</mat-icon>
                         </mat-expansion-panel-header>
                         <mat-form-field>
                             <mat-label>Add element</mat-label>
@@ -926,7 +926,7 @@
                         </mat-form-field>
                         <div *ngIf="element.type === 'vectorcombi'" cdkDragHandle>
                             <mat-accordion>
-                                <mat-expansion-panel *ngFor="let part of element.vectors">
+                                <mat-expansion-panel *ngFor="let part of element.vectors; let idy = index;">
                                     <mat-expansion-panel-header *ngIf="part.type === 'vector'" cdkDragHandle
                                         [class.selected]="element === selectedelement">
                                         <mat-panel-title>
@@ -938,10 +938,11 @@
                                             <div *ngIf="!part.vectors[0].src" [innerHTML]="part.svgcombi  | safeHtml"
                                                 id="previewbox" style="height: 30px; width: 30px;">
                                             </div>
-                                            <mat-icon (click)="deleteitem(i)" class="iconsize-12">delete</mat-icon>
-                                            <mat-icon (click)="copyElement(i, element)" matTooltip="Duplicate element"
-                                                class="iconsize-10">filter_none
+                                            <mat-icon (click)="deleteitemvcgroup(i, idy)" class="iconsize-12">delete
                                             </mat-icon>
+                                            <!-- <mat-icon (click)="copyElement(i, element)" matTooltip="Duplicate element"
+                                                class="iconsize-10">filter_none
+                                            </mat-icon> -->
                                         </mat-panel-title>
                                     </mat-expansion-panel-header>
                                     <div *ngIf="part.type === 'vector'">
@@ -1035,6 +1036,9 @@
 
                                 </mat-expansion-panel>
                             </mat-accordion>
+                            <mat-slide-toggle [(ngModel)]="vectorcombiedit" (click)="vectorcombieditSet(i)"
+                                matTooltip="Move seperate sections">Edit</mat-slide-toggle>
+
                         </div>
 
 
@@ -1325,28 +1329,31 @@
 
         <div *ngIf="changevideo" [ngStyle]="canvas" style="border: 1px solid grey; overflow:hidden;">
 
-
-            <div *ngIf="selectedVecPath && selectedelement.type === 'vector'" fxLayout="row" class="vectorcontrols">
-                <mat-icon (click)="deleteSelectedVectorPath()" class="iconsize-18" matTooltip="Delete section">
-                    delete</mat-icon>
-                <mat-icon (click)="deleteWhitespaceSVG()" class="icon-label" class="iconsize-18"
-                    matTooltip="delete whitespace">
-                    check_box_outline_blank
-                </mat-icon>
-                <mat-icon (click)="saveAsSeperateVector()" class="iconsize-18" matTooltip="Create seperate section">
-                    image</mat-icon>
-                <mat-icon (click)="saveAsNewVector()" class="icon-label" class="iconsize-18"
-                    matTooltip="save to file as new image">
-                    save
-                </mat-icon>
-                <mat-icon (click)="removeVectorPathMultiSelection()" (click)="removeVectorPathSelection()"
-                    class="icon-label" class="iconsize-18" matTooltip="Remove selection">
-                    indeterminate_check_box
-                </mat-icon>
-                <mat-checkbox [(ngModel)]="dragselectvectpath" matTooltip="drag selection tool"
-                    (change)="setDragSelect()"></mat-checkbox>
-                <mat-checkbox [(ngModel)]="selectmultiplepaths" matTooltip="selected multiple sections"
-                    (change)="selectMultiplePaths()"></mat-checkbox>
+            <!-- selectedVecPath &&  -->
+            <div *ngIf="selectedVecPath">
+                <div *ngIf="selectedelement.type === 'vector' || selectedelement.type === 'vectorcombi'" fxLayout="row"
+                    class="vectorcontrols">
+                    <mat-icon (click)="deleteSelectedVectorPath()" class="iconsize-18" matTooltip="Delete section">
+                        delete</mat-icon>
+                    <mat-icon (click)="deleteWhitespaceSVG()" class="icon-label" class="iconsize-18"
+                        matTooltip="delete whitespace">
+                        check_box_outline_blank
+                    </mat-icon>
+                    <mat-icon (click)="saveAsSeperateVector()" class="iconsize-18" matTooltip="Create seperate section">
+                        image</mat-icon>
+                    <mat-icon (click)="saveAsNewVector()" class="icon-label" class="iconsize-18"
+                        matTooltip="save to file as new image">
+                        save
+                    </mat-icon>
+                    <mat-icon (click)="removeVectorPathMultiSelection()" (click)="removeVectorPathSelection()"
+                        class="icon-label" class="iconsize-18" matTooltip="Remove selection">
+                        indeterminate_check_box
+                    </mat-icon>
+                    <mat-checkbox [(ngModel)]="dragselectvectpath" matTooltip="drag selection tool"
+                        (change)="setDragSelect()"></mat-checkbox>
+                    <mat-checkbox [(ngModel)]="selectmultiplepaths" matTooltip="selected multiple sections"
+                        (change)="selectMultiplePaths()"></mat-checkbox>
+                </div>
             </div>
 
 
@@ -1440,13 +1447,14 @@
                             [attr.id]="element.id + 'rotatehandle'">replay</mat-icon>
                     </div>
                     <div *ngIf="element.type === 'vectorcombi'" class="vectorcombi" [style.width]="element.style.width"
-                        [style.height]="element.style.height" [ngDraggable]="dragselectvectpath ===  false"
+                        [style.height]="element.style.height" [ngDraggable]="!dragselectvectpath && !vectorcombiedit"
                         [ngStyle]="element.style" (movingOffset)="onMoving($event, i)" [preventDefaultEvent]="true"
                         [style.transform]="'translate(' + element.posx + 'px, ' + element.posy +'px) rotate(' + element.rotation + 'deg)' | safe: 'style'"
-                         id="{{element.id}}">
-                        <div *ngFor="let part of element.vectors" [style.width]="part.style.width"
-                            [style.height]="part.style.height" [ngDraggable]="dragselectvectpath ===  false && vectorcombiedit"
-                            [ngStyle]="part.style" (movingOffset)="onMoving($event, i)" [preventDefaultEvent]="true"
+                        id="{{element.id}}">
+                        <div *ngFor="let part of element.vectors; let idy = index;" [style.width]="part.style.width"
+                            [style.height]="part.style.height"
+                            [ngDraggable]="dragselectvectpath ===  false && vectorcombiedit" [ngStyle]="part.style"
+                            (movingOffset)="onMoving($event, i, idy)" [preventDefaultEvent]="true"
                             [style.transform]="'translate(' + part.posx + 'px, ' + part.posy +'px) rotate(' + part.rotation + 'deg)' | safe: 'style'"
                             (rzResizing)="onResizing($event, i)" [ngResizable]="vectorcombiedit" [rzAspectRatio]="false"
                             id="{{part.id}}">
@@ -1456,6 +1464,8 @@
                             <mat-icon *ngIf="vectorcombiedit" class="iconsize-4" class="rotatehandle" #rotatehandle
                                 [attr.id]="part.id + 'rotatehandle'">replay</mat-icon>
                         </div>
+                        <mat-icon class="iconsize-4" class="rotatehandle" #rotatehandle
+                            [attr.id]="element.id + 'rotatehandle'">replay</mat-icon>
                     </div>
 
 

@@ -1,0 +1,24 @@
+<script type="text/javascript">
+    var register_func = function () {
+        var currentLocation = window.location;
+        var company = document.getElementById("myCompany").value;
+        var email = document.getElementById("myEmail").value;
+        url = new URL("https://xbmsapi.eu-gb.mybluemix.net/api/websitetrackers/registervisit?id=5a2a4e745c2a7a06c443533f");
+        url.searchParams.append("src", currentLocation);
+        url.searchParams.append("email", email);
+        url.searchParams.append("company", company);
+        var xmlHttp = new XMLHttpRequest;
+        xmlHttp.onreadystatechange = function () { 4 == xmlHttp.readyState && 200 == xmlHttp.status && callback(xmlHttp.responseText) },
+            xmlHttp.open("GET", url, !0), xmlHttp.send(null);
+    };
+    $('#inline-function').click(register_func);
+</script>
+
+
+<!-- set div heigh width background, label lettertype etc..  -->
+<div style="width: 300px; height: 100px;">
+    <label>E-mail:</label> <input type="email" id="myEmail" value="john@example.com">
+    <label>Company:</label> <input type="company" id="myCompany" value="company">
+    <p>Click here to register to our newletter</p>
+    <button id="inline-function">Subscribe</button>
+</div>
