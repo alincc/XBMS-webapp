@@ -792,7 +792,7 @@
               src={{selectedfile.url}} style="width: 400px; height: auto;">
               <div  style="width: 400px; height: 400px;" *ngIf="selectedfile.type === 'vector'" [inlineSVG]="selectedfile.url"></div>
             </mat-card-content>
-            <button mat-button (click)="window.location.href = selectedfile.url">
+            <button mat-button (click)="download(selectedfile)">
                       <mat-icon>file_download</mat-icon>Download
                     </button>
           </mat-card>

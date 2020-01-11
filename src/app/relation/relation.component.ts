@@ -979,6 +979,9 @@ export class RelationComponent implements OnInit {
     this.urldownload.replace(/ /g, "%20")
   }
 
+  download(selectedfile){
+    window.open(this.selectedfile.url, "_blank");
+  }
 
   //set variable and upload + save reference in Publications
   setupload(name): void {
