@@ -316,6 +316,7 @@ export class VideocreatorComponent implements OnInit {
     }
   }
 
+  public colorpick = 'white';
   public vectorcombiedit = false;
   public whiteboard = false;
   public whiteboardcolor = "#000";
@@ -691,9 +692,9 @@ export class VideocreatorComponent implements OnInit {
       var regex = /viewBox="(.*?)"/;
       var strToMatch = element.motionpath;
       var matched = regex.exec(strToMatch);
-      console.log(matched, newview);
+      //console.log(matched, newview);
       element.motionpath = element.motionpath.replace(matched[1], newview);
-      console.log(element);
+      //console.log(element);
     });
     this.changevideo = false;
     setTimeout(() => this.changevideo = true);
@@ -709,20 +710,20 @@ export class VideocreatorComponent implements OnInit {
 
   playSound(id, src, loop) {
     let audio = document.getElementById(id) as HTMLAudioElement;
-    console.log(id, audio);
+    //console.log(id, audio);
     audio.play();
     audio.loop = loop;
   }
 
   pauseSound(id, src) {
     let audio = document.getElementById(id) as HTMLAudioElement;
-    console.log(audio);
+    //console.log(audio);
     audio.pause();
   }
 
   stopSound(id, src) {
     let audio = document.getElementById(id) as HTMLAudioElement;
-    console.log(audio);
+    //console.log(audio);
     audio.currentTime = 0;
     audio.pause();
   }
@@ -1628,7 +1629,7 @@ export class VideocreatorComponent implements OnInit {
         ' d="M14.458,42.741 C14.458,42.741 99.23,1.66 113.885,59.179 129.808,121.664 221.46,50.536 230.889,43.457 " /></svg>',
     }
     this.animationarray.push(chart);
-    console.log(chart);
+    //console.log(chart);
   }
 
   addNewWhiteboard(): void {
@@ -2046,13 +2047,13 @@ export class VideocreatorComponent implements OnInit {
   }
 
   setAudio(event, animation) {
-    console.log('audio file', event, animation)
+    //console.log('audio file', event, animation)
     animation.audioeffectsrc = event;
     // delete this.onchangeaudio();
   }
 
   setAudioCanvas(event) {
-    console.log('audio canvas file', event)
+    //console.log('audio canvas file', event)
     this.canvas.audio = event;
   }
 
@@ -2132,11 +2133,11 @@ export class VideocreatorComponent implements OnInit {
       if (originalsize) {
         x = originalsize['x'];
         y = originalsize['y'];
-        h = originalsize['width']; // * newscale1;
-        w = originalsize['height']; // * newscale1;
+        w = originalsize['width']; // * newscale1;
+        h = originalsize['height']; // * newscale1;
       }
       startstr = '<svg xmlns="http://www.w3.org/2000/svg" ' +
-        'viewBox="' + x + ' ' + y + ' ' + h + ' ' + w + '" height="100%" width="100%"' +
+        'viewBox="' + x + ' ' + y + ' ' + w + ' ' + h + '" height="100%" width="100%"' +
         'id="svg2" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" preserveAspectRatio="none">';
       total.push(startstr);
 
@@ -2150,7 +2151,7 @@ export class VideocreatorComponent implements OnInit {
           total.push(stylstr[0].outerHTML);
         }
 
-        console.log(idnew);
+        //console.log(idnew);
 
         let vectstring;
         if (idnew === null) {
@@ -2176,6 +2177,8 @@ export class VideocreatorComponent implements OnInit {
       total.push('</svg>');
       let childrenst = total.join('');
       element.svgcombi = childrenst;
+      element.style.height = h + 'px';
+      element.style.width = w +'px';
       resolve();
     });
   }
@@ -2620,7 +2623,8 @@ export class VideocreatorComponent implements OnInit {
   }
 
   clickVectorPaths(e) {
-    //console.log('clickVectorPaths', this.dragselectvectpath, this.dragselectiontrue);
+    console.log(e);
+    this.colorpick = e.target.style.fill; 
     if (this.dragselectvectpath === true && this.dragselectiontrue === false) {
       this.dragSelect(this.selectedelement.id);
     } else if (this.dragselectiontrue === false) {
@@ -2766,6 +2770,23 @@ export class VideocreatorComponent implements OnInit {
       this.createnewsvg(finalstring, pathidar);
       this.removeVectorPathSelection();
     }
+  }
+
+  setColorPath(color){
+    if (this.selectmultiplepaths || this.dragselectvectpath) {
+      this.selectedVecPathmultiple.forEach(element => {
+        element.style.fill = color;
+      })
+    } else {
+      this.selectedVecPath.setAttribute('fill', color);
+      this.selectedVecPath.style.fill = color;
+    }
+    this.removeVectorPathMultiSelection(); // remove selection to prevent keeping class.. 
+    this.removeVectorPathSelection();
+    let idnew = document.getElementById(this.selectedelement.id); // get document
+    let vectstring = idnew.innerHTML;
+    this.selectedelement.svgcombi = vectstring;
+
   }
 
   async createnewsvg(svgstring, pathidar) {
@@ -3138,6 +3159,10 @@ export class VideocreatorComponent implements OnInit {
     this.detectchange();
   }
 
+  // crop 
+  // set overflow top div hidden 
+  // set 2nd div margin -20,- etc. 
+
   imageChangedEvent: any = '';
   croppedImage: any = '';
 
@@ -3156,5 +3181,7 @@ export class VideocreatorComponent implements OnInit {
   loadImageFailed() {
     // show message
   }
+
+
 
 }
