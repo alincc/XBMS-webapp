@@ -390,6 +390,7 @@ export class VideocreatorComponent implements OnInit {
   public dragselectiontrue = false;
   public cancelDragSelect?: () => void;
   public dragAreaOverlay;
+  public snippetcode: string;
 
   constructor(
     private sanitizer: DomSanitizer,
@@ -3159,10 +3160,6 @@ export class VideocreatorComponent implements OnInit {
     this.detectchange();
   }
 
-  // crop 
-  // set overflow top div hidden 
-  // set 2nd div margin -20,- etc. 
-
   imageChangedEvent: any = '';
   croppedImage: any = '';
 
@@ -3180,6 +3177,14 @@ export class VideocreatorComponent implements OnInit {
   }
   loadImageFailed() {
     // show message
+  }
+
+  createVideoCodeSnippet(){
+    this.saveVideo();
+    let myJSON = JSON.stringify(this.canvas);
+    let canvasjson = encodeURIComponent(myJSON);
+    let url = 'http://77.170.243.20?id='+ this.newFiles.id +'&cancas='+ canvasjson +'&repeat=false&remote=true';
+    this.snippetcode = '<iframe width='+this.canvas.width+' height='+this.canvas.height+' src='+url+'></iframe>'
   }
 
 
