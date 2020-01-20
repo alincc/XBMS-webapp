@@ -687,7 +687,7 @@ export class MarketingComponent implements OnInit {
     if (this.selectedMailing.html === undefined) {
       this.selectedMailing.html = this.Account.signature;
     }
-    console.log(this.selectedMailing.html);
+    //console.log(this.selectedMailing.html);
     const dialogRef = this.dialog.open(TextEditorDialog, {
       width: '800px',
       data: this.selectedMailing.html, // changingThisBreaksApplicationSecurity,

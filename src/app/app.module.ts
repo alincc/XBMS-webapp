@@ -32,6 +32,7 @@ import { AuthGuard } from './shared/auth.guard';
 import 'hammerjs';
 import { LoginComponent } from './login/login.component';
 import { ConfirmDialog } from './dialogsservice/confirm-dialog.component';
+import { codesnippetService, CodesnippetDialog } from './dialogsservice/codesnippet-dialog.component';
 import { RandomService } from './dialogsservice/random.service';
 import { DialogsService } from './dialogsservice/dialogs.service';
 import { RandomDialog } from './dialogsservice/random-dialog.component';
@@ -128,6 +129,7 @@ export class HammerConfig extends GestureConfig  {
     DashboardComponent,
     LoginComponent,
     ConfirmDialog,
+    CodesnippetDialog,
     RandomDialog,
     MarketingplannerComponent,
     FileserverComponent,
@@ -165,6 +167,7 @@ export class HammerConfig extends GestureConfig  {
     dialogaudiogallerycomponent,
     dialogvectorgallerycomponent,
     dialogbackgroundgallerycomponent,
+    CodesnippetDialog,
     ConfirmDialog,
     TextEditorDialog,
     RandomDialog,
@@ -217,6 +220,7 @@ export class HammerConfig extends GestureConfig  {
     MatPasswordStrengthModule
   ],
   providers: [
+    codesnippetService,
     PwaService ,
     SpeechRecognitionService,
     LinkedinService,
@@ -237,6 +241,7 @@ export class HammerConfig extends GestureConfig  {
   bootstrap: [AppComponent],
   exports: [
     ConfirmDialog,
+    CodesnippetDialog,
     RandomDialog
 ]
 })

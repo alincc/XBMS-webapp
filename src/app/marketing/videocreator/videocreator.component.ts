@@ -10,7 +10,7 @@ import { gsap } from 'assets/js/all';
 import { Physics2DPlugin, InertiaPlugin, ScrambleTextPlugin, SplitText, DrawSVGPlugin, MorphSVGPlugin, MotionPathPlugin, MotionPathHelper, Draggable } from 'assets/js/all';
 gsap.registerPlugin(Physics2DPlugin, Draggable, InertiaPlugin, ScrambleTextPlugin, SplitText, DrawSVGPlugin, MorphSVGPlugin, MotionPathPlugin, MotionPathHelper);
 import { FileUploader, FileItem } from 'ng2-file-upload';
-import { MatSnackBar, AnimationDurations } from '@angular/material';
+import { MatSnackBar, MatDialog, AnimationDurations } from '@angular/material';
 declare const SVG: any;
 import '@svgdotjs/svg.draggable.js'
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
@@ -22,7 +22,7 @@ import svgDragSelect from "svg-drag-select";
 import { ChartDataSets, ChartOptions, Chart } from 'chart.js';
 import { Color, BaseChartDirective, Label } from 'ng2-charts';
 import { ImageCroppedEvent } from 'ngx-image-cropper';
-
+import { codesnippetService } from '../../dialogsservice/codesnippet-dialog.component';
 
 export class chart {
   type: 'chart';
@@ -393,6 +393,8 @@ export class VideocreatorComponent implements OnInit {
   public snippetcode: string;
 
   constructor(
+    public codesnippetService: codesnippetService,
+    public dialog: MatDialog,
     private sanitizer: DomSanitizer,
     private relationsApi: RelationsApi,
     private filesApi: FilesApi,
@@ -3183,8 +3185,10 @@ export class VideocreatorComponent implements OnInit {
     this.saveVideo();
     let myJSON = JSON.stringify(this.canvas);
     let canvasjson = encodeURIComponent(myJSON);
-    let url = 'http://77.170.243.20?id='+ this.newFiles.id +'&cancas='+ canvasjson +'&repeat=false&remote=true';
+    let url = 'https://77.170.243.20?id='+ this.newFiles.id +'&canvas='+ canvasjson +'&repeat=false&remote=true';
     this.snippetcode = '<iframe width='+this.canvas.width+' height='+this.canvas.height+' src='+url+'></iframe>'
+    
+    this.codesnippetService.confirm('Copy Code', 'Copy code and input in your website', this.snippetcode).subscribe()
   }
 
 
