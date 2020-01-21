@@ -918,7 +918,7 @@
                             </div>
                             <mat-icon (click)="deletevcgroup(i)" class="iconsize-12">delete</mat-icon>
                         </mat-expansion-panel-header>
-                        <mat-form-field>
+                        <mat-form-field *ngIf="element.type === 'vectorcombi'">
                             <mat-label>Add element</mat-label>
                             <mat-select (selectionChange)="dropVectorGroup($event, element, i)">
                                 <mat-option *ngFor="let potpart of animationarray" [value]="potpart">
@@ -1325,6 +1325,13 @@
                     <mat-icon>collections</mat-icon>
                 </button>
             </div>
+
+
+            <div style="margin: 15px; height: 50px;">
+                <mat-progress-bar *ngIf="systembusy === true" mode="indeterminate"></mat-progress-bar>
+            </div>
+           
+
         </div>
     </div>
 

@@ -391,6 +391,7 @@ export class VideocreatorComponent implements OnInit {
   public cancelDragSelect?: () => void;
   public dragAreaOverlay;
   public snippetcode: string;
+  public systembusy = false;
 
   constructor(
     public codesnippetService: codesnippetService,
@@ -1011,6 +1012,7 @@ export class VideocreatorComponent implements OnInit {
 
   async initVectors(e, i, idx, vectorid) {
     //console.log(e, i, idx, vectorid);
+      this.systembusy = true;
     if (this.animationarray[i].svgcombi === '' || this.animationarray[i].morph) {
       return new Promise(async (resolve, reject) => {
         let getview;
@@ -1049,9 +1051,11 @@ export class VideocreatorComponent implements OnInit {
         //console.log("vector resized");
         await this.combineSVGs(this.animationarray[i], originalsize);
         //console.log("vectors combined");
+      
         resolve();
       })
     }
+      this.systembusy = false;
   }
 
 
@@ -2181,7 +2185,7 @@ export class VideocreatorComponent implements OnInit {
       let childrenst = total.join('');
       element.svgcombi = childrenst;
       element.style.height = h + 'px';
-      element.style.width = w +'px';
+      element.style.width = w + 'px';
       resolve();
     });
   }
@@ -2437,7 +2441,8 @@ export class VideocreatorComponent implements OnInit {
   grabPaths(svgstring, pathidar) {
     return new Promise((resolve, reject) => {
       let svgarray = [];
-      for (const element of pathidar) {
+      // const element of pathidar
+      for (let i = 0; i < pathidar.length; i++) {
         let n = svgstring.indexOf('<path ');
         let lx = svgstring.indexOf('</path>'); //<defs
         let l = lx + 7;
@@ -2479,13 +2484,15 @@ export class VideocreatorComponent implements OnInit {
       let groupElement;
       let e = document.getElementById(id);
       let g = e.getElementsByTagName("g");
-      console.log(g)
-      for (let index = 0; index < g.length; index++) {  // ---> g.length
-        g[index].setAttribute("id", id + index + 'g');
-        let sg = id + index + 'g';
-        groupElement = SVG.get(sg);
-        if (typeof groupElement.ungroup === "function") {
-          groupElement.ungroup(groupElement.parent());
+      if (g.length < 1000) {
+        console.log(g)
+        for (let index = 0; index < g.length; index++) {  // ---> g.length
+          g[index].setAttribute("id", id + index + 'g');
+          let sg = id + index + 'g';
+          groupElement = SVG.get(sg);
+          if (typeof groupElement.ungroup === "function") {
+            groupElement.ungroup(groupElement.parent());
+          }
         }
       }
       resolve();
@@ -2627,7 +2634,7 @@ export class VideocreatorComponent implements OnInit {
 
   clickVectorPaths(e) {
     console.log(e);
-    this.colorpick = e.target.style.fill; 
+    this.colorpick = e.target.style.fill;
     if (this.dragselectvectpath === true && this.dragselectiontrue === false) {
       this.dragSelect(this.selectedelement.id);
     } else if (this.dragselectiontrue === false) {
@@ -2775,7 +2782,7 @@ export class VideocreatorComponent implements OnInit {
     }
   }
 
-  setColorPath(color){
+  setColorPath(color) {
     if (this.selectmultiplepaths || this.dragselectvectpath) {
       this.selectedVecPathmultiple.forEach(element => {
         element.style.fill = color;
@@ -3181,13 +3188,13 @@ export class VideocreatorComponent implements OnInit {
     // show message
   }
 
-  createVideoCodeSnippet(){
+  createVideoCodeSnippet() {
     this.saveVideo();
     let myJSON = JSON.stringify(this.canvas);
     let canvasjson = encodeURIComponent(myJSON);
-    let url = 'https://77.170.243.20?id='+ this.newFiles.id +'&canvas='+ canvasjson +'&repeat=false&remote=true';
-    this.snippetcode = '<iframe width='+this.canvas.width+' height='+this.canvas.height+' src="'+url+'"></iframe>'
-    
+    let url = 'https://77.170.243.20?id=' + this.newFiles.id + '&canvas=' + canvasjson + '&repeat=false&remote=true';
+    this.snippetcode = '<iframe scrolling="no" width=' + this.canvas.width + ' height=' + this.canvas.height + ' src="' + url + '"></iframe>'
+
     this.codesnippetService.confirm('Copy Code', 'Copy code and input in your website', this.snippetcode).subscribe()
   }
 
