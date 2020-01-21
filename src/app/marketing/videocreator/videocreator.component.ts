@@ -3186,7 +3186,7 @@ export class VideocreatorComponent implements OnInit {
     let myJSON = JSON.stringify(this.canvas);
     let canvasjson = encodeURIComponent(myJSON);
     let url = 'https://77.170.243.20?id='+ this.newFiles.id +'&canvas='+ canvasjson +'&repeat=false&remote=true';
-    this.snippetcode = '<iframe width='+this.canvas.width+' height='+this.canvas.height+' src='+url+'></iframe>'
+    this.snippetcode = '<iframe width='+this.canvas.width+' height='+this.canvas.height+' src="'+url+'"></iframe>'
     
     this.codesnippetService.confirm('Copy Code', 'Copy code and input in your website', this.snippetcode).subscribe()
   }
