@@ -1472,7 +1472,7 @@
                             [style.height]="part.style.height"
                             [ngDraggable]="dragselectvectpath ===  false && vectorcombiedit" [ngStyle]="part.style"
                             (movingOffset)="onMoving($event, i, idy)" [preventDefaultEvent]="true"
-                            [style.transform]="'translate(' + part.posx + 'px, ' + part.posy +'px) rotate(' + part.rotation + 'deg)' | safe: 'style'"
+                            [style.transform]="'rotate(' + part.rotation + 'deg)' | safe: 'style'"
                             (rzResizing)="onResizing($event, i)" [ngResizable]="vectorcombiedit" [rzAspectRatio]="false"
                             id="{{part.id}}">
                             <div style="height: 100%; width: 100%;" [innerHTML]="part.svgcombi | safeHtml"

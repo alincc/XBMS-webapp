@@ -1012,7 +1012,7 @@ export class VideocreatorComponent implements OnInit {
 
   async initVectors(e, i, idx, vectorid) {
     //console.log(e, i, idx, vectorid);
-      this.systembusy = true;
+    this.systembusy = true;
     if (this.animationarray[i].svgcombi === '' || this.animationarray[i].morph) {
       return new Promise(async (resolve, reject) => {
         let getview;
@@ -1051,11 +1051,11 @@ export class VideocreatorComponent implements OnInit {
         //console.log("vector resized");
         await this.combineSVGs(this.animationarray[i], originalsize);
         //console.log("vectors combined");
-      
+
         resolve();
       })
     }
-      this.systembusy = false;
+    this.systembusy = false;
   }
 
 
@@ -1116,15 +1116,17 @@ export class VideocreatorComponent implements OnInit {
 
   onMoving(event, i, idy?) {
     let idel = this.animationarray[i];
-    if (idy) { idel = idel.vectors[idy] }
     idel.posy = event.y;
     idel.posx = event.x;
-    let element = document.getElementById(idel.id);
-    gsap.set(element, {
-      x: idel.posX,
-      y: idel.posY
-    });
-    if (idy) { this.onSetCombiBox(i) }
+    //let element = document.getElementById(idel.id);
+    // gsap.set(element, {
+    //   x: idel.posx,
+    //   y: idel.posy
+    // });
+    //if (idy) { idel = idel.vectors[idy] }
+    if (idy) { // idy is ony vectorcombi
+      this.onSetCombiBox(i) ;
+    }
   }
 
 
@@ -1139,10 +1141,14 @@ export class VideocreatorComponent implements OnInit {
     let vectors = vectorcombi.vectors;
     let x = vectors[0].posx;
     let y = vectors[0].posy;
+    let xhigh = x;
+    let yhigh = y;
     let widthcalc = parseInt(vectors[0].style.width, 10) + x;
     let heightcalc = parseInt(vectors[0].style.height, 10) + y;
+    
     for (let k = 1; k < vectors.length; k++) {
-
+      if (xhigh > vectors[k].posx) { xhigh = vectors[k].posx }
+      if (yhigh > vectors[k].posy) { yhigh = vectors[k].posy }
       let width = parseInt(vectors[k].style.width, 10)
       let height = parseInt(vectors[k].style.height, 10)
       if (vectors[k].posx < x) { x = vectors[k].posx; }
@@ -1150,10 +1156,19 @@ export class VideocreatorComponent implements OnInit {
       if (width + vectors[k].posx > widthcalc) { widthcalc = width + vectors[k].posx }
       if (height + vectors[k].posy > heightcalc) { heightcalc = height + vectors[k].posy }
     }
+
     let widthcalcfin = widthcalc - x;
     let heightcalcfin = heightcalc - y;
+    for (let h = 1; h < vectors.length; h++) {
+      vectors[h].posx = vectors[h].posx - widthcalcfin;
+      vectors[h].posy = vectors[h].posy - heightcalcfin;
+    }
+
     vectorcombi.style.width = widthcalcfin + 'px';
     vectorcombi.style.height = heightcalcfin + 'px';
+    vectorcombi.posx = xhigh;
+    vectorcombi.posy = yhigh;
+    this.detectchange();
   }
 
   onResizing(e, i) {
@@ -3193,9 +3208,8 @@ export class VideocreatorComponent implements OnInit {
     let myJSON = JSON.stringify(this.canvas);
     let canvasjson = encodeURIComponent(myJSON);
     let url = 'https://77.170.243.20?id=' + this.newFiles.id + '&canvas=' + canvasjson + '&repeat=false&remote=true';
-    this.snippetcode = '<iframe scrolling="no" width=' + this.canvas.width + ' height=' + this.canvas.height + ' src="' + url + '"></iframe>'
-
-    this.codesnippetService.confirm('Copy Code', 'Copy code and input in your website', this.snippetcode).subscribe()
+    this.snippetcode = '<iframe scrolling="no" width=' + this.canvas.width + ' height=' + this.canvas.height + ' src="' + url + '"></iframe>';
+    this.codesnippetService.confirm('Copy Code', 'Copy code and input in your website', this.snippetcode).subscribe();
   }
 
 
