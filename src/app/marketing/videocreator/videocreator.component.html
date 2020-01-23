@@ -1272,6 +1272,17 @@
                                 <input [(ngModel)]="whiteboardstokewidth" type="number" matInput placeholder="Stroke">
                             </mat-form-field>
 
+                            
+
+                            <mat-form-field>
+                                <mat-select [(value)]="shapedraw" placeholder="shape">
+                                    <mat-option value="">Draw</mat-option>
+                                    <mat-option value="rectangle">Rectangle</mat-option>
+                                    <mat-option value="circle">Circly</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+
+
                             <mat-form-field>
                                 <mat-select [(value)]="whiteboardsmoothing" placeholder="Smoothness">
                                     <mat-option value="1">1 - No smoothing</mat-option>
@@ -1327,9 +1338,9 @@
             </div>
 
 
-            <div style="margin: 15px; height: 50px;">
+            <!-- <div style="margin: 15px; height: 50px;">
                 <mat-progress-bar *ngIf="systembusy === true" mode="indeterminate"></mat-progress-bar>
-            </div>
+            </div> -->
            
 
         </div>
@@ -1344,11 +1355,14 @@
             <div *ngIf="selectedVecPath">
                 <div *ngIf="selectedelement.type === 'vector' || selectedelement.type === 'vectorcombi'" fxLayout="row"
                     class="vectorcontrols">
-                    
-
-                    <input fxFlex style="width: 20px; height: 20px;" [style.background]="colorpick"
-                    [cpToggle]="false" [(colorPicker)]="colorpick" [cpPosition]="'bottom'"
-                    (colorPickerChange)="setColorPath(colorpick)" [cpCancelButton]="true" [cpPresetLabel]="'Company colors'"
+                    <input fxFlex matInput autocomplete="off" style="width: 20px; height: 20px;" matTooltip="linethickness" [(ngModel)]="linewidth"
+                    (change)="setlinewidth(linewidth)">
+                    <input fxFlex autocomplete="off" style="width: 20px; height: 20px;" [style.background]="colorpickline" matTooltip="Line color"
+                    [cpToggle]="false" [(colorPicker)]="colorpickline" [cpPosition]="'bottom'"
+                    (colorPickerClose)="setColorPathLine(colorpickline)" [cpCancelButton]="true" [cpPresetLabel]="'Company colors'"
+                    [cpPresetColors]="[option.companyprimairycolor, option.companysecondarycolor, company.companyprimairycolor, company.companysecondarycolor]">
+                    <input fxFlex autocomplete="off" style="width: 20px; height: 20px;" [style.background]="colorpick" matTooltip="Fill color"
+                     [(colorPicker)]="colorpick" [cpPosition]="'bottom'" (colorPickerClose)="setColorPath(colorpick)" [cpPresetLabel]="'Company colors'"
                     [cpPresetColors]="[option.companyprimairycolor, option.companysecondarycolor, company.companyprimairycolor, company.companysecondarycolor]">
                     <mat-icon (click)="deleteSelectedVectorPath()" class="iconsize-18" matTooltip="Delete section">
                         delete</mat-icon>

@@ -23,6 +23,7 @@ import { ChartDataSets, ChartOptions, Chart } from 'chart.js';
 import { Color, BaseChartDirective, Label } from 'ng2-charts';
 import { ImageCroppedEvent } from 'ngx-image-cropper';
 import { codesnippetService } from '../../dialogsservice/codesnippet-dialog.component';
+import { isUndefined } from 'util';
 
 export class chart {
   type: 'chart';
@@ -317,6 +318,9 @@ export class VideocreatorComponent implements OnInit {
   }
 
   public colorpick = 'white';
+  public colorpickline = 'black';
+  public linewidth = 2;
+  public shapedraw = '';
   public vectorcombiedit = false;
   public whiteboard = false;
   public whiteboardcolor = "#000";
@@ -453,6 +457,7 @@ export class VideocreatorComponent implements OnInit {
         if (element !== this.selectedelement) {
           this.removeVectorPathSelection();
           this.removeVectorPathMultiSelection();
+          this.saveSVG();
           this.selectedelement = element;
         }
       } else {
@@ -563,6 +568,7 @@ export class VideocreatorComponent implements OnInit {
   }
 
   async detectchange() {
+    this.systembusy = false;
     if (this.whiteboard) { this.deletewhiteboard() }
     this.primairytimeline = gsap.timeline({ paused: true, reversed: true });
     console.log('run check', this.animationarray);
@@ -1061,7 +1067,6 @@ export class VideocreatorComponent implements OnInit {
 
   drawVector(vector, animation: vectoranimationtype) {
     return new Promise(async (resolve, reject) => {
-
       if (vector.vectors.length > 0) {
         let list = vector.vectors[0].pathids;
         let vecttmp = document.getElementById(vector.id);
@@ -1116,24 +1121,15 @@ export class VideocreatorComponent implements OnInit {
 
   onMoving(event, i, idy?) {
     let idel = this.animationarray[i];
+    if (idy) { idel = idel.vectors[idy] }
     idel.posy = event.y;
     idel.posx = event.x;
-    //let element = document.getElementById(idel.id);
-    // gsap.set(element, {
-    //   x: idel.posx,
-    //   y: idel.posy
-    // });
-    //if (idy) { idel = idel.vectors[idy] }
-    if (idy) { // idy is ony vectorcombi
-      this.onSetCombiBox(i) ;
-    }
-  }
-
-
-
-  async onMovingCombi(i) {
-
-
+    let element = document.getElementById(idel.id);
+    gsap.set(element, {
+      x: idel.posX,
+      y: idel.posY
+    });
+    if (idy) { this.onSetCombiBox(i) }
   }
 
   onSetCombiBox(i) {
@@ -1141,14 +1137,10 @@ export class VideocreatorComponent implements OnInit {
     let vectors = vectorcombi.vectors;
     let x = vectors[0].posx;
     let y = vectors[0].posy;
-    let xhigh = x;
-    let yhigh = y;
     let widthcalc = parseInt(vectors[0].style.width, 10) + x;
     let heightcalc = parseInt(vectors[0].style.height, 10) + y;
-    
     for (let k = 1; k < vectors.length; k++) {
-      if (xhigh > vectors[k].posx) { xhigh = vectors[k].posx }
-      if (yhigh > vectors[k].posy) { yhigh = vectors[k].posy }
+
       let width = parseInt(vectors[k].style.width, 10)
       let height = parseInt(vectors[k].style.height, 10)
       if (vectors[k].posx < x) { x = vectors[k].posx; }
@@ -1156,19 +1148,10 @@ export class VideocreatorComponent implements OnInit {
       if (width + vectors[k].posx > widthcalc) { widthcalc = width + vectors[k].posx }
       if (height + vectors[k].posy > heightcalc) { heightcalc = height + vectors[k].posy }
     }
-
     let widthcalcfin = widthcalc - x;
     let heightcalcfin = heightcalc - y;
-    for (let h = 1; h < vectors.length; h++) {
-      vectors[h].posx = vectors[h].posx - widthcalcfin;
-      vectors[h].posy = vectors[h].posy - heightcalcfin;
-    }
-
     vectorcombi.style.width = widthcalcfin + 'px';
     vectorcombi.style.height = heightcalcfin + 'px';
-    vectorcombi.posx = xhigh;
-    vectorcombi.posy = yhigh;
-    this.detectchange();
   }
 
   onResizing(e, i) {
@@ -1668,7 +1651,8 @@ export class VideocreatorComponent implements OnInit {
         var path = null;
         var strPath;
         var buffer = []; // Contains the last positions of the mouse cursor
-
+        let firstpoint;
+        let firstpointcircle;
         let w = this.canvas.width.replace('px', '');
         let h = this.canvas.height.replace('px', '');
         let newview = '0 0 ' + w + ' ' + h;
@@ -1683,22 +1667,54 @@ export class VideocreatorComponent implements OnInit {
           path.setAttribute("stroke-width", this.whiteboardstokewidth);
           buffer = [];
           var pt = getMousePosition(e);
+          console.log(e)
           appendToBuffer(pt);
-          strPath = "M" + pt.x + " " + pt.y;
+
+
+          firstpoint = { x: pt.x, y: pt.y };
+
+          switch (this.shapedraw) {
+            case 'circle':
+              strPath = 'M ' + rect.top + ' ' + rect.left +
+                'm -' + 0 + ', 0' +
+                'a' + 0 + ',' + 0 + ' 0 1,0' + 0 * 2 + ',0' +
+                'a' + 0 + ',' + 0 + ' 0 1,0 -' + 0 * 2 + ',0'
+              break;
+            case 'rectangle':
+              strPath = 'M ' + pt.x + ' ' + pt.y + ' H ' + pt.x + ' V ' + pt.y + ' H ' + pt.x + ' Z';
+              //strPath = 'M ' + pt.x + ' ' + pt.y + ' H ' + pt.x + ' V ' + pt.y + ' H ' + 'Z';
+              break;
+            default:
+              strPath = "M" + pt.x + " " + pt.y;
+          }
+
+          //strPath = "M" + pt.x + " " + pt.y;
           path.setAttribute("d", strPath);
           svgElement.appendChild(path);
         });
 
-        svgElement.addEventListener("mousemove", function (e) {
+        svgElement.addEventListener("mousemove", (e) => {
           if (path) {
-            appendToBuffer(getMousePosition(e));
-            updateSvgPath();
+            switch (this.shapedraw) {
+              case 'circle':
+                updateSvgPathCircle(e);
+                break;
+              case 'rectangle':
+                updateSvgPathRect(e);
+                break;
+              default:
+                appendToBuffer(getMousePosition(e));
+                updateSvgPath();
+            }
           }
         });
 
         svgElement.addEventListener("mouseup", function () {
           if (path) {
             path = null;
+          }
+          if (firstpoint) {
+            firstpoint = null;
           }
         });
 
@@ -1715,6 +1731,27 @@ export class VideocreatorComponent implements OnInit {
             buffer.shift();
           }
         };
+
+        var updateSvgPathCircle = function (e) {
+          var pl = svgElement.getElementsByTagName('path').length;
+          let ptl = getMousePosition(e);
+          ptl.x = ptl.x / 1.5;
+          ptl.y = ptl.y / 1.5;
+          strPath = 'M ' + firstpoint.x + ' ' + firstpoint.y +
+            'm ' + ptl.x / (-2) + ', 0' +
+            'a' + ptl.x / 2 + ',' + ptl.x / 2 + ' 0 1,0 ' + ptl.x + ',0' +
+            'a' + ptl.x / 2 + ',' + ptl.x / 2 + ' 0 1,0 ' + ptl.x * (-1) + ',0'
+          path.setAttribute("d", strPath);
+          path.setAttribute("id", pl + 1);
+        }
+
+        var updateSvgPathRect = function (e) {
+          var pl = svgElement.getElementsByTagName('path').length;
+          let ptl = getMousePosition(e);
+          strPath = 'M ' + firstpoint.x + ' ' + firstpoint.y + ' H ' + ptl.x + ' V ' + ptl.y + ' H ' + firstpoint.x + ' Z';
+          path.setAttribute("d", strPath);
+          path.setAttribute("id", pl + 1);
+        }
 
         // Calculate the average point, starting at offset in the buffer
         var getAveragePoint = function (offset) {
@@ -1765,6 +1802,14 @@ export class VideocreatorComponent implements OnInit {
 
   async savewhiteboard() {
     var svgElement = document.getElementById("svgElement");
+
+    // convert to proper type
+    let svg = svgElement as unknown;
+    let svg2 = svg as SVGAElement;
+    var rect = svg2.getBBox();
+    let height = rect.height + 'px';
+    let width = rect.width + 'px';
+
     let newsvg = svgElement.outerHTML;
     let newelnr;
     if (this.animationarray.length === -1) {
@@ -1785,13 +1830,12 @@ export class VideocreatorComponent implements OnInit {
       pathidarfinal[i] = pathidarfinal[i].replace('id=', '');
       pathidarfinal[i] = pathidarfinal[i].replace(/"/g, '')
     }
-
     this.addNewVector(
       null,
-      this.canvas.height,
-      this.canvas.width,
+      height,
+      width,
       newvectstring,
-      0, 0, pathidarfinal);
+      rect.x, rect.y, pathidarfinal);
 
     this.deletewhiteboard()
   }
@@ -2648,8 +2692,10 @@ export class VideocreatorComponent implements OnInit {
   }
 
   clickVectorPaths(e) {
-    console.log(e);
+    //console.log(e);
     this.colorpick = e.target.style.fill;
+    this.colorpickline = e.target.style.stroke;
+    this.linewidth = e.target.style['stroke-width'];
     if (this.dragselectvectpath === true && this.dragselectiontrue === false) {
       this.dragSelect(this.selectedelement.id);
     } else if (this.dragselectiontrue === false) {
@@ -2750,6 +2796,7 @@ export class VideocreatorComponent implements OnInit {
     let svgstring;
     let pathidar = [];
 
+
     if (this.selectmultiplepaths || this.dragselectvectpath) {
       // this.removeVectorPathMultiSelection();
       console.log('seperate multipaths', this.selectedVecPathmultiple)
@@ -2758,6 +2805,14 @@ export class VideocreatorComponent implements OnInit {
       let arraylenght = this.selectedVecPathmultiple.length - 1;
       this.selectedVecPathmultiple.forEach(element => {
         //console.log(element);
+
+
+        let svg = element as unknown;
+        let svg2 = svg as SVGAElement;
+        var rect = svg2.getBBox();
+        let height = rect.height + 'px';
+        let width = rect.width + 'px';
+
         let idx = this.animationarray.length + 1;
         let ind = i + 1;
         let newid = idx + 'elvect-' + ind;
@@ -2773,7 +2828,7 @@ export class VideocreatorComponent implements OnInit {
         pathidar.push(newid);
         if (i === arraylenght) {
           svgstring = svgarray.join('');
-          this.createnewsvg(svgstring, pathidar);
+          this.createnewsvg(svgstring, pathidar, rect, height, width);
           this.removeVectorPathMultiSelection();
         }
         ++i
@@ -2781,6 +2836,13 @@ export class VideocreatorComponent implements OnInit {
 
     } else {
       let svgel = this.selectedVecPath;
+      
+      let svg = svgel as unknown;
+      let svg2 = svg as SVGAElement;
+      var rect = svg2.getBBox();
+      let height = rect.height + 'px';
+      let width = rect.width + 'px';
+      
       this.deletePathSelClass(svgel);
       let oldid = svgel.getAttribute('id');
       let s = new XMLSerializer(); // convert to string
@@ -2792,12 +2854,13 @@ export class VideocreatorComponent implements OnInit {
       // let cleanstring = finalstring.replace('outline: 1px dotted green;', '');
       finalstring.replace(oldid, newid);
       pathidar.push(newid);
-      this.createnewsvg(finalstring, pathidar);
+      this.createnewsvg(svgstring, pathidar, rect, height, width);
       this.removeVectorPathSelection();
     }
   }
 
   setColorPath(color) {
+    // colorpick
     if (this.selectmultiplepaths || this.dragselectvectpath) {
       this.selectedVecPathmultiple.forEach(element => {
         element.style.fill = color;
@@ -2806,26 +2869,52 @@ export class VideocreatorComponent implements OnInit {
       this.selectedVecPath.setAttribute('fill', color);
       this.selectedVecPath.style.fill = color;
     }
+  }
+
+  setColorPathLine(color) {
+    // colorpickline
+    if (this.selectmultiplepaths || this.dragselectvectpath) {
+      this.selectedVecPathmultiple.forEach(element => {
+        element.style.stroke = color;
+      })
+    } else {
+      this.selectedVecPath.setAttribute('stroke', color);
+      this.selectedVecPath.style.stroke = color;
+    }
+  }
+
+  setlinewidth(linewidth) {
+    //console.log(linewidth, 'line w')
+    if (this.selectmultiplepaths || this.dragselectvectpath) {
+      this.selectedVecPathmultiple.forEach(element => {
+        element.style['stroke-width'] = linewidth;
+      })
+    } else {
+      this.selectedVecPath.setAttribute('stroke-width', linewidth);
+      this.selectedVecPath.style['stroke-width'] = linewidth;
+    }
+  }
+
+  saveSVG() {
     this.removeVectorPathMultiSelection(); // remove selection to prevent keeping class.. 
     this.removeVectorPathSelection();
     let idnew = document.getElementById(this.selectedelement.id); // get document
     let vectstring = idnew.innerHTML;
     this.selectedelement.svgcombi = vectstring;
-
   }
 
-  async createnewsvg(svgstring, pathidar) {
-    console.log('start new svg')
+  async createnewsvg(svgstring, pathidar, bbox, height, width) {
+    //console.log('start new svg')
     let h = 500, w = 500, x = 0, y = 0;
-    let element = document.getElementById(this.selectedelement.id);
-    let originalsize = await this.getViewBox(this.selectedelement.id);
-    //console.log(originalsize);
-    if (originalsize) {
-      x = originalsize['x'];
-      y = originalsize['y'];
-      h = originalsize['width']; // * newscale1;
-      w = originalsize['height']; // * newscale1;
-    }
+      let element = document.getElementById(this.selectedelement.id);
+      let originalsize = await this.getViewBox(this.selectedelement.id);
+      //console.log(originalsize);
+      if (originalsize) {
+        x = originalsize['x'];
+        y = originalsize['y'];
+        h = originalsize['width']; // * newscale1;
+        w = originalsize['height']; // * newscale1;
+      }
 
     let newsvgarray = [
       '<svg xmlns="http://www.w3.org/2000/svg" ' +
@@ -2834,7 +2923,7 @@ export class VideocreatorComponent implements OnInit {
       svgstring, '</svg>'
     ]
     let newsvg = newsvgarray.join('');
-    this.addNewVector(null, this.selectedelement.style.height, this.selectedelement.style.width, newsvg, this.selectedelement.posx, this.selectedelement.posy, pathidar); //, originid
+    this.addNewVector(null, height, width, newsvg, bbox.x, bbox.y, pathidar); //, originid
     this.removeVectorPathMultiSelection()
     this.removeVectorPathSelection();
 
@@ -3209,7 +3298,7 @@ export class VideocreatorComponent implements OnInit {
     let canvasjson = encodeURIComponent(myJSON);
     let url = 'https://77.170.243.20?id=' + this.newFiles.id + '&canvas=' + canvasjson + '&repeat=false&remote=true';
     this.snippetcode = '<iframe scrolling="no" width=' + this.canvas.width + ' height=' + this.canvas.height + ' src="' + url + '"></iframe>';
-    this.codesnippetService.confirm('Copy Code', 'Copy code and input in your website', this.snippetcode).subscribe();
+    this.codesnippetService.confirm('Copy Code', 'Copy code and input in your website', this.snippetcode).subscribe()
   }
 
 
