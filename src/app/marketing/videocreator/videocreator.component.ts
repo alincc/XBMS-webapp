@@ -1,10 +1,9 @@
-import { Component, OnInit, Input, SimpleChange, SimpleChanges, NgZone } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, Input, SimpleChange, SimpleChanges, NgZone } from '@angular/core';
 import { ViewChild, ElementRef } from '@angular/core';
 import {
   Relations, RelationsApi, BASE_URL, CompanyApi, Company, Account,
   Files, FilesApi, ContainerApi
 } from '../../shared';
-import { Subscription } from 'rxjs';
 import { MediaObserver, MediaChange } from '@angular/flex-layout';
 import { gsap } from 'assets/js/all';
 import { Physics2DPlugin, InertiaPlugin, ScrambleTextPlugin, SplitText, DrawSVGPlugin, MorphSVGPlugin, MotionPathPlugin, MotionPathHelper, Draggable } from 'assets/js/all';
@@ -23,7 +22,10 @@ import { ChartDataSets, ChartOptions, Chart } from 'chart.js';
 import { Color, BaseChartDirective, Label } from 'ng2-charts';
 import { ImageCroppedEvent } from 'ngx-image-cropper';
 import { codesnippetService } from '../../dialogsservice/codesnippet-dialog.component';
-import { isUndefined } from 'util';
+//import {Observable, of, Subject} from 'rxjs';
+import { debounceTime } from 'rxjs/operators';
+import { HostListener } from '@angular/core';
+import { Subject, Subscription } from 'rxjs';
 
 export class chart {
   type: 'chart';
@@ -396,11 +398,22 @@ export class VideocreatorComponent implements OnInit {
   public dragAreaOverlay;
   public snippetcode: string;
   public systembusy = false;
+  public historynames = [];
+  public currenthistoryversion = 0;
+
+  @Input() debounceTime = 200;
+  @Output() debounceKey = new EventEmitter();
+  private keyinput = new Subject();
+  private subscription: Subscription;
+
+  @Output() debounceClick = new EventEmitter();
+  private clicks = new Subject();
+  private subscriptionclick: Subscription;
 
   constructor(
     public codesnippetService: codesnippetService,
     public dialog: MatDialog,
-    private sanitizer: DomSanitizer,
+    //private sanitizer: DomSanitizer,
     private relationsApi: RelationsApi,
     private filesApi: FilesApi,
     public snackBar: MatSnackBar,
@@ -413,8 +426,79 @@ export class VideocreatorComponent implements OnInit {
     });
   }
 
+  @HostListener('document:keydown', ['$event'])
+  onKeydownHandler(event: KeyboardEvent) {
+    event.preventDefault();
+    event.stopPropagation();
+    this.keyinput.next(event);
+  }
+
+  @HostListener('click', ['$event'])
+  clickEvent(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    this.clicks.next(event);
+  }
   ngOnInit() {
-    //this.addNewShape();
+    this.subscription = this.keyinput
+      .pipe(debounceTime(this.debounceTime))
+      .subscribe(e => this.KeyPress(e));
+
+    this.subscriptionclick = this.clicks.pipe(
+      debounceTime(this.debounceTime)
+    ).subscribe(e => this.saveToLocalStorageHistory());
+  }
+
+  KeyPress(evtobj) {
+    if (evtobj.keyCode == 90 && evtobj.ctrlKey) { this.historyBack() }
+    if (evtobj.keyCode == 89 && evtobj.ctrlKey) { this.historyForward() }
+  }
+
+  saveToLocalStorageHistory(setnr?) {
+    // check last with new is similar
+    console.log('save new to local storage');
+    let name, histlast;
+    // check if is actually a newer version
+    let jsonaniarray = JSON.stringify(this.animationarray);
+    let jsonaniarraylast = localStorage.getItem(this.historynames[this.currenthistoryversion])
+    if (jsonaniarray !== jsonaniarraylast) {
+      if (this.historynames.length > 0) {
+        histlast = this.historynames.length - 1; // get the last array number
+        this.currenthistoryversion = this.historynames[histlast] + 1;
+      } else {
+        histlast = 0;
+        this.currenthistoryversion = 0;
+      }
+
+      this.historynames.push(this.currenthistoryversion);
+      name = this.currenthistoryversion.toString();
+      localStorage.setItem(name, jsonaniarray);
+    }
+  }
+
+  historyBack() {
+    console.log('ctrl-z', this.currenthistoryversion)
+    // if not last or not empty and if is new; 
+    let count, name;
+    let histlast = this.historynames.length - 2; // array num -1(one back)
+    if (this.currenthistoryversion > this.historynames[0]) {
+      //this.saveToLocalStorageHistory(); not really necessary 
+      this.currenthistoryversion = this.historynames[histlast];
+      name = this.currenthistoryversion.toString();
+      this.animationarray = JSON.parse(localStorage.getItem(name));
+    }
+  }
+
+  historyForward() {
+    console.log('ctrl-y', this.currenthistoryversion)
+    // if not latest or not empty 
+    let histlast = this.historynames.length - 1;
+    if (this.currenthistoryversion !== this.historynames[histlast]) {
+      let count, name;
+      this.currenthistoryversion = this.currenthistoryversion - 1;
+      name = this.currenthistoryversion.toString();
+      this.animationarray = JSON.parse(localStorage.getItem(name));
+    }
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -568,6 +652,7 @@ export class VideocreatorComponent implements OnInit {
   }
 
   async detectchange() {
+    //this.saveToLocalStorageHistory()
     this.systembusy = false;
     if (this.whiteboard) { this.deletewhiteboard() }
     this.primairytimeline = gsap.timeline({ paused: true, reversed: true });
@@ -1101,18 +1186,22 @@ export class VideocreatorComponent implements OnInit {
 
   onMovingAnimationChart(event, i, selectedelement) {
     selectedelement.start_time = event.x / 10;
+    //this.saveToLocalStorageHistory();   
   }
 
   onResizeAnimationChart(event, iv, selectedelement) {
     selectedelement.lineChartOptions.animation.duration = event.size.width * 100;
+    //this.saveToLocalStorageHistory();   
   }
 
   onMovingAnimationEl(event, i, animation) {
     animation.start_time = event.x / 10;
+    //this.saveToLocalStorageHistory();   
   }
 
   onResizeAnimationEl(event, i, animation) {
     animation.duration = event.size.width / 10;
+    //this.saveToLocalStorageHistory();   
   }
 
   onMovingTimeline(event, i) {
@@ -1130,6 +1219,7 @@ export class VideocreatorComponent implements OnInit {
       y: idel.posY
     });
     if (idy) { this.onSetCombiBox(i) }
+    //this.saveToLocalStorageHistory();   
   }
 
   onSetCombiBox(i) {
@@ -2217,7 +2307,7 @@ export class VideocreatorComponent implements OnInit {
           total.push(stylstr[0].outerHTML);
         }
 
-        //console.log(idnew);
+        console.log(idnew);
 
         let vectstring;
         if (idnew === null) {
@@ -2836,13 +2926,13 @@ export class VideocreatorComponent implements OnInit {
 
     } else {
       let svgel = this.selectedVecPath;
-      
+
       let svg = svgel as unknown;
       let svg2 = svg as SVGAElement;
       var rect = svg2.getBBox();
       let height = rect.height + 'px';
       let width = rect.width + 'px';
-      
+
       this.deletePathSelClass(svgel);
       let oldid = svgel.getAttribute('id');
       let s = new XMLSerializer(); // convert to string
@@ -2906,15 +2996,15 @@ export class VideocreatorComponent implements OnInit {
   async createnewsvg(svgstring, pathidar, bbox, height, width) {
     //console.log('start new svg')
     let h = 500, w = 500, x = 0, y = 0;
-      let element = document.getElementById(this.selectedelement.id);
-      let originalsize = await this.getViewBox(this.selectedelement.id);
-      //console.log(originalsize);
-      if (originalsize) {
-        x = originalsize['x'];
-        y = originalsize['y'];
-        h = originalsize['width']; // * newscale1;
-        w = originalsize['height']; // * newscale1;
-      }
+    let element = document.getElementById(this.selectedelement.id);
+    let originalsize = await this.getViewBox(this.selectedelement.id);
+    //console.log(originalsize);
+    if (originalsize) {
+      x = originalsize['x'];
+      y = originalsize['y'];
+      h = originalsize['width']; // * newscale1;
+      w = originalsize['height']; // * newscale1;
+    }
 
     let newsvgarray = [
       '<svg xmlns="http://www.w3.org/2000/svg" ' +
