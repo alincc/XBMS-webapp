@@ -401,7 +401,7 @@ export class VideocreatorComponent implements OnInit {
   public historynames = [];
   public currenthistoryversion = 0;
 
-  @Input() debounceTime = 200;
+  @Input() debounceTime = 50;
   @Output() debounceKey = new EventEmitter();
   private keyinput = new Subject();
   private subscription: Subscription;
@@ -428,15 +428,11 @@ export class VideocreatorComponent implements OnInit {
 
   @HostListener('document:keydown', ['$event'])
   onKeydownHandler(event: KeyboardEvent) {
-    event.preventDefault();
-    event.stopPropagation();
     this.keyinput.next(event);
   }
 
-  @HostListener('click', ['$event'])
+  @HostListener('mouseup', ['$event'])
   clickEvent(event) {
-    event.preventDefault();
-    event.stopPropagation();
     this.clicks.next(event);
   }
   ngOnInit() {
@@ -450,53 +446,45 @@ export class VideocreatorComponent implements OnInit {
   }
 
   KeyPress(evtobj) {
-    if (evtobj.keyCode == 90 && evtobj.ctrlKey) { this.historyBack() }
-    if (evtobj.keyCode == 89 && evtobj.ctrlKey) { this.historyForward() }
+    //console.log(evtobj)
+    if (evtobj.keyCode == 90 && evtobj.ctrlKey) { this.historyBack() } // windows
+    else if (evtobj.keyCode == 89 && evtobj.ctrlKey) { this.historyForward() } // windows
+    else if (evtobj.keyCode == 90 && evtobj.metaKey && !evtobj.shiftKey) { this.historyBack() } // mac
+    else if (evtobj.keyCode == 90 && evtobj.metaKey && evtobj.shiftKey) { this.historyForward() } // mac
+    else {this.keyinput.next(evtobj)}
   }
 
   saveToLocalStorageHistory(setnr?) {
-    // check last with new is similar
-    console.log('save new to local storage');
-    let name, histlast;
-    // check if is actually a newer version
+    // check if is actually a newer version check last with new is similar
+    // triggers on mouseup event set debounce time if triggered to fast see ngoninit
     let jsonaniarray = JSON.stringify(this.animationarray);
     let jsonaniarraylast = localStorage.getItem(this.historynames[this.currenthistoryversion])
     if (jsonaniarray !== jsonaniarraylast) {
-      if (this.historynames.length > 0) {
-        histlast = this.historynames.length - 1; // get the last array number
-        this.currenthistoryversion = this.historynames[histlast] + 1;
-      } else {
-        histlast = 0;
-        this.currenthistoryversion = 0;
-      }
-
+      this.currenthistoryversion = this.currenthistoryversion + 1;
+      //console.log('save new to local storage');
       this.historynames.push(this.currenthistoryversion);
-      name = this.currenthistoryversion.toString();
+      let name = this.currenthistoryversion.toString();
       localStorage.setItem(name, jsonaniarray);
     }
   }
 
   historyBack() {
-    console.log('ctrl-z', this.currenthistoryversion)
+    //console.log('ctrl-z', this.currenthistoryversion)
     // if not last or not empty and if is new; 
-    let count, name;
-    let histlast = this.historynames.length - 2; // array num -1(one back)
-    if (this.currenthistoryversion > this.historynames[0]) {
-      //this.saveToLocalStorageHistory(); not really necessary 
-      this.currenthistoryversion = this.historynames[histlast];
-      name = this.currenthistoryversion.toString();
+      if (this.currenthistoryversion !== 0) {
+      this.currenthistoryversion = this.currenthistoryversion - 1;
+      let name = this.currenthistoryversion.toString();
       this.animationarray = JSON.parse(localStorage.getItem(name));
     }
   }
 
   historyForward() {
-    console.log('ctrl-y', this.currenthistoryversion)
+    //console.log('ctrl-y', this.currenthistoryversion)
     // if not latest or not empty 
     let histlast = this.historynames.length - 1;
     if (this.currenthistoryversion !== this.historynames[histlast]) {
-      let count, name;
-      this.currenthistoryversion = this.currenthistoryversion - 1;
-      name = this.currenthistoryversion.toString();
+      this.currenthistoryversion = this.currenthistoryversion + 1;
+      let name = this.currenthistoryversion.toString();
       this.animationarray = JSON.parse(localStorage.getItem(name));
     }
   }
@@ -696,9 +684,12 @@ export class VideocreatorComponent implements OnInit {
           if (textani.textanimationtype) { this.createSplitText(elm, textani) }
         }
       }
-
       this.addEffect(elm); //normal animatoin
-      this.createRotate(elm);
+     //setTimeout(() => {
+        this.setPosition(elm);
+        //this.createRotate(elm);
+      //}, 500);
+
     }
 
   }
@@ -1213,13 +1204,36 @@ export class VideocreatorComponent implements OnInit {
     if (idy) { idel = idel.vectors[idy] }
     idel.posy = event.y;
     idel.posx = event.x;
-    let element = document.getElementById(idel.id);
-    gsap.set(element, {
-      x: idel.posX,
-      y: idel.posY
-    });
+    //let element = document.getElementById(idel.id);
+    this.setPosition(idel);
+    this.createRotate(idel);
     if (idy) { this.onSetCombiBox(i) }
-    //this.saveToLocalStorageHistory();   
+  }
+
+  setPosition(idel){
+    console.log('set pos', idel)
+    let elm = document.getElementById(idel.id);
+    this.primairytimeline.set(elm, {
+      x: idel.posX,
+      y: idel.posY,
+    });
+    this.primairytimeline.set(elm, {
+      rotation: idel.rotation
+    });
+  }
+
+  createRotate(idel) {
+    let element = document.getElementById(idel.id);
+    let handle = document.getElementById(idel.id + 'rotatehandle');
+    Draggable.create(element, {
+      type: "rotation",
+      trigger: handle,
+      onDragEndParams: [idel],
+      onDragEnd:
+        function (idl) {
+          idl.rotation = this.rotation;
+        }
+    });
   }
 
   onSetCombiBox(i) {
@@ -2468,7 +2482,7 @@ export class VideocreatorComponent implements OnInit {
       container.appendChild(sun);
     }
 
-    const svgurl = 'https://xbmsapi.eu-gb.mybluemix.net/api/Containers/5a2a4e745c2a7a06c443533f/download/2x0vzs.svg';
+    const svgurl = 'https://api.xbms.io/api/Containers/5a2a4e745c2a7a06c443533f/download/2x0vzs.svg';
 
     for (let i = 0; i < total; i++) {
       let Div = document.createElement('div');
@@ -2704,19 +2718,7 @@ export class VideocreatorComponent implements OnInit {
     });
   }
 
-  createRotate(idel) {
-    let element = document.getElementById(idel.id);
-    let handle = document.getElementById(idel.id + 'rotatehandle');
-    Draggable.create(element, {
-      type: "rotation",
-      trigger: handle,
-      onDragEndParams: [idel],
-      onDragEnd:
-        function (idl) {
-          idl.rotation = this.rotation;
-        }
-    });
-  }
+
 
   deleteWhitespaceSVG(): void {
     this.removeVectorPathSelection();
@@ -3039,7 +3041,7 @@ export class VideocreatorComponent implements OnInit {
           // set download url or actual url for publishing
           let imgurl = BASE_URL + '/api/Containers/' + this.option.id + '/download/' + name;
           let setimgurl: string;
-          setimgurl = 'https://xbmsapi.eu-gb.mybluemix.net/api/Containers/' + this.option.id + '/download/' + name;
+          setimgurl = 'https://api.xmbs.io/api/Containers/' + this.option.id + '/download/' + name;
           imgurl = imgurl.replace(/ /g, '-'),
             // define the file settings
             this.newFiles.name = name,
@@ -3098,7 +3100,7 @@ export class VideocreatorComponent implements OnInit {
 
     if (this.elementname === undefined) { this.elementname = Math.random().toString(36).substring(7); }
     let imgurl = BASE_URL + '/api/Containers/' + this.option.id + '/download/' + this.elementname;
-    let setimgurl = 'https://xbmsapi.eu-gb.mybluemix.net/api/Containers/' + this.option.id + '/download/' + this.elementname;
+    let setimgurl = 'https://api.xbms.io.mybluemix.net/api/Containers/' + this.option.id + '/download/' + this.elementname;
     imgurl = imgurl.replace(/ /g, '-'),
       // define the file settings
       this.newFiles.name = this.elementname;
@@ -3386,7 +3388,7 @@ export class VideocreatorComponent implements OnInit {
     this.saveVideo();
     let myJSON = JSON.stringify(this.canvas);
     let canvasjson = encodeURIComponent(myJSON);
-    let url = 'https://77.170.243.20?id=' + this.newFiles.id + '&canvas=' + canvasjson + '&repeat=false&remote=true';
+    let url = 'https://dlcr.xbms.io?id=' + this.newFiles.id + '&canvas=' + canvasjson + '&repeat=false&remote=true';
     this.snippetcode = '<iframe scrolling="no" width=' + this.canvas.width + ' height=' + this.canvas.height + ' src="' + url + '"></iframe>';
     this.codesnippetService.confirm('Copy Code', 'Copy code and input in your website', this.snippetcode).subscribe()
   }

@@ -1445,7 +1445,7 @@
                     <div *ngIf="element.type === 'shape'" id="{{element.id}}" ngDraggable
                         [style.width]="element.style.width" [style.height]="element.style.height"
                         (movingOffset)="onMoving($event, i)" [preventDefaultEvent]="true"
-                        [style.transform]="'translate(' + element.posx + 'px, ' + element.posy +'px) rotate(' + element.rotation + 'deg)' | safe: 'style'"
+                       
                         (rzResizing)="onResizing($event, i)" ngResizable [rzAspectRatio]="element.shape === 'heart'"
                         [ngStyle]="element.style" [className]="element.style.class">
                         <mat-icon class="iconsize-4" class="rotatehandle" #rotatehandle
