@@ -1214,8 +1214,8 @@ export class VideocreatorComponent implements OnInit {
     console.log('set pos', idel)
     let elm = document.getElementById(idel.id);
     this.primairytimeline.set(elm, {
-      x: idel.posX,
-      y: idel.posY,
+      x: idel.posx,
+      y: idel.posy,
     });
     this.primairytimeline.set(elm, {
       rotation: idel.rotation
