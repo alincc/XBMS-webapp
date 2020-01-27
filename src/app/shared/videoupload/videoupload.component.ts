@@ -69,13 +69,6 @@ export class VideouploadComponent implements OnInit {
     });
     this.uploader.onWhenAddingFileFailed = (item, filter, options) => this.onWhenAddingFileFailed(item, filter, options);
     this.uploader.clearQueue();
-    this.relationsApi.getFiles(this.option.id,
-      {
-        where: { type: 'video' }
-      }).subscribe((files: Files[]) => {
-        this.videos = files
-      });
-
     this.uploader.onAfterAddingAll = (files) => {
       files.forEach(fileItem => {
         fileItem.file.name = fileItem.file.name.replace(/ /g, '-');
@@ -109,6 +102,14 @@ export class VideouploadComponent implements OnInit {
   }
 
   onOpenGallery() {
+
+    this.relationsApi.getFiles(this.option.id,
+      {
+        where: { type: 'video' }
+      }).subscribe((files: Files[]) => {
+        this.videos = files
+      });
+
     this.showdropbox = false;
     // this.showgallery = true;
     if (this.Files === undefined) {

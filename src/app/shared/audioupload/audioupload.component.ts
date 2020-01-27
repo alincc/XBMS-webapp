@@ -69,12 +69,7 @@ export class AudiouploadComponent implements OnInit {
     });
     this.uploader.onWhenAddingFileFailed = (item, filter, options) => this.onWhenAddingFileFailed(item, filter, options);
     this.uploader.clearQueue();
-    this.relationsApi.getFiles(this.option.id,
-      {
-        where: { type: 'audio' }
-      }).subscribe((files: Files[]) => {
-        this.audios = files
-      });
+
 
     this.uploader.onAfterAddingAll = (files) => {
       files.forEach(fileItem => {
@@ -109,6 +104,14 @@ export class AudiouploadComponent implements OnInit {
   }
 
   onOpenGallery() {
+
+    this.relationsApi.getFiles(this.option.id,
+      {
+        where: { type: 'audio' }
+      }).subscribe((files: Files[]) => {
+        this.audios = files
+      });
+
     this.showdropbox = false;
     // this.showgallery = true;
     if (this.Files === undefined) {

@@ -139,10 +139,12 @@
                     <label *ngIf="canvas['background-image']">{{ canvas['background-image'] | fileName }}</label>
                 </div>
                 <mat-form-field>
-                <input matInput placeholder="Background color" [(ngModel)]="canvas['background-color']" style="width: 60px; height: 30px; z-index: 10" [style.background]="canvas['background-color']"
-                    [cpToggle]="false" [(colorPicker)]="canvas['background-color']" [cpPosition]="'auto'"
-                    (colorPickerChange)="onchangecanvas()" [cpCancelButton]="true" [cpPresetLabel]="'Company colors'"
-                    [cpPresetColors]="[option.companyprimairycolor, option.companysecondarycolor, company.companyprimairycolor, company.companysecondarycolor]">
+                    <input matInput placeholder="Background color" [(ngModel)]="canvas['background-color']"
+                        style="width: 60px; height: 30px; z-index: 10" [style.background]="canvas['background-color']"
+                        [cpToggle]="false" [(colorPicker)]="canvas['background-color']" [cpPosition]="'auto'"
+                        (colorPickerChange)="onchangecanvas()" [cpCancelButton]="true"
+                        [cpPresetLabel]="'Company colors'"
+                        [cpPresetColors]="[option.companyprimairycolor, option.companysecondarycolor, company.companyprimairycolor, company.companysecondarycolor]">
                 </mat-form-field>
                 <mat-slide-toggle fxFlex *ngIf="canvas.videourl" [(ngModel)]="canvas.loop">Loop</mat-slide-toggle>
 
@@ -1272,7 +1274,7 @@
                                 <input [(ngModel)]="whiteboardstokewidth" type="number" matInput placeholder="Stroke">
                             </mat-form-field>
 
-                            
+
 
                             <mat-form-field>
                                 <mat-select [(value)]="shapedraw" placeholder="shape">
@@ -1341,7 +1343,7 @@
             <!-- <div style="margin: 15px; height: 50px;">
                 <mat-progress-bar *ngIf="systembusy === true" mode="indeterminate"></mat-progress-bar>
             </div> -->
-           
+
 
         </div>
     </div>
@@ -1355,15 +1357,18 @@
             <div *ngIf="selectedVecPath">
                 <div *ngIf="selectedelement.type === 'vector' || selectedelement.type === 'vectorcombi'" fxLayout="row"
                     class="vectorcontrols">
-                    <input fxFlex matInput autocomplete="off" style="width: 20px; height: 20px;" matTooltip="linethickness" [(ngModel)]="linewidth"
-                    (change)="setlinewidth(linewidth)">
-                    <input fxFlex autocomplete="off" style="width: 20px; height: 20px;" [style.background]="colorpickline" matTooltip="Line color"
-                    [cpToggle]="false" [(colorPicker)]="colorpickline" [cpPosition]="'bottom'"
-                    (colorPickerClose)="setColorPathLine(colorpickline)" [cpCancelButton]="true" [cpPresetLabel]="'Company colors'"
-                    [cpPresetColors]="[option.companyprimairycolor, option.companysecondarycolor, company.companyprimairycolor, company.companysecondarycolor]">
-                    <input fxFlex autocomplete="off" style="width: 20px; height: 20px;" [style.background]="colorpick" matTooltip="Fill color"
-                     [(colorPicker)]="colorpick" [cpPosition]="'bottom'" (colorPickerClose)="setColorPath(colorpick)" [cpPresetLabel]="'Company colors'"
-                    [cpPresetColors]="[option.companyprimairycolor, option.companysecondarycolor, company.companyprimairycolor, company.companysecondarycolor]">
+                    <input fxFlex matInput autocomplete="off" style="width: 20px; height: 20px;"
+                        matTooltip="linethickness" [(ngModel)]="linewidth" (change)="setlinewidth(linewidth)">
+                    <input fxFlex autocomplete="off" style="width: 20px; height: 20px;"
+                        [style.background]="colorpickline" matTooltip="Line color" [cpToggle]="false"
+                        [(colorPicker)]="colorpickline" [cpPosition]="'bottom'"
+                        (colorPickerClose)="setColorPathLine(colorpickline)" [cpCancelButton]="true"
+                        [cpPresetLabel]="'Company colors'"
+                        [cpPresetColors]="[option.companyprimairycolor, option.companysecondarycolor, company.companyprimairycolor, company.companysecondarycolor]">
+                    <input fxFlex autocomplete="off" style="width: 20px; height: 20px;" [style.background]="colorpick"
+                        matTooltip="Fill color" [(colorPicker)]="colorpick" [cpPosition]="'bottom'"
+                        (colorPickerClose)="setColorPath(colorpick)" [cpPresetLabel]="'Company colors'"
+                        [cpPresetColors]="[option.companyprimairycolor, option.companysecondarycolor, company.companyprimairycolor, company.companysecondarycolor]">
                     <mat-icon (click)="deleteSelectedVectorPath()" class="iconsize-18" matTooltip="Delete section">
                         delete</mat-icon>
                     <mat-icon (click)="deleteWhitespaceSVG()" class="icon-label" class="iconsize-18"
@@ -1411,19 +1416,18 @@
             <div *ngIf="animationarray && changenow" #myBounds id="myBounds"
                 [style.background-image]="canvas['background-image']"
                 style="overflow: hidden; background-color: transparent;">
-                <div *ngFor="let element of animationarray; let i = index" (click)="onSelectElement(element)"
+                <div *ngFor="let element of animationarray; let i = index" (click)="onSelectElement($event, element)"
+                    (mousedown)="setDraggable($event, element)"
                     style="background-color: transparent; overflow: hidden;">
 
                     <div *ngIf="element.motionpath" class="path-edit" [innerHTML]="element.motionpath | safeHtml"
                         [style.width]="canvas.width" [style.height]="canvas.height"
                         [ngStyle]="{'z-index':editpath === true && element === selectedelement ? 1000 : -1 }">
                     </div>
-                    <div *ngIf="element.type === 'image'" id="{{element.id}}" [attr.id]="element.id" ngDraggable
+                    <div *ngIf="element.type === 'image'" id="{{element.id}}" [attr.id]="element.id"
                         [ngStyle]="element.style" [style.width]="element.style.width"
-                        [style.height]="element.style.height" (movingOffset)="onMoving($event, i)"
-                        [preventDefaultEvent]="true"
-                        [style.transform]="'translate(' + element.posx + 'px, ' + element.posy +'px) rotate(' + element.rotation + 'deg)' | safe: 'style'"
-                        (rzResizing)="onResizing($event, i)" ngResizable [rzAspectRatio]="true">
+                        [style.height]="element.style.height" (rzResizing)="onResizing($event, i)" ngResizable
+                        [rzAspectRatio]="true">
                         <img *ngIf="element.src" style="width: 100%; height: 100%;" src={{element.src}}>
 
                         <image-cropper *ngIf="cropimages" [imageChangedEvent]="imageChangedEvent"
@@ -1435,27 +1439,21 @@
                             [attr.id]="element.id + 'rotatehandle'">replay</mat-icon>
                     </div>
                     <label ngResizable *ngIf="element.type === 'text'" id="{{element.id}}" [attr.id]="element.id"
-                        ngDraggable (movingOffset)="onMoving($event, i)"
-                        [style.transform]="'translate(' + element.posx + 'px, ' + element.posy +'px) rotate(' + element.rotation + 'deg)' | safe: 'style'"
                         (rzResizing)="onResizing($event, i)" [ngStyle]="element.style"
                         [rzAspectRatio]="false">{{element.content}}
                         <mat-icon class="iconsize-4" class="rotatehandle" #rotatehandle
                             [attr.id]="element.id + 'rotatehandle'">replay</mat-icon>
                     </label>
-                    <div *ngIf="element.type === 'shape'" id="{{element.id}}" ngDraggable
-                        [style.width]="element.style.width" [style.height]="element.style.height"
-                        (movingOffset)="onMoving($event, i)" [preventDefaultEvent]="true"
-                       
-                        (rzResizing)="onResizing($event, i)" ngResizable [rzAspectRatio]="element.shape === 'heart'"
-                        [ngStyle]="element.style" [className]="element.style.class">
+                    <div *ngIf="element.type === 'shape'" id="{{element.id}}" [style.width]="element.style.width"
+                        [style.height]="element.style.height" (rzResizing)="onResizing($event, i)" ngResizable
+                        [rzAspectRatio]="element.shape === 'heart'" [ngStyle]="element.style"
+                        [className]="element.style.class">
                         <mat-icon class="iconsize-4" class="rotatehandle" #rotatehandle
                             [attr.id]="element.id + 'rotatehandle'">replay</mat-icon>
                     </div>
-
+                    <!--   [style.transform]="'translate(' + element.posx + 'px, ' + element.posy +'px) rotate(' + element.rotation + 'deg)' | safe: 'style'"                    -->
                     <div *ngIf="element.type === 'chart'" [style.width]="element.style.width"
-                        [style.height]="element.style.height" [ngDraggable]="dragselectvectpath ===  false"
-                        [ngStyle]="element.style" (movingOffset)="onMoving($event, i)" [preventDefaultEvent]="true"
-                        [style.transform]="'translate(' + element.posx + 'px, ' + element.posy +'px) rotate(' + element.rotation + 'deg)' | safe: 'style'"
+                        [style.height]="element.style.height" [ngStyle]="element.style"
                         (rzResizing)="onResizing($event, i)" ngResizable [rzAspectRatio]="false" id="{{element.id}}">
                         <canvas baseChart width="element.style.width" height="element.style.height"
                             [datasets]="element.productiondata" [labels]="element.label" [colors]="element.colors"
@@ -1468,25 +1466,18 @@
                     </div>
                     <div *ngIf="element.type === 'vector' && !element.groupmember" [style.width]="element.style.width"
                         [style.height]="element.style.height" [ngDraggable]="dragselectvectpath ===  false"
-                        [ngStyle]="element.style" (movingOffset)="onMoving($event, i)" [preventDefaultEvent]="true"
-                        [style.transform]="'translate(' + element.posx + 'px, ' + element.posy +'px) rotate(' + element.rotation + 'deg)' | safe: 'style'"
-                        (rzResizing)="onResizing($event, i)" ngResizable [rzAspectRatio]="false" id="{{element.id}}">
-                        <div style="height: 100%; width: 100%;" [innerHTML]="element.svgcombi | safeHtml"
+                        [ngStyle]="element.style" (rzResizing)="onResizing($event, i)" ngResizable
+                        [rzAspectRatio]="false" id="{{element.id}}">
+                        <div style="height: 100%; width: 100%; cursor: pointer;" [innerHTML]="element.svgcombi | safeHtml"
                             (click)="clickVectorPaths($event)">
                         </div>
                         <mat-icon class="iconsize-4" class="rotatehandle" #rotatehandle
                             [attr.id]="element.id + 'rotatehandle'">replay</mat-icon>
                     </div>
                     <div *ngIf="element.type === 'vectorcombi'" class="vectorcombi" [style.width]="element.style.width"
-                        [style.height]="element.style.height" [ngDraggable]="!dragselectvectpath && !vectorcombiedit"
-                        [ngStyle]="element.style" (movingOffset)="onMoving($event, i)" [preventDefaultEvent]="true"
-                        [style.transform]="'translate(' + element.posx + 'px, ' + element.posy +'px) rotate(' + element.rotation + 'deg)' | safe: 'style'"
-                        id="{{element.id}}">
+                        [style.height]="element.style.height" [ngStyle]="element.style" id="{{element.id}}">
                         <div *ngFor="let part of element.vectors; let idy = index;" [style.width]="part.style.width"
-                            [style.height]="part.style.height"
-                            [ngDraggable]="dragselectvectpath ===  false && vectorcombiedit" [ngStyle]="part.style"
-                            (movingOffset)="onMoving($event, i, idy)" [preventDefaultEvent]="true"
-                            [style.transform]="'rotate(' + part.rotation + 'deg)' | safe: 'style'"
+                            [style.height]="part.style.height" [ngStyle]="part.style" (mousedown)="setSVGDraggable($event, element)"
                             (rzResizing)="onResizing($event, i)" [ngResizable]="vectorcombiedit" [rzAspectRatio]="false"
                             id="{{part.id}}">
                             <div style="height: 100%; width: 100%;" [innerHTML]="part.svgcombi | safeHtml"
