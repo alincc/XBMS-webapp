@@ -319,6 +319,9 @@ export class VideocreatorComponent implements OnInit {
     }
   }
 
+  public snaptogrid = false;
+  public snaptogridwidth = 50;
+  public snaptogridheight = 50;
   public colorpick = 'white';
   public colorpickline = 'black';
   public linewidth = 2;
@@ -458,13 +461,25 @@ export class VideocreatorComponent implements OnInit {
     // check if is actually a newer version check last with new is similar
     // triggers on mouseup event set debounce time if triggered to fast see ngoninit
     let jsonaniarray = JSON.stringify(this.animationarray);
-    let jsonaniarraylast = localStorage.getItem(this.historynames[this.currenthistoryversion])
+    let name = this.currenthistoryversion.toString();
+    let jsonaniarraylast = localStorage.getItem(name)
     if (jsonaniarray !== jsonaniarraylast) {
       this.currenthistoryversion = this.currenthistoryversion + 1;
       //console.log('save new to local storage');
-      this.historynames.push(this.currenthistoryversion);
-      let name = this.currenthistoryversion.toString();
-      localStorage.setItem(name, jsonaniarray);
+      try {
+        this.historynames.push(this.currenthistoryversion);
+        name = this.currenthistoryversion.toString();
+        localStorage.setItem(name, jsonaniarray);
+      }
+      catch (e) {
+        let namedel = this.historynames[0].toString();
+        localStorage.removeItem(namedel);
+        this.historynames = this.historynames.splice(0, 1);
+        namedel = this.historynames[0].toString();
+        localStorage.removeItem(namedel);
+        this.historynames = this.historynames.splice(0, 1);
+        localStorage.setItem(name, jsonaniarray);
+      }
     }
   }
 
@@ -474,7 +489,14 @@ export class VideocreatorComponent implements OnInit {
     if (this.currenthistoryversion !== 0) {
       this.currenthistoryversion = this.currenthistoryversion - 1;
       let name = this.currenthistoryversion.toString();
-      this.animationarray = JSON.parse(localStorage.getItem(name));
+      let storedback;
+      try {
+        storedback = localStorage.getItem(name)
+        this.animationarray = JSON.parse(storedback);
+      }
+      catch (e) {
+        this.currenthistoryversion = this.currenthistoryversion + 1;
+      }
     }
   }
 
@@ -485,14 +507,20 @@ export class VideocreatorComponent implements OnInit {
     if (this.currenthistoryversion !== this.historynames[histlast]) {
       this.currenthistoryversion = this.currenthistoryversion + 1;
       let name = this.currenthistoryversion.toString();
-      this.animationarray = JSON.parse(localStorage.getItem(name));
+      let storedback;
+      try {
+        storedback = localStorage.getItem(name)
+        this.animationarray = JSON.parse(storedback);
+      }
+      catch (e) {
+        this.currenthistoryversion = this.currenthistoryversion - 1;
+      }
     }
   }
 
   ngOnChanges(changes: SimpleChanges) {
     //wait for option.id
     const currentItem: SimpleChange = changes.option;
-
     if (currentItem !== undefined) {
       if (currentItem.currentValue.id !== undefined) {
         this.getEditFile()
@@ -523,11 +551,12 @@ export class VideocreatorComponent implements OnInit {
 
   onSelectElement(event, element): void {
     // manual close editpath to prevent interuptions in path
+    console.log('select element')
     if (this.whiteboard) { this.deletewhiteboard() }
     if (this.editpath === false) {
       if (this.selectedelement) {
         if (element !== this.selectedelement) {
-          if (this.selectedelement.type === 'vector' && this.selectedelement.svgcombi !== ''){
+          if (this.selectedelement.type === 'vector' && this.selectedelement.svgcombi !== '') {
             this.removeVectorPathSelection();
             this.removeVectorPathMultiSelection();
             this.vectorcombiedit = false;
@@ -1225,6 +1254,22 @@ export class VideocreatorComponent implements OnInit {
 
   setDraggable(event, idel) {
     if (!this.dragselectvectpath && !this.vectorcombiedit) {
+
+      let snap, inertia = false;
+      if (this.snaptogrid){
+        snap = {
+          x: function (endValue) {
+            return Math.round(endValue / this.snaptogridwidth) * this.snaptogridwidth;
+          },
+          y: function (endValue) {
+            return Math.round(endValue / this.snaptogridheight) * this.snaptogridheight;
+          }
+        }
+        inertia = true
+      }
+
+
+
       let el = document.getElementById(idel.id) as unknown
       let element = el as Draggable;
       if (event.target.id === idel.id + 'rotatehandle') {
@@ -1239,7 +1284,9 @@ export class VideocreatorComponent implements OnInit {
               idel.posy = this.y;
               idel.posx = this.x;
               this.disable();
-            }
+            },
+          inertia: inertia,
+          snap: snap
         });
       }
     }
@@ -2366,16 +2413,19 @@ export class VideocreatorComponent implements OnInit {
           total.push(stylstr[0].outerHTML);
         }
 
-        console.log(idnew);
-
+        //console.log(idnew);
         let vectstring;
+        let svgset = idnew.getElementsByTagName('svg');
         if (idnew === null) {
           vectstring = element.svgcombi;
-        } else if (idnew.childNodes[0] !== null) {
-          vectstring = idnew.childNodes[0].innerHTML;
+        } else if (svgset.length > 0) {
+          vectstring = svgset[0].outerHTML;
         } else {
-          vectstring = idnew.childNodes.innerHTML;
+          console.log('can not load SVG')
         }
+
+        //console.log(idnew, vectstring)
+
 
         let pathidar;
         let newvectstring;
@@ -2693,7 +2743,7 @@ export class VideocreatorComponent implements OnInit {
       let e = document.getElementById(id);
       let g = e.getElementsByTagName("g");
       if (g.length < 1000) {
-        console.log(g)
+        //console.log(g)
         for (let index = 0; index < g.length; index++) {  // ---> g.length
           g[index].setAttribute("id", id + index + 'g');
           let sg = id + index + 'g';
@@ -2829,10 +2879,7 @@ export class VideocreatorComponent implements OnInit {
   }
 
   clickVectorPaths(e) {
-    //console.log(e);
-    this.colorpick = e.target.style.fill;
-    this.colorpickline = e.target.style.stroke;
-    this.linewidth = e.target.style['stroke-width'];
+    console.log('select path');
     if (this.dragselectvectpath === true && this.dragselectiontrue === false) {
       this.dragSelect(this.selectedelement.id);
     } else if (this.dragselectiontrue === false) {
@@ -2840,10 +2887,12 @@ export class VideocreatorComponent implements OnInit {
         if (this.selectmultiplepaths === false) {
           if (this.selectedVecPath === e.target) {
             this.removeVectorPathSelection();
+            this.setVectorColor(e);
           } else {
             this.removeVectorPathSelection();
             this.selectedVecPath = e.target;
             this.setPathSelClass(e.target);
+            this.setVectorColor(e);
           }
         }
         if (this.selectmultiplepaths === true) {
@@ -2854,14 +2903,22 @@ export class VideocreatorComponent implements OnInit {
             e.target.style.outline = null;
             this.deletePathSelClass(e.target);
             this.selectedVecPathmultiple.splice(exist, 1);
+            this.setVectorColor(e);
           } else {
             // if not exists
             this.setPathSelClass(e.target);
             this.selectedVecPathmultiple.push(e.target);
+            this.setVectorColor(e);
           }
         }
       }
     }
+  }
+
+  setVectorColor(e) {
+    this.colorpick = e.target.style.fill;
+    this.colorpickline = e.target.style.stroke;
+    this.linewidth = e.target.style['stroke-width'];
   }
 
   async deleteSelectedVectorPath() {
@@ -2929,8 +2986,8 @@ export class VideocreatorComponent implements OnInit {
       this.selectedVecPath = null;
     }
     if (this.selectedelement) {
-     //if (this.selectedelement.svgcombi !== '') {
-        this.saveSVG();
+      //if (this.selectedelement.svgcombi !== '') {
+      this.saveSVG();
       //}
     }
   }
@@ -3045,9 +3102,12 @@ export class VideocreatorComponent implements OnInit {
   saveSVG() {
     let idnew = document.getElementById(this.selectedelement.id); // get document
     let vec = idnew.getElementsByTagName('svg');
-    let vectstring = vec[0].outerHTML;
-    console.log(vectstring)
-    this.selectedelement.svgcombi = vectstring;
+    if (vec.length > 0) {
+      let vectstring = vec[0].outerHTML;
+      //console.log(vectstring)
+      this.selectedelement.svgcombi = vectstring;
+    }
+
   }
 
   async createnewsvg(svgstring, pathidar, bbox, height, width) {
@@ -3446,6 +3506,92 @@ export class VideocreatorComponent implements OnInit {
     let url = 'https://dlcr.xbms.io?id=' + this.newFiles.id + '&canvas=' + canvasjson + '&repeat=false&remote=true';
     this.snippetcode = '<iframe scrolling="no" width=' + this.canvas.width + ' height=' + this.canvas.height + ' src="' + url + '"></iframe>';
     this.codesnippetService.confirm('Copy Code', 'Copy code and input in your website', this.snippetcode).subscribe()
+  }
+
+
+//   <button mat-mini-fab class="addbutton" matTooltip="Add image" (click)="addNewImage()" color="primary">
+//   <mat-icon>image</mat-icon>
+// </button>
+// <button mat-mini-fab class="addbutton" matTooltip="Add text" (click)="addNewText()" color="primary">
+//   <mat-icon>text_format</mat-icon>
+// </button>
+// <button mat-mini-fab class="addbutton" matTooltip="Add shape" (click)="addNewShape()" color="primary">
+//   <mat-icon>format_shapes</mat-icon>
+// </button>
+// <button mat-mini-fab class="addbutton" matTooltip="Add animated image" (click)="addNewVector()"
+//   color="primary">
+//   <mat-icon>wallpaper</mat-icon>
+// </button>
+// <button mat-mini-fab class="addbutton" matTooltip="Add drawing" (click)="addNewWhiteboard()"
+//   color="primary">
+//   <mat-icon>edit</mat-icon>
+// </button>
+// <button mat-mini-fab class="addbutton" matTooltip="Add Chart" (click)="addNewChart()" color="primary">
+//   <mat-icon>show_chart</mat-icon>
+// </button>
+// <button mat-mini-fab class="addbutton" matTooltip="Add Animation Group" (click)="addNewVectorCombi()"
+//   color="primary">
+//   <mat-icon>collections</mat-icon>
+// </button>
+
+  public speedDialFabButtons = [
+    {
+      icon: 'image',
+      tooltip: 'Add new image'
+    },
+    {
+      icon: 'text_format',
+      tooltip: 'Add new text'
+    },
+    {
+      icon: 'format_shapes',
+      tooltip: 'Add new shape'
+    },
+    {
+      icon: 'wallpaper',
+      tooltip: 'Add animated image'
+    },
+    {
+      icon: 'edit',
+      tooltip: 'Add drawing'
+    },
+    {
+      icon: 'show_chart',
+      tooltip: 'Add chart'
+    },
+    {
+      icon: 'collections',
+      tooltip: 'Add animation group'
+    },
+    // {
+    //   svgIcon: 'xbms_web',
+    //   tooltip: 'web'
+    // },
+    // {
+    //   svgIcon: 'xbms_snapchat',
+    //   tooltip: 'snapchat'
+    // },
+    // {
+    //   svgIcon: 'xbms_vimeo',
+    //   tooltip: 'vimeo'
+    // },
+    // {
+    //   svgIcon: 'xbms_github',
+    //   tooltip: 'github'
+    // }
+
+  ];
+
+  onSpeedDialFabClicked(btn) {
+    console.log(btn.tooltip);
+    if (btn.tooltip === 'Add new image'){this.addNewImage()}
+    if (btn.tooltip === 'Add new text'){this.addNewText()}
+    if (btn.tooltip === 'Add new shape'){this.addNewShape()}
+    if (btn.tooltip === 'Add animated image'){this.addNewVector()}
+    if (btn.tooltip === 'Add drawing'){this.addNewWhiteboard()}
+    if (btn.tooltip === 'Add chart'){this.addNewChart()}
+    if (btn.tooltip === 'Add animation group'){this.addNewVectorCombi()}
+
   }
 
 

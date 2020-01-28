@@ -1,4 +1,10 @@
 <div class="savetobutton">
+
+        <speed-dial-fab matTooltip="Add new item" class="speed-dial-container"
+            [reverse-column-direction]="true" (fabClick)="onSpeedDialFabClicked($event)"
+            [buttons]="speedDialFabButtons">
+        </speed-dial-fab>
+
     <button mat-fab color="primary" matTooltip="Convert to video" (click)="converttovideo()">
         <mat-icon>video_library</mat-icon>
     </button>
@@ -651,7 +657,7 @@
             <div fxLayout="column" fxLayout.xs="column">
                 <mat-accordion cdkDropList (cdkDropListDropped)="drop($event)">
                     <mat-expansion-panel *ngFor="let element of animationarray; let i = index" cdkDrag
-                        (click)="onSelectElement(element)">
+                        (click)="onSelectElement($event, element)">
                         <mat-expansion-panel-header *ngIf="element.type === 'image'" cdkDragHandle
                             [class.selected]="element === selectedelement">
                             <mat-panel-title>
@@ -1312,32 +1318,20 @@
                 </mat-accordion>
 
             </div>
-            <div fxLayout="row wrap" fxLayout.xs="column">
-                <button mat-mini-fab class="addbutton" matTooltip="Add image" (click)="addNewImage()" color="primary">
-                    <mat-icon>image</mat-icon>
-                </button>
-                <button mat-mini-fab class="addbutton" matTooltip="Add text" (click)="addNewText()" color="primary">
-                    <mat-icon>text_format</mat-icon>
-                </button>
-                <button mat-mini-fab class="addbutton" matTooltip="Add shape" (click)="addNewShape()" color="primary">
-                    <mat-icon>format_shapes</mat-icon>
-                </button>
-                <button mat-mini-fab class="addbutton" matTooltip="Add animated image" (click)="addNewVector()"
-                    color="primary">
-                    <mat-icon>wallpaper</mat-icon>
-                </button>
-                <button mat-mini-fab class="addbutton" matTooltip="Add drawing" (click)="addNewWhiteboard()"
-                    color="primary">
-                    <mat-icon>edit</mat-icon>
-                </button>
-                <button mat-mini-fab class="addbutton" matTooltip="Add Chart" (click)="addNewChart()" color="primary">
-                    <mat-icon>show_chart</mat-icon>
-                </button>
-                <button mat-mini-fab class="addbutton" matTooltip="Add Animation Group" (click)="addNewVectorCombi()"
-                    color="primary">
-                    <mat-icon>collections</mat-icon>
-                </button>
+
+            <div fxLayout="row wrap" style="margin-top: 30px;">
+                <label>Snap to grid</label>
+                <mat-slide-toggle [(ngModel)]="snaptogrid"></mat-slide-toggle>
+                <mat-form-field style="max-width: 46px;">
+                    <input [(ngModel)]="snaptogridwidth" matInput>
+                    <mat-hint>Grid width</mat-hint>
+                </mat-form-field>
+                <mat-form-field style="max-width: 46px;">
+                    <input [(ngModel)]="snaptogridheight" matInput>
+                    <mat-hint>Grid height</mat-hint>
+                </mat-form-field>
             </div>
+
 
 
             <!-- <div style="margin: 15px; height: 50px;">
@@ -1349,48 +1343,49 @@
     </div>
 
     <div ngClass.gt-xs="container-normal" ngClass.lt-sm="container-noshow" [class.container-xs-show]="listviewxsshow"
-        fxLayout="row" fxLayoutAlign="start">
+        fxLayout="column" fxLayoutAlign="start">
+
+        <div *ngIf="selectedVecPath">
+            <div *ngIf="selectedelement.type === 'vector' || selectedelement.type === 'vectorcombi'" fxLayout="row"
+                class="vectorcontrols">
+                <input fxFlex matInput autocomplete="off" style="width: 20px; height: 20px;" matTooltip="linethickness"
+                    [(ngModel)]="linewidth" (change)="setlinewidth(linewidth)">
+                <input fxFlex autocomplete="off" style="width: 20px; height: 20px;" [style.background]="colorpickline"
+                    matTooltip="Line color" [cpToggle]="false" [(colorPicker)]="colorpickline" [cpPosition]="'bottom'"
+                    (colorPickerChange)="setColorPathLine(colorpickline)" [cpCancelButton]="true"
+                    [cpPresetLabel]="'Company colors'"
+                    [cpPresetColors]="[option.companyprimairycolor, option.companysecondarycolor, company.companyprimairycolor, company.companysecondarycolor]">
+                <input fxFlex autocomplete="off" style="width: 20px; height: 20px;" [style.background]="colorpick"
+                    matTooltip="Fill color" [(colorPicker)]="colorpick" [cpPosition]="'bottom'"
+                    (colorPickerChange)="setColorPath(colorpick)" [cpPresetLabel]="'Company colors'"
+                    [cpPresetColors]="[option.companyprimairycolor, option.companysecondarycolor, company.companyprimairycolor, company.companysecondarycolor]">
+                <mat-icon (click)="deleteSelectedVectorPath()" class="iconsize-18" matTooltip="Delete section">
+                    delete</mat-icon>
+                <mat-icon (click)="deleteWhitespaceSVG()" class="icon-label" class="iconsize-18"
+                    matTooltip="delete whitespace">
+                    check_box_outline_blank
+                </mat-icon>
+                <mat-icon (click)="saveAsSeperateVector()" class="iconsize-18" matTooltip="Create seperate section">
+                    image</mat-icon>
+                <mat-icon (click)="saveAsNewVector()" class="icon-label" class="iconsize-18"
+                    matTooltip="save to file as new image">
+                    save
+                </mat-icon>
+                <mat-icon (click)="removeVectorPathMultiSelection()" (click)="removeVectorPathSelection()"
+                    class="icon-label" class="iconsize-18" matTooltip="Remove selection">
+                    indeterminate_check_box
+                </mat-icon>
+                <mat-checkbox [(ngModel)]="dragselectvectpath" matTooltip="drag selection tool"
+                    (change)="setDragSelect()"></mat-checkbox>
+                <mat-checkbox [(ngModel)]="selectmultiplepaths" matTooltip="selected multiple sections"
+                    (change)="selectMultiplePaths()"></mat-checkbox>
+            </div>
+        </div>
 
         <div *ngIf="changevideo" [ngStyle]="canvas" style="border: 1px solid grey; overflow:hidden;">
 
             <!-- selectedVecPath &&  -->
-            <div *ngIf="selectedVecPath">
-                <div *ngIf="selectedelement.type === 'vector' || selectedelement.type === 'vectorcombi'" fxLayout="row"
-                    class="vectorcontrols">
-                    <input fxFlex matInput autocomplete="off" style="width: 20px; height: 20px;"
-                        matTooltip="linethickness" [(ngModel)]="linewidth" (change)="setlinewidth(linewidth)">
-                    <input fxFlex autocomplete="off" style="width: 20px; height: 20px;"
-                        [style.background]="colorpickline" matTooltip="Line color" [cpToggle]="false"
-                        [(colorPicker)]="colorpickline" [cpPosition]="'bottom'"
-                        (colorPickerClose)="setColorPathLine(colorpickline)" [cpCancelButton]="true"
-                        [cpPresetLabel]="'Company colors'"
-                        [cpPresetColors]="[option.companyprimairycolor, option.companysecondarycolor, company.companyprimairycolor, company.companysecondarycolor]">
-                    <input fxFlex autocomplete="off" style="width: 20px; height: 20px;" [style.background]="colorpick"
-                        matTooltip="Fill color" [(colorPicker)]="colorpick" [cpPosition]="'bottom'"
-                        (colorPickerClose)="setColorPath(colorpick)" [cpPresetLabel]="'Company colors'"
-                        [cpPresetColors]="[option.companyprimairycolor, option.companysecondarycolor, company.companyprimairycolor, company.companysecondarycolor]">
-                    <mat-icon (click)="deleteSelectedVectorPath()" class="iconsize-18" matTooltip="Delete section">
-                        delete</mat-icon>
-                    <mat-icon (click)="deleteWhitespaceSVG()" class="icon-label" class="iconsize-18"
-                        matTooltip="delete whitespace">
-                        check_box_outline_blank
-                    </mat-icon>
-                    <mat-icon (click)="saveAsSeperateVector()" class="iconsize-18" matTooltip="Create seperate section">
-                        image</mat-icon>
-                    <mat-icon (click)="saveAsNewVector()" class="icon-label" class="iconsize-18"
-                        matTooltip="save to file as new image">
-                        save
-                    </mat-icon>
-                    <mat-icon (click)="removeVectorPathMultiSelection()" (click)="removeVectorPathSelection()"
-                        class="icon-label" class="iconsize-18" matTooltip="Remove selection">
-                        indeterminate_check_box
-                    </mat-icon>
-                    <mat-checkbox [(ngModel)]="dragselectvectpath" matTooltip="drag selection tool"
-                        (change)="setDragSelect()"></mat-checkbox>
-                    <mat-checkbox [(ngModel)]="selectmultiplepaths" matTooltip="selected multiple sections"
-                        (change)="selectMultiplePaths()"></mat-checkbox>
-                </div>
-            </div>
+
 
 
             <video *ngIf="canvas.videourl" preload="auto" class="video-background" no-controls [src]="canvas.videourl"
@@ -1465,11 +1460,10 @@
                             [attr.id]="element.id + 'rotatehandle'">replay</mat-icon>
                     </div>
                     <div *ngIf="element.type === 'vector' && !element.groupmember" [style.width]="element.style.width"
-                        [style.height]="element.style.height" [ngDraggable]="dragselectvectpath ===  false"
-                        [ngStyle]="element.style" (rzResizing)="onResizing($event, i)" ngResizable
-                        [rzAspectRatio]="false" id="{{element.id}}">
-                        <div style="height: 100%; width: 100%; cursor: pointer;" [innerHTML]="element.svgcombi | safeHtml"
-                            (click)="clickVectorPaths($event)">
+                        [style.height]="element.style.height" [ngStyle]="element.style"
+                        (rzResizing)="onResizing($event, i)" ngResizable [rzAspectRatio]="false" id="{{element.id}}">
+                        <div style="height: 100%; width: 100%; cursor: pointer;"
+                            [innerHTML]="element.svgcombi | safeHtml" (click)="clickVectorPaths($event)">
                         </div>
                         <mat-icon class="iconsize-4" class="rotatehandle" #rotatehandle
                             [attr.id]="element.id + 'rotatehandle'">replay</mat-icon>
@@ -1477,7 +1471,7 @@
                     <div *ngIf="element.type === 'vectorcombi'" class="vectorcombi" [style.width]="element.style.width"
                         [style.height]="element.style.height" [ngStyle]="element.style" id="{{element.id}}">
                         <div *ngFor="let part of element.vectors; let idy = index;" [style.width]="part.style.width"
-                            [style.height]="part.style.height" [ngStyle]="part.style" (mousedown)="setSVGDraggable($event, element)"
+                            [style.height]="part.style.height" [ngStyle]="part.style"
                             (rzResizing)="onResizing($event, i)" [ngResizable]="vectorcombiedit" [rzAspectRatio]="false"
                             id="{{part.id}}">
                             <div style="height: 100%; width: 100%;" [innerHTML]="part.svgcombi | safeHtml"
