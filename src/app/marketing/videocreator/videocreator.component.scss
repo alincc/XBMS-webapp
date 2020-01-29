@@ -32,7 +32,11 @@
   }
 
 .vectorcontrols{
+  margin: 5px;
+  padding: 0px 5px 0px 5px;
   z-index: 1000;
+  display: inline-block;
+  box-shadow: 0px 2px 1px -1px rgba(0, 0, 0, 0.2), 0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 1px 3px 0px rgba(0, 0, 0, 0.12);
 }
 
 .video-background { /* class name used in javascript too */
@@ -215,4 +219,10 @@
   background-color: rgba(30, 255, 0, 0.274);
 }
 
+.speed-dial-container {
+  position: fixed;
+  bottom: 40px;
+  left: 50px;
+  z-index: 99;
+}
 

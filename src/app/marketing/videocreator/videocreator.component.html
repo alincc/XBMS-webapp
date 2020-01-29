@@ -1,10 +1,7 @@
+<speed-dial-fab matTooltip="Add new item" class="speed-dial-container" [reverse-column-direction]="true"
+    (fabClick)="onSpeedDialFabClicked($event)" [buttons]="speedDialFabButtons">
+</speed-dial-fab>
 <div class="savetobutton">
-
-        <speed-dial-fab matTooltip="Add new item" class="speed-dial-container"
-            [reverse-column-direction]="true" (fabClick)="onSpeedDialFabClicked($event)"
-            [buttons]="speedDialFabButtons">
-        </speed-dial-fab>
-
     <button mat-fab color="primary" matTooltip="Convert to video" (click)="converttovideo()">
         <mat-icon>video_library</mat-icon>
     </button>
@@ -42,10 +39,6 @@
         <button mat-menu-item (click)="loadEditableVideo()">Start edit</button>
     </mat-menu>
 </div>
-
-
-
-
 
 <div class="videocontrols" fxLayout="column">
     <div fxLayout="row" fxLayoutGap="4px">
@@ -1319,9 +1312,12 @@
 
             </div>
 
-            <div fxLayout="row wrap" style="margin-top: 30px;">
+            <div fxLayout="row" fxLayoutGap="4px" style="margin-top: 30px;">
                 <label>Snap to grid</label>
                 <mat-slide-toggle [(ngModel)]="snaptogrid"></mat-slide-toggle>
+            </div>
+
+            <div fxLayout="row" fxLayoutGap="4px" style="margin-top: 10px;">
                 <mat-form-field style="max-width: 46px;">
                     <input [(ngModel)]="snaptogridwidth" matInput>
                     <mat-hint>Grid width</mat-hint>
@@ -1346,16 +1342,16 @@
         fxLayout="column" fxLayoutAlign="start">
 
         <div *ngIf="selectedVecPath">
-            <div *ngIf="selectedelement.type === 'vector' || selectedelement.type === 'vectorcombi'" fxLayout="row"
+            <div *ngIf="selectedelement.type === 'vector' || selectedelement.type === 'vectorcombi'"
                 class="vectorcontrols">
-                <input fxFlex matInput autocomplete="off" style="width: 20px; height: 20px;" matTooltip="linethickness"
+                <input matInput autocomplete="off" style="width: 20px; height: 20px;" matTooltip="linethickness"
                     [(ngModel)]="linewidth" (change)="setlinewidth(linewidth)">
-                <input fxFlex autocomplete="off" style="width: 20px; height: 20px;" [style.background]="colorpickline"
+                <input autocomplete="off" style="width: 20px; height: 20px;" [style.background]="colorpickline"
                     matTooltip="Line color" [cpToggle]="false" [(colorPicker)]="colorpickline" [cpPosition]="'bottom'"
                     (colorPickerChange)="setColorPathLine(colorpickline)" [cpCancelButton]="true"
                     [cpPresetLabel]="'Company colors'"
                     [cpPresetColors]="[option.companyprimairycolor, option.companysecondarycolor, company.companyprimairycolor, company.companysecondarycolor]">
-                <input fxFlex autocomplete="off" style="width: 20px; height: 20px;" [style.background]="colorpick"
+                <input autocomplete="off" style="width: 20px; height: 20px;" [style.background]="colorpick"
                     matTooltip="Fill color" [(colorPicker)]="colorpick" [cpPosition]="'bottom'"
                     (colorPickerChange)="setColorPath(colorpick)" [cpPresetLabel]="'Company colors'"
                     [cpPresetColors]="[option.companyprimairycolor, option.companysecondarycolor, company.companyprimairycolor, company.companysecondarycolor]">

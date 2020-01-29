@@ -401,8 +401,8 @@ export class VideocreatorComponent implements OnInit {
   public dragAreaOverlay;
   public snippetcode: string;
   public systembusy = false;
-  public historynames = [];
-  public currenthistoryversion = 0;
+  public history = [];
+  public currenthistoryversion = -1;
 
   @Input() debounceTime = 50;
   @Output() debounceKey = new EventEmitter();
@@ -461,25 +461,13 @@ export class VideocreatorComponent implements OnInit {
     // check if is actually a newer version check last with new is similar
     // triggers on mouseup event set debounce time if triggered to fast see ngoninit
     let jsonaniarray = JSON.stringify(this.animationarray);
-    let name = this.currenthistoryversion.toString();
-    let jsonaniarraylast = localStorage.getItem(name)
+    let jsonaniarraylast = JSON.stringify(this.history[this.currenthistoryversion]);
+    if (this.currenthistoryversion < this.history.length -1){
+      this.history = this.history.splice(this.currenthistoryversion+1, this.history.length -1)
+    }
     if (jsonaniarray !== jsonaniarraylast) {
       this.currenthistoryversion = this.currenthistoryversion + 1;
-      //console.log('save new to local storage');
-      try {
-        this.historynames.push(this.currenthistoryversion);
-        name = this.currenthistoryversion.toString();
-        localStorage.setItem(name, jsonaniarray);
-      }
-      catch (e) {
-        let namedel = this.historynames[0].toString();
-        localStorage.removeItem(namedel);
-        this.historynames = this.historynames.splice(0, 1);
-        namedel = this.historynames[0].toString();
-        localStorage.removeItem(namedel);
-        this.historynames = this.historynames.splice(0, 1);
-        localStorage.setItem(name, jsonaniarray);
-      }
+      this.history.push(jsonaniarray);
     }
   }
 
@@ -488,33 +476,20 @@ export class VideocreatorComponent implements OnInit {
     // if not last or not empty and if is new; 
     if (this.currenthistoryversion !== 0) {
       this.currenthistoryversion = this.currenthistoryversion - 1;
-      let name = this.currenthistoryversion.toString();
-      let storedback;
-      try {
-        storedback = localStorage.getItem(name)
-        this.animationarray = JSON.parse(storedback);
-      }
-      catch (e) {
-        this.currenthistoryversion = this.currenthistoryversion + 1;
-      }
+      let storedback = this.history[this.currenthistoryversion];
+      console.log(this.history, this.currenthistoryversion, storedback);
+      this.animationarray = JSON.parse(storedback);
     }
   }
 
   historyForward() {
     //console.log('ctrl-y', this.currenthistoryversion)
     // if not latest or not empty 
-    let histlast = this.historynames.length - 1;
-    if (this.currenthistoryversion !== this.historynames[histlast]) {
+    let histlast = this.history.length - 1;
+    if (this.currenthistoryversion < histlast) {
       this.currenthistoryversion = this.currenthistoryversion + 1;
-      let name = this.currenthistoryversion.toString();
-      let storedback;
-      try {
-        storedback = localStorage.getItem(name)
+        let storedback = this.history[this.currenthistoryversion]
         this.animationarray = JSON.parse(storedback);
-      }
-      catch (e) {
-        this.currenthistoryversion = this.currenthistoryversion - 1;
-      }
     }
   }
 
@@ -551,7 +526,7 @@ export class VideocreatorComponent implements OnInit {
 
   onSelectElement(event, element): void {
     // manual close editpath to prevent interuptions in path
-    console.log('select element')
+   // console.log('select element')
     if (this.whiteboard) { this.deletewhiteboard() }
     if (this.editpath === false) {
       if (this.selectedelement) {
@@ -674,7 +649,7 @@ export class VideocreatorComponent implements OnInit {
     this.systembusy = false;
     if (this.whiteboard) { this.deletewhiteboard() }
     this.primairytimeline = gsap.timeline({ paused: true, reversed: true });
-    console.log('run check', this.animationarray);
+   // console.log('run check', this.animationarray);
     if (this.editpath === true) {
       this.saveNewMotionPath();
     }
@@ -1253,10 +1228,11 @@ export class VideocreatorComponent implements OnInit {
 
 
   setDraggable(event, idel) {
+    let el = document.getElementById(idel.id) as unknown
+    let element = el as Draggable;
     if (!this.dragselectvectpath && !this.vectorcombiedit) {
-
       let snap, inertia = false;
-      if (this.snaptogrid){
+      if (this.snaptogrid) {
         snap = {
           x: function (endValue) {
             return Math.round(endValue / this.snaptogridwidth) * this.snaptogridwidth;
@@ -1268,10 +1244,6 @@ export class VideocreatorComponent implements OnInit {
         inertia = true
       }
 
-
-
-      let el = document.getElementById(idel.id) as unknown
-      let element = el as Draggable;
       if (event.target.id === idel.id + 'rotatehandle') {
         this.setRotate(event, idel)
       } else {
@@ -1280,7 +1252,7 @@ export class VideocreatorComponent implements OnInit {
           onDragEndParams: [idel],
           onDragEnd:
             function (idl) {
-              console.log(this)
+             // console.log(this)
               idel.posy = this.y;
               idel.posx = this.x;
               this.disable();
@@ -1289,28 +1261,28 @@ export class VideocreatorComponent implements OnInit {
           snap: snap
         });
       }
-    }
+    } 
   }
 
-  setSVGDraggable(event, idel) {
-    if (this.dragselectvectpath && this.vectorcombiedit) {
-      let el = document.getElementById(idel.id) as unknown
-      let element = el as Draggable;
-      if (event.target.id === idel.id) {
-        Draggable.create(element, {
-          type: "x,y",
-          onDragEndParams: [idel],
-          onDragEnd:
-            function (idl) {
-              console.log(this)
-              idel.posy = this.y;
-              idel.posx = this.x;
-              this.disable();
-            }
-        });
-      } else { this.setRotate(event, idel) }
-    }
-  }
+  // setSVGDraggable(event, idel) {
+  //   if (this.dragselectvectpath && this.vectorcombiedit) {
+  //     let el = document.getElementById(idel.id) as unknown
+  //     let element = el as Draggable;
+  //     if (event.target.id === idel.id) {
+  //       Draggable.create(element, {
+  //         type: "x,y",
+  //         onDragEndParams: [idel],
+  //         onDragEnd:
+  //           function (idl) {
+  //            // console.log(this)
+  //             idel.posy = this.y;
+  //             idel.posx = this.x;
+  //             this.disable();
+  //           }
+  //       });
+  //     } else { this.setRotate(event, idel) }
+  //   }
+  // }
 
   setRotate(event, idel) {
     let el = document.getElementById(idel.id) as unknown
@@ -1417,7 +1389,7 @@ export class VideocreatorComponent implements OnInit {
 
   addTooVectorCombi(value) {
 
-    console.log(value);
+   // console.log(value);
   }
 
   async dropVectorGroup(value, element, i) {
@@ -1862,7 +1834,7 @@ export class VideocreatorComponent implements OnInit {
           path.setAttribute("stroke-width", this.whiteboardstokewidth);
           buffer = [];
           var pt = getMousePosition(e);
-          console.log(e)
+         // console.log(e)
           appendToBuffer(pt);
 
 
@@ -2819,7 +2791,7 @@ export class VideocreatorComponent implements OnInit {
     this.removeVectorPathSelection();
     this.removeVectorPathMultiSelection();
     setTimeout(() => {
-      console.log('delete whitespace', this.selectedelement);
+     // console.log('delete whitespace', this.selectedelement);
       var element = document.getElementById(this.selectedelement.id);
       var svg = element.getElementsByTagName("svg")[0];
       var bbox = svg.getBBox();
@@ -2830,13 +2802,15 @@ export class VideocreatorComponent implements OnInit {
   }
 
   async seperatePaths(idx, vector: vectorelement, element: vectoranimation) {
+    this.removeVectorPathSelection();
+    this.removeVectorPathSelection();
     vector.pathids.forEach(pid => {
       let svgel = document.getElementById(pid);
       let s = new XMLSerializer(); // convert to string
       let svgstring = s.serializeToString(svgel);
       let h = 500, w = 500, x = 0, y = 0;
       let originalsize = this.getViewBox(this.selectedelement.id);
-      console.log(originalsize);
+      //console.log(originalsize);
       if (originalsize) {
         x = originalsize['x'];
         y = originalsize['y'];
@@ -2852,8 +2826,6 @@ export class VideocreatorComponent implements OnInit {
       ]
       let newsvg = newsvgarray.join('');
       this.addNewVector(null, element.style.height, element.style.width, newsvg, element.posx, element.posy);
-      this.removeVectorPathSelection();
-      this.removeVectorPathSelection();
     });
   }
 
@@ -2879,7 +2851,7 @@ export class VideocreatorComponent implements OnInit {
   }
 
   clickVectorPaths(e) {
-    console.log('select path');
+    //console.log('select path');
     if (this.dragselectvectpath === true && this.dragselectiontrue === false) {
       this.dragSelect(this.selectedelement.id);
     } else if (this.dragselectiontrue === false) {
@@ -3003,7 +2975,7 @@ export class VideocreatorComponent implements OnInit {
 
     if (this.selectmultiplepaths || this.dragselectvectpath) {
       // this.removeVectorPathMultiSelection();
-      console.log('seperate multipaths', this.selectedVecPathmultiple)
+      // console.log('seperate multipaths', this.selectedVecPathmultiple)
       let svgarray = [];
       let i = 0;
       let arraylenght = this.selectedVecPathmultiple.length - 1;
@@ -3101,13 +3073,14 @@ export class VideocreatorComponent implements OnInit {
 
   saveSVG() {
     let idnew = document.getElementById(this.selectedelement.id); // get document
-    let vec = idnew.getElementsByTagName('svg');
-    if (vec.length > 0) {
-      let vectstring = vec[0].outerHTML;
-      //console.log(vectstring)
-      this.selectedelement.svgcombi = vectstring;
+    if (idnew){
+      let vec = idnew.getElementsByTagName('svg');
+      if (vec.length > 0) {
+        let vectstring = vec[0].outerHTML;
+        //console.log(vectstring)
+        this.selectedelement.svgcombi = vectstring;
+      }
     }
-
   }
 
   async createnewsvg(svgstring, pathidar, bbox, height, width) {
@@ -3201,12 +3174,12 @@ export class VideocreatorComponent implements OnInit {
       svgel = document.getElementById(this.selectedelement.id);
       let svg = svgel.getElementsByTagName('svg')[0].outerHTML;
       this.selectedelement.src = this.onSVGsave(svg);
-      console.log(svg)
+     // console.log(svg)
     } else {
       svgel = document.getElementById(element.id);
       let svg = svgel.getElementsByTagName('svg')[0].outerHTML;
       element.src = this.onSVGsave(svg);
-      console.log(svg)
+     // console.log(svg)
     }
   }
 
@@ -3321,6 +3294,7 @@ export class VideocreatorComponent implements OnInit {
 
   //https://github.com/luncheon/svg-drag-select
   dragSelect(id) {
+    this.removeVectorPathSelection();
     this.dragselectiontrue = true;
     let svgel = document.getElementById(id);
     let svgset = svgel.getElementsByTagName("svg")[0];
@@ -3509,30 +3483,30 @@ export class VideocreatorComponent implements OnInit {
   }
 
 
-//   <button mat-mini-fab class="addbutton" matTooltip="Add image" (click)="addNewImage()" color="primary">
-//   <mat-icon>image</mat-icon>
-// </button>
-// <button mat-mini-fab class="addbutton" matTooltip="Add text" (click)="addNewText()" color="primary">
-//   <mat-icon>text_format</mat-icon>
-// </button>
-// <button mat-mini-fab class="addbutton" matTooltip="Add shape" (click)="addNewShape()" color="primary">
-//   <mat-icon>format_shapes</mat-icon>
-// </button>
-// <button mat-mini-fab class="addbutton" matTooltip="Add animated image" (click)="addNewVector()"
-//   color="primary">
-//   <mat-icon>wallpaper</mat-icon>
-// </button>
-// <button mat-mini-fab class="addbutton" matTooltip="Add drawing" (click)="addNewWhiteboard()"
-//   color="primary">
-//   <mat-icon>edit</mat-icon>
-// </button>
-// <button mat-mini-fab class="addbutton" matTooltip="Add Chart" (click)="addNewChart()" color="primary">
-//   <mat-icon>show_chart</mat-icon>
-// </button>
-// <button mat-mini-fab class="addbutton" matTooltip="Add Animation Group" (click)="addNewVectorCombi()"
-//   color="primary">
-//   <mat-icon>collections</mat-icon>
-// </button>
+  //   <button mat-mini-fab class="addbutton" matTooltip="Add image" (click)="addNewImage()" color="primary">
+  //   <mat-icon>image</mat-icon>
+  // </button>
+  // <button mat-mini-fab class="addbutton" matTooltip="Add text" (click)="addNewText()" color="primary">
+  //   <mat-icon>text_format</mat-icon>
+  // </button>
+  // <button mat-mini-fab class="addbutton" matTooltip="Add shape" (click)="addNewShape()" color="primary">
+  //   <mat-icon>format_shapes</mat-icon>
+  // </button>
+  // <button mat-mini-fab class="addbutton" matTooltip="Add animated image" (click)="addNewVector()"
+  //   color="primary">
+  //   <mat-icon>wallpaper</mat-icon>
+  // </button>
+  // <button mat-mini-fab class="addbutton" matTooltip="Add drawing" (click)="addNewWhiteboard()"
+  //   color="primary">
+  //   <mat-icon>edit</mat-icon>
+  // </button>
+  // <button mat-mini-fab class="addbutton" matTooltip="Add Chart" (click)="addNewChart()" color="primary">
+  //   <mat-icon>show_chart</mat-icon>
+  // </button>
+  // <button mat-mini-fab class="addbutton" matTooltip="Add Animation Group" (click)="addNewVectorCombi()"
+  //   color="primary">
+  //   <mat-icon>collections</mat-icon>
+  // </button>
 
   public speedDialFabButtons = [
     {
@@ -3583,14 +3557,14 @@ export class VideocreatorComponent implements OnInit {
   ];
 
   onSpeedDialFabClicked(btn) {
-    console.log(btn.tooltip);
-    if (btn.tooltip === 'Add new image'){this.addNewImage()}
-    if (btn.tooltip === 'Add new text'){this.addNewText()}
-    if (btn.tooltip === 'Add new shape'){this.addNewShape()}
-    if (btn.tooltip === 'Add animated image'){this.addNewVector()}
-    if (btn.tooltip === 'Add drawing'){this.addNewWhiteboard()}
-    if (btn.tooltip === 'Add chart'){this.addNewChart()}
-    if (btn.tooltip === 'Add animation group'){this.addNewVectorCombi()}
+   // console.log(btn.tooltip);
+    if (btn.tooltip === 'Add new image') { this.addNewImage() }
+    if (btn.tooltip === 'Add new text') { this.addNewText() }
+    if (btn.tooltip === 'Add new shape') { this.addNewShape() }
+    if (btn.tooltip === 'Add animated image') { this.addNewVector() }
+    if (btn.tooltip === 'Add drawing') { this.addNewWhiteboard() }
+    if (btn.tooltip === 'Add chart') { this.addNewChart() }
+    if (btn.tooltip === 'Add animation group') { this.addNewVectorCombi() }
 
   }
 
