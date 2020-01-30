@@ -566,7 +566,7 @@ export class VideocreatorComponent implements OnInit {
       //immediateRender: true,
       motionPath: {
         path: svgpath,
-        //align: svgpath,  // do not use self
+        align: svgpath,  // do not use self
         autoRotate: animation.rotationcycle,
         //offsetY: parseInt(element.height, 10)  / 2, // element.travellocX, // 
         //offsetX: parseInt(element.width, 10) / 2//element.travellocY //
@@ -618,8 +618,8 @@ export class VideocreatorComponent implements OnInit {
         svgtransarray = svgtrans.split(',').map(Number);
       }
 
-      this.selectedelement.posx = svgtransarray[4] - (parseInt(this.selectedelement.style.width, 10) / 2);
-      this.selectedelement.posy = svgtransarray[5] - (parseInt(this.selectedelement.style.height, 10) / 2);
+      this.selectedelement.posx = svgtransarray[4] //- (parseInt(this.selectedelement.style.width, 10) / 2);
+      this.selectedelement.posy = svgtransarray[5] //- (parseInt(this.selectedelement.style.height, 10) / 2);
       console.log(this.selectedelement);
     }
 
@@ -891,7 +891,7 @@ export class VideocreatorComponent implements OnInit {
           autoRotate: elementA.rotationcycle,
           //offsetY: 0,// elementA.travellocX,
           //offsetX: 0,//elementA.travellocY,
-          align: 'self'
+          align: svgset//'self'
         }
       }
     }
