@@ -300,11 +300,11 @@
                         <div *ngIf="animation.anim_type === 'move'">
                             <mat-form-field style="max-width: 46px;">
                                 <input [(ngModel)]="animation.travellocY" type="number" matInput>
-                                <mat-hint>Y-axe</mat-hint>
+                                <mat-hint>Y-offset</mat-hint>
                             </mat-form-field>
                             <mat-form-field style="max-width: 46px;">
                                 <input [(ngModel)]="animation.travellocX" type="number" matInput>
-                                <mat-hint>X-axe</mat-hint>
+                                <mat-hint>X-offset</mat-hint>
                             </mat-form-field>
                             <mat-form-field style="max-width: 46px;">
                                 <input [(ngModel)]="selectedelement.motionrotation" type="number" matInput>
@@ -327,6 +327,7 @@
                                 <input [(ngModel)]="animation.travellocX" type="number" matInput>
                                 <mat-hint>X-axe</mat-hint>
                             </mat-form-field>
+                            <button mat-button (click)="editMotionPath(animation)">Edit path</button>
                         </div>
 
                         <div>
@@ -1342,17 +1343,16 @@
         fxLayout="column" fxLayoutAlign="start">
 
         <div *ngIf="selectedVecPath">
-            <div *ngIf="selectedelement.type === 'vector' || selectedelement.type === 'vectorcombi'"
-                class="vectorcontrols">
+            <div class="vectorcontrols">
                 <input matInput autocomplete="off" style="width: 20px; height: 20px;" matTooltip="linethickness"
                     [(ngModel)]="linewidth" (change)="setlinewidth(linewidth)">
                 <input autocomplete="off" style="width: 20px; height: 20px;" [style.background]="colorpickline"
                     matTooltip="Line color" [cpToggle]="false" [(colorPicker)]="colorpickline" [cpPosition]="'bottom'"
-                    (colorPickerChange)="setColorPathLine(colorpickline)" [cpCancelButton]="true"
+                    (colorPickerChange)="setColorPathLine(colorpickline)" [cpCancelButton]="true" [cpOKButton]="true"
                     [cpPresetLabel]="'Company colors'"
                     [cpPresetColors]="[option.companyprimairycolor, option.companysecondarycolor, company.companyprimairycolor, company.companysecondarycolor]">
                 <input autocomplete="off" style="width: 20px; height: 20px;" [style.background]="colorpick"
-                    matTooltip="Fill color" [(colorPicker)]="colorpick" [cpPosition]="'bottom'"
+                    matTooltip="Fill color" [(colorPicker)]="colorpick" [cpPosition]="'bottom'" [cpCancelButton]="true" [cpOKButton]="true"
                     (colorPickerChange)="setColorPath(colorpick)" [cpPresetLabel]="'Company colors'"
                     [cpPresetColors]="[option.companyprimairycolor, option.companysecondarycolor, company.companyprimairycolor, company.companysecondarycolor]">
                 <mat-icon (click)="deleteSelectedVectorPath()" class="iconsize-18" matTooltip="Delete section">
@@ -1372,7 +1372,7 @@
                     indeterminate_check_box
                 </mat-icon>
                 <mat-checkbox [(ngModel)]="dragselectvectpath" matTooltip="drag selection tool"
-                    (change)="setDragSelect()"></mat-checkbox>
+                    (change)="setDragSelect(dragselectvectpath)"></mat-checkbox>
                 <mat-checkbox [(ngModel)]="selectmultiplepaths" matTooltip="selected multiple sections"
                     (change)="selectMultiplePaths()"></mat-checkbox>
             </div>
@@ -1381,9 +1381,6 @@
         <div *ngIf="changevideo" [ngStyle]="canvas" style="border: 1px solid grey; overflow:hidden;">
 
             <!-- selectedVecPath &&  -->
-
-
-
             <video *ngIf="canvas.videourl" preload="auto" class="video-background" no-controls [src]="canvas.videourl"
                 #videoPlayer>
             </video>

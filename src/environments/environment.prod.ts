@@ -1,6 +1,6 @@
 export const environment = {
   production: true,
-  BASE_URL: 'https://xbmsapi.eu-gb.mybluemix.net',
+  BASE_URL: 'https://api.xbms.io',
   API_VERSION: 'api'
 };
 

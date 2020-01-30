@@ -15,8 +15,8 @@
             class="fab-secondary"
             color="primary"
             (click)="onClickFab(btn)">
-      <i class="material-icons">{{btn.icon}}</i>
-      <mat-icon [svgIcon]="btn.svgIcon"></mat-icon>
+      <i *ngIf="btn.icon" class="material-icons">{{btn.icon}}</i>
+      <mat-icon *ngIf='btn.svgIcon' [svgIcon]="btn.svgIcon"></mat-icon>
       
     </button>
   </div>
