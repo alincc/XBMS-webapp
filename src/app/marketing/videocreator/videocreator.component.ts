@@ -544,6 +544,8 @@ export class VideocreatorComponent implements OnInit {
 
   async setMotionPath(id, element, animation) {
     //this.stopFunc();
+    this.removePathEditor();
+    
     this.primairytimeline.kill();
     this.primairytimeline = gsap.timeline({ paused: true, reversed: true });
     const svgpath = document.getElementById(this.selectedelement.id + 'p');
@@ -555,21 +557,19 @@ export class VideocreatorComponent implements OnInit {
 
     let ease = this.selectEaseType(animation.easetype);
     // this.primairytimeline.set(docset, {xPercent: -50, yPercent: -50, transformOrigin: "50% 50%"});
-
-    //svgpath.setAttribute('transform', 'matrix(1, 0, 0, 1, ' + element.posx + ', ' + element.posy + ')')
-    gsap.set(docset, { xPercent: -100, yPercent: -100, transformOrigin: "50% 50%", autoAlpha: 1 });
+    let orgin = element.transformOriginX + ' ' + element.transformOriginY
+    gsap.set(docset, { xPercent: element.travellocX, yPercent: element.travellocY, transformOrigin: orgin, autoAlpha: 1 }); // tranformorgin to set offset??
     this.primairytimeline.to(docset, {
       duration: animation.duration,
       ease: ease,
       repeat: animation.repeat,
       yoyo: element.yoyo,
-      //immediateRender: true,
       motionPath: {
         path: svgpath,
-        align: svgpath,  // do not use self
+        //align: svgpath,  // do not use self
         autoRotate: animation.rotationcycle,
-        //offsetY: parseInt(element.height, 10)  / 2, // element.travellocX, // 
-        //offsetX: parseInt(element.width, 10) / 2//element.travellocY //
+        //offsetY: element.travellocX, // 
+        //offsetX: element.travellocY //
       }
     });
 
@@ -578,6 +578,7 @@ export class VideocreatorComponent implements OnInit {
     const patheditor = document.getElementsByClassName('path-editor'); // path-editor
     const patheditorsel = document.getElementsByClassName('path-editor-selection'); // path-editor
     
+    console.log(patheditor, patheditorsel)
     // docset.setAttribute('transform', 'matrix(1, 0, 0, 1, ' + element.posx + ', ' + element.posy + ')')
 
     if (patheditor.length > 0) {
@@ -591,12 +592,6 @@ export class VideocreatorComponent implements OnInit {
 
   saveNewMotionPath() {
     // delete copy motion path button --> standard gsap edit see plugin
-    const elements = document.getElementsByClassName('copy-motion-path');
-    if (elements.length > 0) {
-      for (let i = 0; i < elements.length; i++) {
-        elements[i].parentNode.removeChild(elements[i]);
-      }
-    }
 
     this.primairytimeline.kill();
     this.primairytimeline = gsap.timeline({ paused: true, reversed: true });
@@ -620,7 +615,7 @@ export class VideocreatorComponent implements OnInit {
 
       this.selectedelement.posx = svgtransarray[4] //- (parseInt(this.selectedelement.style.width, 10) / 2);
       this.selectedelement.posy = svgtransarray[5] //- (parseInt(this.selectedelement.style.height, 10) / 2);
-      console.log(this.selectedelement);
+      console.log(svgtransarray, this.selectedelement);
     }
 
     newpath = MotionPathPlugin.rawPathToString(rawpath);
@@ -630,7 +625,31 @@ export class VideocreatorComponent implements OnInit {
     let newsvgpath = '<svg id="' + this.selectedelement.id + 'mp" viewBox="' + newview + '" class="path-edit"><path id="' + this.selectedelement.id + 'p" style="opacity: 0; " d="' + newpath + '" /></svg>';
     this.selectedelement.motionpath = newsvgpath;
     this.editpath = false;
+    this.removePathEditor();
     this.stopFunc();
+  }
+
+  removePathEditor(){
+    const patheditor = document.getElementsByClassName('path-editor'); // path-editor
+    const patheditorsel = document.getElementsByClassName('path-editor-selection'); // path-editor
+    const elements = document.getElementsByClassName('copy-motion-path');
+    if (elements.length > 0) {
+      for (let i = 0; i < elements.length; i++) {
+        elements[i].parentNode.removeChild(elements[i]);
+      }
+    }
+
+    if (patheditor.length > 0) {
+      for (let i = 0; i < patheditor.length; i++) {
+        patheditor[i].parentNode.removeChild(patheditor[i]);
+      }
+    }
+
+    if (patheditorsel.length > 0) {
+      for (let i = 0; i < patheditorsel.length; i++) {
+        patheditorsel[i].parentNode.removeChild(patheditorsel[i]);
+      }
+    }
   }
 
   resetPath() {
@@ -654,10 +673,11 @@ export class VideocreatorComponent implements OnInit {
 
   async detectchange() {
     //this.saveToLocalStorageHistory()
+    
     this.systembusy = false;
     if (this.whiteboard) { this.deletewhiteboard() }
     this.primairytimeline = gsap.timeline({ paused: true, reversed: true });
-    // console.log('run check', this.animationarray);
+    // console.log('run check', this.ani§mationarray);
     if (this.editpath === true) {
       this.saveNewMotionPath();
     }
@@ -879,19 +899,20 @@ export class VideocreatorComponent implements OnInit {
 
     if (anitype === 'move') {
       let svgset = document.getElementById(elementA.id + 'p');
-      //gsap.set(iset, {xPercent: -50, yPercent: -50, transformOrigin: "50% 50%", autoAlpha: 1});
+      let orgin = element.transformOriginX + ' ' + element.transformOriginY
+      // gsap.set(iset, {xPercent: -50, yPercent: -50, transformOrigin: orgin, autoAlpha: 1});
+      gsap.set(iset, { xPercent: element.travellocX, yPercent: element.travellocY, transformOrigin: orgin, autoAlpha: 1 }); // tranformorgin to set offset??
       aniset = {
         duration: duration,
         ease: ease,
         repeat: repeat,
         yoyo: element.yoyo,
-        // immediateRender: true,
         motionPath: {
           path: svgset, //'id + p'
           autoRotate: elementA.rotationcycle,
           //offsetY: 0,// elementA.travellocX,
           //offsetX: 0,//elementA.travellocY,
-          align: svgset//'self'
+          align: 'self'
         }
       }
     }
@@ -1038,8 +1059,8 @@ export class VideocreatorComponent implements OnInit {
       posx: this.selectedelement.posx,
       posy: this.selectedelement.posy,
       rotationcycle: rotationcycle,
-      travellocX: 0,
-      travellocY: 0,
+      travellocX: -50,
+      travellocY: -50,
       scalesize: 0.8,
       skewY: 50,
       skewX: 50,
@@ -1458,8 +1479,8 @@ export class VideocreatorComponent implements OnInit {
       posx: 0,
       posy: 0,
       rotationcycle: 360,
-      travellocX: 0,
-      travellocY: 0,
+      travellocX: -50,
+      travellocY: -50,
       scalesize: 0.8,
       skewY: 50,
       skewX: 50,
@@ -1584,8 +1605,8 @@ export class VideocreatorComponent implements OnInit {
       posx: 0,
       posy: 0,
       rotationcycle: 360,
-      travellocX: 0,
-      travellocY: 0,
+      travellocX: -50,
+      travellocY: -50,
       scalesize: 0.8,
       skewY: 50,
       skewX: 50,
@@ -1642,8 +1663,8 @@ export class VideocreatorComponent implements OnInit {
       posx: 0,
       posy: 0,
       rotationcycle: 360,
-      travellocX: 0,
-      travellocY: 0,
+      travellocX: -50,
+      travellocY: -50,
       scalesize: 0.8,
       skewY: 50,
       skewX: 50,
@@ -1763,8 +1784,8 @@ export class VideocreatorComponent implements OnInit {
       posx: 0,
       posy: 0,
       rotationcycle: 360,
-      travellocX: 0,
-      travellocY: 0,
+      travellocX: -50,
+      travellocY: -50,
       scalesize: 0.8,
       skewY: 50,
       skewX: 50,
@@ -2046,8 +2067,8 @@ export class VideocreatorComponent implements OnInit {
       posx: 0,
       posy: 0,
       rotationcycle: 360,
-      travellocX: 0,
-      travellocY: 0,
+      travellocX: -50,
+      travellocY: -50,
       scalesize: 0.8,
       skewY: 50,
       skewX: 50,
