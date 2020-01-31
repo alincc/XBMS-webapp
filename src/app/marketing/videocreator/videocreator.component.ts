@@ -558,7 +558,7 @@ export class VideocreatorComponent implements OnInit {
     let ease = this.selectEaseType(animation.easetype);
     // this.primairytimeline.set(docset, {xPercent: -50, yPercent: -50, transformOrigin: "50% 50%"});
     let orgin = element.transformOriginX + ' ' + element.transformOriginY
-    gsap.set(docset, { xPercent: element.travellocX, yPercent: element.travellocY, transformOrigin: orgin, autoAlpha: 1 }); // tranformorgin to set offset??
+    this.primairytimeline.set(docset, { xPercent: element.travellocX, yPercent: element.travellocY, transformOrigin: orgin, autoAlpha: 1 }); // tranformorgin to set offset??
     this.primairytimeline.to(docset, {
       duration: animation.duration,
       ease: ease,
@@ -901,7 +901,7 @@ export class VideocreatorComponent implements OnInit {
       let svgset = document.getElementById(elementA.id + 'p');
       let orgin = element.transformOriginX + ' ' + element.transformOriginY
       // gsap.set(iset, {xPercent: -50, yPercent: -50, transformOrigin: orgin, autoAlpha: 1});
-      gsap.set(iset, { xPercent: element.travellocX, yPercent: element.travellocY, transformOrigin: orgin, autoAlpha: 1 }); // tranformorgin to set offset??
+      this.primairytimeline.set(iset, { xPercent: element.travellocX, yPercent: element.travellocY, transformOrigin: orgin, autoAlpha: 1 }); // tranformorgin to set offset??
       aniset = {
         duration: duration,
         ease: ease,
