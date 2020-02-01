@@ -307,7 +307,7 @@
                                 <mat-hint>X-offset</mat-hint>
                             </mat-form-field>
                             <mat-form-field style="max-width: 46px;">
-                                <input [(ngModel)]="selectedelement.motionrotation" type="number" matInput>
+                                <input [(ngModel)]="animation.rotationcycle" matInput [disabled]="animation.rotationkeeppos">
                                 <mat-hint>Motion direction</mat-hint>
                             </mat-form-field>
                             <mat-form-field style="max-width: 46px;">
@@ -318,12 +318,13 @@
                                 <input [(ngModel)]="animation.transformOriginY" matInput (change)="detectchange()">
                                 <mat-hint>distance from top object</mat-hint>
                             </mat-form-field>
+                            <mat-checkbox [(ngModel)]="animation.rotationkeeppos" matTooltip="Keep position">Don't rotate</mat-checkbox>
                             <!-- <button mat-button
                                 (click)="animation.travellocY = selectedelement.posy; animation.travellocX = selectedelement.posx">Reset</button> -->
                             <button mat-button (click)="resetPath()">Reset</button>
 
                             <button mat-button (click)="editMotionPath(animation)">Edit path</button>
-                            <button mat-button (click)="saveNewMotionPath()">Save path</button>
+                            <button mat-button (click)="saveNewMotionPath(animation)">Save path</button>
                         </div>
 
                         <div *ngIf="animation.anim_type === 'followminions'">

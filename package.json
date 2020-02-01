@@ -55,7 +55,6 @@
     "ngx-color-picker": "^7.3.1",
     "ngx-image-cropper": "^2.0.3",
     "ngx-twitter-timeline": "^0.1.5",
-    "normalize-svg-coords": "^1.0.9",
     "rematrix": "^0.4.1",
     "rxjs": "^6.5.2",
     "snazzy-info-window": "^1.1.0",

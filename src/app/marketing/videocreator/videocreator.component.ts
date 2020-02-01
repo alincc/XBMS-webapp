@@ -12,17 +12,13 @@ import { FileUploader, FileItem } from 'ng2-file-upload';
 import { MatSnackBar, MatDialog, AnimationDurations } from '@angular/material';
 declare const SVG: any;
 import '@svgdotjs/svg.draggable.js'
-import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
-import * as normalize from 'normalize-svg-coords';
 const plugins = [Draggable, InertiaPlugin, DrawSVGPlugin, MorphSVGPlugin, ScrambleTextPlugin, SplitText, Physics2DPlugin, MotionPathPlugin, MotionPathHelper]; //needed for GSAP
-//import { CanvasWhiteboardComponent } from 'ng2-canvas-whiteboard';
 import { fonts } from '../../shared/listsgeneral/fonts';
 import svgDragSelect from "svg-drag-select";
 import { ChartDataSets, ChartOptions, Chart } from 'chart.js';
 import { Color, BaseChartDirective, Label } from 'ng2-charts';
 import { ImageCroppedEvent } from 'ngx-image-cropper';
 import { codesnippetService } from '../../dialogsservice/codesnippet-dialog.component';
-//import {Observable, of, Subject} from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 import { HostListener } from '@angular/core';
 import { Subject, Subscription } from 'rxjs';
@@ -114,7 +110,7 @@ export class animationtype {
   ease: string;
   posx: number;
   posy: number;
-  rotationcycle: number;
+  rotationcycle: string;
   travellocX: number;
   travellocY: number;
   scalesize: number;
@@ -127,6 +123,7 @@ export class animationtype {
   repeat: number;
   yoyo: boolean;
   audioeffectsrc: string;
+  rotationkeeppos: boolean
 }
 
 export class vectoranimationtype {
@@ -467,7 +464,7 @@ export class VideocreatorComponent implements OnInit {
     }
     if (jsonaniarray !== jsonaniarraylast) {
       this.currenthistoryversion = this.currenthistoryversion + 1;
-      this.history.push(jsonaniarray);
+      this.history.push(this.animationarray);
     }
   }
 
@@ -478,7 +475,7 @@ export class VideocreatorComponent implements OnInit {
       this.currenthistoryversion = this.currenthistoryversion - 1;
       let storedback = this.history[this.currenthistoryversion];
       console.log(this.history, this.currenthistoryversion, storedback);
-      this.animationarray = JSON.parse(storedback);
+      this.animationarray = storedback;
     }
   }
 
@@ -489,7 +486,7 @@ export class VideocreatorComponent implements OnInit {
     if (this.currenthistoryversion < histlast) {
       this.currenthistoryversion = this.currenthistoryversion + 1;
       let storedback = this.history[this.currenthistoryversion]
-      this.animationarray = JSON.parse(storedback);
+      this.animationarray = storedback;
     }
   }
 
@@ -556,20 +553,29 @@ export class VideocreatorComponent implements OnInit {
     //console.log(element, offsety, offsetx);
 
     let ease = this.selectEaseType(animation.easetype);
-    // this.primairytimeline.set(docset, {xPercent: -50, yPercent: -50, transformOrigin: "50% 50%"});
-    let orgin = element.transformOriginX + ' ' + element.transformOriginY
-    this.primairytimeline.set(docset, { xPercent: element.travellocX, yPercent: element.travellocY, transformOrigin: orgin, autoAlpha: 1 }); // tranformorgin to set offset??
+    //gsap.set(docset, {xPercent: -50, yPercent: -50, transformOrigin: "50% 50%"});
+    let orgin = animation.transformOriginX + ' ' + animation.transformOriginY;
+   
+    let rotate;    
+    if (!animation.rotationkeeppos){
+     gsap.set(docset, { xPercent: animation.travellocX, yPercent: animation.travellocY, 
+      x: element.posx, y: element.posy, transformOrigin: orgin, autoAlpha: 1 }); // tranformorgin to set offset??
+     rotate = animation.rotationcycle
+    } else {
+      rotate = false;
+      gsap.set(docset, { xPercent: animation.travellocX, yPercent: animation.travellocY, autoAlpha: 1,
+      x: element.posx, y: element.posy });
+    }
+
     this.primairytimeline.to(docset, {
       duration: animation.duration,
       ease: ease,
       repeat: animation.repeat,
-      yoyo: element.yoyo,
+      yoyo: animation.yoyo,
       motionPath: {
         path: svgpath,
-        //align: svgpath,  // do not use self
-        autoRotate: animation.rotationcycle,
-        //offsetY: element.travellocX, // 
-        //offsetX: element.travellocY //
+        align: svgpath,  // do not use self
+        autoRotate: rotate,
       }
     });
 
@@ -577,9 +583,6 @@ export class VideocreatorComponent implements OnInit {
     MotionPathHelper.create(docset);
     const patheditor = document.getElementsByClassName('path-editor'); // path-editor
     const patheditorsel = document.getElementsByClassName('path-editor-selection'); // path-editor
-    
-    console.log(patheditor, patheditorsel)
-    // docset.setAttribute('transform', 'matrix(1, 0, 0, 1, ' + element.posx + ', ' + element.posy + ')')
 
     if (patheditor.length > 0) {
       patheditor[0].setAttribute('transform', 'matrix(1, 0, 0, 1, ' + element.posx + ', ' + element.posy + ')')
@@ -590,11 +593,17 @@ export class VideocreatorComponent implements OnInit {
     }
   }
 
-  saveNewMotionPath() {
+  saveNewMotionPath(animation?) {
     // delete copy motion path button --> standard gsap edit see plugin
 
-    this.primairytimeline.kill();
-    this.primairytimeline = gsap.timeline({ paused: true, reversed: true });
+    if (!animation){ // no animation selected find motion 
+      animation =  this.selectedelement.animation.filter(obj => {
+        return obj.type === 'motion'
+      });
+    }
+
+    this.primairytimeline.pause();
+    this.primairytimeline.reverse();
 
     let newpath;
     let svgpath = document.getElementById(this.selectedelement.id + 'p');
@@ -613,8 +622,18 @@ export class VideocreatorComponent implements OnInit {
         svgtransarray = svgtrans.split(',').map(Number);
       }
 
-      this.selectedelement.posx = svgtransarray[4] //- (parseInt(this.selectedelement.style.width, 10) / 2);
-      this.selectedelement.posy = svgtransarray[5] //- (parseInt(this.selectedelement.style.height, 10) / 2);
+      // get element position actual screen pos - bounding div pos 
+      var boundingElement = document.getElementById('myBounds');
+      var rectbound = boundingElement.getBoundingClientRect();
+
+      var svgElement = document.getElementById(this.selectedelement.id);
+      var rect = svgElement.getBoundingClientRect();
+     
+      let x = rect.left - rectbound.left;
+      let y = rect.top - rectbound.top;
+
+      this.selectedelement.posx = x; //svgtransarray[4] //+ (parseInt(this.selectedelement.style.width, 10)  * (animation.travellocX / 100));
+      this.selectedelement.posy = y; //svgtransarray[5] //+ (parseInt(this.selectedelement.style.height, 10) * (animation.travellocY / 100));
       console.log(svgtransarray, this.selectedelement);
     }
 
@@ -625,6 +644,8 @@ export class VideocreatorComponent implements OnInit {
     let newsvgpath = '<svg id="' + this.selectedelement.id + 'mp" viewBox="' + newview + '" class="path-edit"><path id="' + this.selectedelement.id + 'p" style="opacity: 0; " d="' + newpath + '" /></svg>';
     this.selectedelement.motionpath = newsvgpath;
     this.editpath = false;
+    this.primairytimeline.kill();
+    this.primairytimeline = gsap.timeline({ paused: true, reversed: true });
     this.removePathEditor();
     this.stopFunc();
   }
@@ -889,8 +910,6 @@ export class VideocreatorComponent implements OnInit {
       }
     }
     if (anitype === 'appear') {
-      // elementA.style.opacity = 0;
-      // this.primairytimeline.set(iset, {opacity: 0});
       aniset = {
         duration: duration,
         autoAlpha: 1, ease: ease, repeat: repeat, yoyo: element.yoyo
@@ -899,19 +918,25 @@ export class VideocreatorComponent implements OnInit {
 
     if (anitype === 'move') {
       let svgset = document.getElementById(elementA.id + 'p');
-      let orgin = element.transformOriginX + ' ' + element.transformOriginY
-      // gsap.set(iset, {xPercent: -50, yPercent: -50, transformOrigin: orgin, autoAlpha: 1});
-      this.primairytimeline.set(iset, { xPercent: element.travellocX, yPercent: element.travellocY, transformOrigin: orgin, autoAlpha: 1 }); // tranformorgin to set offset??
+      let orgin = element.transformOriginX + ' ' + element.transformOriginY;
+
+      let rotate;    
+      if (!element.rotationkeeppos){
+       gsap.set(iset, { xPercent: element.travellocX, yPercent: element.travellocY, transformOrigin: orgin, autoAlpha: 1 }); // tranformorgin to set offset??
+       rotate = element.rotationcycle
+      } else {
+        gsap.set(iset, { xPercent: element.travellocX, yPercent: element.travellocY, autoAlpha: 1 }); // tranformorgin to set offset??
+        rotate = false;
+      }
+     
       aniset = {
         duration: duration,
         ease: ease,
         repeat: repeat,
         yoyo: element.yoyo,
         motionPath: {
-          path: svgset, //'id + p'
-          autoRotate: elementA.rotationcycle,
-          //offsetY: 0,// elementA.travellocX,
-          //offsetX: 0,//elementA.travellocY,
+          path: svgset, 
+          autoRotate: rotate,
           align: 'self'
         }
       }
@@ -1046,7 +1071,7 @@ export class VideocreatorComponent implements OnInit {
 
   addNewEffect(element): void {
     if (this.whiteboard) { this.deletewhiteboard() }
-    let rotationcycle = 0;
+    let rotationcycle = '0';
     if (this.selectedelement.rotation !== 0) {
       rotationcycle = this.selectedelement.rotation;
     }
@@ -1070,7 +1095,8 @@ export class VideocreatorComponent implements OnInit {
       transformOriginY: '50%',
       repeat: 0,
       yoyo: false,
-      audioeffectsrc: ''
+      audioeffectsrc: '',
+      rotationkeeppos: false
     }
     this.selectedelement.animation.push(newanimation);
     this.detectchange();
@@ -1415,7 +1441,7 @@ export class VideocreatorComponent implements OnInit {
       transform: '',
       rotation: 0,
       motionrotation: 0,
-      motionpath: '<svg id="' + newelnr + 'mp" viewBox="0 0 600 500" class="path-edit"><path id="' + newelnr + 'p" style="opacity: 0;"' +
+      motionpath: '<svg id="' + newelnr + 'mp" style="width:'+ this.canvas.width +' height='+this.canvas.height+';" viewBox="0 0 600 500" class="path-edit"><path id="' + newelnr + 'p" style="opacity: 0;"' +
         ' d="M15.458,45.741 C15.458,45.741 441.46,44.534 513.889,44.457  " /></svg>',
     }
     this.animationarray.push(newvectorcombi);
@@ -1478,7 +1504,7 @@ export class VideocreatorComponent implements OnInit {
       ease: '',
       posx: 0,
       posy: 0,
-      rotationcycle: 360,
+      rotationcycle: '360',
       travellocX: -50,
       travellocY: -50,
       scalesize: 0.8,
@@ -1490,7 +1516,8 @@ export class VideocreatorComponent implements OnInit {
       transformOriginY: '50%',
       repeat: 0,
       yoyo: false,
-      audioeffectsrc: ''
+      audioeffectsrc: '',
+      rotationkeeppos: false
     }];
     // only add if new svg not split from
     if (!svgcombi) {
@@ -1549,7 +1576,7 @@ export class VideocreatorComponent implements OnInit {
       transform: '',
       rotation: 0,
       motionrotation: 0,
-      motionpath: '<svg id="' + newelnr + 'mp" viewBox="0 0 600 500" class="path-edit"><path id="' + newelnr + 'p" style="opacity: 0;"' +
+      motionpath: '<svg id="' + newelnr + 'mp" style="width:'+ this.canvas.width +' height='+this.canvas.height+';" viewBox="0 0 600 500" class="path-edit"><path id="' + newelnr + 'p" style="opacity: 0;"' +
         ' d="M15.458,45.741 C15.458,45.741 441.46,44.534 513.889,44.457  " /></svg>',
     }
     this.animationarray.push(vector);
@@ -1604,7 +1631,7 @@ export class VideocreatorComponent implements OnInit {
       ease: '',
       posx: 0,
       posy: 0,
-      rotationcycle: 360,
+      rotationcycle: '360',
       travellocX: -50,
       travellocY: -50,
       scalesize: 0.8,
@@ -1616,7 +1643,8 @@ export class VideocreatorComponent implements OnInit {
       transformOriginY: '50%',
       repeat: 0,
       yoyo: false,
-      audioeffectsrc: ''
+      audioeffectsrc: '',
+      rotationkeeppos: false
     }];
     let img: imageanimation = {
       type: 'image',
@@ -1637,7 +1665,7 @@ export class VideocreatorComponent implements OnInit {
       transform: '',
       rotation: 0,
       motionrotation: 0,
-      motionpath: '<svg id="' + newelnr + 'mp" viewBox="0 0 600 500" class="path-edit"><path id="' + newelnr + 'p" style="opacity: 0;"' +
+      motionpath: '<svg id="' + newelnr + 'mp" style="width:'+ this.canvas.width +' height='+this.canvas.height+';" viewBox="0 0 600 500" class="path-edit"><path id="' + newelnr + 'p" style="opacity: 0;"' +
         ' d="M15.458,45.741 C15.458,45.741 441.46,44.534 513.889,44.457  " /></svg>',
     }
     this.animationarray.push(img);
@@ -1662,7 +1690,7 @@ export class VideocreatorComponent implements OnInit {
       ease: '',
       posx: 0,
       posy: 0,
-      rotationcycle: 360,
+      rotationcycle: '360',
       travellocX: -50,
       travellocY: -50,
       scalesize: 0.8,
@@ -1674,7 +1702,8 @@ export class VideocreatorComponent implements OnInit {
       transformOriginY: '50%',
       repeat: 0,
       yoyo: false,
-      audioeffectsrc: ''
+      audioeffectsrc: '',
+      rotationkeeppos: false
     }];
     let img: shapeanimation = {
       groupmember: false,
@@ -1699,7 +1728,7 @@ export class VideocreatorComponent implements OnInit {
       transform: '',
       rotation: 0,
       motionrotation: 0,
-      motionpath: '<svg id="' + newelnr + 'mp" viewBox="0 0 600 500" class="path-edit"><path id="' + newelnr + 'p" style="opacity: 0;"' +
+      motionpath: '<svg id="' + newelnr + 'mp" style="width:'+ this.canvas.width +' height='+this.canvas.height+';" viewBox="0 0 600 500" class="path-edit"><path id="' + newelnr + 'p" style="opacity: 0;"' +
         ' d="M15.458,45.741 C15.458,45.741 441.46,44.534 513.889,44.457  " /></svg>',
 
     }
@@ -1783,7 +1812,7 @@ export class VideocreatorComponent implements OnInit {
       ease: '',
       posx: 0,
       posy: 0,
-      rotationcycle: 360,
+      rotationcycle: '360',
       travellocX: -50,
       travellocY: -50,
       scalesize: 0.8,
@@ -1795,7 +1824,8 @@ export class VideocreatorComponent implements OnInit {
       transformOriginY: '50%',
       repeat: 0,
       yoyo: false,
-      audioeffectsrc: ''
+      audioeffectsrc: '',
+      rotationkeeppos: false
     }];
     let chart: chart = {
       groupmember: false,
@@ -1831,7 +1861,7 @@ export class VideocreatorComponent implements OnInit {
       transform: '',
       rotation: 0,
       motionrotation: 0,
-      motionpath: '<svg id="' + newelnr + 'mp" viewBox="0 0 600 500" class="path-edit"><path id="' + newelnr + 'p" style="opacity: 0;"' +
+      motionpath: '<svg id="' + newelnr + 'mp" style="width:'+ this.canvas.width +' height='+this.canvas.height+';" viewBox="0 0 600 500" class="path-edit"><path id="' + newelnr + 'p" style="opacity: 0;"' +
         ' d="M15.458,45.741 C15.458,45.741 441.46,44.534 513.889,44.457  " /></svg>',
     }
     this.animationarray.push(chart);
@@ -2066,7 +2096,7 @@ export class VideocreatorComponent implements OnInit {
       ease: '',
       posx: 0,
       posy: 0,
-      rotationcycle: 360,
+      rotationcycle: '360',
       travellocX: -50,
       travellocY: -50,
       scalesize: 0.8,
@@ -2078,7 +2108,8 @@ export class VideocreatorComponent implements OnInit {
       transformOriginY: '50%',
       repeat: 0,
       yoyo: false,
-      audioeffectsrc: ''
+      audioeffectsrc: '',
+      rotationkeeppos: false
     }];
     let splittext: splittexttype[] = [{
       textanimationtype: '',
@@ -2116,7 +2147,7 @@ export class VideocreatorComponent implements OnInit {
       transform: '',
       rotation: 0,
       motionrotation: 0,
-      motionpath: '<svg id="' + newelnr + 'mp" viewBox="0 0 600 500" class="path-edit"><path id="' + newelnr + 'p" style="opacity: 0;" ' +
+      motionpath: '<svg id="' + newelnr + 'mp" style="width:'+ this.canvas.width +' height='+this.canvas.height+';" viewBox="0 0 600 500" class="path-edit"><path id="' + newelnr + 'p" style="opacity: 0;"' +
         ' d="M15.458,45.741 C15.458,45.741 441.46,44.534 513.889,44.457  " /></svg>',
     }
     this.animationarray.push(txt);
