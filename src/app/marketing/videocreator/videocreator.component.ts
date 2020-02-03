@@ -22,6 +22,7 @@ import { codesnippetService } from '../../dialogsservice/codesnippet-dialog.comp
 import { debounceTime } from 'rxjs/operators';
 import { HostListener } from '@angular/core';
 import { Subject, Subscription } from 'rxjs';
+import { Position } from 'angular2-draggable';
 
 export class chart {
   type: 'chart';
@@ -316,6 +317,7 @@ export class VideocreatorComponent implements OnInit {
     }
   }
 
+  public draggableObject;
   public pathHelper: MotionPathHelper;
   public snaptogrid = false;
   public snaptogridwidth = 50;
@@ -543,7 +545,7 @@ export class VideocreatorComponent implements OnInit {
   async setMotionPath(id, element, animation) {
     //this.stopFunc();
     this.removePathEditor();
-    
+
     this.primairytimeline.kill();
     this.primairytimeline = gsap.timeline({ paused: true, reversed: true });
     const svgpath = document.getElementById(this.selectedelement.id + 'p');
@@ -551,16 +553,19 @@ export class VideocreatorComponent implements OnInit {
 
     let ease = this.selectEaseType(animation.easetype);
     let orgin = animation.transformOriginX + ' ' + animation.transformOriginY;
-   
-    let rotate;    
-    if (!animation.rotationkeeppos){
-     gsap.set(docset, { xPercent: animation.travellocX, yPercent: animation.travellocY, 
-      transformOrigin: orgin, autoAlpha: 1 }); // tranformorgin to set offset??
-     rotate = animation.rotationcycle
+
+    let rotate;
+    if (!animation.rotationkeeppos) {
+      gsap.set(docset, {
+        xPercent: animation.travellocX, yPercent: animation.travellocY,
+        transformOrigin: orgin, autoAlpha: 1
+      }); // tranformorgin to set offset??
+      rotate = animation.rotationcycle
     } else {
       rotate = false;
-      gsap.set(docset, { xPercent: animation.travellocX, yPercent: animation.travellocY, autoAlpha: 1,
-       });
+      gsap.set(docset, {
+        xPercent: animation.travellocX, yPercent: animation.travellocY, autoAlpha: 1,
+      });
     }
 
     this.primairytimeline.to(docset, {
@@ -575,88 +580,50 @@ export class VideocreatorComponent implements OnInit {
       }
     });
 
-    //MotionPathHelper.create(docset, { x: element.posx, y: element.posy });
     this.pathHelper = MotionPathHelper.create(docset);
-
-    const patheditor = document.getElementsByClassName('path-editor'); // path-editor
-    const patheditorsel = document.getElementsByClassName('path-editor-selection'); // path-editor
-
-    if (patheditor.length > 0) {
-      //patheditor[0].setAttribute('transform', 'matrix(1, 0, 0, 1, ' + element.posx + ', ' + element.posy + ')')
-    }
-
-    if (patheditorsel.length > 0) {
-      //patheditorsel[0].setAttribute('transform', 'matrix(1, 0, 0, 1, ' + element.posx + ', ' + element.posy + ')')
-    }
   }
 
   saveNewMotionPath(animation?) {
     // delete copy motion path button --> standard gsap edit see plugin
 
-    if (!animation){ // no animation selected find motion 
-      animation =  this.selectedelement.animation.filter(obj => {
+    if (!animation) { // no animation selected find motion 
+      animation = this.selectedelement.animation.filter(obj => {
         return obj.anim_type === 'move'
       });
-    }
-
-
-    this.primairytimeline.reverse();
-    this.primairytimeline.pause();
-
-    let newpath;
-    let svgpath = document.getElementById(this.selectedelement.id + 'p');
-    let rawpath = MotionPathPlugin.getRawPath(svgpath);
-    let svgtrans = svgpath.getAttribute('transform');
-    let svgtransarray;
-    //console.log(svgtrans, rawpath);
-
-    if (rawpath === undefined) {
-      newpath = 'M15.458,45.741 C15.458,45.741 441.46,44.534 513.889,44.457  ';
-    } else if (svgtrans !== null) { //&& svgtrans !== 'matrix(1 0 0 1 0 0)'
-      svgtrans = svgtrans.replace('matrix(', '');
-      svgtrans = svgtrans.replace(')', '');
-      let comma = svgtrans.indexOf(',')
-      if (comma === -1) { svgtransarray = svgtrans.split(' ').map(Number) } else {
-        svgtransarray = svgtrans.split(',').map(Number);
+      if (animation.length > 0) {
+        animation = animation[0]; // always returns array
       }
-
-      // get element position actual screen pos - bounding div pos 
-      var boundingElement = document.getElementById('myBounds');
-      var rectbound = boundingElement.getBoundingClientRect();
-
-      var svgElement = document.getElementById(this.selectedelement.id);
-      var rect = svgElement.getBoundingClientRect();
-
-      var setmovebox = svgpath.getBoundingClientRect();
-     
-      let x = rect.left - rectbound.left;
-      let y = rect.top - rectbound.top;
-
-      let startX = parseFloat(gsap.getProperty(svgElement, "x", "px"));
-		  let startY = parseFloat(gsap.getProperty(svgElement, "y", "px"));
-
-      //this.selectedelement.posx = x; //svgtransarray[4] //+ (parseInt(this.selectedelement.style.width, 10)  * (animation.travellocX / 100));
-      //this.selectedelement.posy = y; //svgtransarray[5] //+ (parseInt(this.selectedelement.style.height, 10) * (animation.travellocY / 100));
-      //console.log(setmovebox, x, y, startX, startY);
     }
 
-
-    newpath = this.pathHelper.getString()//
-    let setpath = MotionPathPlugin.rawPathToString(rawpath);
-    console.log(newpath, setpath);
-    let w = this.canvas.width.replace('px', '');
-    let h = this.canvas.height.replace('px', '');
-    let newview = '0 0 ' + w + ' ' + h;
-    let newsvgpath = '<svg id="' + this.selectedelement.id + 'mp" viewBox="' + newview + '" class="path-edit"><path id="' + this.selectedelement.id + 'p" style="opacity: 0; " d="' + newpath + '" /></svg>';
-    this.selectedelement.motionpath = newsvgpath;
+    let id = this.selectedelement.id;
+    let newpath = this.pathHelper.getString();//
+    this.setNewMotionPath(newpath)
     this.editpath = false;
     this.primairytimeline.kill();
     this.primairytimeline = gsap.timeline({ paused: true, reversed: true });
     this.removePathEditor();
     this.stopFunc();
+
+    setTimeout(() => {
+      let element = document.getElementById(id);
+      let position = element.getBoundingClientRect();
+      let boundelement = document.getElementById('myBounds');
+      let boundposition = boundelement.getBoundingClientRect();
+      this.selectedelement.posx = position.x - boundposition.x + (position.width * animation.travellocX);
+      this.selectedelement.posy = position.y - boundposition.y + (position.height * animation.travellocY);
+      console.log(position);
+    }, 500)
   }
 
-  removePathEditor(){
+  setNewMotionPath(newpath) {
+    let w = this.canvas.width.replace('px', '');
+    let h = this.canvas.height.replace('px', '');
+    let newview = '0 0 ' + w + ' ' + h;
+    let newsvgpath = '<svg id="' + this.selectedelement.id + 'mp" viewBox="' + newview + '" class="path-edit"><path id="' + this.selectedelement.id + 'p" style="opacity: 0; " d="' + newpath + '" /></svg>';
+    this.selectedelement.motionpath = newsvgpath;
+  }
+
+  removePathEditor() {
     const patheditor = document.getElementsByClassName('path-editor'); // path-editor
     const patheditorsel = document.getElementsByClassName('path-editor-selection'); // path-editor
     const elements = document.getElementsByClassName('copy-motion-path');
@@ -700,7 +667,7 @@ export class VideocreatorComponent implements OnInit {
 
   async detectchange() {
     //this.saveToLocalStorageHistory()
-    
+
     this.systembusy = false;
     if (this.whiteboard) { this.deletewhiteboard() }
     this.primairytimeline = gsap.timeline({ paused: true, reversed: true });
@@ -926,15 +893,15 @@ export class VideocreatorComponent implements OnInit {
       let svgset = document.getElementById(elementA.id + 'p');
       let orgin = element.transformOriginX + ' ' + element.transformOriginY;
 
-      let rotate;    
-      if (!element.rotationkeeppos){
-       gsap.set(iset, { xPercent: element.travellocX, yPercent: element.travellocY, transformOrigin: orgin, autoAlpha: 1 }); // tranformorgin to set offset??
-       rotate = element.rotationcycle
+      let rotate;
+      if (!element.rotationkeeppos) {
+        gsap.set(iset, { xPercent: element.travellocX, yPercent: element.travellocY, transformOrigin: orgin, autoAlpha: 1 }); // tranformorgin to set offset??
+        rotate = element.rotationcycle
       } else {
         gsap.set(iset, { xPercent: element.travellocX, yPercent: element.travellocY, autoAlpha: 1 }); // tranformorgin to set offset??
         rotate = false;
       }
-     
+
       aniset = {
         duration: duration,
         ease: ease,
@@ -942,7 +909,7 @@ export class VideocreatorComponent implements OnInit {
         yoyo: element.yoyo,
         immediateRender: true,
         motionPath: {
-          path: svgset, 
+          path: svgset,
           autoRotate: rotate,
           align: svgset//'self'
         }
@@ -1280,30 +1247,50 @@ export class VideocreatorComponent implements OnInit {
     this.currenttime = event.x / 10;
   }
 
-  onMoving(event, i, idy?) {
-    let idel = this.animationarray[i];
-    if (idy) { idel = idel.vectors[idy] }
-    idel.posy = event.y;
-    idel.posx = event.x;
-    if (idy) { this.onSetCombiBox(i) }
-  }
+  // onMoving(event, i, idy?) {
+  //   let idel = this.animationarray[i];
+  //   if (idy) { idel = idel.vectors[idy] }
+  //   idel.posy = event.y;
+  //   idel.posx = event.x;
+  //   if (idy) { this.onSetCombiBox(i) }
+  //   let animation =  idel.animation.filter(obj => {
+  //     return obj.anim_type === 'move'
+  //   });
+  //   console.log(animation, idel)
+  //   if (animation.length > 0){
+  //     let rawpath = document.getElementById(this.selectedelement.id).getAttribute('d');
+  //     let newpath = MotionPathPlugin.transformRawPath(rawpath, 1, 0, 0, 1, idel.posx, idel.posy);
+  //     console.log(newpath);
+  //     this.setNewMotionPath(newpath);
+  //   }
+  // }
 
 
   setPosition(idel) {
     //console.log('set pos', idel)
     //if animation is move --> path determines position
-      let animation =  idel.animation.filter(obj => {
-        return obj.anim_type === 'move'
-      });
+    let elm = document.getElementById(idel.id);
+    gsap.set(elm, { x: idel.posx, y: idel.posy, rotation: idel.rotation });
+  }
 
-      console.log(animation);
+  private setMoveableItem = async (idel) => {
 
-      if (animation.length < 1){
-        let elm = document.getElementById(idel.id);
-        gsap.set(elm, { x: idel.posx, y: idel.posy, rotation: idel.rotation });
-      }
-    
-
+    let newy = this.draggableObject.y - idel.posy;
+    let newx = this.draggableObject.x - idel.posx;
+    idel.posy = this.draggableObject.y;
+    idel.posx = this.draggableObject.x;
+    console.log(newy, newx);
+    let animation = idel.animation.filter(obj => {
+      return obj.anim_type === 'move'
+    });
+    if (animation.length > 0) {
+      let path = await document.getElementById(idel.id + 'p');
+      let rawpath = await MotionPathPlugin.getRawPath(path);
+      let newpath = await MotionPathPlugin.transformRawPath(rawpath, 1, 0, 0, 1, newx, newy);
+      let stringpath = await MotionPathPlugin.rawPathToString(newpath);
+      this.setNewMotionPath(stringpath);
+    }
+    this.draggableObject.disable();
   }
 
   enableDraggable() {
@@ -1327,7 +1314,7 @@ export class VideocreatorComponent implements OnInit {
 
     // Draggable does not recognise ts angular so changes are direct dom js related
     if (this.dragselectvectpath === false && this.vectorcombiedit === false) {
-      console.log('setdrag')
+      // console.log('setdrag')
       let element = document.getElementById(idel.id);
       let snap, inertia = false;
       if (this.snaptogrid) {
@@ -1342,20 +1329,14 @@ export class VideocreatorComponent implements OnInit {
         inertia = true
       }
 
+
       if (event.target.id === idel.id + 'rotatehandle') {
         this.setRotate(event, idel)
       } else {
-        Draggable.create(element, {
+        this.draggableObject = new Draggable(element, {
           type: "x,y",
           onDragEndParams: [idel],
-          onDragEnd:
-            function (idl) {
-              console.log(this, idl)
-              idel.posy = this.y;
-              idel.posx = this.x;
-              this.disable();
-            },
-          inertia: inertia,
+          onDragEnd: this.setMoveableItem,
           snap: snap
         });
       }
@@ -1459,7 +1440,7 @@ export class VideocreatorComponent implements OnInit {
       transform: '',
       rotation: 0,
       motionrotation: 0,
-      motionpath: '<svg id="' + newelnr + 'mp" style="width:'+ this.canvas.width +' height='+this.canvas.height+';" viewBox="0 0 600 500" class="path-edit"><path id="' + newelnr + 'p" style="opacity: 0;"' +
+      motionpath: '<svg id="' + newelnr + 'mp" style="width:' + this.canvas.width + ' height=' + this.canvas.height + ';" viewBox="0 0 600 500" class="path-edit"><path id="' + newelnr + 'p" style="opacity: 0;"' +
         ' d="M15.458,45.741 C15.458,45.741 441.46,44.534 513.889,44.457  " /></svg>',
     }
     this.animationarray.push(newvectorcombi);
@@ -1594,7 +1575,7 @@ export class VideocreatorComponent implements OnInit {
       transform: '',
       rotation: 0,
       motionrotation: 0,
-      motionpath: '<svg id="' + newelnr + 'mp" style="width:'+ this.canvas.width +' height='+this.canvas.height+';" viewBox="0 0 600 500" class="path-edit"><path id="' + newelnr + 'p" style="opacity: 0;"' +
+      motionpath: '<svg id="' + newelnr + 'mp" style="width:' + this.canvas.width + ' height=' + this.canvas.height + ';" viewBox="0 0 600 500" class="path-edit"><path id="' + newelnr + 'p" style="opacity: 0;"' +
         ' d="M15.458,45.741 C15.458,45.741 441.46,44.534 513.889,44.457  " /></svg>',
     }
     this.animationarray.push(vector);
@@ -1683,7 +1664,7 @@ export class VideocreatorComponent implements OnInit {
       transform: '',
       rotation: 0,
       motionrotation: 0,
-      motionpath: '<svg id="' + newelnr + 'mp" style="width:'+ this.canvas.width +' height='+this.canvas.height+';" viewBox="0 0 600 500" class="path-edit"><path id="' + newelnr + 'p" style="opacity: 0;"' +
+      motionpath: '<svg id="' + newelnr + 'mp" style="width:' + this.canvas.width + ' height=' + this.canvas.height + ';" viewBox="0 0 600 500" class="path-edit"><path id="' + newelnr + 'p" style="opacity: 0;"' +
         ' d="M15.458,45.741 C15.458,45.741 441.46,44.534 513.889,44.457  " /></svg>',
     }
     this.animationarray.push(img);
@@ -1746,7 +1727,7 @@ export class VideocreatorComponent implements OnInit {
       transform: '',
       rotation: 0,
       motionrotation: 0,
-      motionpath: '<svg id="' + newelnr + 'mp" style="width:'+ this.canvas.width +' height='+this.canvas.height+';" viewBox="0 0 600 500" class="path-edit"><path id="' + newelnr + 'p" style="opacity: 0;"' +
+      motionpath: '<svg id="' + newelnr + 'mp" style="width:' + this.canvas.width + ' height=' + this.canvas.height + ';" viewBox="0 0 600 500" class="path-edit"><path id="' + newelnr + 'p" style="opacity: 0;"' +
         ' d="M15.458,45.741 C15.458,45.741 441.46,44.534 513.889,44.457  " /></svg>',
 
     }
@@ -1879,7 +1860,7 @@ export class VideocreatorComponent implements OnInit {
       transform: '',
       rotation: 0,
       motionrotation: 0,
-      motionpath: '<svg id="' + newelnr + 'mp" style="width:'+ this.canvas.width +' height='+this.canvas.height+';" viewBox="0 0 600 500" class="path-edit"><path id="' + newelnr + 'p" style="opacity: 0;"' +
+      motionpath: '<svg id="' + newelnr + 'mp" style="width:' + this.canvas.width + ' height=' + this.canvas.height + ';" viewBox="0 0 600 500" class="path-edit"><path id="' + newelnr + 'p" style="opacity: 0;"' +
         ' d="M15.458,45.741 C15.458,45.741 441.46,44.534 513.889,44.457  " /></svg>',
     }
     this.animationarray.push(chart);
@@ -2165,7 +2146,7 @@ export class VideocreatorComponent implements OnInit {
       transform: '',
       rotation: 0,
       motionrotation: 0,
-      motionpath: '<svg id="' + newelnr + 'mp" style="width:'+ this.canvas.width +' height='+this.canvas.height+';" viewBox="0 0 600 500" class="path-edit"><path id="' + newelnr + 'p" style="opacity: 0;"' +
+      motionpath: '<svg id="' + newelnr + 'mp" style="width:' + this.canvas.width + ' height=' + this.canvas.height + ';" viewBox="0 0 600 500" class="path-edit"><path id="' + newelnr + 'p" style="opacity: 0;"' +
         ' d="M15.458,45.741 C15.458,45.741 441.46,44.534 513.889,44.457  " /></svg>',
     }
     this.animationarray.push(txt);
