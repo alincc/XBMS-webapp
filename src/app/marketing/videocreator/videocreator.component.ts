@@ -316,6 +316,7 @@ export class VideocreatorComponent implements OnInit {
     }
   }
 
+  public pathHelper: MotionPathHelper;
   public snaptogrid = false;
   public snaptogridwidth = 50;
   public snaptogridheight = 50;
@@ -548,23 +549,18 @@ export class VideocreatorComponent implements OnInit {
     const svgpath = document.getElementById(this.selectedelement.id + 'p');
     const docset = document.getElementById(id);
 
-    //const offsety = parseInt(element.style.width, 10) / 2 * -1;
-    //const offsetx = parseInt(element.style.height, 10) / 2 * -1;
-    //console.log(element, offsety, offsetx);
-
     let ease = this.selectEaseType(animation.easetype);
-    //gsap.set(docset, {xPercent: -50, yPercent: -50, transformOrigin: "50% 50%"});
     let orgin = animation.transformOriginX + ' ' + animation.transformOriginY;
    
     let rotate;    
     if (!animation.rotationkeeppos){
      gsap.set(docset, { xPercent: animation.travellocX, yPercent: animation.travellocY, 
-      x: element.posx, y: element.posy, transformOrigin: orgin, autoAlpha: 1 }); // tranformorgin to set offset??
+      transformOrigin: orgin, autoAlpha: 1 }); // tranformorgin to set offset??
      rotate = animation.rotationcycle
     } else {
       rotate = false;
       gsap.set(docset, { xPercent: animation.travellocX, yPercent: animation.travellocY, autoAlpha: 1,
-      x: element.posx, y: element.posy });
+       });
     }
 
     this.primairytimeline.to(docset, {
@@ -574,22 +570,23 @@ export class VideocreatorComponent implements OnInit {
       yoyo: animation.yoyo,
       motionPath: {
         path: svgpath,
-        align: svgpath,  // do not use self
+        //align: svgpath,  // do not use self
         autoRotate: rotate,
       }
     });
 
     //MotionPathHelper.create(docset, { x: element.posx, y: element.posy });
-    MotionPathHelper.create(docset);
+    this.pathHelper = MotionPathHelper.create(docset);
+
     const patheditor = document.getElementsByClassName('path-editor'); // path-editor
     const patheditorsel = document.getElementsByClassName('path-editor-selection'); // path-editor
 
     if (patheditor.length > 0) {
-      patheditor[0].setAttribute('transform', 'matrix(1, 0, 0, 1, ' + element.posx + ', ' + element.posy + ')')
+      //patheditor[0].setAttribute('transform', 'matrix(1, 0, 0, 1, ' + element.posx + ', ' + element.posy + ')')
     }
 
     if (patheditorsel.length > 0) {
-      patheditorsel[0].setAttribute('transform', 'matrix(1, 0, 0, 1, ' + element.posx + ', ' + element.posy + ')')
+      //patheditorsel[0].setAttribute('transform', 'matrix(1, 0, 0, 1, ' + element.posx + ', ' + element.posy + ')')
     }
   }
 
@@ -598,12 +595,13 @@ export class VideocreatorComponent implements OnInit {
 
     if (!animation){ // no animation selected find motion 
       animation =  this.selectedelement.animation.filter(obj => {
-        return obj.type === 'motion'
+        return obj.anim_type === 'move'
       });
     }
 
-    this.primairytimeline.pause();
+
     this.primairytimeline.reverse();
+    this.primairytimeline.pause();
 
     let newpath;
     let svgpath = document.getElementById(this.selectedelement.id + 'p');
@@ -628,16 +626,24 @@ export class VideocreatorComponent implements OnInit {
 
       var svgElement = document.getElementById(this.selectedelement.id);
       var rect = svgElement.getBoundingClientRect();
+
+      var setmovebox = svgpath.getBoundingClientRect();
      
       let x = rect.left - rectbound.left;
       let y = rect.top - rectbound.top;
 
-      this.selectedelement.posx = x; //svgtransarray[4] //+ (parseInt(this.selectedelement.style.width, 10)  * (animation.travellocX / 100));
-      this.selectedelement.posy = y; //svgtransarray[5] //+ (parseInt(this.selectedelement.style.height, 10) * (animation.travellocY / 100));
-      console.log(svgtransarray, this.selectedelement);
+      let startX = parseFloat(gsap.getProperty(svgElement, "x", "px"));
+		  let startY = parseFloat(gsap.getProperty(svgElement, "y", "px"));
+
+      //this.selectedelement.posx = x; //svgtransarray[4] //+ (parseInt(this.selectedelement.style.width, 10)  * (animation.travellocX / 100));
+      //this.selectedelement.posy = y; //svgtransarray[5] //+ (parseInt(this.selectedelement.style.height, 10) * (animation.travellocY / 100));
+      //console.log(setmovebox, x, y, startX, startY);
     }
 
-    newpath = MotionPathPlugin.rawPathToString(rawpath);
+
+    newpath = this.pathHelper.getString()//
+    let setpath = MotionPathPlugin.rawPathToString(rawpath);
+    console.log(newpath, setpath);
     let w = this.canvas.width.replace('px', '');
     let h = this.canvas.height.replace('px', '');
     let newview = '0 0 ' + w + ' ' + h;
@@ -770,11 +776,11 @@ export class VideocreatorComponent implements OnInit {
     let word = splitText.words;
     let line = splitText.lines;
     let setto;
-    let lenghtarr;
-    if (textani.textanimationtype === 'chars') { setto = char; lenghtarr = char.length }
-    if (textani.textanimationtype === 'words') { setto = word; lenghtarr = word.length }
-    if (textani.textanimationtype === 'lines') { setto = line; lenghtarr = line.length }
-    let dura = textani.duration / lenghtarr;
+    let lengtharr;
+    if (textani.textanimationtype === 'chars') { setto = char; lengtharr = char.length }
+    if (textani.textanimationtype === 'words') { setto = word; lengtharr = word.length }
+    if (textani.textanimationtype === 'lines') { setto = line; lengtharr = line.length }
+    let dura = textani.duration / lengtharr;
     // stagger durationis for each stag (word line character etc.. )
 
     let ease = this.selectEaseType(textani.easetype);
@@ -934,10 +940,11 @@ export class VideocreatorComponent implements OnInit {
         ease: ease,
         repeat: repeat,
         yoyo: element.yoyo,
+        immediateRender: true,
         motionPath: {
           path: svgset, 
           autoRotate: rotate,
-          align: 'self'
+          align: svgset//'self'
         }
       }
     }
@@ -1057,7 +1064,7 @@ export class VideocreatorComponent implements OnInit {
   addEffect(element): void {
     let i = 0;
     let id = document.getElementById(element.id);
-    // for (let i = 0; i < element.animation.lenght; i++) {
+    // for (let i = 0; i < element.animation.length; i++) {
     //   console.log('effect')
     //   let animationsection = element.animation[i];
     //   this.addAnimation(id, animationsection, element, i);
@@ -1284,8 +1291,19 @@ export class VideocreatorComponent implements OnInit {
 
   setPosition(idel) {
     //console.log('set pos', idel)
-    let elm = document.getElementById(idel.id);
-    gsap.set(elm, { x: idel.posx, y: idel.posy, rotation: idel.rotation });
+    //if animation is move --> path determines position
+      let animation =  idel.animation.filter(obj => {
+        return obj.anim_type === 'move'
+      });
+
+      console.log(animation);
+
+      if (animation.length < 1){
+        let elm = document.getElementById(idel.id);
+        gsap.set(elm, { x: idel.posx, y: idel.posy, rotation: idel.rotation });
+      }
+    
+
   }
 
   enableDraggable() {
@@ -1457,7 +1475,7 @@ export class VideocreatorComponent implements OnInit {
     if (newel.type === 'vector') {
       let found = false;
       newel.groupmember = true;
-      for (let i = 0; i > element.vectors.lenght; i++) {
+      for (let i = 0; i > element.vectors.length; i++) {
         if (JSON.stringify(element.vectors[i]) === JSON.stringify(newel)) {
           found = true;
         }
@@ -3040,7 +3058,7 @@ export class VideocreatorComponent implements OnInit {
       // console.log('seperate multipaths', this.selectedVecPathmultiple)
       let svgarray = [];
       let i = 0;
-      let arraylenght = this.selectedVecPathmultiple.length - 1;
+      let arraylength = this.selectedVecPathmultiple.length - 1;
 
       //this.selectedelement.id
       let svggetdefs = document.getElementById(this.selectedelement.id)
@@ -3072,7 +3090,7 @@ export class VideocreatorComponent implements OnInit {
         let finalstring = stringend.replace(oldid, newid);
         svgarray.push(finalstring);
         pathidar.push(newid);
-        if (i === arraylenght) {
+        if (i === arraylength) {
           svgstring = svgarray.join('');
           this.createnewsvg(svgstring, pathidar, rect, height, width);
           this.removeVectorPathMultiSelection();
