@@ -1460,8 +1460,9 @@
                             #rotatehandle [attr.id]="element.id + 'rotatehandle'">replay</mat-icon>
                     </mat-form-field>
 
-                    <div>
-                        
+                    <!-- https://stackoverflow.com/questions/43511437/how-to-use-ng2-ckeditor-as-inline -->
+                    <div> 
+
                     </div>
 
                     <div *ngIf="element.type === 'shape'" id="{{element.id}}" [style.width]="element.style.width"
