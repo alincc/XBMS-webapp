@@ -317,6 +317,7 @@ export class VideocreatorComponent implements OnInit {
     }
   }
 
+  public edittext = false;
   public draggableObject;
   public pathHelper: MotionPathHelper;
   public snaptogrid = false;
@@ -524,8 +525,23 @@ export class VideocreatorComponent implements OnInit {
     this.counter = e.value;
   }
 
+  setEditText(){
+    this.edittext = true;
+    this.detectchange();
+    //console.log('set edit text');
+  }
+
+  deSelectAll(){
+    this.edittext = false;
+    this.setDragSelect(false);
+    this.selectedelement = '';
+    this.selectedVecPath = '';
+    this.detectchange();
+  }
+
   onSelectElement(event, element): void {
-    console.log('select element')
+    //console.log('select element')
+   
     if (!this.selectedelement) { this.selectedelement = element }
     // manual close editpath to prevent interuptions in path check if selectedelement is not already selected
     // set dragpath, whiteboard, ? 
@@ -536,7 +552,8 @@ export class VideocreatorComponent implements OnInit {
         this.vectorcombiedit = false;
       }
       if (this.whiteboard) { this.deletewhiteboard() }
-
+      this.edittext = false;
+      this.selectedVecPath = ';'
       this.setDragSelect(false);
       this.selectedelement = element;
     }
@@ -2134,7 +2151,7 @@ export class VideocreatorComponent implements OnInit {
         opacity: 1,
         padding: '15px', //neccarry to get all fonts,
       },
-      content: 'write here',
+      content: 'start writing',
       posx: 20,
       posy: 50,
       setpos: { 'x': 0, 'y': 0 },

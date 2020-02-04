@@ -190,8 +190,8 @@
 
                                     <div class="timeline-currentelement" ngDraggable [scale]="'1'"
                                         (movingOffset)="onMovingAnimationEl($event, i, animation)" [lockAxis]="'y'"
-                                        [preventDefaultEvent]="true" ngResizable [rzHandles]="'e, w'"
-                                        (rzResizing)="onResizeAnimationEl($event, i, animation)"
+                                        [preventDefaultEvent]="true" [ngResizable]="element === selectedelement"
+                                        [rzHandles]="'e, w'" (rzResizing)="onResizeAnimationEl($event, i, animation)"
                                         [style.width]="animation.duration * 10 + 'px'">
                                     </div>
                                 </div>
@@ -307,7 +307,8 @@
                                 <mat-hint>X-offset</mat-hint>
                             </mat-form-field>
                             <mat-form-field style="max-width: 46px;">
-                                <input [(ngModel)]="animation.rotationcycle" matInput [disabled]="animation.rotationkeeppos">
+                                <input [(ngModel)]="animation.rotationcycle" matInput
+                                    [disabled]="animation.rotationkeeppos">
                                 <mat-hint>Motion direction</mat-hint>
                             </mat-form-field>
                             <mat-form-field style="max-width: 46px;">
@@ -318,7 +319,8 @@
                                 <input [(ngModel)]="animation.transformOriginY" matInput (change)="detectchange()">
                                 <mat-hint>distance from top object</mat-hint>
                             </mat-form-field>
-                            <mat-checkbox [(ngModel)]="animation.rotationkeeppos" matTooltip="Keep position">Don't rotate</mat-checkbox>
+                            <mat-checkbox [(ngModel)]="animation.rotationkeeppos" matTooltip="Keep position">Don't
+                                rotate</mat-checkbox>
                             <!-- <button mat-button
                                 (click)="animation.travellocY = selectedelement.posy; animation.travellocX = selectedelement.posx">Reset</button> -->
                             <button mat-button (click)="resetPath()">Reset</button>
@@ -1369,8 +1371,8 @@
                     [cpPresetLabel]="'Company colors'"
                     [cpPresetColors]="[option.companyprimairycolor, option.companysecondarycolor, company.companyprimairycolor, company.companysecondarycolor]">
                 <input autocomplete="off" style="width: 20px; height: 20px;" [style.background]="colorpick"
-                    matTooltip="Fill color" [(colorPicker)]="colorpick" [cpPosition]="'bottom'" [cpCancelButton]="true" [cpOKButton]="true"
-                    (colorPickerChange)="setColorPath(colorpick)" [cpPresetLabel]="'Company colors'"
+                    matTooltip="Fill color" [(colorPicker)]="colorpick" [cpPosition]="'bottom'" [cpCancelButton]="true"
+                    [cpOKButton]="true" (colorPickerChange)="setColorPath(colorpick)" [cpPresetLabel]="'Company colors'"
                     [cpPresetColors]="[option.companyprimairycolor, option.companysecondarycolor, company.companyprimairycolor, company.companysecondarycolor]">
                 <mat-icon (click)="deleteSelectedVectorPath()" class="iconsize-18" matTooltip="Delete section">
                     delete</mat-icon>
@@ -1399,14 +1401,14 @@
 
             <!-- selectedVecPath &&  -->
             <video *ngIf="canvas.videourl" preload="auto" class="video-background" no-controls [src]="canvas.videourl"
-                #videoPlayer>
+                #videoPlayer (click)="deSelectAll()">
             </video>
 
             <audio *ngIf="canvas.audio" [attr.id]="'canvassound'">
                 <source type="audio/mp3" [src]="canvas.audio">
             </audio>
 
-            <div *ngIf="canvas.videourl === ''" class="image-background"
+            <div *ngIf="canvas.videourl === ''" class="image-background" (click)="deSelectAll()"
                 [style.background-image]="canvas['background-image']"></div>
 
 
@@ -1422,8 +1424,7 @@
                 [style.background-image]="canvas['background-image']"
                 style="overflow: hidden; background-color: transparent;">
                 <div *ngFor="let element of animationarray; let i = index" (click)="onSelectElement($event, element)"
-                    (mousedown)="setDraggable($event, element)"
-                    style="background-color: transparent; overflow: hidden;">
+                    (mousedown)="setDraggable($event, element)">
 
                     <div *ngIf="element.motionpath" class="path-edit" [innerHTML]="element.motionpath | safeHtml"
                         [style.width]="canvas.width" [style.height]="canvas.height"
@@ -1431,55 +1432,77 @@
                     </div>
                     <div *ngIf="element.type === 'image'" id="{{element.id}}" [attr.id]="element.id"
                         [ngStyle]="element.style" [style.width]="element.style.width"
-                        [style.height]="element.style.height" (rzResizing)="onResizing($event, i)" ngResizable
-                        [rzAspectRatio]="true">
+                        [style.height]="element.style.height" (rzResizing)="onResizing($event, i)"
+                        [ngResizable]="element === selectedelement" [rzAspectRatio]="true" class="elementanimationarray"
+                        [class.elementanimationarrayselected]="element === selectedelement">
                         <img *ngIf="element.src" style="width: 100%; height: 100%;" src={{element.src}}>
-
                         <image-cropper *ngIf="cropimages" [imageChangedEvent]="imageChangedEvent"
                             [maintainAspectRatio]="true" [aspectRatio]="4 / 3" [resizeToWidth]="128" format="png"
                             (imageCropped)="imageCropped($event)" (imageLoaded)="imageLoaded()"
                             (cropperReady)="cropperReady()" (loadImageFailed)="loadImageFailed()">
                         </image-cropper>
-                        <mat-icon class="iconsize-4" class="rotatehandle" #rotatehandle
-                            [attr.id]="element.id + 'rotatehandle'">replay</mat-icon>
+                        <mat-icon *ngIf="element === selectedelement" class="iconsize-4" class="rotatehandle"
+                            #rotatehandle [attr.id]="element.id + 'rotatehandle'">replay</mat-icon>
                     </div>
-                    <label ngResizable *ngIf="element.type === 'text'" id="{{element.id}}" [attr.id]="element.id"
-                        (rzResizing)="onResizing($event, i)" [ngStyle]="element.style"
-                        [rzAspectRatio]="false">{{element.content}}
-                        <mat-icon class="iconsize-4" class="rotatehandle" #rotatehandle
-                            [attr.id]="element.id + 'rotatehandle'">replay</mat-icon>
+
+                    <label (dblclick)="setEditText()" [ngResizable]="element === selectedelement" *ngIf="element.type === 'text' && !edittext"
+                        id="{{element.id}}" [attr.id]="element.id" (rzResizing)="onResizing($event, i)"
+                        [ngStyle]="element.style" [rzAspectRatio]="false" class="elementanimationarray"
+                        [class.elementanimationarrayselected]="element === selectedelement">{{element.content}}
+                        <mat-icon *ngIf="element === selectedelement" class="iconsize-4" class="rotatehandle"
+                            #rotatehandle [attr.id]="element.id + 'rotatehandle'">replay</mat-icon>
                     </label>
+                    <mat-form-field *ngIf="element.type === 'text' && edittext && element === selectedelement"
+                        id="{{element.id}}" [attr.id]="element.id" 
+                        [ngStyle]="element.style" class="elementanimationarray">
+                         <textarea matInput [(ngModel)]="element.content" style="width: 100%; height: 100%;"></textarea>
+                        <mat-icon *ngIf="element === selectedelement" class="iconsize-4" class="rotatehandle"
+                            #rotatehandle [attr.id]="element.id + 'rotatehandle'">replay</mat-icon>
+                    </mat-form-field>
+
+                    <div>
+                        
+                    </div>
+
                     <div *ngIf="element.type === 'shape'" id="{{element.id}}" [style.width]="element.style.width"
-                        [style.height]="element.style.height" (rzResizing)="onResizing($event, i)" ngResizable
-                        [rzAspectRatio]="element.shape === 'heart'" [ngStyle]="element.style"
-                        [className]="element.style.class">
-                        <mat-icon class="iconsize-4" class="rotatehandle" #rotatehandle
-                            [attr.id]="element.id + 'rotatehandle'">replay</mat-icon>
+                        [style.height]="element.style.height" (rzResizing)="onResizing($event, i)"
+                        [ngResizable]="element === selectedelement"
+                        [ngClass]="{'elementanimationarray':true, elementanimationarrayselected: element === selectedelement }"
+                        [class]='element.style.class' [rzAspectRatio]="element.shape === 'heart'"
+                        [ngStyle]="element.style">
+                        <mat-icon *ngIf="element === selectedelement" class="iconsize-4" class="rotatehandle"
+                            #rotatehandle [attr.id]="element.id + 'rotatehandle'">replay</mat-icon>
                     </div>
                     <!--   [style.transform]="'translate(' + element.posx + 'px, ' + element.posy +'px) rotate(' + element.rotation + 'deg)' | safe: 'style'"                    -->
                     <div *ngIf="element.type === 'chart'" [style.width]="element.style.width"
-                        [style.height]="element.style.height" [ngStyle]="element.style"
-                        (rzResizing)="onResizing($event, i)" ngResizable [rzAspectRatio]="false" id="{{element.id}}">
+                        [style.height]="element.style.height" [ngStyle]="element.style" class="elementanimationarray"
+                        [class.elementanimationarrayselected]="element === selectedelement"
+                        (rzResizing)="onResizing($event, i)" [ngResizable]="element === selectedelement"
+                        [rzAspectRatio]="false" id="{{element.id}}">
                         <canvas baseChart width="element.style.width" height="element.style.height"
                             [datasets]="element.productiondata" [labels]="element.label" [colors]="element.colors"
                             [legend]="element.legend" [options]="element.lineChartOptions"
                             [chartType]="element.charttype" [plugins]="lineChartPlugins"
                             [attr.id]="'chart' + element.id">
                         </canvas>
-                        <mat-icon class="iconsize-4" class="rotatehandle" #rotatehandle
-                            [attr.id]="element.id + 'rotatehandle'">replay</mat-icon>
+                        <mat-icon *ngIf="element === selectedelement" class="iconsize-4" class="rotatehandle"
+                            #rotatehandle [attr.id]="element.id + 'rotatehandle'">replay</mat-icon>
                     </div>
                     <div *ngIf="element.type === 'vector' && !element.groupmember" [style.width]="element.style.width"
                         [style.height]="element.style.height" [ngStyle]="element.style"
-                        (rzResizing)="onResizing($event, i)" ngResizable [rzAspectRatio]="false" id="{{element.id}}">
+                        (rzResizing)="onResizing($event, i)" [ngResizable]="element === selectedelement"
+                        [rzAspectRatio]="false" id="{{element.id}}" class="elementanimationarray"
+                        [class.elementanimationarrayselected]="element === selectedelement">
                         <div style="height: 100%; width: 100%; cursor: pointer;"
                             [innerHTML]="element.svgcombi | safeHtml" (click)="clickVectorPaths($event)">
                         </div>
-                        <mat-icon class="iconsize-4" class="rotatehandle" #rotatehandle
-                            [attr.id]="element.id + 'rotatehandle'">replay</mat-icon>
+                        <mat-icon *ngIf="element === selectedelement" class="iconsize-4" class="rotatehandle"
+                            #rotatehandle [attr.id]="element.id + 'rotatehandle'">replay</mat-icon>
                     </div>
                     <div *ngIf="element.type === 'vectorcombi'" class="vectorcombi" [style.width]="element.style.width"
-                        [style.height]="element.style.height" [ngStyle]="element.style" id="{{element.id}}">
+                        [style.height]="element.style.height" [ngStyle]="element.style" id="{{element.id}}"
+                        class="elementanimationarray"
+                        [class.elementanimationarrayselected]="element === selectedelement">
                         <div *ngFor="let part of element.vectors; let idy = index;" [style.width]="part.style.width"
                             [style.height]="part.style.height" [ngStyle]="part.style"
                             (rzResizing)="onResizing($event, i)" [ngResizable]="vectorcombiedit" [rzAspectRatio]="false"
@@ -1490,8 +1513,8 @@
                             <mat-icon *ngIf="vectorcombiedit" class="iconsize-4" class="rotatehandle" #rotatehandle
                                 [attr.id]="part.id + 'rotatehandle'">replay</mat-icon>
                         </div>
-                        <mat-icon class="iconsize-4" class="rotatehandle" #rotatehandle
-                            [attr.id]="element.id + 'rotatehandle'">replay</mat-icon>
+                        <mat-icon *ngIf="element === selectedelement" class="iconsize-4" class="rotatehandle"
+                            #rotatehandle [attr.id]="element.id + 'rotatehandle'">replay</mat-icon>
                     </div>
 
 
