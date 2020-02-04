@@ -609,8 +609,8 @@ export class VideocreatorComponent implements OnInit {
       let position = element.getBoundingClientRect();
       let boundelement = document.getElementById('myBounds');
       let boundposition = boundelement.getBoundingClientRect();
-      this.selectedelement.posx = position.x - boundposition.x + (position.width * animation.travellocX);
-      this.selectedelement.posy = position.y - boundposition.y + (position.height * animation.travellocY);
+      this.selectedelement.posx = position.left - boundposition.left - (position.width * (animation.travellocX / 100));
+      this.selectedelement.posy = position.top - boundposition.top - (position.height * (animation.travellocY / 100));
       console.log(position);
     }, 500)
   }
@@ -1096,9 +1096,9 @@ export class VideocreatorComponent implements OnInit {
 
     if (element.type === 'vector') {
       let newVectorElement: vectoranimation = newElement;
-      let i = 0;
-      newVectorElement.vectors.forEach(vector => {
-        let addnr = i + 1
+      for (let y = 0; y < newVectorElement.vectors.length; y++) {
+        let vector = newVectorElement.vectors[y];
+        let addnr = y;
         let idnr = newElement.id + 'vec-' + addnr;
         vector.idx = idnr;
 
@@ -1109,12 +1109,10 @@ export class VideocreatorComponent implements OnInit {
             vector.pathids = [];
             paths.forEach((newpat: string) => {
               vector.pathids.push(newpat);
-            })
+            });
           });
-        }
-
-        );
-      })
+        });
+      }
     }
 
     this.animationarray.push(newElement);
@@ -1156,7 +1154,7 @@ export class VideocreatorComponent implements OnInit {
         if (this.animationarray[i].morph) {
           getview = document.getElementById('previewbox0');
         } else {
-          getview = document.getElementById('previewbox' + i);
+          getview = document.getElementById('previewbox' + i); //was i 
         }
 
         if (newsizestring !== null) {
@@ -1492,7 +1490,7 @@ export class VideocreatorComponent implements OnInit {
       newelnr = this.animationarray.length + 'el';
     }
 
-    let vectorid = newelnr + 'vect-' + 1;
+    let vectorid = newelnr + 'vec-' + 1;
     if (svgcombi) { svgc = svgcombi }
     this.newz = this.newz + 1;
     let anim: animationtype[] = [{
@@ -2441,7 +2439,8 @@ export class VideocreatorComponent implements OnInit {
         'id="svg2" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" preserveAspectRatio="none">';
       total.push(startstr);
 
-      for (const vect of element.vectors) {
+      for (let w = 0; w < element.vectors.length; w++) {
+        let vect = element.vectors[w]
         idnew = document.getElementById(vect.idx);
         let defs = idnew.getElementsByTagName('defs');
         for (let y = 0; y < defs.length; y++) {
@@ -2452,7 +2451,8 @@ export class VideocreatorComponent implements OnInit {
 
       let index = 0;
 
-      for (const vect of element.vectors) {
+      for (let z = 0; z < element.vectors.length; z++) {
+        let vect = element.vectors[z];
         idnew = document.getElementById(vect.idx); // get document
         const stylstr = idnew.getElementsByTagName('style');
 
@@ -2466,13 +2466,12 @@ export class VideocreatorComponent implements OnInit {
         if (idnew === null) {
           vectstring = element.svgcombi;
         } else if (svgset.length > 0) {
-          vectstring = svgset[0].outerHTML;
+          vectstring = svgset[0].innerHTML; //was outerhtml 
         } else {
-          console.log('can not load SVG')
+          console.log('can not load SVG', idnew)
         }
 
         //console.log(idnew, vectstring)
-
 
         let pathidar;
         let newvectstring;
@@ -2790,7 +2789,7 @@ export class VideocreatorComponent implements OnInit {
       let e = document.getElementById(id);
       let g = e.getElementsByTagName("g");
       if (g.length < 1000) {
-        //console.log(g)
+        console.log(g)
         for (let index = 0; index < g.length; index++) {  // ---> g.length
           g[index].setAttribute("id", id + index + 'g');
           let sg = id + index + 'g';
@@ -2804,9 +2803,9 @@ export class VideocreatorComponent implements OnInit {
     })
   }
 
-  async resizeVector(originalsize, newsize, i, id) {
+  async resizeVector(originalsize, newsize, idx, vectorid) {
     return new Promise(async (resolve, reject) => {
-      let e = document.getElementById(id);
+      let e = document.getElementById(vectorid);
 
       // transform to size
       let scale;
@@ -2828,9 +2827,10 @@ export class VideocreatorComponent implements OnInit {
 
       scale = Number((newtranssize).toFixed(8));
       let p = e.getElementsByTagName("path");
+      console.log(e, p)
       for (let index = 0; index < p.length; index++) {
 
-        p[index].setAttribute("id", "child-" + index + i); // keep in case there is no ID set
+        p[index].setAttribute("id", "child-" + index + idx); // keep in case there is no ID set
         let rawpath = await MotionPathPlugin.getRawPath(p[index]);
         let svgsizearray = [scale, 0, 0, scale, 0, 0]
         let newmatrix;
