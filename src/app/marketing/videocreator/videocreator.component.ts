@@ -1156,7 +1156,7 @@ export class VideocreatorComponent implements OnInit {
   }
 
   async initVectors(e, i, idx, vectorid) {
-    //console.log(e, i, idx, vectorid);
+    console.log(e, i, idx, vectorid);
     this.systembusy = true;
     if (this.animationarray[i].svgcombi === '' || this.animationarray[i].morph) {
       return new Promise(async (resolve, reject) => {
@@ -1169,9 +1169,10 @@ export class VideocreatorComponent implements OnInit {
         await MorphSVGPlugin.convertToPath("circle, rect, ellipse, line, polygon, polyline");
 
         if (this.animationarray[i].morph) {
-          getview = document.getElementById('previewbox0');
+          getview = document.getElementById('previewboxtitle' + i);
+          console.log('getview', getview, 'previewboxtitle' + i)
         } else {
-          getview = document.getElementById('previewbox' + i); //was i 
+          getview = document.getElementById('previewbox' + i + idx); //was i 
         }
 
         if (newsizestring !== null) {
@@ -2450,6 +2451,12 @@ export class VideocreatorComponent implements OnInit {
         w = originalsize['width']; // * newscale1;
         h = originalsize['height']; // * newscale1;
       }
+
+      // if (element.morph){
+      //   x = 0;
+      //   y = 0;
+      // }
+
       startstr = '<svg xmlns="http://www.w3.org/2000/svg" ' +
         'viewBox="' + x + ' ' + y + ' ' + w + ' ' + h + '" height="100%" width="100%"' +
         'id="svg2" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" preserveAspectRatio="none">';
@@ -2836,31 +2843,24 @@ export class VideocreatorComponent implements OnInit {
       let e = document.getElementById(vectorid);
 
       // transform to size
-      let scale;
-      let newtranssize;
-      //console.log(newsize, originalsize, bbox);
-      if (newsize.height < newsize.width) {
-        if (newsize < originalsize) {
-          newtranssize = newsize.height / originalsize.height;
-        } else {
-          newtranssize = originalsize.height / newsize.height;
-        }
-      } else {
-        if (newsize < originalsize) {
-          newtranssize = newsize.width / originalsize.width;
-        } else {
-          newtranssize = originalsize.width / newsize.width;
-        }
-      }
+      let scalex, scaley, newviewx = 0, newviewy = 0;
+      let newtranssizex, newtranssizey;
+      //console.log(newsize, originalsize);
+      newtranssizey =  originalsize.height / newsize.height;
+      newtranssizex =  originalsize.width / newsize.width;
 
-      scale = Number((newtranssize).toFixed(8));
+      newviewx = newsize.x - originalsize.x;
+      newviewy = newsize.y - originalsize.y;
+
+      scalex = Number((newtranssizex).toFixed(8));
+      scaley = Number((newtranssizey).toFixed(8));
       let p = e.getElementsByTagName("path");
-      // console.log(e, p)
+      console.log(scalex, scaley, newviewx, newviewy)
       for (let index = 0; index < p.length; index++) {
 
         p[index].setAttribute("id", "child-" + index + idx); // keep in case there is no ID set
         let rawpath = await MotionPathPlugin.getRawPath(p[index]);
-        let svgsizearray = [scale, 0, 0, scale, 0, 0]
+        let svgsizearray = [scalex, 0, 0, scaley, newviewx, newviewy]
         let newmatrix;
         let transf = p[index].getAttribute('transform');
 
@@ -3471,7 +3471,7 @@ export class VideocreatorComponent implements OnInit {
   }
 
   deletePathSelClass(element) {
-    if (element) {
+    if (element !== null) {
       let elclass = element.getAttribute('class');
       if (elclass !== null) {
         elclass = elclass.replace('data-selected', '')

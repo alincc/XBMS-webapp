@@ -694,6 +694,14 @@
                                 <input (change)="detectchange()" [(ngModel)]="element.posx" type="number" matInput>
                                 <mat-hint>X -</mat-hint>
                             </mat-form-field>
+                            <mat-form-field style="max-width: 46px;">
+                                <input (change)="detectchange()" [(ngModel)]="element.style.height" matInput>
+                                <mat-hint>Height</mat-hint>
+                            </mat-form-field>
+                            <mat-form-field style="max-width: 46px;">
+                                <input (change)="detectchange()" [(ngModel)]="element.style.width" matInput>
+                                <mat-hint>Width</mat-hint>
+                            </mat-form-field>
                             <div *ngIf="element.src">
                                 <img style="max-width: 100%;" src={{element.src}} class="elementsedit">
                                 <mat-icon (click)="element.src = ''" class="icon-label" class="iconsize-12">delete
@@ -722,6 +730,14 @@
                             <mat-form-field style="max-width: 46px;">
                                 <input (change)="detectchange()" [(ngModel)]="element.posx" type="number" matInput>
                                 <mat-hint>X -</mat-hint>
+                            </mat-form-field>
+                            <mat-form-field style="max-width: 46px;">
+                                <input (change)="detectchange()" [(ngModel)]="element.style.height" matInput>
+                                <mat-hint>Height</mat-hint>
+                            </mat-form-field>
+                            <mat-form-field style="max-width: 46px;">
+                                <input (change)="detectchange()" [(ngModel)]="element.style.width" matInput>
+                                <mat-hint>Width</mat-hint>
                             </mat-form-field>
                             <div fxLayout="column">
                                 <div fxLayout="row" fxLayout.xs="column">
@@ -811,6 +827,14 @@
                                 <input (change)="detectchange()" [(ngModel)]="element.posx" type="number" matInput>
                                 <mat-hint>X -</mat-hint>
                             </mat-form-field>
+                            <mat-form-field style="max-width: 46px;">
+                                <input (change)="detectchange()" [(ngModel)]="element.style.height" matInput>
+                                <mat-hint>Height</mat-hint>
+                            </mat-form-field>
+                            <mat-form-field style="max-width: 46px;">
+                                <input (change)="detectchange()" [(ngModel)]="element.style.width" matInput>
+                                <mat-hint>Width</mat-hint>
+                            </mat-form-field>
                             <div fxLayout="column" *ngIf="element.shape !== 'heart'">
                                 <input style="width: 60px;" [style.background]="element.style['background-color']"
                                     [(colorPicker)]="element.style['background-color']"
@@ -831,11 +855,11 @@
                             <mat-panel-title>
                                 <!-- <mat-checkbox color="primary" [(ngModel)]="element.selected"></mat-checkbox> -->
                                 <div *ngIf="element.vectors[0].src" [inlineSVG]="element.vectors[0].src"
-                                    [onSVGLoaded]="previewSVG" id="previewbox" class="elementsedit"
+                                    [onSVGLoaded]="previewSVG" [attr.id]="'previewboxtitle' + i" class="elementsedit"
                                     style="height: 30px; width: auto;">
                                 </div>
                                 <div *ngIf="!element.vectors[0].src" [innerHTML]="element.svgcombi  | safeHtml"
-                                    id="previewbox" style="height: 30px; width: 30px;">
+                                [attr.id]="'previewboxtitle' + i" style="height: 30px; width: 30px;">
                                 </div>
                                 <mat-icon (click)="deleteitem(i)" class="iconsize-12">delete</mat-icon>
                                 <mat-icon (click)="copyElement(i, element)" matTooltip="Duplicate element"
@@ -850,7 +874,7 @@
 
                                     <mat-expansion-panel-header>
                                         <div *ngIf="vector.src || vector.svgcombi !== 'undefined'"
-                                            [attr.id]="'previewbox' + idx" [inlineSVG]="vector.src"
+                                            [attr.id]="vector.idx" [inlineSVG]="vector.src"
                                             [onSVGLoaded]="previewSVG" class="elementsedit"
                                             style="height: 30px; width: auto;">
                                         </div>
@@ -910,12 +934,12 @@
                                         <mat-hint>X -</mat-hint>
                                     </mat-form-field>
                                     <mat-form-field style="max-width: 46px;">
-                                        <input (change)="detectchange()" [(ngModel)]="element.height" matInput>
-                                        <mat-hint>Y |</mat-hint>
+                                        <input (change)="detectchange()" [(ngModel)]="element.style.height" matInput>
+                                        <mat-hint>Height</mat-hint>
                                     </mat-form-field>
                                     <mat-form-field style="max-width: 46px;">
-                                        <input (change)="detectchange()" [(ngModel)]="element.width" matInput>
-                                        <mat-hint>X -</mat-hint>
+                                        <input (change)="detectchange()" [(ngModel)]="element.style.width" matInput>
+                                        <mat-hint>Width</mat-hint>
                                     </mat-form-field>
                                 </div>
                             </div>
@@ -957,11 +981,11 @@
                                         <mat-panel-title>
                                             <!-- <mat-checkbox color="primary" [(ngModel)]="part.selected"></mat-checkbox> -->
                                             <div *ngIf="part.vectors[0].src" [inlineSVG]="part.vectors[0].src"
-                                                [onSVGLoaded]="previewSVG" id="previewbox" class="elementsedit"
+                                                [onSVGLoaded]="previewSVG" [attr.id]="'previewboxtitle'+ i + idx" class="elementsedit"
                                                 style="height: 30px; width: auto;">
                                             </div>
                                             <div *ngIf="!part.vectors[0].src" [innerHTML]="part.svgcombi  | safeHtml"
-                                                id="previewbox" style="height: 30px; width: 30px;">
+                                            [attr.id]="'previewboxtitle'+ i + idx" style="height: 30px; width: 30px;">
                                             </div>
                                             <mat-icon (click)="deleteitemvcgroup(i, idy)" class="iconsize-12">delete
                                             </mat-icon>
@@ -977,7 +1001,7 @@
 
                                                 <mat-expansion-panel-header>
                                                     <div *ngIf="vector.src || vector.svgcombi !== 'undefined'"
-                                                        [attr.id]="'previewbox' + idx" [inlineSVG]="vector.src"
+                                                        [attr.id]="vector.idx" [inlineSVG]="vector.src"
                                                         [onSVGLoaded]="previewSVG" class="elementsedit"
                                                         style="height: 30px; width: auto;">
                                                     </div>
@@ -1043,12 +1067,12 @@
                                                     <mat-hint>X -</mat-hint>
                                                 </mat-form-field>
                                                 <mat-form-field style="max-width: 46px;">
-                                                    <input (change)="detectchange()" [(ngModel)]="part.height" matInput>
-                                                    <mat-hint>Y |</mat-hint>
+                                                    <input (change)="detectchange()" [(ngModel)]="part.style.height" matInput>
+                                                    <mat-hint>Height</mat-hint>
                                                 </mat-form-field>
                                                 <mat-form-field style="max-width: 46px;">
-                                                    <input (change)="detectchange()" [(ngModel)]="part.width" matInput>
-                                                    <mat-hint>X -</mat-hint>
+                                                    <input (change)="detectchange()" [(ngModel)]="part.style.width" matInput>
+                                                    <mat-hint>Width</mat-hint>
                                                 </mat-form-field>
                                             </div>
                                         </div>
@@ -1058,7 +1082,6 @@
                                             <mat-icon>add</mat-icon>
                                         </button>
                                     </div>
-
                                 </mat-expansion-panel>
                             </mat-accordion>
                             <mat-slide-toggle [(ngModel)]="vectorcombiedit" (click)="vectorcombieditSet(i)"
@@ -1401,14 +1424,14 @@
 
             <!-- selectedVecPath &&  -->
             <video *ngIf="canvas.videourl" preload="auto" class="video-background" no-controls [src]="canvas.videourl"
-                #videoPlayer (click)="deSelectAll()">
+                #videoPlayer >
             </video>
 
             <audio *ngIf="canvas.audio" [attr.id]="'canvassound'">
                 <source type="audio/mp3" [src]="canvas.audio">
             </audio>
 
-            <div *ngIf="canvas.videourl === ''" class="image-background" (click)="deSelectAll()"
+            <div *ngIf="canvas.videourl === ''" class="image-background" 
                 [style.background-image]="canvas['background-image']"></div>
 
 
