@@ -670,7 +670,7 @@
             <div fxLayout="column" fxLayout.xs="column">
                 <mat-accordion cdkDropList (cdkDropListDropped)="drop($event)">
                     <mat-expansion-panel *ngFor="let element of animationarray; let i = index" cdkDrag
-                        (click)="onSelectElement($event, element)">
+                        (click)="onSelectElement($event, element)" [expanded]="element === selectedelement">
                         <mat-expansion-panel-header *ngIf="element.type === 'image'" cdkDragHandle
                             [class.selected]="element === selectedelement">
                             <mat-panel-title>

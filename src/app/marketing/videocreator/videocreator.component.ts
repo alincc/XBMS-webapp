@@ -478,7 +478,7 @@ export class VideocreatorComponent implements OnInit {
     if (this.currenthistoryversion !== 0) {
       this.currenthistoryversion = this.currenthistoryversion - 1;
       let storedback = this.history[this.currenthistoryversion];
-      console.log(this.history, this.currenthistoryversion, storedback);
+      // console.log(this.history, this.currenthistoryversion, storedback);
       this.animationarray = storedback;
     }
   }
@@ -525,23 +525,23 @@ export class VideocreatorComponent implements OnInit {
     this.counter = e.value;
   }
 
-  setEditText(){
+  setEditText() {
     this.edittext = true;
     this.detectchange();
     //console.log('set edit text');
   }
 
-  deSelectAll(){
+  deSelectAll() {
     this.edittext = false;
     this.setDragSelect(false);
-    this.selectedelement = '';
-    this.selectedVecPath = '';
+    this.removeVectorPathSelection();
+    this.removeVectorPathMultiSelection();
     this.detectchange();
   }
 
   onSelectElement(event, element): void {
     //console.log('select element')
-   
+
     if (!this.selectedelement) { this.selectedelement = element }
     // manual close editpath to prevent interuptions in path check if selectedelement is not already selected
     // set dragpath, whiteboard, ? 
@@ -628,7 +628,7 @@ export class VideocreatorComponent implements OnInit {
       let boundposition = boundelement.getBoundingClientRect();
       this.selectedelement.posx = position.left - boundposition.left - (position.width * (animation.travellocX / 100));
       this.selectedelement.posy = position.top - boundposition.top - (position.height * (animation.travellocY / 100));
-      console.log(position);
+      // console.log(position);
     }, 500)
   }
 
@@ -1049,7 +1049,7 @@ export class VideocreatorComponent implements OnInit {
     let i = 0;
     let id = document.getElementById(element.id);
     // for (let i = 0; i < element.animation.length; i++) {
-    //   console.log('effect')
+    //  console.log('effect')
     //   let animationsection = element.animation[i];
     //   this.addAnimation(id, animationsection, element, i);
     // }
@@ -1271,11 +1271,11 @@ export class VideocreatorComponent implements OnInit {
   //   let animation =  idel.animation.filter(obj => {
   //     return obj.anim_type === 'move'
   //   });
-  //   console.log(animation, idel)
+  //  console.log(animation, idel)
   //   if (animation.length > 0){
   //     let rawpath = document.getElementById(this.selectedelement.id).getAttribute('d');
   //     let newpath = MotionPathPlugin.transformRawPath(rawpath, 1, 0, 0, 1, idel.posx, idel.posy);
-  //     console.log(newpath);
+  //    console.log(newpath);
   //     this.setNewMotionPath(newpath);
   //   }
   // }
@@ -1294,7 +1294,7 @@ export class VideocreatorComponent implements OnInit {
     let newx = this.draggableObject.x - idel.posx;
     idel.posy = this.draggableObject.y;
     idel.posx = this.draggableObject.x;
-    console.log(newy, newx);
+    //console.log(newy, newx);
     let animation = idel.animation.filter(obj => {
       return obj.anim_type === 'move'
     });
@@ -2222,7 +2222,8 @@ export class VideocreatorComponent implements OnInit {
     }
 
     this.currenttime = 0;
-    this.primairytimeline.restart();
+    //this.primairytimeline.restart();
+    this.primairytimeline.time(0)
     this.primairytimeline.pause();
     this.primairytimeline.timeScale(1);
 
@@ -2550,11 +2551,17 @@ export class VideocreatorComponent implements OnInit {
               const frompathid = fromvector.pathids[sindex];
               const fromel = document.getElementById(frompathid);
               const svgnew = fromel.parentElement;// vectornew.getElementsByTagName('svg');
-              const newElement = fromel.cloneNode(true) as HTMLElement;
-              newElement.setAttribute('id', '0elvect-res' + ix);
-              svgnew.insertAdjacentElement('afterbegin', newElement)
-              //svgnew.appendChild(newElement);
-              vectornewpath = document.getElementById('0elvect-res' + ix);
+              const newid = '0elvect-res' + ix;
+              const checkifexit = document.getElementById(newid)
+              if (checkifexit == null){
+                const newElement = fromel.cloneNode(true) as HTMLElement;
+                newElement.setAttribute('id', newid);
+                svgnew.insertAdjacentElement('afterbegin', newElement)
+                //svgnew.appendChild(newElement);
+                vectornewpath = document.getElementById('0elvect-res' + ix);
+              } else {
+                vectornewpath = checkifexit;
+              }
             }
             this.primairytimeline.to(vectornewpath, {
               duration: animation.duration, morphSVG: {
@@ -2806,7 +2813,7 @@ export class VideocreatorComponent implements OnInit {
       let e = document.getElementById(id);
       let g = e.getElementsByTagName("g");
       if (g.length < 1000) {
-        console.log(g)
+        // console.log(g)
         for (let index = 0; index < g.length; index++) {  // ---> g.length
           g[index].setAttribute("id", id + index + 'g');
           let sg = id + index + 'g';
@@ -2844,7 +2851,7 @@ export class VideocreatorComponent implements OnInit {
 
       scale = Number((newtranssize).toFixed(8));
       let p = e.getElementsByTagName("path");
-      console.log(e, p)
+      // console.log(e, p)
       for (let index = 0; index < p.length; index++) {
 
         p[index].setAttribute("id", "child-" + index + idx); // keep in case there is no ID set
@@ -2941,7 +2948,7 @@ export class VideocreatorComponent implements OnInit {
   }
 
   clickVectorPaths(e) {
-    console.log('select path', e);
+    // console.log('select path', e);
     if (this.dragselectvectpath === true && this.dragselectiontrue === false) {
       this.dragSelect(this.selectedelement.id); // activate drag
     } else if (this.dragselectiontrue === false) { // check if drag is not in progress
@@ -3460,12 +3467,13 @@ export class VideocreatorComponent implements OnInit {
   }
 
   deletePathSelClass(element) {
-    let elclass = element.getAttribute('class');
-    if (elclass !== null) {
-      elclass = elclass.replace('data-selected', '')
-      element.setAttribute('class', elclass);
+    if (element) {
+      let elclass = element.getAttribute('class');
+      if (elclass !== null) {
+        elclass = elclass.replace('data-selected', '')
+        element.setAttribute('class', elclass);
+      }
     }
-
   }
 
   addcell(i, i1, i2): void {
