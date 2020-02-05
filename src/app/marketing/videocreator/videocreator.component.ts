@@ -2222,9 +2222,7 @@ export class VideocreatorComponent implements OnInit {
     }
 
     this.currenttime = 0;
-    //this.primairytimeline.restart();
-    this.primairytimeline.time(0)
-    this.primairytimeline.pause();
+    this.primairytimeline.pause(0);
     this.primairytimeline.timeScale(1);
 
     if (this.canvas.videourl) {
@@ -2528,6 +2526,7 @@ export class VideocreatorComponent implements OnInit {
     let vectors: vectorelement[];
     vectors = element.vectors;
     let ease = this.selectEaseType(animation.easetype);
+    // await this.combineSVGs(element); // takes to long to rebuild 
 
     for (let i1 = 0; i1 < vectors.length - 1; i1++) {
       let fromvector = vectors[i1];
@@ -2563,6 +2562,8 @@ export class VideocreatorComponent implements OnInit {
                 vectornewpath = checkifexit;
               }
             }
+            //this.primairytimeline.set()
+            this.primairytimeline.set(vectornewpath, {morphSVG: {shape: vectornewpath}, autoAlpha: 1}, 0); //reset to original
             this.primairytimeline.to(vectornewpath, {
               duration: animation.duration, morphSVG: {
                 shape: toel,
@@ -2570,8 +2571,8 @@ export class VideocreatorComponent implements OnInit {
                 origin: "50% 50%" //or "20% 60%,35% 90%" if there are different values for the start and end shapes.
               }, ease: ease
             }, starttime);
-            this.primairytimeline.fromTo(toel, { opacity: 0 }, { duration: fintimehalf, opacity: 1 }, fintime - 1);
-            this.primairytimeline.to(vectornewpath, { duration: 1, opacity: 0 }, fintime);
+            this.primairytimeline.fromTo(toel, { autoAlpha: 0 }, { duration: fintimehalf, autoAlpha: 1 }, fintime - 1);
+            this.primairytimeline.to(vectornewpath, { duration: 1, autoAlpha: 0 }, fintime);
           }
         }
       }
@@ -2584,15 +2585,17 @@ export class VideocreatorComponent implements OnInit {
           let fromel = document.getElementById(frompathid);
           let toel = document.getElementById(topathid);
 
+          this.primairytimeline.set(fromel, {morphSVG: {shape: fromel}, autoAlpha: 1}, 0); //reset to original
           this.primairytimeline.to(fromel, {
-            duration: animation.duration, morphSVG: {
+            duration: animation.duration, 
+            morphSVG: {
               shape: toel,
               type: "rotational",
               origin: "50% 50%" //or "20% 60%,35% 90%" if there are different values for the start and end shapes.
             }, ease: ease
           }, starttime);
-          this.primairytimeline.fromTo(toel, { opacity: 0 }, { duration: fintimehalf, opacity: 1 }, fintime - 1);
-          this.primairytimeline.to(fromel, { duration: 1, opacity: 0 }, fintime);
+          this.primairytimeline.fromTo(toel, { autoAlpha: 0 }, { duration: fintimehalf, autoAlpha: 1 }, fintime - 1);
+          this.primairytimeline.to(fromel, { duration: 1, autoAlpha: 0 }, fintime);
 
         } else { // (i2 > tovector.pathids.length)
           // vector 1 is larger then vector 2
@@ -2602,6 +2605,7 @@ export class VideocreatorComponent implements OnInit {
           let fromel = document.getElementById(frompathid);
           let toel = document.getElementById(topathid);
 
+          this.primairytimeline.set(fromel, {morphSVG: { shape: fromel}, autoAlpha: 1 }, 0); //reset to original
           this.primairytimeline.to(fromel, {
             duration: animation.duration, morphSVG: {
               shape: toel,
@@ -2609,8 +2613,8 @@ export class VideocreatorComponent implements OnInit {
               origin: "50% 50%" //or "20% 60%,35% 90%" if there are different values for the start and end shapes.
             }, ease: ease
           }, starttime);
-          this.primairytimeline.fromTo(toel, { opacity: 0 }, { duration: fintimehalf, opacity: 1 }, fintime - 1);
-          this.primairytimeline.to(fromel, { duration: 1, opacity: 0 }, fintime);
+          this.primairytimeline.fromTo(toel, { autoAlpha: 0 }, { duration: fintimehalf, autoAlpha: 1 }, fintime - 1);
+          this.primairytimeline.to(fromel, { duration: 1, autoAlpha: 0 }, fintime);
         }
       }
     }
