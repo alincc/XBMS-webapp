@@ -2842,28 +2842,47 @@ export class VideocreatorComponent implements OnInit {
     return new Promise(async (resolve, reject) => {
       let e = document.getElementById(vectorid);
 
-      // transform to size
-      let scalex, scaley, newviewx = 0, newviewy = 0;
-      let newtranssizex, newtranssizey;
-      //console.log(newsize, originalsize);
-      newtranssizey =  originalsize.height / newsize.height;
-      newtranssizex =  originalsize.width / newsize.width;
+      // originalsize = vector 0 
+      let scale;
+      let newtranssize;
+      //console.log(newsize, originalsize, bbox);
+      if (newsize.height < newsize.width) {
+        // if (newsize < originalsize) {
+        //   newtranssize = newsize.height / originalsize.height;
+        // } else {
+          newtranssize = originalsize.height / newsize.height;
+        //}
+      } else {
+        //if (newsize < originalsize) {
+        //   newtranssize = newsize.width / originalsize.width;
+        // } else {
+          newtranssize = originalsize.width / newsize.width;
+        //}
+      }
 
-      newviewx = newsize.x - originalsize.x;
-      newviewy = newsize.y - originalsize.y;
+      let newx = originalsize.x; // - newsize.x;
+      let newy = originalsize.y; // - newsize.y;
 
-      scalex = Number((newtranssizex).toFixed(8));
-      scaley = Number((newtranssizey).toFixed(8));
+      if (originalsize.x === newsize.x){
+        newx = 0; 
+      }
+      if (originalsize.y === newsize.y){
+        newy = 0;
+      }
+
+
+      scale = Number((newtranssize).toFixed(8));
       let p = e.getElementsByTagName("path");
-      console.log(scalex, scaley, newviewx, newviewy)
+      // console.log(e, p)
+      
       for (let index = 0; index < p.length; index++) {
 
         p[index].setAttribute("id", "child-" + index + idx); // keep in case there is no ID set
         let rawpath = await MotionPathPlugin.getRawPath(p[index]);
-        let svgsizearray = [scalex, 0, 0, scaley, newviewx, newviewy]
+        let svgsizearray = [scale, 0, 0, scale, newx, newy];
         let newmatrix;
-        let transf = p[index].getAttribute('transform');
-
+        let transf = p[index].getAttribute('transform'); // there is transform on the element we need remove it 
+        //console.log(svgsizearray)
         if (transf !== null) {
           let style = transf;
           style = style.replace('matrix(', '');
@@ -2887,6 +2906,7 @@ export class VideocreatorComponent implements OnInit {
       resolve();
     });
   }
+
 
 
 
