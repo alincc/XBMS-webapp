@@ -1480,6 +1480,7 @@ export class VideocreatorComponent implements OnInit {
 
       if (found === false) {
         element.vectors.push(newel);
+        this.updateVectorGrpElementPos(element, newel);
       }
 
       //console.log(element, newel, found);
@@ -1487,8 +1488,19 @@ export class VideocreatorComponent implements OnInit {
     }
   }
 
-  addNewVector(src?, height?, width?, svgcombi?, posx?, posy?, pathidar?): void { //, originid?
+  updateVectorGrpElementPos(element, vector){
+    // get screen position minus the boundbox 
+    let groupbind = document.getElementById(element.id).getBoundingClientRect();
+    let boundelement = document.getElementById('myBounds').getBoundingClientRect();
 
+    let grouplocationx = groupbind.left - boundelement.left;
+    let grouplocationy = groupbind.top - boundelement.top;
+    vector.posx = vector.posx - grouplocationx;
+    vector.posy = vector.posy - grouplocationy;
+  }
+
+
+  addNewVector(src?, height?, width?, svgcombi?, posx?, posy?, pathidar?): void { //, originid?
     let svgc = '';
     let newsrc = '';
     let newheight = '300px';
@@ -2432,9 +2444,15 @@ export class VideocreatorComponent implements OnInit {
     this.animationarray[i].vectoranimation.push(vectanim);
   }
 
-  deleteVectorSrc(idx, element) {
+  async deleteVectorSrc(i, idx, element) {
     this.selectedelement.vectors.splice(idx, 1);
-    this.combineSVGs(element);
+    this.selectedelement.svgcombi = '';
+    for (let i = 0; i < this.selectedelement.vectors.length; i++){
+      let vector: vectorelement = this.selectedelement.vectors[i];
+      let e = document.getElementById('');
+      let vectorid = vector.idx;
+      await this.initVectors(e, i, idx, vectorid);
+    }    
   }
 
 
@@ -2570,7 +2588,7 @@ export class VideocreatorComponent implements OnInit {
               }
             }
             //this.primairytimeline.set()
-            this.primairytimeline.set(vectornewpath, {morphSVG: {shape: vectornewpath}, autoAlpha: 1}, 0); //reset to original
+            this.primairytimeline.set(vectornewpath, {morphSVG: {shape: vectornewpath}}, 0); //reset to original
             this.primairytimeline.to(vectornewpath, {
               duration: animation.duration, morphSVG: {
                 shape: toel,
@@ -2592,7 +2610,7 @@ export class VideocreatorComponent implements OnInit {
           let fromel = document.getElementById(frompathid);
           let toel = document.getElementById(topathid);
 
-          this.primairytimeline.set(fromel, {morphSVG: {shape: fromel}, autoAlpha: 1}, 0); //reset to original
+          this.primairytimeline.set(fromel, {morphSVG: {shape: fromel}}, 0); //reset to original
           this.primairytimeline.to(fromel, {
             duration: animation.duration, 
             morphSVG: {
@@ -2612,7 +2630,7 @@ export class VideocreatorComponent implements OnInit {
           let fromel = document.getElementById(frompathid);
           let toel = document.getElementById(topathid);
 
-          this.primairytimeline.set(fromel, {morphSVG: { shape: fromel}, autoAlpha: 1 }, 0); //reset to original
+          this.primairytimeline.set(fromel, {morphSVG: { shape: fromel}}, 0); //reset to original
           this.primairytimeline.to(fromel, {
             duration: animation.duration, morphSVG: {
               shape: toel,
@@ -2841,44 +2859,40 @@ export class VideocreatorComponent implements OnInit {
   async resizeVector(originalsize, newsize, idx, vectorid) {
     return new Promise(async (resolve, reject) => {
       let e = document.getElementById(vectorid);
-
-      // originalsize = vector 0 
       let scale;
       let newtranssize;
-      //console.log(newsize, originalsize, bbox);
-      if (newsize.height < newsize.width) {
-        // if (newsize < originalsize) {
-        //   newtranssize = newsize.height / originalsize.height;
-        // } else {
+      if (newsize.height > newsize.width) {
           newtranssize = originalsize.height / newsize.height;
-        //}
       } else {
-        //if (newsize < originalsize) {
-        //   newtranssize = newsize.width / originalsize.width;
-        // } else {
           newtranssize = originalsize.width / newsize.width;
-        //}
       }
+      let x = parseInt(originalsize.x, 10);
+      let y = parseInt(originalsize.y, 10);
+      let x2 = parseInt(newsize.x, 10) * -1;
+      let y2 = parseInt(newsize.y, 10) * -1;
+      let newx = x; // - x2;
+      let newy = y; // - y2;
 
-      let newx = originalsize.x - newsize.x;
-      let newy = originalsize.y - newsize.y;
-
-      // if (originalsize.x === newsize.x){
-      //   newx = 0; 
-      // }
-      // if (originalsize.y === newsize.y){
-      //   newy = 0;
-      // }
-
+      if (originalsize.x === newsize.x){
+        newx = 0; 
+      }
+      if (originalsize.y === newsize.y){
+        newy = 0;
+      }
 
       scale = Number((newtranssize).toFixed(8));
       let p = e.getElementsByTagName("path");
-      // console.log(e, p)
-      
+      //console.log(newx, newy, scale)
+      let rawpath;
       for (let index = 0; index < p.length; index++) {
 
         p[index].setAttribute("id", "child-" + index + idx); // keep in case there is no ID set
-        let rawpath = await MotionPathPlugin.getRawPath(p[index]);
+        let rawpath1 = await MotionPathPlugin.getRawPath(p[index]);
+        if (newx === 0 && newy === 0){
+          rawpath = rawpath1;
+        } else {
+          rawpath = await MotionPathPlugin.transformRawPath(rawpath1, 1, 0, 0, 1, x2, y2); // remove viewport x and y of newpath otherwise it will scale on the wrong viewport
+        }
         let svgsizearray = [scale, 0, 0, scale, newx, newy];
         let newmatrix;
         let transf = p[index].getAttribute('transform'); // there is transform on the element we need remove it 
@@ -3491,7 +3505,7 @@ export class VideocreatorComponent implements OnInit {
   }
 
   deletePathSelClass(element) {
-    if (element !== null) {
+    if (typeof element.getAttribute === 'function') {
       let elclass = element.getAttribute('class');
       if (elclass !== null) {
         elclass = elclass.replace('data-selected', '')
