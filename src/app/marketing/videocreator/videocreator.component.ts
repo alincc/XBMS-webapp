@@ -2860,15 +2860,15 @@ export class VideocreatorComponent implements OnInit {
         //}
       }
 
-      let newx = originalsize.x; // - newsize.x;
-      let newy = originalsize.y; // - newsize.y;
+      let newx = originalsize.x - newsize.x;
+      let newy = originalsize.y - newsize.y;
 
-      if (originalsize.x === newsize.x){
-        newx = 0; 
-      }
-      if (originalsize.y === newsize.y){
-        newy = 0;
-      }
+      // if (originalsize.x === newsize.x){
+      //   newx = 0; 
+      // }
+      // if (originalsize.y === newsize.y){
+      //   newy = 0;
+      // }
 
 
       scale = Number((newtranssize).toFixed(8));
