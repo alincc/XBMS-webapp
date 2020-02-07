@@ -859,7 +859,7 @@
                                     style="height: 30px; width: auto;">
                                 </div>
                                 <div *ngIf="!element.vectors[0].src" [innerHTML]="element.svgcombi  | safeHtml"
-                                [attr.id]="'previewboxtitle' + i" style="height: 30px; width: 30px;">
+                                    [attr.id]="'previewboxtitle' + i" style="height: 30px; width: 30px;">
                                 </div>
                                 <mat-icon (click)="deleteitem(i)" class="iconsize-12">delete</mat-icon>
                                 <mat-icon (click)="copyElement(i, element)" matTooltip="Duplicate element"
@@ -874,9 +874,8 @@
 
                                     <mat-expansion-panel-header>
                                         <div *ngIf="vector.src || vector.svgcombi !== 'undefined'"
-                                            [attr.id]="vector.idx" [inlineSVG]="vector.src"
-                                            [onSVGLoaded]="previewSVG" class="elementsedit"
-                                            style="height: 30px; width: auto;">
+                                            [attr.id]="vector.idx" [inlineSVG]="vector.src" [onSVGLoaded]="previewSVG"
+                                            class="elementsedit" style="height: 30px; width: auto;">
                                         </div>
                                     </mat-expansion-panel-header>
 
@@ -981,11 +980,12 @@
                                         <mat-panel-title>
                                             <!-- <mat-checkbox color="primary" [(ngModel)]="part.selected"></mat-checkbox> -->
                                             <div *ngIf="part.vectors[0].src" [inlineSVG]="part.vectors[0].src"
-                                                [onSVGLoaded]="previewSVG" [attr.id]="'previewboxtitle'+ i + idx" class="elementsedit"
-                                                style="height: 30px; width: auto;">
+                                                [onSVGLoaded]="previewSVG" [attr.id]="'previewboxtitle'+ i + idx"
+                                                class="elementsedit" style="height: 30px; width: auto;">
                                             </div>
                                             <div *ngIf="!part.vectors[0].src" [innerHTML]="part.svgcombi  | safeHtml"
-                                            [attr.id]="'previewboxtitle'+ i + idx" style="height: 30px; width: 30px;">
+                                                [attr.id]="'previewboxtitle'+ i + idx"
+                                                style="height: 30px; width: 30px;">
                                             </div>
                                             <mat-icon (click)="deleteitemvcgroup(i, idy)" class="iconsize-12">delete
                                             </mat-icon>
@@ -1067,11 +1067,13 @@
                                                     <mat-hint>X -</mat-hint>
                                                 </mat-form-field>
                                                 <mat-form-field style="max-width: 46px;">
-                                                    <input (change)="detectchange()" [(ngModel)]="part.style.height" matInput>
+                                                    <input (change)="detectchange()" [(ngModel)]="part.style.height"
+                                                        matInput>
                                                     <mat-hint>Height</mat-hint>
                                                 </mat-form-field>
                                                 <mat-form-field style="max-width: 46px;">
-                                                    <input (change)="detectchange()" [(ngModel)]="part.style.width" matInput>
+                                                    <input (change)="detectchange()" [(ngModel)]="part.style.width"
+                                                        matInput>
                                                     <mat-hint>Width</mat-hint>
                                                 </mat-form-field>
                                             </div>
@@ -1468,17 +1470,18 @@
                             #rotatehandle [attr.id]="element.id + 'rotatehandle'">replay</mat-icon>
                     </div>
 
-                    <label (dblclick)="setEditText()" [ngResizable]="element === selectedelement" *ngIf="element.type === 'text' && !edittext"
-                        id="{{element.id}}" [attr.id]="element.id" (rzResizing)="onResizing($event, i)"
-                        [ngStyle]="element.style" [rzAspectRatio]="false" class="elementanimationarray"
+                    <label (dblclick)="setEditText()" [ngResizable]="element === selectedelement"
+                        *ngIf="element.type === 'text' && !edittext" id="{{element.id}}" [attr.id]="element.id"
+                        (rzResizing)="onResizing($event, i)" [ngStyle]="element.style" [rzAspectRatio]="false"
+                        class="elementanimationarray"
                         [class.elementanimationarrayselected]="element === selectedelement">{{element.content}}
                         <mat-icon *ngIf="element === selectedelement" class="iconsize-4" class="rotatehandle"
                             #rotatehandle [attr.id]="element.id + 'rotatehandle'">replay</mat-icon>
                     </label>
                     <mat-form-field *ngIf="element.type === 'text' && edittext && element === selectedelement"
-                        id="{{element.id}}" [attr.id]="element.id" 
-                        [ngStyle]="element.style" class="elementanimationarray">
-                         <textarea matInput [(ngModel)]="element.content" style="width: 100%; height: 100%;"></textarea>
+                        id="{{element.id}}" [attr.id]="element.id" [ngStyle]="element.style"
+                        class="elementanimationarray">
+                        <textarea matInput [(ngModel)]="element.content" style="width: 100%; height: 100%;"></textarea>
                         <mat-icon *ngIf="element === selectedelement" class="iconsize-4" class="rotatehandle"
                             #rotatehandle [attr.id]="element.id + 'rotatehandle'">replay</mat-icon>
                     </mat-form-field>
@@ -1525,15 +1528,25 @@
                         [style.height]="element.style.height" [ngStyle]="element.style" id="{{element.id}}"
                         class="elementanimationarray"
                         [class.elementanimationarrayselected]="element === selectedelement">
-                        <div *ngFor="let part of element.vectors; let idy = index;" [style.width]="part.style.width"
-                            [style.height]="part.style.height" [ngStyle]="part.style"
-                            (rzResizing)="onResizing($event, i)" [ngResizable]="vectorcombiedit" [rzAspectRatio]="false"
-                            id="{{part.id}}">
-                            <div style="height: 100%; width: 100%;" [innerHTML]="part.svgcombi | safeHtml"
+                        <div *ngFor="let part of element.vectors; let idy = index;"
+                            (click)="onSelectElement($event, part)" (mousedown)="setDraggable($event, part)">
+                            <div *ngIf="part.type === 'vector' && part.groupmember"
+                                [style.width]="part.style.width" [style.height]="part.style.height"
+                                [ngStyle]="part.style" (rzResizing)="onResizing($event, i)"
+                                [ngResizable]="part === selectedpart" [rzAspectRatio]="false" id="{{part.id}}"
+                                class="elementanimationarray"
+                                [class.elementanimationarrayselected]="part === selectedelement">
+                                <div style="height: 100%; width: 100%; cursor: pointer;"
+                                    [innerHTML]="part.svgcombi | safeHtml" (click)="clickVectorPaths($event)">
+                                </div>
+                                <mat-icon *ngIf="part === selectedelement && vectorcombiedit" class="iconsize-4" class="rotatehandle"
+                                    #rotatehandle [attr.id]="part.id + 'rotatehandle'">replay</mat-icon>
+                            </div>
+                            <!-- <div style="height: 100%; width: 100%;" [innerHTML]="part.svgcombi | safeHtml"
                                 (click)="clickVectorPaths($event)">
                             </div>
                             <mat-icon *ngIf="vectorcombiedit" class="iconsize-4" class="rotatehandle" #rotatehandle
-                                [attr.id]="part.id + 'rotatehandle'">replay</mat-icon>
+                                [attr.id]="part.id + 'rotatehandle'">replay</mat-icon> -->
                         </div>
                         <mat-icon *ngIf="element === selectedelement" class="iconsize-4" class="rotatehandle"
                             #rotatehandle [attr.id]="element.id + 'rotatehandle'">replay</mat-icon>

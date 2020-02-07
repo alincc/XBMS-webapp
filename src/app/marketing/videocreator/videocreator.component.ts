@@ -1156,7 +1156,7 @@ export class VideocreatorComponent implements OnInit {
   }
 
   async initVectors(e, i, idx, vectorid) {
-    console.log(e, i, idx, vectorid);
+    //console.log(e, i, idx, vectorid);
     this.systembusy = true;
     if (this.animationarray[i].svgcombi === '' || this.animationarray[i].morph) {
       return new Promise(async (resolve, reject) => {
@@ -1374,7 +1374,7 @@ export class VideocreatorComponent implements OnInit {
   }
 
 
-  onSetCombiBox(i) {
+  onSetCombiBox(i, element, newel) {
     let vectorcombi: vectorcombinator = this.animationarray[i];
     let vectors = vectorcombi.vectors;
     let x = vectors[0].posx;
@@ -1394,6 +1394,7 @@ export class VideocreatorComponent implements OnInit {
     let heightcalcfin = heightcalc - y;
     vectorcombi.style.width = widthcalcfin + 'px';
     vectorcombi.style.height = heightcalcfin + 'px';
+    this.updateVectorGrpElementPos(element, newel); // update element position
   }
 
   onResizing(e, i) {
@@ -1480,11 +1481,12 @@ export class VideocreatorComponent implements OnInit {
 
       if (found === false) {
         element.vectors.push(newel);
-        this.updateVectorGrpElementPos(element, newel);
+        
+        this.onSetCombiBox(i, element, newel);
       }
 
       //console.log(element, newel, found);
-      this.onSetCombiBox(i)
+      
     }
   }
 
@@ -1497,6 +1499,7 @@ export class VideocreatorComponent implements OnInit {
     let grouplocationy = groupbind.top - boundelement.top;
     vector.posx = vector.posx - grouplocationx;
     vector.posy = vector.posy - grouplocationy;
+    
   }
 
 
