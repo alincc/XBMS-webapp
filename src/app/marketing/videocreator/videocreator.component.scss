@@ -229,16 +229,16 @@
   //cursor: url('assets/icons/dark-set/marketing/pencil.png'), default;
 }
 
-.vectorcombi {
-  border: 1px dotted gray;
-  margin: -1;
-  background-color: rgba(30, 255, 0, 0.274);
-}
 
 .speed-dial-container {
   position: fixed;
   bottom: 40px;
   left: 50px;
   z-index: 99;
+}
+
+.editcombi{
+  // pointer-events: none;
+  z-index: -1;
 }
 

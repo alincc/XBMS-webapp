@@ -323,8 +323,18 @@
                                 rotate</mat-checkbox>
                             <!-- <button mat-button
                                 (click)="animation.travellocY = selectedelement.posy; animation.travellocX = selectedelement.posx">Reset</button> -->
-                            <button mat-button (click)="resetPath()">Reset</button>
 
+
+                            <mat-form-field>
+                                <mat-select [(value)]="standardpath" (selectionChange)="detectchange()"
+                                    placeholder="Animation">
+                                    <mat-option value="linear">Linear</mat-option>
+                                    <mat-option value="circle">Circle</mat-option>
+                                    <mat-option value="square">Square</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+
+                            <button mat-button (click)="resetPath()">Set path</button>
                             <button mat-button (click)="editMotionPath(animation)">Edit path</button>
                             <button mat-button (click)="saveNewMotionPath(animation)">Save path</button>
                         </div>
@@ -424,7 +434,14 @@
                                 <mat-option value="morph">Morph</mat-option>
                             </mat-select>
                         </mat-form-field>
-
+                        <mat-form-field style="max-width: 46px;">
+                            <input [(ngModel)]="vectoranimation.repeat" type="number" step="1" min="-1" matInput
+                                (change)="detectchange()">
+                            <mat-hint>repeat</mat-hint>
+                        </mat-form-field>
+                        <mat-checkbox [(ngModel)]="vectoranimation.yoyo" (change)="detectchange()"
+                            matTooltip="Reset when repeated">Fluent</mat-checkbox>
+                        <!-- [disabled]="vectoranimation.repeat !== -1 -->
                         <mat-form-field>
                             <mat-select [(value)]="vectoranimation.easetype" (selectionChange)="detectchange()"
                                 placeholder="Animation">
@@ -1340,9 +1357,15 @@
                                 </mat-select>
                             </mat-form-field>
 
+                            <mat-checkbox [(ngModel)]="closewhiteboard" matTooltip="Connect end-points">Close
+                            </mat-checkbox>
+
                             <div fxLayout="row">
                                 <button mat-mini-fab matTooltip="Save image" (click)="savewhiteboard()" color="primary">
                                     <mat-icon>save</mat-icon>
+                                </button>
+                                <button mat-mini-fab matTooltip="Drag tool" (click)="addNewFigure()" color="primary">
+                                    <mat-icon>figure tool</mat-icon>
                                 </button>
                                 <button mat-mini-fab matTooltip="Delete image" (click)="deletewhiteboard()"
                                     color="primary">
@@ -1524,23 +1547,23 @@
                         <mat-icon *ngIf="element === selectedelement" class="iconsize-4" class="rotatehandle"
                             #rotatehandle [attr.id]="element.id + 'rotatehandle'">replay</mat-icon>
                     </div>
-                    <div *ngIf="element.type === 'vectorcombi'" class="vectorcombi" [style.width]="element.style.width"
+                    <div *ngIf="element.type === 'vectorcombi'" [style.width]="element.style.width"
                         [style.height]="element.style.height" [ngStyle]="element.style" id="{{element.id}}"
-                        class="elementanimationarray"
-                        [class.elementanimationarrayselected]="element === selectedelement">
+                        [ngClass]="{elementanimationarrayselected: element === selectedelement, editcombi: vectorcombiedit, elementanimationarray: true}">
                         <div *ngFor="let part of element.vectors; let idy = index;"
                             (click)="onSelectElement($event, part)" (mousedown)="setDraggable($event, part)">
-                            <div *ngIf="part.type === 'vector' && part.groupmember"
-                                [style.width]="part.style.width" [style.height]="part.style.height"
-                                [ngStyle]="part.style" (rzResizing)="onResizing($event, i)"
-                                [ngResizable]="part === selectedpart" [rzAspectRatio]="false" id="{{part.id}}"
-                                class="elementanimationarray"
-                                [class.elementanimationarrayselected]="part === selectedelement">
+                            <div *ngIf="part.type === 'vector' && part.groupmember" [style.width]="part.style.width"
+                                [style.height]="part.style.height" [ngStyle]="part.style"
+                                (rzResizing)="onResizing($event, i)" [ngResizable]="part === selectedpart"
+                                [rzAspectRatio]="false" id="{{part.id}}" class="elementanimationarray"
+                                [ngStyle]="{'z-index':vectorcombiedit === true && element === selectedelement ? 1000 : -1 }"
+                                [class.elementanimationarrayselected]="part === selectedelement && vectorcombiedit">
                                 <div style="height: 100%; width: 100%; cursor: pointer;"
                                     [innerHTML]="part.svgcombi | safeHtml" (click)="clickVectorPaths($event)">
                                 </div>
-                                <mat-icon *ngIf="part === selectedelement && vectorcombiedit" class="iconsize-4" class="rotatehandle"
-                                    #rotatehandle [attr.id]="part.id + 'rotatehandle'">replay</mat-icon>
+                                <mat-icon *ngIf="part === selectedelement && vectorcombiedit" class="iconsize-4"
+                                    class="rotatehandle" #rotatehandle [attr.id]="part.id + 'rotatehandle'">replay
+                                </mat-icon>
                             </div>
                             <!-- <div style="height: 100%; width: 100%;" [innerHTML]="part.svgcombi | safeHtml"
                                 (click)="clickVectorPaths($event)">

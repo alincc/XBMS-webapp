@@ -317,6 +317,8 @@ export class VideocreatorComponent implements OnInit {
     }
   }
 
+  public closewhiteboard = false;
+  public standardpath = 'linear';
   public edittext = false;
   public draggableObject;
   public pathHelper: MotionPathHelper;
@@ -463,7 +465,7 @@ export class VideocreatorComponent implements OnInit {
     // triggers on mouseup event set debounce time if triggered to fast see ngoninit
     let jsonaniarray = JSON.stringify(this.animationarray);
     let jsonaniarraylast = JSON.stringify(this.history[this.currenthistoryversion]);
-    if (this.currenthistoryversion < this.history.length - 1) {
+    if (this.currenthistoryversion < this.history.length) {
       this.history = this.history.splice(this.currenthistoryversion + 1, this.history.length - 1)
     }
     if (jsonaniarray !== jsonaniarraylast) {
@@ -540,8 +542,17 @@ export class VideocreatorComponent implements OnInit {
   }
 
   onSelectElement(event, element): void {
-    //console.log('select element')
+    //console.log('select element', event, element);
+    if (this.vectorcombiedit && element.type !== 'vectorcombi'){
+      this.selectitem(element);
+    }
+    if (!this.vectorcombiedit){
+      this.selectitem(element);
+    }
 
+  }
+
+  selectitem(element){
     if (!this.selectedelement) { this.selectedelement = element }
     // manual close editpath to prevent interuptions in path check if selectedelement is not already selected
     // set dragpath, whiteboard, ? 
@@ -549,14 +560,22 @@ export class VideocreatorComponent implements OnInit {
       if (this.selectedelement.type === 'vector' && this.selectedelement.svgcombi !== '') {
         this.removeVectorPathSelection();
         this.removeVectorPathMultiSelection();
-        this.vectorcombiedit = false;
+        // if (this.vectorcombiedit){
+        //   this.resetVectorCombiEdit(element)
+        // }
+       
       }
       if (this.whiteboard) { this.deletewhiteboard() }
       this.edittext = false;
-      this.selectedVecPath = ';'
+      this.selectedVecPath = '';
       this.setDragSelect(false);
       this.selectedelement = element;
     }
+  }
+
+  resetVectorCombiEdit(element){
+    this.vectorcombiedit = false;
+    this.detectchange();
   }
 
   async setMotionPath(id, element, animation) {
@@ -669,6 +688,26 @@ export class VideocreatorComponent implements OnInit {
     let newview = '0 0 ' + w + ' ' + h;
     let newpath = 'M15.458,45.741 C15.458,45.741 441.46,44.534 513.889,44.457  ';
     let newsvgpath = '<svg id="' + this.selectedelement.id + 'mp" viewBox="' + newview + '" class="path-edit"><path id="' + this.selectedelement.id + 'p" style="opacity: 0; " d="' + newpath + '" /></svg>';
+
+    switch(this.standardpath){
+      case 'linear': {
+        newpath = 'M15.458,45.741 C15.458,45.741 441.46,44.534 513.889,44.457  ';
+        newsvgpath = '<svg id="' + this.selectedelement.id + 'mp" viewBox="' + newview + '" class="path-edit"><path id="' + this.selectedelement.id + 'p" style="opacity: 0; " d="' + newpath + '" /></svg>';
+        break
+      }
+      case 'circle': {
+        newsvgpath = '<svg id="' + this.selectedelement.id + 'mp" viewBox="' + newview + 
+        '" class="path-edit"><ellipse cx="200" cy="80" rx="100" ry="50" id="' + this.selectedelement.id + 'p" style="opacity: 0;" /></svg>';
+        break
+      }
+      case 'square': {
+        newsvgpath = '<svg id="' + this.selectedelement.id + 'mp" viewBox="' + newview + '" class="path-edit"><rect width="300" height="100" id="' + this.selectedelement.id + 'p" style="opacity: 0;" /></svg>';
+       break
+      }
+
+     
+    }
+
     this.selectedelement.motionpath = newsvgpath;
   }
 
@@ -1295,7 +1334,7 @@ export class VideocreatorComponent implements OnInit {
     let newx = this.draggableObject.x - idel.posx;
     idel.posy = this.draggableObject.y;
     idel.posx = this.draggableObject.x;
-    //console.log(newy, newx);
+    // check if animation path needs to be updated
     let animation = idel.animation.filter(obj => {
       return obj.anim_type === 'move'
     });
@@ -1306,7 +1345,16 @@ export class VideocreatorComponent implements OnInit {
       let stringpath = await MotionPathPlugin.rawPathToString(newpath);
       this.setNewMotionPath(stringpath);
     }
+
+    // check if combi item
+    if (idel.groupmember){
+      //console.log('update combibox')
+      this.updateCombiBox(idel);
+    }
+
     this.draggableObject.disable();
+
+
   }
 
   enableDraggable() {
@@ -1327,36 +1375,44 @@ export class VideocreatorComponent implements OnInit {
 
 
   setDraggable(event, idel) {
-
     // Draggable does not recognise ts angular so changes are direct dom js related
-    if (this.dragselectvectpath === false && this.vectorcombiedit === false) {
-      // console.log('setdrag')
-      let element = document.getElementById(idel.id);
-      let snap, inertia = false;
-      if (this.snaptogrid) {
-        snap = {
-          x: function (endValue) {
-            return Math.round(endValue / this.snaptogridwidth) * this.snaptogridwidth;
-          },
-          y: function (endValue) {
-            return Math.round(endValue / this.snaptogridheight) * this.snaptogridheight;
-          }
-        }
-        inertia = true
-      }
-
-
-      if (event.target.id === idel.id + 'rotatehandle') {
-        this.setRotate(event, idel)
-      } else {
-        this.draggableObject = new Draggable(element, {
-          type: "x,y",
-          onDragEndParams: [idel],
-          onDragEnd: this.setMoveableItem,
-          snap: snap
-        });
-      }
+    // drag selectionbox should be off and vectorcombinator should be off
+    if (this.dragselectvectpath === false && this.vectorcombiedit === false && !idel.groupmember) {
+      this.setMovable(event, idel);
     } else { this.disableDraggable(); }
+
+    if (!this.dragselectvectpath && this.vectorcombiedit && idel.groupmember){
+      this.setMovable(event, idel);
+    }
+
+  }
+
+  setMovable(event, idel){
+    let element = document.getElementById(idel.id);
+    let snap, inertia = false;
+    if (this.snaptogrid) {
+      snap = {
+        x: function (endValue) {
+          return Math.round(endValue / this.snaptogridwidth) * this.snaptogridwidth;
+        },
+        y: function (endValue) {
+          return Math.round(endValue / this.snaptogridheight) * this.snaptogridheight;
+        }
+      }
+      inertia = true
+    }
+
+
+    if (event.target.id === idel.id + 'rotatehandle') {
+      this.setRotate(event, idel)
+    } else {
+      this.draggableObject = new Draggable(element, {
+        type: "x,y",
+        onDragEndParams: [idel],
+        onDragEnd: this.setMoveableItem,
+        snap: snap
+      });
+    }
   }
 
   setRotate(event, idel) {
@@ -1373,16 +1429,25 @@ export class VideocreatorComponent implements OnInit {
     })
   }
 
+  updateCombiBox(element){
+   // filter elements for correct vectorcombi
+   for (let i = 0; i < this.animationarray.length; i++){
+     let animation = this.animationarray[i];
+     if (animation.type === 'vectorcombi'){
+       this.combiBoxCalculator(animation);
+     }
+   }
+   // calculate new position
+  }
 
-  onSetCombiBox(i, element, newel) {
-    let vectorcombi: vectorcombinator = this.animationarray[i];
+  combiBoxCalculator(vectorcombi){
+    console.log('is combiboxcalculator')
     let vectors = vectorcombi.vectors;
     let x = vectors[0].posx;
     let y = vectors[0].posy;
     let widthcalc = parseInt(vectors[0].style.width, 10) + x;
     let heightcalc = parseInt(vectors[0].style.height, 10) + y;
     for (let k = 1; k < vectors.length; k++) {
-
       let width = parseInt(vectors[k].style.width, 10)
       let height = parseInt(vectors[k].style.height, 10)
       if (vectors[k].posx < x) { x = vectors[k].posx; }
@@ -1394,6 +1459,12 @@ export class VideocreatorComponent implements OnInit {
     let heightcalcfin = heightcalc - y;
     vectorcombi.style.width = widthcalcfin + 'px';
     vectorcombi.style.height = heightcalcfin + 'px';
+  }
+
+
+  onSetCombiBox(i, element, newel) {
+    let vectorcombi: vectorcombinator = this.animationarray[i];
+    this.combiBoxCalculator(vectorcombi);
     this.updateVectorGrpElementPos(element, newel); // update element position
   }
 
@@ -1898,6 +1969,11 @@ export class VideocreatorComponent implements OnInit {
     //console.log(chart);
   }
 
+  addNewFigure(): void {
+    let docset = document.getElementById('svgElement')
+    this.pathHelper = MotionPathHelper.create(docset);
+  }
+
   addNewWhiteboard(): void {
     if (this.whiteboard === false) {
       this.whiteboard = true;
@@ -2060,10 +2136,20 @@ export class VideocreatorComponent implements OnInit {
       }, 300) // mininmum needed for dom to process
     }
   }
+  
 
   async savewhiteboard() {
     var svgElement = document.getElementById("svgElement");
 
+
+    if (this.closewhiteboard){
+     let path = svgElement.getElementsByTagName('path');
+      for (let i = 0; i < path.length; i++){
+        let d = path[i].getAttribute('d');
+        let newd = d + ' z';
+        path[i].setAttribute('d', newd);
+      }
+    }
     // convert to proper type
     let svg = svgElement as unknown;
     let svg2 = svg as SVGAElement;
@@ -2098,7 +2184,8 @@ export class VideocreatorComponent implements OnInit {
       newvectstring,
       rect.x, rect.y, pathidarfinal);
 
-    this.deletewhiteboard()
+    this.deletewhiteboard();
+    this.removePathEditor();
   }
 
   deletewhiteboard() {
@@ -2554,6 +2641,7 @@ export class VideocreatorComponent implements OnInit {
     let vectors: vectorelement[];
     vectors = element.vectors;
     let ease = this.selectEaseType(animation.easetype);
+    
     // await this.combineSVGs(element); // takes to long to rebuild 
 
     for (let i1 = 0; i1 < vectors.length - 1; i1++) {
@@ -2562,7 +2650,10 @@ export class VideocreatorComponent implements OnInit {
       let fintime = animation.start_time + animation.duration + (animation.duration * i1);
       let fintimehalf = animation.duration / 0.9;
       let starttime = animation.start_time + (animation.duration * i1) + (1 * i1);
+      let repeat = animation.repeat;
+      let yoyo = animation.yoyo;
 
+      //console.log(yoyo);
       // if vector 1 hess less paths then vector 2
       if (vectors[i1].pathids.length < vectors[i1 + 1].pathids.length) {
         for (let ix = 0; ix < vectors[i1 + 1].pathids.length; ix++) {
@@ -2591,16 +2682,16 @@ export class VideocreatorComponent implements OnInit {
               }
             }
             //this.primairytimeline.set()
-            this.primairytimeline.set(vectornewpath, {morphSVG: {shape: vectornewpath}}, 0); //reset to original
+            this.primairytimeline.set(vectornewpath, {morphSVG: {shape: vectornewpath}, autoAlpha: 1}, 0); //reset to original
             this.primairytimeline.to(vectornewpath, {
               duration: animation.duration, morphSVG: {
                 shape: toel,
-                type: "rotational",
-                origin: "50% 50%" //or "20% 60%,35% 90%" if there are different values for the start and end shapes.
-              }, ease: ease
+                //type: "rotational",
+                //origin: "50% 50%" //or "20% 60%,35% 90%" if there are different values for the start and end shapes.
+              }, ease: ease, repeat: repeat, yoyo: yoyo
             }, starttime);
-            this.primairytimeline.fromTo(toel, { autoAlpha: 0 }, { duration: fintimehalf, autoAlpha: 1 }, fintime - 1);
-            this.primairytimeline.to(vectornewpath, { duration: 1, autoAlpha: 0 }, fintime);
+            this.primairytimeline.fromTo(toel, { autoAlpha: 0 }, { duration: fintimehalf, autoAlpha: 1, repeat: repeat, yoyo: yoyo }, fintime - 1);
+            this.primairytimeline.to(vectornewpath, { duration: 1, autoAlpha: 0, repeat: repeat, yoyo: yoyo }, fintime);
           }
         }
       }
@@ -2613,17 +2704,17 @@ export class VideocreatorComponent implements OnInit {
           let fromel = document.getElementById(frompathid);
           let toel = document.getElementById(topathid);
 
-          this.primairytimeline.set(fromel, {morphSVG: {shape: fromel}}, 0); //reset to original
+          this.primairytimeline.set(fromel, {morphSVG: {shape: fromel}, autoAlpha: 1}, 0); //reset to original
           this.primairytimeline.to(fromel, {
             duration: animation.duration, 
             morphSVG: {
               shape: toel,
-              type: "rotational",
-              origin: "50% 50%" //or "20% 60%,35% 90%" if there are different values for the start and end shapes.
-            }, ease: ease
+              //type: "rotational",
+              //origin: "50% 50%" //or "20% 60%,35% 90%" if there are different values for the start and end shapes.
+            }, ease: ease, repeat: repeat
           }, starttime);
-          this.primairytimeline.fromTo(toel, { autoAlpha: 0 }, { duration: fintimehalf, autoAlpha: 1 }, fintime - 1);
-          this.primairytimeline.to(fromel, { duration: 1, autoAlpha: 0 }, fintime);
+          this.primairytimeline.fromTo(toel, { autoAlpha: 0 }, { duration: fintimehalf, autoAlpha: 1, repeat: repeat, yoyo: yoyo }, fintime - 1);
+          this.primairytimeline.to(fromel, { duration: 1, autoAlpha: 0, repeat: repeat, yoyo: yoyo }, fintime);
 
         } else { // (i2 > tovector.pathids.length)
           // vector 1 is larger then vector 2
@@ -2633,16 +2724,16 @@ export class VideocreatorComponent implements OnInit {
           let fromel = document.getElementById(frompathid);
           let toel = document.getElementById(topathid);
 
-          this.primairytimeline.set(fromel, {morphSVG: { shape: fromel}}, 0); //reset to original
+          this.primairytimeline.set(fromel, {morphSVG: { shape: fromel}, autoAlpha: 1}, 0); //reset to original
           this.primairytimeline.to(fromel, {
             duration: animation.duration, morphSVG: {
               shape: toel,
-              type: "rotational",
-              origin: "50% 50%" //or "20% 60%,35% 90%" if there are different values for the start and end shapes.
-            }, ease: ease
+              //type: "rotational",
+              //origin: "50% 50%" //or "20% 60%,35% 90%" if there are different values for the start and end shapes.
+            }, ease: ease, repeat: repeat, yoyo: yoyo
           }, starttime);
-          this.primairytimeline.fromTo(toel, { autoAlpha: 0 }, { duration: fintimehalf, autoAlpha: 1 }, fintime - 1);
-          this.primairytimeline.to(fromel, { duration: 1, autoAlpha: 0 }, fintime);
+          this.primairytimeline.fromTo(toel, { autoAlpha: 0 }, { duration: fintimehalf, autoAlpha: 1, repeat: repeat, yoyo: yoyo }, fintime - 1);
+          this.primairytimeline.to(fromel, { duration: 1, autoAlpha: 0, repeat: repeat, yoyo: yoyo }, fintime);
         }
       }
     }
@@ -3067,12 +3158,17 @@ export class VideocreatorComponent implements OnInit {
   removeVectorPathMultiSelection() {
     this.setDragSelect(false);
     this.selectmultiplepaths = false;
-    if (this.selectedVecPathmultiple.length > 0) {
-      this.selectedVecPathmultiple.forEach((path, index) => {
-        this.deletePathSelClass(path)
-        this.selectedVecPathmultiple.splice(index, 1)
-      });
+    // if (this.selectedVecPathmultiple.length > 0) {
+    //   this.selectedVecPathmultiple.forEach((path, index) => {
+    //     this.deletePathSelClass(path)
+    //     this.selectedVecPathmultiple.splice(index, 1)
+    //   });
+    // }
+    let allselectedclass = document.getElementsByClassName('data-selected');
+    for (let i = 0; i < allselectedclass.length; ++i){
+      allselectedclass[i].classList.remove('data-selected');
     }
+    this.selectedVecPathmultiple = [];
     if (this.selectedelement) {
       if (this.selectedelement.svgcombi) {
         this.saveSVG();
@@ -3499,22 +3595,24 @@ export class VideocreatorComponent implements OnInit {
   }
 
   setPathSelClass(element) {
-    let elclass = element.getAttribute('class');
-    if (elclass !== null) {
-      element.setAttribute('class', 'data-selected ' + elclass);
-    } else {
-      element.setAttribute('class', 'data-selected')
-    }
+    // let elclass = element.getAttribute('class');
+    // if (elclass !== null) {
+    //   element.setAttribute('class', 'data-selected ' + elclass);
+    // } else {
+    //   element.setAttribute('class', 'data-selected')
+    // }
+    element.classList.add('data-selected');
   }
 
   deletePathSelClass(element) {
-    if (typeof element.getAttribute === 'function') {
-      let elclass = element.getAttribute('class');
-      if (elclass !== null) {
-        elclass = elclass.replace('data-selected', '')
-        element.setAttribute('class', elclass);
-      }
-    }
+    //if (typeof element.getAttribute === 'function') {
+      element.classList.remove('data-selected');
+      // let elclass = element.getAttribute('class');
+      // if (elclass !== null) {
+      //   elclass = elclass.replace('data-selected', '')
+      //   element.setAttribute('class', elclass);
+      // }
+    //}
   }
 
   addcell(i, i1, i2): void {
