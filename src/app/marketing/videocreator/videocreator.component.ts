@@ -23,6 +23,7 @@ import { debounceTime } from 'rxjs/operators';
 import { HostListener } from '@angular/core';
 import { Subject, Subscription } from 'rxjs';
 import { Position } from 'angular2-draggable';
+import PathEditor from 'assets/js/utils/PathEditor';
 
 export class chart {
   type: 'chart';
@@ -317,11 +318,13 @@ export class VideocreatorComponent implements OnInit {
     }
   }
 
+  public editfigure = false;
   public closewhiteboard = false;
   public standardpath = 'linear';
   public edittext = false;
   public draggableObject;
   public pathHelper: MotionPathHelper;
+  public pathEditor: PathEditor;
   public snaptogrid = false;
   public snaptogridwidth = 50;
   public snaptogridheight = 50;
@@ -543,16 +546,21 @@ export class VideocreatorComponent implements OnInit {
 
   onSelectElement(event, element): void {
     //console.log('select element', event, element);
-    if (this.vectorcombiedit && element.type !== 'vectorcombi'){
+    if (this.vectorcombiedit && element.type !== 'vectorcombi' && !this.editfigure) {
       this.selectitem(element);
     }
-    if (!this.vectorcombiedit){
+    if (!this.vectorcombiedit && !this.editfigure) {
       this.selectitem(element);
+    }
+
+    if (this.editfigure) {
+      //this.disableDraggable();
+      this.draggableObject.disable();
     }
 
   }
 
-  selectitem(element){
+  selectitem(element) {
     if (!this.selectedelement) { this.selectedelement = element }
     // manual close editpath to prevent interuptions in path check if selectedelement is not already selected
     // set dragpath, whiteboard, ? 
@@ -563,7 +571,7 @@ export class VideocreatorComponent implements OnInit {
         // if (this.vectorcombiedit){
         //   this.resetVectorCombiEdit(element)
         // }
-       
+
       }
       if (this.whiteboard) { this.deletewhiteboard() }
       this.edittext = false;
@@ -573,7 +581,7 @@ export class VideocreatorComponent implements OnInit {
     }
   }
 
-  resetVectorCombiEdit(element){
+  resetVectorCombiEdit(element) {
     this.vectorcombiedit = false;
     this.detectchange();
   }
@@ -689,23 +697,23 @@ export class VideocreatorComponent implements OnInit {
     let newpath = 'M15.458,45.741 C15.458,45.741 441.46,44.534 513.889,44.457  ';
     let newsvgpath = '<svg id="' + this.selectedelement.id + 'mp" viewBox="' + newview + '" class="path-edit"><path id="' + this.selectedelement.id + 'p" style="opacity: 0; " d="' + newpath + '" /></svg>';
 
-    switch(this.standardpath){
+    switch (this.standardpath) {
       case 'linear': {
         newpath = 'M15.458,45.741 C15.458,45.741 441.46,44.534 513.889,44.457  ';
         newsvgpath = '<svg id="' + this.selectedelement.id + 'mp" viewBox="' + newview + '" class="path-edit"><path id="' + this.selectedelement.id + 'p" style="opacity: 0; " d="' + newpath + '" /></svg>';
         break
       }
       case 'circle': {
-        newsvgpath = '<svg id="' + this.selectedelement.id + 'mp" viewBox="' + newview + 
-        '" class="path-edit"><ellipse cx="200" cy="80" rx="100" ry="50" id="' + this.selectedelement.id + 'p" style="opacity: 0;" /></svg>';
+        newsvgpath = '<svg id="' + this.selectedelement.id + 'mp" viewBox="' + newview +
+          '" class="path-edit"><ellipse cx="200" cy="80" rx="100" ry="50" id="' + this.selectedelement.id + 'p" style="opacity: 0;" /></svg>';
         break
       }
       case 'square': {
         newsvgpath = '<svg id="' + this.selectedelement.id + 'mp" viewBox="' + newview + '" class="path-edit"><rect width="300" height="100" id="' + this.selectedelement.id + 'p" style="opacity: 0;" /></svg>';
-       break
+        break
       }
 
-     
+
     }
 
     this.selectedelement.motionpath = newsvgpath;
@@ -1211,7 +1219,7 @@ export class VideocreatorComponent implements OnInit {
           getview = document.getElementById('previewboxtitle' + i);
           console.log('getview', getview, 'previewboxtitle' + i)
         } else {
-          getview = document.getElementById('previewbox' + i + idx); //was i 
+          getview = document.getElementById('previewbox'); //was +i 
         }
 
         if (newsizestring !== null) {
@@ -1347,7 +1355,7 @@ export class VideocreatorComponent implements OnInit {
     }
 
     // check if combi item
-    if (idel.groupmember){
+    if (idel.groupmember) {
       //console.log('update combibox')
       this.updateCombiBox(idel);
     }
@@ -1381,13 +1389,13 @@ export class VideocreatorComponent implements OnInit {
       this.setMovable(event, idel);
     } else { this.disableDraggable(); }
 
-    if (!this.dragselectvectpath && this.vectorcombiedit && idel.groupmember){
+    if (!this.dragselectvectpath && this.vectorcombiedit && idel.groupmember) {
       this.setMovable(event, idel);
     }
 
   }
 
-  setMovable(event, idel){
+  setMovable(event, idel) {
     let element = document.getElementById(idel.id);
     let snap, inertia = false;
     if (this.snaptogrid) {
@@ -1429,18 +1437,18 @@ export class VideocreatorComponent implements OnInit {
     })
   }
 
-  updateCombiBox(element){
-   // filter elements for correct vectorcombi
-   for (let i = 0; i < this.animationarray.length; i++){
-     let animation = this.animationarray[i];
-     if (animation.type === 'vectorcombi'){
-       this.combiBoxCalculator(animation);
-     }
-   }
-   // calculate new position
+  updateCombiBox(element) {
+    // filter elements for correct vectorcombi
+    for (let i = 0; i < this.animationarray.length; i++) {
+      let animation = this.animationarray[i];
+      if (animation.type === 'vectorcombi') {
+        this.combiBoxCalculator(animation);
+      }
+    }
+    // calculate new position
   }
 
-  combiBoxCalculator(vectorcombi){
+  combiBoxCalculator(vectorcombi) {
     console.log('is combiboxcalculator')
     let vectors = vectorcombi.vectors;
     let x = vectors[0].posx;
@@ -1552,16 +1560,16 @@ export class VideocreatorComponent implements OnInit {
 
       if (found === false) {
         element.vectors.push(newel);
-        
+
         this.onSetCombiBox(i, element, newel);
       }
 
       //console.log(element, newel, found);
-      
+
     }
   }
 
-  updateVectorGrpElementPos(element, vector){
+  updateVectorGrpElementPos(element, vector) {
     // get screen position minus the boundbox 
     let groupbind = document.getElementById(element.id).getBoundingClientRect();
     let boundelement = document.getElementById('myBounds').getBoundingClientRect();
@@ -1570,7 +1578,7 @@ export class VideocreatorComponent implements OnInit {
     let grouplocationy = groupbind.top - boundelement.top;
     vector.posx = vector.posx - grouplocationx;
     vector.posy = vector.posy - grouplocationy;
-    
+
   }
 
 
@@ -1969,182 +1977,216 @@ export class VideocreatorComponent implements OnInit {
     //console.log(chart);
   }
 
+  editFigurePath(): void {
+    //console.log(this.selectedVecPath)
+    if (this.selectedVecPath) {
+      this.editfigure = true;
+      this.draggableObject.disable();
+      this.pathEditor = PathEditor.create(this.selectedVecPath);
+    }
+  }
+
+  saveFigurePath(): void {
+    this.editfigure = false;
+    this.removePathEditor();
+    this.saveSVG();
+  }
+
   addNewFigure(): void {
-    let docset = document.getElementById('svgElement')
-    this.pathHelper = MotionPathHelper.create(docset);
+    //this.cancelDragSelect();
+    let docset = document.getElementById('svgElement');
+    let path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    let strPath = 'M15.458,45.741 C15.458,45.741 441.46,44.534 513.889,44.457';
+    path.setAttribute("d", strPath);
+    path.setAttribute("id", 'svgElementPath');
+    docset.appendChild(path);
+    let pathset = document.getElementById('svgElementPath');
+    this.pathEditor = PathEditor.create(pathset);
+  }
+
+  startDraw(): void {
+    //console.log(this.shapedraw);
+    if (this.shapedraw === 'figure') {
+      this.addNewFigure();
+    } else {
+      this.startNewWhiteboard();
+    }
   }
 
   addNewWhiteboard(): void {
     if (this.whiteboard === false) {
       this.whiteboard = true;
-      this.selectedelement = '';
-      window.scrollTo(0, 0);
-
-      setTimeout(() => {
-        //  https://stackoverflow.com/questions/40324313/svg-smooth-freehand-drawing
-        var bufferSize;
-        var svgElement = document.getElementById("svgElement");
-        var rect = svgElement.getBoundingClientRect();
-        var path = null;
-        var strPath;
-        var buffer = []; // Contains the last positions of the mouse cursor
-        let firstpoint;
-        let firstpointcircle;
-        let w = this.canvas.width.replace('px', '');
-        let h = this.canvas.height.replace('px', '');
-        let newview = '0 0 ' + w + ' ' + h;
-        svgElement.setAttribute('viewBox', newview);
-
-        svgElement.addEventListener("mousedown", (e) => {
-          //bs = document.getElementById("cmbBufferSize") as unknown;
-          bufferSize = this.whiteboardsmoothing;
-          path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-          path.setAttribute("fill", "none");
-          path.setAttribute("stroke", this.whiteboardcolor);
-          path.setAttribute("stroke-width", this.whiteboardstokewidth);
-          buffer = [];
-          var pt = getMousePosition(e);
-          // console.log(e)
-          appendToBuffer(pt);
-
-
-          firstpoint = { x: pt.x, y: pt.y };
-
-          switch (this.shapedraw) {
-            case 'circle':
-              strPath = 'M ' + rect.top + ' ' + rect.left +
-                'm -' + 0 + ', 0' +
-                'a' + 0 + ',' + 0 + ' 0 1,0' + 0 * 2 + ',0' +
-                'a' + 0 + ',' + 0 + ' 0 1,0 -' + 0 * 2 + ',0'
-              break;
-            case 'rectangle':
-              strPath = 'M ' + pt.x + ' ' + pt.y + ' H ' + pt.x + ' V ' + pt.y + ' H ' + pt.x + ' Z';
-              //strPath = 'M ' + pt.x + ' ' + pt.y + ' H ' + pt.x + ' V ' + pt.y + ' H ' + 'Z';
-              break;
-            default:
-              strPath = "M" + pt.x + " " + pt.y;
-          }
-
-          //strPath = "M" + pt.x + " " + pt.y;
-          path.setAttribute("d", strPath);
-          svgElement.appendChild(path);
-        });
-
-        svgElement.addEventListener("mousemove", (e) => {
-          if (path) {
-            switch (this.shapedraw) {
-              case 'circle':
-                updateSvgPathCircle(e);
-                break;
-              case 'rectangle':
-                updateSvgPathRect(e);
-                break;
-              default:
-                appendToBuffer(getMousePosition(e));
-                updateSvgPath();
-            }
-          }
-        });
-
-        svgElement.addEventListener("mouseup", function () {
-          if (path) {
-            path = null;
-          }
-          if (firstpoint) {
-            firstpoint = null;
-          }
-        });
-
-        var getMousePosition = function (e) {
-          return {
-            x: e.pageX - rect.left,
-            y: e.pageY - rect.top
-          }
-        };
-
-        var appendToBuffer = function (pt) {
-          buffer.push(pt);
-          while (buffer.length > bufferSize) {
-            buffer.shift();
-          }
-        };
-
-        var updateSvgPathCircle = function (e) {
-          var pl = svgElement.getElementsByTagName('path').length;
-          let ptl = getMousePosition(e);
-          ptl.x = ptl.x / 1.5;
-          ptl.y = ptl.y / 1.5;
-          strPath = 'M ' + firstpoint.x + ' ' + firstpoint.y +
-            'm ' + ptl.x / (-2) + ', 0' +
-            'a' + ptl.x / 2 + ',' + ptl.x / 2 + ' 0 1,0 ' + ptl.x + ',0' +
-            'a' + ptl.x / 2 + ',' + ptl.x / 2 + ' 0 1,0 ' + ptl.x * (-1) + ',0'
-          path.setAttribute("d", strPath);
-          path.setAttribute("id", pl + 1);
-        }
-
-        var updateSvgPathRect = function (e) {
-          var pl = svgElement.getElementsByTagName('path').length;
-          let ptl = getMousePosition(e);
-          strPath = 'M ' + firstpoint.x + ' ' + firstpoint.y + ' H ' + ptl.x + ' V ' + ptl.y + ' H ' + firstpoint.x + ' Z';
-          path.setAttribute("d", strPath);
-          path.setAttribute("id", pl + 1);
-        }
-
-        // Calculate the average point, starting at offset in the buffer
-        var getAveragePoint = function (offset) {
-          var len = buffer.length;
-          if (len % 2 === 1 || len >= bufferSize) {
-            var totalX = 0;
-            var totalY = 0;
-            var pt, i;
-            var count = 0;
-            for (i = offset; i < len; i++) {
-              count++;
-              pt = buffer[i];
-              totalX += pt.x;
-              totalY += pt.y;
-            }
-            return {
-              x: totalX / count,
-              y: totalY / count
-            }
-          }
-          return null;
-        };
-
-        var updateSvgPath = function () {
-          var pt = getAveragePoint(0);
-          var pl = svgElement.getElementsByTagName('path').length;
-
-          if (pt) {
-            // Get the smoothed part of the path that will not change
-            strPath += " L" + pt.x + " " + pt.y;
-
-            // Get the last part of the path (close to the current mouse position)
-            // This part will change if the mouse moves again
-            var tmpPath = "";
-            for (var offset = 2; offset < buffer.length; offset += 2) {
-              pt = getAveragePoint(offset);
-              tmpPath += " L" + pt.x + " " + pt.y;
-            }
-
-            // Set the complete current path coordinates
-            path.setAttribute("d", strPath + tmpPath);
-            path.setAttribute("id", pl + 1);
-          }
-        };
-      }, 300) // mininmum needed for dom to process
     }
   }
-  
+
+
+  startNewWhiteboard(): void {
+    this.selectedelement = '';
+    window.scrollTo(0, 0);
+
+    setTimeout(() => {
+      //  https://stackoverflow.com/questions/40324313/svg-smooth-freehand-drawing
+      var bufferSize;
+      var svgElement = document.getElementById("svgElement");
+      var rect = svgElement.getBoundingClientRect();
+      var path = null;
+      var strPath;
+      var buffer = []; // Contains the last positions of the mouse cursor
+      let firstpoint;
+      let firstpointcircle;
+      let w = this.canvas.width.replace('px', '');
+      let h = this.canvas.height.replace('px', '');
+      let newview = '0 0 ' + w + ' ' + h;
+      svgElement.setAttribute('viewBox', newview);
+
+      svgElement.addEventListener("mousedown", (e) => {
+        //bs = document.getElementById("cmbBufferSize") as unknown;
+        bufferSize = this.whiteboardsmoothing;
+        path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        path.setAttribute("fill", "none");
+        path.setAttribute("stroke", this.whiteboardcolor);
+        path.setAttribute("stroke-width", this.whiteboardstokewidth);
+        buffer = [];
+        var pt = getMousePosition(e);
+        // console.log(e)
+        appendToBuffer(pt);
+
+
+        firstpoint = { x: pt.x, y: pt.y };
+
+        switch (this.shapedraw) {
+          case 'circle':
+            strPath = 'M ' + rect.top + ' ' + rect.left +
+              'm -' + 0 + ', 0' +
+              'a' + 0 + ',' + 0 + ' 0 1,0' + 0 * 2 + ',0' +
+              'a' + 0 + ',' + 0 + ' 0 1,0 -' + 0 * 2 + ',0'
+            break;
+          case 'rectangle':
+            strPath = 'M ' + pt.x + ' ' + pt.y + ' H ' + pt.x + ' V ' + pt.y + ' H ' + pt.x + ' Z';
+            //strPath = 'M ' + pt.x + ' ' + pt.y + ' H ' + pt.x + ' V ' + pt.y + ' H ' + 'Z';
+            break;
+          default:
+            strPath = "M" + pt.x + " " + pt.y;
+        }
+
+        //strPath = "M" + pt.x + " " + pt.y;
+        path.setAttribute("d", strPath);
+        svgElement.appendChild(path);
+      });
+
+      svgElement.addEventListener("mousemove", (e) => {
+        if (path) {
+          switch (this.shapedraw) {
+            case 'circle':
+              updateSvgPathCircle(e);
+              break;
+            case 'rectangle':
+              updateSvgPathRect(e);
+              break;
+            default:
+              appendToBuffer(getMousePosition(e));
+              updateSvgPath();
+          }
+        }
+      });
+
+      svgElement.addEventListener("mouseup", function () {
+        if (path) {
+          path = null;
+        }
+        if (firstpoint) {
+          firstpoint = null;
+        }
+      });
+
+      var getMousePosition = function (e) {
+        return {
+          x: e.pageX - rect.left,
+          y: e.pageY - rect.top
+        }
+      };
+
+      var appendToBuffer = function (pt) {
+        buffer.push(pt);
+        while (buffer.length > bufferSize) {
+          buffer.shift();
+        }
+      };
+
+      var updateSvgPathCircle = function (e) {
+        var pl = svgElement.getElementsByTagName('path').length;
+        let ptl = getMousePosition(e);
+        ptl.x = ptl.x / 1.5;
+        ptl.y = ptl.y / 1.5;
+        strPath = 'M ' + firstpoint.x + ' ' + firstpoint.y +
+          'm ' + ptl.x / (-2) + ', 0' +
+          'a' + ptl.x / 2 + ',' + ptl.x / 2 + ' 0 1,0 ' + ptl.x + ',0' +
+          'a' + ptl.x / 2 + ',' + ptl.x / 2 + ' 0 1,0 ' + ptl.x * (-1) + ',0'
+        path.setAttribute("d", strPath);
+        path.setAttribute("id", pl + 1);
+      }
+
+      var updateSvgPathRect = function (e) {
+        var pl = svgElement.getElementsByTagName('path').length;
+        let ptl = getMousePosition(e);
+        strPath = 'M ' + firstpoint.x + ' ' + firstpoint.y + ' H ' + ptl.x + ' V ' + ptl.y + ' H ' + firstpoint.x + ' Z';
+        path.setAttribute("d", strPath);
+        path.setAttribute("id", pl + 1);
+      }
+
+      // Calculate the average point, starting at offset in the buffer
+      var getAveragePoint = function (offset) {
+        var len = buffer.length;
+        if (len % 2 === 1 || len >= bufferSize) {
+          var totalX = 0;
+          var totalY = 0;
+          var pt, i;
+          var count = 0;
+          for (i = offset; i < len; i++) {
+            count++;
+            pt = buffer[i];
+            totalX += pt.x;
+            totalY += pt.y;
+          }
+          return {
+            x: totalX / count,
+            y: totalY / count
+          }
+        }
+        return null;
+      };
+
+      var updateSvgPath = function () {
+        var pt = getAveragePoint(0);
+        var pl = svgElement.getElementsByTagName('path').length;
+
+        if (pt) {
+          // Get the smoothed part of the path that will not change
+          strPath += " L" + pt.x + " " + pt.y;
+
+          // Get the last part of the path (close to the current mouse position)
+          // This part will change if the mouse moves again
+          var tmpPath = "";
+          for (var offset = 2; offset < buffer.length; offset += 2) {
+            pt = getAveragePoint(offset);
+            tmpPath += " L" + pt.x + " " + pt.y;
+          }
+
+          // Set the complete current path coordinates
+          path.setAttribute("d", strPath + tmpPath);
+          path.setAttribute("id", pl + 1);
+        }
+      };
+    }, 300) // mininmum needed for dom to process
+
+  }
+
 
   async savewhiteboard() {
     var svgElement = document.getElementById("svgElement");
-
-
-    if (this.closewhiteboard){
-     let path = svgElement.getElementsByTagName('path');
-      for (let i = 0; i < path.length; i++){
+    if (this.closewhiteboard) {
+      let path = svgElement.getElementsByTagName('path');
+      for (let i = 0; i < path.length; i++) {
         let d = path[i].getAttribute('d');
         let newd = d + ' z';
         path[i].setAttribute('d', newd);
@@ -2537,12 +2579,12 @@ export class VideocreatorComponent implements OnInit {
   async deleteVectorSrc(i, idx, element) {
     this.selectedelement.vectors.splice(idx, 1);
     this.selectedelement.svgcombi = '';
-    for (let i = 0; i < this.selectedelement.vectors.length; i++){
+    for (let i = 0; i < this.selectedelement.vectors.length; i++) {
       let vector: vectorelement = this.selectedelement.vectors[i];
       let e = document.getElementById('');
       let vectorid = vector.idx;
       await this.initVectors(e, i, idx, vectorid);
-    }    
+    }
   }
 
 
@@ -2641,7 +2683,7 @@ export class VideocreatorComponent implements OnInit {
     let vectors: vectorelement[];
     vectors = element.vectors;
     let ease = this.selectEaseType(animation.easetype);
-    
+
     // await this.combineSVGs(element); // takes to long to rebuild 
 
     for (let i1 = 0; i1 < vectors.length - 1; i1++) {
@@ -2654,7 +2696,7 @@ export class VideocreatorComponent implements OnInit {
       let yoyo = animation.yoyo;
 
       //console.log(yoyo);
-      // if vector 1 hess less paths then vector 2
+      // if vector 1 has less paths then vector 2
       if (vectors[i1].pathids.length < vectors[i1 + 1].pathids.length) {
         for (let ix = 0; ix < vectors[i1 + 1].pathids.length; ix++) {
           // copy random vector paths to connect to empty paths
@@ -2671,7 +2713,7 @@ export class VideocreatorComponent implements OnInit {
               const svgnew = fromel.parentElement;// vectornew.getElementsByTagName('svg');
               const newid = '0elvect-res' + ix;
               const checkifexit = document.getElementById(newid)
-              if (checkifexit == null){
+              if (checkifexit == null) {
                 const newElement = fromel.cloneNode(true) as HTMLElement;
                 newElement.setAttribute('id', newid);
                 svgnew.insertAdjacentElement('afterbegin', newElement)
@@ -2682,7 +2724,16 @@ export class VideocreatorComponent implements OnInit {
               }
             }
             //this.primairytimeline.set()
-            this.primairytimeline.set(vectornewpath, {morphSVG: {shape: vectornewpath}, autoAlpha: 1}, 0); //reset to original
+            if (repeat !== -1) {
+              this.primairytimeline.set(vectornewpath, { morphSVG: { shape: vectornewpath }, autoAlpha: 1 }, 0); //reset to original
+              this.primairytimeline.fromTo(toel, { autoAlpha: 0 }, { duration: fintimehalf, autoAlpha: 1, repeat: repeat, yoyo: yoyo }, fintime - 1);
+              this.primairytimeline.to(vectornewpath, { duration: 1, autoAlpha: 0, repeat: repeat, yoyo: yoyo }, fintime);
+            }
+            if (repeat === -1 ){
+              this.primairytimeline.set(toel, { autoAlpha: 0 }, 0); //reset to original
+              this.primairytimeline.set(vectornewpath, { autoAlpha: 1 }, 0); //reset to original
+            }
+
             this.primairytimeline.to(vectornewpath, {
               duration: animation.duration, morphSVG: {
                 shape: toel,
@@ -2690,8 +2741,7 @@ export class VideocreatorComponent implements OnInit {
                 //origin: "50% 50%" //or "20% 60%,35% 90%" if there are different values for the start and end shapes.
               }, ease: ease, repeat: repeat, yoyo: yoyo
             }, starttime);
-            this.primairytimeline.fromTo(toel, { autoAlpha: 0 }, { duration: fintimehalf, autoAlpha: 1, repeat: repeat, yoyo: yoyo }, fintime - 1);
-            this.primairytimeline.to(vectornewpath, { duration: 1, autoAlpha: 0, repeat: repeat, yoyo: yoyo }, fintime);
+
           }
         }
       }
@@ -2704,17 +2754,46 @@ export class VideocreatorComponent implements OnInit {
           let fromel = document.getElementById(frompathid);
           let toel = document.getElementById(topathid);
 
-          this.primairytimeline.set(fromel, {morphSVG: {shape: fromel}, autoAlpha: 1}, 0); //reset to original
+          if (repeat !== -1) {
+            this.primairytimeline.set(fromel, { morphSVG: { shape: fromel }, autoAlpha: 1 }, 0); //reset to original
+            this.primairytimeline.fromTo(toel, { autoAlpha: 0 }, { duration: fintimehalf, autoAlpha: 1, repeat: repeat, yoyo: yoyo }, fintime - 1);
+            this.primairytimeline.to(fromel, { duration: 1, autoAlpha: 0, repeat: repeat, yoyo: yoyo }, fintime);
+          }
+          if (repeat === -1 ){
+            this.primairytimeline.set(toel, { autoAlpha: 0 }, 0); //reset to original
+            this.primairytimeline.set(fromel, { autoAlpha: 1 }, 0); //reset to original
+            this.primairytimeline.to(fromel, {
+              duration: animation.duration / 2,
+              morphSVG: {
+                shape: toel,
+              }, ease: ease, repeat: repeat
+            }, starttime);
+            this.primairytimeline.to(fromel, {
+              duration: animation.duration / 2,
+              morphSVG: {
+                shape: fromel,
+              }, ease: ease, repeat: repeat
+            }, animation.duration / 2);
+          }
+          else {
+            this.primairytimeline.to(fromel, {
+              duration: animation.duration,
+              morphSVG: {
+                shape: toel,
+                //type: "rotational",
+                //origin: "50% 50%" //or "20% 60%,35% 90%" if there are different values for the start and end shapes.
+              }, ease: ease, repeat: repeat
+            }, starttime);
+          }
           this.primairytimeline.to(fromel, {
-            duration: animation.duration, 
+            duration: animation.duration,
             morphSVG: {
               shape: toel,
               //type: "rotational",
               //origin: "50% 50%" //or "20% 60%,35% 90%" if there are different values for the start and end shapes.
             }, ease: ease, repeat: repeat
           }, starttime);
-          this.primairytimeline.fromTo(toel, { autoAlpha: 0 }, { duration: fintimehalf, autoAlpha: 1, repeat: repeat, yoyo: yoyo }, fintime - 1);
-          this.primairytimeline.to(fromel, { duration: 1, autoAlpha: 0, repeat: repeat, yoyo: yoyo }, fintime);
+
 
         } else { // (i2 > tovector.pathids.length)
           // vector 1 is larger then vector 2
@@ -2724,7 +2803,15 @@ export class VideocreatorComponent implements OnInit {
           let fromel = document.getElementById(frompathid);
           let toel = document.getElementById(topathid);
 
-          this.primairytimeline.set(fromel, {morphSVG: { shape: fromel}, autoAlpha: 1}, 0); //reset to original
+          if (repeat !== -1) {
+            this.primairytimeline.set(fromel, { morphSVG: { shape: fromel }, autoAlpha: 1 }, 0); //reset to original
+            this.primairytimeline.fromTo(toel, { autoAlpha: 0 }, { duration: fintimehalf, autoAlpha: 1, repeat: repeat, yoyo: yoyo }, fintime - 1);
+            this.primairytimeline.to(fromel, { duration: 1, autoAlpha: 0, repeat: repeat, yoyo: yoyo }, fintime);
+          }
+          if (repeat === -1 ){
+            this.primairytimeline.set(toel, { autoAlpha: 0 }, 0); //reset to original
+            this.primairytimeline.set(fromel, { autoAlpha: 1 }, 0); //reset to original
+          }
           this.primairytimeline.to(fromel, {
             duration: animation.duration, morphSVG: {
               shape: toel,
@@ -2732,8 +2819,7 @@ export class VideocreatorComponent implements OnInit {
               //origin: "50% 50%" //or "20% 60%,35% 90%" if there are different values for the start and end shapes.
             }, ease: ease, repeat: repeat, yoyo: yoyo
           }, starttime);
-          this.primairytimeline.fromTo(toel, { autoAlpha: 0 }, { duration: fintimehalf, autoAlpha: 1, repeat: repeat, yoyo: yoyo }, fintime - 1);
-          this.primairytimeline.to(fromel, { duration: 1, autoAlpha: 0, repeat: repeat, yoyo: yoyo }, fintime);
+
         }
       }
     }
@@ -2875,9 +2961,10 @@ export class VideocreatorComponent implements OnInit {
   async renumberSvgIds(svgstring, idx, pathidar) {
     let newsvgstring = svgstring;
     let index = 0;
+    let r = Math.random().toString(36).substring(7); // add random sring 
     for (const element of pathidar) {
       let ind = index + 1;
-      let newid = 'id="' + idx + ind + '"';
+      let newid = 'id="' + idx + ind + r + '"';
       newsvgstring = await this.runloop(newsvgstring, element, newid);
       ++index;
     };
@@ -2956,9 +3043,9 @@ export class VideocreatorComponent implements OnInit {
       let scale;
       let newtranssize;
       if (newsize.height > newsize.width) {
-          newtranssize = originalsize.height / newsize.height;
+        newtranssize = originalsize.height / newsize.height;
       } else {
-          newtranssize = originalsize.width / newsize.width;
+        newtranssize = originalsize.width / newsize.width;
       }
       let x = parseInt(originalsize.x, 10);
       let y = parseInt(originalsize.y, 10);
@@ -2967,10 +3054,10 @@ export class VideocreatorComponent implements OnInit {
       let newx = x; // - x2;
       let newy = y; // - y2;
 
-      if (originalsize.x === newsize.x){
-        newx = 0; 
+      if (originalsize.x === newsize.x) {
+        newx = 0;
       }
-      if (originalsize.y === newsize.y){
+      if (originalsize.y === newsize.y) {
         newy = 0;
       }
 
@@ -2982,7 +3069,7 @@ export class VideocreatorComponent implements OnInit {
 
         p[index].setAttribute("id", "child-" + index + idx); // keep in case there is no ID set
         let rawpath1 = await MotionPathPlugin.getRawPath(p[index]);
-        if (newx === 0 && newy === 0){
+        if (newx === 0 && newy === 0) {
           rawpath = rawpath1;
         } else {
           rawpath = await MotionPathPlugin.transformRawPath(rawpath1, 1, 0, 0, 1, x2, y2); // remove viewport x and y of newpath otherwise it will scale on the wrong viewport
@@ -3015,9 +3102,6 @@ export class VideocreatorComponent implements OnInit {
     });
   }
 
-
-
-
   deleteWhitespaceSVG(): void {
     this.removeVectorPathSelection();
     this.removeVectorPathMultiSelection();
@@ -3026,10 +3110,12 @@ export class VideocreatorComponent implements OnInit {
       var element = document.getElementById(this.selectedelement.id);
       var svg = element.getElementsByTagName("svg")[0];
       var bbox = svg.getBBox();
-      var viewBox = [bbox.x - 5, bbox.y - 5, bbox.width + 10, bbox.height + 10].join(" ");
+      var viewBox = [bbox.x - 5, bbox.y - 5, bbox.width + 5, bbox.height + 5].join(" ");
       svg.setAttribute("viewBox", viewBox);
       this.selectedelement.svgcombi = svg.outerHTML;
-    }, 1000);
+      this.detectchange();
+    }, 300);
+
   }
 
   async seperatePaths(idx, vector: vectorelement, element: vectoranimation) {
@@ -3081,9 +3167,9 @@ export class VideocreatorComponent implements OnInit {
 
   clickVectorPaths(e) {
     // console.log('select path', e);
-    if (this.dragselectvectpath === true && this.dragselectiontrue === false) {
+    if (this.dragselectvectpath === true && this.dragselectiontrue === false && !this.editfigure) {
       this.dragSelect(this.selectedelement.id); // activate drag
-    } else if (this.dragselectiontrue === false) { // check if drag is not in progress
+    } else if (this.dragselectiontrue === false && !this.editfigure) { // check if drag is not in progress
       if (e.target.localName !== 'svg') {
         if (this.selectmultiplepaths === false) {
           if (this.selectedVecPath === e.target) {
@@ -3165,7 +3251,7 @@ export class VideocreatorComponent implements OnInit {
     //   });
     // }
     let allselectedclass = document.getElementsByClassName('data-selected');
-    for (let i = 0; i < allselectedclass.length; ++i){
+    for (let i = 0; i < allselectedclass.length; ++i) {
       allselectedclass[i].classList.remove('data-selected');
     }
     this.selectedVecPathmultiple = [];
@@ -3606,12 +3692,12 @@ export class VideocreatorComponent implements OnInit {
 
   deletePathSelClass(element) {
     //if (typeof element.getAttribute === 'function') {
-      element.classList.remove('data-selected');
-      // let elclass = element.getAttribute('class');
-      // if (elclass !== null) {
-      //   elclass = elclass.replace('data-selected', '')
-      //   element.setAttribute('class', elclass);
-      // }
+    element.classList.remove('data-selected');
+    // let elclass = element.getAttribute('class');
+    // if (elclass !== null) {
+    //   elclass = elclass.replace('data-selected', '')
+    //   element.setAttribute('class', elclass);
+    // }
     //}
   }
 
