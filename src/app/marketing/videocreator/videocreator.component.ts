@@ -6,13 +6,13 @@ import {
 } from '../../shared';
 import { MediaObserver, MediaChange } from '@angular/flex-layout';
 import { gsap } from 'assets/js/all';
-import { Physics2DPlugin, InertiaPlugin, ScrambleTextPlugin, SplitText, DrawSVGPlugin, MorphSVGPlugin, MotionPathPlugin, MotionPathHelper, Draggable } from 'assets/js/all';
-gsap.registerPlugin(Physics2DPlugin, Draggable, InertiaPlugin, ScrambleTextPlugin, SplitText, DrawSVGPlugin, MorphSVGPlugin, MotionPathPlugin, MotionPathHelper);
+import { CustomBounce, CustomEase, Physics2DPlugin, InertiaPlugin, ScrambleTextPlugin, SplitText, DrawSVGPlugin, MorphSVGPlugin, MotionPathPlugin, MotionPathHelper, Draggable } from 'assets/js/all';
+gsap.registerPlugin(Physics2DPlugin, CustomEase, CustomBounce, Draggable, InertiaPlugin, ScrambleTextPlugin, SplitText, DrawSVGPlugin, MorphSVGPlugin, MotionPathPlugin, MotionPathHelper);
 import { FileUploader, FileItem } from 'ng2-file-upload';
 import { MatSnackBar, MatDialog, AnimationDurations } from '@angular/material';
 declare const SVG: any;
 import '@svgdotjs/svg.draggable.js'
-const plugins = [Draggable, InertiaPlugin, DrawSVGPlugin, MorphSVGPlugin, ScrambleTextPlugin, SplitText, Physics2DPlugin, MotionPathPlugin, MotionPathHelper]; //needed for GSAP
+const plugins = [Draggable, CustomEase, CustomBounce, InertiaPlugin, DrawSVGPlugin, MorphSVGPlugin, ScrambleTextPlugin, SplitText, Physics2DPlugin, MotionPathPlugin, MotionPathHelper]; //needed for GSAP
 import { fonts } from '../../shared/listsgeneral/fonts';
 import svgDragSelect from "svg-drag-select";
 import { ChartDataSets, ChartOptions, Chart } from 'chart.js';
@@ -694,12 +694,12 @@ export class VideocreatorComponent implements OnInit {
     let w = this.canvas.width.replace('px', '');
     let h = this.canvas.height.replace('px', '');
     let newview = '0 0 ' + w + ' ' + h;
-    let newpath = 'M15.458,45.741 C15.458,45.741 441.46,44.534 513.889,44.457  ';
+    let newpath = 'M282.457,480.74 C282.457,480.74 280.457,217.529 279.888,139.457   ';
     let newsvgpath = '<svg id="' + this.selectedelement.id + 'mp" viewBox="' + newview + '" class="path-edit"><path id="' + this.selectedelement.id + 'p" style="opacity: 0; " d="' + newpath + '" /></svg>';
 
     switch (this.standardpath) {
       case 'linear': {
-        newpath = 'M15.458,45.741 C15.458,45.741 441.46,44.534 513.889,44.457  ';
+        newpath = 'M282.457,480.74 C282.457,480.74 280.457,217.529 279.888,139.457   ';
         newsvgpath = '<svg id="' + this.selectedelement.id + 'mp" viewBox="' + newview + '" class="path-edit"><path id="' + this.selectedelement.id + 'p" style="opacity: 0; " d="' + newpath + '" /></svg>';
         break
       }
@@ -842,7 +842,13 @@ export class VideocreatorComponent implements OnInit {
       case 'over':
         ease = 'back.out(1.7)'
         break;
-      case 'linear':
+      case 'power1':
+        ease = 'power1.out'
+        break;
+      case 'power2':
+        ease = 'power2.out'
+        break;
+      case 'power3':
         ease = 'power3.out'
         break;
       case 'easy':
@@ -953,6 +959,34 @@ export class VideocreatorComponent implements OnInit {
       };
     }
 
+    if (anitype === 'bounce') {
+      //Create a custom bounce ease:
+      CustomBounce.create("myBounce", { strength: 0.6, squash: 3, squashID: "myBounce-squash" });
+      let orgin = element.transformOriginX + ' ' + element.transformOriginY;
+      let rotate;
+      if (!element.rotationkeeppos) {
+        gsap.set(iset, { xPercent: element.travellocX, yPercent: element.travellocY, transformOrigin: orgin, autoAlpha: 1 }); // tranformorgin to set offset??
+        rotate = element.rotationcycle
+      } else {
+        gsap.set(iset, { xPercent: element.travellocX, yPercent: element.travellocY, autoAlpha: 1 }); // tranformorgin to set offset??
+        rotate = false;
+      }
+      let svgset = document.getElementById(elementA.id + 'p');
+      //do the bounce by affecting the "y" property.
+      this.primairytimeline.from(iset, { duration: duration, 
+        //y:550,
+        repeat: repeat, yoyo: element.yoyo,
+        motionPath: {
+          path: svgset,
+          autoRotate: rotate,
+          align: svgset//'self'
+        },
+        ease:"myBounce"}, starttime );
+
+      //and do the squash/stretch at the same time:
+      this.primairytimeline.to(iset, { duration: duration, scaleY:0.5, scaleX:1.3, ease: "myBounce-squash", transformOrigin: "center bottom" }, starttime);
+    }
+
     if (anitype === 'move') {
       let svgset = document.getElementById(elementA.id + 'p');
       let orgin = element.transformOriginX + ' ' + element.transformOriginY;
@@ -987,7 +1021,7 @@ export class VideocreatorComponent implements OnInit {
       }
     }
 
-    if (anitype !== 'fountain' && anitype !== 'followminions') {
+    if (anitype !== 'fountain' && anitype !== 'followminions' && anitype !== 'bounce') {
       if (element.fromto === 'from') {
         this.primairytimeline.from(iset, aniset, starttime);
       }
@@ -1134,7 +1168,7 @@ export class VideocreatorComponent implements OnInit {
       repeat: 0,
       yoyo: false,
       audioeffectsrc: '',
-      rotationkeeppos: false
+      rotationkeeppos: true
     }
     this.selectedelement.animation.push(newanimation);
     this.detectchange();
@@ -1217,7 +1251,7 @@ export class VideocreatorComponent implements OnInit {
 
         if (this.animationarray[i].morph) {
           getview = document.getElementById('previewboxtitle' + i);
-          console.log('getview', getview, 'previewboxtitle' + i)
+          //console.log('getview', getview, 'previewboxtitle' + i)
         } else {
           getview = document.getElementById('previewbox'); //was +i 
         }
@@ -1343,10 +1377,13 @@ export class VideocreatorComponent implements OnInit {
     idel.posy = this.draggableObject.y;
     idel.posx = this.draggableObject.x;
     // check if animation path needs to be updated
-    let animation = idel.animation.filter(obj => {
-      return obj.anim_type === 'move'
+    let animationmove = idel.animation.filter(obj => {
+      return obj.anim_type === 'move' 
     });
-    if (animation.length > 0) {
+    let animationbounce = idel.animation.filter(obj => {
+      return obj.anim_type === 'bounce' 
+    });
+    if (animationmove.length > 0 || animationbounce.length > 0) {
       let path = await document.getElementById(idel.id + 'p');
       let rawpath = await MotionPathPlugin.getRawPath(path);
       let newpath = await MotionPathPlugin.transformRawPath(rawpath, 1, 0, 0, 1, newx, newy);
@@ -1537,7 +1574,7 @@ export class VideocreatorComponent implements OnInit {
       rotation: 0,
       motionrotation: 0,
       motionpath: '<svg id="' + newelnr + 'mp" style="width:' + this.canvas.width + ' height=' + this.canvas.height + ';" viewBox="0 0 600 500" class="path-edit"><path id="' + newelnr + 'p" style="opacity: 0;"' +
-        ' d="M15.458,45.741 C15.458,45.741 441.46,44.534 513.889,44.457  " /></svg>',
+        ' d="M282.457,480.74 C282.457,480.74 280.457,217.529 279.888,139.457   " /></svg>',
     }
     this.animationarray.push(newvectorcombi);
   }
@@ -1626,7 +1663,7 @@ export class VideocreatorComponent implements OnInit {
       repeat: 0,
       yoyo: false,
       audioeffectsrc: '',
-      rotationkeeppos: false
+      rotationkeeppos: true
     }];
     // only add if new svg not split from
     if (!svgcombi) {
@@ -1686,7 +1723,7 @@ export class VideocreatorComponent implements OnInit {
       rotation: 0,
       motionrotation: 0,
       motionpath: '<svg id="' + newelnr + 'mp" style="width:' + this.canvas.width + ' height=' + this.canvas.height + ';" viewBox="0 0 600 500" class="path-edit"><path id="' + newelnr + 'p" style="opacity: 0;"' +
-        ' d="M15.458,45.741 C15.458,45.741 441.46,44.534 513.889,44.457  " /></svg>',
+        ' d="M282.457,480.74 C282.457,480.74 280.457,217.529 279.888,139.457   " /></svg>',
     }
     this.animationarray.push(vector);
     this.onSelectElement(null, vector);
@@ -1753,7 +1790,7 @@ export class VideocreatorComponent implements OnInit {
       repeat: 0,
       yoyo: false,
       audioeffectsrc: '',
-      rotationkeeppos: false
+      rotationkeeppos: true
     }];
     let img: imageanimation = {
       type: 'image',
@@ -1775,7 +1812,7 @@ export class VideocreatorComponent implements OnInit {
       rotation: 0,
       motionrotation: 0,
       motionpath: '<svg id="' + newelnr + 'mp" style="width:' + this.canvas.width + ' height=' + this.canvas.height + ';" viewBox="0 0 600 500" class="path-edit"><path id="' + newelnr + 'p" style="opacity: 0;"' +
-        ' d="M15.458,45.741 C15.458,45.741 441.46,44.534 513.889,44.457  " /></svg>',
+        ' d="M282.457,480.74 C282.457,480.74 280.457,217.529 279.888,139.457   " /></svg>',
     }
     this.animationarray.push(img);
     this.selectedelement = img;
@@ -1812,7 +1849,7 @@ export class VideocreatorComponent implements OnInit {
       repeat: 0,
       yoyo: false,
       audioeffectsrc: '',
-      rotationkeeppos: false
+      rotationkeeppos: true
     }];
     let img: shapeanimation = {
       groupmember: false,
@@ -1838,7 +1875,7 @@ export class VideocreatorComponent implements OnInit {
       rotation: 0,
       motionrotation: 0,
       motionpath: '<svg id="' + newelnr + 'mp" style="width:' + this.canvas.width + ' height=' + this.canvas.height + ';" viewBox="0 0 600 500" class="path-edit"><path id="' + newelnr + 'p" style="opacity: 0;"' +
-        ' d="M15.458,45.741 C15.458,45.741 441.46,44.534 513.889,44.457  " /></svg>',
+        ' d="M282.457,480.74 C282.457,480.74 280.457,217.529 279.888,139.457   " /></svg>',
 
     }
     this.animationarray.push(img);
@@ -1934,7 +1971,7 @@ export class VideocreatorComponent implements OnInit {
       repeat: 0,
       yoyo: false,
       audioeffectsrc: '',
-      rotationkeeppos: false
+      rotationkeeppos: true
     }];
     let chart: chart = {
       groupmember: false,
@@ -1971,7 +2008,7 @@ export class VideocreatorComponent implements OnInit {
       rotation: 0,
       motionrotation: 0,
       motionpath: '<svg id="' + newelnr + 'mp" style="width:' + this.canvas.width + ' height=' + this.canvas.height + ';" viewBox="0 0 600 500" class="path-edit"><path id="' + newelnr + 'p" style="opacity: 0;"' +
-        ' d="M15.458,45.741 C15.458,45.741 441.46,44.534 513.889,44.457  " /></svg>',
+        ' d="M282.457,480.74 C282.457,480.74 280.457,217.529 279.888,139.457   " /></svg>',
     }
     this.animationarray.push(chart);
     //console.log(chart);
@@ -1996,7 +2033,7 @@ export class VideocreatorComponent implements OnInit {
     //this.cancelDragSelect();
     let docset = document.getElementById('svgElement');
     let path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-    let strPath = 'M15.458,45.741 C15.458,45.741 441.46,44.534 513.889,44.457';
+    let strPath = 'M282.457,480.74 C282.457,480.74 280.457,217.529 279.888,139.457 ';
     path.setAttribute("d", strPath);
     path.setAttribute("id", 'svgElementPath');
     docset.appendChild(path);
@@ -2268,7 +2305,7 @@ export class VideocreatorComponent implements OnInit {
       repeat: 0,
       yoyo: false,
       audioeffectsrc: '',
-      rotationkeeppos: false
+      rotationkeeppos: true
     }];
     let splittext: splittexttype[] = [{
       textanimationtype: '',
@@ -2307,7 +2344,7 @@ export class VideocreatorComponent implements OnInit {
       rotation: 0,
       motionrotation: 0,
       motionpath: '<svg id="' + newelnr + 'mp" style="width:' + this.canvas.width + ' height=' + this.canvas.height + ';" viewBox="0 0 600 500" class="path-edit"><path id="' + newelnr + 'p" style="opacity: 0;"' +
-        ' d="M15.458,45.741 C15.458,45.741 441.46,44.534 513.889,44.457  " /></svg>',
+        ' d="M282.457,480.74 C282.457,480.74 280.457,217.529 279.888,139.457   " /></svg>',
     }
     this.animationarray.push(txt);
     this.selectedelement = txt;
@@ -2729,7 +2766,7 @@ export class VideocreatorComponent implements OnInit {
               this.primairytimeline.fromTo(toel, { autoAlpha: 0 }, { duration: fintimehalf, autoAlpha: 1, repeat: repeat, yoyo: yoyo }, fintime - 1);
               this.primairytimeline.to(vectornewpath, { duration: 1, autoAlpha: 0, repeat: repeat, yoyo: yoyo }, fintime);
             }
-            if (repeat === -1 ){
+            if (repeat === -1) {
               this.primairytimeline.set(toel, { autoAlpha: 0 }, 0); //reset to original
               this.primairytimeline.set(vectornewpath, { autoAlpha: 1 }, 0); //reset to original
             }
@@ -2754,28 +2791,16 @@ export class VideocreatorComponent implements OnInit {
           let fromel = document.getElementById(frompathid);
           let toel = document.getElementById(topathid);
 
+          // always reset morph element
+          this.primairytimeline.set(fromel, {
+            morphSVG: {
+              shape: fromel,
+            }
+          });
           if (repeat !== -1) {
             this.primairytimeline.set(fromel, { morphSVG: { shape: fromel }, autoAlpha: 1 }, 0); //reset to original
             this.primairytimeline.fromTo(toel, { autoAlpha: 0 }, { duration: fintimehalf, autoAlpha: 1, repeat: repeat, yoyo: yoyo }, fintime - 1);
             this.primairytimeline.to(fromel, { duration: 1, autoAlpha: 0, repeat: repeat, yoyo: yoyo }, fintime);
-          }
-          if (repeat === -1 ){
-            this.primairytimeline.set(toel, { autoAlpha: 0 }, 0); //reset to original
-            this.primairytimeline.set(fromel, { autoAlpha: 1 }, 0); //reset to original
-            this.primairytimeline.to(fromel, {
-              duration: animation.duration / 2,
-              morphSVG: {
-                shape: toel,
-              }, ease: ease, repeat: repeat
-            }, starttime);
-            this.primairytimeline.to(fromel, {
-              duration: animation.duration / 2,
-              morphSVG: {
-                shape: fromel,
-              }, ease: ease, repeat: repeat
-            }, animation.duration / 2);
-          }
-          else {
             this.primairytimeline.to(fromel, {
               duration: animation.duration,
               morphSVG: {
@@ -2785,6 +2810,26 @@ export class VideocreatorComponent implements OnInit {
               }, ease: ease, repeat: repeat
             }, starttime);
           }
+          if (repeat === -1) {
+            let ease2 = ease.replace('in', 'out')
+            this.primairytimeline.set(toel, { autoAlpha: 0 }, 0); //reset to original
+            this.primairytimeline.set(fromel, { autoAlpha: 1 }, 0); //reset to original
+            this.primairytimeline.to(fromel, {
+              duration: animation.duration / 2,
+              morphSVG: {
+                shape: toel,
+              }, ease: ease, repeat: repeat
+            }, starttime);
+            this.primairytimeline.to(fromel, {
+              delay: animation.duration / 2,
+              repeatDelay: animation.duration / 2,
+              duration: animation.duration / 2,
+              morphSVG: {
+                shape: fromel,
+              }, ease: ease2, repeat: repeat
+            }, starttime);
+          }
+
           this.primairytimeline.to(fromel, {
             duration: animation.duration,
             morphSVG: {
@@ -2808,7 +2853,7 @@ export class VideocreatorComponent implements OnInit {
             this.primairytimeline.fromTo(toel, { autoAlpha: 0 }, { duration: fintimehalf, autoAlpha: 1, repeat: repeat, yoyo: yoyo }, fintime - 1);
             this.primairytimeline.to(fromel, { duration: 1, autoAlpha: 0, repeat: repeat, yoyo: yoyo }, fintime);
           }
-          if (repeat === -1 ){
+          if (repeat === -1) {
             this.primairytimeline.set(toel, { autoAlpha: 0 }, 0); //reset to original
             this.primairytimeline.set(fromel, { autoAlpha: 1 }, 0); //reset to original
           }

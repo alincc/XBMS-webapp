@@ -208,6 +208,7 @@
                                 <mat-option value="skew">Skew</mat-option>
                                 <mat-option value="appear">Appear</mat-option>
                                 <!-- <mat-option value="disappear">Disappear</mat-option> -->
+                                <mat-option value="bounce">Bounce</mat-option>
                                 <mat-option value="move">Move</mat-option>
                                 <mat-option value="fountain">Fountain</mat-option>
                                 <mat-option value="followminions">Minions</mat-option>
@@ -216,7 +217,9 @@
                         <mat-form-field>
                             <mat-select [(value)]="animation.easetype" (selectionChange)="detectchange()">
                                 <mat-option value="">None</mat-option>
-                                <mat-option value="linear">Linear</mat-option>
+                                <mat-option value="power1">Force 1</mat-option>
+                                <mat-option value="power2">Force 2</mat-option>
+                                <mat-option value="power3">Force 3</mat-option>
                                 <mat-option value="bounce">Bounce</mat-option>
                                 <mat-option value="elastic">Elastic</mat-option>
                                 <mat-option value="circle">Circle</mat-option>
@@ -272,7 +275,7 @@
                         </div>
 
                         <div *ngIf="animation.anim_type === 'bounce'">
-                            <mat-form-field style="max-width: 46px;">
+                            <!-- <mat-form-field style="max-width: 46px;">
                                 <input [(ngModel)]="animation.travellocY" type="number" matInput>
                                 <mat-hint>Y-axe</mat-hint>
                             </mat-form-field>
@@ -282,6 +285,27 @@
                             </mat-form-field>
                             <button mat-button
                                 (click)="animation.travellocY = selectedelement.posy; animation.travellocX = selectedelement.posx">Reset</button>
+                                 -->
+
+                            <mat-form-field style="max-width: 46px;">
+                                <input [(ngModel)]="animation.rotationcycle" matInput
+                                    [disabled]="animation.rotationkeeppos">
+                                <mat-hint>Motion direction</mat-hint>
+                            </mat-form-field>
+                            <mat-form-field style="max-width: 46px;">
+                                <input [(ngModel)]="animation.transformOriginX" matInput (change)="detectchange()">
+                                <mat-hint>distance from bottom object</mat-hint>
+                            </mat-form-field>
+                            <mat-form-field style="max-width: 46px;">
+                                <input [(ngModel)]="animation.transformOriginY" matInput (change)="detectchange()">
+                                <mat-hint>distance from top object</mat-hint>
+                            </mat-form-field>
+                            <mat-checkbox [(ngModel)]="animation.rotationkeeppos" matTooltip="Keep position">Don't
+                                rotate</mat-checkbox>
+
+                            <button mat-button (click)="resetPath()">Set path</button>
+                            <button mat-button (click)="editMotionPath(animation)">Edit path</button>
+                            <button mat-button (click)="saveNewMotionPath(animation)">Save path</button>
                         </div>
 
                         <div *ngIf="animation.anim_type === 'skew'">
@@ -446,7 +470,9 @@
                             <mat-select [(value)]="vectoranimation.easetype" (selectionChange)="detectchange()"
                                 placeholder="Animation">
                                 <mat-option value="">None</mat-option>
-                                <mat-option value="linear">Linear</mat-option>
+                                <mat-option value="power1">Force 1</mat-option>
+                                <mat-option value="power2">Force 2</mat-option>
+                                <mat-option value="power3">Force 3</mat-option>
                                 <mat-option value="bounce">Bounce</mat-option>
                                 <mat-option value="elastic">Elastic</mat-option>
                                 <mat-option value="circle">Circle</mat-option>
@@ -578,7 +604,9 @@
                             <mat-select [(value)]="textanimation.easetype" (selectionChange)="detectchange()"
                                 placeholder="Animation">
                                 <mat-option value="">None</mat-option>
-                                <mat-option value="linear">Linear</mat-option>
+                                <mat-option value="power1">Force 1</mat-option>
+                                <mat-option value="power2">Force 2</mat-option>
+                                <mat-option value="power3">Force 3</mat-option>
                                 <mat-option value="bounce">Bounce</mat-option>
                                 <mat-option value="elastic">Elastic</mat-option>
                                 <mat-option value="circle">Circle</mat-option>
@@ -1440,7 +1468,8 @@
                     matTooltip="save to file as new image">
                     save
                 </mat-icon>
-                <mat-icon *ngIf="editfigure" (click)="saveFigurePath()" class="icon-label" class="iconsize-20" matTooltip="save Figure">
+                <mat-icon *ngIf="editfigure" (click)="saveFigurePath()" class="icon-label" class="iconsize-20"
+                    matTooltip="save Figure">
                     save
                 </mat-icon>
                 <mat-icon (click)="removeVectorPathMultiSelection()" (click)="removeVectorPathSelection()"
