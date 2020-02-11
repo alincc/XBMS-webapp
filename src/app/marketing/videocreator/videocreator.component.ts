@@ -750,6 +750,7 @@ export class VideocreatorComponent implements OnInit {
 
     for (let i = 0; i < this.animationarray.length; i++) {
       const elm = this.animationarray[i];
+      this.setPosition(elm);
 
       if (elm.type === 'chart') {
         elm.productiondata = [
@@ -779,7 +780,6 @@ export class VideocreatorComponent implements OnInit {
       }
 
       //setTimeout(() => {
-      this.setPosition(elm);
       this.addEffect(elm); //normal animatoin
       //}, 100);
     }
@@ -1579,10 +1579,6 @@ export class VideocreatorComponent implements OnInit {
     this.animationarray.push(newvectorcombi);
   }
 
-  addTooVectorCombi(value) {
-
-    // console.log(value);
-  }
 
   async dropVectorGroup(value, element, i) {
     let newel = value.value;
@@ -1597,12 +1593,8 @@ export class VideocreatorComponent implements OnInit {
 
       if (found === false) {
         element.vectors.push(newel);
-
         this.onSetCombiBox(i, element, newel);
       }
-
-      //console.log(element, newel, found);
-
     }
   }
 
@@ -1610,14 +1602,11 @@ export class VideocreatorComponent implements OnInit {
     // get screen position minus the boundbox 
     let groupbind = document.getElementById(element.id).getBoundingClientRect();
     let boundelement = document.getElementById('myBounds').getBoundingClientRect();
-
     let grouplocationx = groupbind.left - boundelement.left;
     let grouplocationy = groupbind.top - boundelement.top;
     vector.posx = vector.posx - grouplocationx;
     vector.posy = vector.posy - grouplocationy;
-
   }
-
 
   addNewVector(src?, height?, width?, svgcombi?, posx?, posy?, pathidar?): void { //, originid?
     let svgc = '';
