@@ -43,7 +43,7 @@ export class chart {
   label: Label[] = [];
   data: ChartDataSets[];
   productiondata: ChartDataSets[];
-  //options: 
+  //options:
   colors: Color[] = [
     { // grey
       backgroundColor: '#232222',
@@ -479,7 +479,7 @@ export class VideocreatorComponent implements OnInit {
 
   historyBack() {
     //console.log('ctrl-z', this.currenthistoryversion)
-    // if not last or not empty and if is new; 
+    // if not last or not empty and if is new;
     if (this.currenthistoryversion !== 0) {
       this.currenthistoryversion = this.currenthistoryversion - 1;
       let storedback = this.history[this.currenthistoryversion];
@@ -490,7 +490,7 @@ export class VideocreatorComponent implements OnInit {
 
   historyForward() {
     //console.log('ctrl-y', this.currenthistoryversion)
-    // if not latest or not empty 
+    // if not latest or not empty
     let histlast = this.history.length - 1;
     if (this.currenthistoryversion < histlast) {
       this.currenthistoryversion = this.currenthistoryversion + 1;
@@ -563,7 +563,7 @@ export class VideocreatorComponent implements OnInit {
   selectitem(element) {
     if (!this.selectedelement) { this.selectedelement = element }
     // manual close editpath to prevent interuptions in path check if selectedelement is not already selected
-    // set dragpath, whiteboard, ? 
+    // set dragpath, whiteboard, ?
     if (this.editpath === false && this.selectedelement.id !== element.id) {
       if (this.selectedelement.type === 'vector' && this.selectedelement.svgcombi !== '') {
         this.removeVectorPathSelection();
@@ -630,7 +630,7 @@ export class VideocreatorComponent implements OnInit {
   saveNewMotionPath(animation?) {
     // delete copy motion path button --> standard gsap edit see plugin
 
-    if (!animation) { // no animation selected find motion 
+    if (!animation) { // no animation selected find motion
       animation = this.selectedelement.animation.filter(obj => {
         return obj.anim_type === 'move'
       });
@@ -973,7 +973,7 @@ export class VideocreatorComponent implements OnInit {
       }
       let svgset = document.getElementById(elementA.id + 'p');
       //do the bounce by affecting the "y" property.
-      this.primairytimeline.from(iset, { duration: duration, 
+      this.primairytimeline.from(iset, { duration: duration,
         //y:550,
         repeat: repeat, yoyo: element.yoyo,
         motionPath: {
@@ -1253,7 +1253,7 @@ export class VideocreatorComponent implements OnInit {
           getview = document.getElementById('previewboxtitle' + i);
           //console.log('getview', getview, 'previewboxtitle' + i)
         } else {
-          getview = document.getElementById('previewbox'); //was +i 
+          getview = document.getElementById('previewbox'); //was +i
         }
 
         if (newsizestring !== null) {
@@ -1322,46 +1322,27 @@ export class VideocreatorComponent implements OnInit {
 
   onMovingAnimationChart(event, i, selectedelement) {
     selectedelement.start_time = event.x / 10;
-    //this.saveToLocalStorageHistory();   
+    //this.saveToLocalStorageHistory();
   }
 
   onResizeAnimationChart(event, iv, selectedelement) {
     selectedelement.lineChartOptions.animation.duration = event.size.width * 100;
-    //this.saveToLocalStorageHistory();   
+    //this.saveToLocalStorageHistory();
   }
 
   onMovingAnimationEl(event, i, animation) {
     animation.start_time = event.x / 10;
-    //this.saveToLocalStorageHistory();   
+    //this.saveToLocalStorageHistory();
   }
 
   onResizeAnimationEl(event, i, animation) {
     animation.duration = event.size.width / 10;
-    //this.saveToLocalStorageHistory();   
+    //this.saveToLocalStorageHistory();
   }
 
   onMovingTimeline(event, i) {
     this.currenttime = event.x / 10;
   }
-
-  // onMoving(event, i, idy?) {
-  //   let idel = this.animationarray[i];
-  //   if (idy) { idel = idel.vectors[idy] }
-  //   idel.posy = event.y;
-  //   idel.posx = event.x;
-  //   if (idy) { this.onSetCombiBox(i) }
-  //   let animation =  idel.animation.filter(obj => {
-  //     return obj.anim_type === 'move'
-  //   });
-  //  console.log(animation, idel)
-  //   if (animation.length > 0){
-  //     let rawpath = document.getElementById(this.selectedelement.id).getAttribute('d');
-  //     let newpath = MotionPathPlugin.transformRawPath(rawpath, 1, 0, 0, 1, idel.posx, idel.posy);
-  //    console.log(newpath);
-  //     this.setNewMotionPath(newpath);
-  //   }
-  // }
-
 
   setPosition(idel) {
     //console.log('set pos', idel)
@@ -1378,10 +1359,10 @@ export class VideocreatorComponent implements OnInit {
     idel.posx = this.draggableObject.x;
     // check if animation path needs to be updated
     let animationmove = idel.animation.filter(obj => {
-      return obj.anim_type === 'move' 
+      return obj.anim_type === 'move'
     });
     let animationbounce = idel.animation.filter(obj => {
-      return obj.anim_type === 'bounce' 
+      return obj.anim_type === 'bounce'
     });
     if (animationmove.length > 0 || animationbounce.length > 0) {
       let path = await document.getElementById(idel.id + 'p');
@@ -1485,32 +1466,70 @@ export class VideocreatorComponent implements OnInit {
     // calculate new position
   }
 
-  combiBoxCalculator(vectorcombi) {
+  async combiBoxCalculator(vectorcombi) {
     console.log('is combiboxcalculator')
     let vectors = vectorcombi.vectors;
-    let x = vectors[0].posx;
-    let y = vectors[0].posy;
+
+
+    let boundelement = document.getElementById('myBounds');
+    let boundposition = boundelement.getBoundingClientRect();
+
+    // get the actual position on the screen
+    let x = document.getElementById(vectors[0].id).getBoundingClientRect().left - boundposition.left;
+    let y = document.getElementById(vectors[0].id).getBoundingClientRect().top - boundposition.top;
+
+    if (this.draggableObject){
+      x = this.draggableObject.x;
+      y = this.draggableObject.y;
+    }
+
+    // calculate new width/height
+    //let x = vectors[0].posx;
+    //let y = vectors[0].posy;
     let widthcalc = parseInt(vectors[0].style.width, 10) + x;
     let heightcalc = parseInt(vectors[0].style.height, 10) + y;
-    for (let k = 1; k < vectors.length; k++) {
-      let width = parseInt(vectors[k].style.width, 10)
-      let height = parseInt(vectors[k].style.height, 10)
-      if (vectors[k].posx < x) { x = vectors[k].posx; }
-      if (vectors[k].posy < y) { y = vectors[k].posy; }
-      if (width + vectors[k].posx > widthcalc) { widthcalc = width + vectors[k].posx }
-      if (height + vectors[k].posy > heightcalc) { heightcalc = height + vectors[k].posy }
+
+    for (let k = 0; k < vectors.length; k++) {
+      console.log(vectors[k])
+      let width = parseInt(vectors[k].style.width, 10);
+      let height = parseInt(vectors[k].style.height, 10);
+      let testx = document.getElementById(vectors[k].id).getBoundingClientRect().left - boundposition.left;
+      let testy = document.getElementById(vectors[k].id).getBoundingClientRect().top - boundposition.top;
+      console.log('test x', x, testx, vectorcombi.posx, boundposition.left, document.getElementById(vectors[k].id).getBoundingClientRect().left)
+      if (testx < x) { x = testx; }
+      if (testy < y) { y = testy; }
+      if (width + testx > widthcalc) { widthcalc = width + testx }
+      if (height + testy > heightcalc) { heightcalc = height + testy }
     }
+
     let widthcalcfin = widthcalc - x;
     let heightcalcfin = heightcalc - y;
     vectorcombi.style.width = widthcalcfin + 'px';
     vectorcombi.style.height = heightcalcfin + 'px';
+
+    // new position combi
+    let diffposx = x - vectorcombi.posx; 
+    let diffposy = y - vectorcombi.posy;
+    //vectorcombi.posx = x; 
+    //vectorcombi.posy = y;
+
+    console.log('diff position', diffposx, diffposy);
+
+    // compensate for new combi position. 
+    for (let k = 1; k < vectors.length; k++) {
+      // vectors[k].posx = vectors[k].posx + diffposx; 
+      // vectors[k].posy = vectors[k].posy + diffposy; 
+    }
+
+    this.detectchange();
+
   }
 
 
   onSetCombiBox(i, element, newel) {
     let vectorcombi: vectorcombinator = this.animationarray[i];
     this.combiBoxCalculator(vectorcombi);
-    this.updateVectorGrpElementPos(element, newel); // update element position
+    //this.updateVectorGrpElementPos(element, newel); // update element position
   }
 
   onResizing(e, i) {
@@ -1598,15 +1617,15 @@ export class VideocreatorComponent implements OnInit {
     }
   }
 
-  updateVectorGrpElementPos(element, vector) {
-    // get screen position minus the boundbox 
-    let groupbind = document.getElementById(element.id).getBoundingClientRect();
-    let boundelement = document.getElementById('myBounds').getBoundingClientRect();
-    let grouplocationx = groupbind.left - boundelement.left;
-    let grouplocationy = groupbind.top - boundelement.top;
-    vector.posx = vector.posx - grouplocationx;
-    vector.posy = vector.posy - grouplocationy;
-  }
+  // updateVectorGrpElementPos(element, vector) {
+  //   // get screen position minus the boundbox
+  //   let groupbind = document.getElementById(element.id).getBoundingClientRect();
+  //   let boundelement = document.getElementById('myBounds').getBoundingClientRect();
+  //   let grouplocationx = groupbind.left - boundelement.left;
+  //   let grouplocationy = groupbind.top - boundelement.top;
+  //   vector.posx = vector.posx - grouplocationx;
+  //   vector.posy = vector.posy - grouplocationy;
+  // }
 
   addNewVector(src?, height?, width?, svgcombi?, posx?, posy?, pathidar?): void { //, originid?
     let svgc = '';
@@ -1978,7 +1997,7 @@ export class VideocreatorComponent implements OnInit {
         { data: [0, 0, 0], label: 'Series A' },
         { data: [0, 0, 0], label: 'Series B' }
       ],
-      //options: 
+      //options:
       colors: colorset,
       legend: true,
       style: {
@@ -2233,7 +2252,7 @@ export class VideocreatorComponent implements OnInit {
       newelnr = this.animationarray.length;// + 'el';
     }
 
-    // rename ids 
+    // rename ids
     let pathidar = svgElement.innerHTML.match(/id="(.*?)"/g); //get ids
     let idnr = newelnr + 'vec-' + 1;
     let newvectstring = await this.renumberSvgIds(newsvg, idnr, pathidar);
@@ -2351,8 +2370,8 @@ export class VideocreatorComponent implements OnInit {
   }
 
   async playFunc() {
-    console.log('play', this.primairytimeline.time());
-    // clean up edits 
+    console.log('play', this.animationarray);
+    // clean up edits
     this.removeVectorPathMultiSelection();
     this.removeVectorPathSelection();
     this.vectorcombiedit = false;
@@ -2665,7 +2684,7 @@ export class VideocreatorComponent implements OnInit {
         if (idnew === null) {
           vectstring = element.svgcombi;
         } else if (svgset.length > 0) {
-          vectstring = svgset[0].innerHTML; //was outerhtml 
+          vectstring = svgset[0].innerHTML; //was outerhtml
         } else {
           console.log('can not load SVG', idnew)
         }
@@ -2710,7 +2729,7 @@ export class VideocreatorComponent implements OnInit {
     vectors = element.vectors;
     let ease = this.selectEaseType(animation.easetype);
 
-    // await this.combineSVGs(element); // takes to long to rebuild 
+    // await this.combineSVGs(element); // takes to long to rebuild
 
     for (let i1 = 0; i1 < vectors.length - 1; i1++) {
       let fromvector = vectors[i1];
@@ -2995,7 +3014,7 @@ export class VideocreatorComponent implements OnInit {
   async renumberSvgIds(svgstring, idx, pathidar) {
     let newsvgstring = svgstring;
     let index = 0;
-    let r = Math.random().toString(36).substring(7); // add random sring 
+    let r = Math.random().toString(36).substring(7); // add random sring
     for (const element of pathidar) {
       let ind = index + 1;
       let newid = 'id="' + idx + ind + r + '"';
@@ -3110,7 +3129,7 @@ export class VideocreatorComponent implements OnInit {
         }
         let svgsizearray = [scale, 0, 0, scale, newx, newy];
         let newmatrix;
-        let transf = p[index].getAttribute('transform'); // there is transform on the element we need remove it 
+        let transf = p[index].getAttribute('transform'); // there is transform on the element we need remove it
         //console.log(svgsizearray)
         if (transf !== null) {
           let style = transf;
@@ -3645,7 +3664,7 @@ export class VideocreatorComponent implements OnInit {
   //https://github.com/luncheon/svg-drag-select
   dragSelect(id) {
     //this.removeVectorPathSelection();
-    //this.disableDraggable(); 
+    //this.disableDraggable();
     this.deletePathSelClass(this.selectedVecPath)
     this.dragselectiontrue = true;
     let svgel = document.getElementById(id);
