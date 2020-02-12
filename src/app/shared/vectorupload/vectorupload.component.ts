@@ -247,11 +247,11 @@ export class VectoruploadComponent implements OnInit {
 
   setSvgupload(name): void {
     // set upload url
-    let urluse = 'https://xbmsapi.eu-gb.mybluemix.net' + '/api/Containers/' + this.option.id + '/upload';
+    let urluse = BASE_URL + '/api/Containers/' + this.option.id + '/upload';
     this.uploadersvg.setOptions({ url: urluse });
 
     // set download url or actual url for publishing
-    let imgurl = 'https://xbmsapi.eu-gb.mybluemix.net' + '/api/Containers/' + this.option.id + '/download/' + name
+    let imgurl = BASE_URL + '/api/Containers/' + this.option.id + '/download/' + name
     imgurl = imgurl.replace(/ /g, '-'),
       // imgurl = encodeURI(imgurl);
       // define the file settings
