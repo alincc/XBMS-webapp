@@ -973,7 +973,8 @@ export class VideocreatorComponent implements OnInit {
       }
       let svgset = document.getElementById(elementA.id + 'p');
       //do the bounce by affecting the "y" property.
-      this.primairytimeline.from(iset, { duration: duration,
+      this.primairytimeline.from(iset, {
+        duration: duration,
         //y:550,
         repeat: repeat, yoyo: element.yoyo,
         motionPath: {
@@ -981,10 +982,11 @@ export class VideocreatorComponent implements OnInit {
           autoRotate: rotate,
           align: svgset//'self'
         },
-        ease:"myBounce"}, starttime );
+        ease: "myBounce"
+      }, starttime);
 
       //and do the squash/stretch at the same time:
-      this.primairytimeline.to(iset, { duration: duration, scaleY:0.5, scaleX:1.3, ease: "myBounce-squash", transformOrigin: "center bottom" }, starttime);
+      this.primairytimeline.to(iset, { duration: duration, scaleY: 0.5, scaleX: 1.3, ease: "myBounce-squash", transformOrigin: "center bottom" }, starttime);
     }
 
     if (anitype === 'move') {
@@ -1272,6 +1274,8 @@ export class VideocreatorComponent implements OnInit {
           originalsize = newsize;
         }
 
+        await this.removeclipPath(vectorid);
+
         await this.deleteVectorGroup(vectorid);
         //console.log("vector groups deleted");
         await this.resizeVector(originalsize, newsize, idx, vectorid);
@@ -1284,6 +1288,19 @@ export class VideocreatorComponent implements OnInit {
     }
     this.systembusy = false;
   }
+
+  removeclipPath(vectorid) {
+    let svgdiv = document.getElementById(vectorid);
+    let svg = svgdiv.getElementsByTagName('svg')[0];
+    let clippaths = svg.getElementsByTagName('clipPath');
+    //console.log(clippaths);
+    var index;
+    for (index = clippaths.length - 1; index >= 0; index--) {
+      clippaths[index].parentNode.removeChild(clippaths[index]);
+    }
+  }
+  
+
 
 
   drawVector(vector, animation: vectoranimationtype) {
@@ -1478,7 +1495,7 @@ export class VideocreatorComponent implements OnInit {
     let x = document.getElementById(vectors[0].id).getBoundingClientRect().left - boundposition.left;
     let y = document.getElementById(vectors[0].id).getBoundingClientRect().top - boundposition.top;
 
-    if (this.draggableObject){
+    if (this.draggableObject) {
       x = this.draggableObject.x;
       y = this.draggableObject.y;
     }
@@ -1508,7 +1525,7 @@ export class VideocreatorComponent implements OnInit {
     vectorcombi.style.height = heightcalcfin + 'px';
 
     // new position combi
-    let diffposx = x - vectorcombi.posx; 
+    let diffposx = x - vectorcombi.posx;
     let diffposy = y - vectorcombi.posy;
     //vectorcombi.posx = x; 
     //vectorcombi.posy = y;
@@ -2690,11 +2707,14 @@ export class VideocreatorComponent implements OnInit {
         }
 
         //console.log(idnew, vectstring)
-
         let pathidar;
         let newvectstring;
-        pathidar = vectstring.match(/id="(.*?)"/g); //get ids
-        newvectstring = await this.grabPaths(vectstring, pathidar);
+        // pathidar = vectstring.match(/id="(.*?)"/g); //get ids
+        // newvectstring = await this.GrabPaths(vectstring, pathidar);
+        newvectstring = await this.getPath(vect.idx);
+
+        //newvectstring = vectstring;
+
         pathidar = newvectstring.match(/id="(.*?)"/g); //get ids
         newvectstring = await this.renumberSvgIds(newvectstring, vect.idx, pathidar); // set ids
         pathidar = newvectstring.match(/id="(.*?)"/g); //get ids
@@ -2711,6 +2731,9 @@ export class VideocreatorComponent implements OnInit {
       resolve();
     });
   }
+
+
+
 
   async cleantags(paths) {
     let newpaths = [];
@@ -3011,42 +3034,88 @@ export class VideocreatorComponent implements OnInit {
     return
   }
 
-  async renumberSvgIds(svgstring, idx, pathidar) {
-    let newsvgstring = svgstring;
-    let index = 0;
-    let r = Math.random().toString(36).substring(7); // add random sring
-    for (const element of pathidar) {
-      let ind = index + 1;
-      let newid = 'id="' + idx + ind + r + '"';
-      newsvgstring = await this.runloop(newsvgstring, element, newid);
-      ++index;
-    };
-    return newsvgstring;
+  // async renumberSvgIds(svgstring, idx, pathidar) {
+  //   let newsvgstring = svgstring;
+  //   let index = 0;
+  //   let r = Math.random().toString(36).substring(7); // add random sring
+  //   for (const element of pathidar) {
+  //     let ind = index + 1;
+  //     let newid = 'id="' + idx + ind + r + '"';
+  //     newsvgstring = await this.runloop(newsvgstring, element, newid);
+  //     ++index;
+  //   };
+  //   return newsvgstring;
+  // }
+
+  // Moved to server
+  async renumberSvgIds(svgstring, idx, pathidar): Promise<string> {
+    return new Promise((resolve, reject) => {
+      let jsonaniarray = JSON.stringify(pathidar);
+      let data = {
+        svgstring: svgstring,
+        pathidar: jsonaniarray,
+        idx: idx
+      }
+      this.filesApi.renumberSvgIds(data)
+        .subscribe((newsvgstring: string) => {
+          resolve(newsvgstring);
+        });
+    });
   }
+
+  getPath(vectorid) {
+    let svgdiv = document.getElementById(vectorid);
+    //let svg = svgdiv.getElementsByTagName('svg')[0];
+    let paths = svgdiv.getElementsByTagName('path');
+    console.log(paths)
+    let newpaths = [];
+    for (let y = 0; y < paths.length; y++){
+      let ohtml = paths[y].outerHTML;
+      newpaths.push(ohtml)
+    };
+    //console.log(clippaths);
+    let pathjoin = newpaths.join('');
+    return pathjoin;
+  }
+
+  async GrabPaths(vectstring, pathidar): Promise<string> {
+    return new Promise((resolve, reject) => {
+      let jsonidar = JSON.stringify(pathidar)
+      let data = {
+        vectstring: vectstring,
+        jsonidar: jsonidar
+      }
+      this.filesApi.grabPaths(data).subscribe(res => {
+        resolve(res);
+      });
+    });
+  }
+
 
   async runloop(newsvgstring, element, newid) {
     newsvgstring = newsvgstring.replace(element, newid);
     return newsvgstring
   }
 
-  grabPaths(svgstring, pathidar) {
-    return new Promise((resolve, reject) => {
-      let svgarray = [];
-      // const element of pathidar
-      for (let i = 0; i < pathidar.length; i++) {
-        let n = svgstring.indexOf('<path ');
-        let lx = svgstring.indexOf('</path>'); //<defs
-        let l = lx + 7;
-        if (n !== -1) {
-          svgarray.push(svgstring.substring(n, l));
-          svgstring = svgstring.replace(svgstring.substring(n, l), '');
-        }
-      }
-      svgstring = svgarray.join('');
-      resolve(svgstring)
-    });
-  }
+  // grabPaths(svgstring, pathidar) {
+  //   return new Promise((resolve, reject) => {
+  //     let svgarray = [];
+  //     // const element of pathidar
+  //     for (let i = 0; i < pathidar.length; i++) {
+  //       let n = svgstring.indexOf('<path ');
+  //       let lx = svgstring.indexOf('</path>'); //<defs
+  //       let l = lx + 7;
+  //       if (n !== -1) {
+  //         svgarray.push(svgstring.substring(n, l));
+  //         svgstring = svgstring.replace(svgstring.substring(n, l), '');
+  //       }
+  //     }
+  //     svgstring = svgarray.join('');
+  //     resolve(svgstring)
+  //   });
+  // }
 
+  // Moved to server 
 
 
   deleteMetaSvg(svgstring) {
@@ -3075,24 +3144,26 @@ export class VideocreatorComponent implements OnInit {
       let groupElement;
       let e = document.getElementById(id);
       let g = e.getElementsByTagName("g");
-      if (g.length < 1000) {
-        // console.log(g)
+      if (g.length === 0){resolve()}
+      //if (g.length < 1000) {
+        console.log("çheck groups")
         for (let index = 0; index < g.length; index++) {  // ---> g.length
           g[index].setAttribute("id", id + index + 'g');
+        
           let sg = id + index + 'g';
           groupElement = SVG.get(sg);
           if (typeof groupElement.ungroup === "function") {
             groupElement.ungroup(groupElement.parent());
           }
+          if (index === g.length){resolve()}
         }
-      }
-      resolve();
     })
   }
 
   async resizeVector(originalsize, newsize, idx, vectorid) {
-    return new Promise(async (resolve, reject) => {
+     return new Promise(async (resolve, reject) => {
       let e = document.getElementById(vectorid);
+
       let scale;
       let newtranssize;
       if (newsize.height > newsize.width) {
@@ -3116,7 +3187,7 @@ export class VideocreatorComponent implements OnInit {
 
       scale = Number((newtranssize).toFixed(8));
       let p = e.getElementsByTagName("path");
-      //console.log(newx, newy, scale)
+      console.log(newx, newy, scale, p)
       let rawpath;
       for (let index = 0; index < p.length; index++) {
 

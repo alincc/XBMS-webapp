@@ -19,6 +19,7 @@ export interface WebsitetrackerInterface {
   "street"?: string;
   "lat"?: string;
   "lon"?: string;
+  "ispname"?: string;
   "isp"?: boolean;
   "id"?: any;
   "relationsId"?: any;
@@ -40,6 +41,7 @@ export class Websitetracker implements WebsitetrackerInterface {
   "street": string;
   "lat": string;
   "lon": string;
+  "ispname": string;
   "isp": boolean;
   "id": any;
   "relationsId": any;
@@ -131,6 +133,10 @@ export class Websitetracker implements WebsitetrackerInterface {
         },
         "lon": {
           name: 'lon',
+          type: 'string'
+        },
+        "ispname": {
+          name: 'ispname',
           type: 'string'
         },
         "isp": {
