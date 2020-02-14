@@ -409,6 +409,7 @@ export class VideocreatorComponent implements OnInit {
   public systembusy = false;
   public history = [];
   public currenthistoryversion = -1;
+  public generalprogressbar = 0;
 
   @Input() debounceTime = 50;
   @Output() debounceKey = new EventEmitter();
@@ -1238,9 +1239,11 @@ export class VideocreatorComponent implements OnInit {
     }, 500);
   }
 
-  async initVectors(e, i, idx, vectorid) {
+  initVectors(e, i, idx, vectorid) {
+    // this.systembusy = true;
+    // this.generalprogressbar = 2;
+
     //console.log(e, i, idx, vectorid);
-    this.systembusy = true;
     if (this.animationarray[i].svgcombi === '' || this.animationarray[i].morph) {
       return new Promise(async (resolve, reject) => {
         let getview;
@@ -1273,20 +1276,21 @@ export class VideocreatorComponent implements OnInit {
         } else {
           originalsize = newsize;
         }
-
+        this.generalprogressbar = 10;
         await this.removeclipPath(vectorid);
-
+        this.generalprogressbar = 20;
         await this.deleteVectorGroup(vectorid);
+        this.generalprogressbar = 30;
         //console.log("vector groups deleted");
         await this.resizeVector(originalsize, newsize, idx, vectorid);
+        this.generalprogressbar = 50;
         //console.log("vector resized");
         await this.combineSVGs(this.animationarray[i], originalsize);
         //console.log("vectors combined");
-
-        resolve();
+        this.generalprogressbar = 100;
       })
     }
-    this.systembusy = false;
+ 
   }
 
   removeclipPath(vectorid) {
@@ -3067,7 +3071,7 @@ export class VideocreatorComponent implements OnInit {
     let svgdiv = document.getElementById(vectorid);
     //let svg = svgdiv.getElementsByTagName('svg')[0];
     let paths = svgdiv.getElementsByTagName('path');
-    console.log(paths)
+    //console.log(paths)
     let newpaths = [];
     for (let y = 0; y < paths.length; y++){
       let ohtml = paths[y].outerHTML;
@@ -3146,7 +3150,7 @@ export class VideocreatorComponent implements OnInit {
       let g = e.getElementsByTagName("g");
       if (g.length === 0){resolve()}
       //if (g.length < 1000) {
-        console.log("çheck groups")
+        //console.log("çheck groups")
         for (let index = 0; index < g.length; index++) {  // ---> g.length
           g[index].setAttribute("id", id + index + 'g');
         
@@ -3187,7 +3191,7 @@ export class VideocreatorComponent implements OnInit {
 
       scale = Number((newtranssize).toFixed(8));
       let p = e.getElementsByTagName("path");
-      console.log(newx, newy, scale, p)
+      //console.log(newx, newy, scale, p)
       let rawpath;
       for (let index = 0; index < p.length; index++) {
 

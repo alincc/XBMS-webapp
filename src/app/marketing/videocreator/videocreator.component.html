@@ -40,6 +40,10 @@
     </mat-menu>
 </div>
 
+<div *ngIf="systembusy" class="generalprogressbar">
+    <mat-progress-bar mode="determinate" [value]="generalprogressbar"></mat-progress-bar>
+</div>
+
 <div class="videocontrols" fxLayout="column">
     <div fxLayout="row" fxLayoutGap="4px">
         <button mat-mini-fab color="primary" (click)="playFunc()">
