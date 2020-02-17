@@ -409,7 +409,7 @@ export class VideocreatorComponent implements OnInit {
   public systembusy = false;
   public history = [];
   public currenthistoryversion = -1;
-  public generalprogressbar = 0;
+
 
   @Input() debounceTime = 50;
   @Output() debounceKey = new EventEmitter();
@@ -723,7 +723,6 @@ export class VideocreatorComponent implements OnInit {
   }
 
   async detectchange() {
-    this.systembusy = false;
     if (this.whiteboard) { this.deletewhiteboard() }
     this.primairytimeline = gsap.timeline({ paused: true, reversed: true });
     if (this.editpath === true) {
@@ -1198,9 +1197,7 @@ export class VideocreatorComponent implements OnInit {
   }
 
   initVectors(e, i, idx, vectorid) {
-    this.systembusy = true;
-    this.generalprogressbar = 2;
-
+    //this.systembusy = true;
     //console.log(e, i, idx, vectorid);
     if (this.animationarray[i].svgcombi === '' || this.animationarray[i].morph) {
       return new Promise(async (resolve, reject) => {
@@ -1234,20 +1231,16 @@ export class VideocreatorComponent implements OnInit {
         } else {
           originalsize = newsize;
         }
-        this.generalprogressbar = 10;
+
         await this.removeclipPath(vectorid);
-        this.generalprogressbar = 20;
         await this.deleteVectorGroup(vectorid);
-        this.generalprogressbar = 30;
         //console.log("vector groups deleted");
         await this.resizeVector(originalsize, newsize, idx, vectorid);
-        this.generalprogressbar = 50;
-        //console.log("vector resized");
+        //consolelog("vector resized");
         await this.combineSVGs(this.animationarray[i], originalsize);
         //console.log("vectors combined");
-        this.generalprogressbar = 100;
-        this.systembusy = false;
-        this.generalprogressbar = 0;
+        //this.systembusy = false;
+
       })
     }
  
@@ -1447,70 +1440,59 @@ export class VideocreatorComponent implements OnInit {
     // calculate new position
   }
 
-  async combiBoxCalculator(vectorcombi) {
-    console.log('is combiboxcalculator')
+  async combiBoxCalculator(vectorcombi: vectorcombinator) {
+    //console.log('is combiboxcalculator')
     let vectors = vectorcombi.vectors;
-
-
-    let boundelement = document.getElementById('myBounds');
-    let boundposition = boundelement.getBoundingClientRect();
+    let boundposition = document.getElementById('myBounds').getBoundingClientRect();
 
     // get the actual position on the screen
     let x = document.getElementById(vectors[0].id).getBoundingClientRect().left - boundposition.left;
     let y = document.getElementById(vectors[0].id).getBoundingClientRect().top - boundposition.top;
 
-    if (this.draggableObject) {
-      x = this.draggableObject.x;
-      y = this.draggableObject.y;
-    }
-
     // calculate new width/height
-    //let x = vectors[0].posx;
-    //let y = vectors[0].posy;
-    let widthcalc = parseInt(vectors[0].style.width, 10) + x;
-    let heightcalc = parseInt(vectors[0].style.height, 10) + y;
+    let widthcalc = document.getElementById(vectors[0].id).getBoundingClientRect().right;
+    let heightcalc =  document.getElementById(vectors[0].id).getBoundingClientRect().bottom;
+    let resetvaluex = 0;
+    let resetvaluey = 0;
 
     for (let k = 0; k < vectors.length; k++) {
-      console.log(vectors[k])
-      let width = parseInt(vectors[k].style.width, 10);
-      let height = parseInt(vectors[k].style.height, 10);
+     //console.log(vectors[k])
       let testx = document.getElementById(vectors[k].id).getBoundingClientRect().left - boundposition.left;
       let testy = document.getElementById(vectors[k].id).getBoundingClientRect().top - boundposition.top;
-      console.log('test x', x, testx, vectorcombi.posx, boundposition.left, document.getElementById(vectors[k].id).getBoundingClientRect().left)
-      if (testx < x) { x = testx; }
-      if (testy < y) { y = testy; }
-      if (width + testx > widthcalc) { widthcalc = width + testx }
-      if (height + testy > heightcalc) { heightcalc = height + testy }
+      let testright = document.getElementById(vectors[k].id).getBoundingClientRect().right;
+      let testbottom = document.getElementById(vectors[k].id).getBoundingClientRect().bottom;
+      //console.log('pos combibox', testright, widthcalc);
+      if (testx < x) { x = testx; resetvaluex = k}
+      if (testy < y) { y = testy; resetvaluey = k}
+      if (testright > widthcalc) { widthcalc = testright }
+      if (testbottom > heightcalc) { heightcalc = testbottom }
     }
 
-    let widthcalcfin = widthcalc - x;
-    let heightcalcfin = heightcalc - y;
+    let widthcalcfin = (widthcalc-boundposition.left) - x;
+    let heightcalcfin = (heightcalc-boundposition.top) - y;
     vectorcombi.style.width = widthcalcfin + 'px';
     vectorcombi.style.height = heightcalcfin + 'px';
+    vectorcombi.posx = x;
+    vectorcombi.posy = y;
 
     // new position combi
-    let diffposx = x - vectorcombi.posx;
-    let diffposy = y - vectorcombi.posy;
-    //vectorcombi.posx = x; 
-    //vectorcombi.posy = y;
-
-    console.log('diff position', diffposx, diffposy);
+    let diffposx = vectors[resetvaluex].posx;
+    let diffposy = vectors[resetvaluey].posy;
+    //console.log('diff position', diffposx, diffposy);
 
     // compensate for new combi position. 
-    for (let k = 1; k < vectors.length; k++) {
-      // vectors[k].posx = vectors[k].posx + diffposx; 
-      // vectors[k].posy = vectors[k].posy + diffposy; 
+    for (let k = 0; k < vectors.length; k++) {
+       vectors[k].posx = vectors[k].posx - diffposx; 
+       vectors[k].posy = vectors[k].posy - diffposy; 
     }
 
     this.detectchange();
-
   }
 
 
   onSetCombiBox(i, element, newel) {
     let vectorcombi: vectorcombinator = this.animationarray[i];
     this.combiBoxCalculator(vectorcombi);
-    //this.updateVectorGrpElementPos(element, newel); // update element position
   }
 
   onResizing(e, i) {
@@ -1597,16 +1579,6 @@ export class VideocreatorComponent implements OnInit {
       }
     }
   }
-
-  // updateVectorGrpElementPos(element, vector) {
-  //   // get screen position minus the boundbox
-  //   let groupbind = document.getElementById(element.id).getBoundingClientRect();
-  //   let boundelement = document.getElementById('myBounds').getBoundingClientRect();
-  //   let grouplocationx = groupbind.left - boundelement.left;
-  //   let grouplocationy = groupbind.top - boundelement.top;
-  //   vector.posx = vector.posx - grouplocationx;
-  //   vector.posy = vector.posy - grouplocationy;
-  // }
 
   addNewVector(src?, height?, width?, svgcombi?, posx?, posy?, pathidar?): void { //, originid?
     let svgc = '';

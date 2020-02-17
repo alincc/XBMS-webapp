@@ -260,11 +260,11 @@
                             </mat-form-field>
                             <mat-form-field style="max-width: 46px;">
                                 <input [(ngModel)]="animation.transformOriginX" matInput (change)="detectchange()">
-                                <mat-hint>distance from bottom object</mat-hint>
+                                <mat-hint>%/px right</mat-hint>
                             </mat-form-field>
                             <mat-form-field style="max-width: 46px;">
                                 <input [(ngModel)]="animation.transformOriginY" matInput (change)="detectchange()">
-                                <mat-hint>distance from top object</mat-hint>
+                                <mat-hint>%/px bottom</mat-hint>
                             </mat-form-field>
                         </div>
                         <div *ngIf="animation.anim_type === 'scale'">
@@ -294,11 +294,11 @@
                             </mat-form-field>
                             <mat-form-field style="max-width: 46px;">
                                 <input [(ngModel)]="animation.transformOriginX" matInput (change)="detectchange()">
-                                <mat-hint>distance from bottom object</mat-hint>
+                                <mat-hint>%/px right</mat-hint>
                             </mat-form-field>
                             <mat-form-field style="max-width: 46px;">
                                 <input [(ngModel)]="animation.transformOriginY" matInput (change)="detectchange()">
-                                <mat-hint>distance from top object</mat-hint>
+                                <mat-hint>%/px bottom</mat-hint>
                             </mat-form-field>
                             <mat-checkbox [(ngModel)]="animation.rotationkeeppos" matTooltip="Keep position">Don't
                                 rotate</mat-checkbox>
@@ -337,11 +337,11 @@
                             </mat-form-field>
                             <mat-form-field style="max-width: 46px;">
                                 <input [(ngModel)]="animation.transformOriginX" matInput (change)="detectchange()">
-                                <mat-hint>distance from bottom object</mat-hint>
+                                <mat-hint>%/px right</mat-hint>
                             </mat-form-field>
                             <mat-form-field style="max-width: 46px;">
                                 <input [(ngModel)]="animation.transformOriginY" matInput (change)="detectchange()">
-                                <mat-hint>distance from top object</mat-hint>
+                                <mat-hint>%/px bottom</mat-hint>
                             </mat-form-field>
                             <mat-checkbox [(ngModel)]="animation.rotationkeeppos" matTooltip="Keep position">Don't
                                 rotate</mat-checkbox>
@@ -374,11 +374,11 @@
                             </mat-form-field>
                             <mat-form-field style="max-width: 46px;">
                                 <input [(ngModel)]="animation.transformOriginX" matInput (change)="detectchange()">
-                                <mat-hint>distance from bottom object</mat-hint>
+                                <mat-hint>%/px right</mat-hint>
                             </mat-form-field>
                             <mat-form-field style="max-width: 46px;">
                                 <input [(ngModel)]="animation.transformOriginY" matInput (change)="detectchange()">
-                                <mat-hint>distance from top object</mat-hint>
+                                <mat-hint>%/px bottom</mat-hint>
                             </mat-form-field>
                             <button mat-button (click)="editMotionPath(animation)">Edit path</button>
                         </div>
@@ -706,7 +706,7 @@
 <!-- class="generalprogressbar" -->
 <div *ngIf="systembusy">
     <label>lOADING...</label>
-    <mat-progress-bar mode="determinate" [value]="generalprogressbar"></mat-progress-bar>
+    <mat-progress-bar mode="indeterminate"></mat-progress-bar>
 </div>
 
 <div class="tabcontainer" fxLayout="row" cdkDropListGroup (swipeleft)="swipeleft($event)"
@@ -1591,29 +1591,24 @@
                         <mat-icon *ngIf="element === selectedelement" class="iconsize-4" class="rotatehandle"
                             #rotatehandle [attr.id]="element.id + 'rotatehandle'">replay</mat-icon>
                     </div>
-                    <div *ngIf="element.type === 'vectorcombi'" 
-                         id="{{element.id}}"
+                    <div *ngIf="element.type === 'vectorcombi'" [style.width]="element.style.width"
+                    [style.height]="element.style.height" id="{{element.id}}" [ngStyle]="element.style"
                         [ngClass]="{elementanimationarrayselected: element === selectedelement, editcombi: vectorcombiedit, elementanimationarray: true}">
                         <div *ngFor="let part of element.vectors; let idy = index;"
                             (click)="onSelectElement($event, part)" (mousedown)="setDraggable($event, part)">
                             <div *ngIf="part.type === 'vector' && part.groupmember" [style.width]="part.style.width"
                                 [style.height]="part.style.height" [ngStyle]="part.style"
-                                (rzResizing)="onResizing($event, i)" [ngResizable]="part === selectedpart"
+                                (rzResizing)="onResizing($event, i)" [ngResizable]="vectorcombiedit && part === selectedelement"
                                 [rzAspectRatio]="false" id="{{part.id}}" class="elementanimationarray"
                                 [ngStyle]="{'z-index':vectorcombiedit === true && element === selectedelement ? 1000 : -1 }"
                                 [class.elementanimationarrayselected]="part === selectedelement && vectorcombiedit">
                                 <div style="height: 100%; width: 100%; cursor: pointer;"
                                     [innerHTML]="part.svgcombi | safeHtml" (click)="clickVectorPaths($event)">
                                 </div>
-                                <mat-icon *ngIf="part === selectedelement && vectorcombiedit" class="iconsize-4"
+                                <mat-icon *ngIf="vectorcombiedit && part === selectedelement" class="iconsize-4"
                                     class="rotatehandle" #rotatehandle [attr.id]="part.id + 'rotatehandle'">replay
                                 </mat-icon>
                             </div>
-                            <!-- <div style="height: 100%; width: 100%;" [innerHTML]="part.svgcombi | safeHtml"
-                                (click)="clickVectorPaths($event)">
-                            </div>
-                            <mat-icon *ngIf="vectorcombiedit" class="iconsize-4" class="rotatehandle" #rotatehandle
-                                [attr.id]="part.id + 'rotatehandle'">replay</mat-icon> -->
                         </div>
                         <mat-icon *ngIf="element === selectedelement" class="iconsize-4" class="rotatehandle"
                             #rotatehandle [attr.id]="element.id + 'rotatehandle'">replay</mat-icon>
