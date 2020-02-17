@@ -40,10 +40,6 @@
     </mat-menu>
 </div>
 
-<div *ngIf="systembusy" class="generalprogressbar">
-    <mat-progress-bar mode="determinate" [value]="generalprogressbar"></mat-progress-bar>
-</div>
-
 <div class="videocontrols" fxLayout="column">
     <div fxLayout="row" fxLayoutGap="4px">
         <button mat-mini-fab color="primary" (click)="playFunc()">
@@ -707,6 +703,11 @@
     </mat-card> -->
 </div>
 
+<!-- class="generalprogressbar" -->
+<div *ngIf="systembusy">
+    <label>lOADING...</label>
+    <mat-progress-bar mode="determinate" [value]="generalprogressbar"></mat-progress-bar>
+</div>
 
 <div class="tabcontainer" fxLayout="row" cdkDropListGroup (swipeleft)="swipeleft($event)"
     (swiperight)="swiperight($event)">
@@ -1590,8 +1591,8 @@
                         <mat-icon *ngIf="element === selectedelement" class="iconsize-4" class="rotatehandle"
                             #rotatehandle [attr.id]="element.id + 'rotatehandle'">replay</mat-icon>
                     </div>
-                    <div *ngIf="element.type === 'vectorcombi'" [style.width]="element.style.width"
-                        [style.height]="element.style.height" [ngStyle]="element.style" id="{{element.id}}"
+                    <div *ngIf="element.type === 'vectorcombi'" 
+                         id="{{element.id}}"
                         [ngClass]="{elementanimationarrayselected: element === selectedelement, editcombi: vectorcombiedit, elementanimationarray: true}">
                         <div *ngFor="let part of element.vectors; let idy = index;"
                             (click)="onSelectElement($event, part)" (mousedown)="setDraggable($event, part)">

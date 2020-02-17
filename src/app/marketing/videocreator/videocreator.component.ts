@@ -555,7 +555,6 @@ export class VideocreatorComponent implements OnInit {
     }
 
     if (this.editfigure) {
-      //this.disableDraggable();
       this.draggableObject.disable();
     }
 
@@ -569,10 +568,6 @@ export class VideocreatorComponent implements OnInit {
       if (this.selectedelement.type === 'vector' && this.selectedelement.svgcombi !== '') {
         this.removeVectorPathSelection();
         this.removeVectorPathMultiSelection();
-        // if (this.vectorcombiedit){
-        //   this.resetVectorCombiEdit(element)
-        // }
-
       }
       if (this.whiteboard) { this.deletewhiteboard() }
       this.edittext = false;
@@ -713,10 +708,7 @@ export class VideocreatorComponent implements OnInit {
         newsvgpath = '<svg id="' + this.selectedelement.id + 'mp" viewBox="' + newview + '" class="path-edit"><rect width="300" height="100" id="' + this.selectedelement.id + 'p" style="opacity: 0;" /></svg>';
         break
       }
-
-
     }
-
     this.selectedelement.motionpath = newsvgpath;
   }
 
@@ -731,20 +723,15 @@ export class VideocreatorComponent implements OnInit {
   }
 
   async detectchange() {
-    //this.saveToLocalStorageHistory()
-
     this.systembusy = false;
     if (this.whiteboard) { this.deletewhiteboard() }
     this.primairytimeline = gsap.timeline({ paused: true, reversed: true });
-    // console.log('run check', this.ani§mationarray);
     if (this.editpath === true) {
       this.saveNewMotionPath();
     }
     // force dom update
     this.changenow = false;
     setTimeout(() => { this.changenow = true }, 10);
-    //setTimeout(() => {
-    // setTimeout(async () => { this.changenow = true; return });
     await new Promise(resolve => setTimeout(resolve, 100));
     // wait for dom update to finish otherwise it will create the effects on the old dom
     if (this.canvas.weather !== '') { this.addWeatherEffect() };
@@ -779,10 +766,7 @@ export class VideocreatorComponent implements OnInit {
           if (textani.textanimationtype) { this.createSplitText(elm, textani) }
         }
       }
-
-      //setTimeout(() => {
       this.addEffect(elm); //normal animatoin
-      //}, 100);
     }
 
   }
@@ -865,28 +849,18 @@ export class VideocreatorComponent implements OnInit {
 
   onchangecanvas() {
     if (this.canvas.videourl) { this.canvas['background-color'] = 'transparent' }
-
     this.animationarray.forEach(element => {
       let w = this.canvas.width.replace('px', '');
       let h = this.canvas.height.replace('px', '');
       let newview = '0 0 ' + w + ' ' + h;
-      //let id = element.id + 'mp';
-      //let svg = document.getElementById(id);
-      //svg.setAttribute('viewBox', newview);
-      //element.motionpath = svg.outerHTML;
       var regex = /viewBox="(.*?)"/;
       var strToMatch = element.motionpath;
       var matched = regex.exec(strToMatch);
-      //console.log(matched, newview);
       element.motionpath = element.motionpath.replace(matched[1], newview);
       //console.log(element);
     });
     this.changevideo = false;
     setTimeout(() => this.changevideo = true);
-
-    // for (let i = 0; i < paths.length; i++){
-    //   paths[i].setAttribute('viewbox', newview)
-    // }
   }
 
   onchangeaudio() {
@@ -956,7 +930,7 @@ export class VideocreatorComponent implements OnInit {
     if (anitype === 'appear') {
       aniset = {
         duration: duration,
-        autoAlpha: 1, ease: ease, repeat: repeat, yoyo: element.yoyo
+        autoAlpha: 0, ease: ease, repeat: repeat, yoyo: element.yoyo
       };
     }
 
@@ -1078,17 +1052,6 @@ export class VideocreatorComponent implements OnInit {
       let seperation = 0.17;
       let svgset2 = document.getElementById(elementA.id + 'p');
 
-      // this.primairytimeline.to(iset,
-      //   {
-      //     duration: duration,
-      //     ease: ease, repeat: repeat, yoyo: element.yoyo, delay: seperation,
-      //     motionPath: {
-      //       path: svgset2, //'id + p'
-      //       autoRotate: 90,
-      //       //immediateRender: true
-      //     }
-      //   }, starttime);
-
       for (let i = 0; i < minions; i++) {
         //start creature animation every 0.12 seconds
         let cln = iset.cloneNode(true);
@@ -1132,11 +1095,6 @@ export class VideocreatorComponent implements OnInit {
   addEffect(element): void {
     let i = 0;
     let id = document.getElementById(element.id);
-    // for (let i = 0; i < element.animation.length; i++) {
-    //  console.log('effect')
-    //   let animationsection = element.animation[i];
-    //   this.addAnimation(id, animationsection, element, i);
-    // }
     element.animation.forEach(animationsection => {
       this.addAnimation(id, animationsection, element, i);
       ++i;
@@ -1240,8 +1198,8 @@ export class VideocreatorComponent implements OnInit {
   }
 
   initVectors(e, i, idx, vectorid) {
-    // this.systembusy = true;
-    // this.generalprogressbar = 2;
+    this.systembusy = true;
+    this.generalprogressbar = 2;
 
     //console.log(e, i, idx, vectorid);
     if (this.animationarray[i].svgcombi === '' || this.animationarray[i].morph) {
@@ -1288,6 +1246,8 @@ export class VideocreatorComponent implements OnInit {
         await this.combineSVGs(this.animationarray[i], originalsize);
         //console.log("vectors combined");
         this.generalprogressbar = 100;
+        this.systembusy = false;
+        this.generalprogressbar = 0;
       })
     }
  

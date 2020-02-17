@@ -14,21 +14,21 @@
     bottom: 40px;
     right: 50px;
     position: fixed;
-    z-index: 200000;
+    z-index: 3000;
   }
 
 .editbutton {
     top: 120px;
     right: 80px;
     position: fixed;
-    z-index: 200000;
+    z-index: 3000;
   }
 
 .videocontrols {
     bottom: 40px;
     right: 30%;
     position: fixed;
-    z-index: 200000;
+    z-index: 30000;
   }
 
 .vectorcontrols{
@@ -177,7 +177,7 @@
   overflow: visible;
   height: 100%;
   max-width: 100%;
-  z-index: 10000;
+  z-index: 1000;
 }
 
 #motionPath path {
@@ -215,7 +215,7 @@
 .svg-drag-select-area-overlay {
   border: 1px dotted gray;
   background-color: rgba(255,255,255,.4);
-  z-index: 100000;
+  z-index: 2000;
 }
 
 .whiteboard {
@@ -246,6 +246,7 @@
   bottom: 40%;
   right: 30%;
   position: fixed;
-  z-index: 200000;
+  z-index: 3000;
+
 }
 
