@@ -1492,7 +1492,8 @@ export class VideocreatorComponent implements OnInit {
 
   onSetCombiBox(i, element, newel) {
     let vectorcombi: vectorcombinator = this.animationarray[i];
-    this.combiBoxCalculator(vectorcombi);
+    // this.combiBoxCalculator(vectorcombi);
+    this.updateCombiBox(element);
   }
 
   onResizing(e, i) {
@@ -1564,7 +1565,7 @@ export class VideocreatorComponent implements OnInit {
 
   async dropVectorGroup(value, element, i) {
     let newel = value.value;
-    if (newel.type === 'vector') {
+    //if (newel.type === 'vector') {
       let found = false;
       newel.groupmember = true;
       for (let i = 0; i > element.vectors.length; i++) {
@@ -1577,7 +1578,7 @@ export class VideocreatorComponent implements OnInit {
         element.vectors.push(newel);
         this.onSetCombiBox(i, element, newel);
       }
-    }
+    //}
   }
 
   addNewVector(src?, height?, width?, svgcombi?, posx?, posy?, pathidar?): void { //, originid?
