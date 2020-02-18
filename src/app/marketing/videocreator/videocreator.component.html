@@ -1238,7 +1238,7 @@
                         </mat-form-field>
                         <div *ngIf="element.type === 'vectorcombi'" cdkDragHandle>
                             <mat-accordion>
-                                <mat-expansion-panel *ngFor="let part of part.vectors; let idy = index;">
+                                <mat-expansion-panel *ngFor="let part of element.vectors; let idy = index;">
                                     <div *ngIf="part.type === 'image'">
                                         <mat-checkbox [(ngModel)]="cropimages" (change)="detectchange()"
                                             matTooltip="Crop image to size">Crop</mat-checkbox>
