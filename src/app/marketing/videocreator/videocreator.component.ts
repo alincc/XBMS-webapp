@@ -167,8 +167,9 @@ export class imageanimation {
     height: string;
     position: 'absolute';
     opacity: 1;
-    'clip-path': '';
+    'clip-path': string;
   };
+  clippath: string;
   src: string;
   posx: number;
   posy: number;
@@ -1244,7 +1245,7 @@ export class VideocreatorComponent implements OnInit {
 
       })
     }
- 
+
   }
 
   removeclipPath(vectorid) {
@@ -1257,7 +1258,7 @@ export class VideocreatorComponent implements OnInit {
       clippaths[index].parentNode.removeChild(clippaths[index]);
     }
   }
-  
+
 
 
 
@@ -1388,19 +1389,36 @@ export class VideocreatorComponent implements OnInit {
 
   }
 
+  setGrid(){
+    let gridRows = 10;
+    let gridColumns = 10;
+    let gridHeight = 
+    let gridWidth = 
+    for (let i = 0; i < gridRows * gridColumns; i++) {
+      y = Math.floor(i / gridColumns) * gridHeight;
+      x = (i * gridWidth) % (gridColumns * gridWidth);
+
+      $("<div/>").css({position:"absolute", border:"1px solid #454545", width:gridWidth-1, height:gridHeight-1, top:y, left:x}).prependTo($container);
+    }
+  }
+
   setMovable(event, idel) {
     let element = document.getElementById(idel.id);
-    let snap, inertia = false;
-    if (this.snaptogrid) {
-      snap = {
-        x: function (endValue) {
-          return Math.round(endValue / this.snaptogridwidth) * this.snaptogridwidth;
-        },
-        y: function (endValue) {
-          return Math.round(endValue / this.snaptogridheight) * this.snaptogridheight;
-        }
+    let inertia = false;
+
+
+    let snap = {
+      x: function (endValue) {
+        return Math.round(endValue / this.snaptogridwidth) * this.snaptogridwidth;
+      },
+      y: function (endValue) {
+        return Math.round(endValue / this.snaptogridheight) * this.snaptogridheight;
       }
-      inertia = true
+    }
+
+
+    if (!this.snaptogrid) {
+      snap = undefined;
     }
 
 
@@ -1411,6 +1429,8 @@ export class VideocreatorComponent implements OnInit {
         type: "x,y",
         onDragEndParams: [idel],
         onDragEnd: this.setMoveableItem,
+        inertia:true,
+        edgeResistance:0.65,
         snap: snap
       });
     }
@@ -1452,25 +1472,25 @@ export class VideocreatorComponent implements OnInit {
 
     // calculate new width/height
     let widthcalc = document.getElementById(vectors[0].id).getBoundingClientRect().right;
-    let heightcalc =  document.getElementById(vectors[0].id).getBoundingClientRect().bottom;
+    let heightcalc = document.getElementById(vectors[0].id).getBoundingClientRect().bottom;
     let resetvaluex = 0;
     let resetvaluey = 0;
 
     for (let k = 0; k < vectors.length; k++) {
-     //console.log(vectors[k])
+      //console.log(vectors[k])
       let testx = document.getElementById(vectors[k].id).getBoundingClientRect().left - boundposition.left;
       let testy = document.getElementById(vectors[k].id).getBoundingClientRect().top - boundposition.top;
       let testright = document.getElementById(vectors[k].id).getBoundingClientRect().right;
       let testbottom = document.getElementById(vectors[k].id).getBoundingClientRect().bottom;
       //console.log('pos combibox', testright, widthcalc);
-      if (testx < x) { x = testx; resetvaluex = k}
-      if (testy < y) { y = testy; resetvaluey = k}
+      if (testx < x) { x = testx; resetvaluex = k }
+      if (testy < y) { y = testy; resetvaluey = k }
       if (testright > widthcalc) { widthcalc = testright }
       if (testbottom > heightcalc) { heightcalc = testbottom }
     }
 
-    let widthcalcfin = (widthcalc-boundposition.left) - x;
-    let heightcalcfin = (heightcalc-boundposition.top) - y;
+    let widthcalcfin = (widthcalc - boundposition.left) - x;
+    let heightcalcfin = (heightcalc - boundposition.top) - y;
     vectorcombi.style.width = widthcalcfin + 'px';
     vectorcombi.style.height = heightcalcfin + 'px';
     vectorcombi.posx = x;
@@ -1483,8 +1503,8 @@ export class VideocreatorComponent implements OnInit {
 
     // compensate for new combi position. 
     for (let k = 0; k < vectors.length; k++) {
-       vectors[k].posx = vectors[k].posx - diffposx; 
-       vectors[k].posy = vectors[k].posy - diffposy; 
+      vectors[k].posx = vectors[k].posx - diffposx;
+      vectors[k].posy = vectors[k].posy - diffposy;
     }
 
     this.detectchange();
@@ -1567,18 +1587,18 @@ export class VideocreatorComponent implements OnInit {
   async dropVectorGroup(value, element, i) {
     let newel = value.value;
     //if (newel.type === 'vector') {
-      let found = false;
-      newel.groupmember = true;
-      for (let i = 0; i > element.vectors.length; i++) {
-        if (JSON.stringify(element.vectors[i]) === JSON.stringify(newel)) {
-          found = true;
-        }
+    let found = false;
+    newel.groupmember = true;
+    for (let i = 0; i > element.vectors.length; i++) {
+      if (JSON.stringify(element.vectors[i]) === JSON.stringify(newel)) {
+        found = true;
       }
+    }
 
-      if (found === false) {
-        element.vectors.push(newel);
-        this.onSetCombiBox(i, element, newel);
-      }
+    if (found === false) {
+      element.vectors.push(newel);
+      this.onSetCombiBox(i, element, newel);
+    }
     //}
   }
 
@@ -1766,6 +1786,7 @@ export class VideocreatorComponent implements OnInit {
         opacity: 1,
         'clip-path': ''
       },
+      clippath: '',
       src: '',
       posx: 0,
       posy: 0,
@@ -2325,27 +2346,60 @@ export class VideocreatorComponent implements OnInit {
     });
   }
 
-  imageCropPath(){
-    this.cropimages = true;
-    if (!this.selectedelement.style['clip-path']){
-      this.selectedelement.style['clip-path'] = 'M0.5,1 C0.5,1,0,0.7,0,0.3 A0.25,0.25,1,1,1,0.5,0.3 A0.25,0.25,1,1,1,1,0.3 C1,0.7,0.5,1,0.5,1 Z';
-    }
-    let docset = document.getElementById(this.selectedelement.id + 'crop');
-    let path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-    let strPath = this.selectedelement.style['clip-path'];
-    path.setAttribute("d", strPath);
-    path.setAttribute("id", 'croppath');
-    docset.appendChild(path);
-    let pathset = document.getElementById('croppath');
-    this.pathEditor = PathEditor.create(pathset);
+  async imageCropPath() {
+    // this.selectedelement.style['clip-path'] = 'url(#' + this.selectedelement.id + 'cropclip)'
     this.selectedelement.style['clip-path'] = '';
+    this.cropimages = true;
+    let pathset = document.getElementById(this.selectedelement.id + 'croppath');
+    let docset = document.getElementById(this.selectedelement.id);
+    let svg = document.getElementById(this.selectedelement.id + 'crop');
+    let editpath;
+    let h = docset.getBoundingClientRect().height;
+    let w = docset.getBoundingClientRect().width;
+    let viewbox = '0 0 ' + w + ' ' + h;
+    svg.setAttribute('viewBox', viewbox);
+    // if not clippath present set to current size box 
+    if (!this.selectedelement.clippath) {
+      //editpath = 'M0,0 L300,0 L300,300 L0,300z'
+      editpath = 'M 10,10 L' + (w - 10) + ',10 L' + (w - 10) + ',' + (h - 10) + ' L10,' + (h - 10) + ' z';
+      this.selectedelement.clippath = editpath;
+      pathset.setAttribute('d', editpath);
+    } else {
+      editpath = this.selectedelement.clippath;
+    }
+    docset.style['clip-path'] = '';
+
+    // this.detectchange();
+    // await new Promise(resolve => setTimeout(resolve, 1000));
+    this.pathEditor = PathEditor.create(pathset);
   }
 
-  imageSaveCropPath(){
-    let pathset = document.getElementById(this.selectedelement.id + 'cropclip');
-    let newcrop = pathset.getAttribute('d');
-    let newd = newcrop + ' z';
-    // this.selectedelement.style['clip-path'] = 'path(' + newd + ')';
+  async imageSaveCropPath() {
+    if (this.cropimages) {
+      let pathset = document.getElementById(this.selectedelement.id + 'croppath');
+      let rawpath = await MotionPathPlugin.getRawPath(pathset);
+      let stringpath;
+      let style = pathset.getAttribute('transform');
+      if (style) {
+        style = style.replace('matrix(', '');
+        style = style.replace('matrix(', '');
+        style = style.replace(')', '');
+        style = style.replace(/,/g, ' ');
+        let newmatrix = style.split(' ').map(Number);
+        let testpath2 = await MotionPathPlugin.transformRawPath(rawpath, newmatrix[0], newmatrix[1], newmatrix[2], newmatrix[3], newmatrix[4], newmatrix[5]);
+        stringpath = await MotionPathPlugin.rawPathToString(testpath2);
+      } else {
+        stringpath = await MotionPathPlugin.rawPathToString(rawpath);
+      }
+      this.selectedelement.clippath = stringpath;
+      this.selectedelement.style['clip-path'] = 'url(#' + this.selectedelement.id + 'cropclip)'
+      this.cropimages = false;
+      this.detectchange();
+    }
+  }
+
+  imageRemoveCrop() {
+    this.selectedelement.style['clip-path'] = ''
     this.cropimages = false;
     this.detectchange();
   }
@@ -3033,7 +3087,7 @@ export class VideocreatorComponent implements OnInit {
     let paths = svgdiv.getElementsByTagName('path');
     //console.log(paths)
     let newpaths = [];
-    for (let y = 0; y < paths.length; y++){
+    for (let y = 0; y < paths.length; y++) {
       let ohtml = paths[y].outerHTML;
       newpaths.push(ohtml)
     };
@@ -3108,24 +3162,24 @@ export class VideocreatorComponent implements OnInit {
       let groupElement;
       let e = document.getElementById(id);
       let g = e.getElementsByTagName("g");
-      if (g.length === 0){resolve()}
+      if (g.length === 0) { resolve() }
       //if (g.length < 1000) {
-        //console.log("çheck groups")
-        for (let index = 0; index < g.length; index++) {  // ---> g.length
-          g[index].setAttribute("id", id + index + 'g');
-        
-          let sg = id + index + 'g';
-          groupElement = SVG.get(sg);
-          if (typeof groupElement.ungroup === "function") {
-            groupElement.ungroup(groupElement.parent());
-          }
-          if (index === g.length){resolve()}
+      //console.log("çheck groups")
+      for (let index = 0; index < g.length; index++) {  // ---> g.length
+        g[index].setAttribute("id", id + index + 'g');
+
+        let sg = id + index + 'g';
+        groupElement = SVG.get(sg);
+        if (typeof groupElement.ungroup === "function") {
+          groupElement.ungroup(groupElement.parent());
         }
+        if (index === g.length) { resolve() }
+      }
     })
   }
 
   async resizeVector(originalsize, newsize, idx, vectorid) {
-     return new Promise(async (resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
       let e = document.getElementById(vectorid);
 
       let scale;
