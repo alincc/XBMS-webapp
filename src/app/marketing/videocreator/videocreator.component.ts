@@ -167,6 +167,7 @@ export class imageanimation {
     height: string;
     position: 'absolute';
     opacity: 1;
+    'clip-path': '';
   };
   src: string;
   posx: number;
@@ -1377,7 +1378,7 @@ export class VideocreatorComponent implements OnInit {
   setDraggable(event, idel) {
     // Draggable does not recognise ts angular so changes are direct dom js related
     // drag selectionbox should be off and vectorcombinator should be off
-    if (this.dragselectvectpath === false && this.vectorcombiedit === false && !idel.groupmember) {
+    if (this.dragselectvectpath === false && this.vectorcombiedit === false && !idel.groupmember && !this.cropimages) {
       this.setMovable(event, idel);
     } else { this.disableDraggable(); }
 
@@ -1763,6 +1764,7 @@ export class VideocreatorComponent implements OnInit {
         height: "auto",
         position: 'absolute',
         opacity: 1,
+        'clip-path': ''
       },
       src: '',
       posx: 0,
@@ -2321,6 +2323,31 @@ export class VideocreatorComponent implements OnInit {
     this.animationarray[i].vectors.forEach(element => {
       //this.createRotate(element);
     });
+  }
+
+  imageCropPath(){
+    this.cropimages = true;
+    if (!this.selectedelement.style['clip-path']){
+      this.selectedelement.style['clip-path'] = 'M0.5,1 C0.5,1,0,0.7,0,0.3 A0.25,0.25,1,1,1,0.5,0.3 A0.25,0.25,1,1,1,1,0.3 C1,0.7,0.5,1,0.5,1 Z';
+    }
+    let docset = document.getElementById(this.selectedelement.id + 'crop');
+    let path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    let strPath = this.selectedelement.style['clip-path'];
+    path.setAttribute("d", strPath);
+    path.setAttribute("id", 'croppath');
+    docset.appendChild(path);
+    let pathset = document.getElementById('croppath');
+    this.pathEditor = PathEditor.create(pathset);
+    this.selectedelement.style['clip-path'] = '';
+  }
+
+  imageSaveCropPath(){
+    let pathset = document.getElementById(this.selectedelement.id + 'cropclip');
+    let newcrop = pathset.getAttribute('d');
+    let newd = newcrop + ' z';
+    // this.selectedelement.style['clip-path'] = 'path(' + newd + ')';
+    this.cropimages = false;
+    this.detectchange();
   }
 
   async playFunc() {

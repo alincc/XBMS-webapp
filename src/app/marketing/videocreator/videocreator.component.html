@@ -721,8 +721,8 @@
                 <mat-accordion cdkDropList (cdkDropListDropped)="drop($event)">
                     <mat-expansion-panel *ngFor="let element of animationarray; let i = index" cdkDrag
                         (click)="onSelectElement($event, element)" [expanded]="element === selectedelement">
-                        <mat-expansion-panel-header *ngIf="element.type === 'image' && !element.groupmember" cdkDragHandle
-                            [class.selected]="element === selectedelement">
+                        <mat-expansion-panel-header *ngIf="element.type === 'image' && !element.groupmember"
+                            cdkDragHandle [class.selected]="element === selectedelement">
                             <mat-panel-title>
                                 <img *ngIf="element.src" src={{element.src}} class="elementsedit"
                                     style="height: 30px; width: auto;">
@@ -734,35 +734,43 @@
                             </mat-panel-title>
                         </mat-expansion-panel-header>
                         <div *ngIf="element.type === 'image' && !element.groupmember">
-                            <mat-checkbox [(ngModel)]="cropimages" (change)="detectchange()"
-                                matTooltip="Crop image to size">Crop</mat-checkbox>
-                            <mat-form-field style="max-width: 46px;">
-                                <input (change)="detectchange()" [(ngModel)]="element.posy" type="number" matInput>
-                                <mat-hint>Y |</mat-hint>
-                            </mat-form-field>
-                            <mat-form-field style="max-width: 46px;">
-                                <input (change)="detectchange()" [(ngModel)]="element.posx" type="number" matInput>
-                                <mat-hint>X -</mat-hint>
-                            </mat-form-field>
-                            <mat-form-field style="max-width: 46px;">
-                                <input (change)="detectchange()" [(ngModel)]="element.style.height" matInput>
-                                <mat-hint>Height</mat-hint>
-                            </mat-form-field>
-                            <mat-form-field style="max-width: 46px;">
-                                <input (change)="detectchange()" [(ngModel)]="element.style.width" matInput>
-                                <mat-hint>Width</mat-hint>
-                            </mat-form-field>
-                            <div *ngIf="element.src">
-                                <img style="max-width: 100%;" src={{element.src}} class="elementsedit">
-                                <mat-icon (click)="element.src = ''" class="icon-label" class="iconsize-12">delete
-                                </mat-icon>
-                            </div>
-                            <app-fileupload *ngIf="!element.src" [account]="Account" [option]="option"
-                                (imgurl)="setImage($event, i)">
-                            </app-fileupload>
+                            <!-- <mat-checkbox [(ngModel)]="cropimages" 
+                            (change)="element.style['clip-path'] = ''"
+                                matTooltip="Crop image to size">Crop</mat-checkbox> -->
+                            <<button mat-button (click)="imageCropPath()">edit crop</button>
+                                <<button mat-button (click)="imageSaveCropPath()">save crop</button>
+                                    <<button mat-button (click)="element.style['clip-path'] = ''">remove crop</button>
+                                        <mat-form-field style="max-width: 46px;">
+                                            <input (change)="detectchange()" [(ngModel)]="element.posy" type="number"
+                                                matInput>
+                                            <mat-hint>Y |</mat-hint>
+                                        </mat-form-field>
+                                        <mat-form-field style="max-width: 46px;">
+                                            <input (change)="detectchange()" [(ngModel)]="element.posx" type="number"
+                                                matInput>
+                                            <mat-hint>X -</mat-hint>
+                                        </mat-form-field>
+                                        <mat-form-field style="max-width: 46px;">
+                                            <input (change)="detectchange()" [(ngModel)]="element.style.height"
+                                                matInput>
+                                            <mat-hint>Height</mat-hint>
+                                        </mat-form-field>
+                                        <mat-form-field style="max-width: 46px;">
+                                            <input (change)="detectchange()" [(ngModel)]="element.style.width" matInput>
+                                            <mat-hint>Width</mat-hint>
+                                        </mat-form-field>
+                                        <div *ngIf="element.src">
+                                            <img style="max-width: 100%;" src={{element.src}} class="elementsedit">
+                                            <mat-icon (click)="element.src = ''" class="icon-label" class="iconsize-12">
+                                                delete
+                                            </mat-icon>
+                                        </div>
+                                        <app-fileupload *ngIf="!element.src" [account]="Account" [option]="option"
+                                            (imgurl)="setImage($event, i)">
+                                        </app-fileupload>
                         </div>
-                        <mat-expansion-panel-header *ngIf="element.type === 'text' && !element.groupmember" cdkDragHandle
-                            [class.selected]="element === selectedelement">
+                        <mat-expansion-panel-header *ngIf="element.type === 'text' && !element.groupmember"
+                            cdkDragHandle [class.selected]="element === selectedelement">
                             <mat-panel-title>
                                 <label>{{element.content}}</label>
                                 <mat-icon (click)="deleteitem(i)" class="iconsize-12">delete</mat-icon>
@@ -845,8 +853,8 @@
                                 </div>
                             </div>
                         </div>
-                        <mat-expansion-panel-header *ngIf="element.type === 'shape' && !element.groupmember" cdkDragHandle
-                            [class.selected]="element === selectedelement">
+                        <mat-expansion-panel-header *ngIf="element.type === 'shape' && !element.groupmember"
+                            cdkDragHandle [class.selected]="element === selectedelement">
                             <mat-panel-title>
                                 <div [style.width]="'50px'" [style.height]="'50px'" [ngStyle]="element.style"
                                     [className]="element.style.class">
@@ -999,7 +1007,8 @@
                                 <mat-icon>collections</mat-icon>
                             </button> -->
                         </div>
-                        <mat-expansion-panel-header *ngIf="element.type === 'chart' && !element.groupmember" cdkDragHandle>
+                        <mat-expansion-panel-header *ngIf="element.type === 'chart' && !element.groupmember"
+                            cdkDragHandle>
                             <mat-panel-title>
                                 <mat-icon>show_chart</mat-icon>
                                 <mat-icon (click)="deleteitem(i)" class="iconsize-12">delete</mat-icon>
@@ -1222,9 +1231,8 @@
                                     </div>
                                     <img *ngIf="potpart.type === 'image'" src={{potpart.src}}
                                         style="height: 20px; width: 20px;">
-                                    <div *ngIf="potpart.type === 'shape'"
-                                        style="height: 20px; width: 20px;" [className]="potpart.style.class"
-                                        [ngStyle]="potpart.style">
+                                    <div *ngIf="potpart.type === 'shape'" style="height: 20px; width: 20px;"
+                                        [className]="potpart.style.class" [ngStyle]="potpart.style">
                                     </div>
                                     <div *ngIf="potpart.type === 'chart'">
                                         <mat-icon>graph</mat-icon>
@@ -1232,7 +1240,7 @@
                                     <div *ngIf="potpart.type === 'text'">
                                         <label>{{potpart.content}}</label>
                                     </div>
-                                   
+
                                 </mat-option>
                             </mat-select>
                         </mat-form-field>
@@ -1243,11 +1251,13 @@
                                         <mat-checkbox [(ngModel)]="cropimages" (change)="detectchange()"
                                             matTooltip="Crop image to size">Crop</mat-checkbox>
                                         <mat-form-field style="max-width: 46px;">
-                                            <input (change)="detectchange()" [(ngModel)]="part.posy" type="number" matInput>
+                                            <input (change)="detectchange()" [(ngModel)]="part.posy" type="number"
+                                                matInput>
                                             <mat-hint>Y |</mat-hint>
                                         </mat-form-field>
                                         <mat-form-field style="max-width: 46px;">
-                                            <input (change)="detectchange()" [(ngModel)]="part.posx" type="number" matInput>
+                                            <input (change)="detectchange()" [(ngModel)]="part.posx" type="number"
+                                                matInput>
                                             <mat-hint>X -</mat-hint>
                                         </mat-form-field>
                                         <mat-form-field style="max-width: 46px;">
@@ -1260,7 +1270,8 @@
                                         </mat-form-field>
                                         <div *ngIf="part.src">
                                             <img style="max-width: 100%;" src={{part.src}} class="elementsedit">
-                                            <mat-icon (click)="part.src = ''" class="icon-label" class="iconsize-12">delete
+                                            <mat-icon (click)="part.src = ''" class="icon-label" class="iconsize-12">
+                                                delete
                                             </mat-icon>
                                         </div>
                                         <app-fileupload *ngIf="!part.src" [account]="Account" [option]="option"
@@ -1278,13 +1289,15 @@
                                         </mat-panel-title>
                                     </mat-expansion-panel-header>
                                     <div *ngIf="part.type === 'text'">
-            
+
                                         <mat-form-field style="max-width: 46px;">
-                                            <input (change)="detectchange()" [(ngModel)]="part.posy" type="number" matInput>
+                                            <input (change)="detectchange()" [(ngModel)]="part.posy" type="number"
+                                                matInput>
                                             <mat-hint>Y |</mat-hint>
                                         </mat-form-field>
                                         <mat-form-field style="max-width: 46px;">
-                                            <input (change)="detectchange()" [(ngModel)]="part.posx" type="number" matInput>
+                                            <input (change)="detectchange()" [(ngModel)]="part.posx" type="number"
+                                                matInput>
                                             <mat-hint>X -</mat-hint>
                                         </mat-form-field>
                                         <mat-form-field style="max-width: 46px;">
@@ -1298,11 +1311,14 @@
                                         <div fxLayout="column">
                                             <div fxLayout="row" fxLayout.xs="column">
                                                 <mat-form-field style="width: 95%;" appearance="outline">
-                                                    <input matTooltip="insert text" #inputpreview [(ngModel)]="part.content"
-                                                        type="text" matInput placeholder="element text">
-                                                    <mat-icon matTooltip="select Emoji" (click)="onshowemoji(i)" matSuffix>
+                                                    <input matTooltip="insert text" #inputpreview
+                                                        [(ngModel)]="part.content" type="text" matInput
+                                                        placeholder="element text">
+                                                    <mat-icon matTooltip="select Emoji" (click)="onshowemoji(i)"
+                                                        matSuffix>
                                                         insert_emoticon</mat-icon>
-                                                    <mat-hint align="end">{{inputpreview.value?.length || 0}}/90</mat-hint>
+                                                    <mat-hint align="end">{{inputpreview.value?.length || 0}}/90
+                                                    </mat-hint>
                                                 </mat-form-field>
                                             </div>
                                             <div fxLayout="row" fxLayout.xs="column" *ngIf="showemoji">
@@ -1313,7 +1329,8 @@
                                                       top: 8;
                                                       left: 20;
                                                       z-index: 20;">
-                                                        <emoji-mart (emojiClick)="setemoji($event, i, part)" set="emojione">
+                                                        <emoji-mart (emojiClick)="setemoji($event, i, part)"
+                                                            set="emojione">
                                                         </emoji-mart>
                                                     </div>
                                                 </div>
@@ -1327,7 +1344,8 @@
                                             <div fxLayout="row" fxLayout.xs="column">
                                                 <input style="width: 60px;" [style.background]="part.style['color']"
                                                     [cpOutputFormat]="'hex'" [(colorPicker)]="part.style['color']"
-                                                    (colorPickerChange)="detectchange()" [cpPresetLabel]="'Company colors'"
+                                                    (colorPickerChange)="detectchange()"
+                                                    [cpPresetLabel]="'Company colors'"
                                                     [cpPresetColors]="[option.companyprimairycolor, option.companysecondarycolor, company.companyprimairycolor, company.companysecondarycolor]">
                                             </div>
                                             <br>
@@ -1337,16 +1355,18 @@
                                                     <mat-select [(value)]="part.style['font-family']"
                                                         (selectionChange)="detectchange()">
                                                         <mat-option *ngFor="let font of Fonts" [value]="font.value">
-                                                            <label [style.font-family]="font.value">{{font.name}}</label>
+                                                            <label
+                                                                [style.font-family]="font.value">{{font.name}}</label>
                                                         </mat-option>
                                                     </mat-select>
                                                 </mat-form-field>
                                             </div>
-            
+
                                             <div fxLayout="row">
                                                 <mat-button-toggle fxFlex (click)="setbold(part)" value="bold">Bold
                                                 </mat-button-toggle>
-                                                <mat-button-toggle fxFlex (click)="setitalic(part)" value="italic">Italic
+                                                <mat-button-toggle fxFlex (click)="setitalic(part)" value="italic">
+                                                    Italic
                                                 </mat-button-toggle>
                                             </div>
                                         </div>
@@ -1376,11 +1396,13 @@
                                             </mat-select>
                                         </mat-form-field>
                                         <mat-form-field style="max-width: 46px;">
-                                            <input (change)="detectchange()" [(ngModel)]="part.posy" type="number" matInput>
+                                            <input (change)="detectchange()" [(ngModel)]="part.posy" type="number"
+                                                matInput>
                                             <mat-hint>Y |</mat-hint>
                                         </mat-form-field>
                                         <mat-form-field style="max-width: 46px;">
-                                            <input (change)="detectchange()" [(ngModel)]="part.posx" type="number" matInput>
+                                            <input (change)="detectchange()" [(ngModel)]="part.posx" type="number"
+                                                matInput>
                                             <mat-hint>X -</mat-hint>
                                         </mat-form-field>
                                         <mat-form-field style="max-width: 46px;">
@@ -1392,7 +1414,8 @@
                                             <mat-hint>Width</mat-hint>
                                         </mat-form-field>
                                         <div fxLayout="column" *ngIf="part.shape !== 'heart'">
-                                            <input style="width: 60px;" [style.background]="part.style['background-color']"
+                                            <input style="width: 60px;"
+                                                [style.background]="part.style['background-color']"
                                                 [(colorPicker)]="part.style['background-color']"
                                                 (colorPickerChange)="detectchange()" [cpPresetLabel]="'Company colors'"
                                                 [cpPresetColors]="[option.companyprimairycolor, option.companysecondarycolor, company.companyprimairycolor, company.companysecondarycolor]">
@@ -1442,9 +1465,8 @@
                                                     (click)="removeVectorPathSelection()">
                                                     delete
                                                 </mat-icon>
-                                                <mat-icon (click)="seperatePaths(idx, vector, part)"
-                                                    class="icon-label" class="iconsize-14"
-                                                    matTooltip="Seperate images parts">
+                                                <mat-icon (click)="seperatePaths(idx, vector, part)" class="icon-label"
+                                                    class="iconsize-14" matTooltip="Seperate images parts">
                                                     tab_unselected
                                                 </mat-icon>
                                             </mat-expansion-panel>
@@ -1474,9 +1496,8 @@
                                                     (click)="removeVectorPathSelection()">
                                                     delete
                                                 </mat-icon>
-                                                <mat-icon (click)="seperatePaths(idx, vector, part)"
-                                                    class="icon-label" class="iconsize-14"
-                                                    matTooltip="Seperate images parts">
+                                                <mat-icon (click)="seperatePaths(idx, vector, part)" class="icon-label"
+                                                    class="iconsize-14" matTooltip="Seperate images parts">
                                                     tab_unselected
                                                 </mat-icon>
                                                 <mat-form-field style="max-width: 46px;">
@@ -1502,8 +1523,7 @@
                                             </div>
                                         </div>
                                         <button mat-mini-fab *ngIf="part.morph" class="addbutton"
-                                            matTooltip="Add vector" (click)="addNewVectorSrc(i, part)"
-                                            color="primary">
+                                            matTooltip="Add vector" (click)="addNewVectorSrc(i, part)" color="primary">
                                             <mat-icon>add</mat-icon>
                                         </button>
                                     </div>
@@ -1525,14 +1545,16 @@
                                                 </mat-expansion-panel-header>
                                                 <div *ngFor="let label of part.label; let i1 = index;">
                                                     <mat-form-field fxflex>
-                                                        <input (change)="detectchangeLabel(i, i1, label)" [(ngModel)]="label"
-                                                            type="text" matInput placeholder="label">
+                                                        <input (change)="detectchangeLabel(i, i1, label)"
+                                                            [(ngModel)]="label" type="text" matInput
+                                                            placeholder="label">
                                                     </mat-form-field>
                                                 </div>
-                                                <mat-icon (click)="deletelabel(i, i1)" class="iconsize-12">delete</mat-icon>
+                                                <mat-icon (click)="deletelabel(i, i1)" class="iconsize-12">delete
+                                                </mat-icon>
                                                 <mat-icon (click)="addLabel(i, i1)">add</mat-icon>
                                                 <div *ngFor="let row of part.data; let i1 = index;" fxLayout="column">
-            
+
                                                     <mat-form-field fxflex>
                                                         <input (change)="detectchangerowlabel(i, i1, row.label)"
                                                             [(ngModel)]="row.label" type="text" matInput>
@@ -1551,7 +1573,7 @@
                                                 </div>
                                             </mat-expansion-panel>
                                         </mat-accordion>
-            
+
                                         <mat-accordion>
                                             <mat-expansion-panel>
                                                 <mat-expansion-panel-header>
@@ -1561,7 +1583,8 @@
                                                 </mat-expansion-panel-header>
                                                 <div *ngFor="let colors of part.colors" fxLayout="column">
                                                     Color Specification
-                                                    <input style="width: 60px;" [style.background]="colors.backgroundColor"
+                                                    <input style="width: 60px;"
+                                                        [style.background]="colors.backgroundColor"
                                                         [(colorPicker)]="colors.backgroundColor"
                                                         (colorPickerChange)="detectchange()" [cpCancelButton]="true"
                                                         [cpPresetLabel]="'Company colors'"
@@ -1570,30 +1593,38 @@
                                                         delete
                                                     </mat-icon>
                                                     <input style="width: 60px;" [style.background]="colors.borderColor"
-                                                        [(colorPicker)]="colors.borderColor" (colorPickerChange)="detectchange()"
+                                                        [(colorPicker)]="colors.borderColor"
+                                                        (colorPickerChange)="detectchange()"
                                                         [cpPresetLabel]="'Company colors'"
                                                         [cpPresetColors]="[company.companyprimairycolor, company.companysecondarycolor]">
-                                                    <mat-icon class="iconsize-12" (click)="colors.borderColor = ''">delete
-                                                    </mat-icon>
-                                                    <input style="width: 60px;" [style.background]="colors.pointBackgroundColor"
-                                                        [(colorPicker)]="colors.pointBackgroundColor"
-                                                        (colorPickerChange)="detectchange()" [cpPresetLabel]="'Company colors'"
-                                                        [cpPresetColors]="[company.companyprimairycolor, company.secondarycolor]">
-                                                    <mat-icon class="iconsize-12" (click)="colors.pointBackgroundColor = ''">
+                                                    <mat-icon class="iconsize-12" (click)="colors.borderColor = ''">
                                                         delete
                                                     </mat-icon>
-                                                    <input style="width: 60px;" [style.background]="colors.pointBorderColor"
-                                                        [(colorPicker)]="colors.pointBorderColor"
-                                                        (colorPickerChange)="detectchange()" [cpPresetLabel]="'Company colors'"
+                                                    <input style="width: 60px;"
+                                                        [style.background]="colors.pointBackgroundColor"
+                                                        [(colorPicker)]="colors.pointBackgroundColor"
+                                                        (colorPickerChange)="detectchange()"
+                                                        [cpPresetLabel]="'Company colors'"
                                                         [cpPresetColors]="[company.companyprimairycolor, company.secondarycolor]">
-                                                    <mat-icon class="iconsize-12" (click)="colors.pointBorderColor = ''">
+                                                    <mat-icon class="iconsize-12"
+                                                        (click)="colors.pointBackgroundColor = ''">
+                                                        delete
+                                                    </mat-icon>
+                                                    <input style="width: 60px;"
+                                                        [style.background]="colors.pointBorderColor"
+                                                        [(colorPicker)]="colors.pointBorderColor"
+                                                        (colorPickerChange)="detectchange()"
+                                                        [cpPresetLabel]="'Company colors'"
+                                                        [cpPresetColors]="[company.companyprimairycolor, company.secondarycolor]">
+                                                    <mat-icon class="iconsize-12"
+                                                        (click)="colors.pointBorderColor = ''">
                                                         delete
                                                     </mat-icon>
                                                 </div>
-            
+
                                             </mat-expansion-panel>
                                         </mat-accordion>
-            
+
                                         <mat-accordion>
                                             <mat-expansion-panel>
                                                 <mat-expansion-panel-header>
@@ -1618,7 +1649,8 @@
                                                     <input style="width: 60px"
                                                         [style.background]="part.lineChartOptions.scales.xAxes[0].gridLines.color"
                                                         [(colorPicker)]="part.lineChartOptions.scales.xAxes[0].gridLines.color"
-                                                        (colorPickerChange)="detectchange()" [cpPresetLabel]="'Company colors'"
+                                                        (colorPickerChange)="detectchange()"
+                                                        [cpPresetLabel]="'Company colors'"
                                                         [cpPresetColors]="[company.companyprimairycolor, company.secondarycolor]">
                                                     <mat-icon class="iconsize-12"
                                                         (click)="part.lineChartOptions.scales.xAxes[0].gridLines.color = ''">
@@ -1629,7 +1661,8 @@
                                                     <input style="width: 60px"
                                                         [style.background]="part.lineChartOptions.scales.xAxes[0].ticks.fontColor"
                                                         [(colorPicker)]="part.lineChartOptions.scales.xAxes[0].ticks.fontColor"
-                                                        (colorPickerChange)="detectchange()" [cpPresetLabel]="'Company colors'"
+                                                        (colorPickerChange)="detectchange()"
+                                                        [cpPresetLabel]="'Company colors'"
                                                         [cpPresetColors]="[company.companyprimairycolor, company.secondarycolor]">
                                                     <mat-icon class="iconsize-12"
                                                         (click)="part.lineChartOptions.scales.xAxes[0].ticks.fontColor = ''">
@@ -1640,7 +1673,8 @@
                                                     <input style="width: 60px"
                                                         [style.background]="part.lineChartOptions.scales.yAxes[0].gridLines.color"
                                                         [(colorPicker)]="part.lineChartOptions.scales.yAxes[0].gridLines.color"
-                                                        (colorPickerChange)="detectchange()" [cpPresetLabel]="'Company colors'"
+                                                        (colorPickerChange)="detectchange()"
+                                                        [cpPresetLabel]="'Company colors'"
                                                         [cpPresetColors]="[company.companyprimairycolor, company.secondarycolor]">
                                                     <mat-icon class="iconsize-12"
                                                         (click)="part.lineChartOptions.scales.yAxes[0].gridLines.color = ''">
@@ -1651,7 +1685,8 @@
                                                     <input style="width: 60px"
                                                         [style.background]="part.lineChartOptions.scales.yAxes[0].ticks.fontColor"
                                                         [(colorPicker)]="part.lineChartOptions.scales.yAxes[0].ticks.fontColor"
-                                                        (colorPickerChange)="detectchange()" [cpPresetLabel]="'Company colors'"
+                                                        (colorPickerChange)="detectchange()"
+                                                        [cpPresetLabel]="'Company colors'"
                                                         [cpPresetColors]="[company.companyprimairycolor, company.secondarycolor]">
                                                     <mat-icon class="iconsize-12"
                                                         (click)="part.lineChartOptions.scales.xAxes[0].ticks.fontColor = ''">
@@ -1659,10 +1694,12 @@
                                                     </mat-icon>
                                                     <mat-form-field>
                                                         <mat-label>Select font lables</mat-label>
-                                                        <mat-select [(value)]="part.lineChartOptions.legend.labels.fontFamily"
+                                                        <mat-select
+                                                            [(value)]="part.lineChartOptions.legend.labels.fontFamily"
                                                             (selectionChange)="detectchange()">
                                                             <mat-option *ngFor="let font of Fonts" [value]="font.value">
-                                                                <label [style.font-family]="font.value">{{font.name}}</label>
+                                                                <label
+                                                                    [style.font-family]="font.value">{{font.name}}</label>
                                                             </mat-option>
                                                         </mat-select>
                                                     </mat-form-field>
@@ -1672,7 +1709,8 @@
                                                             [(value)]="part.lineChartOptions.scales.xAxes[0].ticks.fontFamily"
                                                             (selectionChange)="detectchange()">
                                                             <mat-option *ngFor="let font of Fonts" [value]="font.value">
-                                                                <label [style.font-family]="font.value">{{font.name}}</label>
+                                                                <label
+                                                                    [style.font-family]="font.value">{{font.name}}</label>
                                                             </mat-option>
                                                         </mat-select>
                                                     </mat-form-field>
@@ -1682,13 +1720,15 @@
                                                             [(value)]="part.lineChartOptions.scales.yAxes[0].ticks.fontFamily"
                                                             (selectionChange)="detectchange()">
                                                             <mat-option *ngFor="let font of Fonts" [value]="font.value">
-                                                                <label [style.font-family]="font.value">{{font.name}}</label>
+                                                                <label
+                                                                    [style.font-family]="font.value">{{font.name}}</label>
                                                             </mat-option>
                                                         </mat-select>
                                                     </mat-form-field>
                                                     <mat-form-field style="max-width: 46px;">
                                                         <input (change)="detectchange()"
-                                                            [(ngModel)]="part.lineChartOptions.legend.labels.fontSize" matInput>
+                                                            [(ngModel)]="part.lineChartOptions.legend.labels.fontSize"
+                                                            matInput>
                                                         <mat-hint>Label -</mat-hint>
                                                     </mat-form-field>
                                                     <mat-form-field style="max-width: 46px;">
@@ -1706,11 +1746,11 @@
                                                 </div>
                                             </mat-expansion-panel>
                                         </mat-accordion>
-            
+
                                         <mat-icon (click)="addgraph(i)">add</mat-icon>
                                         <mat-icon (click)="deletegraph(i)">delete</mat-icon>
-            
-            
+
+
                                     </div>
                                 </mat-expansion-panel>
                             </mat-accordion>
@@ -1816,7 +1856,7 @@
     <div ngClass.gt-xs="container-normal" ngClass.lt-sm="container-noshow" [class.container-xs-show]="listviewxsshow"
         fxLayout="column" fxLayoutAlign="start">
 
-        <div *ngIf="selectedVecPath">
+        <div *ngIf="selectedVecPath && selectedelement.type === 'vector'">
             <div class="vectorcontrols">
 
                 <mat-icon (click)="editFigurePath()" class="iconsize-18" matTooltip="Change shape path">
@@ -1860,10 +1900,12 @@
         </div>
 
         <div *ngIf="selectedelement" class="vectorcontrols">
-            <mat-slide-toggle *ngIf="selectedelement.type === 'vectorcombi'" [(ngModel)]="vectorcombiedit" (click)="vectorcombieditSet(i)"
-            matTooltip="Move seperate sections">Edit</mat-slide-toggle>
+            <mat-slide-toggle
+                *ngIf="selectedelement.type === 'vectorcombi' || selectedelement.groupmember || vectorcombiedit"
+                [(ngModel)]="vectorcombiedit" (click)="vectorcombieditSet(i)" matTooltip="Move seperate sections">Edit
+            </mat-slide-toggle>
         </div>
- 
+
 
         <div *ngIf="changevideo" [ngStyle]="canvas" style="border: 1px solid grey; overflow:hidden;">
 
@@ -1905,12 +1947,21 @@
                         [style.height]="element.style.height" (rzResizing)="onResizing($event, i)"
                         [ngResizable]="element === selectedelement" [rzAspectRatio]="true" class="elementanimationarray"
                         [class.elementanimationarrayselected]="element === selectedelement">
-                        <img *ngIf="element.src" style="width: 100%; height: 100%;" src={{element.src}}>
-                        <image-cropper *ngIf="cropimages" [imageChangedEvent]="imageChangedEvent"
-                            [maintainAspectRatio]="true" [aspectRatio]="4 / 3" [resizeToWidth]="128" format="png"
-                            (imageCropped)="imageCropped($event)" (imageLoaded)="imageLoaded()"
-                            (cropperReady)="cropperReady()" (loadImageFailed)="loadImageFailed()">
-                        </image-cropper>
+                        <div [ngStyle]="{'z-index':cropimages === true && element === selectedelement ? 1000 : -1 }"
+                            class="whiteboard">
+
+                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                                version="1.1" [attr.id]="element.id + 'crop'" width="100%" height="100%"
+                                style="fill:transparent; stroke:black; stroke-width: 2px;" viewBox="0 0 500 500">
+                                <defs>
+                                    <clipPath id="element.id + 'cropclip'" d="M100,100 L150,100 L150,150  Z">
+                                    </clipPath>
+                                </defs>
+                            </svg>
+
+                        </div>
+                        <img *ngIf="element.src" style="width: 100%; height: 100%;" src={{element.src}} 
+                        [style.clip-path]="'clip-path: url('element.id + 'cropclip)'">
                         <mat-icon *ngIf="element === selectedelement" class="iconsize-4" class="rotatehandle"
                             #rotatehandle [attr.id]="element.id + 'rotatehandle'">replay</mat-icon>
                     </div>
@@ -1989,11 +2040,6 @@
                                 [ngStyle]="{'z-index':vectorcombiedit === true && element === selectedelement ? 1000 : -1 }"
                                 [class.elementanimationarrayselected]="part === selectedelement && vectorcombiedit">
                                 <img *ngIf="part.src" style="width: 100%; height: 100%;" src={{part.src}}>
-                                <image-cropper *ngIf="cropimages" [imageChangedEvent]="imageChangedEvent"
-                                    [maintainAspectRatio]="true" [aspectRatio]="4 / 3" [resizeToWidth]="128"
-                                    format="png" (imageCropped)="imageCropped($event)" (imageLoaded)="imageLoaded()"
-                                    (cropperReady)="cropperReady()" (loadImageFailed)="loadImageFailed()">
-                                </image-cropper>
                                 <mat-icon *ngIf="vectorcombiedit && part === selectedelement" class="iconsize-4"
                                     class="rotatehandle" #rotatehandle [attr.id]="part.id + 'rotatehandle'">replay
                                 </mat-icon>
