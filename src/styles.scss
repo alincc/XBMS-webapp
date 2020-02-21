@@ -280,7 +280,7 @@ body{
 
 .gridcells {
   position: absolute;
-  border: 1px solid #454545; 
+  border: 1px solid lightgray; 
 }
 
 @for $i from 1 through 100{
@@ -361,3 +361,24 @@ body{
 }
 
 
+.imggreyclass {
+  -webkit-filter: grayscale(1); /* Webkit */
+  filter: gray; /* IE6-9 */
+  filter: grayscale(1); /* W3C */
+}
+
+.imgblur {
+  filter: blur(4px);
+}
+
+
+.imgblursection {
+  z-index: 1;
+  width: calc(100% - 20px);
+  // height: calc(100% - 20px);
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  filter: blur(4px);
+}

@@ -41,8 +41,8 @@ export class chart {
   motionrotation: number;
   rotation: number;
   label: Label[] = [];
-  data: ChartDataSets[];
-  productiondata: ChartDataSets[];
+  data: any;
+  productiondata: any;
   //options:
   colors: Color[] = [
     { // grey
@@ -180,10 +180,13 @@ export class imageanimation {
   transform: string;
   motionrotation: number;
   rotation: number;
+  grey: false;
+  blur: false;
 }
 
 export class vectorcombinator {
   type: 'vectorcombi';
+  groupname: string;
   groupmember: false;
   vectors: vectoranimation[];
   animation: animationtype[];
@@ -328,8 +331,8 @@ export class VideocreatorComponent implements OnInit {
   public pathHelper: MotionPathHelper;
   public pathEditor: PathEditor;
   public snaptogrid = false;
-  public snaptogridwidth = 50;
-  public snaptogridheight = 50;
+  public snaptogridwidth = 20;
+  public snaptogridheight = 20;
   public colorpick = 'white';
   public colorpickline = 'black';
   public linewidth = 2;
@@ -410,7 +413,7 @@ export class VideocreatorComponent implements OnInit {
   public snippetcode: string;
   public systembusy = false;
   public history = [];
-  public currenthistoryversion = -1;
+  public currenthistoryversion = 0;
 
 
   @Input() debounceTime = 50;
@@ -466,39 +469,58 @@ export class VideocreatorComponent implements OnInit {
     else { this.keyinput.next(evtobj) }
   }
 
-  saveToLocalStorageHistory(setnr?) {
+  async saveToLocalStorageHistory(setnr?) {
     // check if is actually a newer version check last with new is similar
     // triggers on mouseup event set debounce time if triggered to fast see ngoninit
-    let jsonaniarray = JSON.stringify(this.animationarray);
+
+    console.log('save');
+    let jsonaniarray = JSON.stringify(this.animationarray, this.getCircularReplacer());
     let jsonaniarraylast = JSON.stringify(this.history[this.currenthistoryversion]);
-    if (this.currenthistoryversion < this.history.length) {
+    if (this.currenthistoryversion < this.history.length -1) {
       this.history = this.history.splice(this.currenthistoryversion + 1, this.history.length - 1)
     }
     if (jsonaniarray !== jsonaniarraylast) {
       this.currenthistoryversion = this.currenthistoryversion + 1;
-      this.history.push(this.animationarray);
+      this.history.push(jsonaniarray);
     }
   }
 
+  // circular chart data._meta
+  getCircularReplacer = () => {
+    const seen = new WeakSet();
+    return (key, value) => {
+      if (typeof value === "object" && value !== null) {
+        if (seen.has(value)) {
+          return;
+        }
+        seen.add(value);
+      }
+      return value;
+    };
+  };
+  
+
   historyBack() {
-    //console.log('ctrl-z', this.currenthistoryversion)
+    console.log('ctrl-z', this.currenthistoryversion)
     // if not last or not empty and if is new;
     if (this.currenthistoryversion !== 0) {
       this.currenthistoryversion = this.currenthistoryversion - 1;
       let storedback = this.history[this.currenthistoryversion];
       // console.log(this.history, this.currenthistoryversion, storedback);
-      this.animationarray = storedback;
+      this.animationarray = JSON.parse(storedback);
+      this.detectchange();
     }
   }
 
   historyForward() {
-    //console.log('ctrl-y', this.currenthistoryversion)
+    console.log('ctrl-y', this.currenthistoryversion)
     // if not latest or not empty
     let histlast = this.history.length - 1;
     if (this.currenthistoryversion < histlast) {
       this.currenthistoryversion = this.currenthistoryversion + 1;
       let storedback = this.history[this.currenthistoryversion]
-      this.animationarray = storedback;
+      this.animationarray = JSON.parse(storedback);
+      this.detectchange();
     }
   }
 
@@ -742,6 +764,12 @@ export class VideocreatorComponent implements OnInit {
       this.setPosition(elm);
 
       if (elm.type === 'chart') {
+        // remove json meta problem 
+        // elm.data.forEach(dataelement => {
+        //   if (dataelement){
+        //     dataelement._meta = undefined;
+        //   }
+        // });
         elm.productiondata = [
           { data: [0, 0, 0], label: 'Series A' },
           { data: [0, 0, 0], label: 'Series B' }
@@ -1153,6 +1181,8 @@ export class VideocreatorComponent implements OnInit {
     // redo all ids
     let newelnr = this.animationarray.length + 'el';
     newElement.id = newelnr;
+    this.newz = this.newz + 1;
+    newElement.style['z-index'] = this.newz; 
 
     if (element.type === 'vector') {
       let newVectorElement: vectoranimation = newElement;
@@ -1341,11 +1371,24 @@ export class VideocreatorComponent implements OnInit {
       return obj.anim_type === 'bounce'
     });
     if (animationmove.length > 0 || animationbounce.length > 0) {
-      let path = await document.getElementById(idel.id + 'p');
-      let rawpath = await MotionPathPlugin.getRawPath(path);
-      let newpath = await MotionPathPlugin.transformRawPath(rawpath, 1, 0, 0, 1, newx, newy);
-      let stringpath = await MotionPathPlugin.rawPathToString(newpath);
-      this.setNewMotionPath(stringpath);
+      if (idel.groupmember){
+        let boundposition = document.getElementById('myBounds').getBoundingClientRect();
+
+        // get the actual position on the screen / relative
+        let relx = document.getElementById(idel.id).getBoundingClientRect().left - boundposition.left;
+        let rely = document.getElementById(idel.id).getBoundingClientRect().top - boundposition.top;
+        let path = await document.getElementById(idel.id + 'p');
+        let rawpath = await MotionPathPlugin.getRawPath(path);
+        let newpath = await MotionPathPlugin.transformRawPath(rawpath, 1, 0, 0, 1, relx, rely);
+        let stringpath = await MotionPathPlugin.rawPathToString(newpath);
+        this.setNewMotionPath(stringpath);
+      } else {
+        let path = await document.getElementById(idel.id + 'p');
+        let rawpath = await MotionPathPlugin.getRawPath(path);
+        let newpath = await MotionPathPlugin.transformRawPath(rawpath, 1, 0, 0, 1, newx, newy);
+        let stringpath = await MotionPathPlugin.rawPathToString(newpath);
+        this.setNewMotionPath(stringpath);
+      }
     }
 
     // check if combi item
@@ -1355,8 +1398,6 @@ export class VideocreatorComponent implements OnInit {
     }
 
     this.draggableObject.disable();
-
-
   }
 
   enableDraggable() {
@@ -1375,7 +1416,6 @@ export class VideocreatorComponent implements OnInit {
     }
   }
 
-
   setDraggable(event, idel) {
     // Draggable does not recognise ts angular so changes are direct dom js related
     // drag selectionbox should be off and vectorcombinator should be off
@@ -1389,68 +1429,76 @@ export class VideocreatorComponent implements OnInit {
 
   }
 
-  removeGrid(){
-    let oldgrid = document.getElementsByName('gridcells');
-    for (let i = 0; i < oldgrid.length; i++){
-      oldgrid[i].parentNode.removeChild(oldgrid[i]);
-    }
-    return
-  }
 
-  async setGrid(){
-    await this.removeGrid();
-    if (this.snaptogrid){
-    let gridRows = parseInt(this.canvas.width, 10) / this.snaptogridwidth;
-    let gridColumns = parseInt(this.canvas.height, 10) / this.snaptogridheight;
-    let gridHeight = this.snaptogridheight;
-    let gridWidth = this.snaptogridwidth;
-    let docset = document.getElementById('myBounds');
-    console.log('set grid', docset, gridRows, gridColumns)
-    for (let i = 0; i < gridRows * gridColumns; i++) {
-      //console.log(i)
-      let y = Math.floor(i / gridColumns) * gridHeight;
-      let x = (i * gridWidth) % (gridColumns * gridWidth);
-      var divi = document.createElement("div");
-      divi.className = 'gridcells';
-      divi.style.width = (gridWidth -1) + 'px';
-      divi.style.height = (gridHeight -1) + 'px';
-      divi.style.top = y + 'px';
-      divi.style.left = x + 'px';
-      docset.appendChild(divi);
+  async setGrid() {
+    //await this.removeGrid();
+    const myNode = document.getElementById("snapgrid");
+    myNode.innerHTML = '';
+
+    if (this.snaptogrid) {
+      let gridHeight = this.snaptogridheight;
+      let gridWidth = this.snaptogridwidth;
+      let gridColumns = parseInt(this.canvas.width, 10) / gridWidth;
+      let gridRows = parseInt(this.canvas.height, 10) / gridHeight;
+
+      let docset = document.getElementById('snapgrid');
+      //console.log('set grid', docset, gridRows, gridColumns)
+      for (let i = 0; i < gridRows * gridColumns; i++) {
+        let y = Math.floor(i / gridColumns) * gridHeight;
+        let x = (i * gridWidth) % (gridColumns * gridWidth);
+        var divi = document.createElement("div");
+        divi.className = 'gridcells';
+        divi.id = 'gridcell' + i;
+        divi.style.width = (gridWidth - 1) + 'px';
+        divi.style.height = (gridHeight - 1) + 'px';
+        divi.style.top = y + 'px';
+        divi.style.left = x + 'px';
+        docset.appendChild(divi);
+      }
     }
-  }
   }
 
   setMovable(event, idel) {
     let element = document.getElementById(idel.id);
-    let inertia = false;
-
+    //let inertia = false;
+    let snapw = this.snaptogridwidth;
+    let snaph = this.snaptogridheight;
+    let dragfunc;
+    let throwfunc;
 
     let snap = {
-      x: function (endValue) {
-        return Math.round(endValue / this.snaptogridwidth) * this.snaptogridwidth;
+      x: function (value) {
+        return Math.round(value / snapw) * snapw;
       },
-      y: function (endValue) {
-        return Math.round(endValue / this.snaptogridheight) * this.snaptogridheight;
+      y: function (value) {
+        return Math.round(value / snaph) * snaph;
       }
     }
 
-
     if (!this.snaptogrid) {
       snap = undefined;
+      dragfunc = this.setMoveableItem;
+      throwfunc = undefined;
+    } else {
+      dragfunc = undefined;
+      throwfunc = this.setMoveableItem;
     }
-
 
     if (event.target.id === idel.id + 'rotatehandle') {
       this.setRotate(event, idel)
     } else {
       this.draggableObject = new Draggable(element, {
         type: "x,y",
-        onDragEndParams: [idel],
-        onDragEnd: this.setMoveableItem,
+        snap: snap,
+        onThrowCompleteParams: [idel, snapw, snaph],
+        onThrowComplete: throwfunc,
+        onDragEnd: dragfunc,
+        onDragEndParams: [idel, snapw, snaph],
         inertia: this.snaptogrid,
-        edgeResistance: 0.65,
-        snap: snap
+        edgeResistance: 0.95,
+        //liveSnap: this.snaptogrid,
+        //snap: snap,
+        //bounds: '#myBounds',
       });
     }
   }
@@ -1579,6 +1627,7 @@ export class VideocreatorComponent implements OnInit {
     }
     let newvectorcombi: vectorcombinator = {
       type: 'vectorcombi',
+      groupname: '',
       groupmember: false,
       vectors: [],
       animation: [],
@@ -1815,6 +1864,8 @@ export class VideocreatorComponent implements OnInit {
       transform: '',
       rotation: 0,
       motionrotation: 0,
+      grey: false,
+      blur: false,
       motionpath: '<svg id="' + newelnr + 'mp" style="width:' + this.canvas.width + ' height=' + this.canvas.height + ';" viewBox="0 0 600 500" class="path-edit"><path id="' + newelnr + 'p" style="opacity: 0;"' +
         ' d="M282.457,480.74 C282.457,480.74 280.457,217.529 279.888,139.457   " /></svg>',
     }
@@ -2015,7 +2066,7 @@ export class VideocreatorComponent implements OnInit {
         ' d="M282.457,480.74 C282.457,480.74 280.457,217.529 279.888,139.457   " /></svg>',
     }
     this.animationarray.push(chart);
-    //console.log(chart);
+    console.log(this.animationarray[this.animationarray.length -1]);
   }
 
   editFigurePath(): void {
@@ -2357,12 +2408,6 @@ export class VideocreatorComponent implements OnInit {
 
   deleteTextAnimation(iv) {
     this.selectedelement.splittextanimation.splice(iv, 1);
-  }
-
-  vectorcombieditSet(i) {
-    this.animationarray[i].vectors.forEach(element => {
-      //this.createRotate(element);
-    });
   }
 
   async imageCropPath() {

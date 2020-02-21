@@ -60,25 +60,6 @@
     margin: 0px 20px 0px 20px;
 }
 
-.imggreyclass {
-  -webkit-filter: grayscale(1); /* Webkit */
-  filter: gray; /* IE6-9 */
-  filter: grayscale(1); /* W3C */
-}
-
-
-.imgblursection {
-  z-index: 1;
-  width: calc(100% - 20px);
-  // height: calc(100% - 20px);
-  height: 100%;
-  position: absolute;
-  top: 0;
-  left: 0;
-  filter: blur(4px);
-
-}
-
 
 .fullwidthsection {
   margin: 0px 0px 0px 0px;

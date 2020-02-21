@@ -85,15 +85,14 @@
         <mat-expansion-panel>
             <mat-expansion-panel-header>
                 <mat-panel-title>
-                    <mat-form-field>
-                        <input [(ngModel)]="elementname" type="text" matInput placeholder="Video Name">
-                    </mat-form-field>
-
-
+                    <label>{{elementname}}</label>
                 </mat-panel-title>
             </mat-expansion-panel-header>
 
             <div fxLayout="row wrap" fxLayoutGap="20px">
+                <mat-form-field>
+                    <input [(ngModel)]="elementname" type="text" matInput placeholder="Video Name">
+                </mat-form-field>
 
                 <mat-form-field fxFlex>
                     <input (change)="onchangecanvas()" [(ngModel)]="canvas.width" type="text" matInput
@@ -137,14 +136,14 @@
                     </mat-icon>
                     <label *ngIf="canvas['background-image']">{{ canvas['background-image'] | fileName }}</label>
                 </div>
-                <mat-form-field>
-                    <input matInput placeholder="Background color" [(ngModel)]="canvas['background-color']"
+                
+                    <input placeholder="Background color" [(ngModel)]="canvas['background-color']"
                         style="width: 60px; height: 30px; z-index: 10" [style.background]="canvas['background-color']"
                         [cpToggle]="false" [(colorPicker)]="canvas['background-color']" [cpPosition]="'auto'"
                         (colorPickerChange)="onchangecanvas()" [cpCancelButton]="true"
                         [cpPresetLabel]="'Company colors'"
                         [cpPresetColors]="[option.companyprimairycolor, option.companysecondarycolor, company.companyprimairycolor, company.companysecondarycolor]">
-                </mat-form-field>
+               
                 <mat-slide-toggle fxFlex *ngIf="canvas.videourl" [(ngModel)]="canvas.loop">Loop</mat-slide-toggle>
 
                 <mat-form-field>
@@ -733,38 +732,55 @@
 
                             </mat-panel-title>
                         </mat-expansion-panel-header>
-                        <div *ngIf="element.type === 'image' && !element.groupmember">
-                            <!-- <mat-checkbox [(ngModel)]="cropimages" 
+                        <div *ngIf="element.type === 'image' && !element.groupmember" fxLayout="column">
+                            <!-- <mat-checkbox [(ngModel)]="cropimages"
                             (change)="element.style['clip-path'] = ''"
                                 matTooltip="Crop image to size">Crop</mat-checkbox> -->
-                            <button mat-button (click)="imageCropPath()">edit crop</button>
-                            <button mat-button (click)="imageSaveCropPath()">save crop</button>
-                            <button mat-button (click)="imageRemoveCrop()">remove crop</button>
-                            <mat-form-field style="max-width: 46px;">
-                                <input (change)="detectchange()" [(ngModel)]="element.posy" type="number" matInput>
-                                <mat-hint>Y |</mat-hint>
-                            </mat-form-field>
-                            <mat-form-field style="max-width: 46px;">
-                                <input (change)="detectchange()" [(ngModel)]="element.posx" type="number" matInput>
-                                <mat-hint>X -</mat-hint>
-                            </mat-form-field>
-                            <mat-form-field style="max-width: 46px;">
-                                <input (change)="detectchange()" [(ngModel)]="element.style.height" matInput>
-                                <mat-hint>Height</mat-hint>
-                            </mat-form-field>
-                            <mat-form-field style="max-width: 46px;">
-                                <input (change)="detectchange()" [(ngModel)]="element.style.width" matInput>
-                                <mat-hint>Width</mat-hint>
-                            </mat-form-field>
+                            <app-fileupload *ngIf="!element.src" [account]="Account" [option]="option"
+                                (imgurl)="setImage($event, i)">
+                            </app-fileupload>
+                            <div fxLayout="row wrap" fxLayoutGap="20px">
+                                <button mat-button (click)="imageCropPath()">edit crop</button>
+                                <button mat-button (click)="imageSaveCropPath()">
+                                    <mat-icon>save</mat-icon>
+                                </button>
+                                <button mat-button (click)="imageRemoveCrop()">
+                                    <mat-icon>delete</mat-icon>
+                                </button>
+                            </div>
+                            <div>
+                                <mat-slide-toggle (change)="detectchange()" [(ngModel)]="element.grey">Greyscale
+                                </mat-slide-toggle>
+                                <mat-slide-toggle (change)="detectchange()" [(ngModel)]="element.blur">Blur
+                                </mat-slide-toggle>
+                            </div>
+                            <div>
+                                <mat-form-field style="max-width: 46px;">
+                                    <input (change)="detectchange()" [(ngModel)]="element.posy" type="number" matInput>
+                                    <mat-hint>Y |</mat-hint>
+                                </mat-form-field>
+                                <mat-form-field style="max-width: 46px;">
+                                    <input (change)="detectchange()" [(ngModel)]="element.posx" type="number" matInput>
+                                    <mat-hint>X -</mat-hint>
+                                </mat-form-field>
+                            </div>
+                            <div>
+                                <mat-form-field style="max-width: 46px;">
+                                    <input (change)="detectchange()" [(ngModel)]="element.style.height" matInput>
+                                    <mat-hint>Height</mat-hint>
+                                </mat-form-field>
+                                <mat-form-field style="max-width: 46px;">
+                                    <input (change)="detectchange()" [(ngModel)]="element.style.width" matInput>
+                                    <mat-hint>Width</mat-hint>
+                                </mat-form-field>
+                            </div>
                             <div *ngIf="element.src">
                                 <img style="max-width: 100%;" src={{element.src}} class="elementsedit">
                                 <mat-icon (click)="element.src = ''" class="icon-label" class="iconsize-12">
                                     delete
                                 </mat-icon>
                             </div>
-                            <app-fileupload *ngIf="!element.src" [account]="Account" [option]="option"
-                                (imgurl)="setImage($event, i)">
-                            </app-fileupload>
+
                         </div>
                         <mat-expansion-panel-header *ngIf="element.type === 'text' && !element.groupmember"
                             cdkDragHandle [class.selected]="element === selectedelement">
@@ -1214,66 +1230,105 @@
                             [class.selected]="element === selectedelement" cdkDropList
                             (cdkDropListDropped)="dropVectorGroup($event)">
                             <div fxLayout="row">
-                                <label>Animation group</label> &nbsp;
+                                <label *ngIf="!element.groupname">Group</label> &nbsp;
+                                <label *ngIf="element.groupname">{{element.groupname}}</label> &nbsp;
                                 <label [innerHTML]="element.vectors.length"></label>
                             </div>
                             <mat-icon (click)="deletevcgroup(i)" class="iconsize-12">delete</mat-icon>
                         </mat-expansion-panel-header>
-                        <mat-form-field *ngIf="element.type === 'vectorcombi'">
-                            <mat-label>Add element</mat-label>
-                            <mat-select (selectionChange)="dropVectorGroup($event, element, i)">
-                                <mat-option *ngFor="let potpart of animationarray" [value]="potpart">
-                                    <div *ngIf="potpart.type === 'vector'" [innerHTML]="potpart.svgcombi  | safeHtml"
-                                        style="height: 20px; width: 20px;">
-                                    </div>
-                                    <img *ngIf="potpart.type === 'image'" src={{potpart.src}}
-                                        style="height: 20px; width: 20px;">
-                                    <div *ngIf="potpart.type === 'shape'" style="height: 20px; width: 20px;"
-                                        [className]="potpart.style.class" [ngStyle]="potpart.style">
-                                    </div>
-                                    <div *ngIf="potpart.type === 'chart'">
-                                        <mat-icon>graph</mat-icon>
-                                    </div>
-                                    <div *ngIf="potpart.type === 'text'">
-                                        <label>{{potpart.content}}</label>
-                                    </div>
 
-                                </mat-option>
-                            </mat-select>
-                        </mat-form-field>
                         <div *ngIf="element.type === 'vectorcombi'" cdkDragHandle>
+                            <mat-form-field style="width: 95%;" appearance="outline">
+                                <input matTooltip="groupname" [(ngModel)]="element.groupname" type="text" matInput
+                                    placeholder="Group name">
+                            </mat-form-field>
+                            <mat-form-field>
+                                <mat-label>Add element</mat-label>
+                                <mat-select (selectionChange)="dropVectorGroup($event, element, i)">
+                                    <mat-option *ngFor="let potpart of animationarray" [value]="potpart">
+                                        <div *ngIf="potpart.type === 'vector'" [innerHTML]="potpart.svgcombi  | safeHtml"
+                                            style="height: 20px; width: 20px;">
+                                        </div>
+                                        <img *ngIf="potpart.type === 'image'" src={{potpart.src}}
+                                            style="height: 20px; width: 20px;">
+                                        <div *ngIf="potpart.type === 'shape'" style="height: 20px; width: 20px;"
+                                            [className]="potpart.style.class" [ngStyle]="potpart.style">
+                                        </div>
+                                        <div *ngIf="potpart.type === 'chart'">
+                                            <mat-icon>graph</mat-icon>
+                                        </div>
+                                        <div *ngIf="potpart.type === 'text'">
+                                            <label>{{potpart.content}}</label>
+                                        </div>
+    
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
                             <mat-accordion>
                                 <mat-expansion-panel *ngFor="let part of element.vectors; let idy = index;">
-                                    <div *ngIf="part.type === 'image'">
-                                        <mat-checkbox [(ngModel)]="cropimages" (change)="detectchange()"
-                                            matTooltip="Crop image to size">Crop</mat-checkbox>
-                                        <mat-form-field style="max-width: 46px;">
-                                            <input (change)="detectchange()" [(ngModel)]="part.posy" type="number"
-                                                matInput>
-                                            <mat-hint>Y |</mat-hint>
-                                        </mat-form-field>
-                                        <mat-form-field style="max-width: 46px;">
-                                            <input (change)="detectchange()" [(ngModel)]="part.posx" type="number"
-                                                matInput>
-                                            <mat-hint>X -</mat-hint>
-                                        </mat-form-field>
-                                        <mat-form-field style="max-width: 46px;">
-                                            <input (change)="detectchange()" [(ngModel)]="part.style.height" matInput>
-                                            <mat-hint>Height</mat-hint>
-                                        </mat-form-field>
-                                        <mat-form-field style="max-width: 46px;">
-                                            <input (change)="detectchange()" [(ngModel)]="part.style.width" matInput>
-                                            <mat-hint>Width</mat-hint>
-                                        </mat-form-field>
+                                    <mat-expansion-panel-header *ngIf="part.type === 'image'" cdkDragHandle
+                                        [class.selected]="part === selectedelement">
+                                        <mat-panel-title>
+                                            <img *ngIf="part.src" src={{part.src}} class="elementsedit"
+                                                style="height: 30px; width: auto;">
+                                            <mat-icon (click)="deleteitem(i)" class="iconsize-12">delete</mat-icon>
+                                            <mat-icon (click)="copyElement(i, part)" matTooltip="Duplicate effect"
+                                                class="iconsize-10">
+                                                filter_none</mat-icon>
+                                        </mat-panel-title>
+                                    </mat-expansion-panel-header>
+                                    <div *ngIf="part.type === 'image'" fxLayout="column">
+                                        <app-fileupload *ngIf="!part.src" [account]="Account" [option]="option"
+                                            (imgurl)="setImage($event, i)">
+                                        </app-fileupload>
+                                        <div fxLayout="row wrap" fxLayoutGap="20px">
+                                            <button mat-button (click)="imageCropPath()">edit crop</button>
+                                            <button mat-button (click)="imageSaveCropPath()">
+                                                <mat-icon>save</mat-icon>
+                                            </button>
+                                            <button mat-button (click)="imageRemoveCrop()">
+                                                <mat-icon>delete</mat-icon>
+                                            </button>
+                                        </div>
+                                        <div>
+                                            <mat-slide-toggle (change)="detectchange()" [(ngModel)]="part.grey">
+                                                Greyscale
+                                            </mat-slide-toggle>
+                                            <mat-slide-toggle (change)="detectchange()" [(ngModel)]="part.blur">Blur
+                                            </mat-slide-toggle>
+                                        </div>
+                                        <div>
+                                            <mat-form-field style="max-width: 46px;">
+                                                <input (change)="detectchange()" [(ngModel)]="part.posy" type="number"
+                                                    matInput>
+                                                <mat-hint>Y |</mat-hint>
+                                            </mat-form-field>
+                                            <mat-form-field style="max-width: 46px;">
+                                                <input (change)="detectchange()" [(ngModel)]="part.posx" type="number"
+                                                    matInput>
+                                                <mat-hint>X -</mat-hint>
+                                            </mat-form-field>
+                                        </div>
+                                        <div>
+                                            <mat-form-field style="max-width: 46px;">
+                                                <input (change)="detectchange()" [(ngModel)]="part.style.height"
+                                                    matInput>
+                                                <mat-hint>Height</mat-hint>
+                                            </mat-form-field>
+                                            <mat-form-field style="max-width: 46px;">
+                                                <input (change)="detectchange()" [(ngModel)]="part.style.width"
+                                                    matInput>
+                                                <mat-hint>Width</mat-hint>
+                                            </mat-form-field>
+                                        </div>
+
                                         <div *ngIf="part.src">
                                             <img style="max-width: 100%;" src={{part.src}} class="elementsedit">
                                             <mat-icon (click)="part.src = ''" class="icon-label" class="iconsize-12">
                                                 delete
                                             </mat-icon>
                                         </div>
-                                        <app-fileupload *ngIf="!part.src" [account]="Account" [option]="option"
-                                            (imgurl)="setImage($event, i)">
-                                        </app-fileupload>
+
                                     </div>
                                     <mat-expansion-panel-header *ngIf="part.type === 'text'" cdkDragHandle
                                         [class.selected]="part === selectedelement">
@@ -1743,19 +1798,12 @@
                                                 </div>
                                             </mat-expansion-panel>
                                         </mat-accordion>
-
                                         <mat-icon (click)="addgraph(i)">add</mat-icon>
                                         <mat-icon (click)="deletegraph(i)">delete</mat-icon>
-
-
                                     </div>
                                 </mat-expansion-panel>
                             </mat-accordion>
                         </div>
-
-
-
-
                     </mat-expansion-panel>
                 </mat-accordion>
 
@@ -1831,11 +1879,11 @@
 
             <div fxLayout="row" fxLayoutGap="4px" style="margin-top: 10px;">
                 <mat-form-field style="max-width: 46px;">
-                    <input [(ngModel)]="snaptogridwidth" matInput>
+                    <input (change)="setGrid()" [(ngModel)]="snaptogridwidth" matInput>
                     <mat-hint>Grid width</mat-hint>
                 </mat-form-field>
                 <mat-form-field style="max-width: 46px;">
-                    <input [(ngModel)]="snaptogridheight" matInput>
+                    <input (change)="setGrid()" [(ngModel)]="snaptogridheight" matInput>
                     <mat-hint>Grid height</mat-hint>
                 </mat-form-field>
             </div>
@@ -1899,7 +1947,7 @@
         <div *ngIf="selectedelement" class="vectorcontrols">
             <mat-slide-toggle
                 *ngIf="selectedelement.type === 'vectorcombi' || selectedelement.groupmember || vectorcombiedit"
-                [(ngModel)]="vectorcombiedit" (click)="vectorcombieditSet(i)" matTooltip="Move seperate sections">Edit
+                [(ngModel)]="vectorcombiedit" matTooltip="Move seperate sections">Edit
             </mat-slide-toggle>
         </div>
 
@@ -1928,15 +1976,17 @@
                     style="fill:transparent; stroke:black; stroke-width: 2px;" viewBox="0 0 500 500"></svg>
             </div>
 
+            <div style="height: 100%; width: 100%; position: absolute; z-index: 1; pointer-events: none;" id="snapgrid">
+            </div>
+
             <div *ngIf="animationarray && changenow" #myBounds id="myBounds"
                 [style.background-image]="canvas['background-image']"
                 style="overflow: hidden; background-color: transparent;">
                 <div *ngFor="let element of animationarray; let i = index" (click)="onSelectElement($event, element)"
                     (mousedown)="setDraggable($event, element)">
 
-                    <div *ngIf="element.motionpath && !element.groupmember" class="path-edit"
-                        [innerHTML]="element.motionpath | safeHtml" [style.width]="canvas.width"
-                        [style.height]="canvas.height"
+                    <div *ngIf="element.motionpath" class="path-edit" [innerHTML]="element.motionpath | safeHtml"
+                        [style.width]="canvas.width" [style.height]="canvas.height"
                         [ngStyle]="{'z-index':editpath === true && element === selectedelement ? 1000 : -1 }">
                     </div>
                     <div *ngIf="element.type === 'image' && !element.groupmember" id="{{element.id}}"
@@ -1957,7 +2007,8 @@
                                 </defs>
                             </svg>
                         </div>
-                        <img *ngIf="element.src" style="width: 100%; height: 100%;" src={{element.src}}>
+                        <img *ngIf="element.src" style="width: 100%; height: 100%;" src={{element.src}}
+                            [class.imggreyclass]="element.grey" [class.imgblur]="element.blur">
                         <mat-icon *ngIf="element === selectedelement" class="iconsize-4" class="rotatehandle"
                             #rotatehandle [attr.id]="element.id + 'rotatehandle'">replay</mat-icon>
                     </div>
@@ -2024,11 +2075,11 @@
                         [ngClass]="{elementanimationarrayselected: element === selectedelement, editcombi: vectorcombiedit, elementanimationarray: true}">
                         <div *ngFor="let part of element.vectors; let idy = index;"
                             (click)="onSelectElement($event, part)" (mousedown)="setDraggable($event, part)">
-                            <div *ngIf="part.motionpath" class="path-edit" [innerHTML]="part.motionpath | safeHtml"
+                            <!-- <div *ngIf="part.motionpath" class="path-edit" [innerHTML]="part.motionpath | safeHtml"
                                 [style.width]="canvas.width" [style.height]="canvas.height"
                                 [ngStyle]="{'z-index':editpath === true && element === selectedelement ? 1000 : -1 }">
-                            </div>
-                            <div *ngIf="part.type === 'image' && part.groupmember" id="{{part.id}}" [attr.id]="part.id"
+                            </div> -->
+                            <div *ngIf="part.type === 'image' && part.groupmember" [attr.id]="part.id"
                                 [ngStyle]="part.style" [style.width]="part.style.width"
                                 [style.height]="part.style.height" (rzResizing)="onResizing($event, i)"
                                 [ngResizable]="part === selectedelement" [rzAspectRatio]="true"
@@ -2041,14 +2092,14 @@
                                         style="fill:transparent; stroke:black; stroke-width: 2px;"
                                         viewBox="0 0 500 500">
                                         <defs>
-                                            <!-- d={{element.clippath}}  d="M100,100 L150,100 L150,150 z" -->
                                             <clipPath [attr.id]="part.id + 'cropclip'">
                                                 <path [attr.d]="part.clippath" [attr.id]="part.id + 'croppath'" />
                                             </clipPath>
                                         </defs>
                                     </svg>
                                 </div>
-                                <img *ngIf="part.src" style="width: 100%; height: 100%;" src={{part.src}}>
+                                <img *ngIf="part.src" style="width: 100%; height: 100%;" src={{part.src}}
+                                    [class.imggreyclass]="part.grey" [class.imgblur]="part.blur">
                                 <mat-icon *ngIf="vectorcombiedit && part === selectedelement" class="iconsize-4"
                                     class="rotatehandle" #rotatehandle [attr.id]="part.id + 'rotatehandle'">replay
                                 </mat-icon>
