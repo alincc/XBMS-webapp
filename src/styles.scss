@@ -278,6 +278,11 @@ body{
   //@extendpointer-events: none;
 }
 
+.gridcells {
+  position: absolute;
+  border: 1px solid #454545; 
+}
+
 @for $i from 1 through 100{
   .iconsize-#{$i}{
     font-size: $i+unquote('px') !important;

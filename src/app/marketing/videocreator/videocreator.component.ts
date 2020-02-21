@@ -1389,17 +1389,36 @@ export class VideocreatorComponent implements OnInit {
 
   }
 
-  setGrid(){
-    let gridRows = 10;
-    let gridColumns = 10;
-    let gridHeight = 
-    let gridWidth = 
-    for (let i = 0; i < gridRows * gridColumns; i++) {
-      y = Math.floor(i / gridColumns) * gridHeight;
-      x = (i * gridWidth) % (gridColumns * gridWidth);
-
-      $("<div/>").css({position:"absolute", border:"1px solid #454545", width:gridWidth-1, height:gridHeight-1, top:y, left:x}).prependTo($container);
+  removeGrid(){
+    let oldgrid = document.getElementsByName('gridcells');
+    for (let i = 0; i < oldgrid.length; i++){
+      oldgrid[i].parentNode.removeChild(oldgrid[i]);
     }
+    return
+  }
+
+  async setGrid(){
+    await this.removeGrid();
+    if (this.snaptogrid){
+    let gridRows = parseInt(this.canvas.width, 10) / this.snaptogridwidth;
+    let gridColumns = parseInt(this.canvas.height, 10) / this.snaptogridheight;
+    let gridHeight = this.snaptogridheight;
+    let gridWidth = this.snaptogridwidth;
+    let docset = document.getElementById('myBounds');
+    console.log('set grid', docset, gridRows, gridColumns)
+    for (let i = 0; i < gridRows * gridColumns; i++) {
+      //console.log(i)
+      let y = Math.floor(i / gridColumns) * gridHeight;
+      let x = (i * gridWidth) % (gridColumns * gridWidth);
+      var divi = document.createElement("div");
+      divi.className = 'gridcells';
+      divi.style.width = (gridWidth -1) + 'px';
+      divi.style.height = (gridHeight -1) + 'px';
+      divi.style.top = y + 'px';
+      divi.style.left = x + 'px';
+      docset.appendChild(divi);
+    }
+  }
   }
 
   setMovable(event, idel) {
@@ -1429,8 +1448,8 @@ export class VideocreatorComponent implements OnInit {
         type: "x,y",
         onDragEndParams: [idel],
         onDragEnd: this.setMoveableItem,
-        inertia:true,
-        edgeResistance:0.65,
+        inertia: this.snaptogrid,
+        edgeResistance: 0.65,
         snap: snap
       });
     }
