@@ -2422,38 +2422,44 @@ export class VideocreatorComponent implements OnInit {
     let viewbox = '0 0 ' + w + ' ' + h;
     svg.setAttribute('viewBox', viewbox);
     // if not clippath present set to current size box 
-    if (!this.selectedelement.clippath) {
+    if (!this.selectedelement.clippath ) {
       //editpath = 'M0,0 L300,0 L300,300 L0,300z'
-      editpath = 'M 10,10 L' + (w - 10) + ',10 L' + (w - 10) + ',' + (h - 10) + ' L10,' + (h - 10) + ' z';
-      this.selectedelement.clippath = editpath;
-      pathset.setAttribute('d', editpath);
+      // editpath = 'M 10,10 L' + (w - 10) + ',10 L' + (w - 10) + ',' + (h - 10) + ' L10,' + (h - 10) + ' z';
+      // this.selectedelement.clippath = editpath;
+      // pathset.setAttribute('d', editpath);
+      this.resetImageCropPath()
     } else {
       editpath = this.selectedelement.clippath;
     }
     docset.style['clip-path'] = '';
-
-    // this.detectchange();
-    // await new Promise(resolve => setTimeout(resolve, 1000));
     this.pathEditor = PathEditor.create(pathset);
   }
 
   resetImageCropPath(){
+    let pathset = document.getElementById(this.selectedelement.id + 'croppath');
+    let docset = document.getElementById(this.selectedelement.id);
+    let svg = document.getElementById(this.selectedelement.id + 'crop');
+    let h = docset.getBoundingClientRect().height;
+    let w = docset.getBoundingClientRect().width;
     switch (this.standardpath) {
       case 'linear': {
-        this.selectedelement.clippath = 'M282.457,480.74 C282.457,480.74 280.457,217.529 279.888,139.457   ';
+        let editpath = 'M282.457,480.74 C282.457,480.74 280.457,217.529 279.888,139.457   ';
+        this.selectedelement.clippath = editpath;
+        pathset.setAttribute('d', editpath);
         break
       }
       case 'circle': {
-        let newsvgpath = '<ellipse cx="200" cy="80" rx="100" ry="50" id="' + this.selectedelement.id + 'p" style="opacity: 0;" />';
+        let circw = (w - 10) /2;
+        let circh = (h - 10) /2;
+        let newsvgpath = '<ellipse cx="'+circw+'" cy="'+circw+'" rx="'+circh+'" ry="'+circh+'" id="'+ this.selectedelement.id +'croppath" style="opacity: 0;" />';
+        pathset.outerHTML = newsvgpath; 
+        MorphSVGPlugin.convertToPath("circle, rect, ellipse, line, polygon, polyline");
         break
       }
       case 'square': {
-        let pathset = document.getElementById(this.selectedelement.id + 'croppath');
-        let docset = document.getElementById(this.selectedelement.id);
-        let svg = document.getElementById(this.selectedelement.id + 'crop');
-        let h = docset.getBoundingClientRect().height;
-        let w = docset.getBoundingClientRect().width;
         let editpath = 'M 10,10 L' + (w - 10) + ',10 L' + (w - 10) + ',' + (h - 10) + ' L10,' + (h - 10) + ' z';;
+        this.selectedelement.clippath = editpath;
+        pathset.setAttribute('d', editpath);
         break
       }
     }
@@ -3767,6 +3773,7 @@ export class VideocreatorComponent implements OnInit {
     this.removeVectorPathMultiSelection();
     let array = this.animationarray;
     let myJSON = JSON.stringify(array);
+    this.canvas.videourl = this.canvas.videourl.replace('http://localhost:3000', 'https://api.xbms.io')
     //var aniarray = encodeURIComponent(myJSON);
     if (this.elementname === undefined) { this.elementname = Math.random().toString(36).substring(7); }
     this.filesApi.createvideo(this.option.id, this.option.companyId,
