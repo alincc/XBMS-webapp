@@ -748,6 +748,14 @@
                                     <mat-icon>delete</mat-icon>
                                 </button>
                             </div>
+                            <mat-form-field>
+                                <mat-select [(value)]="standardpath" (selectionChange)="resetImageCropPath()"
+                                    placeholder="Animation">
+                                    <mat-option value="linear">Linear</mat-option>
+                                    <mat-option value="circle">Circle</mat-option>
+                                    <mat-option value="square">Square</mat-option>
+                                </mat-select>
+                            </mat-form-field>
                             <div>
                                 <mat-slide-toggle (change)="detectchange()" [(ngModel)]="element.grey">Greyscale
                                 </mat-slide-toggle>

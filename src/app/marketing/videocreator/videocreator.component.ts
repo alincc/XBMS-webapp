@@ -503,7 +503,7 @@ export class VideocreatorComponent implements OnInit {
   historyBack() {
     console.log('ctrl-z', this.currenthistoryversion)
     // if not last or not empty and if is new;
-    if (this.currenthistoryversion !== 0) {
+    if (this.currenthistoryversion > 0) {
       this.currenthistoryversion = this.currenthistoryversion - 1;
       let storedback = this.history[this.currenthistoryversion];
       // console.log(this.history, this.currenthistoryversion, storedback);
@@ -614,7 +614,6 @@ export class VideocreatorComponent implements OnInit {
     this.primairytimeline = gsap.timeline({ paused: true, reversed: true });
     const svgpath = document.getElementById(this.selectedelement.id + 'p');
     const docset = document.getElementById(id);
-
     let ease = this.selectEaseType(animation.easetype);
     let orgin = animation.transformOriginX + ' ' + animation.transformOriginY;
 
@@ -2436,6 +2435,28 @@ export class VideocreatorComponent implements OnInit {
     // this.detectchange();
     // await new Promise(resolve => setTimeout(resolve, 1000));
     this.pathEditor = PathEditor.create(pathset);
+  }
+
+  resetImageCropPath(){
+    switch (this.standardpath) {
+      case 'linear': {
+        this.selectedelement.clippath = 'M282.457,480.74 C282.457,480.74 280.457,217.529 279.888,139.457   ';
+        break
+      }
+      case 'circle': {
+        let newsvgpath = '<ellipse cx="200" cy="80" rx="100" ry="50" id="' + this.selectedelement.id + 'p" style="opacity: 0;" />';
+        break
+      }
+      case 'square': {
+        let pathset = document.getElementById(this.selectedelement.id + 'croppath');
+        let docset = document.getElementById(this.selectedelement.id);
+        let svg = document.getElementById(this.selectedelement.id + 'crop');
+        let h = docset.getBoundingClientRect().height;
+        let w = docset.getBoundingClientRect().width;
+        let editpath = 'M 10,10 L' + (w - 10) + ',10 L' + (w - 10) + ',' + (h - 10) + ' L10,' + (h - 10) + ' z';;
+        break
+      }
+    }
   }
 
   async imageSaveCropPath() {
