@@ -15,291 +15,15 @@ import '@svgdotjs/svg.draggable.js'
 const plugins = [Draggable, CustomEase, CustomBounce, InertiaPlugin, DrawSVGPlugin, MorphSVGPlugin, ScrambleTextPlugin, SplitText, Physics2DPlugin, MotionPathPlugin, MotionPathHelper]; //needed for GSAP
 import { fonts } from '../../shared/listsgeneral/fonts';
 import svgDragSelect from "svg-drag-select";
-import { ChartDataSets, ChartOptions, Chart } from 'chart.js';
-import { Color, BaseChartDirective, Label } from 'ng2-charts';
 import { ImageCroppedEvent } from 'ngx-image-cropper';
 import { codesnippetService } from '../../dialogsservice/codesnippet-dialog.component';
 import { debounceTime } from 'rxjs/operators';
 import { HostListener } from '@angular/core';
 import { Subject, Subscription } from 'rxjs';
-import { Position } from 'angular2-draggable';
 import PathEditor from 'assets/js/utils/PathEditor';
+import { chart, animationtype, vectoranimationtype, vectoranimation, vectorcombinator, vectorelement,
+splittexttype, shapeanimation, imageanimation, textanimation } from './videocreator.model';
 
-export class chart {
-  type: 'chart';
-  groupmember: false;
-  start_time: number;
-  charttype: string;
-  src: string;
-  posx: number;
-  posy: number;
-  setpos: object;
-  id: string;
-  animation: animationtype[];
-  motionpath: string;
-  transform: string;
-  motionrotation: number;
-  rotation: number;
-  label: Label[] = [];
-  data: any;
-  productiondata: any;
-  //options:
-  colors: Color[] = [
-    { // grey
-      backgroundColor: '#232222',
-      borderColor: '#232222',
-      pointBackgroundColor: '#232222',
-      pointBorderColor: '#fff'
-    }
-  ]
-  legend: true;
-  style: {
-    'z-index': number,
-    width: string;
-    height: string;
-    position: 'absolute';
-    opacity: 1;
-  }
-  lineChartOptions: ChartOptions = {
-    legend: {
-      labels: {
-        fontFamily: 'Open Sans',
-        fontSize: 14,
-      }
-    },
-    animation: {
-      duration: 1000,
-      easing: 'easeInQuad'
-    },
-    scales: {
-      // We use this empty structure as a placeholder for dynamic theming.
-      xAxes: [
-        {
-          gridLines: {
-            color: 'rgba(255,0,0,0.3)',
-          },
-          ticks: {
-            fontColor: 'blue',
-            fontSize: 12,
-            fontFamily: 'Open Sans',
-          }
-        }
-      ],
-      yAxes: [
-        {
-          position: 'right',
-          gridLines: {
-            color: 'rgba(255,0,0,0.3)',
-          },
-          ticks: {
-            suggestedMin: 0,
-            suggestedMax: 100,
-            fontColor: 'blue',
-            fontSize: 12,
-            fontFamily: 'Open Sans',
-          }
-        }
-      ]
-    }
-  }
-}
-
-export class animationtype {
-  start_time: number; //delayt
-  end_time: number;
-  anim_type: string;
-  duration: number;
-  ease: string;
-  posx: number;
-  posy: number;
-  rotationcycle: string;
-  travellocX: number;
-  travellocY: number;
-  scalesize: number;
-  skewY: number;
-  skewX: number;
-  easetype: any;
-  fromto: string;
-  transformOriginX: string;
-  transformOriginY: string;
-  repeat: number;
-  yoyo: boolean;
-  audioeffectsrc: string;
-  rotationkeeppos: boolean
-}
-
-export class vectoranimationtype {
-  svganimationtype: string;
-  drawcolor: string;
-  linethickness: string;
-  repeat: number;
-  yoyo: boolean;
-  fillright: string;
-  fillleft: string;
-  drawright: string;
-  drawleft: string;
-  start_time: number; //delay
-  end_time: number;
-  duration: number;
-  hideimage: boolean;
-  easetype: any;
-  fromto: string;
-}
-
-export class splittexttype {
-  textanimationtype: string;
-  repeat: number;
-  start_time: number; //delay
-  end_time: number;
-  duration: number;
-  x: number;
-  y: number;
-  fromto: string;
-  easetype: any;
-}
-
-export class imageanimation {
-  type: 'image';
-  groupmember: false;
-  style: {
-    'z-index': number,
-    width: string;
-    height: string;
-    position: 'absolute';
-    opacity: 1;
-    'clip-path': string;
-  };
-  clippath: string;
-  src: string;
-  posx: number;
-  posy: number;
-  setpos: object;
-  id: string;
-  animation: animationtype[];
-  motionpath: string;
-  transform: string;
-  motionrotation: number;
-  rotation: number;
-  grey: false;
-  blur: false;
-}
-
-export class vectorcombinator {
-  type: 'vectorcombi';
-  groupname: string;
-  groupmember: false;
-  vectors: vectoranimation[];
-  animation: animationtype[];
-  style: {
-    'z-index': number,
-    width: string;
-    height: string;
-    position: 'absolute';
-    opacity: 1;
-  }
-  posx: number;
-  posy: number;
-  setpos: object;
-  id: string;
-  motionpath: string;
-  transform: string;
-  motionrotation: number;
-  rotation: number;
-}
-
-export class vectoranimation {
-  groupmember: false;
-  type: 'vector';
-  style: {
-    'z-index': number,
-    width: string;
-    height: string;
-    position: 'absolute';
-    opacity: 1;
-    'stroke-width': string;
-    stroke: string;
-  };
-  src: string;
-  posx: number;
-  posy: number;
-  setpos: object;
-  id: string;
-  animation: animationtype[];
-  vectors: vectorelement[];
-  vectoranimation: vectoranimationtype[];
-  svgcombi: string;
-  selected: boolean;
-  morph: boolean;
-  motionpath: string;
-  transform: string;
-  motionrotation: number;
-  rotation: number;
-}
-
-export class vectorelement {
-  idx: string;
-  src: string;
-  duration: number;
-  start_time: number;
-  pathids: string[];
-  easetype: any;
-  fromto: string;
-  scale: number;
-}
-
-export class shapeanimation {
-  type: 'shape';
-  groupmember: false;
-  style: {
-    'z-index': number,
-    width: string;
-    height: string;
-    position: 'absolute';
-    'background-color': string;
-    opacity: 1;
-    'border-radius': string;
-    class: string;
-  };
-  src: string;
-  posx: number;
-  posy: number;
-  setpos: object;
-  id: string;
-  shape: string;
-  animation: animationtype[];
-  motionpath: string;
-  transform: string;
-  motionrotation: number;
-  rotation: number;
-}
-
-export class textanimation {
-  content: string;
-  groupmember: false;
-  type: 'text';
-  style: {
-    'z-index': number,
-    width: string;
-    height: string;
-    position: 'absolute';
-    'font-size': string;
-    'font-style': string;
-    'font-weight': string;
-    'font-family': string;
-    padding: string;
-    opacity: 1;
-  }
-  posx: number;
-  posy: number;
-  setpos: object;
-  id: string;
-  splittextanimation: splittexttype[];
-  animation: animationtype[];
-  motionpath: string;
-  transform: string;
-  motionrotation: number;
-  rotation: number;
-}
 
 @Component({
   selector: 'app-videocreator',
@@ -388,23 +112,11 @@ export class VideocreatorComponent implements OnInit {
   public elementname;
   private MorphSVGPlugin = MorphSVGPlugin;
   private SplitText = SplitText;
-  private largesthbox;
-  private largestwbox;
   public setreplay = false;
   public selectedVecPath;
   public selectmultiplepaths = false;
   public selectedVecPathmultiple = [];
   public editpath = false;
-  public firstvectpathcorner: {
-    width: undefined,
-    height: undefined
-  }
-
-  public secondvectpathcorner: {
-    width: undefined,
-    height: undefined
-  }
-
   public dragselectvectpath = false;
   public standardvector;
   public dragselectiontrue = false;
@@ -414,7 +126,6 @@ export class VideocreatorComponent implements OnInit {
   public systembusy = false;
   public history = [];
   public currenthistoryversion = 0;
-
 
   @Input() debounceTime = 50;
   @Output() debounceKey = new EventEmitter();
@@ -428,7 +139,6 @@ export class VideocreatorComponent implements OnInit {
   constructor(
     public codesnippetService: codesnippetService,
     public dialog: MatDialog,
-    //private sanitizer: DomSanitizer,
     private relationsApi: RelationsApi,
     private filesApi: FilesApi,
     public snackBar: MatSnackBar,
@@ -1947,7 +1657,7 @@ export class VideocreatorComponent implements OnInit {
       newelnr = this.animationarray.length + 'el';
     }
     this.newz = this.newz + 1;
-    let colorset: Color[] = [
+    let colorset = [
       { // grey
         backgroundColor: '',
         borderColor: '#232222',
@@ -1961,7 +1671,7 @@ export class VideocreatorComponent implements OnInit {
         pointBorderColor: '#fff'
       }
     ];
-    let lineChartOptions: ChartOptions = {
+    let lineChartOptions = {
       legend: {
         labels: {
           fontFamily: 'Open Sans',
@@ -2027,7 +1737,7 @@ export class VideocreatorComponent implements OnInit {
       audioeffectsrc: '',
       rotationkeeppos: true
     }];
-    let chart: chart = {
+    let chart = {
       groupmember: false,
       start_time: 0,
       type: 'chart',
@@ -4037,31 +3747,6 @@ export class VideocreatorComponent implements OnInit {
     this.codesnippetService.confirm('Copy Code', 'Copy code and input in your website', this.snippetcode).subscribe()
   }
 
-
-  //   <button mat-mini-fab class="addbutton" matTooltip="Add image" (click)="addNewImage()" color="primary">
-  //   <mat-icon>image</mat-icon>
-  // </button>
-  // <button mat-mini-fab class="addbutton" matTooltip="Add text" (click)="addNewText()" color="primary">
-  //   <mat-icon>text_format</mat-icon>
-  // </button>
-  // <button mat-mini-fab class="addbutton" matTooltip="Add shape" (click)="addNewShape()" color="primary">
-  //   <mat-icon>format_shapes</mat-icon>
-  // </button>
-  // <button mat-mini-fab class="addbutton" matTooltip="Add animated image" (click)="addNewVector()"
-  //   color="primary">
-  //   <mat-icon>wallpaper</mat-icon>
-  // </button>
-  // <button mat-mini-fab class="addbutton" matTooltip="Add drawing" (click)="addNewWhiteboard()"
-  //   color="primary">
-  //   <mat-icon>edit</mat-icon>
-  // </button>
-  // <button mat-mini-fab class="addbutton" matTooltip="Add Chart" (click)="addNewChart()" color="primary">
-  //   <mat-icon>show_chart</mat-icon>
-  // </button>
-  // <button mat-mini-fab class="addbutton" matTooltip="Add Animation Group" (click)="addNewVectorCombi()"
-  //   color="primary">
-  //   <mat-icon>collections</mat-icon>
-  // </button>
 
   public speedDialFabButtons = [
     {
