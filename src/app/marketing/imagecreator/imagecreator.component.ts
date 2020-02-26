@@ -15,7 +15,7 @@ import { MediaObserver, MediaChange } from '@angular/flex-layout';
 //import * as pluginAnnotations from 'chartjs-plugin-annotation';
 import {Subscription} from 'rxjs';
 import { fonts } from '../../shared/listsgeneral/fonts';
-import { ImageCroppedEvent } from 'ngx-image-cropper';
+
 
 export class image {
   type: 'image';
@@ -126,7 +126,7 @@ export class chart {
 
 
 export class ImagecreatorComponent implements OnInit {
-  @ViewChild('myCanvas', { static: false }) myCanvas: ElementRef;
+  @ViewChild('myCanvas') myCanvas: ElementRef;
   @Input() Account: Account = new Account();
   @Input() SelectedRelation: Relations;
   @Input() option: Relations = new Relations();
@@ -599,18 +599,6 @@ export class ImagecreatorComponent implements OnInit {
   
   fileChangeEvent(event: any): void {
       this.imageChangedEvent = event;
-  }
-  imageCropped(event: ImageCroppedEvent) {
-      this.croppedImage = event.base64;
-  }
-  imageLoaded() {
-      // show cropper
-  }
-  cropperReady() {
-      // cropper ready
-  }
-  loadImageFailed() {
-      // show message
   }
 
 

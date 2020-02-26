@@ -11,6 +11,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
+            "aot": true,
             "outputPath": "dist",
             "index": "src/index.html",
             "main": "src/main.ts",
@@ -23,8 +24,7 @@
             ],
             "styles": [
               "src/styles.scss",
-              "./node_modules/angular2-draggable/css/resizable.min.css",
-              "./node_modules/videogular2/fonts/videogular.css"
+              "./node_modules/angular2-draggable/css/resizable.min.css"
             ],
             "scripts": [
               "./node_modules/svg.js/dist/svg.min.js"
@@ -32,6 +32,12 @@
           },
           "configurations": {
             "production": {
+              "budgets": [
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb"
+                }
+              ],
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
@@ -126,10 +132,13 @@
   "schematics": {
     "@schematics/angular:component": {
       "prefix": "app",
-      "styleext": "scss"
+      "style": "scss"
     },
     "@schematics/angular:directive": {
       "prefix": "app"
     }
+  },
+  "cli": {
+    "analytics": "c65085d5-e304-4d2a-ac4f-c814b4c8c686"
   }
 }

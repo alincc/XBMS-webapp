@@ -41,7 +41,7 @@
               <input type="text" placeholder="Select Relation" aria-label="Assignee" [(ngModel)]=option matInput
                 [formControl]="myControl" [matAutocomplete]="auto">
               <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
-                <mat-option *ngFor="let option of filteredOptions | async" [value]="option"
+                <mat-option *ngFor="let option of filteredOptions" [value]="option"
                   (blur)="onSelectRelation(option, i)">
                   {{ option.relationname }}
 

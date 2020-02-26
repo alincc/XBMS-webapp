@@ -15,7 +15,6 @@ import '@svgdotjs/svg.draggable.js'
 const plugins = [Draggable, CustomEase, CustomBounce, InertiaPlugin, DrawSVGPlugin, MorphSVGPlugin, ScrambleTextPlugin, SplitText, Physics2DPlugin, MotionPathPlugin, MotionPathHelper]; //needed for GSAP
 import { fonts } from '../../shared/listsgeneral/fonts';
 import svgDragSelect from "svg-drag-select";
-import { ImageCroppedEvent } from 'ngx-image-cropper';
 import { codesnippetService } from '../../dialogsservice/codesnippet-dialog.component';
 import { debounceTime } from 'rxjs/operators';
 import { HostListener } from '@angular/core';
@@ -33,14 +32,14 @@ splittexttype, shapeanimation, imageanimation, textanimation } from './videocrea
 
 export class VideocreatorComponent implements OnInit {
 
-  @ViewChild('progressbar', { static: false }) progressbar: ElementRef;
+  @ViewChild('progressbar') progressbar: ElementRef;
   @Input() Account: Account = new Account();
   @Input() SelectedRelation: Relations;
   @Input() option: Relations = new Relations();
   @Input() company: Company = new Company;
 
   videoPlayer: HTMLVideoElement;
-  @ViewChild('videoPlayer', { static: false })
+  @ViewChild('videoPlayer')
   set mainVideoEl(el: ElementRef) {
     if (el !== undefined) {
       this.videoPlayer = el.nativeElement;

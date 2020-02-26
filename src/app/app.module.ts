@@ -2,7 +2,6 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule, Injectable } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
 import { Routes, RouterModule } from '@angular/router';
-import { NgxTwitterTimelineModule } from 'ngx-twitter-timeline';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatMenuModule, MatButtonModule, MatCheckboxModule,
   MatSidenavModule, MatDialogModule, MatDatepickerModule } from '@angular/material';
@@ -79,10 +78,6 @@ import { MarketingpromotionsComponent } from './marketing/marketingpromotions/ma
 import { MarketingpublicationsComponent } from './marketing/marketingpublications/marketingpublications.component';
 import { ImagecreatorComponent } from './marketing/imagecreator/imagecreator.component';
 import { AngularDraggableModule } from 'angular2-draggable';
-import { VgCoreModule } from 'videogular2/compiled/core';
-import { VgControlsModule } from 'videogular2/compiled/controls';
-import { VgOverlayPlayModule } from 'videogular2/compiled/overlay-play';
-import { VgBufferingModule } from 'videogular2/compiled/buffering';
 import { MatBottomSheetModule } from '@angular/material/bottom-sheet';
 import { HammerGestureConfig, HAMMER_GESTURE_CONFIG } from '@angular/platform-browser';
 import { CalendarModule, DateAdapter } from 'angular-calendar';
@@ -103,7 +98,7 @@ import { VectoruploadComponent, dialogvectorgallerycomponent } from './shared/ve
 import { BackgroundComponent, dialogbackgroundgallerycomponent } from './shared/background/background.component';
 import { TranslationsComponent } from './translations/translations.component';
 import { MatPasswordStrengthModule } from '@angular-material-extensions/password-strength';
-import { ImageCropperModule } from 'ngx-image-cropper';
+
 
 declare var Hammer: any;
 @Injectable()
@@ -176,17 +171,11 @@ export class HammerConfig extends GestureConfig  {
 
   imports: [
     MatPasswordStrengthModule.forRoot(),
-    ImageCropperModule,
     CanvasWhiteboardModule,
     InlineSVGModule,
     BrowserModule,
     BrowserAnimationsModule,
     MatBottomSheetModule,
-    VgCoreModule,
-    VgControlsModule,
-    VgOverlayPlayModule,
-    VgBufferingModule,
-    NgxTwitterTimelineModule,
     PickerModule,
     ColorPickerModule,
     FlexLayoutModule,

@@ -324,12 +324,12 @@
                   <div>
                     <div *ngIf="selectedPublications.videourl && !selectedPublications.pictureurl"
                       style="max-width: 600px;">
-                      <vg-player style="max-width: 600px;">
-                        <video [vgMedia]="media" #media id="singleVideo" preload="auto" controls
-                          style="max-width: 600px;">
-                          <source [src]="selectedPublications.videourl" type="video/mp4">
+                     
+                        <video style="max-width: 600px;"  preload="auto" controls
+                          style="max-width: 600px;"
+                          [src]="selectedPublications.videourl" type="video/mp4">
                         </video>
-                      </vg-player>
+                     
                       <mat-icon (click)="selectedPublications.videourl = ''" class="icon-label" class="iconsize-12">
                         delete</mat-icon>
                     </div>

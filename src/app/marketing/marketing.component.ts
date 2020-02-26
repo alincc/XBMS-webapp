@@ -65,7 +65,7 @@ import { ImagecreatorComponent } from './imagecreator/imagecreator.component';
 import { MaileditorComponent } from './maileditor/maileditor.component';
 import { TextEditorDialog } from './maileditor/texteditordialog.component';
 
-export interface UploadResult {
+export interface uploadResult {
   result: 'failure' | 'success';
   payload: any;
 }
@@ -1446,8 +1446,8 @@ export class MarketingComponent implements OnInit {
 
 
   // chipinput for mailings
-  @ViewChild('chipInput', { static: false }) chipInput: MatInput;
-  @ViewChild("maileditor", { static: false }) maileditor;
+  @ViewChild('chipInput') chipInput: MatInput;
+  @ViewChild("maileditor") maileditor;
 
 
   selectedItems: string[] = [];

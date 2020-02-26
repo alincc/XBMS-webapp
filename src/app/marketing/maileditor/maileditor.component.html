@@ -100,7 +100,7 @@
               <input [(ngModel)]=company.companyfont type="text" placeholder="Template Font" aria-label="Number" matInput
                 [formControl]="myControlfont" [matAutocomplete]="auto">
               <mat-autocomplete #auto="matAutocomplete">
-                <mat-option *ngFor="let font of filteredfonts | async" [value]="font">
+                <mat-option *ngFor="let font of filteredfonts" [value]="font">
                   {{font}}
                 </mat-option>
               </mat-autocomplete>

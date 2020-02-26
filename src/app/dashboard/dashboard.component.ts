@@ -455,7 +455,7 @@ export class DashboardComponent implements OnInit {
   }
 
 
-  @ViewChild('baseChartBar', { static: false }) chartBar: BaseChartDirective;
+  @ViewChild('baseChartBar') chartBar: BaseChartDirective;
 
   public getNumbers(): void {
     const data1 = this.TotalNumber.slice(0);
@@ -478,7 +478,7 @@ export class DashboardComponent implements OnInit {
      */
   }
 
-  @ViewChild('baseChartBarChannel', { static: false }) chartBarChannel: BaseChartDirective;
+  @ViewChild('baseChartBarChannel') chartBarChannel: BaseChartDirective;
 
   public barChartDataChannel: any[] = [
     { data: [], label: 'Linkedin' },
@@ -566,7 +566,7 @@ export class DashboardComponent implements OnInit {
   }
 
 
-  @ViewChild('baseChartBar2', { static: false }) baseChartBar2: BaseChartDirective;
+  @ViewChild('baseChartBar2') baseChartBar2: BaseChartDirective;
 
   public get1Numbers(): void {
     this.barChart2Labels = [];
@@ -661,7 +661,7 @@ export class DashboardComponent implements OnInit {
   }
 
 
-  @ViewChild('baseChartLine', { static: false }) chartLine: BaseChartDirective;
+  @ViewChild('baseChartLine') chartLine: BaseChartDirective;
 
   public get2Numbers(): void {
 
@@ -732,7 +732,7 @@ export class DashboardComponent implements OnInit {
     console.log(e);
   }
 
-  @ViewChild('baseChartDoughnut', { static: false }) chartDoughnut: BaseChartDirective;
+  @ViewChild('baseChartDoughnut') chartDoughnut: BaseChartDirective;
 
   public getDoughnutNumbers() {
     this.doughnutChartLabels = [];
@@ -878,7 +878,7 @@ export class DashboardComponent implements OnInit {
     console.log(e);
   }
 
-  @ViewChild('baseMailChart', { static: false }) MailchartLine: BaseChartDirective;
+  @ViewChild('baseMailChart') MailchartLine: BaseChartDirective;
 
   public getMailChart(): void {
 
