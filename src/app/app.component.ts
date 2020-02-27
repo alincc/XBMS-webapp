@@ -5,7 +5,6 @@ import {
   AccountApi,
   Account,
   Logger,
-  LoggerApi,
   CompanyApi
 } from './shared/';
 import { DomSanitizer } from '@angular/platform-browser';

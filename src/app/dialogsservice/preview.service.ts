@@ -12,7 +12,6 @@ export class previewService {
     public confirm(title: string, message: string): Observable<boolean> {
 
         let dialogRef: MatDialogRef<ConfirmDialog>;
-
         dialogRef = this.dialog.open(ConfirmDialog);
         dialogRef.componentInstance.title = title;
         dialogRef.componentInstance.message = message;

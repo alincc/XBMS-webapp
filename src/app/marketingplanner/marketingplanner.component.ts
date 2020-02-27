@@ -36,10 +36,6 @@ import {
   endOfDay,
   format
 } from 'date-fns';
-import { green } from 'ansi-colors';
-import { ColorFormats } from 'ngx-color-picker/dist/lib/formats';
-import { ColorPickerService } from 'ngx-color-picker';
-import { setHours, setMinutes } from 'date-fns';
 import {
   CalendarEventAction,
   CalendarEventTimesChangedEvent,

@@ -1,6 +1,6 @@
 <div style="height: 500px" fxLayout="column">
-  <mat-button-toggle-group  fxFlex="50px" style="width: 100%" fxFlexAlign="start"  [vertical]="false">
-    <mat-button-toggle matTooltip="Local stored vectors" style="width: 50%" value="fromaccount">
+  <mat-button-toggle-group #group="matButtonToggleGroup" fxFlex="50px" style="width: 100%" fxFlexAlign="start"  [vertical]="false">
+    <mat-button-toggle  matTooltip="Local stored vectors" style="width: 50%" value="fromaccount">
       <mat-icon>storage</mat-icon>
     </mat-button-toggle>
     <mat-button-toggle matTooltip="Standard vectors" style="width: 50%"  value="standardvectors">

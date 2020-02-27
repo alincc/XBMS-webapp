@@ -10,7 +10,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-// import { MatNativeDateModule } from '@angular/material/native';
+import { MatNativeDateModule } from '@angular/material/core';
 
 import { MatTableModule } from '@angular/material/table';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -44,7 +44,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SDKBrowserModule } from './shared/sdk/index';
 import { SpeechRecognitionService } from './shared/speechservice/speechservice';
 import { AuthGuard } from './shared/auth.guard';
-import 'hammerjs';
+//import 'hammerjs';
 
 import { codesnippetService, CodesnippetDialog } from './dialogsservice/codesnippet-dialog.component';
 import { RandomService } from './dialogsservice/random.service';
@@ -67,7 +67,6 @@ import { GoogleMapService } from './shared/googlemapservice/googlemap.service'
 import { timeconv } from './shared/timeconv'
 import { CKEditorModule } from 'ng2-ckeditor';
 import { IconService } from '../assets/icons/icon.service';
-import 'mousetrap';
 import { ModalGalleryModule } from '@ks89/angular-modal-gallery';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
@@ -235,6 +234,7 @@ import { MatPasswordStrengthModule } from '@angular-material-extensions/password
     MatProgressSpinnerModule,
     MatProgressBarModule, MatAutocompleteModule, MatListModule, MatSliderModule,
     FormsModule, ReactiveFormsModule, HttpClientModule, MatGridListModule, MatSlideToggleModule,
+    MatNativeDateModule,
     MatDatepickerModule, MatExpansionModule, MatButtonToggleModule, MatChipsModule, MatBadgeModule,
     ModalGalleryModule.forRoot(),
     CalendarModule.forRoot({

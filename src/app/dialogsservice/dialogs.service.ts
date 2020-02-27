@@ -9,7 +9,7 @@ import { DomSanitizer} from '@angular/platform-browser';
 export class DialogsService {
 
     constructor(
-        private sanitizer:DomSanitizer,
+       
         private dialog: MatDialog) { }
 
     public confirm(title: string, message: string, preview?: string): Observable<boolean> {

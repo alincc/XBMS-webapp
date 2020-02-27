@@ -71,6 +71,8 @@ class Attendee {
 })
 export class RelationComponent implements OnInit {
 
+  public compannyseccolor = 'white';
+  public companypricolor = 'white';
   public fontlist: string[] = fontoptions;
   showSearchButton: boolean;
   speechData: string;
@@ -366,15 +368,12 @@ export class RelationComponent implements OnInit {
   getCurrentUserInfo(): void {
     this.AccountApi.getCurrent().subscribe((Account: Account) => {
       this.Account = Account,
-        // this.CompanyApi.getRelations(this.Account.companyId)
-        //   .subscribe((Relations: Relations[]) => {
-        // this.Relations = Relations,
         this.RelationsApi.findById(this.Account.standardrelation)
-          .subscribe((relations: Relations) =>
-            this.onSelect(relations, null)),
-        this.getRelations();
-      this.CompanyApi.countRelations(this.Account.companyId).subscribe(res => this.totalrelationcount = res.count);
-      // });
+          .subscribe((relations: Relations) => {
+            this.onSelect(relations, null);
+            this.getRelations();
+            this.CompanyApi.countRelations(this.Account.companyId).subscribe(res => this.totalrelationcount = res.count);
+          });
     });
   }
 
@@ -385,6 +384,8 @@ export class RelationComponent implements OnInit {
       this.tasklist = [],
       this.option = undefined,
       this.selectedRelation = Relations;
+      this.compannyseccolor = Relations.companysecondarycolor;
+      this.companypricolor = Relations.companyprimairycolor;
     this.relationindex = i;
     this.selectedCall = null;
     this.getCalls();

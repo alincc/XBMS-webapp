@@ -44,7 +44,7 @@ export class MaileditorComponent implements OnInit {
   editColumn = new FormControl();
 
   public slideIndex = 1;
-  public showprogressbar = false;
+  public showprogressbarbusy = false;
   public Section = false;
   public Column = false;
   public Image = false;
@@ -706,14 +706,14 @@ export class MaileditorComponent implements OnInit {
    * @returns confirmation of created template
   */
   private ConvertToMail(): void {
-    this.showprogressbar = true;
+    this.showprogressbarbusy = true;
     let templArray = this.mailtemplateArray;
     let sectionStyle = this.sectionStyleArray;
     let columnStyle = this.columnStyleArray;
     let sendobject = { templArray, sectionStyle, columnStyle };
 
     this.mailingApi.mjml(this.option.companyId, this.option.id, sendobject).subscribe((data) => {
-      this.showprogressbar = false;
+      this.showprogressbarbusy = false;
       // console.log(data.html);
       const previewstring = '<div style="width: 600px; height: 500px;>"' + data.html + '</div>';
       const previewhtml = [];

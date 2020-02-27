@@ -208,9 +208,9 @@
                           </mat-panel-title>
                         </mat-expansion-panel-header>
                         <br>
-                        <span [style.background]="selectedRelation.companyprimairycolor" [cpToggle]="true"
+                        <span [style.background]="companypricolor" [cpToggle]="true"
                           [cpDialogDisplay]="'inline'" [cpCancelButton]="true"
-                          [(colorPicker)]="selectedRelation.companyprimairycolor"></span>
+                          [(colorPicker)]="companypricolor"></span>
                       </mat-expansion-panel>
                     </mat-accordion>
                   </div>
@@ -223,9 +223,9 @@
                           </mat-panel-title>
                         </mat-expansion-panel-header>
                         <br>
-                        <span [style.background]="selectedRelation.companysecondarycolor" [cpToggle]="true"
+                        <span [style.background]="compannyseccolor" [cpToggle]="true"
                           [cpDialogDisplay]="'inline'" [cpCancelButton]="true"
-                          [(colorPicker)]="selectedRelation.companysecondarycolor"></span>
+                          [(colorPicker)]="compannyseccolor"></span>
                       </mat-expansion-panel>
                     </mat-accordion>
                   </div>
@@ -782,12 +782,11 @@
                 <label fxFlex="40%">Url: </label>
                 <label fxFlex="40%">{{selectedfile.url}}</label>
               </div>
-              <vg-player *ngIf="selectedfile.type === 'marketing-video' || selectedfile.type === 'video'"
+              <div *ngIf="selectedfile.type === 'marketing-video' || selectedfile.type === 'video'"
                 style="max-width: 600px;">
-                <video *ngIf="selectedfile.url" [vgMedia]="media" #media id="singleVideo" preload="auto" controls style="max-width: 600px;">
-                  <source [src]="selectedfile.url" type="video/mp4">
+                <video *ngIf="selectedfile.url" [vgMedia]="media" #media id="singleVideo" preload="auto" controls style="max-width: 600px;" source [src]="selectedfile.url" type="video/mp4">
                 </video>
-              </vg-player>
+              </div>
               <img *ngIf="selectedfile.type !== 'marketing-video' || selectedfile.type !== 'video' || selectedfile.type !== 'vector' "
               src={{selectedfile.url}} style="width: 400px; height: auto;">
               <div  style="width: 400px; height: 400px;" *ngIf="selectedfile.type === 'vector'" [inlineSVG]="selectedfile.url"></div>
@@ -1191,7 +1190,7 @@
           <mat-card-content>
             <mat-list role="list">
 
-              <mat-button-toggle-group  [vertical]="true">
+              <mat-button-toggle-group #group="matButtonToggleGroup" [vertical]="true">
                 <mat-button-toggle value="Analytics">
                   <mat-icon>details</mat-icon> Analytics
                 </mat-button-toggle>
@@ -1541,12 +1540,12 @@
                 target="_blank">For Joomla</a>
               <a href="https://www.drupal.org/project/header_and_footer_scripts" target="_blank">For Drupal</a>
               <mat-form-field class="example-full-width">
-                <textarea matInput [(ngModel)]=trackingcode (click)="copyMessage(trackingcode)"
+                <textarea matInput [(ngModel)]=trackingcode (click)="copyMessage(trackingcode)" #tooltip="matTooltip"
                   (mouseenter)="$event.stopImmediatePropagation()" (mouseleave)="$event.stopImmediatePropagation()"
                   matTooltip="Copied!" (click)="tooltip.toggle()" ></textarea>
               </mat-form-field>
               <button mat-button (mouseenter)="$event.stopImmediatePropagation()"
-                (mouseleave)="$event.stopImmediatePropagation()" matTooltip="Copied!" 
+                (mouseleave)="$event.stopImmediatePropagation()" matTooltip="Copied!" #tooltip="matTooltip"
                 (click)="copyMessage(trackingcode)" (click)="tooltip.toggle()">Copy</button>
             </div>
           </mat-card-content>

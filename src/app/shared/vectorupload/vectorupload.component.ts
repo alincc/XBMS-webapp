@@ -4,17 +4,13 @@ const URL = 'http://localhost:3000/api/containers/tmp/upload';
 import {
   ButtonEvent,
   ButtonsConfig,
-  Image,
-  ImageModalEvent,
   PlainGalleryConfig,
-  PlainGalleryStrategy,
   PreviewConfig
 } from '@ks89/angular-modal-gallery';
 import { ContainerApi, Files, Relations, RelationsApi, Company, Account, FilesApi } from '../sdk';
 import { BASE_URL, API_VERSION } from '../base.api'
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
-
 
 export interface DialogData {
   img;
@@ -50,10 +46,6 @@ export class VectoruploadComponent implements OnInit {
   public customButtonsConfig: ButtonsConfig;
   public ButtonEvent: ButtonEvent;
   public PreviewConfig: PreviewConfig;
-  //public ImageModalEvent: ImageModalEvent
-  // public buttonsConfigFull: ButtonsConfig;
-  // public images: Image[] = [];
-  // public imagesNew: Image[] = [];
   public Files: Files[];
   public newFiles: Files = new Files();
   public showdropbox = true;

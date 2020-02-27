@@ -45,7 +45,7 @@
       </ng-template>
 
       <div class="tabcontainer" fxLayout="column">
-        <mat-button-toggle-group style="width: 300px; margin-top: 10px;" fxFlex="3 3 40px" fxFlexAlign="start"
+        <mat-button-toggle-group #group="matButtonToggleGroup" style="width: 300px; margin-top: 10px;" fxFlex="3 3 40px" fxFlexAlign="start"
           [vertical]="false" fxflex>
           <mat-button-toggle style="width: 25%" matTooltip="Campaigns" value="campaign" (click)="getMailingCampaign()">
             <mat-icon>today</mat-icon>
@@ -123,9 +123,6 @@
                             }}
                         </h2>
 
-                        <button mat-icon-button [matMenuTriggerFor]="menucall" class="menu">
-                          <mat-icon>more_vert</mat-icon>
-                        </button>
                         <mat-menu #menucall="matMenu">
                           <button mat-menu-item (click)="openDialogDeleteMailing()">
                             <mat-icon>delete</mat-icon>
@@ -150,6 +147,10 @@
                             Edit in Maileditor
                           </button>
                         </mat-menu>
+                        
+                        <button mat-icon-button [matMenuTriggerFor]="menucall" class="menu">
+                          <mat-icon>more_vert</mat-icon>
+                        </button>
                       </mat-toolbar>
                     
                   </div>
@@ -282,22 +283,22 @@
                         <div fxLayout="column" style="width: 200px;"
                           matTooltip="Click to copy, insert in text to retreive mailinglist information">
                           <label (mouseenter)="$event.stopImmediatePropagation()"
-                            (mouseleave)="$event.stopImmediatePropagation()" matTooltip="Copied!" #matTooltip
+                            (mouseleave)="$event.stopImmediatePropagation()" matTooltip="Copied!"  #tooltip="matTooltip"
                             (click)="tooltip.toggle()"
                             (click)="copyMessage('%recipient_name%')">%recipient_name%</label>
                           <label (mouseenter)="$event.stopImmediatePropagation()"
-                            (mouseleave)="$event.stopImmediatePropagation()" matTooltip="Copied!" #matTooltip
+                            (mouseleave)="$event.stopImmediatePropagation()" matTooltip="Copied!" #tooltip="matTooltip"
                             (click)="tooltip.toggle()"
                             (click)="copyMessage('%recipient.company%')">%recipient.company%</label>
                           <label (mouseenter)="$event.stopImmediatePropagation()"
-                            (mouseleave)="$event.stopImmediatePropagation()" matTooltip="Copied!" #matTooltip
+                            (mouseleave)="$event.stopImmediatePropagation()" matTooltip="Copied!" #tooltip="matTooltip"
                             (click)="tooltip.toggle()" (click)="copyMessage('%recipient%')">%recipient%</label>
                           <label (mouseenter)="$event.stopImmediatePropagation()"
-                            (mouseleave)="$event.stopImmediatePropagation()" matTooltip="Copied!" #matTooltip
+                            (mouseleave)="$event.stopImmediatePropagation()" matTooltip="Copied!" #tooltip="matTooltip"
                             (click)="tooltip.toggle()"
                             (click)="copyMessage('%recipient.firstname%')">%recipient.firstname%</label>
                           <label (mouseenter)="$event.stopImmediatePropagation()"
-                            (mouseleave)="$event.stopImmediatePropagation()" matTooltip="Copied!" #matTooltip
+                            (mouseleave)="$event.stopImmediatePropagation()" matTooltip="Copied!" #tooltip="matTooltip"
                             (click)="tooltip.toggle()"
                             (click)="copyMessage('%recipient.lastname%')">%recipient.lastname%</label>
                         </div>
