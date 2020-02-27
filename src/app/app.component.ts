@@ -9,7 +9,7 @@ import {
   CompanyApi
 } from './shared/';
 import { DomSanitizer } from '@angular/platform-browser';
-import { MatIconRegistry } from '@angular/material';
+import { MatIconRegistry } from '@angular/material/icon';
 import { Router, RoutesRecognized } from '@angular/router';
 import { map, distinctUntilChanged, share, filter, throttleTime, pairwise } from 'rxjs/operators';
 import { fromEvent, Observable } from 'rxjs';

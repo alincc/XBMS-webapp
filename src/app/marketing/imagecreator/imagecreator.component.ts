@@ -1,14 +1,11 @@
 import { Component, OnInit, Input, SimpleChange, SimpleChanges } from '@angular/core';
-import { FileuploadComponent } from '../../shared/fileupload/fileupload.component';
 import {
   Relations, RelationsApi, BASE_URL, CompanyApi, Company, Account,
   Files, FilesApi, ContainerApi
 } from '../../shared';
-import { NgModule, HostListener } from '@angular/core';
-import { MatSnackBar, MatSnackBarConfig, MatInput, MatAutocompleteSelectedEvent } from '@angular/material';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { ChartDataSets, ChartOptions } from 'chart.js';
 import { Color, BaseChartDirective, Label } from 'ng2-charts';
-import { Array } from 'core-js';
 import { ViewChild, ElementRef } from '@angular/core';
 import { FileUploader, FileItem } from 'ng2-file-upload';
 import { MediaObserver, MediaChange } from '@angular/flex-layout';

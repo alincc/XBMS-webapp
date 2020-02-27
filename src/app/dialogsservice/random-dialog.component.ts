@@ -1,7 +1,6 @@
-import { MatDialogRef, MatCardTitleGroup } from '@angular/material';
 import { Component, Inject } from '@angular/core';
 import { Randomizer } from './randomize';
-import { MatDialog, MAT_DIALOG_DATA } from '@angular/material';
+import { MatDialog, MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { FormControl } from '@angular/forms';
 import { timezones } from '../shared/';
 import { timeconv } from '../shared/timeconv';

@@ -14,7 +14,7 @@ import {
   LinkedinApi
 } from '../';
 import { DomSanitizer } from '@angular/platform-browser';
-import { MatIconRegistry } from '@angular/material';
+import { MatIconRegistry } from '@angular/material/icon';
 import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({

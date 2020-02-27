@@ -1,6 +1,6 @@
 import { Component, OnInit, NgZone } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Observable, BehaviorSubject } from 'rxjs';
+import { Observable} from 'rxjs';
 import {
   LoopBackConfig,
   CompanyApi,
@@ -18,31 +18,18 @@ import {
   ContainerApi,
   UnsortedcallsApi,
   Unsortedcalls,
-  Contactpersons,
   Emailhandler,
-  EmailhandlerApi,
-  Mailinglist,
-  MailinglistApi,
   ContainersecureApi,
   MailingApi,
-  Mailing,
-  LoggerApi, 
   Logger
 } from '../shared/';
-import { NgClass, NgStyle } from '@angular/common';
-import { ReactiveFormsModule, FormsModule } from '@angular/forms';
-import { MatIconRegistry } from '@angular/material';
-import { DomSanitizer } from '@angular/platform-browser';
-import { MatDialog, MatDialogRef } from '@angular/material';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { WordpressService } from '../shared/websiteservice';
 import { LinkedinService } from '../shared/socialservice';
 import { DialogsService } from './../dialogsservice/dialogs.service';
 import {map, startWith} from "rxjs/operators";
-import { Options } from 'selenium-webdriver/ie';
-import { ChangeDetectionStrategy, Output, EventEmitter, OnDestroy } from '@angular/core';
 import { FormControl, FormGroupDirective, NgForm, Validators, FormBuilder, FormGroup } from '@angular/forms';
-import { ErrorStateMatcher } from '@angular/material/core';
-import { MatSnackBar, MatSnackBarConfig, MatInput, MatAutocompleteSelectedEvent } from '@angular/material';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { fontoptions } from './google-fonts-list';
 import { TextEditorDialog } from '../marketing/maileditor/texteditordialog.component';
 import { fonts } from '../shared/listsgeneral/fonts';

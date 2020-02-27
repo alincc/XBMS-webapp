@@ -3,7 +3,7 @@
  * Add subject name + emoticon support
  * Add image resize support
  * */
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import {
   Component, OnInit, Input, Output, NgZone, IterableDiffers,
   ChangeDetectorRef, ApplicationRef, Renderer2,  EventEmitter
@@ -20,7 +20,7 @@ import { Mailing, MailingApi } from '../../shared/sdk';
 import { TextEditorDialog } from './texteditordialog.component';
 import { DomSanitizer } from '@angular/platform-browser';
 import { DialogsService } from './../../dialogsservice/dialogs.service';
-import { MatSnackBar, MatSnackBarConfig, MatInput, MatAutocompleteSelectedEvent } from '@angular/material';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { map, startWith } from "rxjs/operators";
 import { Observable, BehaviorSubject } from 'rxjs';
 import { fontoptions } from '../../settings/google-fonts-list';

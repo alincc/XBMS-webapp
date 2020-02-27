@@ -1191,7 +1191,7 @@
           <mat-card-content>
             <mat-list role="list">
 
-              <mat-button-toggle-group #group="matButtonToggleGroup" [vertical]="true">
+              <mat-button-toggle-group  [vertical]="true">
                 <mat-button-toggle value="Analytics">
                   <mat-icon>details</mat-icon> Analytics
                 </mat-button-toggle>
@@ -1543,10 +1543,10 @@
               <mat-form-field class="example-full-width">
                 <textarea matInput [(ngModel)]=trackingcode (click)="copyMessage(trackingcode)"
                   (mouseenter)="$event.stopImmediatePropagation()" (mouseleave)="$event.stopImmediatePropagation()"
-                  matTooltip="Copied!" (click)="tooltip.toggle()" #tooltip="matTooltip"></textarea>
+                  matTooltip="Copied!" (click)="tooltip.toggle()" ></textarea>
               </mat-form-field>
               <button mat-button (mouseenter)="$event.stopImmediatePropagation()"
-                (mouseleave)="$event.stopImmediatePropagation()" matTooltip="Copied!" #tooltip="matTooltip"
+                (mouseleave)="$event.stopImmediatePropagation()" matTooltip="Copied!" 
                 (click)="copyMessage(trackingcode)" (click)="tooltip.toggle()">Copy</button>
             </div>
           </mat-card-content>

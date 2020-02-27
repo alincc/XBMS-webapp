@@ -2,35 +2,50 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule, Injectable } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
 import { Routes, RouterModule } from '@angular/router';
+
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MatMenuModule, MatButtonModule, MatCheckboxModule,
-  MatSidenavModule, MatDialogModule, MatDatepickerModule } from '@angular/material';
-import { MatSelectModule, MatNativeDateModule, MatTableModule,
-  MatProgressSpinnerModule, MatTabsModule, MatTooltipModule } from '@angular/material';
-import { MatInputModule, MatCardModule, MatToolbarModule, MatAutocompleteModule } from '@angular/material';
-import { MatIconModule, MatExpansionModule, MatListModule, MatSlideToggleModule, MatSliderModule} from '@angular/material';
-import {MatBadgeModule} from '@angular/material/badge';
+import { MatButtonModule } from '@angular/material/button';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+// import { MatNativeDateModule } from '@angular/material/native';
+
+import { MatTableModule } from '@angular/material/table';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatSelectModule } from '@angular/material/select';
+import { MatInputModule } from '@angular/material/input';
+import { MatCardModule } from '@angular/material/card';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatIconModule} from '@angular/material/icon';
+import { MatExpansionModule} from '@angular/material/expansion';
+import { MatListModule} from '@angular/material/list';
+import { MatSlideToggleModule} from '@angular/material/slide-toggle';
+import { MatSliderModule } from '@angular/material/slider';
+import { MatBadgeModule } from '@angular/material/badge';
+//import { GestureConfig } from '@angular/material/';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
-import {MatGridListModule} from '@angular/material/grid-list';
+import { MatGridListModule } from '@angular/material/grid-list';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatChipsModule } from '@angular/material/chips';
+import { MatStepperModule } from '@angular/material/stepper';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialogRef } from '@angular/material/dialog';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 
 import { HttpClientModule } from '@angular/common/http';
-import { AppComponent, BottomSheetLogOverview  } from './app.component';
-import { RelationComponent } from './relation/relation.component';
-import { MarketingComponent } from './marketing/marketing.component';
-import { SettingsComponent } from './settings/settings.component';
-import { DashboardComponent } from './dashboard/dashboard.component';
+import { AppComponent, BottomSheetLogOverview } from './app.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SDKBrowserModule } from './shared/sdk/index';
-import { FileserverComponent } from './shared/fileserver/fileserver.component';
-import { LinkedinComponent } from './shared/linkedin/linkedin.component';
 import { SpeechRecognitionService } from './shared/speechservice/speechservice';
-
 import { AuthGuard } from './shared/auth.guard';
 import 'hammerjs';
-import { LoginComponent } from './login/login.component';
-import { ConfirmDialog } from './dialogsservice/confirm-dialog.component';
+
 import { codesnippetService, CodesnippetDialog } from './dialogsservice/codesnippet-dialog.component';
 import { RandomService } from './dialogsservice/random.service';
 import { DialogsService } from './dialogsservice/dialogs.service';
@@ -42,13 +57,12 @@ import { SpeedDialFabComponent } from './shared/speed-dial-fab/speed-dial-fab.co
 
 import { ChartsModule } from 'ng2-charts';
 import { AgmCoreModule } from '@agm/core';
-import { WordpressService } from './shared/websiteservice/'; 
+import { WordpressService } from './shared/websiteservice/';
 import { LinkedinService } from './shared/socialservice/';
 
-import { MarketingplannerComponent } from './marketingplanner/marketingplanner.component';
-import { MatStepperModule } from '@angular/material/stepper';
+
+
 import { XlsxFileUploadComponent } from './marketing/xlsx-file-upload/xlsx-file-upload.component';
-import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { GoogleMapService } from './shared/googlemapservice/googlemap.service'
 import { timeconv } from './shared/timeconv'
 import { CKEditorModule } from 'ng2-ckeditor';
@@ -58,31 +72,44 @@ import { ModalGalleryModule } from '@ks89/angular-modal-gallery';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
 import { MaileditorText } from './marketing/maileditor/maileditormodel/maileditormodels'
-import {FlexLayoutModule} from '@angular/flex-layout';
+import { FlexLayoutModule } from '@angular/flex-layout';
 import { GooglePlacesDirective } from './google-places.directive';
 import { ReturnpageComponent } from './returnpage/returnpage.component';
 import { MarketingchannelsComponent } from './marketing/marketingchannels/marketingchannels.component';
 import { PwaService } from './pwa.service';
 import { MaileditorComponent } from './marketing/maileditor/maileditor.component';
 import { TextEditorDialog } from './marketing/maileditor/texteditordialog.component';
-import {DragDropModule} from '@angular/cdk/drag-drop';
 import { ColorPickerModule } from 'ngx-color-picker';
-import { FileuploadComponent, dialoggallerycomponent } from './shared/fileupload/fileupload.component';
-import { VideouploadComponent, dialogvideogallerycomponent } from './shared/videoupload/videoupload.component';
-import { AudiouploadComponent, dialogaudiogallerycomponent } from './shared/audioupload/audioupload.component';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+
+
 import { SafeHtml } from './pipe/safehtmlpipe.component';
 import { SafePipe } from './pipe/safepipe.component';
 import { FileName } from './pipe/filenamepipe.component';
+
+import { MarketingplannerComponent } from './marketingplanner/marketingplanner.component';
 import { MarketingpromotionsComponent } from './marketing/marketingpromotions/marketingpromotions.component';
 import { MarketingpublicationsComponent } from './marketing/marketingpublications/marketingpublications.component';
+import { VideocreatorComponent } from './marketing/videocreator/videocreator.component';
 import { ImagecreatorComponent } from './marketing/imagecreator/imagecreator.component';
+import { FileuploadComponent, dialoggallerycomponent } from './shared/fileupload/fileupload.component';
+import { RelationComponent } from './relation/relation.component';
+import { MarketingComponent } from './marketing/marketing.component';
+import { SettingsComponent } from './settings/settings.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
+import { LoginComponent } from './login/login.component';
+import { ConfirmDialog } from './dialogsservice/confirm-dialog.component';
+
+import { VideouploadComponent, dialogvideogallerycomponent } from './shared/videoupload/videoupload.component';
+import { AudiouploadComponent, dialogaudiogallerycomponent } from './shared/audioupload/audioupload.component';
+import { FileserverComponent } from './shared/fileserver/fileserver.component';
+import { LinkedinComponent } from './shared/linkedin/linkedin.component';
+
 import { AngularDraggableModule } from 'angular2-draggable';
 import { MatBottomSheetModule } from '@angular/material/bottom-sheet';
 import { HammerGestureConfig, HAMMER_GESTURE_CONFIG } from '@angular/platform-browser';
 import { CalendarModule, DateAdapter } from 'angular-calendar';
 import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
-import { VideocreatorComponent } from './marketing/videocreator/videocreator.component';
+
 import { InlineSVGModule } from 'ng-inline-svg';
 import { CanvasWhiteboardModule } from 'ng2-canvas-whiteboard';
 //disable pinch and rotate to scroll swip check the hammerjs doc for future fix
@@ -93,24 +120,24 @@ import { CanvasWhiteboardModule } from 'ng2-canvas-whiteboard';
 //   }
 // }
 
-import { GestureConfig } from '@angular/material';
+
 import { VectoruploadComponent, dialogvectorgallerycomponent } from './shared/vectorupload/vectorupload.component';
 import { BackgroundComponent, dialogbackgroundgallerycomponent } from './shared/background/background.component';
 import { TranslationsComponent } from './translations/translations.component';
 import { MatPasswordStrengthModule } from '@angular-material-extensions/password-strength';
 
 
-declare var Hammer: any;
-@Injectable()
-export class HammerConfig extends GestureConfig  {
-  buildHammer(element: HTMLElement) {
-    return new GestureConfig({touchAction: 'pan-y'}).buildHammer(element);
-  }
-  overrides = <any>{
-    'pinch': { enable: false },
-    'rotate': { enable: false }
-}
-}
+// declare var Hammer: any;
+// @Injectable()
+// export class HammerConfig extends GestureConfig {
+//   buildHammer(element: HTMLElement) {
+//     return new GestureConfig({ touchAction: 'pan-y' }).buildHammer(element);
+//   }
+//   overrides = <any>{
+//     'pinch': { enable: false },
+//     'rotate': { enable: false }
+//   }
+// }
 
 @NgModule({
   declarations: [
@@ -155,7 +182,7 @@ export class HammerConfig extends GestureConfig  {
     TranslationsComponent
   ],
 
-   entryComponents: [
+  entryComponents: [
     BottomSheetLogOverview,
     dialoggallerycomponent,
     dialogvideogallerycomponent,
@@ -187,11 +214,25 @@ export class HammerConfig extends GestureConfig  {
     AppRoutingModule,
     MatCheckboxModule,
     DragDropModule,
-    MatIconModule, MatSnackBarModule,
-    MatSidenavModule, MatTooltipModule,
-    MatMenuModule, MatSelectModule, MatTabsModule, MatInputModule, MatCardModule, MatToolbarModule,
-    MatNativeDateModule, MatTableModule, MatToolbarModule, MatStepperModule,
-    MatButtonModule, MatCheckboxModule, MatSidenavModule, MatDialogModule, MatProgressSpinnerModule,
+    MatIconModule, 
+    MatSnackBarModule,
+    MatSidenavModule, 
+    MatTooltipModule,
+    MatMenuModule, 
+    MatSelectModule, 
+    MatTabsModule, 
+    MatInputModule, 
+    MatCardModule, 
+    MatToolbarModule,
+    //MatNativeDateModule, 
+    MatTableModule, 
+    MatToolbarModule, 
+    MatStepperModule,
+    MatButtonModule, 
+    MatCheckboxModule, 
+    MatSidenavModule, 
+    MatDialogModule, 
+    MatProgressSpinnerModule,
     MatProgressBarModule, MatAutocompleteModule, MatListModule, MatSliderModule,
     FormsModule, ReactiveFormsModule, HttpClientModule, MatGridListModule, MatSlideToggleModule,
     MatDatepickerModule, MatExpansionModule, MatButtonToggleModule, MatChipsModule, MatBadgeModule,
@@ -210,7 +251,7 @@ export class HammerConfig extends GestureConfig  {
   ],
   providers: [
     codesnippetService,
-    PwaService ,
+    PwaService,
     SpeechRecognitionService,
     LinkedinService,
     AuthGuard,
@@ -222,16 +263,18 @@ export class HammerConfig extends GestureConfig  {
     timeconv,
     MarketingchannelsComponent,
     WordpressUploadDialogComponent,
-      { provide: MAT_DIALOG_DATA, useValue: {} },
-      { provide: MatDialogRef, useValue: {} },
-      { provide: HAMMER_GESTURE_CONFIG,
-        useClass: HammerConfig}
+    { provide: MAT_DIALOG_DATA, useValue: {} },
+    { provide: MatDialogRef, useValue: {} },
+    // {
+    //   provide: HAMMER_GESTURE_CONFIG,
+    //   useClass: HammerConfig
+    // }
   ],
   bootstrap: [AppComponent],
   exports: [
     ConfirmDialog,
     CodesnippetDialog,
     RandomDialog
-]
+  ]
 })
 export class AppModule { }

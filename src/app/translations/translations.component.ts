@@ -15,8 +15,10 @@ import {
 import { WordpressUploadDialogComponent } from '../dialogsservice/wordpressupload-dialog.component';
 import { WordpressService } from '../shared/websiteservice';
 import { DialogsService } from './../dialogsservice/dialogs.service';
-import { MatSnackBar, MatSnackBarConfig, MatInput, MatAutocompleteSelectedEvent } from '@angular/material';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
+import { MatInput } from '@angular/material/input';
+import { MatAutocompleteSelectedEvent} from '@angular/material/autocomplete';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-translations',

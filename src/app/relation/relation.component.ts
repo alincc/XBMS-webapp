@@ -32,13 +32,10 @@ import {
   MailingApi
 } from '../shared/';
 import { DialogsService } from './../dialogsservice/dialogs.service';
-import { MatSnackBar, MatDatepickerModule } from '@angular/material';
-import { DatePipe } from '@angular/common';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { LinkedinService } from '../shared/socialservice';
-import { MatDialog, MatDialogRef } from '@angular/material';
+import { MatDialog} from '@angular/material/dialog';
 import { fonts } from '../shared/listsgeneral/fonts';
-
-import { HostBinding } from '@angular/core';
 import { GoogleMapService } from '../shared/googlemapservice/googlemap.service';
 import { Observable } from 'rxjs';
 import { map, startWith } from "rxjs/operators";

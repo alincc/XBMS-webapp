@@ -34,10 +34,7 @@ import {
   ArticlereposterApi
 } from '../../shared/';
 import { DialogsService } from './../../dialogsservice/dialogs.service';
-import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material';
-import { TextEditorDialog } from './../maileditor/texteditordialog.component';
 import { WordpressService } from '../../shared/websiteservice';
-import { months } from 'moment';
 import { languages } from '../../shared/listsgeneral/languages';
 import { countrylist } from '../../shared/listsgeneral/countrylist';
 

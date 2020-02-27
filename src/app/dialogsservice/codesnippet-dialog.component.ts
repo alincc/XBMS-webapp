@@ -1,8 +1,8 @@
-import { MatDialogRef, MatDialog } from '@angular/material';
+import { MatDialogRef, MatDialog } from '@angular/material/dialog';
 import { Component } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Injectable } from '@angular/core';
-import { MatSnackBar, AnimationDurations } from '@angular/material';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Injectable()
 export class codesnippetService {

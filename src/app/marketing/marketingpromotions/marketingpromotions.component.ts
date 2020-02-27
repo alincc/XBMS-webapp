@@ -12,7 +12,7 @@ import {
   FacebookApi,
   timezones,
 } from '../../shared/';
-import { MatSnackBar, MatSnackBarConfig, MatInput, MatAutocompleteSelectedEvent } from '@angular/material';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import * as moment from 'moment-timezone';
 import { DialogsService } from './../../dialogsservice/dialogs.service';
 import { timeconv } from '../../shared/timeconv';

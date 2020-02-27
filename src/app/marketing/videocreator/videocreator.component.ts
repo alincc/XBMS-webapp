@@ -9,7 +9,8 @@ import { gsap } from 'assets/js/all';
 import { CustomBounce, CustomEase, Physics2DPlugin, InertiaPlugin, ScrambleTextPlugin, SplitText, DrawSVGPlugin, MorphSVGPlugin, MotionPathPlugin, MotionPathHelper, Draggable } from 'assets/js/all';
 gsap.registerPlugin(Physics2DPlugin, CustomEase, CustomBounce, Draggable, InertiaPlugin, ScrambleTextPlugin, SplitText, DrawSVGPlugin, MorphSVGPlugin, MotionPathPlugin, MotionPathHelper);
 import { FileUploader, FileItem } from 'ng2-file-upload';
-import { MatSnackBar, MatDialog, AnimationDurations } from '@angular/material';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatDialog } from '@angular/material/dialog';
 declare const SVG: any;
 import '@svgdotjs/svg.draggable.js'
 const plugins = [Draggable, CustomEase, CustomBounce, InertiaPlugin, DrawSVGPlugin, MorphSVGPlugin, ScrambleTextPlugin, SplitText, Physics2DPlugin, MotionPathPlugin, MotionPathHelper]; //needed for GSAP
@@ -472,12 +473,6 @@ export class VideocreatorComponent implements OnInit {
       this.setPosition(elm);
 
       if (elm.type === 'chart') {
-        // remove json meta problem 
-        // elm.data.forEach(dataelement => {
-        //   if (dataelement){
-        //     dataelement._meta = undefined;
-        //   }
-        // });
         elm.productiondata = [
           { data: [0, 0, 0], label: 'Series A' },
           { data: [0, 0, 0], label: 'Series B' }

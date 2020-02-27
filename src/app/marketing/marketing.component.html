@@ -46,7 +46,7 @@
 
       <div class="tabcontainer" fxLayout="column">
         <mat-button-toggle-group style="width: 300px; margin-top: 10px;" fxFlex="3 3 40px" fxFlexAlign="start"
-          #group="matButtonToggleGroup" [vertical]="false" fxflex>
+          [vertical]="false" fxflex>
           <mat-button-toggle style="width: 25%" matTooltip="Campaigns" value="campaign" (click)="getMailingCampaign()">
             <mat-icon>today</mat-icon>
           </mat-button-toggle>
@@ -282,22 +282,22 @@
                         <div fxLayout="column" style="width: 200px;"
                           matTooltip="Click to copy, insert in text to retreive mailinglist information">
                           <label (mouseenter)="$event.stopImmediatePropagation()"
-                            (mouseleave)="$event.stopImmediatePropagation()" matTooltip="Copied!" #tooltip="matTooltip"
+                            (mouseleave)="$event.stopImmediatePropagation()" matTooltip="Copied!" #matTooltip
                             (click)="tooltip.toggle()"
                             (click)="copyMessage('%recipient_name%')">%recipient_name%</label>
                           <label (mouseenter)="$event.stopImmediatePropagation()"
-                            (mouseleave)="$event.stopImmediatePropagation()" matTooltip="Copied!" #tooltip="matTooltip"
+                            (mouseleave)="$event.stopImmediatePropagation()" matTooltip="Copied!" #matTooltip
                             (click)="tooltip.toggle()"
                             (click)="copyMessage('%recipient.company%')">%recipient.company%</label>
                           <label (mouseenter)="$event.stopImmediatePropagation()"
-                            (mouseleave)="$event.stopImmediatePropagation()" matTooltip="Copied!" #tooltip="matTooltip"
+                            (mouseleave)="$event.stopImmediatePropagation()" matTooltip="Copied!" #matTooltip
                             (click)="tooltip.toggle()" (click)="copyMessage('%recipient%')">%recipient%</label>
                           <label (mouseenter)="$event.stopImmediatePropagation()"
-                            (mouseleave)="$event.stopImmediatePropagation()" matTooltip="Copied!" #tooltip="matTooltip"
+                            (mouseleave)="$event.stopImmediatePropagation()" matTooltip="Copied!" #matTooltip
                             (click)="tooltip.toggle()"
                             (click)="copyMessage('%recipient.firstname%')">%recipient.firstname%</label>
                           <label (mouseenter)="$event.stopImmediatePropagation()"
-                            (mouseleave)="$event.stopImmediatePropagation()" matTooltip="Copied!" #tooltip="matTooltip"
+                            (mouseleave)="$event.stopImmediatePropagation()" matTooltip="Copied!" #matTooltip
                             (click)="tooltip.toggle()"
                             (click)="copyMessage('%recipient.lastname%')">%recipient.lastname%</label>
                         </div>

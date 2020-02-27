@@ -1,20 +1,8 @@
 
 import { Component, OnInit, Input, Output, EventEmitter, Inject } from '@angular/core';
-import { FileUploader } from 'ng2-file-upload';
-const URL = 'http://localhost:3000/api/containers/tmp/upload';
-import {
-  ButtonEvent,
-  ButtonsConfig,
-  Image,
-  ImageModalEvent,
-  PlainGalleryConfig,
-  PlainGalleryStrategy,
-  PreviewConfig
-} from '@ks89/angular-modal-gallery';
 import { ContainerApi, Files, Relations, RelationsApi, Company, Account, FilesApi } from '../sdk';
-import { BASE_URL, API_VERSION } from '../base.api'
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { DomSanitizer } from '@angular/platform-browser';
 import { StockBackgrounds } from './stockbackgrounds';
 import { StockBackgroundsAnimated } from './stockbackgroundanimated';
 
@@ -97,6 +85,7 @@ export class dialogbackgroundgallerycomponent implements OnInit {
   public animatedbackground = StockBackgroundsAnimated;
   public stockbackgrounds = [];
   public animatedbackgrounds = [];
+  public URL = 'http://localhost:3000/api/containers/tmp/upload';
 
   constructor(
     public dialogRef: MatDialogRef<dialogbackgroundgallerycomponent>,
