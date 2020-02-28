@@ -21,8 +21,10 @@ import { debounceTime } from 'rxjs/operators';
 import { HostListener } from '@angular/core';
 import { Subject, Subscription } from 'rxjs';
 import PathEditor from 'assets/js/utils/PathEditor';
-import { chart, animationtype, vectoranimationtype, vectoranimation, vectorcombinator, vectorelement,
-splittexttype, shapeanimation, imageanimation, textanimation } from './videocreator.model';
+import {
+  chart, animationtype, vectoranimationtype, vectoranimation, vectorcombinator, vectorelement,
+  splittexttype, shapeanimation, imageanimation, textanimation
+} from './videocreator.model';
 
 
 @Component({
@@ -34,10 +36,10 @@ splittexttype, shapeanimation, imageanimation, textanimation } from './videocrea
 export class VideocreatorComponent implements OnInit {
 
   @ViewChild('progressbar') progressbar: ElementRef;
-  @Input() Account: Account = new Account();
+  @Input() Account: Account;
   @Input() SelectedRelation: Relations;
-  @Input() option: Relations = new Relations();
-  @Input() company: Company = new Company;
+  @Input() option: Relations;
+  @Input() company: Company;
 
   videoPlayer: HTMLVideoElement;
   @ViewChild('videoPlayer')
@@ -186,7 +188,7 @@ export class VideocreatorComponent implements OnInit {
     console.log('save');
     let jsonaniarray = JSON.stringify(this.animationarray, this.getCircularReplacer());
     let jsonaniarraylast = JSON.stringify(this.history[this.currenthistoryversion]);
-    if (this.currenthistoryversion < this.history.length -1) {
+    if (this.currenthistoryversion < this.history.length - 1) {
       this.history = this.history.splice(this.currenthistoryversion + 1, this.history.length - 1)
     }
     if (jsonaniarray !== jsonaniarraylast) {
@@ -208,7 +210,7 @@ export class VideocreatorComponent implements OnInit {
       return value;
     };
   };
-  
+
 
   historyBack() {
     console.log('ctrl-z', this.currenthistoryversion)
@@ -419,30 +421,41 @@ export class VideocreatorComponent implements OnInit {
     }
   }
 
-  resetPath() {
-    let w = this.canvas.width.replace('px', '');
-    let h = this.canvas.height.replace('px', '');
-    let newview = '0 0 ' + w + ' ' + h;
-    let newpath = 'M282.457,480.74 C282.457,480.74 280.457,217.529 279.888,139.457   ';
-    let newsvgpath = '<svg id="' + this.selectedelement.id + 'mp" viewBox="' + newview + '" class="path-edit"><path id="' + this.selectedelement.id + 'p" style="opacity: 0; " d="' + newpath + '" /></svg>';
+  async resetPath(animation) {
+    this.stopFunc();
+    let h = parseInt(this.canvas.height, 10);
+    let w = parseInt(this.canvas.width, 10);
+    let pathset = document.getElementById(this.selectedelement.id + 'p')
 
     switch (this.standardpath) {
       case 'linear': {
-        newpath = 'M282.457,480.74 C282.457,480.74 280.457,217.529 279.888,139.457   ';
-        newsvgpath = '<svg id="' + this.selectedelement.id + 'mp" viewBox="' + newview + '" class="path-edit"><path id="' + this.selectedelement.id + 'p" style="opacity: 0; " d="' + newpath + '" /></svg>';
+        let editpath = 'M282.457,480.74 C282.457,480.74 280.457,217.529 279.888,139.457   ';
+        this.selectedelement.clippath = editpath;
+        pathset.setAttribute('d', editpath);
         break
       }
       case 'circle': {
-        newsvgpath = '<svg id="' + this.selectedelement.id + 'mp" viewBox="' + newview +
-          '" class="path-edit"><ellipse cx="200" cy="80" rx="100" ry="50" id="' + this.selectedelement.id + 'p" style="opacity: 0;" /></svg>';
+        let circw = (w - 10) / 2;
+        let circh = (h - 10) / 2;
+        let newsvgpath = '<ellipse cx="' + circw + '" cy="' + circw + '" rx="' + circh + '" ry="' + circh + '" id="' + this.selectedelement.id + 'p" style="opacity: 0;" />';
+        pathset.outerHTML = newsvgpath;
+        MorphSVGPlugin.convertToPath("circle, rect, ellipse, line, polygon, polyline");
+        pathset = document.getElementById(this.selectedelement.id + 'p')
+        console.log(pathset);
         break
       }
       case 'square': {
-        newsvgpath = '<svg id="' + this.selectedelement.id + 'mp" viewBox="' + newview + '" class="path-edit"><rect width="300" height="100" id="' + this.selectedelement.id + 'p" style="opacity: 0;" /></svg>';
+        let editpath = 'M 10,10 L' + (w - 50) + ',10 L' + (w - 50) + ',' + (h - 50) + ' L10,' + (h - 50) + ' z';;
+        this.selectedelement.clippath = editpath;
+        pathset.setAttribute('d', editpath);
         break
       }
     }
-    this.selectedelement.motionpath = newsvgpath;
+    let newpath = pathset.getAttribute('d')
+    this.setNewMotionPath(newpath)
+    await new Promise(resolve => setTimeout(resolve, 400));
+    this.editMotionPath(animation);
+  
   }
 
   detectMorph(value) {
@@ -573,8 +586,12 @@ export class VideocreatorComponent implements OnInit {
         break;
       case 'slowmotion':
         ease = 'slow(0.7, 0.7, false)'
+      case 'rough':
+        ease = 'rough'
+      case 'none':
+        ease = 'none'
       default:
-        ease = '';
+        ease = 'none';
     }
     return ease
   }
@@ -878,14 +895,14 @@ export class VideocreatorComponent implements OnInit {
     this.selectedelement.animation.push(neweffect);
   }
 
-  copyElement(i, element) {
+ async copyElement(i, element) {
     const curel = element;
     let newElement = JSON.parse(JSON.stringify(curel));
     // redo all ids
     let newelnr = this.animationarray.length + 'el';
     newElement.id = newelnr;
     this.newz = this.newz + 1;
-    newElement.style['z-index'] = this.newz; 
+    newElement.style['z-index'] = this.newz;
 
     if (element.type === 'vector') {
       let newVectorElement: vectoranimation = newElement;
@@ -908,6 +925,7 @@ export class VideocreatorComponent implements OnInit {
       }
     }
 
+    newElement.motionpath = newElement.motionpath.replace(this.selectedelement.id, newElement.id)
     this.animationarray.push(newElement);
     this.selectedelement = newElement;
   }
@@ -1074,7 +1092,7 @@ export class VideocreatorComponent implements OnInit {
       return obj.anim_type === 'bounce'
     });
     if (animationmove.length > 0 || animationbounce.length > 0) {
-      if (idel.groupmember){
+      if (idel.groupmember) {
         let boundposition = document.getElementById('myBounds').getBoundingClientRect();
 
         // get the actual position on the screen / relative
@@ -1769,7 +1787,7 @@ export class VideocreatorComponent implements OnInit {
         ' d="M282.457,480.74 C282.457,480.74 280.457,217.529 279.888,139.457   " /></svg>',
     }
     this.animationarray.push(chart);
-    console.log(this.animationarray[this.animationarray.length -1]);
+    console.log(this.animationarray[this.animationarray.length - 1]);
   }
 
   editFigurePath(): void {
@@ -2126,7 +2144,7 @@ export class VideocreatorComponent implements OnInit {
     let viewbox = '0 0 ' + w + ' ' + h;
     svg.setAttribute('viewBox', viewbox);
     // if not clippath present set to current size box 
-    if (!this.selectedelement.clippath ) {
+    if (!this.selectedelement.clippath) {
       //editpath = 'M0,0 L300,0 L300,300 L0,300z'
       // editpath = 'M 10,10 L' + (w - 10) + ',10 L' + (w - 10) + ',' + (h - 10) + ' L10,' + (h - 10) + ' z';
       // this.selectedelement.clippath = editpath;
@@ -2139,7 +2157,7 @@ export class VideocreatorComponent implements OnInit {
     this.pathEditor = PathEditor.create(pathset);
   }
 
-  resetImageCropPath(){
+  resetImageCropPath() {
     let pathset = document.getElementById(this.selectedelement.id + 'croppath');
     let docset = document.getElementById(this.selectedelement.id);
     let svg = document.getElementById(this.selectedelement.id + 'crop');
@@ -2153,10 +2171,10 @@ export class VideocreatorComponent implements OnInit {
         break
       }
       case 'circle': {
-        let circw = (w - 10) /2;
-        let circh = (h - 10) /2;
-        let newsvgpath = '<ellipse cx="'+circw+'" cy="'+circw+'" rx="'+circh+'" ry="'+circh+'" id="'+ this.selectedelement.id +'croppath" style="opacity: 0;" />';
-        pathset.outerHTML = newsvgpath; 
+        let circw = (w - 10) / 2;
+        let circh = (h - 10) / 2;
+        let newsvgpath = '<ellipse cx="' + circw + '" cy="' + circw + '" rx="' + circh + '" ry="' + circh + '" id="' + this.selectedelement.id + 'croppath" style="opacity: 0;" />';
+        pathset.outerHTML = newsvgpath;
         MorphSVGPlugin.convertToPath("circle, rect, ellipse, line, polygon, polyline");
         break
       }
@@ -2718,12 +2736,14 @@ export class VideocreatorComponent implements OnInit {
     let type = this.canvas.weather;
     let classtype;
     let total = 30;
-
+    if (type === 'flies') { total = 40 }
+    if (type === 'stars') { total = 100 }
     if (type === 'snow') { total = 60 }
     if (type === 'rain') { total = 60 }
     if (type === 'leaves') { total = 50 }
     if (type === 'sun') { total = 90 } // also depends on the angle this case is 90 degrees
     if (type === 'clouds') { total = 20 }
+    if (type === 'butterfly') {total = 10}
     let container = document.getElementById("weathercontainer");
     // container.removeChild   ---> ??
     container.innerHTML = '';
@@ -2748,7 +2768,11 @@ export class VideocreatorComponent implements OnInit {
     const svgurl = 'https://api.xbms.io/api/Containers/5a2a4e745c2a7a06c443533f/download/2x0vzs.svg';
 
     for (let i = 0; i < total; i++) {
+
       let Div = document.createElement('div');
+      let setid = 'divPar' + i;
+      Div.setAttribute('id', setid);
+
       if (type === 'snow') {
         gsap.set(Div, { attr: { class: 'snow' }, x: this.R(0, canvasposR), y: this.R(h, heightanitop), z: this.R(-200, 200), rotationZ: this.R(0, 180), rotationX: this.R(0, 360) });
       }
@@ -2762,6 +2786,24 @@ export class VideocreatorComponent implements OnInit {
       if (type === 'clouds') {
         gsap.set(Div, { attr: { class: 'cloud' }, x: this.R(w, widthaniside), y: this.R(0, h * 0.1), z: this.R(-200, 200), scale: this.R(0.5, 1.5) });
       }
+      if (type === 'stars') {
+        let scale = this.R(1, -3);
+        gsap.set(Div, { attr: { class: 'stars'}, scale: scale, x: this.R(0, parseInt(this.canvas.width, 10)), y: this.R(0, parseInt(this.canvas.height, 10))});
+        this.canvas["background-color"] = 'transparent';
+      }
+      if (type === 'flies') {
+        let scale = this.R(1, -3);
+        gsap.set(Div, { attr: { class: 'flies'}, scale: scale, x: this.R(0, parseInt(this.canvas.width, 10)), y: this.R(0, parseInt(this.canvas.height, 10))});
+      }
+
+      if (type === "butterfly"){
+         let innerdiv = '<div class="butterfly"><div class="wing"><div class="bit"></div><div class="bit"></div></div><div class="wing"><div class="bit"></div><div class="bit"></div></div></div>';
+         Div.innerHTML = innerdiv;
+         let scale = this.R(-10, -3);
+         gsap.set(Div, {  x: this.R(0, parseInt(this.canvas.width, 10)), y: this.R(0, parseInt(this.canvas.height, 10))});
+      }
+
+
       if (type === 'clouds') { this.animclouds(Div, h, w); }
       if (type === 'snow') { this.animsnow(Div, h); }
       if (type === 'rain') { this.animrain(Div, h); }
@@ -2773,10 +2815,45 @@ export class VideocreatorComponent implements OnInit {
         gsap.set(Div, { attr: { class: 'sunray' }, x: w + 10, y: -10, rotation: i + "_short", });
         this.animsun(Div, ya, xa);
       }
-
+      if (type === 'flies') { 
+        this.animflies(Div, h, w); }
+      if (type === 'stars') { this.animstars(Div); }
+      if (type === 'butterfly') { this.animbutterfly(Div, h, w); }
 
       container.appendChild(Div);
     }
+  }
+
+  animbutterfly(elm, h, w){
+    let minw = (w * -1) / 2;
+    let minh = (h * -1) / 2;
+    let movex = '+=' + this.R(minw, (w / 2));
+    let movey = '+=' + this.R(minh, (h / 2));
+    //let scale = this.R(-2, 1);
+    //this.primairytimeline.to(elm, { duration: this.R(5, 20), scale: scale, ease: 'none', repeat: -1,  yoyo: true}, this.R(0, 10));
+    this.primairytimeline.to(elm, { duration: this.R(0, 20), autoAlpha: 0.1, ease: 'none', repeat: -1, yoyo: true}, this.R(0, 10));
+    this.primairytimeline.to(elm, { duration: this.R(5, 20), y: movey, ease: 'none', repeat: -1, yoyo: true}, 0);
+    this.primairytimeline.to(elm, { duration: this.R(5, 20), x: movex, rotationZ: this.R(0, 180), repeat: -1, yoyo: true, ease: 'none'}, 0);
+  }
+
+  animflies(elm, h, w){
+    let minw = (w * -1) / 2;
+    let minh = (h * -1) / 2;
+    let movex = '+=' + this.R(minw, (w / 2));
+    let movey = '+=' + this.R(minh, (h / 2));
+    let scale = this.R(-2, 1);
+    this.primairytimeline.to(elm, { duration: this.R(5, 20), scale: scale, ease: 'none', repeat: -1,  yoyo: true}, this.R(0, 10));
+    this.primairytimeline.to(elm, { duration: this.R(0, 20), autoAlpha: 0.1, ease: 'none', repeat: -1, yoyo: true}, this.R(0, 10));
+    this.primairytimeline.to(elm, { duration: this.R(5, 20), y: movey, ease: 'none', repeat: -1, yoyo: true}, 0);
+    this.primairytimeline.to(elm, { duration: this.R(5, 20), x: movex, rotationZ: this.R(0, 180), repeat: -1, yoyo: true, ease: 'none'}, 0);
+   
+  }
+
+
+  animstars(elm){
+    let scale = this.R(-2, 1);
+    this.primairytimeline.to(elm, { duration: 10, scale: scale, ease: 'none', repeat: -1,  yoyo: true, delay: this.R(0, 10) }, this.R(0, 10));
+    this.primairytimeline.to(elm, { duration: 5, autoAlpha: 0, ease: 'none', repeat: -1, yoyo: true, delay: this.R(0, 10) }, this.R(0, 10));
   }
 
   animsun(elm, h, w) {
@@ -3619,24 +3696,11 @@ export class VideocreatorComponent implements OnInit {
   }
 
   setPathSelClass(element) {
-    // let elclass = element.getAttribute('class');
-    // if (elclass !== null) {
-    //   element.setAttribute('class', 'data-selected ' + elclass);
-    // } else {
-    //   element.setAttribute('class', 'data-selected')
-    // }
     element.classList.add('data-selected');
   }
 
   deletePathSelClass(element) {
-    //if (typeof element.getAttribute === 'function') {
     element.classList.remove('data-selected');
-    // let elclass = element.getAttribute('class');
-    // if (elclass !== null) {
-    //   elclass = elclass.replace('data-selected', '')
-    //   element.setAttribute('class', elclass);
-    // }
-    //}
   }
 
   addcell(i, i1, i2): void {

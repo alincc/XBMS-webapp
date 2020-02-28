@@ -10,7 +10,7 @@
             <input [(ngModel)]="imagename" type="text" matInput placeholder="Image Name">
         </mat-form-field>
 
-        <input style="width: 150px; height: 30px;" [style.background]="canvas['background-color']" [cpToggle]="false"
+        <input *ngIf="company" style="width: 150px; height: 30px;" [style.background]="canvas['background-color']" [cpToggle]="false"
             [cpOutputFormat]="'hex'" [(colorPicker)]="canvas['background-color']" (colorPickerChange)="detectchange()"
             [cpCancelButton]="true" [cpPresetLabel]="'Company colors'"
             [cpPresetColors]="[option.companyprimairycolor, option.companysecondarycolor, company.companyprimairycolor, company.companysecondarycolor]">
@@ -136,7 +136,7 @@
                                                     </mat-panel-title>
                                                 </mat-expansion-panel-header>
                                                 <br>
-                                                <input style="width: 230px;" [style.background]="image.style['color']"
+                                                <input *ngIf="company" style="width: 230px;" [style.background]="image.style['color']"
                                                     [cpOutputFormat]="'hex'" [(colorPicker)]="image.style['color']"
                                                     (colorPickerChange)="detectchange()"
                                                     [cpPresetLabel]="'Company colors'"
@@ -182,7 +182,7 @@
                                 </mat-expansion-panel-header>
                                 <div fxLayout="column">
 
-                                    <input style="width: 230px;" [style.background]="image.style['background-color']"
+                                    <input *ngIf="company" style="width: 230px;" [style.background]="image.style['background-color']"
                                         [(colorPicker)]="image.style['background-color']"
                                         (colorPickerChange)="detectchange()" [cpPresetLabel]="'Company colors'"
                                         [cpPresetColors]="[option.companyprimairycolor, option.companysecondarycolor, company.companyprimairycolor, company.companysecondarycolor]">
@@ -244,20 +244,20 @@
                                         </mat-expansion-panel-header>
                                         <div *ngFor="let colors of image.colors" fxLayout="column">
                                             Color Specification
-                                            <input style="width: 150px;" [style.background]="colors.backgroundColor"
+                                            <input *ngIf="company" style="width: 150px;" [style.background]="colors.backgroundColor"
                                                 [(colorPicker)]="colors.backgroundColor"
                                                 (colorPickerChange)="detectchange()" [cpCancelButton]="true"
                                                 [cpPresetLabel]="'Company colors'"
                                                 [cpPresetColors]="[option.companyprimairycolor, option.companysecondarycolor, company.companyprimairycolor, company.companysecondarycolor]">
                                             <mat-icon class="iconsize-12" (click)="colors.backgroundColor = ''">delete
                                             </mat-icon>
-                                            <input style="width: 150px;" [style.background]="colors.borderColor"
+                                            <input *ngIf="company" style="width: 150px;" [style.background]="colors.borderColor"
                                                 [(colorPicker)]="colors.borderColor"
                                                 (colorPickerChange)="detectchange()" [cpPresetLabel]="'Company colors'"
                                                 [cpPresetColors]="[company.companyprimairycolor, company.companysecondarycolor]">
                                             <mat-icon class="iconsize-12" (click)="colors.borderColor = ''">delete
                                             </mat-icon>
-                                            <input style="width: 150px;"
+                                            <input *ngIf="company" style="width: 150px;"
                                                 [style.background]="colors.pointBackgroundColor"
                                                 [(colorPicker)]="colors.pointBackgroundColor"
                                                 (colorPickerChange)="detectchange()" [cpPresetLabel]="'Company colors'"
@@ -265,7 +265,7 @@
                                             <mat-icon class="iconsize-12" (click)="colors.pointBackgroundColor = ''">
                                                 delete
                                             </mat-icon>
-                                            <input style="width: 150px;" [style.background]="colors.pointBorderColor"
+                                            <input *ngIf="company" style="width: 150px;" [style.background]="colors.pointBorderColor"
                                                 [(colorPicker)]="colors.pointBorderColor"
                                                 (colorPickerChange)="detectchange()" [cpPresetLabel]="'Company colors'"
                                                 [cpPresetColors]="[company.companyprimairycolor, company.secondarycolor]">
@@ -299,7 +299,7 @@
                                         <div fxLayout="column">
                                             X-Axe
                                             Gridline color
-                                            <input
+                                            <input *ngIf="company"
                                                 [style.background]="image.lineChartOptions.scales.xAxes[0].gridLines.color"
                                                 [(colorPicker)]="image.lineChartOptions.scales.xAxes[0].gridLines.color"
                                                 (colorPickerChange)="detectchange()" [cpPresetLabel]="'Company colors'"
@@ -310,7 +310,7 @@
                                             </mat-icon>
                                             X-Axe
                                             Font color
-                                            <input
+                                            <input *ngIf="company"
                                                 [style.background]="image.lineChartOptions.scales.xAxes[0].ticks.fontColor"
                                                 [(colorPicker)]="image.lineChartOptions.scales.xAxes[0].ticks.fontColor"
                                                 (colorPickerChange)="detectchange()" [cpPresetLabel]="'Company colors'"
@@ -321,7 +321,7 @@
                                             </mat-icon>
                                             Y-axe
                                             Gridline color
-                                            <input
+                                            <input *ngIf="company"
                                                 [style.background]="image.lineChartOptions.scales.yAxes[0].gridLines.color"
                                                 [(colorPicker)]="image.lineChartOptions.scales.yAxes[0].gridLines.color"
                                                 (colorPickerChange)="detectchange()" [cpPresetLabel]="'Company colors'"
@@ -332,7 +332,7 @@
                                             </mat-icon>
                                             Y-axe
                                             Font color
-                                            <input
+                                            <input *ngIf="company"
                                                 [style.background]="image.lineChartOptions.scales.yAxes[0].ticks.fontColor"
                                                 [(colorPicker)]="image.lineChartOptions.scales.yAxes[0].ticks.fontColor"
                                                 (colorPickerChange)="detectchange()" [cpPresetLabel]="'Company colors'"

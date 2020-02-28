@@ -214,15 +214,6 @@ export class MaileditorComponent implements OnInit {
 
   }
 
-  ngDoCheck() {
-  //  let a = this.sectionStyleArray;
-  //  let b = this.columnStyleArray;
-  //  this.sectionStyleArray.set = true;
-  //  this.columnStyleArray.set = true;
-  //  this.sectionStyleArray.set = true;
-  //  this.columnStyleArray.set = true;
-  }
-
   ngOnInit() {
     this.toolboxfooter = this.createNewItem('Footer');
     this.toolset.push(this.toolboxfooter);

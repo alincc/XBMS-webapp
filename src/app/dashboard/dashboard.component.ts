@@ -177,6 +177,7 @@ export class DashboardComponent implements OnInit {
             if (this.Account.standardrelation !== undefined) {
               this.RelationsApi.findById(this.Account.standardrelation)
                 .subscribe((rel: Relations) => {
+                  this.option = rel;
                   console.log(rel);
                   this.onSelectRelation(rel, null)
                   this.getWebsiteTracker();
@@ -217,7 +218,7 @@ export class DashboardComponent implements OnInit {
 
   //  select relation --> get info for all tabs
   onSelectRelation(option, i): void {
-    this.option = option;
+
     this.AccountApi.addStdRelation(this.Account.id, option.id).subscribe();
     this.getAnalyticsAccounts(option, i);
     this.getWebsiteTracker();

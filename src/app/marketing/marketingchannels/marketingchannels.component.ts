@@ -29,9 +29,9 @@ import { timeconv } from '../../shared/timeconv';
 })
 export class MarketingchannelsComponent implements OnInit {
 
-  @Input() Account: Account = new Account();
+  @Input() Account: Account;
   @Input() SelectedRelation: Relations;
-  @Input() option: Relations = new Relations();
+  @Input() option: Relations;
 
   public options = [];
   public timezones = timezones;

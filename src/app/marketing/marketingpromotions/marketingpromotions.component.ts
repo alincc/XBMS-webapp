@@ -45,9 +45,9 @@ export class Facebookcampaign {
 })
 export class MarketingpromotionsComponent implements OnInit {
 
-  @Input() Account: Account = new Account();
+  @Input() Account: Account;
   @Input() SelectedRelation: Relations;
-  @Input() option: Relations = new Relations();
+  @Input() option: Relations;
 
   public Twitter: Twitter[];
   public Linkedin: Linkedin[];

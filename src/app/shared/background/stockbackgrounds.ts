@@ -28,4 +28,5 @@ export const StockBackgrounds = [
     BASE_URL  + '/api/Containers/standardbackgroundimages/download/wood-white-rustic-10.jpg',
     BASE_URL  + '/api/Containers/standardbackgroundimages/download/green-black-tech.jpg',
     BASE_URL  + '/api/Containers/standardbackgroundimages/download/Tropical-Pink.jpg',
+    BASE_URL  + '/api/Containers/standardbackgroundimages/download/forest.jpg',
 ]

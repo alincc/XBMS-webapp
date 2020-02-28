@@ -124,10 +124,10 @@ export class chart {
 
 export class ImagecreatorComponent implements OnInit {
   @ViewChild('myCanvas') myCanvas: ElementRef;
-  @Input() Account: Account = new Account();
+  @Input() Account: Account;
   @Input() SelectedRelation: Relations;
-  @Input() option: Relations = new Relations();
-  @Input() company: Company = new Company;
+  @Input() option: Relations;
+  @Input() company: Company;
 
   public Fonts =  fonts;
   public listviewxsshow = false;
@@ -167,7 +167,7 @@ export class ImagecreatorComponent implements OnInit {
 
   watcher: Subscription;
   activeMediaQuery;
-
+ 
   constructor(
     public media: MediaObserver,
     private relationsApi: RelationsApi,

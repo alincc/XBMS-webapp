@@ -112,9 +112,9 @@ export class MarketingComponent implements OnInit {
   public selectedMarketingplannerevents: Marketingplannerevents;
   public CampaignMailing: Mailing[];
 
-  public Account: Account = new Account();
-  public Company: Company[];
-  public company: Company = new Company;
+  public Account: Account;
+  //public Company: Company[];
+  public company: Company;
   public Mailing: Mailing[];
   public newMailing: Mailing = new Mailing();
   public selectedMailing: Mailing;

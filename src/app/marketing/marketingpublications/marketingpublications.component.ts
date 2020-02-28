@@ -59,9 +59,9 @@ export class Dynatext {
 })
 export class MarketingpublicationsComponent implements OnInit {
 
-  @Input() Account: Account = new Account();
+  @Input() Account: Account;
   @Input() SelectedRelation: Relations;
-  @Input() option: Relations = new Relations();
+  @Input() option: Relations;
   public Publications: Publications[];
   public selectedPublications: Publications;
   public limitresult: 10;
