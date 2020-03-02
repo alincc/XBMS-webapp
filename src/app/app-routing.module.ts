@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { AuthGuard } from './shared/auth.guard';
-import { FileserverComponent } from './shared/fileserver/fileserver.component';
+//import { FileserverComponent } from './shared/fileserver/fileserver.component';
 import { AppComponent } from './app.component';
 import { RelationComponent } from './relation/relation.component';
 import { MarketingComponent } from './marketing/marketing.component';
@@ -66,10 +66,10 @@ const routes: Routes = [
     , canActivate: [AuthGuard]
   },
 
-  {
-    path: 'filemanager/:id', component: FileserverComponent
-    , canActivate: [AuthGuard]
-  },
+  // {
+  //   path: 'filemanager/:id', component: FileserverComponent
+  //   , canActivate: [AuthGuard]
+  // },
 
   {
     path: 'linkedin', component: LinkedinComponent

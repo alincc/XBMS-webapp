@@ -33,7 +33,6 @@
     "@angular/router": "^9.0.3",
     "@angular/service-worker": "^9.0.3",
     "@ctrl/ngx-emoji-mart": "^0.16.3",
-    "@ks89/angular-modal-gallery": "^6.3.0",
     "@svgdotjs/svg.draggable.js": "^3.0.2",
     "@types/gsap": "^1.20.2",
     "@types/xlsx": "0.0.36",

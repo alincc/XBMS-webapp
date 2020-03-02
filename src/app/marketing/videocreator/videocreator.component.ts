@@ -455,7 +455,6 @@ export class VideocreatorComponent implements OnInit {
     this.setNewMotionPath(newpath)
     await new Promise(resolve => setTimeout(resolve, 400));
     this.editMotionPath(animation);
-  
   }
 
   detectMorph(value) {
@@ -2743,11 +2742,11 @@ export class VideocreatorComponent implements OnInit {
     if (type === 'leaves') { total = 50 }
     if (type === 'sun') { total = 90 } // also depends on the angle this case is 90 degrees
     if (type === 'clouds') { total = 20 }
-    if (type === 'butterfly') {total = 10}
+    if (type === 'butterfly') {total = 20}
     let container = document.getElementById("weathercontainer");
     // container.removeChild   ---> ??
     container.innerHTML = '';
-
+    let randomcolors = ['dodgerblue', 'red', 'yellow', 'green', 'purple']
     let w = container.offsetWidth;
     let h = container.offsetHeight;
     let LeafL = window.innerHeight;
@@ -2797,12 +2796,38 @@ export class VideocreatorComponent implements OnInit {
       }
 
       if (type === "butterfly"){
-         let innerdiv = '<div class="butterfly"><div class="wing"><div class="bit"></div><div class="bit"></div></div><div class="wing"><div class="bit"></div><div class="bit"></div></div></div>';
-         Div.innerHTML = innerdiv;
-         let scale = this.R(-10, -3);
-         gsap.set(Div, {  x: this.R(0, parseInt(this.canvas.width, 10)), y: this.R(0, parseInt(this.canvas.height, 10))});
-      }
+        // butterfly
+        let butterfly = document.createElement('div');
+        butterfly.className = "butterfly";
+        Div.appendChild(butterfly);
+        let wing1 = document.createElement('div');
+        wing1.className = "wing";
+        butterfly.appendChild(wing1);
+        let bit1 = document.createElement('div');
+        bit1.className = "bit";
+        wing1.appendChild(bit1);
+        let bit2 = document.createElement('div');
+        bit2.className = "bit";
+        wing1.appendChild(bit2);
+        let wing2 = document.createElement('div');
+        wing2.className = "wing";
+        butterfly.appendChild(wing2);
+        let bit3 = document.createElement('div');
+        bit3.className = "bit";
+        wing2.appendChild(bit3);
+        let bit4 = document.createElement('div');
+        bit4.className = "bit";
+        wing2.appendChild(bit4);
 
+        let randomy = this.RandomInt(0, 5);
+        let color = randomcolors[randomy];
+        let bits = Div.getElementsByClassName('bit')
+        for (let i = 0; i < bits.length; i++ ){
+         bits[i].setAttribute('style', 'background-color: '+color );
+        }
+         let scale = this.R(-0.3, 0.3);
+         gsap.set(Div, { scale: scale, x: this.R(-300, (w - 300)), y: this.R(0, h)});   // -200 compensate for scale   
+        }
 
       if (type === 'clouds') { this.animclouds(Div, h, w); }
       if (type === 'snow') { this.animsnow(Div, h); }
@@ -2824,16 +2849,29 @@ export class VideocreatorComponent implements OnInit {
     }
   }
 
-  animbutterfly(elm, h, w){
+  animbutterfly(elm: HTMLDivElement, h, w){
+    let customease = CustomEase.create("custom", "M0,0,C0,0,0.256,0.014,0.432,0.176,0.608,0.338,0.436,0.638,0.638,0.842,0.792,0.998,1,1,1,1");
     let minw = (w * -1) / 2;
     let minh = (h * -1) / 2;
     let movex = '+=' + this.R(minw, (w / 2));
     let movey = '+=' + this.R(minh, (h / 2));
-    //let scale = this.R(-2, 1);
-    //this.primairytimeline.to(elm, { duration: this.R(5, 20), scale: scale, ease: 'none', repeat: -1,  yoyo: true}, this.R(0, 10));
-    this.primairytimeline.to(elm, { duration: this.R(0, 20), autoAlpha: 0.1, ease: 'none', repeat: -1, yoyo: true}, this.R(0, 10));
-    this.primairytimeline.to(elm, { duration: this.R(5, 20), y: movey, ease: 'none', repeat: -1, yoyo: true}, 0);
-    this.primairytimeline.to(elm, { duration: this.R(5, 20), x: movex, rotationZ: this.R(0, 180), repeat: -1, yoyo: true, ease: 'none'}, 0);
+    let scale = this.R(-0.3, 0.3);
+    this.primairytimeline.to(elm, { duration: this.R(10, 20), scale: scale, ease: 'none', repeat: -1,  yoyo: true}, this.R(0, 10));
+    //this.primairytimeline.to(elm, { duration: this.R(0, 20), autoAlpha: 0.1, ease: 'none', repeat: -1, yoyo: true}, this.R(0, 10));
+    this.primairytimeline.to(elm, { duration: this.R(10, 20), y: movey, ease: 'none', repeat: -1, yoyo: true}, 0);
+    this.primairytimeline.to(elm, { duration: this.R(10, 20), x: movex, rotationZ: this.R(0, 180), repeat: -1, yoyo: true, ease: 'none'}, 0);
+  
+    let leftwing = elm.getElementsByClassName('wing')[0];
+    let rightwing = elm.getElementsByClassName('wing')[1];
+    this.primairytimeline.fromTo(leftwing, {rotationY: -20}, {rotationY: 90, duration: 0.25, transformOrigin: '700% 50%', repeat: -1, yoyo: true, 
+      ease: customease}, 0);
+    this.primairytimeline.fromTo(rightwing, {rotationY: 200}, {rotationY: 90, duration: 0.25, repeat: -1, yoyo: true, 
+      ease: customease}, 0);
+
+    let butterfly = elm.getElementsByClassName('butterfly')[0];
+    // gsap.set(butterfly, {rotationX: 50, rotationY: 20, rotationZ: -50});
+    // this.primairytimeline.fromTo(butterfly, {translateZ: -1 }, {translateZ: 0, duration: 0.25, repeat: -1, yoyo: true, 
+    //   ease: customease}, 0);
   }
 
   animflies(elm, h, w){
@@ -2846,7 +2884,6 @@ export class VideocreatorComponent implements OnInit {
     this.primairytimeline.to(elm, { duration: this.R(0, 20), autoAlpha: 0.1, ease: 'none', repeat: -1, yoyo: true}, this.R(0, 10));
     this.primairytimeline.to(elm, { duration: this.R(5, 20), y: movey, ease: 'none', repeat: -1, yoyo: true}, 0);
     this.primairytimeline.to(elm, { duration: this.R(5, 20), x: movex, rotationZ: this.R(0, 180), repeat: -1, yoyo: true, ease: 'none'}, 0);
-   
   }
 
 
@@ -2883,6 +2920,13 @@ export class VideocreatorComponent implements OnInit {
 
 
   R(min, max) { return min + Math.random() * (max - min) };
+
+  RandomInt(min, max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min)) + min; //The maximum is exclusive and the minimum is inclusive
+  }
+
 
   setDrawAni(from, animation: vectoranimationtype) {
     let animationdrawto = animation.fillleft + ' ' + animation.fillright;

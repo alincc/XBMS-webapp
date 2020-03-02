@@ -29,18 +29,6 @@ import {
   timezones,
 } from '../shared/';
 import { FileUploader } from 'ng2-file-upload';
-import {
-  ButtonEvent,
-  ButtonsConfig,
-  ButtonsStrategy,
-  ButtonType,
-  GridLayout,
-  Image,
-  ImageModalEvent,
-  PlainGalleryConfig,
-  PlainGalleryStrategy,
-  PreviewConfig
-} from '@ks89/angular-modal-gallery'
 import { FileuploadComponent } from '../shared/fileupload/fileupload.component';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { Location, NgClass, NgStyle } from '@angular/common';
@@ -127,15 +115,8 @@ export class MarketingComponent implements OnInit {
   public callback
   public errorMessage;
   public selectedPublications: Publications;
-
-  public PlainGalleryConfig: PlainGalleryConfig;
-  public customButtonsConfig: ButtonsConfig;
-  public ButtonEvent: ButtonEvent;
-  public PreviewConfig: PreviewConfig;
-  public ImageModalEvent: ImageModalEvent
-  // public buttonsConfigFull: ButtonsConfig;
-  public images: Image[] = [];
-  public imagesNew: Image[] = [];
+  public images = [];
+  public imagesNew = [];
   public listviewxsshow = false;
 
 

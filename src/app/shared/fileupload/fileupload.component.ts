@@ -1,18 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter, Inject } from '@angular/core';
 import { FileUploader } from 'ng2-file-upload';
 const URL = 'http://localhost:3000/api/containers/tmp/upload';
-import {
-  ButtonEvent,
-  ButtonsConfig,
-  ButtonsStrategy,
-  ButtonType,
-  GridLayout,
-  Image,
-  ImageModalEvent,
-  PlainGalleryConfig,
-  PlainGalleryStrategy,
-  PreviewConfig
-} from '@ks89/angular-modal-gallery';
+
 import { ContainerApi, Files, Relations, RelationsApi, Company, Account, FilesApi } from '../sdk';
 import { BASE_URL, API_VERSION } from '../base.api'
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
@@ -39,14 +28,10 @@ export class FileuploadComponent implements OnInit {
   maxFileSize = 10 * 1024 * 1024;
   public hasBaseDropZoneOver = false;
   public hasAnotherDropZoneOver = false;
-  public PlainGalleryConfig: PlainGalleryConfig;
-  public customButtonsConfig: ButtonsConfig;
-  public ButtonEvent: ButtonEvent;
-  public PreviewConfig: PreviewConfig;
-  public ImageModalEvent: ImageModalEvent
+
   // public buttonsConfigFull: ButtonsConfig;
-  public images: Image[] = [];
-  public imagesNew: Image[] = [];
+  public images = [];
+  public imagesNew = [];
   public Files: Files[];
   public newFiles: Files = new Files();
   public showdropbox = true;
@@ -85,7 +70,7 @@ export class FileuploadComponent implements OnInit {
           let ext = file.name.split('.').pop(); 
           if (ext === 'gif' || ext === "jpeg" || ext === "jpg" || ext === "bmp" || ext === "png"  ){
             const modalImage = { img: BASE_URL + '/api/Containers/' + this.option.id + '/download/' + file.name };
-            const modal = new Image(index, modalImage, null)
+            const modal = {index, modalImage}
             this.imagesNew.push(modal)
           }
         }),

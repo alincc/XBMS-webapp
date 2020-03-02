@@ -1,15 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter, Inject } from '@angular/core';
 import { FileUploader } from 'ng2-file-upload';
 const URL = 'http://localhost:3000/api/containers/tmp/upload';
-import {
-  ButtonEvent,
-  ButtonsConfig,
-  Image,
-  ImageModalEvent,
-  PlainGalleryConfig,
-  PlainGalleryStrategy,
-  PreviewConfig
-} from '@ks89/angular-modal-gallery';
 import { ContainerApi, Files, Relations, RelationsApi, Company, Account, FilesApi } from '../sdk';
 import { BASE_URL, API_VERSION } from '../base.api'
 import { MatDialog } from '@angular/material/dialog';
@@ -34,10 +25,6 @@ export class AudiouploadComponent implements OnInit {
   maxFileSize = 100 * 1024 * 1024;
   public hasBaseDropZoneOver = false;
   public hasAnotherDropZoneOver = false;
-  public PlainGalleryConfig: PlainGalleryConfig;
-  public customButtonsConfig: ButtonsConfig;
-  public ButtonEvent: ButtonEvent;
-  public PreviewConfig: PreviewConfig;
   //public ImageModalEvent: ImageModalEvent
   // public buttonsConfigFull: ButtonsConfig;
   // public images: Image[] = [];

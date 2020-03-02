@@ -2,7 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule, Injectable } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
 import { Routes, RouterModule } from '@angular/router';
-
+import { ServiceWorkerModule, SwUpdate } from '@angular/service-worker'; 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
@@ -67,8 +67,6 @@ import { GoogleMapService } from './shared/googlemapservice/googlemap.service'
 import { timeconv } from './shared/timeconv'
 import { CKEditorModule } from 'ng2-ckeditor';
 import { IconService } from '../assets/icons/icon.service';
-import { ModalGalleryModule } from '@ks89/angular-modal-gallery';
-import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
 import { MaileditorText } from './marketing/maileditor/maileditormodel/maileditormodels'
 import { FlexLayoutModule } from '@angular/flex-layout';
@@ -100,7 +98,7 @@ import { ConfirmDialog } from './dialogsservice/confirm-dialog.component';
 
 import { VideouploadComponent, dialogvideogallerycomponent } from './shared/videoupload/videoupload.component';
 import { AudiouploadComponent, dialogaudiogallerycomponent } from './shared/audioupload/audioupload.component';
-import { FileserverComponent } from './shared/fileserver/fileserver.component';
+//import { FileserverComponent } from './shared/fileserver/fileserver.component';
 import { LinkedinComponent } from './shared/linkedin/linkedin.component';
 
 import { AngularDraggableModule } from 'angular2-draggable';
@@ -153,7 +151,7 @@ import { MatPasswordStrengthModule } from '@angular-material-extensions/password
     CodesnippetDialog,
     RandomDialog,
     MarketingplannerComponent,
-    FileserverComponent,
+    //FileserverComponent,
     LinkedinComponent,
     GooglePlacesDirective,
     ReturnpageComponent,
@@ -236,7 +234,7 @@ import { MatPasswordStrengthModule } from '@angular-material-extensions/password
     FormsModule, ReactiveFormsModule, HttpClientModule, MatGridListModule, MatSlideToggleModule,
     MatNativeDateModule,
     MatDatepickerModule, MatExpansionModule, MatButtonToggleModule, MatChipsModule, MatBadgeModule,
-    ModalGalleryModule.forRoot(),
+    //ModalGalleryModule.forRoot(),
     CalendarModule.forRoot({
       provide: DateAdapter,
       useFactory: adapterFactory

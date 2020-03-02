@@ -1,12 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter, Inject } from '@angular/core';
 import { FileUploader } from 'ng2-file-upload';
 const URL = 'http://localhost:3000/api/containers/tmp/upload';
-import {
-  ButtonEvent,
-  ButtonsConfig,
-  PlainGalleryConfig,
-  PreviewConfig
-} from '@ks89/angular-modal-gallery';
 import { ContainerApi, Files, Relations, RelationsApi, Company, Account, FilesApi } from '../sdk';
 import { BASE_URL, API_VERSION } from '../base.api'
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
@@ -42,10 +36,6 @@ export class VectoruploadComponent implements OnInit {
   public hasAnotherDropZoneOver = false;
   public hasBaseDropZoneOverSvg = false;
   public hasAnotherDropZoneOverSvg = false;
-  public PlainGalleryConfig: PlainGalleryConfig;
-  public customButtonsConfig: ButtonsConfig;
-  public ButtonEvent: ButtonEvent;
-  public PreviewConfig: PreviewConfig;
   public Files: Files[];
   public newFiles: Files = new Files();
   public showdropbox = true;
