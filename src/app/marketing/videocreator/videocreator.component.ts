@@ -49,6 +49,8 @@ export class VideocreatorComponent implements OnInit {
     }
   }
 
+  public zoomfactor = 1; 
+  public selectedvideoformat: string;
   public editfigure = false;
   public closewhiteboard = false;
   public standardpath = 'linear';
@@ -94,7 +96,10 @@ export class VideocreatorComponent implements OnInit {
     videourl: '',
     loop: false,
     weather: '',
-    audio: ''
+    audio: '',
+    top: '',
+    left: '',
+    hovereffect: true
   }
   public moveitem = false;
   public selectedImage: imageanimation;
@@ -244,6 +249,13 @@ export class VideocreatorComponent implements OnInit {
         this.getEditFile()
       }
     }
+  }
+
+  changevideoformat(){
+    let setvideo = this.selectedvideoformat.split(' x ');
+    this.canvas.width = setvideo[0];
+    this.canvas.height = setvideo[1];
+    this.onchangecanvas();
   }
 
   editMotionPath(animation) {
@@ -607,8 +619,26 @@ export class VideocreatorComponent implements OnInit {
       element.motionpath = element.motionpath.replace(matched[1], newview);
       //console.log(element);
     });
+
+
+    if (this.zoomfactor !== 1){
+      // let element = document.getElementById('containernormal');
+      // let rect = element.getBoundingClientRect();
+      let scale = this.zoomfactor - 1;
+      let w = parseInt(this.canvas.width) / 2;
+      let h = parseInt(this.canvas.height) / 2;
+      this.canvas.left = w * scale + 'px';
+      this.canvas.top = h * scale + 'px';
+    } 
+    
+    if (this.zoomfactor === 1){
+      this.canvas.left = '0px';
+      this.canvas.top = '0px';
+    }
+
     this.changevideo = false;
     setTimeout(() => this.changevideo = true);
+
   }
 
   onchangeaudio() {
@@ -2735,23 +2765,22 @@ export class VideocreatorComponent implements OnInit {
     let type = this.canvas.weather;
     let classtype;
     let total = 30;
-    if (type === 'flies') { total = 40 }
-    if (type === 'stars') { total = 100 }
-    if (type === 'snow') { total = 60 }
-    if (type === 'rain') { total = 60 }
-    if (type === 'leaves') { total = 50 }
-    if (type === 'sun') { total = 90 } // also depends on the angle this case is 90 degrees
-    if (type === 'clouds') { total = 20 }
-    if (type === 'butterfly') {total = 20}
+    let aggrenr = parseInt(this.canvas.width) * parseInt(this.canvas.height);
+    let averagesize = Math.round(aggrenr / (600 * 500)); 
+    if (type === 'flies') { total = 40 * averagesize}
+    if (type === 'stars') { total = 100 * averagesize}
+    if (type === 'snow') { total = 60 * averagesize}
+    if (type === 'rain') { total = 60 * averagesize}
+    if (type === 'leaves') { total = 50 * averagesize}
+    if (type === 'sun') { total = 90 * averagesize} // also depends on the angle this case is 90 degrees
+    if (type === 'clouds') { total = 20 * averagesize}
+    if (type === 'butterfly') {total = 15 * averagesize}
     let container = document.getElementById("weathercontainer");
     // container.removeChild   ---> ??
     container.innerHTML = '';
     let randomcolors = ['dodgerblue', 'red', 'yellow', 'green', 'purple']
     let w = container.offsetWidth;
     let h = container.offsetHeight;
-    let LeafL = window.innerHeight;
-    let LeafR = window.innerWidth;
-    let canvasposL = 0;
     let canvasposR = container.offsetWidth;
     let heightani = h * -1;
     let heightanibottom = heightani - 100; // total area from above the square to lower edge
@@ -2772,6 +2801,13 @@ export class VideocreatorComponent implements OnInit {
       let setid = 'divPar' + i;
       Div.setAttribute('id', setid);
 
+      if (this.canvas.hovereffect){
+        Div.addEventListener("mouseenter", (e) => {
+          //console.log(e);
+          this.primairytimeline.to(e.target, { duration: '5', y: this.R(0, w), x: this.R(0, h), ease: 'none'}, this.currenttime); //repeat: -1,  yoyo: true
+        })
+      }
+
       if (type === 'snow') {
         gsap.set(Div, { attr: { class: 'snow' }, x: this.R(0, canvasposR), y: this.R(h, heightanitop), z: this.R(-200, 200), rotationZ: this.R(0, 180), rotationX: this.R(0, 360) });
       }
@@ -2786,12 +2822,12 @@ export class VideocreatorComponent implements OnInit {
         gsap.set(Div, { attr: { class: 'cloud' }, x: this.R(w, widthaniside), y: this.R(0, h * 0.1), z: this.R(-200, 200), scale: this.R(0.5, 1.5) });
       }
       if (type === 'stars') {
-        let scale = this.R(1, -3);
+        let scale = this.R(0.2, 1.5);
         gsap.set(Div, { attr: { class: 'stars'}, scale: scale, x: this.R(0, parseInt(this.canvas.width, 10)), y: this.R(0, parseInt(this.canvas.height, 10))});
         this.canvas["background-color"] = 'transparent';
       }
       if (type === 'flies') {
-        let scale = this.R(1, -3);
+        let scale = this.R(0.2, 1.5);
         gsap.set(Div, { attr: { class: 'flies'}, scale: scale, x: this.R(0, parseInt(this.canvas.width, 10)), y: this.R(0, parseInt(this.canvas.height, 10))});
       }
 
@@ -2825,8 +2861,19 @@ export class VideocreatorComponent implements OnInit {
         for (let i = 0; i < bits.length; i++ ){
          bits[i].setAttribute('style', 'background-color: '+color );
         }
-         let scale = this.R(-0.3, 0.3);
-         gsap.set(Div, { scale: scale, x: this.R(-300, (w - 300)), y: this.R(0, h)});   // -200 compensate for scale   
+         let scale = this.R(0.1, 0.3);
+         let calcscale = (scale - 1);
+         let w2 = parseInt(this.canvas.width) / 2;
+         let h2 = parseInt(this.canvas.height) / 2;
+         let mw = w2 * calcscale;
+         let mh = h2 * calcscale;
+
+         gsap.set(Div, { scale: scale, x: this.R(mw, (w+mw)), y: this.R(mh, h)});   //  compensate for scale   
+         let movex = '+=' + this.R((mw * 2 ), (w + mw)); // mw * 2 increases travellenght 
+         let movey = '+=' + this.R((mh * 2), h);
+         this.primairytimeline.to(Div, { duration: this.R(5, 15), scale: scale, ease: 'none', repeat: -1,  yoyo: true}, this.R(0, 10));
+         this.primairytimeline.to(Div, { duration: this.R(5, 15), y: movey, ease: 'none', repeat: -1, yoyo: true}, 0);
+         this.primairytimeline.to(Div, { duration: this.R(5, 15), x: movex, rotationZ: this.R(0, 180), repeat: -1, yoyo: true, ease: 'none'}, 0);
         }
 
       if (type === 'clouds') { this.animclouds(Div, h, w); }
@@ -2851,15 +2898,16 @@ export class VideocreatorComponent implements OnInit {
 
   animbutterfly(elm: HTMLDivElement, h, w){
     let customease = CustomEase.create("custom", "M0,0,C0,0,0.256,0.014,0.432,0.176,0.608,0.338,0.436,0.638,0.638,0.842,0.792,0.998,1,1,1,1");
-    let minw = (w * -1) / 2;
-    let minh = (h * -1) / 2;
-    let movex = '+=' + this.R(minw, (w / 2));
-    let movey = '+=' + this.R(minh, (h / 2));
-    let scale = this.R(-0.3, 0.3);
-    this.primairytimeline.to(elm, { duration: this.R(10, 20), scale: scale, ease: 'none', repeat: -1,  yoyo: true}, this.R(0, 10));
-    //this.primairytimeline.to(elm, { duration: this.R(0, 20), autoAlpha: 0.1, ease: 'none', repeat: -1, yoyo: true}, this.R(0, 10));
-    this.primairytimeline.to(elm, { duration: this.R(10, 20), y: movey, ease: 'none', repeat: -1, yoyo: true}, 0);
-    this.primairytimeline.to(elm, { duration: this.R(10, 20), x: movex, rotationZ: this.R(0, 180), repeat: -1, yoyo: true, ease: 'none'}, 0);
+    // let minw = (w * -1) / 2;
+    // let minh = (h * -1) / 2;
+
+    // let scale = this.R(0.1, 0.3);
+    // let calcscale = (scale - 1);
+    // let w2 = parseInt(this.canvas.width) / 2;
+    // let h2 = parseInt(this.canvas.height) / 2;
+    // let mw = w2 * calcscale;
+    // let mh = h2 * calcscale;
+
   
     let leftwing = elm.getElementsByClassName('wing')[0];
     let rightwing = elm.getElementsByClassName('wing')[1];
@@ -2867,11 +2915,8 @@ export class VideocreatorComponent implements OnInit {
       ease: customease}, 0);
     this.primairytimeline.fromTo(rightwing, {rotationY: 200}, {rotationY: 90, duration: 0.25, repeat: -1, yoyo: true, 
       ease: customease}, 0);
-
     let butterfly = elm.getElementsByClassName('butterfly')[0];
-    // gsap.set(butterfly, {rotationX: 50, rotationY: 20, rotationZ: -50});
-    // this.primairytimeline.fromTo(butterfly, {translateZ: -1 }, {translateZ: 0, duration: 0.25, repeat: -1, yoyo: true, 
-    //   ease: customease}, 0);
+    this.primairytimeline.fromTo(butterfly, {y: 0 }, {y: -5, duration: 0.25, repeat: -1, yoyo: true, ease: customease}, 0); //set body animation
   }
 
   animflies(elm, h, w){
@@ -2879,7 +2924,7 @@ export class VideocreatorComponent implements OnInit {
     let minh = (h * -1) / 2;
     let movex = '+=' + this.R(minw, (w / 2));
     let movey = '+=' + this.R(minh, (h / 2));
-    let scale = this.R(-2, 1);
+    let scale = this.R(0.2, 1.5);
     this.primairytimeline.to(elm, { duration: this.R(5, 20), scale: scale, ease: 'none', repeat: -1,  yoyo: true}, this.R(0, 10));
     this.primairytimeline.to(elm, { duration: this.R(0, 20), autoAlpha: 0.1, ease: 'none', repeat: -1, yoyo: true}, this.R(0, 10));
     this.primairytimeline.to(elm, { duration: this.R(5, 20), y: movey, ease: 'none', repeat: -1, yoyo: true}, 0);
@@ -2888,7 +2933,7 @@ export class VideocreatorComponent implements OnInit {
 
 
   animstars(elm){
-    let scale = this.R(-2, 1);
+    let scale = this.R(0.2, 1.5);
     this.primairytimeline.to(elm, { duration: 10, scale: scale, ease: 'none', repeat: -1,  yoyo: true, delay: this.R(0, 10) }, this.R(0, 10));
     this.primairytimeline.to(elm, { duration: 5, autoAlpha: 0, ease: 'none', repeat: -1, yoyo: true, delay: this.R(0, 10) }, this.R(0, 10));
   }
@@ -3647,7 +3692,10 @@ export class VideocreatorComponent implements OnInit {
       videourl: '',
       loop: false,
       weather: '',
-      audio: ''
+      audio: '',
+      top: '',
+      left: '',
+      hovereffect: false
     }
     this.animationarray = [];
     this.counter = 60;

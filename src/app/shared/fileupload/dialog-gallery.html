@@ -22,8 +22,8 @@
 
   <div *ngIf="group.value == 'fromaccount'" class="gallery" fxFlex="80%" fxLayout="row wrap">
     <div *ngFor="let image of data.img; let i = index" fxFlex>
-      <img src="{{ image.modal.img }}" class="image" (click)="selectedimage(image.modal.img)"
-        [class.selected]="image.modal.img === data.selected" />
+      <img src="{{ image }}" class="image" (click)="selectedimage(image)"
+        [class.selected]="image === data.selected" />
     </div>
   </div>
 
@@ -42,30 +42,3 @@
   </div>
 </div>
 
-<!-- 
-<div *ngIf="showgallery">
-  <mat-button-toggle-group >
-    <mat-button-toggle value="fromaccount">
-      <mat-icon>drive</mat-icon>
-    </mat-button-toggle>
-    <mat-button-toggle value="includedimages" disabled>
-      <mat-icon>general</mat-icon>
-    </mat-button-toggle>
-  </mat-button-toggle-group>
-
-  <div *ngIf="group.value === includedimages" class="" fxFlex="20%">
-    <div *ngFor="let icon of existingIcons; let i = index">
-      <div>
-        <img src={{icon}} class="image" (click)="setimage(icon)">
-      </div>
-    </div>
-  </div>
-
-  <div *ngIf="group.value === fromaccount" fxLayout="row wrap" class="gallery">
-    <div *ngFor="let image of images; let i = index" fxFlex="20%">
-      <div>
-        <img src={{image.modal.img}} class="image" (click)="setimage(image.modal.img)">
-      </div>
-    </div>
-  </div>
-</div> -->

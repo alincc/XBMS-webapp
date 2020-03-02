@@ -106,6 +106,23 @@
                         placeholder="height">
                     <label matSuffix>px</label>
                 </mat-form-field>
+                <!-- [(value)]="canvas.weather" -->
+                <mat-form-field>
+                    <mat-select [(value)]="selectedvideoformat" (selectionChange)="changevideoformat()" placeholder="Select video size">
+                        <mat-option value="4096px x 2048px">4096 x 2048</mat-option>
+                        <mat-option value="1920px x 1080px">1920 x 1080</mat-option>
+                        <mat-option value="1280px x 720px">1280 x 720</mat-option>
+                        <mat-option value="1080px x 1080px">1080 x 1080</mat-option>
+                        <mat-option value="1024px x 576px">1024 x 576</mat-option>
+                        <mat-option value="768px x 432px">768 x 432</mat-option>
+                        <mat-option value="512px x 288px">512 x 288</mat-option>
+                        <mat-option value="256px x 144px">256 x 144</mat-option>
+                        <mat-option value="468px x 60px">468 x 60 fullbanner</mat-option>
+                        <mat-option value="728px x 90px">728 x 90 leaderboard</mat-option>
+                        <mat-option value="1366px x 480px">1366 x 480 website banner</mat-option>
+                    </mat-select>
+                </mat-form-field>
+
 
                 <div>
                     <app-videoupload *ngIf="!canvas.videourl" [account]="Account" [option]="option"
@@ -145,6 +162,7 @@
                         *ngIf="company" [cpPresetColors]="[option.companyprimairycolor, option.companysecondarycolor, company.companyprimairycolor, company.companysecondarycolor]">
                
                 <mat-slide-toggle fxFlex *ngIf="canvas.videourl" [(ngModel)]="canvas.loop">Loop</mat-slide-toggle>
+                <mat-slide-toggle fxFlex matTooltip="Only for embedded code" [(ngModel)]="canvas.hovereffect">Hover effect</mat-slide-toggle>
 
                 <mat-form-field>
                     <mat-select [(value)]="canvas.weather" (selectionChange)="detectchange()"
@@ -158,6 +176,25 @@
                         <mat-option value="stars">Stars</mat-option>
                         <mat-option value="flies">Flies</mat-option>
                         <mat-option value="butterfly">Butterfly</mat-option>
+                    </mat-select>
+                </mat-form-field>
+
+                <mat-form-field>
+                    <mat-select [(value)]="zoomfactor" (selectionChange)="onchangecanvas()"
+                        placeholder="Zoom">
+                        <mat-option value="1">100%</mat-option>
+                        <mat-option value="0.9">90%</mat-option>
+                        <mat-option value="0.8">80%</mat-option>
+                        <mat-option value="0.7">70%</mat-option>
+                        <mat-option value="0.6">60%</mat-option>
+                        <mat-option value="0.5">50%</mat-option>
+                        <mat-option value="0.4">40%</mat-option>
+                        <mat-option value="0.3">30%</mat-option>
+                        <mat-option value="0.2">20%</mat-option>
+                        <mat-option value="0.1">10%</mat-option>
+                        <mat-option value="1.5">150%</mat-option>
+                        <mat-option value="2">200%</mat-option>
+                        
                     </mat-select>
                 </mat-form-field>
 
@@ -1910,7 +1947,7 @@
         </div>
     </div>
 
-    <div ngClass.gt-xs="container-normal" ngClass.lt-sm="container-noshow" [class.container-xs-show]="listviewxsshow"
+    <div ngClass.gt-xs="container-normal" [attr.id]="'containernormal'" ngClass.lt-sm="container-noshow" [class.container-xs-show]="listviewxsshow"
         fxLayout="column" fxLayoutAlign="start">
 
         <div *ngIf="selectedVecPath && selectedelement.type === 'vector'">
@@ -1964,7 +2001,7 @@
         </div>
 
 
-        <div *ngIf="changevideo" [ngStyle]="canvas" style="border: 1px solid grey; overflow:hidden;" [class.starbackground]="this.canvas.weather === 'stars'" >
+        <div *ngIf="changevideo" [attr.id]="'videobox'" [ngStyle]="canvas" style="border: 1px solid grey; overflow:hidden;" [class.starbackground]="this.canvas.weather === 'stars'" [style.transform]="'scale('+zoomfactor+')'" >
 
             <!-- selectedVecPath &&  -->
             <video *ngIf="canvas.videourl" preload="auto" class="video-background" no-controls [src]="canvas.videourl"
@@ -1979,8 +2016,8 @@
                 [style.background-image]="canvas['background-image']"></div>
 
 
-            <div style="height: 100%; width: 100%; position: absolute; z-index: 100; pointer-events: none;"
-                id="weathercontainer"></div>
+                <!--  z-index: 100; pointer-events: none;" -->
+            <div style="height: 100%; width: 100%; position: absolute; z-index: 1000;" id="weathercontainer" ></div>
 
             <div *ngIf="whiteboard === true" class="whiteboard" id="svgElementParent">
                 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1"
