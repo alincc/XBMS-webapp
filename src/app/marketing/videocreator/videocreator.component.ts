@@ -3607,7 +3607,7 @@ export class VideocreatorComponent implements OnInit {
 
     if (this.elementname === undefined) { this.elementname = Math.random().toString(36).substring(7); }
     let imgurl = BASE_URL + '/api/Containers/' + this.option.id + '/download/' + this.elementname;
-    let setimgurl = 'https://api.xbms.io.mybluemix.net/api/Containers/' + this.option.id + '/download/' + this.elementname;
+    let setimgurl = 'https://api.xbms.io/api/Containers/' + this.option.id + '/download/' + this.elementname;
     imgurl = imgurl.replace(/ /g, '-'),
       // define the file settings
       this.newFiles.name = this.elementname;
@@ -3875,7 +3875,7 @@ export class VideocreatorComponent implements OnInit {
     let myJSON = JSON.stringify(this.canvas);
     let canvasjson = encodeURIComponent(myJSON);
     let url = 'https://dlcr.xbms.io?id=' + this.newFiles.id + '&canvas=' + canvasjson + '&repeat=false&remote=true';
-    this.snippetcode = '<iframe scrolling="no" width=' + this.canvas.width + ' height=' + this.canvas.height + ' src="' + url + '"></iframe>';
+    this.snippetcode = '<iframe scrolling="no" width=' + this.canvas.width + ' height=' + this.canvas.height + ' src="' + url + 'counter=' + this.counter +'"></iframe>';
     this.codesnippetService.confirm('Copy Code', 'Copy code and input in your website', this.snippetcode).subscribe()
   }
 
