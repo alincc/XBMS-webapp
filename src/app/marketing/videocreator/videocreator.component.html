@@ -758,33 +758,38 @@
                             Data
                         </mat-panel-title>
                     </mat-expansion-panel-header>
-                    <div fxFlex fxLayout="row wrap">
-                        <div *ngFor="let label of selectedelement.label; let i1 = index;">
-                            <mat-form-field fxflex>
-                                <input (change)="detectchangeLabel(i1, label)" [(ngModel)]="label" type="text" matInput
-                                    placeholder="label">
-                            </mat-form-field>
-                        </div>
-                    </div>
-                    <mat-icon (click)="deletelabel(i1)" class="iconsize-12">delete</mat-icon>
-                    <mat-icon (click)="addLabel(i1)">add</mat-icon>
-                    <div *ngFor="let row of selectedelement.data; let i1 = index;" fxLayout="column">
-
-                        <mat-form-field fxflex>
-                            <input (change)="detectchangerowlabel(i1, row.label)" [(ngModel)]="row.label" type="text"
-                                matInput>
-                        </mat-form-field>
+                    <div fxLayout="column">
                         <div fxFlex fxLayout="row wrap">
-                            <div *ngFor="let cell of row.data; let i2 = index;">
-                                <mat-form-field fxflex style="width: 20px;">
-                                    <input (change)="detectchangerowcell(i1, i2, cell)" [(ngModel)]="cell" type="text"
-                                        matInput>
+                            <div *ngFor="let label of selectedelement.label; let i1 = index;">
+                                <mat-form-field fxflex>
+                                    <input (change)="detectchangeLabel(i1, label)" [(ngModel)]="label" type="text"
+                                        matInput placeholder="label">
                                 </mat-form-field>
                             </div>
                         </div>
-                        <mat-icon (click)="deletecell(i1)" class="iconsize-12">delete
-                        </mat-icon>
-                        <mat-icon (click)="addcell(i1, i2)">add</mat-icon>
+                        <div>
+                            <mat-icon (click)="deletelabel(i1)" class="iconsize-12">delete</mat-icon>
+                            <mat-icon (click)="addLabel(i1)">add</mat-icon>
+                        </div>
+                        <div *ngFor="let row of selectedelement.data; let i1 = index;" fxLayout="column">
+
+                            <mat-form-field fxflex>
+                                <input (change)="detectchangerowlabel(i1, row.label)" [(ngModel)]="row.label"
+                                    type="text" matInput>
+                            </mat-form-field>
+                            <div fxFlex fxLayout="row wrap">
+                                <div *ngFor="let cell of row.data; let i2 = index;">
+                                    <mat-form-field fxflex style="width: 30px;">
+                                        <input (change)="detectchangerowcell(i1, i2, cell)" [(ngModel)]="cell"
+                                            type="text" matInput>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                            <mat-icon (click)="deletecell(i1)" class="iconsize-12">delete</mat-icon>
+                            <mat-icon (click)="addcell(i1, i2)">add</mat-icon>
+                            <mat-icon (click)="deleteseries()" class="iconsize-12">delete</mat-icon>
+                        </div>
+                        
                     </div>
                 </mat-expansion-panel>
             </mat-accordion>
