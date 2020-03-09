@@ -35,6 +35,7 @@ export class chart {
       height: string;
       position: 'absolute';
       opacity: 1;
+      'box-shadow': string;
     }
     lineChartOptions: ChartOptions = {
       legend: {
@@ -144,6 +145,7 @@ export class chart {
       position: 'absolute';
       opacity: 1;
       'clip-path': string;
+      'box-shadow': string;
     };
     clippath: string;
     src: string;
@@ -194,6 +196,7 @@ export class chart {
       opacity: 1;
       'stroke-width': string;
       stroke: string;
+      'box-shadow': string;
     };
     src: string;
     posx: number;
@@ -235,6 +238,7 @@ export class chart {
       opacity: 1;
       'border-radius': string;
       class: string;
+      'box-shadow': string;
     };
     src: string;
     posx: number;
@@ -264,6 +268,7 @@ export class chart {
       'font-family': string;
       padding: string;
       opacity: 1;
+      'box-shadow': string;
     }
     posx: number;
     posy: number;

@@ -10,7 +10,6 @@ import { CustomBounce, CustomEase, Physics2DPlugin, InertiaPlugin, ScrambleTextP
 gsap.registerPlugin(Physics2DPlugin, CustomEase, CustomBounce, Draggable, InertiaPlugin, ScrambleTextPlugin, SplitText, DrawSVGPlugin, MorphSVGPlugin, MotionPathPlugin, MotionPathHelper);
 import { FileUploader, FileItem } from 'ng2-file-upload';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { MatDialog } from '@angular/material/dialog';
 declare const SVG: any;
 import '@svgdotjs/svg.draggable.js'
 const plugins = [Draggable, CustomEase, CustomBounce, InertiaPlugin, DrawSVGPlugin, MorphSVGPlugin, ScrambleTextPlugin, SplitText, Physics2DPlugin, MotionPathPlugin, MotionPathHelper]; //needed for GSAP
@@ -25,7 +24,9 @@ import {
   chart, animationtype, vectoranimationtype, vectoranimation, vectorcombinator, vectorelement,
   splittexttype, shapeanimation, imageanimation, textanimation
 } from './videocreator.model';
-
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { DialogGetname } from '../../dialogsservice/dialog.getname'
+import { DialogsService } from './../../dialogsservice/dialogs.service';
 
 @Component({
   selector: 'app-videocreator',
@@ -48,8 +49,7 @@ export class VideocreatorComponent implements OnInit {
       this.videoPlayer = el.nativeElement;
     }
   }
-
-  public zoomfactor = 1; 
+  public zoomfactor = 1;
   public selectedvideoformat: string;
   public editfigure = false;
   public closewhiteboard = false;
@@ -133,6 +133,8 @@ export class VideocreatorComponent implements OnInit {
   public systembusy = false;
   public history = [];
   public currenthistoryversion = 0;
+  public boxshadow = false;
+  public destroy = false;
 
   @Input() debounceTime = 50;
   @Output() debounceKey = new EventEmitter();
@@ -151,11 +153,16 @@ export class VideocreatorComponent implements OnInit {
     public snackBar: MatSnackBar,
     public ngZone: NgZone,
     public media: MediaObserver,
+    public dialogsService: DialogsService,
 
   ) {
     this.watcher = media.media$.subscribe((change: MediaChange) => {
       this.activeMediaQuery = change;
     });
+  }
+
+  ngOnDestroy() {
+    this.destroy = true;
   }
 
   @HostListener('document:keydown', ['$event'])
@@ -187,18 +194,39 @@ export class VideocreatorComponent implements OnInit {
   }
 
   async saveToLocalStorageHistory(setnr?) {
-    // check if is actually a newer version check last with new is similar
-    // triggers on mouseup event set debounce time if triggered to fast see ngoninit
+    if (!this.destroy) { // check destroy is not triggered same time as save to storage
 
-    console.log('save');
-    let jsonaniarray = JSON.stringify(this.animationarray, this.getCircularReplacer());
-    let jsonaniarraylast = JSON.stringify(this.history[this.currenthistoryversion]);
-    if (this.currenthistoryversion < this.history.length - 1) {
-      this.history = this.history.splice(this.currenthistoryversion + 1, this.history.length - 1)
-    }
-    if (jsonaniarray !== jsonaniarraylast) {
-      this.currenthistoryversion = this.currenthistoryversion + 1;
-      this.history.push(jsonaniarray);
+      // check if is actually a newer version check last with new is similar
+      // triggers on mouseup event set debounce time if triggered to fast see ngoninit
+      // clean chart area for JSON 
+      let meta = [];
+      for (let i = 0; i < this.animationarray.length; i++) {
+        meta.push([])
+        if (this.animationarray[i].type === 'chart') {
+          for (let y = 0; y < this.animationarray[i].data.length; y++) {
+            let meta1 = this.animationarray[i].data[y]._meta;
+            let meta2 = this.animationarray[i].productiondata[y]._meta;
+            meta[i].push(meta1);
+            meta[i].push(meta2);
+            delete this.animationarray[i].data[y]._meta;
+            delete this.animationarray[i].productiondata[y]._meta;
+          }
+        }
+      }
+
+      console.log('save', this.animationarray);
+      let jsonaniarray = JSON.stringify(this.animationarray); // ,this.getCircularReplacer()
+      let jsonaniarraylast = JSON.stringify(this.history[this.currenthistoryversion]);
+      if (this.currenthistoryversion < this.history.length - 1) {
+        this.history = this.history.splice(this.currenthistoryversion + 1, this.history.length - 1)
+      }
+      if (jsonaniarray !== jsonaniarraylast) {
+        this.currenthistoryversion = this.currenthistoryversion + 1;
+        this.history.push(jsonaniarray);
+      }
+
+      // restore chart area meta function
+      this.restoreChart(meta);
     }
   }
 
@@ -251,7 +279,7 @@ export class VideocreatorComponent implements OnInit {
     }
   }
 
-  changevideoformat(){
+  changevideoformat() {
     let setvideo = this.selectedvideoformat.split(' x ');
     this.canvas.width = setvideo[0];
     this.canvas.height = setvideo[1];
@@ -310,6 +338,7 @@ export class VideocreatorComponent implements OnInit {
 
   selectitem(element) {
     if (!this.selectedelement) { this.selectedelement = element }
+
     // manual close editpath to prevent interuptions in path check if selectedelement is not already selected
     // set dragpath, whiteboard, ?
     if (this.editpath === false && this.selectedelement.id !== element.id) {
@@ -321,12 +350,22 @@ export class VideocreatorComponent implements OnInit {
       this.edittext = false;
       this.selectedVecPath = '';
       this.setDragSelect(false);
+      if (element.style['box-shadow'] === '') { this.boxshadow = false } else { this.boxshadow = true }
       this.selectedelement = element;
     }
   }
 
   resetVectorCombiEdit(element) {
     this.vectorcombiedit = false;
+    this.detectchange();
+  }
+
+  setBoxShadow() {
+    if (this.boxshadow) {
+      this.selectedelement.style['box-shadow'] = ' 0px 10px 13px -7px #000000, 5px 5px 15px 5px rgba(0,0,0,0)';
+    } else {
+      this.selectedelement.style['box-shadow'] = '';
+    }
     this.detectchange();
   }
 
@@ -621,7 +660,7 @@ export class VideocreatorComponent implements OnInit {
     });
 
 
-    if (this.zoomfactor !== 1){
+    if (this.zoomfactor !== 1) {
       // let element = document.getElementById('containernormal');
       // let rect = element.getBoundingClientRect();
       let scale = this.zoomfactor - 1;
@@ -629,9 +668,9 @@ export class VideocreatorComponent implements OnInit {
       let h = parseInt(this.canvas.height) / 2;
       this.canvas.left = w * scale + 'px';
       this.canvas.top = h * scale + 'px';
-    } 
-    
-    if (this.zoomfactor === 1){
+    }
+
+    if (this.zoomfactor === 1) {
       this.canvas.left = '0px';
       this.canvas.top = '0px';
     }
@@ -773,6 +812,13 @@ export class VideocreatorComponent implements OnInit {
       aniset = {
         duration: duration,
         skewY: skewY, skewX: skewX, ease: ease, repeat: repeat, yoyo: element.yoyo
+      }
+    }
+
+    if (anitype === '3drotate') {
+      aniset = {
+        duration: duration,
+        rotationX: element.transformOriginX, rotationY: element.transformOriginY, ease: ease, repeat: repeat, yoyo: element.yoyo
       }
     }
 
@@ -924,7 +970,7 @@ export class VideocreatorComponent implements OnInit {
     this.selectedelement.animation.push(neweffect);
   }
 
- async copyElement(i, element) {
+  async copyElement(i, element) {
     const curel = element;
     let newElement = JSON.parse(JSON.stringify(curel));
     // redo all ids
@@ -1508,6 +1554,7 @@ export class VideocreatorComponent implements OnInit {
         opacity: 1,
         'stroke-width': '',
         stroke: '',
+        'box-shadow': ''
       },
       src: '',
       posx: posxset,
@@ -1602,7 +1649,8 @@ export class VideocreatorComponent implements OnInit {
         height: "auto",
         position: 'absolute',
         opacity: 1,
-        'clip-path': ''
+        'clip-path': '',
+        'box-shadow': ''
       },
       clippath: '',
       src: '',
@@ -1668,6 +1716,7 @@ export class VideocreatorComponent implements OnInit {
         opacity: 1,
         'border-radius': '0%',
         class: '',
+        'box-shadow': ''
       },
       src: '',
       posx: 50,
@@ -2137,6 +2186,7 @@ export class VideocreatorComponent implements OnInit {
         'font-weight': '',
         opacity: 1,
         padding: '15px', //neccarry to get all fonts,
+        'box-shadow': ''
       },
       content: 'start writing',
       posx: 20,
@@ -2592,9 +2642,6 @@ export class VideocreatorComponent implements OnInit {
     });
   }
 
-
-
-
   async cleantags(paths) {
     let newpaths = [];
     for (const path of paths) {
@@ -2766,15 +2813,16 @@ export class VideocreatorComponent implements OnInit {
     let classtype;
     let total = 30;
     let aggrenr = parseInt(this.canvas.width) * parseInt(this.canvas.height);
-    let averagesize = Math.round(aggrenr / (600 * 500)); 
-    if (type === 'flies') { total = 40 * averagesize}
-    if (type === 'stars') { total = 100 * averagesize}
-    if (type === 'snow') { total = 60 * averagesize}
-    if (type === 'rain') { total = 60 * averagesize}
-    if (type === 'leaves') { total = 50 * averagesize}
-    if (type === 'sun') { total = 90 * averagesize} // also depends on the angle this case is 90 degrees
-    if (type === 'clouds') { total = 20 * averagesize}
-    if (type === 'butterfly') {total = 15 * averagesize}
+    let averagesize = Math.round(aggrenr / (600 * 500));
+    if (type === 'flies') { total = 40 * averagesize }
+    if (type === 'stars') { total = 100 * averagesize }
+    if (type === 'snow') { total = 60 * averagesize }
+    if (type === 'celebrations') { total = 60 * averagesize }
+    if (type === 'rain') { total = 60 * averagesize }
+    if (type === 'leaves') { total = 50 * averagesize }
+    if (type === 'sun') { total = 90 * averagesize } // also depends on the angle this case is 90 degrees
+    if (type === 'clouds') { total = 20 * averagesize }
+    if (type === 'butterfly') { total = 15 * averagesize }
     let container = document.getElementById("weathercontainer");
     // container.removeChild   ---> ??
     container.innerHTML = '';
@@ -2801,15 +2849,22 @@ export class VideocreatorComponent implements OnInit {
       let setid = 'divPar' + i;
       Div.setAttribute('id', setid);
 
-      if (this.canvas.hovereffect){
+      if (this.canvas.hovereffect) {
         Div.addEventListener("mouseenter", (e) => {
           //console.log(e);
-          this.primairytimeline.to(e.target, { duration: '5', y: this.R(0, w), x: this.R(0, h), ease: 'none'}, this.currenttime); //repeat: -1,  yoyo: true
+          this.primairytimeline.to(e.target, { duration: '5', y: this.R(0, w), x: this.R(0, h), ease: 'none' }, this.currenttime); //repeat: -1,  yoyo: true
         })
       }
 
       if (type === 'snow') {
-        gsap.set(Div, { attr: { class: 'snow' }, x: this.R(0, canvasposR), y: this.R(h, heightanitop), z: this.R(-200, 200), rotationZ: this.R(0, 180), rotationX: this.R(0, 360) });
+        gsap.set(Div, { attr: { class: 'snow' }, x: this.R(0, canvasposR), y: -100, z: this.R(-200, 200), rotationZ: this.R(0, 180), rotationX: this.R(0, 360) });
+      }
+      if (type === 'celebrations') {
+        //let yset = h * -1; // this.R(yset, 0)
+        let randomy = this.RandomInt(0, 5);
+        let color = randomcolors[randomy];
+        Div.setAttribute('style', 'background-color: ' + color);
+        gsap.set(Div, { attr: { class: 'celebrations' }, x: this.R(0, canvasposR), y: -100, z: this.R(-200, 200), rotationZ: this.R(0, 180), rotationX: this.R(0, 360) });
       }
       if (type === 'rain') {
         gsap.set(Div, { attr: { class: 'rain' }, x: this.R(0, canvasposR), y: this.R(heightanibottom, heightanitop), z: this.R(-200, 200), rotation: "-20_short", });
@@ -2823,15 +2878,15 @@ export class VideocreatorComponent implements OnInit {
       }
       if (type === 'stars') {
         let scale = this.R(0.2, 1.5);
-        gsap.set(Div, { attr: { class: 'stars'}, scale: scale, x: this.R(0, parseInt(this.canvas.width, 10)), y: this.R(0, parseInt(this.canvas.height, 10))});
+        gsap.set(Div, { attr: { class: 'stars' }, scale: scale, x: this.R(0, parseInt(this.canvas.width, 10)), y: this.R(0, parseInt(this.canvas.height, 10)) });
         this.canvas["background-color"] = 'transparent';
       }
       if (type === 'flies') {
         let scale = this.R(0.2, 1.5);
-        gsap.set(Div, { attr: { class: 'flies'}, scale: scale, x: this.R(0, parseInt(this.canvas.width, 10)), y: this.R(0, parseInt(this.canvas.height, 10))});
+        gsap.set(Div, { attr: { class: 'flies' }, scale: scale, x: this.R(0, parseInt(this.canvas.width, 10)), y: this.R(0, parseInt(this.canvas.height, 10)) });
       }
 
-      if (type === "butterfly"){
+      if (type === "butterfly") {
         // butterfly
         let butterfly = document.createElement('div');
         butterfly.className = "butterfly";
@@ -2858,26 +2913,27 @@ export class VideocreatorComponent implements OnInit {
         let randomy = this.RandomInt(0, 5);
         let color = randomcolors[randomy];
         let bits = Div.getElementsByClassName('bit')
-        for (let i = 0; i < bits.length; i++ ){
-         bits[i].setAttribute('style', 'background-color: '+color );
+        for (let i = 0; i < bits.length; i++) {
+          bits[i].setAttribute('style', 'background-color: ' + color);
         }
-         let scale = this.R(0.1, 0.3);
-         let calcscale = (scale - 1);
-         let w2 = parseInt(this.canvas.width) / 2;
-         let h2 = parseInt(this.canvas.height) / 2;
-         let mw = w2 * calcscale;
-         let mh = h2 * calcscale;
+        let scale = this.R(0.1, 0.3);
+        let calcscale = (scale - 1);
+        let w2 = parseInt(this.canvas.width) / 2;
+        let h2 = parseInt(this.canvas.height) / 2;
+        let mw = w2 * calcscale;
+        let mh = h2 * calcscale;
 
-         gsap.set(Div, { scale: scale, x: this.R(mw, (w+mw)), y: this.R(mh, h)});   //  compensate for scale   
-         let movex = '+=' + this.R((mw * 2 ), (w + mw)); // mw * 2 increases travellenght 
-         let movey = '+=' + this.R((mh * 2), h);
-         this.primairytimeline.to(Div, { duration: this.R(5, 15), scale: scale, ease: 'none', repeat: -1,  yoyo: true}, this.R(0, 10));
-         this.primairytimeline.to(Div, { duration: this.R(5, 15), y: movey, ease: 'none', repeat: -1, yoyo: true}, 0);
-         this.primairytimeline.to(Div, { duration: this.R(5, 15), x: movex, rotationZ: this.R(0, 180), repeat: -1, yoyo: true, ease: 'none'}, 0);
-        }
+        gsap.set(Div, { scale: scale, x: this.R(mw, (w + mw)), y: this.R(mh, h) });   //  compensate for scale   
+        let movex = '+=' + this.R((mw * 2), (w + mw)); // mw * 2 increases travellenght 
+        let movey = '+=' + this.R((mh * 2), h);
+        this.primairytimeline.to(Div, { duration: this.R(5, 15), scale: scale, ease: 'none', repeat: -1, yoyo: true }, this.R(0, 10));
+        this.primairytimeline.to(Div, { duration: this.R(5, 15), y: movey, ease: 'none', repeat: -1, yoyo: true }, 0);
+        this.primairytimeline.to(Div, { duration: this.R(5, 15), x: movex, rotationZ: this.R(0, 180), repeat: -1, yoyo: true, ease: 'none' }, 0);
+      }
 
       if (type === 'clouds') { this.animclouds(Div, h, w); }
       if (type === 'snow') { this.animsnow(Div, h); }
+      if (type === 'celebrations') { this.animceleb(Div, h, w); }
       if (type === 'rain') { this.animrain(Div, h); }
       if (type === 'leaves') { this.animleaves(Div, h); }
       if (type === 'sun') {
@@ -2887,8 +2943,9 @@ export class VideocreatorComponent implements OnInit {
         gsap.set(Div, { attr: { class: 'sunray' }, x: w + 10, y: -10, rotation: i + "_short", });
         this.animsun(Div, ya, xa);
       }
-      if (type === 'flies') { 
-        this.animflies(Div, h, w); }
+      if (type === 'flies') {
+        this.animflies(Div, h, w);
+      }
       if (type === 'stars') { this.animstars(Div); }
       if (type === 'butterfly') { this.animbutterfly(Div, h, w); }
 
@@ -2896,45 +2953,38 @@ export class VideocreatorComponent implements OnInit {
     }
   }
 
-  animbutterfly(elm: HTMLDivElement, h, w){
+  animbutterfly(elm: HTMLDivElement, h, w) {
     let customease = CustomEase.create("custom", "M0,0,C0,0,0.256,0.014,0.432,0.176,0.608,0.338,0.436,0.638,0.638,0.842,0.792,0.998,1,1,1,1");
-    // let minw = (w * -1) / 2;
-    // let minh = (h * -1) / 2;
-
-    // let scale = this.R(0.1, 0.3);
-    // let calcscale = (scale - 1);
-    // let w2 = parseInt(this.canvas.width) / 2;
-    // let h2 = parseInt(this.canvas.height) / 2;
-    // let mw = w2 * calcscale;
-    // let mh = h2 * calcscale;
-
-  
     let leftwing = elm.getElementsByClassName('wing')[0];
     let rightwing = elm.getElementsByClassName('wing')[1];
-    this.primairytimeline.fromTo(leftwing, {rotationY: -20}, {rotationY: 90, duration: 0.25, transformOrigin: '700% 50%', repeat: -1, yoyo: true, 
-      ease: customease}, 0);
-    this.primairytimeline.fromTo(rightwing, {rotationY: 200}, {rotationY: 90, duration: 0.25, repeat: -1, yoyo: true, 
-      ease: customease}, 0);
+    this.primairytimeline.fromTo(leftwing, { rotationY: -20 }, {
+      rotationY: 90, duration: 0.25, transformOrigin: '700% 50%', repeat: -1, yoyo: true,
+      ease: customease
+    }, 0);
+    this.primairytimeline.fromTo(rightwing, { rotationY: 200 }, {
+      rotationY: 90, duration: 0.25, repeat: -1, yoyo: true,
+      ease: customease
+    }, 0);
     let butterfly = elm.getElementsByClassName('butterfly')[0];
-    this.primairytimeline.fromTo(butterfly, {y: 0 }, {y: -5, duration: 0.25, repeat: -1, yoyo: true, ease: customease}, 0); //set body animation
+    this.primairytimeline.fromTo(butterfly, { y: 0 }, { y: -5, duration: 0.25, repeat: -1, yoyo: true, ease: customease }, 0); //set body animation
   }
 
-  animflies(elm, h, w){
+  animflies(elm, h, w) {
     let minw = (w * -1) / 2;
     let minh = (h * -1) / 2;
     let movex = '+=' + this.R(minw, (w / 2));
     let movey = '+=' + this.R(minh, (h / 2));
     let scale = this.R(0.2, 1.5);
-    this.primairytimeline.to(elm, { duration: this.R(5, 20), scale: scale, ease: 'none', repeat: -1,  yoyo: true}, this.R(0, 10));
-    this.primairytimeline.to(elm, { duration: this.R(0, 20), autoAlpha: 0.1, ease: 'none', repeat: -1, yoyo: true}, this.R(0, 10));
-    this.primairytimeline.to(elm, { duration: this.R(5, 20), y: movey, ease: 'none', repeat: -1, yoyo: true}, 0);
-    this.primairytimeline.to(elm, { duration: this.R(5, 20), x: movex, rotationZ: this.R(0, 180), repeat: -1, yoyo: true, ease: 'none'}, 0);
+    this.primairytimeline.to(elm, { duration: this.R(5, 20), scale: scale, ease: 'none', repeat: -1, yoyo: true }, this.R(0, 10));
+    this.primairytimeline.to(elm, { duration: this.R(0, 20), autoAlpha: 0.1, ease: 'none', repeat: -1, yoyo: true }, this.R(0, 10));
+    this.primairytimeline.to(elm, { duration: this.R(5, 20), y: movey, ease: 'none', repeat: -1, yoyo: true }, 0);
+    this.primairytimeline.to(elm, { duration: this.R(5, 20), x: movex, rotationZ: this.R(0, 180), repeat: -1, yoyo: true, ease: 'none' }, 0);
   }
 
 
-  animstars(elm){
+  animstars(elm) {
     let scale = this.R(0.2, 1.5);
-    this.primairytimeline.to(elm, { duration: 10, scale: scale, ease: 'none', repeat: -1,  yoyo: true, delay: this.R(0, 10) }, this.R(0, 10));
+    this.primairytimeline.to(elm, { duration: 10, scale: scale, ease: 'none', repeat: -1, yoyo: true, delay: this.R(0, 10) }, this.R(0, 10));
     this.primairytimeline.to(elm, { duration: 5, autoAlpha: 0, ease: 'none', repeat: -1, yoyo: true, delay: this.R(0, 10) }, this.R(0, 10));
   }
 
@@ -2947,9 +2997,19 @@ export class VideocreatorComponent implements OnInit {
   } // y: h, '+=' + w
 
   animsnow(elm, h) {
-    this.primairytimeline.to(elm, { duration: this.R(15, 30), y: h + 100, ease: 'linear.none', repeat: -1, delay: 0 }, 0);
-    this.primairytimeline.to(elm, { duration: this.R(8, 8), x: '+=100', rotationZ: this.R(0, 180), repeat: -1, yoyo: true, ease: 'sine.out', delay: 0 }, 0);
-    this.primairytimeline.to(elm, { duration: this.R(2, 8), rotationX: this.R(0, 360), rotationY: this.R(0, 360), repeat: -1, yoyo: true, ease: 'sine.out', delay: 0 }, 0);
+    let randomstart = this.R(0, 25)
+    this.primairytimeline.to(elm, { duration: this.R(15, 30), y: h + 100, ease: 'linear.none', repeat: -1, delay: 0 }, randomstart);
+    this.primairytimeline.to(elm, { duration: this.R(8, 8), x: '+=100', rotationZ: this.R(0, 180), repeat: -1, yoyo: true, ease: 'sine.out', delay: 0 }, randomstart);
+    this.primairytimeline.to(elm, { duration: this.R(2, 8), rotationX: this.R(0, 360), rotationY: this.R(0, 360), repeat: -1, yoyo: true, ease: 'sine.out', delay: 0 }, randomstart);
+  };
+
+  animceleb(elm, h, w) {
+    let minw = (w * -1) / 2;
+    let movex = '+=' + this.R(minw, (w / 2));
+    let randomstart = this.R(0, 25)
+    this.primairytimeline.to(elm, { duration: this.R(20, 30), y: h + 100, ease: 'linear.none', repeat: -1, delay: 0 }, randomstart);
+    this.primairytimeline.to(elm, { duration: this.R(8, 15), x: movex, rotationZ: this.R(0, 180), repeat: -1, yoyo: true, ease: 'sine.out', delay: 0 }, randomstart);
+    this.primairytimeline.to(elm, { duration: this.R(8, 15), rotationX: this.R(0, 360), rotationY: this.R(0, 360), repeat: -1, yoyo: true, ease: 'sine.out', delay: 0 }, randomstart);
   };
 
   // element, time(speed),
@@ -3603,58 +3663,215 @@ export class VideocreatorComponent implements OnInit {
   }
 
   async saveVideo() {
-    //console.log(this.animationarray);
+
+    // clean chart area for JSON 
+    let meta = [];
+    for (let i = 0; i < this.animationarray.length; i++) {
+      meta.push([])
+      if (this.animationarray[i].type === 'chart') {
+        for (let y = 0; y < this.animationarray[i].data.length; y++) {
+          let meta1 = this.animationarray[i].data[y]._meta;
+          let meta2 = this.animationarray[i].productiondata[y]._meta;
+          meta[i].push(meta1);
+          meta[i].push(meta2);
+          delete this.animationarray[i].data[y]._meta;
+          delete this.animationarray[i].productiondata[y]._meta;
+        }
+      }
+    }
 
     if (this.elementname === undefined) { this.elementname = Math.random().toString(36).substring(7); }
-    let imgurl = BASE_URL + '/api/Containers/' + this.option.id + '/download/' + this.elementname;
-    let setimgurl = 'https://api.xbms.io/api/Containers/' + this.option.id + '/download/' + this.elementname;
-    imgurl = imgurl.replace(/ /g, '-'),
-      // define the file settings
-      this.newFiles.name = this.elementname;
-    this.newFiles.url = setimgurl;
-    this.newFiles.createdate = new Date();
-    this.newFiles.type = 'video';
-    this.newFiles.companyId = this.Account.companyId;
-    this.newFiles.canvas = [this.canvas];
-    this.newFiles.template = this.animationarray;
-    this.newFiles.counter = this.counter;
-    this.newFiles.companyId = this.Account.companyId;
+    this.relationsApi.getFiles(this.option.id, { where: { name: this.elementname } })
+      .subscribe((res => {
+        if (res.length > 0) { this.elementname = this.elementname + '1' }
+        let imgurl = BASE_URL + '/api/Containers/' + this.option.id + '/download/' + this.elementname;
+        let setimgurl = 'https://api.xbms.io/api/Containers/' + this.option.id + '/download/' + this.elementname;
+        imgurl = imgurl.replace(/ /g, '-'),
+          // define the file settings
+          this.newFiles.name = this.elementname;
+        this.newFiles.url = setimgurl;
+        this.newFiles.createdate = new Date();
+        this.newFiles.type = 'video';
+        this.newFiles.companyId = this.Account.companyId;
+        this.newFiles.canvas = [this.canvas];
+        this.newFiles.template = this.animationarray;
+        this.newFiles.counter = this.counter;
+        this.newFiles.companyId = this.Account.companyId;
 
-    if (this.newFiles.id) {
-      this.relationsApi.updateByIdFiles(this.newFiles.relationsId, this.newFiles.id, this.newFiles).subscribe(res => {
-        this.snackBar.open("video saved!", undefined, {
-          duration: 2000,
-          panelClass: 'snackbar-class'
-        });
-      });
-    } else {
-      this.relationsApi.createFiles(this.option.id, this.newFiles).subscribe(res => {
-        this.snackBar.open("video saved!", undefined, {
-          duration: 2000,
-          panelClass: 'snackbar-class'
-        });
-      });
+        if (this.newFiles.id) {
+          this.relationsApi.updateByIdFiles(this.newFiles.relationsId, this.newFiles.id, this.newFiles).subscribe(res => {
+            this.snackBar.open("video saved!", undefined, {
+              duration: 2000,
+              panelClass: 'snackbar-class'
+            });
+            // restore chart area meta function
+            this.restoreChart(meta);
+          });
+        } else {
+          this.relationsApi.createFiles(this.option.id, this.newFiles).subscribe(res => {
+            this.snackBar.open("video saved!", undefined, {
+              duration: 2000,
+              panelClass: 'snackbar-class'
+            });
+            // restore chart area meta function
+            this.restoreChart(meta);
+          });
+        }
+      }));
+
+  }
+
+  restoreChart(meta) {
+    for (let i = 0; i < this.animationarray.length; i++) {
+      if (this.animationarray[i].type === 'chart') {
+        for (let y = 0; y < this.animationarray[i].data.length; y++) {
+          this.animationarray[i].data[y]._meta = meta[i][0];
+          this.animationarray[i].productiondata[y]._meta = meta[i][1];
+        }
+      }
     }
   }
 
-  async converttovideo() {
-    // let myJSON = await this.jsonVectors();
-    this.removeVectorPathSelection();
-    this.removeVectorPathMultiSelection();
-    let array = this.animationarray;
-    let myJSON = JSON.stringify(array);
-    this.canvas.videourl = this.canvas.videourl.replace('http://localhost:3000', 'https://api.xbms.io')
-    //var aniarray = encodeURIComponent(myJSON);
-    if (this.elementname === undefined) { this.elementname = Math.random().toString(36).substring(7); }
-    this.filesApi.createvideo(this.option.id, this.option.companyId,
-      this.elementname, this.canvas, myJSON, this.counter)
-      .subscribe(
-        res => {
-          //console.log(res);
-          this.saveVideo()
+  async saveVideoAs() {
+
+    let meta = [];
+    for (let i = 0; i < this.animationarray.length; i++) {
+      meta.push([])
+      if (this.animationarray[i].type === 'chart') {
+        for (let y = 0; y < this.animationarray[i].data.length; y++) {
+          let meta1 = this.animationarray[i].data[y]._meta;
+          let meta2 = this.animationarray[i].productiondata[y]._meta;
+          meta[i].push(meta1);
+          meta[i].push(meta2);
+          delete this.animationarray[i].data[y]._meta;
+          delete this.animationarray[i].productiondata[y]._meta;
         }
-      );
+      }
+    }
+
+    const dialogRef = this.dialog.open(DialogGetname, {
+      width: '250px',
+      data: { name: this.elementname }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      let name = result;
+      console.log(name)
+      if (name) {
+        this.relationsApi.getFiles(this.option.id, { where: { name: this.elementname } })
+          .subscribe((res => {
+            if (res.length > 0) { name = name + '-1' }
+            let imgurl = BASE_URL + '/api/Containers/' + this.option.id + '/download/' + name;
+            let setimgurl = 'https://api.xbms.io/api/Containers/' + this.option.id + '/download/' + name;
+            imgurl = imgurl.replace(/ /g, '-'),
+              // define the file settings
+              this.newFiles.name = name;
+            this.newFiles.url = setimgurl;
+            this.newFiles.createdate = new Date();
+            this.newFiles.type = 'video';
+            this.newFiles.companyId = this.Account.companyId;
+            this.newFiles.canvas = [this.canvas];
+            this.newFiles.template = this.animationarray;
+            this.newFiles.counter = this.counter;
+            this.newFiles.companyId = this.Account.companyId;
+            this.newFiles.id = undefined;
+
+            this.relationsApi.createFiles(this.option.id, this.newFiles).subscribe((res: Files) => {
+              this.elementname = name;
+              this.newFiles.id = res.id
+              this.snackBar.open("video saved!", undefined, {
+                duration: 2000,
+                panelClass: 'snackbar-class'
+              });
+              this.restoreChart(meta);
+            });
+
+          }));
+      } else {
+        this.restoreChart(meta);
+      }
+    });
   }
+
+  createVideoCodeSnippet() {
+    if (this.newFiles.id) {
+      this.dialogsService
+        .confirm('Implement code', 'Do you want to save as seperate video?')
+        .subscribe(res => {
+          if (res) { this.saveVideoAs() } else {
+            this.saveVideo();
+          }
+          let myJSON = JSON.stringify(this.canvas);
+          let canvasjson = encodeURIComponent(myJSON);
+          let url = 'https://dlcr.xbms.io?id=' + this.newFiles.id + '&canvas=' + canvasjson + '&repeat=false&remote=true';
+          this.snippetcode = '<iframe scrolling="no" width=' + this.canvas.width + ' height=' + this.canvas.height + ' src="' + url + 'counter=' + this.counter + '"></iframe>';
+          this.codesnippetService.confirm('Copy Code', 'Copy code and input in your website', this.snippetcode).subscribe()
+        });
+    }
+  }
+
+  loadVideo() {
+    this.dialogsService
+      .confirm('Load video', 'Do you want to load this video?')
+      .subscribe(res => {
+        if (res) {
+          this.loadEditableVideo();
+        }
+      });
+  }
+
+  async converttovideo() {
+    if (this.newFiles.id) {
+      this.dialogsService
+        .confirm('Implement code', 'Do you want to save as seperate video?')
+        .subscribe(res => {
+          if (res) { this.saveVideoAs() } else {
+            this.saveVideo();
+          }
+          this.removeVectorPathSelection();
+          this.removeVectorPathMultiSelection();
+          let array = this.animationarray;
+          let myJSON = JSON.stringify(array);
+          this.canvas.videourl = this.canvas.videourl.replace('http://localhost:3000', 'https://api.xbms.io')
+          //var aniarray = encodeURIComponent(myJSON);
+          if (this.elementname === undefined) { this.elementname = Math.random().toString(36).substring(7); }
+          this.filesApi.createvideo(this.option.id, this.option.companyId,
+            this.elementname, this.canvas, myJSON, this.counter)
+            .subscribe(
+              res => {
+                //console.log(res);
+                this.saveVideo()
+              }
+            );
+        });
+    }
+  }
+
+  async converttogif() {
+    if (this.newFiles.id) {
+      this.dialogsService
+        .confirm('Implement code', 'Do you want to save as seperate video?')
+        .subscribe(res => {
+          if (res) { this.saveVideoAs() } else {
+            this.saveVideo();
+          }
+          this.canvas.videourl = this.canvas.videourl.replace('http://localhost:3000', 'https://api.xbms.io')
+          this.removeVectorPathSelection();
+          this.removeVectorPathMultiSelection();
+          let array = this.animationarray;
+          let myJSON = JSON.stringify(array);
+          if (this.elementname === undefined) { this.elementname = Math.random().toString(36).substring(7); }
+          this.filesApi.creategif(this.option.id, this.option.companyId,
+            this.elementname, this.canvas, myJSON, this.counter)
+            .subscribe(
+              res => {
+                this.saveVideo()
+              }
+            );
+        });
+    }
+  }
+
 
   async jsonVectors() {
     let newanimationarray = JSON.parse(JSON.stringify(this.animationarray));
@@ -3666,20 +3883,6 @@ export class VideocreatorComponent implements OnInit {
     }
   }
 
-  async converttogif() {
-    this.removeVectorPathSelection();
-    this.removeVectorPathMultiSelection();
-    let array = this.animationarray;
-    let myJSON = JSON.stringify(array);
-    if (this.elementname === undefined) { this.elementname = Math.random().toString(36).substring(7); }
-    this.filesApi.creategif(this.option.id, this.option.companyId,
-      this.elementname, this.canvas, myJSON, this.counter)
-      .subscribe(
-        res => {
-          this.saveVideo()
-        }
-      );
-  }
 
   resetVideo() {
     this.elementname = '';
@@ -3795,19 +3998,19 @@ export class VideocreatorComponent implements OnInit {
     element.classList.remove('data-selected');
   }
 
-  addcell(i, i1, i2): void {
-    this.animationarray[i].data[i1].data.push(0);
-    this.animationarray[i].productiondata[i1].data.push(0);
+  addcell(i1, i2): void {
+    this.selectedelement.data[i1].data.push(0);
+    this.selectedelement.productiondata[i1].data.push(0);
   }
 
-  addLabel(i, i1): void {
-    this.animationarray[i].label.push("new label");
+  addLabel(i1): void {
+    this.selectedelement.label.push("new label");
   }
 
-  addgraph(i, i1): void {
-    this.animationarray[i].data.push({ data: [0, 0, 0], labels: 'new label' });
-    this.animationarray[i].productiondata.push({ data: [0, 0, 0], labels: 'new label' });
-    this.animationarray[i].colors.push(
+  addgraph(i1): void {
+    this.selectedelement.data.push({ data: [0, 0, 0], labels: 'new label' });
+    this.selectedelement.productiondata.push({ data: [0, 0, 0], labels: 'new label' });
+    this.selectedelement.colors.push(
       { // grey
         backgroundColor: '#232222',
         borderColor: '#232222',
@@ -3817,67 +4020,60 @@ export class VideocreatorComponent implements OnInit {
     )
   }
 
-  deletegraph(i): void {
-    let del = this.animationarray[i].data.length - 1;
-    this.animationarray[i].data.splice(del, 1);
-    this.animationarray[i].productiondata.splice(del, 1);
+  deletegraph(): void {
+    let del = this.selectedelement.data.length - 1;
+    this.selectedelement.data.splice(del, 1);
+    this.selectedelement.productiondata.splice(del, 1);
     this.detectchange();
   }
 
-  detectchangerowcell(i, i1, i2, cell): void {
-    this.animationarray[i].data[i1].data[i2] = cell;
-    let max = Math.max(... this.animationarray[i].data[i1]);
-    let min = Math.min(... this.animationarray[i].data[i1]);
+  detectchangerowcell(i1, i2, cell): void {
+    this.selectedelement.data[i1].data[i2] = cell;
+    let max = Math.max(... this.selectedelement.data[i1]);
+    let min = Math.min(... this.selectedelement.data[i1]);
     if (max < cell) {
-      this.animationarray[i].lineChartOptions.scales.yAxes[0].ticks.suggestedMax = cell;
-      this.animationarray[i].lineChartOptions.scales.yAxes[0].ticks.suggestedMin = min;
+      this.selectedelement.lineChartOptions.scales.yAxes[0].ticks.suggestedMax = cell;
+      this.selectedelement.lineChartOptions.scales.yAxes[0].ticks.suggestedMin = min;
     }
     if (min > cell) {
-      this.animationarray[i].lineChartOptions.scales.yAxes[0].ticks.suggestedMin = cell;
-      this.animationarray[i].lineChartOptions.scales.yAxes[0].ticks.suggestedMax = max; // throws error if not
+      this.selectedelement.lineChartOptions.scales.yAxes[0].ticks.suggestedMin = cell;
+      this.selectedelement.lineChartOptions.scales.yAxes[0].ticks.suggestedMax = max; // throws error if not
     }
-    //this.animationarray[i].productiondata[i1].data[i2] = 0;
+    //this.selectedelement.productiondata[i1].data[i2] = 0;
     this.detectchange();
   }
 
-  detectchangerowlabel(i, i1, labelnew): void {
-    this.animationarray[i].data[i1].label = labelnew;
-    this.animationarray[i].productiondata[i].label = labelnew;
+  detectchangerowlabel(i1, labelnew): void {
+    this.selectedelement.data[i1].label = labelnew;
+    this.selectedelement.productiondata[i1].label = labelnew;
     this.detectchange();
   }
 
-  detectchangeLabel(i, i1, label): void {
-    this.animationarray[i].label[i1] = label;
+  detectchangeLabel(i1, label): void {
+    this.selectedelement.label[i1] = label;
     this.detectchange();
   }
 
-  detectchangetype(i, type): void {
-    this.animationarray[i].charttype = type;
+  detectchangetype(type): void {
+    this.selectedelement.charttype = type;
     this.detectchange();
   }
 
-  deletelabel(i, i1) {
-    let del = this.animationarray[i].label.length - 1;
-    this.animationarray[i].label.splice(del, 1);
+  deletelabel(i1) {
+    let del = this.selectedelement.label.length - 1;
+    this.selectedelement.label.splice(del, 1);
     this.detectchange();
   }
 
-  deletecell(i, i1) {
-    let del = this.animationarray[i].data[i1].data.length - 1;
-    this.animationarray[i].data[i1].data.splice(del, 1);
-    this.animationarray[i].productiondata[i1].data.splice(del, 1);
+  deletecell(i1) {
+    let del = this.selectedelement.data[i1].data.length - 1;
+    this.selectedelement.data[i1].data.splice(del, 1);
+    this.selectedelement.productiondata[i1].data.splice(del, 1);
     this.detectchange();
   }
 
 
-  createVideoCodeSnippet() {
-    this.saveVideo();
-    let myJSON = JSON.stringify(this.canvas);
-    let canvasjson = encodeURIComponent(myJSON);
-    let url = 'https://dlcr.xbms.io?id=' + this.newFiles.id + '&canvas=' + canvasjson + '&repeat=false&remote=true';
-    this.snippetcode = '<iframe scrolling="no" width=' + this.canvas.width + ' height=' + this.canvas.height + ' src="' + url + 'counter=' + this.counter +'"></iframe>';
-    this.codesnippetService.confirm('Copy Code', 'Copy code and input in your website', this.snippetcode).subscribe()
-  }
+
 
 
   public speedDialFabButtons = [

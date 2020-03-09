@@ -5,8 +5,11 @@
     <button mat-fab color="primary" matTooltip="Convert to video" (click)="converttovideo()">
         <mat-icon>video_library</mat-icon>
     </button>
-    <button mat-mini-fab color="primary" matTooltip="Save video" (click)="saveVideo()">
+    <button mat-mini-fab color="primary" matTooltip="Save" (click)="saveVideo()">
         <mat-icon>save</mat-icon>
+    </button>
+    <button mat-mini-fab color="primary" matTooltip="Save as" (click)="saveVideoAs()">
+        <mat-icon>save_alt</mat-icon>
     </button>
     <button mat-mini-fab color="primary" matTooltip="Convert to GIF" (click)="converttogif()" [disabled]="counter > 61">
         <mat-icon>gif</mat-icon>
@@ -19,7 +22,7 @@
     <button mat-icon-button [matMenuTriggerFor]="menumarketing" class="menu">
         <mat-icon>more_vert</mat-icon>
     </button>
-    <mat-menu #menumarketing="matMenu" >
+    <mat-menu #menumarketing="matMenu">
         <button mat-menu-item (click)="resetVideo()">
             <mat-icon>delete</mat-icon>
             <span>Reset</span>
@@ -29,8 +32,8 @@
             <span>New</span>
         </button>
         <mat-form-field>
-            <mat-label>Edit existing element</mat-label>
-            <mat-select [(value)]="editablevideo">
+            <mat-label>Edit video</mat-label>
+            <mat-select [(value)]="editablevideo" (selectionChange)="loadVideo()">
                 <mat-option *ngFor="let editvideo of editablevideos" [value]="editvideo">
                     {{editvideo.name}}
                 </mat-option>
@@ -91,7 +94,8 @@
 
             <div fxLayout="row wrap" fxLayoutGap="20px">
                 <mat-form-field>
-                    <input [(ngModel)]="elementname" type="text" matInput placeholder="Video Name">
+                    <input specialIsAlphaNumeric [(ngModel)]="elementname" type="text" matInput
+                        placeholder="Video Name">
                 </mat-form-field>
 
                 <mat-form-field fxFlex>
@@ -108,7 +112,8 @@
                 </mat-form-field>
                 <!-- [(value)]="canvas.weather" -->
                 <mat-form-field>
-                    <mat-select [(value)]="selectedvideoformat" (selectionChange)="changevideoformat()" placeholder="Select video size">
+                    <mat-select [(value)]="selectedvideoformat" (selectionChange)="changevideoformat()"
+                        placeholder="Select video size">
                         <mat-option value="4096px x 2048px">4096 x 2048</mat-option>
                         <mat-option value="1920px x 1080px">1920 x 1080</mat-option>
                         <mat-option value="1280px x 720px">1280 x 720</mat-option>
@@ -153,16 +158,17 @@
                     </mat-icon>
                     <label *ngIf="canvas['background-image']">{{ canvas['background-image'] | fileName }}</label>
                 </div>
-                
-                    <input placeholder="Background color" [(ngModel)]="canvas['background-color']"
-                        style="width: 60px; height: 30px; z-index: 10" [style.background]="canvas['background-color']"
-                        [cpToggle]="false" [(colorPicker)]="canvas['background-color']" [cpPosition]="'auto'"
-                        (colorPickerChange)="onchangecanvas()" [cpCancelButton]="true"
-                        [cpPresetLabel]="'Company colors'"
-                        *ngIf="company" [cpPresetColors]="[option.companyprimairycolor, option.companysecondarycolor, company.companyprimairycolor, company.companysecondarycolor]">
-               
+
+                <input placeholder="Background color" [(ngModel)]="canvas['background-color']"
+                    style="width: 60px; height: 30px; z-index: 10" [style.background]="canvas['background-color']"
+                    [cpToggle]="false" [(colorPicker)]="canvas['background-color']" [cpPosition]="'auto'"
+                    (colorPickerChange)="onchangecanvas()" [cpCancelButton]="true" [cpPresetLabel]="'Company colors'"
+                    *ngIf="company"
+                    [cpPresetColors]="[option.companyprimairycolor, option.companysecondarycolor, company.companyprimairycolor, company.companysecondarycolor]">
+
                 <mat-slide-toggle fxFlex *ngIf="canvas.videourl" [(ngModel)]="canvas.loop">Loop</mat-slide-toggle>
-                <mat-slide-toggle fxFlex matTooltip="Only for embedded code" [(ngModel)]="canvas.hovereffect">Hover effect</mat-slide-toggle>
+                <mat-slide-toggle fxFlex matTooltip="Only for embedded code" [(ngModel)]="canvas.hovereffect">Hover
+                    effect</mat-slide-toggle>
 
                 <mat-form-field>
                     <mat-select [(value)]="canvas.weather" (selectionChange)="detectchange()"
@@ -170,6 +176,7 @@
                         <mat-option value="none">None</mat-option>
                         <mat-option value="rain">Rain</mat-option>
                         <mat-option value="snow">Snow</mat-option>
+                        <mat-option value="celebrations">Party</mat-option>
                         <mat-option value="leaves">Leaves</mat-option>
                         <mat-option value="sun">Sun</mat-option>
                         <mat-option value="clouds">Clouds</mat-option>
@@ -180,8 +187,7 @@
                 </mat-form-field>
 
                 <mat-form-field>
-                    <mat-select [(value)]="zoomfactor" (selectionChange)="onchangecanvas()"
-                        placeholder="Zoom">
+                    <mat-select [(value)]="zoomfactor" (selectionChange)="onchangecanvas()" placeholder="Zoom">
                         <mat-option value="1">100%</mat-option>
                         <mat-option value="0.9">90%</mat-option>
                         <mat-option value="0.8">80%</mat-option>
@@ -194,7 +200,7 @@
                         <mat-option value="0.1">10%</mat-option>
                         <mat-option value="1.5">150%</mat-option>
                         <mat-option value="2">200%</mat-option>
-                        
+
                     </mat-select>
                 </mat-form-field>
 
@@ -246,7 +252,7 @@
                                 <mat-option value="scale">Scale</mat-option>
                                 <mat-option value="skew">Skew</mat-option>
                                 <mat-option value="appear">Appear</mat-option>
-                                <!-- <mat-option value="disappear">Disappear</mat-option> -->
+                                <mat-option value="3drotate">3drotate</mat-option>
                                 <mat-option value="bounce">Bounce</mat-option>
                                 <mat-option value="move">Move</mat-option>
                                 <mat-option value="fountain">Fountain</mat-option>
@@ -359,6 +365,17 @@
                             </mat-form-field>
                             <button mat-button
                                 (click)="animation.travellocY = selectedelement.posy; animation.travellocX = selectedelement.posx">Reset</button>
+                        </div>
+
+                        <div *ngIf="animation.anim_type === '3drotate'">
+                            <mat-form-field style="max-width: 46px;">
+                                <input [(ngModel)]="animation.transformOriginY" type="number" matInput>
+                                <mat-hint>Y-axe</mat-hint>
+                            </mat-form-field>
+                            <mat-form-field style="max-width: 46px;">
+                                <input [(ngModel)]="animation.transformOriginX" type="number" matInput>
+                                <mat-hint>X-axe</mat-hint>
+                            </mat-form-field>
                         </div>
 
                         <div *ngIf="animation.anim_type === 'move'">
@@ -555,8 +572,8 @@
                                     <input style="width: 60px; height: 30px;" (change)="detectchange()"
                                         [style.background]="vectoranimation.drawcolor" [cpToggle]="false"
                                         [(colorPicker)]="vectoranimation.drawcolor" [cpCancelButton]="true"
-                                        [cpPresetLabel]="'Company colors'"
-                                        *ngIf="company" [cpPresetColors]="[option.companyprimairycolor, option.companysecondarycolor, company.companyprimairycolor, company.companysecondarycolor]">
+                                        [cpPresetLabel]="'Company colors'" *ngIf="company"
+                                        [cpPresetColors]="[option.companyprimairycolor, option.companysecondarycolor, company.companyprimairycolor, company.companysecondarycolor]">
                                 </div>
 
                                 <mat-form-field style="max-width: 46px;" fxFlex>
@@ -734,6 +751,43 @@
 
                 </mat-expansion-panel>
             </mat-accordion>
+            <mat-accordion>
+                <mat-expansion-panel>
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>
+                            Data
+                        </mat-panel-title>
+                    </mat-expansion-panel-header>
+                    <div fxFlex fxLayout="row wrap">
+                        <div *ngFor="let label of selectedelement.label; let i1 = index;">
+                            <mat-form-field fxflex>
+                                <input (change)="detectchangeLabel(i1, label)" [(ngModel)]="label" type="text" matInput
+                                    placeholder="label">
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <mat-icon (click)="deletelabel(i1)" class="iconsize-12">delete</mat-icon>
+                    <mat-icon (click)="addLabel(i1)">add</mat-icon>
+                    <div *ngFor="let row of selectedelement.data; let i1 = index;" fxLayout="column">
+
+                        <mat-form-field fxflex>
+                            <input (change)="detectchangerowlabel(i1, row.label)" [(ngModel)]="row.label" type="text"
+                                matInput>
+                        </mat-form-field>
+                        <div fxFlex fxLayout="row wrap">
+                            <div *ngFor="let cell of row.data; let i2 = index;">
+                                <mat-form-field fxflex style="width: 20px;">
+                                    <input (change)="detectchangerowcell(i1, i2, cell)" [(ngModel)]="cell" type="text"
+                                        matInput>
+                                </mat-form-field>
+                            </div>
+                        </div>
+                        <mat-icon (click)="deletecell(i1)" class="iconsize-12">delete
+                        </mat-icon>
+                        <mat-icon (click)="addcell(i1, i2)">add</mat-icon>
+                    </div>
+                </mat-expansion-panel>
+            </mat-accordion>
         </div>
 
     </div>
@@ -822,6 +876,8 @@
                                     <input (change)="detectchange()" [(ngModel)]="element.style.width" matInput>
                                     <mat-hint>Width</mat-hint>
                                 </mat-form-field>
+                                Shadow <mat-checkbox color="primary" (change)="setBoxShadow()" [(ngModel)]="boxshadow">
+                                </mat-checkbox>
                             </div>
                             <div *ngIf="element.src">
                                 <img style="max-width: 100%;" src={{element.src}} class="elementsedit">
@@ -859,6 +915,8 @@
                                 <input (change)="detectchange()" [(ngModel)]="element.style.width" matInput>
                                 <mat-hint>Width</mat-hint>
                             </mat-form-field>
+                            Shadow <mat-checkbox color="primary" (change)="setBoxShadow()" [(ngModel)]="boxshadow">
+                            </mat-checkbox>
                             <div fxLayout="column">
                                 <div fxLayout="row" fxLayout.xs="column">
                                     <mat-form-field style="width: 95%;" appearance="outline">
@@ -892,7 +950,8 @@
                                     <input style="width: 60px;" [style.background]="element.style['color']"
                                         [cpOutputFormat]="'hex'" [(colorPicker)]="element.style['color']"
                                         (colorPickerChange)="detectchange()" [cpPresetLabel]="'Company colors'"
-                                        *ngIf="company" [cpPresetColors]="[option.companyprimairycolor, option.companysecondarycolor, company.companyprimairycolor, company.companysecondarycolor]">
+                                        *ngIf="company"
+                                        [cpPresetColors]="[option.companyprimairycolor, option.companysecondarycolor, company.companyprimairycolor, company.companysecondarycolor]">
                                 </div>
                                 <br>
                                 <div fxLayout="row" fxLayout.xs="column">
@@ -918,8 +977,7 @@
                         <mat-expansion-panel-header *ngIf="element.type === 'shape' && !element.groupmember"
                             cdkDragHandle [class.selected]="element === selectedelement">
                             <mat-panel-title>
-                                <div [style.width]="'50px'" [style.height]="'50px'"
-                                    [className]="element.style.class">
+                                <div [style.width]="'50px'" [style.height]="'50px'" [className]="element.style.class">
                                 </div>
                                 <div style="height: 30px; width: 30px"
                                     [style.background-color]="element.style['background-color']"></div>
@@ -959,14 +1017,12 @@
                                 <input style="width: 60px;" [style.background]="element.style['background-color']"
                                     [(colorPicker)]="element.style['background-color']"
                                     (colorPickerChange)="detectchange()" [cpPresetLabel]="'Company colors'"
-                                    *ngIf="company" [cpPresetColors]="[option.companyprimairycolor, option.companysecondarycolor, company.companyprimairycolor, company.companysecondarycolor]">
+                                    *ngIf="company"
+                                    [cpPresetColors]="[option.companyprimairycolor, option.companysecondarycolor, company.companyprimairycolor, company.companysecondarycolor]">
                             </div>
-                            <!-- <div fxLayout="column" *ngIf="element.shape === 'heart'">
-                                    <input style="width: 230px;" [style.background]="element.style['background-color']"
-                                        [(colorPicker)]="element.style['background-color']"
-                                        (colorPickerChange)="detectchange()" [cpPresetLabel]="'Company colors'"
-                                        *ngIf="company" [cpPresetColors]="[option.companyprimairycolor, option.companysecondarycolor, company.companyprimairycolor, company.companysecondarycolor]">
-                                </div> -->
+                            Shadow <mat-checkbox color="primary" (change)="setBoxShadow()" [(ngModel)]="boxshadow">
+                            </mat-checkbox>
+
                         </div>
                         <mat-expansion-panel-header *ngIf="element.type === 'vector' && !element.groupmember"
                             cdkDragHandle [class.selected]="element === selectedelement">
@@ -1058,6 +1114,8 @@
                                         <input (change)="detectchange()" [(ngModel)]="element.style.width" matInput>
                                         <mat-hint>Width</mat-hint>
                                     </mat-form-field>
+                                    Shadow <mat-checkbox color="primary" (change)="setBoxShadow()"
+                                        [(ngModel)]="boxshadow"></mat-checkbox>
                                 </div>
                             </div>
                             <button mat-mini-fab *ngIf="element.morph" class="addbutton" matTooltip="Add vector"
@@ -1079,41 +1137,7 @@
                             </mat-panel-title>
                         </mat-expansion-panel-header>
                         <div *ngIf="element.type === 'chart' && !element.groupmember">
-                            <mat-accordion>
-                                <mat-expansion-panel>
-                                    <mat-expansion-panel-header>
-                                        <mat-panel-title>
-                                            Data
-                                        </mat-panel-title>
-                                    </mat-expansion-panel-header>
-                                    <div *ngFor="let label of element.label; let i1 = index;">
-                                        <mat-form-field fxflex>
-                                            <input (change)="detectchangeLabel(i, i1, label)" [(ngModel)]="label"
-                                                type="text" matInput placeholder="label">
-                                        </mat-form-field>
-                                    </div>
-                                    <mat-icon (click)="deletelabel(i, i1)" class="iconsize-12">delete</mat-icon>
-                                    <mat-icon (click)="addLabel(i, i1)">add</mat-icon>
-                                    <div *ngFor="let row of element.data; let i1 = index;" fxLayout="column">
 
-                                        <mat-form-field fxflex>
-                                            <input (change)="detectchangerowlabel(i, i1, row.label)"
-                                                [(ngModel)]="row.label" type="text" matInput>
-                                        </mat-form-field>
-                                        <div fxFlex fxLayout="row wrap">
-                                            <div *ngFor="let cell of row.data; let i2 = index;">
-                                                <mat-form-field fxflex style="width: 20px;">
-                                                    <input (change)="detectchangerowcell(i, i1, i2, cell)"
-                                                        [(ngModel)]="cell" type="text" matInput>
-                                                </mat-form-field>
-                                            </div>
-                                        </div>
-                                        <mat-icon (click)="deletecell(i, i1)" class="iconsize-12">delete
-                                        </mat-icon>
-                                        <mat-icon (click)="addcell(i, i1, i2)">add</mat-icon>
-                                    </div>
-                                </mat-expansion-panel>
-                            </mat-accordion>
 
                             <mat-accordion>
                                 <mat-expansion-panel>
@@ -1127,8 +1151,8 @@
                                         <input style="width: 60px;" [style.background]="colors.backgroundColor"
                                             [(colorPicker)]="colors.backgroundColor"
                                             (colorPickerChange)="detectchange()" [cpCancelButton]="true"
-                                            [cpPresetLabel]="'Company colors'"
-                                            *ngIf="company" [cpPresetColors]="[option.companyprimairycolor, option.companysecondarycolor, company.companyprimairycolor, company.companysecondarycolor]">
+                                            [cpPresetLabel]="'Company colors'" *ngIf="company"
+                                            [cpPresetColors]="[option.companyprimairycolor, option.companysecondarycolor, company.companyprimairycolor, company.companysecondarycolor]">
                                         <mat-icon class="iconsize-12" (click)="colors.backgroundColor = ''">
                                             delete
                                         </mat-icon>
@@ -1295,13 +1319,14 @@
                                 <mat-label>Add element</mat-label>
                                 <mat-select (selectionChange)="dropVectorGroup($event, element, i)">
                                     <mat-option *ngFor="let potpart of animationarray" [value]="potpart">
-                                        <div *ngIf="potpart.type === 'vector'" [innerHTML]="potpart.svgcombi  | safeHtml"
+                                        <div *ngIf="potpart.type === 'vector'"
+                                            [innerHTML]="potpart.svgcombi  | safeHtml"
                                             style="height: 20px; width: 20px;">
                                         </div>
                                         <img *ngIf="potpart.type === 'image'" src={{potpart.src}}
                                             style="height: 20px; width: 20px;">
                                         <div *ngIf="potpart.type === 'shape'" style="height: 20px; width: 20px;"
-                                            [className]="potpart.style.class" >
+                                            [className]="potpart.style.class">
                                         </div>
                                         <div *ngIf="potpart.type === 'chart'">
                                             <mat-icon>graph</mat-icon>
@@ -1309,7 +1334,7 @@
                                         <div *ngIf="potpart.type === 'text'">
                                             <label>{{potpart.content}}</label>
                                         </div>
-    
+
                                     </mat-option>
                                 </mat-select>
                             </mat-form-field>
@@ -1446,8 +1471,8 @@
                                                 <input style="width: 60px;" [style.background]="part.style['color']"
                                                     [cpOutputFormat]="'hex'" [(colorPicker)]="part.style['color']"
                                                     (colorPickerChange)="detectchange()"
-                                                    [cpPresetLabel]="'Company colors'"
-                                                    *ngIf="company" [cpPresetColors]="[option.companyprimairycolor, option.companysecondarycolor, company.companyprimairycolor, company.companysecondarycolor]">
+                                                    [cpPresetLabel]="'Company colors'" *ngIf="company"
+                                                    [cpPresetColors]="[option.companyprimairycolor, option.companysecondarycolor, company.companyprimairycolor, company.companysecondarycolor]">
                                             </div>
                                             <br>
                                             <div fxLayout="row" fxLayout.xs="column">
@@ -1519,7 +1544,8 @@
                                                 [style.background]="part.style['background-color']"
                                                 [(colorPicker)]="part.style['background-color']"
                                                 (colorPickerChange)="detectchange()" [cpPresetLabel]="'Company colors'"
-                                                *ngIf="company" [cpPresetColors]="[option.companyprimairycolor, option.companysecondarycolor, company.companyprimairycolor, company.companysecondarycolor]">
+                                                *ngIf="company"
+                                                [cpPresetColors]="[option.companyprimairycolor, option.companysecondarycolor, company.companyprimairycolor, company.companysecondarycolor]">
                                         </div>
                                     </div>
                                     <mat-expansion-panel-header *ngIf="part.type === 'vector'" cdkDragHandle
@@ -1688,8 +1714,8 @@
                                                         [style.background]="colors.backgroundColor"
                                                         [(colorPicker)]="colors.backgroundColor"
                                                         (colorPickerChange)="detectchange()" [cpCancelButton]="true"
-                                                        [cpPresetLabel]="'Company colors'"
-                                                        *ngIf="company" [cpPresetColors]="[option.companyprimairycolor, option.companysecondarycolor, company.companyprimairycolor, company.companysecondarycolor]">
+                                                        [cpPresetLabel]="'Company colors'" *ngIf="company"
+                                                        [cpPresetColors]="[option.companyprimairycolor, option.companysecondarycolor, company.companyprimairycolor, company.companysecondarycolor]">
                                                     <mat-icon class="iconsize-12" (click)="colors.backgroundColor = ''">
                                                         delete
                                                     </mat-icon>
@@ -1866,8 +1892,8 @@
                         <div fxLayout="column">
                             <div>
                                 <input style="width: 60px;" [style.background]="whiteboardcolor"
-                                    [(colorPicker)]="whiteboardcolor" [cpPresetLabel]="'Company colors'"
-                                    *ngIf="company" [cpPresetColors]="[option.companyprimairycolor, option.companysecondarycolor, company.companyprimairycolor, company.companysecondarycolor]">
+                                    [(colorPicker)]="whiteboardcolor" [cpPresetLabel]="'Company colors'" *ngIf="company"
+                                    [cpPresetColors]="[option.companyprimairycolor, option.companysecondarycolor, company.companyprimairycolor, company.companysecondarycolor]">
                             </div>
                             <mat-form-field style="max-width: 46px;">
                                 <input [(ngModel)]="whiteboardstokewidth" type="number" matInput placeholder="Stroke">
@@ -1947,8 +1973,8 @@
         </div>
     </div>
 
-    <div ngClass.gt-xs="container-normal" [attr.id]="'containernormal'" ngClass.lt-sm="container-noshow" [class.container-xs-show]="listviewxsshow"
-        fxLayout="column" fxLayoutAlign="start">
+    <div ngClass.gt-xs="container-normal" [attr.id]="'containernormal'" ngClass.lt-sm="container-noshow"
+        [class.container-xs-show]="listviewxsshow" fxLayout="column" fxLayoutAlign="start">
 
         <div *ngIf="selectedVecPath && selectedelement.type === 'vector'">
             <div class="vectorcontrols">
@@ -1960,12 +1986,13 @@
                 <input autocomplete="off" style="width: 20px; height: 20px;" [style.background]="colorpickline"
                     matTooltip="Line color" [cpToggle]="false" [(colorPicker)]="colorpickline" [cpPosition]="'bottom'"
                     (colorPickerChange)="setColorPathLine(colorpickline)" [cpCancelButton]="true" [cpOKButton]="true"
-                    [cpPresetLabel]="'Company colors'"
-                    *ngIf="company" [cpPresetColors]="[option.companyprimairycolor, option.companysecondarycolor, company.companyprimairycolor, company.companysecondarycolor]">
+                    [cpPresetLabel]="'Company colors'" *ngIf="company"
+                    [cpPresetColors]="[option.companyprimairycolor, option.companysecondarycolor, company.companyprimairycolor, company.companysecondarycolor]">
                 <input autocomplete="off" style="width: 20px; height: 20px;" [style.background]="colorpick"
                     matTooltip="Fill color" [(colorPicker)]="colorpick" [cpPosition]="'bottom'" [cpCancelButton]="true"
                     [cpOKButton]="true" (colorPickerChange)="setColorPath(colorpick)" [cpPresetLabel]="'Company colors'"
-                    *ngIf="company" [cpPresetColors]="[option.companyprimairycolor, option.companysecondarycolor, company.companyprimairycolor, company.companysecondarycolor]">
+                    *ngIf="company"
+                    [cpPresetColors]="[option.companyprimairycolor, option.companysecondarycolor, company.companyprimairycolor, company.companysecondarycolor]">
                 <mat-icon (click)="deleteSelectedVectorPath()" class="iconsize-18" matTooltip="Delete section">
                     delete</mat-icon>
                 <mat-icon (click)="deleteWhitespaceSVG()" class="icon-label" class="iconsize-18"
@@ -2001,7 +2028,9 @@
         </div>
 
 
-        <div *ngIf="changevideo" [attr.id]="'videobox'" [ngStyle]="canvas" style="border: 1px solid grey; overflow:hidden;" [class.starbackground]="this.canvas.weather === 'stars'" [style.transform]="'scale('+zoomfactor+')'" >
+        <div *ngIf="changevideo" [attr.id]="'videobox'" [ngStyle]="canvas"
+            style="border: 1px solid grey; overflow:hidden;" [class.starbackground]="this.canvas.weather === 'stars'"
+            [style.transform]="'scale('+zoomfactor+')'">
 
             <!-- selectedVecPath &&  -->
             <video *ngIf="canvas.videourl" preload="auto" class="video-background" no-controls [src]="canvas.videourl"
@@ -2016,8 +2045,9 @@
                 [style.background-image]="canvas['background-image']"></div>
 
 
-                <!--  z-index: 100; pointer-events: none;" -->
-            <div style="height: 100%; width: 100%; position: absolute; z-index: 1000; pointer-events: none;" id="weathercontainer" ></div>
+            <!--  z-index: 100; pointer-events: none;" -->
+            <div style="height: 100%; width: 100%; position: absolute; z-index: 1000; pointer-events: none;"
+                id="weathercontainer"></div>
 
             <div *ngIf="whiteboard === true" class="whiteboard" id="svgElementParent">
                 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1"
@@ -2041,7 +2071,8 @@
                     <div *ngIf="element.type === 'image' && !element.groupmember" id="{{element.id}}"
                         [attr.id]="element.id" [ngStyle]="element.style" [style.width]="element.style.width"
                         [style.height]="element.style.height" (rzResizing)="onResizing($event, i)"
-                        [ngResizable]="element === selectedelement && !cropimages" [rzAspectRatio]="true" class="elementanimationarray"
+                        [ngResizable]="element === selectedelement && !cropimages" [rzAspectRatio]="true"
+                        class="elementanimationarray"
                         [class.elementanimationarrayselected]="element === selectedelement">
                         <div [ngStyle]="{'z-index':cropimages === true && element === selectedelement ? 1000 : -1 }"
                             class="whiteboard">

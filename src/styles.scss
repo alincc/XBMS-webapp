@@ -67,10 +67,19 @@ body{
 
 
 .snow {
-  width: 10px;
-  height: 10px; 
+  width: 4px;
+  height: 4px; 
   background-color: white;
   border-radius: 50%;
+  position: absolute;
+  border-radius: 50%;
+  box-shadow: 2px 2px 4px 4px #fcfcfc;
+}
+
+.celebrations {
+  width: 8px;
+  height: 30px; 
+  position: absolute;
 }
 
 

@@ -50,6 +50,7 @@ import { codesnippetService, CodesnippetDialog } from './dialogsservice/codesnip
 import { RandomService } from './dialogsservice/random.service';
 import { DialogsService } from './dialogsservice/dialogs.service';
 import { RandomDialog } from './dialogsservice/random-dialog.component';
+import { DialogGetname } from './dialogsservice/dialog.getname';
 import { WordpressUploadDialogComponent } from './dialogsservice/wordpressupload-dialog.component';
 import { FileUploadModule } from 'ng2-file-upload';
 import { PickerModule } from '@ctrl/ngx-emoji-mart'
@@ -122,7 +123,7 @@ import { VectoruploadComponent, dialogvectorgallerycomponent } from './shared/ve
 import { BackgroundComponent, dialogbackgroundgallerycomponent } from './shared/background/background.component';
 import { TranslationsComponent } from './translations/translations.component';
 import { MatPasswordStrengthModule } from '@angular-material-extensions/password-strength';
-
+import {SpecialCharacterDirective } from './directives/specialcharacter.directive';
 
 // declare var Hammer: any;
 // @Injectable()
@@ -138,6 +139,7 @@ import { MatPasswordStrengthModule } from '@angular-material-extensions/password
 
 @NgModule({
   declarations: [
+    SpecialCharacterDirective,
     SpeedDialFabComponent,
     XlsxFileUploadComponent,
     BottomSheetLogOverview,
@@ -150,6 +152,7 @@ import { MatPasswordStrengthModule } from '@angular-material-extensions/password
     ConfirmDialog,
     CodesnippetDialog,
     RandomDialog,
+    DialogGetname,
     MarketingplannerComponent,
     //FileserverComponent,
     LinkedinComponent,
@@ -190,6 +193,7 @@ import { MatPasswordStrengthModule } from '@angular-material-extensions/password
     ConfirmDialog,
     TextEditorDialog,
     RandomDialog,
+    DialogGetname,
     WordpressUploadDialogComponent
   ],
 
@@ -272,7 +276,8 @@ import { MatPasswordStrengthModule } from '@angular-material-extensions/password
   exports: [
     ConfirmDialog,
     CodesnippetDialog,
-    RandomDialog
+    RandomDialog,
+    DialogGetname
   ]
 })
 export class AppModule { }

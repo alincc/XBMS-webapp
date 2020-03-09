@@ -194,7 +194,7 @@ export class ImagecreatorComponent implements OnInit {
   }
   
   getEditFile() {
-    this.relationsApi.getFiles(this.option.id, { where: { template: { "neq":  null } } })
+    this.relationsApi.getFiles(this.option.id, { where: { template: { "neq":  null }, type: 'image' } })
       .subscribe((files: Files[]) => {
         this.editableimages = files;
         //console.log('received files', this.editableimages);
@@ -452,7 +452,7 @@ export class ImagecreatorComponent implements OnInit {
           this.newFiles.name = name,
             this.newFiles.url = imgurl,
             this.newFiles.createdate = new Date(),
-            this.newFiles.type = 'marketing',
+            this.newFiles.type = 'image',
             this.newFiles.companyId = this.Account.companyId,
             // check if container exists and create
             this.relationsApi.createFiles(this.option.id, this.newFiles)
