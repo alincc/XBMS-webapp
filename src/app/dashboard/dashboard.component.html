@@ -65,9 +65,34 @@
     </mat-card>
   </div>
 
-  <div fxLayout fxLayout="column" fxLayoutAlign="space-around">
+  <div *ngIf="changenow" fxLayout="column" fxLayoutAlign="space-around">
     <div fxFlex="5%">
       <h3 class="mat-h3">Selected Account: {{ option.relationname }}</h3>
+    </div>
+
+    <div fxFlex="30%" fxLayout.lt-md="column" fxLayout="row" fxLayoutWrap="wrap" fxLayoutAlign="space-around">
+
+      <div fxFlex="45%" class="doubleflex">
+        <label class="mat-h4">Total Activities</label>
+        <mat-divider></mat-divider>
+        <div>
+          <canvas baseChart #baseChartBar="base-chart" [datasets]="barChartManagerData" [labels]="barChartManagerLabels"
+            [options]="barChartOptions" [legend]="barChartLegend" [chartType]="barChartType"
+            (chartHover)="chartHovered($event)" (chartClick)="chartClicked($event)"></canvas>
+        </div>
+      </div>
+
+      <div fxFlex="45%" class="doubleflex">
+        <label class="mat-h4">Total Activities</label>
+        <mat-divider></mat-divider>
+        <div>
+          <canvas baseChart #baseChartBarChannel="base-chart" [datasets]="barChartDataChannel" [labels]="barChartChannelLabels"
+            [options]="barChartOptions" [legend]="barChartLegend" [chartType]="barChartType"
+            (chartHover)="chartHovered($event)" (chartClick)="chartClicked($event)"></canvas>
+        </div>
+      </div>
+
+
     </div>
 
     <div fxFlex="30%" fxLayout.lt-md="column" fxLayout="row" fxLayoutWrap="wrap" fxLayoutAlign="space-around">

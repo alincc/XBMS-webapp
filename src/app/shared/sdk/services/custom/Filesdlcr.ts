@@ -233,19 +233,15 @@ export class FilesdlcrApi extends BaseLoopBackApi {
    *
    * @param {string} id 
    *
-   * @param {string} companyid 
-   *
-   * @param {string} name 
-   *
-   * @param {string} canvas 
-   *
-   * @param {string} images 
-   *
-   * @param {number} duration 
-   *
    * @param {object} data Request data.
    *
-   * This method does not accept any data. Supply an empty object.
+   *  - `name` – `{string}` - 
+   *
+   *  - `canvas` – `{string}` - 
+   *
+   *  - `animations` – `{string}` - 
+   *
+   *  - `duration` – `{number}` - 
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -256,20 +252,22 @@ export class FilesdlcrApi extends BaseLoopBackApi {
    * This usually means the response is a `Filesdlcr` object.)
    * </em>
    */
-  public createvideo(id: any = {}, companyid: any = {}, name: any = {}, canvas: any = {}, images: any = {}, duration: any = {}, customHeaders?: Function): Observable<any> {
+  public createvideo(id: any = {}, name: any = {}, canvas: any = {}, animations: any = {}, duration: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "POST";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
     "/filesdlcrs/createvideo/:id";
     let _routeParams: any = {
       id: id
     };
-    let _postBody: any = {};
+    let _postBody: any = {
+      data: {
+        name: name,
+        canvas: canvas,
+        animations: animations,
+        duration: duration
+      }
+    };
     let _urlParams: any = {};
-    if (typeof companyid !== 'undefined' && companyid !== null) _urlParams.companyid = companyid;
-    if (typeof name !== 'undefined' && name !== null) _urlParams.name = name;
-    if (typeof canvas !== 'undefined' && canvas !== null) _urlParams.canvas = canvas;
-    if (typeof images !== 'undefined' && images !== null) _urlParams.images = images;
-    if (typeof duration !== 'undefined' && duration !== null) _urlParams.duration = duration;
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
     return result;
   }
@@ -281,19 +279,13 @@ export class FilesdlcrApi extends BaseLoopBackApi {
    *
    * @param {string} id 
    *
-   * @param {string} companyid 
-   *
-   * @param {string} name 
-   *
-   * @param {string} canvas 
-   *
-   * @param {string} images 
-   *
-   * @param {number} duration 
-   *
    * @param {object} data Request data.
    *
-   * This method does not accept any data. Supply an empty object.
+   *  - `canvas` – `{string}` - 
+   *
+   *  - `animations` – `{string}` - 
+   *
+   *  - `repeat` – `{boolean}` - 
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -304,20 +296,67 @@ export class FilesdlcrApi extends BaseLoopBackApi {
    * This usually means the response is a `Filesdlcr` object.)
    * </em>
    */
-  public creategif(id: any = {}, companyid: any = {}, name: any = {}, canvas: any = {}, images: any = {}, duration: any = {}, customHeaders?: Function): Observable<any> {
+  public getanimationpage(id: any = {}, canvas: any = {}, animations: any = {}, repeat: any = {}, customHeaders?: Function): Observable<any> {
+    let _method: string = "POST";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/filesdlcrs/getanimationpage/:id";
+    let _routeParams: any = {
+      id: id
+    };
+    let _postBody: any = {
+      data: {
+        canvas: canvas,
+        animations: animations,
+        repeat: repeat
+      }
+    };
+    let _urlParams: any = {};
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
+   * <em>
+         * (The remote method definition does not provide any description.)
+         * </em>
+   *
+   * @param {string} id 
+   *
+   * @param {object} data Request data.
+   *
+   *  - `name` – `{string}` - 
+   *
+   *  - `canvas` – `{string}` - 
+   *
+   *  - `animations` – `{string}` - 
+   *
+   *  - `duration` – `{number}` - 
+   *
+   * @returns {object} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * <em>
+   * (The remote method definition does not provide any description.
+   * This usually means the response is a `Filesdlcr` object.)
+   * </em>
+   */
+  public creategif(id: any = {}, name: any = {}, canvas: any = {}, animations: any = {}, duration: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "POST";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
     "/filesdlcrs/creategif/:id";
     let _routeParams: any = {
       id: id
     };
-    let _postBody: any = {};
+    let _postBody: any = {
+      data: {
+        name: name,
+        canvas: canvas,
+        animations: animations,
+        duration: duration
+      }
+    };
     let _urlParams: any = {};
-    if (typeof companyid !== 'undefined' && companyid !== null) _urlParams.companyid = companyid;
-    if (typeof name !== 'undefined' && name !== null) _urlParams.name = name;
-    if (typeof canvas !== 'undefined' && canvas !== null) _urlParams.canvas = canvas;
-    if (typeof images !== 'undefined' && images !== null) _urlParams.images = images;
-    if (typeof duration !== 'undefined' && duration !== null) _urlParams.duration = duration;
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
     return result;
   }
@@ -360,6 +399,92 @@ export class FilesdlcrApi extends BaseLoopBackApi {
     if (typeof imageurl !== 'undefined' && imageurl !== null) _urlParams.imageurl = imageurl;
     if (typeof name !== 'undefined' && name !== null) _urlParams.name = name;
     if (typeof centerline !== 'undefined' && centerline !== null) _urlParams.centerline = centerline;
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
+   * <em>
+         * (The remote method definition does not provide any description.)
+         * </em>
+   *
+   * @param {string} id 
+   *
+   * @param {object} data Request data.
+   *
+   *  - `name` – `{string}` - 
+   *
+   *  - `canvas` – `{string}` - 
+   *
+   *  - `animations` – `{string}` - 
+   *
+   *  - `duration` – `{number}` - 
+   *
+   * @returns {object} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * <em>
+   * (The remote method definition does not provide any description.
+   * This usually means the response is a `Filesdlcr` object.)
+   * </em>
+   */
+  public screenshotanimation(id: any = {}, name: any = {}, canvas: any = {}, animations: any = {}, duration: any = {}, customHeaders?: Function): Observable<any> {
+    let _method: string = "POST";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/filesdlcrs/screenshotanimation/:id";
+    let _routeParams: any = {
+      id: id
+    };
+    let _postBody: any = {
+      data: {
+        name: name,
+        canvas: canvas,
+        animations: animations,
+        duration: duration
+      }
+    };
+    let _urlParams: any = {};
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
+   * <em>
+         * (The remote method definition does not provide any description.)
+         * </em>
+   *
+   * @param {string} id 
+   *
+   * @param {object} data Request data.
+   *
+   *  - `url` – `{string}` - 
+   *
+   *  - `name` – `{string}` - 
+   *
+   * @returns {object} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * <em>
+   * (The remote method definition does not provide any description.
+   * This usually means the response is a `Filesdlcr` object.)
+   * </em>
+   */
+  public screenshot(id: any = {}, url: any = {}, name: any = {}, customHeaders?: Function): Observable<any> {
+    let _method: string = "POST";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/filesdlcrs/screenshot/:id";
+    let _routeParams: any = {
+      id: id
+    };
+    let _postBody: any = {
+      data: {
+        url: url,
+        name: name
+      }
+    };
+    let _urlParams: any = {};
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
     return result;
   }

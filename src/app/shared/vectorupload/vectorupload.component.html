@@ -40,7 +40,7 @@
                 </tr>
                 <tr>
                     <td nowrap>
-                        <button mat-button (click)="setupload(item?.file?.name)"
+                        <button mat-button (click)="setupload(item?.file?.name, item?.file?.size)"
                             [disabled]="item.isReady || item.isUploading || item.isSuccess">
                             <mat-icon aria-hidden="false" class="iconsize-10">cloud_upload</mat-icon>Upload
                         </button>

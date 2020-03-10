@@ -27,9 +27,16 @@
             <mat-icon>delete</mat-icon>
             <span>Reset</span>
         </button>
-        <button mat-menu-item (click)="resetVideo()">
+        <button mat-menu-item (click)="newVideo()">
             <mat-icon>note_add</mat-icon>
             <span>New</span>
+        </button>
+        <app-background *ngIf="!canvas.videourl || !canvas['background-image']" [account]="Account" [option]="option"
+            (imgurl)="setBackground($event)">
+        </app-background>
+        <button mat-menu-item (click)="downloadAsJSON()">
+            <mat-icon>code</mat-icon>
+            <span>Download as code</span>
         </button>
         <mat-form-field>
             <mat-label>Edit video</mat-label>
@@ -88,14 +95,13 @@
         <mat-expansion-panel>
             <mat-expansion-panel-header>
                 <mat-panel-title>
-                    <label>{{elementname}}</label>
+                    <label>{{name}}</label>
                 </mat-panel-title>
             </mat-expansion-panel-header>
 
             <div fxLayout="row wrap" fxLayoutGap="20px">
                 <mat-form-field>
-                    <input specialIsAlphaNumeric [(ngModel)]="elementname" type="text" matInput
-                        placeholder="Video Name">
+                    <input specialIsAlphaNumeric [(ngModel)]="name" type="text" matInput placeholder="Video Name">
                 </mat-form-field>
 
                 <mat-form-field fxFlex>
@@ -789,7 +795,7 @@
                             <mat-icon (click)="addcell(i1, i2)">add</mat-icon>
                             <mat-icon (click)="deleteseries()" class="iconsize-12">delete</mat-icon>
                         </div>
-                        
+
                     </div>
                 </mat-expansion-panel>
             </mat-accordion>

@@ -4,7 +4,7 @@ import { ContainerApi, Files, Relations, RelationsApi, Company, Account, FilesAp
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { DomSanitizer } from '@angular/platform-browser';
 import { StockBackgrounds } from './stockbackgrounds';
-import { StockBackgroundsAnimated } from './stockbackgroundanimated';
+import {  templatescreenshots } from './stockbackgroundanimated';
 
 export interface DialogData {
   img;
@@ -82,7 +82,7 @@ export class dialogbackgroundgallerycomponent implements OnInit {
   //public fileVideo = StockVideo;
   public existingIcons = [];
   public background = StockBackgrounds;
-  public animatedbackground = StockBackgroundsAnimated;
+  public animatedbackground =  templatescreenshots;
   public stockbackgrounds = [];
   public animatedbackgrounds = [];
   public URL = 'http://localhost:3000/api/containers/tmp/upload';

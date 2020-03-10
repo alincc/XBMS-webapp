@@ -716,6 +716,7 @@
                   <a href="{{ Filesimg.url }}" style="font-size: 8pt">
                     {{ Filesimg.name }}
                   </a>
+                  <label>{{Filesimg.size}}</label>
                   <mat-icon (click)="dialogDeleteFile(Filesimg)" color="primary" class="iconsize-12">delete</mat-icon>
                 </div>
               </div>
@@ -734,7 +735,7 @@
                   <a href="{{ Filesvid.url }}" style="font-size: 8pt">
                     {{ Filesvid.name }}
                   </a>
-
+                  <label>{{Filesvid.size}}</label>
                   <mat-icon (click)="dialogDeleteFile(Filesvid)" color="primary" class="iconsize-12">delete</mat-icon>
                 </div>
               </div>
@@ -753,6 +754,7 @@
                   <a href="{{ Files.url }}" style="font-size: 8pt">
                     {{ Files.name }}
                   </a>
+                  <label>{{Files.size}}</label>
                   <mat-icon (click)="dialogDeleteFile(Files)" color="primary" class="iconsize-12">delete</mat-icon>
                 </div>
               </div>
@@ -782,6 +784,10 @@
                 <label fxFlex="40%">Url: </label>
                 <label fxFlex="40%">{{selectedfile.url}}</label>
               </div>
+              <div fxLayout="row" fxLayoutGap="20px">
+                <label fxFlex="40%">Size: </label>
+                <label fxFlex="40%">{{selectedfile.size}}</label>
+              </div>
               <div *ngIf="selectedfile.type === 'marketing-video' || selectedfile.type === 'video'"
                 style="max-width: 600px;">
                 <video *ngIf="selectedfile.url" [vgMedia]="media" #media id="singleVideo" preload="auto" controls style="max-width: 600px;" source [src]="selectedfile.url" type="video/mp4">
@@ -789,7 +795,7 @@
               </div>
               <img *ngIf="selectedfile.type !== 'marketing-video' || selectedfile.type !== 'video' || selectedfile.type !== 'vector' "
               src={{selectedfile.url}} style="width: 400px; height: auto;">
-              <div  style="width: 400px; height: 400px;" *ngIf="selectedfile.type === 'vector'" [inlineSVG]="selectedfile.url"></div>
+              <!-- <div  style="width: 400px; height: 400px;" *ngIf="selectedfile.type === 'vector'" [inlineSVG]="selectedfile.url"></div> -->
             </mat-card-content>
             <button mat-button (click)="download(selectedfile)">
                       <mat-icon>file_download</mat-icon>Download

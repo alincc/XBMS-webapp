@@ -1,3 +1,8 @@
-<button matTooltip="Open Background gallery" class="deletepicture" mat-mini-fab color="primary" (click)="onOpenGallery()">
+<!-- <button matTooltip="Open Background gallery" class="deletepicture" mat-mini-fab color="primary" (click)="onOpenGallery()">
     <mat-icon>wallpaper</mat-icon>
+</button> -->
+
+<button mat-menu-item (click)="onOpenGallery()">
+    <mat-icon>wallpaper</mat-icon>
+    <span>Load Template/Background</span>
 </button>

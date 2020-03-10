@@ -90,6 +90,7 @@ export class MarketingchannelsComponent implements OnInit {
   }
 
   swiperight(e) {
+    console.log('swipe right')
     this.listviewxsshow = true;
   }
 

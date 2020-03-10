@@ -192,7 +192,7 @@ export class VectoruploadComponent implements OnInit {
 
 
   // set constiable and upload + save reference in Publications
-  setupload(name): void {
+  setupload(name, size): void {
     // set upload url
     let urluse = BASE_URL + '/api/Containers/' + this.option.id + '/upload';
     this.uploader.setOptions({ url: urluse });
@@ -202,6 +202,7 @@ export class VectoruploadComponent implements OnInit {
     imgurl = imgurl.replace(/ /g, '-'),
       // imgurl = encodeURI(imgurl);
       // define the file settings
+      this.newFiles.size = size,
       this.newFiles.name = name,
       this.newFiles.url = imgurl,
       this.newFiles.createdate = new Date(),

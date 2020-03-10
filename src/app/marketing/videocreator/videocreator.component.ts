@@ -27,6 +27,8 @@ import {
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { DialogGetname } from '../../dialogsservice/dialog.getname'
 import { DialogsService } from './../../dialogsservice/dialogs.service';
+import { BackgroundComponent } from '../../shared/background/background.component';
+
 
 @Component({
   selector: 'app-videocreator',
@@ -116,7 +118,7 @@ export class VideocreatorComponent implements OnInit {
   private watcher: Subscription;
   public activeMediaQuery;
   public selectedelement;
-  public elementname;
+  public name;
   private MorphSVGPlugin = MorphSVGPlugin;
   private SplitText = SplitText;
   public setreplay = false;
@@ -135,6 +137,7 @@ export class VideocreatorComponent implements OnInit {
   public currenthistoryversion = 0;
   public boxshadow = false;
   public destroy = false;
+  public backgroundComponent: BackgroundComponent;
 
   @Input() debounceTime = 50;
   @Output() debounceKey = new EventEmitter();
@@ -154,6 +157,7 @@ export class VideocreatorComponent implements OnInit {
     public ngZone: NgZone,
     public media: MediaObserver,
     public dialogsService: DialogsService,
+
 
   ) {
     this.watcher = media.media$.subscribe((change: MediaChange) => {
@@ -3585,7 +3589,6 @@ export class VideocreatorComponent implements OnInit {
     this.addNewVector(null, height, width, newsvg, bbox.x, bbox.y, pathidar); //, originid
     this.removeVectorPathMultiSelection()
     this.removeVectorPathSelection();
-
   }
 
   async onSVGsave(url): Promise<string> {
@@ -3680,15 +3683,15 @@ export class VideocreatorComponent implements OnInit {
       }
     }
 
-    if (this.elementname === undefined) { this.elementname = Math.random().toString(36).substring(7); }
-    this.relationsApi.getFiles(this.option.id, { where: { name: this.elementname } })
+    if (this.name === undefined) { this.name = Math.random().toString(36).substring(7); }
+    this.relationsApi.getFiles(this.option.id, { where: { name: this.name } })
       .subscribe((res => {
-        if (res.length > 0) { this.elementname = this.elementname + '1' }
-        let imgurl = BASE_URL + '/api/Containers/' + this.option.id + '/download/' + this.elementname;
-        let setimgurl = 'https://api.xbms.io/api/Containers/' + this.option.id + '/download/' + this.elementname;
+        if (res.length > 0) { this.name = this.name + '1' }
+        let imgurl = BASE_URL + '/api/Containers/' + this.option.id + '/download/' + this.name;
+        let setimgurl = 'https://api.xbms.io/api/Containers/' + this.option.id + '/download/' + this.name;
         imgurl = imgurl.replace(/ /g, '-'),
           // define the file settings
-          this.newFiles.name = this.elementname;
+          this.newFiles.name = this.name;
         this.newFiles.url = setimgurl;
         this.newFiles.createdate = new Date();
         this.newFiles.type = 'video';
@@ -3751,14 +3754,14 @@ export class VideocreatorComponent implements OnInit {
 
     const dialogRef = this.dialog.open(DialogGetname, {
       width: '250px',
-      data: { name: this.elementname }
+      data: { name: this.name }
     });
 
     dialogRef.afterClosed().subscribe(result => {
       let name = result;
       console.log(name)
       if (name) {
-        this.relationsApi.getFiles(this.option.id, { where: { name: this.elementname } })
+        this.relationsApi.getFiles(this.option.id, { where: { name: this.name } })
           .subscribe((res => {
             if (res.length > 0) { name = name + '-1' }
             let imgurl = BASE_URL + '/api/Containers/' + this.option.id + '/download/' + name;
@@ -3777,13 +3780,14 @@ export class VideocreatorComponent implements OnInit {
             this.newFiles.id = undefined;
 
             this.relationsApi.createFiles(this.option.id, this.newFiles).subscribe((res: Files) => {
-              this.elementname = name;
+              this.name = name;
               this.newFiles.id = res.id
               this.snackBar.open("video saved!", undefined, {
                 duration: 2000,
                 panelClass: 'snackbar-class'
               });
               this.restoreChart(meta);
+              
             });
 
           }));
@@ -3810,6 +3814,41 @@ export class VideocreatorComponent implements OnInit {
     }
   }
 
+  downloadAsJSON() {
+    let meta = [];
+    for (let i = 0; i < this.animationarray.length; i++) {
+      meta.push([])
+      if (this.animationarray[i].type === 'chart') {
+        for (let y = 0; y < this.animationarray[i].data.length; y++) {
+          let meta1 = this.animationarray[i].data[y]._meta;
+          let meta2 = this.animationarray[i].productiondata[y]._meta;
+          meta[i].push(meta1);
+          meta[i].push(meta2);
+          delete this.animationarray[i].data[y]._meta;
+          delete this.animationarray[i].productiondata[y]._meta;
+        }
+      }
+    }
+
+    let downloadjson = {
+      name: this.name,
+      canvas: [this.canvas],
+      animationarray: this.animationarray,
+      counter: this.counter,
+    }
+    let downloadstring = JSON.stringify(downloadjson);
+    // create downloadable string
+    var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(downloadstring);
+    var downloadAnchorNode = document.createElement('a');
+    downloadAnchorNode.setAttribute("href",     dataStr);
+    downloadAnchorNode.setAttribute("download", this.name + ".json");
+    document.body.appendChild(downloadAnchorNode); // required for firefox
+    downloadAnchorNode.click();
+    downloadAnchorNode.remove();
+
+    this.restoreChart(meta);
+  }
+
   loadVideo() {
     this.dialogsService
       .confirm('Load video', 'Do you want to load this video?')
@@ -3834,9 +3873,9 @@ export class VideocreatorComponent implements OnInit {
           let myJSON = JSON.stringify(array);
           this.canvas.videourl = this.canvas.videourl.replace('http://localhost:3000', 'https://api.xbms.io')
           //var aniarray = encodeURIComponent(myJSON);
-          if (this.elementname === undefined) { this.elementname = Math.random().toString(36).substring(7); }
+          if (this.name === undefined) { this.name = Math.random().toString(36).substring(7); }
           this.filesApi.createvideo(this.option.id, this.option.companyId,
-            this.elementname, this.canvas, myJSON, this.counter)
+            this.name, this.canvas, myJSON, this.counter)
             .subscribe(
               res => {
                 //console.log(res);
@@ -3860,9 +3899,9 @@ export class VideocreatorComponent implements OnInit {
           this.removeVectorPathMultiSelection();
           let array = this.animationarray;
           let myJSON = JSON.stringify(array);
-          if (this.elementname === undefined) { this.elementname = Math.random().toString(36).substring(7); }
+          if (this.name === undefined) { this.name = Math.random().toString(36).substring(7); }
           this.filesApi.creategif(this.option.id, this.option.companyId,
-            this.elementname, this.canvas, myJSON, this.counter)
+            this.name, this.canvas, myJSON, this.counter)
             .subscribe(
               res => {
                 this.saveVideo()
@@ -3883,107 +3922,123 @@ export class VideocreatorComponent implements OnInit {
     }
   }
 
-
   resetVideo() {
-    this.elementname = '';
-    this.canvas = {
-      width: '600px',
-      height: '500px',
-      'background-color': '#ffffff',
-      'background-image': '',
-      position: 'relative',
-      videourl: '',
-      loop: false,
-      weather: '',
-      audio: '',
-      top: '',
-      left: '',
-      hovereffect: false
+    this.dialogsService
+      .confirm('Reset', 'Do you want to reset this video?')
+      .subscribe(res => {
+        if (res) {
+          const myNode = document.getElementById('weathercontainer');
+          myNode.innerHTML = '';
+          this.newFiles = this.editablevideo;
+          this.name = this.editablevideo.name;
+          this.canvas = this.editablevideo.canvas[0];
+          this.animationarray = this.editablevideo.template;
+          this.counter = this.editablevideo.counter;
+          this.detectchange();
+        }
+      });
     }
+
+  newVideo() {
+        this.name = '';
+        this.canvas = {
+          width: '600px',
+          height: '500px',
+          'background-color': '#ffffff',
+          'background-image': '',
+          position: 'relative',
+          videourl: '',
+          loop: false,
+          weather: '',
+          audio: '',
+          top: '',
+          left: '',
+          hovereffect: false
+        }
     this.animationarray = [];
-    this.counter = 60;
-    const myNode = document.getElementById('weathercontainer');
-    myNode.innerHTML = '';
-    this.detectchange();
-  }
+        this.counter = 60;
+        const myNode = document.getElementById('weathercontainer');
+        myNode.innerHTML = '';
+        this.detectchange();
+      }
 
   loadEditableVideo() {
-    const myNode = document.getElementById('weathercontainer');
-    myNode.innerHTML = '';
-    this.newFiles = this.editablevideo;
-    this.elementname = this.editablevideo.name;
-    this.canvas = this.editablevideo.canvas[0];
-    this.animationarray = this.editablevideo.template;
-    this.counter = this.editablevideo.counter;
-    this.detectchange();
-  }
+        const myNode = document.getElementById('weathercontainer');
+        myNode.innerHTML = '';
+        this.newFiles = this.editablevideo;
+        this.name = this.editablevideo.name;
+        this.canvas = this.editablevideo.canvas[0];
+        this.animationarray = this.editablevideo.template;
+        this.counter = this.editablevideo.counter;
+        this.detectchange();
+      }
 
   //https://github.com/luncheon/svg-drag-select
   dragSelect(id) {
-    //this.removeVectorPathSelection();
-    //this.disableDraggable();
-    this.deletePathSelClass(this.selectedVecPath)
+        //this.removeVectorPathSelection();
+        //this.disableDraggable();
+        this.deletePathSelClass(this.selectedVecPath)
     this.dragselectiontrue = true;
-    let svgel = document.getElementById(id);
-    let svgset = svgel.getElementsByTagName("svg")[0];
+        let svgel = document.getElementById(id);
+        let svgset = svgel.getElementsByTagName("svg")[0];
 
-    const {
-      cancel,           // cleanup funciton. please call `cancel()` when the select-on-drag behavior is no longer needed.
-      dragAreaOverlay,
-    } = svgDragSelect({
-      svg: svgset,
-      referenceElement: null,
-      selector: "enclosure",
-      onSelectionStart({ svg, pointerEvent, cancel }) {
-        if (pointerEvent.button !== 0) {
-          cancel()
-          return
-        }
-        const selectedElements = svg.querySelectorAll('[data-selected]');
-        for (let i = 0; i < selectedElements.length; i++) {
-          selectedElements[i].removeAttribute('data-selected');
-          let elclass = selectedElements[i].getAttribute('class');
-          elclass = elclass.replace('data-selected', '')
-          selectedElements[i].setAttribute('class', elclass);
-        }
-      },
+        const {
+          cancel,           // cleanup funciton. please call `cancel()` when the select-on-drag behavior is no longer needed.
+          dragAreaOverlay,
+        } = svgDragSelect({
+          svg: svgset,
+          referenceElement: null,
+          selector: "enclosure",
+          onSelectionStart({ svg, pointerEvent, cancel }) {
+            if (pointerEvent.button !== 0) {
+              cancel()
+              return
+            }
+            const selectedElements = svg.querySelectorAll('[data-selected]');
+            for (let i = 0; i < selectedElements.length; i++) {
+              selectedElements[i].removeAttribute('data-selected');
+              let elclass = selectedElements[i].getAttribute('class');
+              elclass = elclass.replace('data-selected', '')
+              selectedElements[i].setAttribute('class', elclass);
+            }
+          },
 
-      onSelectionChange({
-        newlySelectedElements,    // `selectedElements - previousSelectedElements`
-        newlyDeselectedElements,  // `previousSelectedElements - selectedElements`
-      }) {
-        newlyDeselectedElements.forEach(element => {
-          element.removeAttribute('data-selected')
-          let elclass = element.getAttribute('class');
-          //console.log(elclass);
-          elclass = elclass.replace('data-selected', '')
-          element.setAttribute('class', elclass);
-        });
-        newlySelectedElements.forEach(element => {
-          element.setAttribute('data-selected', '');
-          let elclass = element.getAttribute('class');
-          if (elclass !== null) {
-            element.setAttribute('class', 'data-selected ' + elclass);
-          } else {
-            element.setAttribute('class', 'data-selected')
+          onSelectionChange({
+            newlySelectedElements,    // `selectedElements - previousSelectedElements`
+            newlyDeselectedElements,  // `previousSelectedElements - selectedElements`
+          }) {
+            newlyDeselectedElements.forEach(element => {
+              element.removeAttribute('data-selected')
+              let elclass = element.getAttribute('class');
+              //console.log(elclass);
+              elclass = elclass.replace('data-selected', '')
+              element.setAttribute('class', elclass);
+            });
+            newlySelectedElements.forEach(element => {
+              element.setAttribute('data-selected', '');
+              let elclass = element.getAttribute('class');
+              if (elclass !== null) {
+                element.setAttribute('class', 'data-selected ' + elclass);
+              } else {
+                element.setAttribute('class', 'data-selected')
+              }
+            });
+          },
+
+          onSelectionEnd: event => {
+            this.selectedVecPathmultiple = [];
+            event.selectedElements.forEach(el => {
+              this.selectedVecPathmultiple.push(el);
+            });
           }
         });
-      },
 
-      onSelectionEnd: event => {
-        this.selectedVecPathmultiple = [];
-        event.selectedElements.forEach(el => {
-          this.selectedVecPathmultiple.push(el);
-        });
+        this.cancelDragSelect = cancel;
+        this.dragAreaOverlay = dragAreaOverlay;
       }
-    });
-
-    this.cancelDragSelect = cancel;
-    this.dragAreaOverlay = dragAreaOverlay;
-  }
 
   setDragSelect(dragset) {
-    if (dragset === false && this.dragselectiontrue === true) {
+        if(dragset === false && this.dragselectiontrue === true) {
       this.cancelDragSelect();
       this.dragselectiontrue = false;
       this.dragselectvectpath = false

@@ -1,4 +1,4 @@
-import { BrowserModule } from '@angular/platform-browser';
+import { BrowserModule, HammerModule } from '@angular/platform-browser';
 import { NgModule, Injectable } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
 import { Routes, RouterModule } from '@angular/router';
@@ -110,20 +110,22 @@ import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
 
 import { InlineSVGModule } from 'ng-inline-svg';
 import { CanvasWhiteboardModule } from 'ng2-canvas-whiteboard';
-//disable pinch and rotate to scroll swip check the hammerjs doc for future fix
-// export class CustomHammerConfig extends HammerGestureConfig  {
-//   overrides = <any>{
-//       'pinch': { enable: false },
-//       'rotate': { enable: false }
-//   }
-// }
-
 
 import { VectoruploadComponent, dialogvectorgallerycomponent } from './shared/vectorupload/vectorupload.component';
 import { BackgroundComponent, dialogbackgroundgallerycomponent } from './shared/background/background.component';
 import { TranslationsComponent } from './translations/translations.component';
 import { MatPasswordStrengthModule } from '@angular-material-extensions/password-strength';
 import {SpecialCharacterDirective } from './directives/specialcharacter.directive';
+import {GestureConfig} from '@angular/material/core';
+
+
+//disable pinch and rotate to scroll swip check the hammerjs doc for future fix
+export class CustomHammerConfig extends HammerGestureConfig  {
+  overrides = <any>{
+      'pinch': { enable: false },
+      'rotate': { enable: false }
+  }
+}
 
 // declare var Hammer: any;
 // @Injectable()
@@ -198,6 +200,7 @@ import {SpecialCharacterDirective } from './directives/specialcharacter.directiv
   ],
 
   imports: [
+    HammerModule,
     MatPasswordStrengthModule.forRoot(),
     CanvasWhiteboardModule,
     InlineSVGModule,
@@ -267,10 +270,10 @@ import {SpecialCharacterDirective } from './directives/specialcharacter.directiv
     WordpressUploadDialogComponent,
     { provide: MAT_DIALOG_DATA, useValue: {} },
     { provide: MatDialogRef, useValue: {} },
-    // {
-    //   provide: HAMMER_GESTURE_CONFIG,
-    //   useClass: HammerConfig
-    // }
+    {
+      provide: HAMMER_GESTURE_CONFIG,
+      useClass: CustomHammerConfig // HammerConfig
+    }
   ],
   bootstrap: [AppComponent],
   exports: [
