@@ -27,6 +27,22 @@ import { BaseChartDirective } from 'ng2-charts';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { ChartType } from 'chart.js';
 
+export class Chart {
+  data: Array<any>;
+  label: string;
+}
+
+export class Graph {
+  type: string;
+  data_dimension: string;
+  startdate: Date;
+  enddate: Date;
+  dimension: string;
+  data_set: Array<Chart>;
+  data_labels: Array<Object>;
+  charttype: string;
+  colorscheme: string;
+}
 
 @Component({
   selector: 'app-dashboard',
@@ -39,6 +55,8 @@ export class DashboardComponent implements OnInit {
   colorScheme = {
     domain: ['#e1f5fe', '#b3e5fc', '#81d4fa', '#4fc3f7', '#29b6f6', '#03a9f4', '#039be5', '#0288d1', '#0277bd', '#01579b']
   };
+
+  public dashboardsetup = [];
 
   public polarAreaChartType: ChartType = 'polarArea';
   public polarAreaLegend = true;
@@ -86,19 +104,7 @@ export class DashboardComponent implements OnInit {
   //  Doughnut
   public doughnutChartLabels: string[];
   public doughnutChartType: string = 'doughnut';
-  public doughnutChartData: any[] = [
-    { data: [], label: 'Website visitors by Source' }, // for flex colors you need predetermine the arrays
-    { data: [], label: 'Website visitors by Source' },
-    { data: [], label: 'Website visitors by Source' },
-    { data: [], label: 'Website visitors by Source' },
-    { data: [], label: 'Website visitors by Source' },
-    { data: [], label: 'Website visitors by Source' },
-    { data: [], label: 'Website visitors by Source' },
-    { data: [], label: 'Website visitors by Source' },
-    { data: [], label: 'Website visitors by Source' },
-    { data: [], label: 'Website visitors by Source' },
-    { data: [], label: 'Website visitors by Source' },
-    { data: [], label: 'Website visitors by Source' }];
+  public doughnutChartData: any[] = [];
 
   public barChart2Labels: string[];
   public barChart2Type: string = 'bar';
@@ -145,31 +151,16 @@ export class DashboardComponent implements OnInit {
   public barChart2Colors: Array<any> = [this.greycolors];
   public lineChartColors: Array<any> = [this.greycolors];
   public MailChartColors: Array<any> = [this.greycolors];
-
-  @ViewChild('baseChartBarChannel') chartBarChannel: BaseChartDirective;
-  @ViewChild('baseChartBar') chartBar: BaseChartDirective;
-  @ViewChild('baseChartLine') chartLine: BaseChartDirective;
-  @ViewChild('baseChartBar2') baseChartBar2: BaseChartDirective;
-  @ViewChild('baseChartDoughnut') chartDoughnut: BaseChartDirective;
-  @ViewChild('baseMailChart') MailchartLine: BaseChartDirective;
-
-  
   barChartManagerData: any[] = [];
   barChartManagerLabels: any[] = ['Relations', 'Calls'];
-
-  public barChartDataChannel: any[] = [
-    { data: [], label: 'Linkedin' },
-    { data: [], label: 'Twitter' },
-    { data: [], label: 'Instagram' },
-    { data: [], label: 'Facebook' },
-    { data: [], label: 'Pinterest' }
-  ];
+  public barChartDataChannel: any[] = [];
+  public barChartDataChannelLabels: any[] = ['linkedin', 'twitter', 'instagram', 'facebook', 'pinterest'];
 
   public barChartData: any[] = [
-    { data: [], label: 'Publications' },
-    { data: [], label: 'Mailings' },
-    { data: [], label: 'Videos/Animations' },
-    { data: [], label: 'Images' }
+    { data: [], labels: 'Publications' },
+    { data: [], labels: 'Mailings' },
+    { data: [], labels: 'Videos/Animations' },
+    { data: [], labels: 'Images' }
   ];
 
   //  lineChart
@@ -193,17 +184,6 @@ export class DashboardComponent implements OnInit {
   }
 
   public MailChartData = [];
-
-  // public MailChartData: Array<any> = [
-  //   { data: [], label: 'Accepted Emails' },
-  //   { data: [], label: 'Delivered Emails' },
-  //   { data: [], label: 'Opened Emails' },
-  //   { data: [], label: 'ClickedEmails' },
-  //   { data: [], label: 'Unsubscribed Emails' },
-  //   { data: [], label: 'Complained Emails' },
-  //   { data: [], label: 'Stored' },
-  //   { data: [], label: 'Failed' },
-  // ];
   public MailChartLabels: Array<any>; // dates only 
   public MailChartOptions: any = {
     responsive: true,
@@ -233,26 +213,12 @@ export class DashboardComponent implements OnInit {
     public router: Router,
   ) {
 
-    this.analytics_ids = 'ga:154403562'; // add user to analytics account 
-    this.analytics_startdate = '30daysAgo';
-    this.analytics_enddate = 'today';
-    this.analytics_dimensions = 'ga:medium';
-    this.analytics_metrics = 'ga:users';
 
-    this.analytics_ids2 = 'ga:154403562';
-    this.analytics_startdate2 = '30daysAgo';
-    this.analytics_enddate2 = 'today';
-    this.analytics_dimensions2 = 'ga:date';
-    this.analytics_metrics2 = 'ga:users';
-
-    this.analytics_ids3 = 'ga:154403562'; // add user to analytics account 
-    this.analytics_startdate3 = '30daysAgo';
-    this.analytics_enddate3 = 'today';
-    this.analytics_dimensions3 = 'ga:region';
-    this.analytics_metrics3 = 'ga:users';
+    this.getCurrentUserInfo();
   }
 
   detectchange(): void {
+    console.log('detect change')
     this.changenow = false;
     setTimeout(() => { this.changenow = true }, 10);
   }
@@ -261,57 +227,144 @@ export class DashboardComponent implements OnInit {
     if (this.AccountApi.isAuthenticated() === false) { this.router.navigate(['login']) }
     if (this.AccountApi.getCurrentToken() === undefined) { this.router.navigate(['login']) }
     // this.setFilter();
-    this.getCurrentUserInfo();
+
+    this.getWebsiteTracker();
+    this.getLogs();
+    this.getTwitterAccount();
+    this.getAnalyticsAccounts();
+    this.buildDashboard()
   }
 
 
   //  get currentuserinfo for api
   getCurrentUserInfo(): void {
     this.AccountApi.getCurrent().subscribe((account: Account) => {
-      this.Account = account,
-        this.CompanyApi.getRelations(this.Account.companyId,
-          { fields: { id: true, relationname: true, domain: true } }
-        )
-          .subscribe((relations: Relations[]) => {
-            this.Relations = relations,
-              //this.getrelationsEntry();
-              this.getAdsMailing();
-            if (this.Account.standardrelation !== undefined) {
-              this.RelationsApi.findById(this.Account.standardrelation)
-                .subscribe((rel: Relations) => {
-                  this.option = rel;
-                  console.log(rel);
-                  this.onSelectRelation(rel, null)
-                  this.getWebsiteTracker();
-                  this.getLogs();
-                  this.getTwitterAccount();
-                  this.getMailStats(rel.domain);
-                })
-            }
-            if (this.Account.standardGa) {
-              this.GoogleanalyticsApi.findById(this.Account.standardGa)
-                .subscribe((googleanalytics: Googleanalytics) => {
-                  this.selectedanalytics = googleanalytics,
-                    this.buildDashboard()
-                })
-            }
-          });
+      this.Account = account;
+      this.CompanyApi.getRelations(this.Account.companyId,
+        { fields: { id: true, relationname: true, domain: true } }
+      )
+        .subscribe((relations: Relations[]) => {
+          this.Relations = relations,
+            //this.getrelationsEntry();
+            this.getAdsMailing();
+          if (this.Account.standardrelation !== undefined) {
+            this.RelationsApi.findById(this.Account.standardrelation)
+              .subscribe((rel: Relations) => {
+                this.option = rel;
+                console.log(rel);
+                this.onSelectRelation(rel, null);
+              })
+          }
+          if (this.Account.standardGa) {
+            this.GoogleanalyticsApi.findById(this.Account.standardGa)
+              .subscribe((googleanalytics: Googleanalytics) => {
+                this.selectedanalytics = googleanalytics;
+              })
+          }
+        });
     })
   }
 
-  buildDashboard(): void {
-    //  delay for user inputs
-      this.countRelations();
-      this.countChannels();
-      this.getTask();
-      this.getFollowups();
-      this.getMailStats();
-      if (this.selectedanalytics !== null) {
-        this.getAnalyticsLine();
-        this.getAnalytics();
-        this.getAnalytics3();
+  getAnalyticsData(startdate, enddate, dimension) {
+    this.GoogleanalyticsApi.getanalyticsreport(this.selectedanalytics.id, this.analytics_ids, startdate,
+      enddate, dimension, this.analytics_metrics)
+      .subscribe(data => {
+        return data
+      });
+  }
+
+  setChartType(resdata, graph: Graph) {
+    switch (graph.charttype) {
+      case 'line': {
+        resdata.rows.forEach((item) => {
+          const txt2 = item[0].slice(0, 4) + '-' + item[0].slice(4, 12);
+          const txt3 = txt2.slice(0, 7) + '-' + txt2.slice(7, 13);
+          const newset: Chart = { data: item[1], label: txt3 }
+          graph.data_set.push(newset)
+          graph.data_labels.push(txt3);
+        });
+        break
       }
-      setTimeout(() => {this.detectchange()}, 500);
+      case 'doughnut': {
+        resdata.rows.forEach((item) => {
+          const newset: Chart = { data: item[0], label: item[1] }
+          graph.data_set.push(newset);
+          graph.data_labels.push(item[0]);
+        });
+        break
+      }
+      default: {
+        resdata.rows.forEach((item) => {
+          const newset: Chart = { data: item[0], label: item[1] }
+          graph.data_set.push(newset);
+          graph.data_labels.push(item[0]);
+        });
+      }
+    }
+  }
+
+
+
+
+  async buildDashboard() {
+    console.log('build dashboard')
+    //  delay for user inputs
+   
+    this.countChannels();
+    //await this.getTask();
+  
+    if (this.selectedanalytics) {
+      this.dashboardsetup.forEach(async (graph) => {
+        switch (graph.charttype) {
+          case 'googleanalytics': {
+            let resdata = await this.getAnalyticsData(graph.startdate, graph.enddate, graph.dimension);
+            graph.data_set = this.setChartType(resdata, graph.charttype);
+            break
+          }
+          case 'followups': {
+            this.getFollowups();
+            break
+          }
+          case 'mailingstatistics': {
+            this.getMailStats();
+            break
+          }
+          case 'relationstatistics': {
+            this.countRelations();
+            break
+          }
+          default: {
+            console.error('no chart type or incorrect value')
+          }
+        }
+
+        })
+      //by source
+      this.analytics_ids = 'ga:154403562'; // add user to analytics account 
+      this.analytics_startdate = '30daysAgo';
+      this.analytics_enddate = 'today';
+      this.analytics_dimensions = 'ga:medium';
+      this.analytics_metrics = 'ga:users';
+
+      // by date
+      //this.analytics_ids2 = 'ga:154403562';
+      this.analytics_startdate2 = '30daysAgo';
+      this.analytics_enddate2 = 'today';
+      this.analytics_dimensions2 = 'ga:date';
+      //this.analytics_metrics2 = 'ga:users';
+
+      // by region 
+      //this.analytics_ids3 = 'ga:154403562'; // add user to analytics account 
+      this.analytics_startdate3 = '30daysAgo';
+      this.analytics_enddate3 = 'today';
+      this.analytics_dimensions3 = 'ga:region';
+      //this.analytics_metrics3 = 'ga:users';
+
+      this.getAnalyticsLine(); // by source
+      this.getAnalytics(); // by date
+      this.getAnalytics3(); // by region
+    }
+    setTimeout(() => { this.detectchange() }, 2000);
   }
 
   getTwitterAccount(): void {
@@ -336,8 +389,7 @@ export class DashboardComponent implements OnInit {
   //  select relation --> get info for all tabs
   onSelectRelation(option, i): void {
     this.AccountApi.addStdRelation(this.Account.id, option.id).subscribe();
-    this.getAnalyticsAccounts(option, i);
-    this.getWebsiteTracker();
+
   }
 
   getLogs(): void {
@@ -432,9 +484,6 @@ export class DashboardComponent implements OnInit {
     // .subscribe(res => this.getWebsiteTracker());
   }
 
-  getTask(): void {
-    this.CompanyApi.getCalls(this.Account.companyId, { where: {} })
-  }
 
   getFollowups(): void {
     this.CompanyApi.getCalls(
@@ -455,79 +504,53 @@ export class DashboardComponent implements OnInit {
       .subscribe();
   }
 
-  public getAnalyticsAccounts(option, i): void {
-    this.option = option;
-    this.AccountApi.addStdRelation(this.Account.id, option.id)
-      .subscribe(res => {
-        this.buildDashboard(),
-          this.RelationsApi.getGoogleanalytics(this.option.id)
-            .subscribe((GoogleanalyticsModel: Googleanalytics[]) => {
-              this.GoogleanalyticsModel = GoogleanalyticsModel
-            })
+  public getAnalyticsAccounts(): void {
+    this.RelationsApi.getGoogleanalytics(this.option.id)
+      .subscribe((GoogleanalyticsModel: Googleanalytics[]) => {
+        this.GoogleanalyticsModel = GoogleanalyticsModel
       });
   }
-
-  // public getNumbers(TotalNumber): void {
-  //   // const data1 = TotalNumber.slice(0);
-  //   // const data2 = TotalNumber.slice(1);
-  //   // const data3 = TotalNumber.slice(2);
-  //   // const data4 = TotalNumber.slice(3);
-  //   // //const clone = JSON.parse(JSON.stringify(this.barChartData));
-  //   // const clone = this.barChartData;
-  //   // clone[0].data = data1;
-  //   // clone[1].data = data2;
-  //   // clone[2].data = data3;
-  //   // clone[3].data = data4;
-  //   this.barChartData = TotalNumber;
-  //   // console.log(this.RelationsNum.count);
-  //   /**
-  //    * (My guess), for Angular to recognize the change in the dataset
-  //    * it has to change the dataset constiable directly,
-  //    * so one way around it, is to clone the data, change it and then
-  //    * assign it;
-  //    */
-  // }
 
   public countChannels() {
-    let channeltypes = ['linkedin', 'twitter', 'instagram', 'facebook', 'pinterest'];
-    channeltypes.forEach((typeCh, index) => {
+    this.barChartDataChannel = [];
+    this.barChartDataChannelLabels.forEach(typeCh => {
       this.RelationsApi.countChannels(this.option.id, { 'type': typeCh }).subscribe(res => {
-        this.barChartDataChannel[index].data.push(res.count)
+        this.barChartDataChannel.push({ data: [res.count], labels: typeCh });
       });
     });
+    console.log(this.barChartDataChannel)
   }
 
-  public countManagerData(){
+  public countManagerData() {
     let TotalNumber = [];
     this.CompanyApi.countRelations(this.Account.companyId).subscribe(res => {
-      TotalNumber.push({ data: [res.count], label: 'Relations' }),
+      TotalNumber.push({ data: [res.count], labels: 'Relations' }),
         this.CompanyApi.countCalls(this.Account.companyId).subscribe(res => {
-          TotalNumber.push({ data: [res.count], label: 'Calls' }),  
-          this.barChartManagerData = TotalNumber
-          this.detectchange();
+          TotalNumber.push({ data: [res.count], labels: 'Calls' }),
+            this.barChartManagerData = TotalNumber;
         });
-      });
+    });
   }
 
 
   public countRelations() {
     let TotalNumber = [];
     // use count include?? open issue for loopback --> create hook instead to package as one call or move to automation
-            this.CompanyApi.countPublications(this.Account.companyId).subscribe(res => {
+    this.CompanyApi.countPublications(this.Account.companyId).subscribe(res => {
+      TotalNumber.push(res.count),
+        this.RelationsApi.countMarketingplannerevents(this.Account.standardrelation).subscribe(res => {
+          TotalNumber.push(res.count),
+            this.RelationsApi.countFiles(this.Account.standardrelation, { 'type': 'video' }).subscribe(res => {
               TotalNumber.push(res.count),
-                this.RelationsApi.countMarketingplannerevents(this.Account.standardrelation).subscribe(res => {
-                  TotalNumber.push(res.count),
-                    this.RelationsApi.countFiles(this.Account.standardrelation, {where: {type: 'video'}}).subscribe(res => {
-                      TotalNumber.push(res.count),
-                      this.RelationsApi.countFiles(this.Account.standardrelation, {where: {type: 'image'}}).subscribe(res => {
-                        TotalNumber.push(res.count)
-                      })
-                    })
-                    //this.getNumbers(TotalNumber);
-                    this.barChartData = TotalNumber
-                    this.detectchange();
-                }, error => console.log('Could not load Marketing', error));
-            });
+                this.RelationsApi.countFiles(this.Account.standardrelation, { 'type': 'image' }).subscribe(res => {
+                  TotalNumber.push(res.count)
+                })
+            })
+          //this.getNumbers(TotalNumber);
+          this.barChartData = TotalNumber
+          //this.detectchange();
+        }, error => console.log('Could not load Marketing', error));
+    });
 
   }
 
@@ -555,8 +578,8 @@ export class DashboardComponent implements OnInit {
     this.GoogleanalyticsApi.getanalyticsreport(this.selectedanalytics.id, this.analytics_ids, this.analytics_startdate,
       this.analytics_enddate, this.analytics_dimensions, this.analytics_metrics)
       .subscribe((data) => {
-        const googleanalyticsreturn1 = data.rows
-        googleanalyticsreturn1.forEach((item, index) => {
+
+        data.rows.forEach((item, index) => {
           Googleanalyticsnumbers.push(item[1]);
           const analyticsobject = { 'name': item[0], 'value': item[1] }
           this.googleanalyticsreturn.push(analyticsobject);
@@ -566,9 +589,9 @@ export class DashboardComponent implements OnInit {
           // get array even and uneven split
           //this.getDoughnutNumbers(Googleanalyticsnames, Googleanalyticsnumbers); // Doughnut
           this.doughnutChartLabels = [];
-          this.doughnutChartLabels = Googleanalyticsnames;
-          this.doughnutChartData = [];
-          this.doughnutChartData = Googleanalyticsnumbers;
+        this.doughnutChartLabels = Googleanalyticsnames;
+        this.doughnutChartData = [];
+        this.doughnutChartData = Googleanalyticsnumbers;
         // import to update for ngx charts
         this.googleanalyticsreturn = [...this.googleanalyticsreturn];
       }, error => console.log('Could not load Analytics', error));
@@ -588,54 +611,30 @@ export class DashboardComponent implements OnInit {
           // get array even and uneven split
           //this.get1Numbers(Googleanalyticsnames3, Googleanalyticsnumbers3);
           this.barChart2Labels = Googleanalyticsnames3;
-          this.barChart2Data = Googleanalyticsnumbers3;
+        this.barChart2Data = Googleanalyticsnumbers3;
       }, error => console.log('Could not load Analytics', error));
   }
-
-  // public get2Numbers(Googleanalyticsnumbers2, Googleanalyticsnames2): void {
-  //   this.lineChartLabels = [];
-  //   this.lineChartLabels = Googleanalyticsnames2;
-  //   this.lineChartData = [];
-  //   this.lineChartData = Googleanalyticsnumbers2;
-  // }
-
 
   public getAnalyticsLine() {
-    let Googleanalyticsnames2 = [];
-    let Googleanalyticsnumbers2 = [];
+    this.lineChartLabels = [];
+    this.lineChartData = [];
     this.GoogleanalyticsApi.getanalyticsreport(this.selectedanalytics.id, this.analytics_ids2, this.analytics_startdate2,
       this.analytics_enddate2, this.analytics_dimensions2, this.analytics_metrics2)
-      .subscribe((data) => {
-        this.Googleanalyticsreturn2 = data,
-          this.Googleanalytics2 = this.Googleanalyticsreturn2.rows,
-          this.Googleanalytics2.forEach((item, index) => {
-            const txt2 = item[0].slice(0, 4) + '-' + item[0].slice(4, 12);
-            const txt3 = txt2.slice(0, 7) + '-' + txt2.slice(7, 13);
-            Googleanalyticsnumbers2.push(item[1]);
-            Googleanalyticsnames2.push(txt3);
-          });
-          this.lineChartLabels = [];
-          this.lineChartLabels = Googleanalyticsnames2;
-          this.lineChartData = [];
-          this.lineChartData = Googleanalyticsnumbers2;
-        //this.get2Numbers(Googleanalyticsnumbers2, Googleanalyticsnames2);
+      .subscribe(data => {
+        data.rows.forEach((item) => {
+          const txt2 = item[0].slice(0, 4) + '-' + item[0].slice(4, 12);
+          const txt3 = txt2.slice(0, 7) + '-' + txt2.slice(7, 13);
+          this.lineChartData.push(item[1]);
+          this.lineChartLabels.push(txt3);
+        });
       }, error => console.log('Could not load Analytics', error));
   }
 
-  // public getDoughnutNumbers(Googleanalyticsnames, Googleanalyticsnumbers) {
-  //   this.doughnutChartLabels = [];
-  //   this.doughnutChartLabels = Googleanalyticsnames;
-  //   this.doughnutChartData = [];
-  //   this.doughnutChartData = Googleanalyticsnumbers;
-  // }
-
-
-  //  __________ Mailing Charts
   getMailStats(domain?): void {
     let SDomain;
     if (domain) {
       SDomain = domain
-      console.log(domain)
+      //console.log(domain)
     } else {
       SDomain = this.option.domain
     }
@@ -647,52 +646,52 @@ export class DashboardComponent implements OnInit {
     } else { data = this.mailStatsTimeSelected.value }
     this.MailingApi.getstats(this.Account.companyId, SDomain, data).subscribe(res => {
       const mailingstats = res.res;
-        console.log('mailingstats:', mailingstats)
+      console.log('mailingstats:', mailingstats)
 
-        // set accepted mails
-        mailingstats[0].stats.forEach(element => {
-          this.MailChartData.push(element.accepted.outgoing);
-        });
+      // set accepted mails
+      mailingstats[0].stats.forEach(element => {
+        this.MailChartData.push(element.accepted.outgoing);
+      });
 
-        // set accepted labels/Dates
-        mailingstats[0].stats.forEach(element => {
-          const time = element.time.slice(0, 16)
-          this.MailChartLabels = time
-        });
+      // set accepted labels/Dates
+      mailingstats[0].stats.forEach(element => {
+        const time = element.time.slice(0, 16)
+        this.MailChartLabels = time
+      });
 
-        // set accepted mails
-        mailingstats[0].stats.forEach(element => {
-          this.MailChartData.push(element.delivered.total); // smtp/html
-        });
-
-
-        mailingstats[0].stats.forEach(element => {
-          this.MailChartData.push(element.opened.total);
-        });
+      // set accepted mails
+      mailingstats[0].stats.forEach(element => {
+        this.MailChartData.push(element.delivered.total); // smtp/html
+      });
 
 
-        mailingstats[0].stats.forEach(element => {
-          this.MailChartData.push(element.clicked.total);
-        });
-
-        mailingstats[0].stats.forEach(element => {
-          this.MailChartData.push(element.unsubscribed.total);
-        });
+      mailingstats[0].stats.forEach(element => {
+        this.MailChartData.push(element.opened.total);
+      });
 
 
-        mailingstats[0].stats.forEach(element => {
-          this.MailChartData.push(element.complained.total);
-        });
+      mailingstats[0].stats.forEach(element => {
+        this.MailChartData.push(element.clicked.total);
+      });
+
+      mailingstats[0].stats.forEach(element => {
+        this.MailChartData.push(element.unsubscribed.total);
+      });
 
 
-        mailingstats[0].stats.forEach(element => {
-          this.MailChartData.push(element.stored.total);
-        });
+      mailingstats[0].stats.forEach(element => {
+        this.MailChartData.push(element.complained.total);
+      });
 
 
-        mailingstats[0].stats.forEach(element => {
-          this.MailChartData.push(element.failed.permanent.total);
-        });
+      mailingstats[0].stats.forEach(element => {
+        this.MailChartData.push(element.stored.total);
+      });
+
+
+      mailingstats[0].stats.forEach(element => {
+        this.MailChartData.push(element.failed.permanent.total);
+      });
 
       // this.getMailChart(acceptedNumbers, deliveredNumbers, openedNumbers, clickedNumbers, unsubscribedNumbers, complainedNumbers,
       //   storedNumbers, failedNumbers, acceptedLabel)
@@ -787,14 +786,14 @@ export class DashboardComponent implements OnInit {
     console.log(e);
   }
 
-    //  events
-    public chart3Clicked(e: any): void {
-      console.log(e);
-    }
-  
-    public chart3Hovered(e: any): void {
-      console.log(e);
-    }
+  //  events
+  public chart3Clicked(e: any): void {
+    console.log(e);
+  }
+
+  public chart3Hovered(e: any): void {
+    console.log(e);
+  }
 
 
 }

@@ -1,6 +1,6 @@
 <div fxLayout="column" fxLayoutWrap="wrap" fxLayoutAlign="space-around" class="home-wrapper">
 
-  <div fxFlex="100%" fxLayout="column" class="topbanner">
+  <div *ngIf="Account" fxFlex="100%" fxLayout="column" class="topbanner">
     <mat-card style="min-height: 100px">
       <mat-card-content>
         <div style="margin-left: 100px" fxFlex fxShow.xs="false">
@@ -23,23 +23,9 @@
         </div>
         <div fxFlex class="selectrelation">
 
-          <!-- <mat-form-field class="selectboxheader">
-            <input type="text" placeholder="Select Relation" aria-label="relation" matInput [formControl]="myControl"
-              [matAutocomplete]="auto" (keyup)="getAnalyticsAccounts(option, i)"/>
-            <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
-              <mat-option *ngFor="
-                      let option of filteredOptions | async;
-                      let i = index
-                    " [value]="option">
-                {{ option.relationname }}
-              </mat-option>
-            </mat-autocomplete>
-          </mat-form-field> -->
-
-          
-      <mat-chip-list style="margin: 10px">
-          <mat-chip color="primary" class="mat-h4">{{ option.relationname }}</mat-chip>
-        </mat-chip-list>
+          <mat-chip-list *ngIf="option" style="margin: 10px">
+            <mat-chip color="primary" class="mat-h4">{{ option.relationname }}</mat-chip>
+          </mat-chip-list>
           <mat-form-field>
             <input type="text" placeholder="Select Relation" aria-label="relation" matInput
               (keyup)="searchGoQuick($event.srcElement.value)" [matAutocomplete]="relations">
@@ -66,17 +52,17 @@
   </div>
 
   <div *ngIf="changenow" fxLayout="column" fxLayoutAlign="space-around">
-    <div fxFlex="5%">
+    <!-- <div fxFlex="5%">
       <h3 class="mat-h3">Selected Account: {{ option.relationname }}</h3>
-    </div>
+    </div> -->
 
     <div fxFlex="30%" fxLayout.lt-md="column" fxLayout="row" fxLayoutWrap="wrap" fxLayoutAlign="space-around">
 
       <div fxFlex="45%" class="doubleflex">
         <label class="mat-h4">Total Activities</label>
         <mat-divider></mat-divider>
-        <div>
-          <canvas baseChart #baseChartBar="base-chart" [datasets]="barChartManagerData" [labels]="barChartManagerLabels"
+        <div *ngIf="barChartManagerData.length > 0">
+          <canvas baseChart [datasets]="barChartManagerData" [labels]="barChartManagerLabels"
             [options]="barChartOptions" [legend]="barChartLegend" [chartType]="barChartType"
             (chartHover)="chartHovered($event)" (chartClick)="chartClicked($event)"></canvas>
         </div>
@@ -85,8 +71,8 @@
       <div fxFlex="45%" class="doubleflex">
         <label class="mat-h4">Total Activities</label>
         <mat-divider></mat-divider>
-        <div>
-          <canvas baseChart #baseChartBarChannel="base-chart" [datasets]="barChartDataChannel" [labels]="barChartChannelLabels"
+        <div *ngIf="barChartDataChannel.length > 0">
+          <canvas baseChart [datasets]="barChartDataChannel" [labels]="barChartChannelLabels"
             [options]="barChartOptions" [legend]="barChartLegend" [chartType]="barChartType"
             (chartHover)="chartHovered($event)" (chartClick)="chartClicked($event)"></canvas>
         </div>
@@ -111,9 +97,9 @@
         <label class="mat-h4">Total Activities</label>
         <mat-divider></mat-divider>
         <div>
-          <canvas baseChart #baseChartBarChannel="base-chart" [datasets]="barChartDataChannel" [labels]="barChartChannelLabels"
-            [options]="barChartOptions" [legend]="barChartLegend" [chartType]="barChartType"
-            (chartHover)="chartHovered($event)" (chartClick)="chartClicked($event)"></canvas>
+          <canvas baseChart #baseChartBarChannel="base-chart" [datasets]="barChartDataChannel"
+            [labels]="barChartChannelLabels" [options]="barChartOptions" [legend]="barChartLegend"
+            [chartType]="barChartType" (chartHover)="chartHovered($event)" (chartClick)="chartClicked($event)"></canvas>
         </div>
       </div>
 
@@ -148,29 +134,23 @@
               </th>
             </mat-list-item>
           </tr>
-          <tr fxLayout="column" fxLayoutWrap="wrap" fxLayoutAlign="space-around"
+          <tr  fxLayout="column" fxLayoutWrap="wrap" fxLayoutAlign="space-around"
             *ngFor="let Mailing of Mailing; let i = index">
             <mat-list-item>
               <td fxFlex="20%" class="tdwebsitetr">
-                <label class="followuplist">{{
-                      Mailing.marketingplannereventsIds
-                    }}</label>
+                <label class="followuplist">{{Mailing.marketingplannereventsIds}}</label>
               </td>
               <td fxFlex="20%" class="tdwebsitetr">
                 <label class="followuplist">{{ Mailing.subject }}</label>
               </td>
               <td fxFlex="20%" class="tdwebsitetr">
-                <label class="followuplist">{{
-                      Mailing.from | slice: 0:50
-                    }}</label>
+                <label class="followuplist">{{ Mailing.from | slice: 0:50 }}</label>
               </td>
               <td fxFlex="20%" class="tdwebsitetr">
                 <label class="followuplist">{{ Mailing.title }}</label>
               </td>
               <td fxFlex="20%" class="tdwebsitetr">
-                <label class="followuplist">{{
-                      Mailing.date | date: "medium"
-                    }}</label>
+                <label class="followuplist">{{Mailing.date | date: "medium"}}</label>
               </td>
             </mat-list-item>
             <mat-divider></mat-divider>
@@ -264,17 +244,17 @@
                   </div>
                 </mat-panel-title>
               </mat-expansion-panel-header>
-             
-                <div *ngFor="let visit of WebsitetrackerFullList" class="websitedata" fxLayout="row" fxLayoutWrap="wrap"
-                  fxLayoutAlign="space-around">
-                  <div fxFlex="50%">
-                    <label class="followuplist">{{ visit.url | slice: 0:50 }}</label>
-                  </div>
-                  <div fxFlex="50%">
-                    <label class="followuplist">{{ visit.date | date: "medium" }}</label>
-                  </div>
+
+              <div *ngFor="let visit of WebsitetrackerFullList" class="websitedata" fxLayout="row" fxLayoutWrap="wrap"
+                fxLayoutAlign="space-around">
+                <div fxFlex="50%">
+                  <label class="followuplist">{{ visit.url | slice: 0:50 }}</label>
                 </div>
-             
+                <div fxFlex="50%">
+                  <label class="followuplist">{{ visit.date | date: "medium" }}</label>
+                </div>
+              </div>
+
             </mat-expansion-panel>
           </mat-accordion>
         </div>
@@ -308,43 +288,61 @@
       </div>
     </div>
 
-    <div fxFlex="30%" fxLayout="row wrap" fxLayoutWrap="wrap" fxLayoutAlign="space-around">
-      <div fxFlex.gt-xs="45%" fxFlex.lt-sm="90%" class="doubleflex">
+    <div  fxFlex="30%" fxLayout="row wrap" fxLayoutWrap="wrap" fxLayoutAlign="space-around">
+      <div *ngIf="doughnutChartData.length > 0" fxFlex.gt-xs="45%" fxFlex.lt-sm="90%" class="doubleflex">
         <label class="mat-h4">Website Source</label>
         <mat-divider></mat-divider>
         <div>
-          <canvas baseChart #baseChartDoughnut="base-chart" [data]="doughnutChartData" [labels]="doughnutChartLabels"
+          <canvas baseChart [data]="doughnutChartData" [labels]="doughnutChartLabels"
             [chartType]="doughnutChartType" (chartHover)="chartHovered2($event)"
             (chartClick)="chartClicked2($event)"></canvas>
         </div>
       </div>
 
-      <div fxFlex.gt-xs="45%" fxFlex.lt-sm="90%" class="doubleflex">
+      <div *ngIf="doughnutChartData.length > 0" fxFlex.gt-xs="45%" fxFlex.lt-sm="90%" class="doubleflex">
         <label class="mat-h4">Website Source</label>
+        <mat-form-field>
+          <mat-select [(value)]="polarAreaChartType" (selectionChange)="detectchange()">
+            <mat-option value="line">line</mat-option>
+            <mat-option value="bar">bar</mat-option>
+            <mat-option value="radar">radar</mat-option>
+            <mat-option value="pie">pie</mat-option>
+            <mat-option value="polarArea">Polararea</mat-option>
+            <mat-option value="doughnut">Doughnut</mat-option>
+          </mat-select>
+        </mat-form-field>
         <mat-divider></mat-divider>
-        <!-- <ngx-charts-tree-map [view]="view" [scheme]="colorScheme" [results]="googleanalyticsreturn">
-        </ngx-charts-tree-map> -->
         <canvas baseChart [data]="doughnutChartData" [labels]="doughnutChartLabels" [legend]="polarAreaLegend"
           [chartType]="polarAreaChartType">
         </canvas>
       </div>
     </div>
 
-    <div fxFlex="40%">
+    <div *ngIf="lineChartData.length > 0" fxFlex="40%">
       <label class="mat-h4">Website Visitors by Day</label>
+      <mat-form-field>
+        <mat-select [(value)]="lineChartType" (selectionChange)="detectchange()">
+          <mat-option value="line">line</mat-option>
+          <mat-option value="bar">bar</mat-option>
+          <mat-option value="radar">radar</mat-option>
+          <mat-option value="pie">pie</mat-option>
+          <mat-option value="polarArea">Polararea</mat-option>
+          <mat-option value="doughnut">Doughnut</mat-option>
+        </mat-select>
+      </mat-form-field>
       <mat-divider></mat-divider>
       <div class="singleflex">
-        <canvas baseChart #baseChartLine="base-chart" [datasets]="lineChartData" [labels]="lineChartLabels"
-          [options]="lineChartOptions" [colors]="lineChartColors" [legend]="lineChartLegend" [chartType]="lineChartType"
+        <canvas baseChart [datasets]="lineChartData" [labels]="lineChartLabels" [options]="lineChartOptions"
+          [colors]="lineChartColors" [legend]="lineChartLegend" [chartType]="lineChartType"
           (chartHover)="chartHovered($event)" (chartClick)="chartClicked($event)"></canvas>
       </div>
     </div>
 
-    <div fxFlex="40%">
+    <div *ngIf="barChart2Data.length > 0" fxFlex="40%">
       <label class="mat-h4">Website Visitors by Region</label>
       <mat-divider></mat-divider>
       <div class="singleflex">
-        <canvas baseChart #baseChartBar2="base-chart" [datasets]="barChart2Data" [labels]="barChart2Labels"
+        <canvas baseChart [datasets]="barChart2Data" [labels]="barChart2Labels"
           [options]="barChart2Options" [legend]="barChart2Legend" [chartType]="barChart2Type"
           (chartHover)="chart2Hovered($event)" [colors]="barChart2Colors" (chartClick)="chart2Clicked($event)"></canvas>
       </div>
