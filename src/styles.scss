@@ -535,5 +535,12 @@ $color-background2: #d6c18b;
   }
 }
 
+.speed-dial-container {
+  position: fixed;
+  bottom: 40px;
+  left: 50px;
+  z-index: 99;
+}
+
 
 

@@ -117,6 +117,7 @@ import { TranslationsComponent } from './translations/translations.component';
 import { MatPasswordStrengthModule } from '@angular-material-extensions/password-strength';
 import {SpecialCharacterDirective } from './directives/specialcharacter.directive';
 import {GestureConfig} from '@angular/material/core';
+import { TableComponent } from './dashboard/table/table.component';
 
 
 //disable pinch and rotate to scroll swip check the hammerjs doc for future fix
@@ -181,7 +182,8 @@ export class CustomHammerConfig extends HammerGestureConfig  {
     VideocreatorComponent,
     VectoruploadComponent,
     BackgroundComponent,
-    TranslationsComponent
+    TranslationsComponent,
+    TableComponent
   ],
 
   entryComponents: [

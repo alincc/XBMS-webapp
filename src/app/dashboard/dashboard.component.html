@@ -38,7 +38,7 @@
           </mat-form-field>
 
 
-          <mat-form-field class="selectboxheader">
+          <mat-form-field *ngIf="selectedanalytics" class="selectboxheader">
             <mat-select [(ngModel)]="selectedanalytics.name" placeholder="GA Account" class="InputField"
               (selectionChange)="buildDashboard()">
               <mat-option *ngFor="let selectedanalytics of GoogleanalyticsModel" [value]="selectedanalytics">
@@ -51,16 +51,64 @@
     </mat-card>
   </div>
 
-  <div *ngIf="changenow" fxLayout="column" fxLayoutAlign="space-around">
-    <div *ngFor="let dashitem of dashboardsetup">
-      <div *ngIf="dashitem.type === 'googleanalytics'"
+  <div *ngIf="changenow" fxLayout fxLayoutWrap fxLayoutGap="25px">
+
+    <speed-dial-fab matTooltip="Add new item" class="speed-dial-container" [reverse-column-direction]="true"
+      (fabClick)="onSpeedDialFabClicked($event)" [buttons]="speedDialFabButtons">
+    </speed-dial-fab>
+
+    <div *ngFor="let dashitem of dashboardsetup" [fxFlex]="dashitem.chartsize" fxLayout="column">
+      <div>
+        <mat-form-field>
+          <mat-select [(value)]="dashitem.chartsize" (selectionChange)="detectchange()" placeholder="type">
+            <mat-option value="90%">100%</mat-option>
+            <mat-option value="45%">50%</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field>
+          <mat-select [(value)]="dashitem.colorscheme" (selectionChange)="detectchange()" placeholder="type">
+            <mat-option value="">None</mat-option>
+            <mat-option value="greycolors">Grey</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field>
+          <mat-select [(value)]="dashitem.charttype" (selectionChange)="detectchange()">
+            <mat-option value="table">table</mat-option>
+            <mat-option value="line">line</mat-option>
+            <mat-option value="bar">bar</mat-option>
+            <mat-option value="radar">radar</mat-option>
+            <mat-option value="pie">pie</mat-option>
+            <mat-option value="polarArea">Polararea</mat-option>
+            <mat-option value="doughnut">Doughnut</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field>
+          <mat-select [(value)]="dashitem.dimension" (selectionChange)="detectchange()">
+            <mat-option value="ga:medium">Source</mat-option>
+            <mat-option value="ga:date">Date</mat-option>
+            <mat-option value="ga:region">Region</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+
+      <div *ngIf="dashitem.charttype !== 'table' && dashitem.data_set.length > 0">
+        <canvas baseChart [datasets]="dashitem.data_set" [labels]="dashitem.data_labels" [options]="barChartOptions"
+          [legend]="barChartLegend" [chartType]="dashitem.charttype" (chartHover)="chartHovered($event)"
+          (chartClick)="chartClicked($event)"></canvas>
+      </div>
+      <div *ngIf="dashitem.charttype === 'table' && dashitem.data_set.length > 0">
+        <app-table [tabledata]="dashitem.data_set" [tablelabels]="dashitem.data_labels">
+        </app-table>
+      </div>
+
+
     </div>
+
   </div>
 
-  <div *ngIf="changenow" fxLayout="column" fxLayoutAlign="space-around">
-    <!-- <div fxFlex="5%">
-      <h3 class="mat-h3">Selected Account: {{ option.relationname }}</h3>
-    </div> -->
+  <!-- <div *ngIf="changenow" fxLayout="column" fxLayoutAlign="space-around">
+
 
     <div fxFlex="30%" fxLayout.lt-md="column" fxLayout="row" fxLayoutWrap="wrap" fxLayoutAlign="space-around">
 
@@ -112,7 +160,6 @@
 
     </div>
 
-    <!-- fxLayout.lt-md="column" -->
     <div fxFlex="30%" fxLayout="row" fxLayoutWrap="wrap" fxLayoutAlign="space-around">
       <div fxFlex="45%" class="innerfollowup">
         <a mat-mini-fab color="primary" style="float: right;" (click)="getAdsMailing()">
@@ -140,7 +187,7 @@
               </th>
             </mat-list-item>
           </tr>
-          <tr  fxLayout="column" fxLayoutWrap="wrap" fxLayoutAlign="space-around"
+          <tr fxLayout="column" fxLayoutWrap="wrap" fxLayoutAlign="space-around"
             *ngFor="let Mailing of Mailing; let i = index">
             <mat-list-item>
               <td fxFlex="20%" class="tdwebsitetr">
@@ -271,12 +318,7 @@
     <div fxFlex.gt-xs="30%" fxFlex.lt-sm="50%" fxLayout="row" fxLayoutWrap="wrap" fxLayoutAlign="space-around">
       <div fxFlex="90%" class="doubleflex">
         <label class="mat-h4">Email Activities</label>
-        <!-- <mat-select style="width: 200px; height: 50px;" placeholder="Select Domain"
-        [(value)]="selecteddomain">
-        <mat-option *ngFor="let domain of domains" [value]="selecteddomain" (blur)="getMailStats()">
-          {{ domain }}
-        </mat-option>
-      </mat-select> -->
+
         <mat-divider></mat-divider>
         <mat-spinner *ngIf="mailstatsspinner" style="margin: auto;"></mat-spinner>
         <div *ngIf="mailstatsspinner === false" style="min-height: 400px">
@@ -294,14 +336,13 @@
       </div>
     </div>
 
-    <div  fxFlex="30%" fxLayout="row wrap" fxLayoutWrap="wrap" fxLayoutAlign="space-around">
+    <div fxFlex="30%" fxLayout="row wrap" fxLayoutWrap="wrap" fxLayoutAlign="space-around">
       <div *ngIf="doughnutChartData.length > 0" fxFlex.gt-xs="45%" fxFlex.lt-sm="90%" class="doubleflex">
         <label class="mat-h4">Website Source</label>
         <mat-divider></mat-divider>
         <div>
-          <canvas baseChart [data]="doughnutChartData" [labels]="doughnutChartLabels"
-            [chartType]="doughnutChartType" (chartHover)="chartHovered2($event)"
-            (chartClick)="chartClicked2($event)"></canvas>
+          <canvas baseChart [data]="doughnutChartData" [labels]="doughnutChartLabels" [chartType]="doughnutChartType"
+            (chartHover)="chartHovered2($event)" (chartClick)="chartClicked2($event)"></canvas>
         </div>
       </div>
 
@@ -348,9 +389,9 @@
       <label class="mat-h4">Website Visitors by Region</label>
       <mat-divider></mat-divider>
       <div class="singleflex">
-        <canvas baseChart [datasets]="barChart2Data" [labels]="barChart2Labels"
-          [options]="barChart2Options" [legend]="barChart2Legend" [chartType]="barChart2Type"
-          (chartHover)="chart2Hovered($event)" [colors]="barChart2Colors" (chartClick)="chart2Clicked($event)"></canvas>
+        <canvas baseChart [datasets]="barChart2Data" [labels]="barChart2Labels" [options]="barChart2Options"
+          [legend]="barChart2Legend" [chartType]="barChart2Type" (chartHover)="chart2Hovered($event)"
+          [colors]="barChart2Colors" (chartClick)="chart2Clicked($event)"></canvas>
       </div>
     </div>
 
@@ -358,4 +399,4 @@
 
 
     </div>
-  </div>
+  </div> -->
