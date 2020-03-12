@@ -32,7 +32,7 @@ export class Chart {
   label: string;
 }
 
-export class Graph {
+export class DataObject {
   type: string;
   data_dimension: string;
   startdate: Date;
@@ -273,7 +273,7 @@ export class DashboardComponent implements OnInit {
       });
   }
 
-  setChartType(resdata, graph: Graph) {
+  setChartType(resdata, graph: DataObject) {
     switch (graph.charttype) {
       case 'line': {
         resdata.rows.forEach((item) => {
@@ -314,11 +314,11 @@ export class DashboardComponent implements OnInit {
     //await this.getTask();
   
     if (this.selectedanalytics) {
-      this.dashboardsetup.forEach(async (graph) => {
-        switch (graph.charttype) {
+      this.dashboardsetup.forEach(async (dashitem) => {
+        switch (dashitem.type) {
           case 'googleanalytics': {
-            let resdata = await this.getAnalyticsData(graph.startdate, graph.enddate, graph.dimension);
-            graph.data_set = this.setChartType(resdata, graph.charttype);
+            let resdata = await this.getAnalyticsData(dashitem.startdate, dashitem.enddate, dashitem.dimension);
+            dashitem.data_set = this.setChartType(resdata, dashitem.charttype);
             break
           }
           case 'followups': {

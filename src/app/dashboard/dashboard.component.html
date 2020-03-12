@@ -52,6 +52,12 @@
   </div>
 
   <div *ngIf="changenow" fxLayout="column" fxLayoutAlign="space-around">
+    <div *ngFor="let dashitem of dashboardsetup">
+      <div *ngIf="dashitem.type === 'googleanalytics'"
+    </div>
+  </div>
+
+  <div *ngIf="changenow" fxLayout="column" fxLayoutAlign="space-around">
     <!-- <div fxFlex="5%">
       <h3 class="mat-h3">Selected Account: {{ option.relationname }}</h3>
     </div> -->
