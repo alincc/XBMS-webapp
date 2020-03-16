@@ -25,7 +25,7 @@ import { map, startWith } from "rxjs/operators";
 import { Observable, BehaviorSubject } from 'rxjs';
 import { fontoptions } from '../../settings/google-fonts-list';
 '../../shared/speed-dial-fab/speed-dial-fab.component';
-
+import { fonts } from '../../shared/listsgeneral/fonts';
 import { FormControl } from '@angular/forms';
 
 @Component({
@@ -42,7 +42,7 @@ export class MaileditorComponent implements OnInit {
 
 
   editColumn = new FormControl();
-
+  public Fonts = fonts;
   public slideIndex = 1;
   public showprogressbarbusy = false;
   public Section = false;
@@ -713,7 +713,9 @@ export class MaileditorComponent implements OnInit {
         .confirm('Preview', 'Add to templates?', previewhtml[0])
         .subscribe((res) => {
           if (res) {
+            console.log(Object.keys(this.updateMailingObj).length)
             if (Object.keys(this.updateMailingObj).length > 0) {
+              console.log('update mailing')
               this.updateMailingObj.subject = this.subject;
               this.updateMailingObj.preview = this.preview;
               this.updateMailingObj.relationname = this.option.relationname;
@@ -721,7 +723,6 @@ export class MaileditorComponent implements OnInit {
               this.updateMailingObj.templatearray = templArray;
               this.updateMailingObj.sectionStyle = sectionStyle;
               this.updateMailingObj.columnStyle = columnStyle;
-
               this.RelationsApi.updateByIdMailing(this.option.id, this.updateMailingObj.id, this.updateMailingObj)
                 .subscribe(res => {
                   this.snackBar.open("Template Updated", undefined, {
@@ -730,6 +731,7 @@ export class MaileditorComponent implements OnInit {
                   });
                 });
             } else {
+              console.log('new mailing')
               this.RelationsApi.createMailing(this.option.id, {
                 subject: this.subject,
                 relationname: this.option.relationname,
@@ -1027,8 +1029,6 @@ export class MaileditorComponent implements OnInit {
     this.maileditorAccordion.elements.push(newAccordionElement);
   }
 
-
-
   togglebackgroundrepeat() {
     let norep: string;
     let rep: string;
@@ -1040,7 +1040,6 @@ export class MaileditorComponent implements OnInit {
     if (this.backgroundrepeat === false) {
       this.maileditorSection.style['background-repeat'] = norep;
     }
-
   }
 
   // Next/previous controls

@@ -167,7 +167,7 @@ export class MarketingComponent implements OnInit {
   public options = [];
   public mailinglist = [];
   public mailingaddress;
-  public option: Relations = new Relations();
+  public option: Relations;
   public ReadyForUpload;
   public maillist = [];
   public maillist1;
@@ -629,7 +629,7 @@ export class MarketingComponent implements OnInit {
     this.mailingaddresscampaign = []; // first clean up a few things
     this.selectedItems = [];
     if (this.mailingaddress === undefined) { this.mailingaddress = []; }
-    if (this.selectedMailing.selectedlists[0] !== undefined) {
+    if (this.selectedMailing.selectedlists.length > 0) {
       Object.keys(this.selectedMailing.selectedlists).forEach(key => {
         const value = this.selectedMailing.selectedlists[key];
         // console.log(this.selectedMailing.selectedlists);

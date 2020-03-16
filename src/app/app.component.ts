@@ -242,7 +242,7 @@ export class BottomSheetLogOverview {
   ngOnInit() {
     this.logger = this.data.logger;
     this.Account = this.data.account;
-    console.log('logs', this.logger)
+    // console.log('logs', this.logger)
   }
 
   deleteLog(i): void {

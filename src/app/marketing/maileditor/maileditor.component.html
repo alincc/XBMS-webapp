@@ -1,5 +1,93 @@
 <div fxLayout="row" cdkDropListGroup style="width: 100%;">
 
+  <div fxLayout="row" class="top-bar">
+    <mat-accordion>
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            Standard Components
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        <div *ngFor="let components of option.standardcomponents; let i1 = index;" fxLayout="row">
+          <div *ngFor="let items of components">
+            <div style="border: lightgray; border-style: solid; border-width: 1px;" *ngFor="let parts of items">
+              <label style="font-size: 0.2vw"> {{parts.type}}</label>
+            </div>
+          </div>
+          <mat-icon matTooltip="add to mail" (click)="onAddStandardSectionPart(i1)"
+            class="sectionlabelbuttons iconsize-10" matSuffix>add</mat-icon>
+          <mat-icon matTooltip="delete from profile" (click)="onDeleteStandardSectionPart(i1)"
+            class="sectionlabelbuttons iconsize-10" matSuffix>delete</mat-icon>
+        </div>
+        <button (click)="deleteAllStandardComp()" mat-button>Delete All</button>
+      </mat-expansion-panel>
+    </mat-accordion>
+
+    <mat-accordion>
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            Dynamic input
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        <div fxLayout="column" style="width: 200px;"
+          matTooltip="Click to copy, insert in text to retreive mailinglist information">
+          <label (mouseenter)="$event.stopImmediatePropagation()" (mouseleave)="$event.stopImmediatePropagation()"
+            matTooltip="Copied!" (click)="tooltip.toggle()" #tooltip="matTooltip"
+            (click)="copyMessage('%recipient_name%')">%recipient_name%</label>
+          <label (mouseenter)="$event.stopImmediatePropagation()" (mouseleave)="$event.stopImmediatePropagation()"
+            matTooltip="Copied!" (click)="tooltip.toggle()" #tooltip="matTooltip"
+            (click)="copyMessage('%recipient.company%')">%recipient.company%</label>
+          <label (mouseenter)="$event.stopImmediatePropagation()" (mouseleave)="$event.stopImmediatePropagation()"
+            matTooltip="Copied!" (click)="tooltip.toggle()" #tooltip="matTooltip"
+            (click)="copyMessage('%recipient%')">%recipient%</label>
+          <label (mouseenter)="$event.stopImmediatePropagation()" (mouseleave)="$event.stopImmediatePropagation()"
+            matTooltip="Copied!" (click)="tooltip.toggle()" #tooltip="matTooltip"
+            (click)="copyMessage('%recipient.firstname%')">%recipient.firstname%</label>
+          <label (mouseenter)="$event.stopImmediatePropagation()" (mouseleave)="$event.stopImmediatePropagation()"
+            matTooltip="Copied!" (click)="tooltip.toggle()" #tooltip="matTooltip"
+            (click)="copyMessage('%recipient.lastname%')">%recipient.lastname%</label>
+        </div>
+      </mat-expansion-panel>
+    </mat-accordion>
+
+    <mat-accordion>
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            Email Settings
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+
+        <mat-form-field>
+          <mat-label>Select font</mat-label>
+          <mat-select [(value)]="company.companyfont">
+            <mat-option *ngFor="let font of Fonts" [value]="font.value">
+              <label [style.font-family]="font.value">{{font.name}}</label>
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <div matTooltip="click to set color" fxLayout="column">
+          <div fxLayout="row" fxLayoutAlign="space-around center">
+            <label>Primairy color</label>
+            <label>Secondairy color</label>
+          </div>
+          <div *ngIf="company" fxLayout="row" fxLayoutAlign="space-around center">
+            <label (mouseenter)="$event.stopImmediatePropagation()" (mouseleave)="$event.stopImmediatePropagation()"
+              #tooltip="matTooltip" matTooltip="Copied!" (click)="tooltip.toggle()"
+              (click)="copyMessage(company.companyprimairycolor)">
+              {{company.companyprimairycolor}}</label>
+            <label (mouseenter)="$event.stopImmediatePropagation()" (mouseleave)="$event.stopImmediatePropagation()"
+              #tooltip="matTooltip" matTooltip="Copied!" (click)="tooltip.toggle()"
+              (click)="copyMessage(company.companysecondarycolor)">
+              {{company.companysecondarycolor}}</label>
+          </div>
+        </div>
+      </mat-expansion-panel>
+    </mat-accordion>
+  </div>
+
   <div class="savetobutton">
     <button mat-fab color="primary" matTooltip="Convert to Email" *ngIf="!updatemail" (click)="ConvertToMail()">
       <mat-icon>save</mat-icon>
@@ -46,108 +134,17 @@
         </div>
       </div>
       <br>
-      <mat-accordion>
-        <mat-expansion-panel>
-          <mat-expansion-panel-header>
-            <mat-panel-title>
-              Standard Components
-            </mat-panel-title>
-          </mat-expansion-panel-header>
-          <div *ngFor="let components of option.standardcomponents; let i1 = index;" fxLayout="row">
-            <div *ngFor="let items of components">
-              <div style="border: lightgray; border-style: solid; border-width: 1px;" *ngFor="let parts of items">
-                <label style="font-size: 0.2vw"> {{parts.type}}</label>
-              </div>
-            </div>
-            <mat-icon matTooltip="add to mail" (click)="onAddStandardSectionPart(i1)"
-              class="sectionlabelbuttons iconsize-10" matSuffix>add</mat-icon>
-            <mat-icon matTooltip="delete from profile" (click)="onDeleteStandardSectionPart(i1)"
-              class="sectionlabelbuttons iconsize-10" matSuffix>delete</mat-icon>
-          </div>
-          <button (click)="deleteAllStandardComp()" mat-button>Delete All</button>
-        </mat-expansion-panel>
-      </mat-accordion>
 
-      <mat-accordion>
-        <mat-expansion-panel>
-          <mat-expansion-panel-header>
-            <mat-panel-title>
-              Dynamic input
-            </mat-panel-title>
-          </mat-expansion-panel-header>
-          <div fxLayout="column" style="width: 200px;"
-            matTooltip="Click to copy, insert in text to retreive mailinglist information">
-            <label (mouseenter)="$event.stopImmediatePropagation()" (mouseleave)="$event.stopImmediatePropagation()"
-              matTooltip="Copied!" (click)="tooltip.toggle()" #tooltip="matTooltip"
-              (click)="copyMessage('%recipient_name%')">%recipient_name%</label>
-            <label (mouseenter)="$event.stopImmediatePropagation()" (mouseleave)="$event.stopImmediatePropagation()"
-              matTooltip="Copied!" (click)="tooltip.toggle()" #tooltip="matTooltip"
-              (click)="copyMessage('%recipient.company%')">%recipient.company%</label>
-            <label (mouseenter)="$event.stopImmediatePropagation()" (mouseleave)="$event.stopImmediatePropagation()"
-              matTooltip="Copied!" (click)="tooltip.toggle()" #tooltip="matTooltip"
-              (click)="copyMessage('%recipient%')">%recipient%</label>
-            <label (mouseenter)="$event.stopImmediatePropagation()" (mouseleave)="$event.stopImmediatePropagation()"
-              matTooltip="Copied!" (click)="tooltip.toggle()" #tooltip="matTooltip"
-              (click)="copyMessage('%recipient.firstname%')">%recipient.firstname%</label>
-            <label (mouseenter)="$event.stopImmediatePropagation()" (mouseleave)="$event.stopImmediatePropagation()"
-              matTooltip="Copied!" (click)="tooltip.toggle()" #tooltip="matTooltip"
-              (click)="copyMessage('%recipient.lastname%')">%recipient.lastname%</label>
-          </div>
-        </mat-expansion-panel>
-      </mat-accordion>
-
-      <mat-accordion>
-        <mat-expansion-panel>
-          <mat-expansion-panel-header>
-            <mat-panel-title>
-              Email Settings
-            </mat-panel-title>
-          </mat-expansion-panel-header>
-          <form>
-            <mat-form-field class="example-full-width">
-              <input [(ngModel)]=company.companyfont type="text" placeholder="Template Font" aria-label="Number"
-                matInput [formControl]="myControlfont" [matAutocomplete]="auto">
-              <mat-autocomplete #auto="matAutocomplete">
-                <mat-option *ngFor="let font of filteredfonts" [value]="font">
-                  <label>{{font}}</label>
-                </mat-option>
-              </mat-autocomplete>
-            </mat-form-field>
-          </form>
-          <table matTooltip="click to set color">
-            <tr>
-              <td>Primairy color</td>
-              <td>Secondairy color</td>
-            </tr>
-            <tr>
-              <label (mouseenter)="$event.stopImmediatePropagation()" (mouseleave)="$event.stopImmediatePropagation()"
-                #tooltip="matTooltip" matTooltip="Copied!" (click)="tooltip.toggle()"
-                (click)="copyMessage(company.companyprimairycolor)">
-                {{company.companyprimairycolor}}</label>
-              <label (mouseenter)="$event.stopImmediatePropagation()" (mouseleave)="$event.stopImmediatePropagation()"
-                #tooltip="matTooltip" matTooltip="Copied!" (click)="tooltip.toggle()"
-                (click)="copyMessage(company.companysecondarycolor)">
-                {{company.companysecondarycolor}}</label>
-            </tr>
-          </table>
-        </mat-expansion-panel>
-      </mat-accordion>
     </div>
   </div>
 
-
-
-
-    <div *ngIf="showprogressbarbusy" class="showprogressbardiv">
-      <div style="width: 50%; margin: 0 auto; justify-content: center; align-items: center;">
-        <mat-spinner style="width: 50%; margin: 0 auto;" mode="indeterminate"></mat-spinner>
-        <br>
-        <h1>Creating your awesome mail template one moment please... </h1>
-      </div>
+  <div *ngIf="showprogressbarbusy" class="showprogressbardiv">
+    <div style="position: absolute; left: 50%; top: 50%;">
+      <mat-spinner mode="indeterminate"></mat-spinner>
+      <br>
+      <h1>Creating your awesome mail template one moment please... </h1>
     </div>
-
-
-
+  </div>
 
   <div fxFlex="70%" class="template">
     <table>

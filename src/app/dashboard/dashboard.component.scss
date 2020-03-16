@@ -1,5 +1,7 @@
 .home-wrapper{
-    position: relative;
+    //position: relative;
+    height: 900px;
+    background-color: white;
 }
 
 .selectrelation {
@@ -142,3 +144,26 @@
     border-color: lightgrey;
     padding: 10px;
 }
+
+.tabledash{
+    overflow: scroll;
+    max-height: 500px;
+}
+
+.chartdash{
+    overflow: scroll;
+    height: 100%;
+    width: 100%;
+}
+
+.dashitem {
+    margin: 5px;
+}
+
+.speed-dial-dashboard {
+    position: fixed;
+    bottom: 40px;
+    right: 50px;
+    z-index: 99;
+  }
+  

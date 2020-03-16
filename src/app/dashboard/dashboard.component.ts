@@ -25,7 +25,9 @@ import {
 } from '../shared/';
 import { BaseChartDirective } from 'ng2-charts';
 import { Router, ActivatedRoute, Params } from '@angular/router';
-import { ChartType } from 'chart.js';
+import { ChartType, ChartOptions } from 'chart.js';
+import { Observable } from 'rxjs';
+import * as moment from 'moment';
 
 export class Chart {
   data: Array<any>;
@@ -40,8 +42,12 @@ export interface DataObject {
   data_set: Array<Chart>;
   data_labels: Array<Object>;
   charttype: string;
-  colorscheme: string;
+  colorscheme: Array<Object>;
   chartsize: string;
+  data_object: Array<Object>;
+  color: string;
+  showlabels: boolean;
+  showlegend: boolean;
 }
 
 
@@ -53,8 +59,12 @@ export function createDataObject(type, startdate, enddate, charttype, dimension)
   data_set: Array<Chart>;
   data_labels: Array<Object>;
   charttype: string;
-  colorscheme: string;
+  colorscheme: Array<Object>;
   chartsize: string;
+  data_object: Array<Object>;
+  color: string;
+  showlabels: boolean;
+  showlegend: boolean;
 } {
   let newDataObject = {
     type: type,
@@ -64,8 +74,12 @@ export function createDataObject(type, startdate, enddate, charttype, dimension)
     data_set: [],
     data_labels: [],
     charttype: charttype,
-    colorscheme: 'greycolors',
-    chartsize: '45%',
+    colorscheme: undefined,
+    chartsize: '47%',
+    data_object: [],
+    color: 'auto',
+    showlabels: true,
+    showlegend: true
   }
   return newDataObject;
 }
@@ -105,19 +119,7 @@ export class DashboardComponent implements OnInit {
   public analytics_startdate: string;
   public analytics_enddate: string;
   public analytics_dimensions: string;
-  public Googleanalytics2: any;
-  public Googleanalyticsreturn2: any;
-  public analytics_ids2: string;
-  public analytics_startdate2: string;
-  public analytics_enddate2: string;
-  public analytics_dimensions2: string;
-  public analytics_metrics2: string;
-  public analytics_ids3: string;
-  public analytics_startdate3: string;
-  public analytics_enddate3: string;
-  public analytics_dimensions3: string;
-  public analytics_metrics3: string;
-  public googleanalyticsreturn: any[];
+
   public selectedanalytics: Googleanalytics;
   public options = [];
   public option: Relations;
@@ -138,6 +140,9 @@ export class DashboardComponent implements OnInit {
   public barChart2Legend: boolean = true;
   public barChart2Data: any[];
 
+  public minDate = new Date(2017, 0, 1);
+  public maxDate = Date.now()
+
   mailStatsTime = [
     { value: '12m', viewValue: 'Year/months' },
     { value: '365d', viewValue: 'Year/days' },
@@ -148,9 +153,10 @@ export class DashboardComponent implements OnInit {
 
 
   // chart 1 Activities
-  public barChartOptions: any = {
-    scaleShowVerticalLines: false,
+  public chartOptions: ChartOptions = {
+    //scaleShowVerticalLines: false,
     responsive: true,
+    maintainAspectRatio: false,
     scales: {
       yAxes: [{
         ticks: {
@@ -164,20 +170,87 @@ export class DashboardComponent implements OnInit {
   public barChartLegend: boolean = true;
 
 
-  public greycolors = [{ //  grey
+  public greycolors = {
     backgroundColor: 'rgba(148,159,177,0.2)',
     borderColor: 'rgba(148,159,177,1)',
     pointBackgroundColor: 'rgba(148,159,177,1)',
     pointBorderColor: '#23549D',
     pointHoverBackgroundColor: '#23549D',
     pointHoverBorderColor: 'rgba(148,159,177,0.8)'
-  }];
+  };
 
-  public barChartColors: Array<any> = [this.greycolors];
-  public doughnutChartColors: Array<any> = [this.greycolors];
-  public barChart2Colors: Array<any> = [this.greycolors];
-  public lineChartColors: Array<any> = [this.greycolors];
-  public MailChartColors: Array<any> = [this.greycolors];
+  public bluecolors = {
+    backgroundColor: 'rgba(50,70,168,0.2)',
+    borderColor: 'rgba(50,70,168,1)',
+    pointBackgroundColor: 'rgba(50,70,168,1)',
+    pointBorderColor: '#23549D',
+    pointHoverBackgroundColor: '#23549D',
+    pointHoverBorderColor: 'rgba(148,159,177,0.8)'
+  };
+
+  public redcolors = {
+    backgroundColor: 'rgba(242,7,46,0.3)',
+    borderColor: 'rgba(242,7,46,1)',
+    pointBackgroundColor: 'rgba(242,7,46,1)',
+    pointBorderColor: '#fff',
+    pointHoverBackgroundColor: '#fff',
+    pointHoverBorderColor: 'rgba(148,159,177,0.8)'
+  }
+  public greencolors = {
+    backgroundColor: 'rgba(43,255,0,0.3)',
+    borderColor: 'rgba(43,255,0,1)',
+    pointBackgroundColor: 'rgba(43,255,0,1)',
+    pointBorderColor: '#fff',
+    pointHoverBackgroundColor: '#fff',
+    pointHoverBorderColor: 'rgba(148,159,177,0.8)'
+  }
+  public pinkcolors = {
+    backgroundColor: 'rgba(255,0,221,0.3)',
+    borderColor: 'rgba(255,0,221,1)',
+    pointBackgroundColor: 'rgba(255,0,221,1)',
+    pointBorderColor: '#fff',
+    pointHoverBackgroundColor: '#fff',
+    pointHoverBorderColor: 'rgba(148,159,177,0.8)'
+  }
+  public yellowcolors = {
+    backgroundColor: 'rgba(252, 211, 3,0.3)',
+    borderColor: 'rgba(252, 211, 3,1)',
+    pointBackgroundColor: 'rgba(252, 211, 3,1)',
+    pointBorderColor: '#fff',
+    pointHoverBackgroundColor: '#fff',
+    pointHoverBorderColor: 'rgba(148,159,177,0.8)'
+  }
+
+  public azurecolors = {
+    backgroundColor: 'rgba(66, 245, 224,0.3)',
+    borderColor: 'rgba(66, 245, 224,1)',
+    pointBackgroundColor: 'rgba(66, 245, 224,1)',
+    pointBorderColor: '#fff',
+    pointHoverBackgroundColor: '#fff',
+    pointHoverBorderColor: 'rgba(148,159,177,0.8)'
+  }
+
+  public purplecolors = {
+    backgroundColor: 'rgba(173, 66, 245,0.3)',
+    borderColor: 'rgba(173, 66, 245,1)',
+    pointBackgroundColor: 'rgba(173, 66, 245,1)',
+    pointBorderColor: '#fff',
+    pointHoverBackgroundColor: '#fff',
+    pointHoverBorderColor: 'rgba(148,159,177,0.8)'
+  }
+
+  public darkbluecolors = {
+    backgroundColor: 'rgba(25, 26, 71,0.3)',
+    borderColor: 'rgba(25, 26, 71,1)',
+    pointBackgroundColor: 'rgba(25, 26, 71,1)',
+    pointBorderColor: '#fff',
+    pointHoverBackgroundColor: '#fff',
+    pointHoverBorderColor: 'rgba(148,159,177,0.8)'
+  }
+
+  public selectcolor = '';
+
+
   barChartManagerData: any[] = [];
   barChartManagerLabels: any[] = ['Relations', 'Calls'];
   public barChartDataChannel: any[] = [];
@@ -210,19 +283,9 @@ export class DashboardComponent implements OnInit {
     }
   }
 
-  public MailChartData = [];
-  public MailChartLabels: Array<any>; // dates only 
-  public MailChartOptions: any = {
-    responsive: true,
-    maintainAspectRatio: false
-  };
-  public MailChartLegend: boolean = true;
-  public MailChartType: string = 'line';
-
 
   public barChartChannelLabels: string[] = ['Social Messages'];
   public Marketingplannerevents: Marketingplannerevents[];
-  public facebookfeed;
   public changenow = true;
 
   constructor(
@@ -248,7 +311,7 @@ export class DashboardComponent implements OnInit {
       tooltip: 'Add new Website data'
     },
     {
-      icon: 'google',
+      icon: 'show_chart',
       tooltip: 'Add google analytics'
     },
     {
@@ -256,12 +319,24 @@ export class DashboardComponent implements OnInit {
       tooltip: 'Add mailing data'
     },
     {
-      icon: 'relation',
+      icon: 'contact_mail',
       tooltip: 'Add CRM data'
     },
     {
-      icon: 'social',
-      tooltip: 'Add Channel data'
+      icon: 'chat',
+      tooltip: 'Add channel data'
+    },
+    {
+      icon: 'toc',
+      tooltip: 'Add follow up list'
+    },
+    {
+      icon: 'media',
+      tooltip: 'Add publication data'
+    },
+    {
+      icon: 'schedule',
+      tooltip: 'Add scheduled events'
     }
   ];
 
@@ -271,38 +346,75 @@ export class DashboardComponent implements OnInit {
     if (btn.tooltip === 'Add google analytics') { this.addNewAnalyticsData() }
     if (btn.tooltip === 'Add mailing data') { this.addNewMailingData() }
     if (btn.tooltip === 'Add CRM data') { this.addNewCRMData() }
-    if (btn.tooltip === 'Add Channel data') { this.addNewChannelData() }
+    if (btn.tooltip === 'Add channel data') { this.addNewChannelData() }
+    if (btn.tooltip === 'Add follow up list') { this.addFollowUpData() }
+    if (btn.tooltip === 'Add publication data') { this.addPublicationData() }
+    if (btn.tooltip === 'Add scheduled events') { this.addScheduledData() }
   }
 
+
   addNewWebsiteData() {
-    let newData = createDataObject('websitedata', '30daysAgo', 'today', 'table', undefined);
+    let newData = createDataObject('Website data', '30daysAgo', 'table', 'table', undefined);
     this.dashboardsetup.push(newData);
-    this.buildDashboard();
+    this.detectchange();
   }
 
   addNewAnalyticsData() {
-    let newData = createDataObject('googleanalytics', '30daysAgo', 'today', 'line', 'ga:date');
+    let newData = createDataObject('Google Analytics', '30daysAgo', 'today', 'line', 'ga:date');
     this.dashboardsetup.push(newData);
-    this.buildDashboard();
+    this.detectchange();
   }
 
   addNewMailingData() {
-    this.buildDashboard()
+    let newData = createDataObject('Mailing statistics', '30daysAgo', 'table', 'line', undefined);
+    this.dashboardsetup.push(newData);
+    this.detectchange();
   }
 
   addNewCRMData() {
-    this.buildDashboard()
+    let newData = createDataObject('CRM statistics', '30daysAgo', 'today', 'bar', undefined);
+    this.dashboardsetup.push(newData);
+    this.detectchange();
   }
 
   addNewChannelData() {
-    this.buildDashboard()
+    let newData = createDataObject('Channels', '30daysAgo', 'today', 'bar', undefined);
+    this.dashboardsetup.push(newData);
+    this.detectchange();
+  }
+
+  addFollowUpData() {
+    let newData = createDataObject('Followups', '30daysAgo', 'today', 'table', undefined);
+    this.dashboardsetup.push(newData);
+    this.detectchange();
+  }
+
+  addPublicationData() {
+    let newData = createDataObject('Publications', '30daysAgo', 'today', 'bar', undefined);
+    this.dashboardsetup.push(newData);
+    this.detectchange();
+  }
+
+  addScheduledData() {
+    let newData = createDataObject('Scheduled', '30daysAgo', 'today', 'table', undefined);
+    this.dashboardsetup.push(newData);
+    this.detectchange();
   }
 
 
-  detectchange(): void {
-    console.log('detect change')
+
+  async detectchange() {
+    for (let dashitem of this.dashboardsetup) {
+      let dashitem1 = await this.buildDashboard(dashitem);
+      let dashitem2 = await this.setColor(dashitem1);
+      dashitem = dashitem2;
+    }
+
     this.changenow = false;
-    setTimeout(() => { this.changenow = true }, 10);
+    setTimeout(() => {
+      console.log('detect change', this.dashboardsetup)
+      this.changenow = true
+    }, 10);
   }
 
   ngOnInit(): void {
@@ -312,31 +424,130 @@ export class DashboardComponent implements OnInit {
     this.getCurrentUserInfo();
   }
 
+  async setColor(dashitem) {
+    return new Promise(async (resolve, reject) => {
+      dashitem.colorscheme = [];
+      let colorscheme;
+
+      switch (dashitem.color) {
+        case 'grey': {
+          colorscheme = this.greycolors;
+          let dashitem1 = this.setColorScheme(dashitem, colorscheme);
+          resolve(dashitem1);
+          break
+        }
+        case 'blue': {
+          colorscheme = this.bluecolors;
+          let dashitem1 = this.setColorScheme(dashitem, colorscheme);
+          resolve(dashitem1);
+          break
+        }
+        case 'red': {
+          colorscheme = this.redcolors;
+          let dashitem1 = this.setColorScheme(dashitem, colorscheme);
+          resolve(dashitem1);
+          break
+        }
+        case 'green': {
+          colorscheme = this.greencolors;
+          let dashitem1 = this.setColorScheme(dashitem, colorscheme);
+          resolve(dashitem1);
+          break
+        }
+        case 'pink': {
+          colorscheme = this.pinkcolors;
+          let dashitem1 = this.setColorScheme(dashitem, colorscheme);
+          resolve(dashitem1);
+          break
+        }
+        case 'yellow': {
+          colorscheme = this.yellowcolors;
+          let dashitem1 = this.setColorScheme(dashitem, colorscheme);
+          resolve(dashitem1);
+          break
+        }
+        case 'darkblue': {
+          colorscheme = this.darkbluecolors;
+          let dashitem1 = this.setColorScheme(dashitem, colorscheme);
+          resolve(dashitem1);
+          break
+        }
+        case 'azure': {
+          colorscheme = this.azurecolors;
+          let dashitem1 = this.setColorScheme(dashitem, colorscheme);
+          resolve(dashitem1);
+          break
+        }
+        case 'purple': {
+          colorscheme = this.purplecolors;
+          let dashitem1 = this.setColorScheme(dashitem, colorscheme);
+          resolve(dashitem1);
+          break
+        }
+        case 'auto': {
+          colorscheme = 'auto';
+          let dashitem1 = this.setColorScheme(dashitem, colorscheme);
+          resolve(dashitem1);
+          break
+        }
+        default: {
+          colorscheme = 'auto'
+          console.error('Color not found');
+          let dashitem1 = this.setColorScheme(dashitem, colorscheme);
+          resolve(dashitem1);
+        }
+      }
+    });
+  }
+
+  async setColorScheme(dashitem: DataObject, colorscheme) {
+    return new Promise(async (resolve, reject) => {
+      let count = dashitem.data_set.length
+      let colorarray = [this.greycolors, this.bluecolors, this.redcolors, this.greencolors, this.pinkcolors, 
+        this.yellowcolors, this.azurecolors, this.purplecolors, this.darkbluecolors];
+      for (let i = 0; i < count; i++) {
+        if (colorscheme === 'auto') {
+          let randomnum = i;
+          if (i > 8){
+            randomnum = this.RandomInt(0, 5);
+          } 
+         
+          let newcolorscheme = colorarray[randomnum];
+          dashitem.colorscheme.push(newcolorscheme);
+        } else {
+          dashitem.colorscheme.push(colorscheme);
+        }
+      }
+      resolve(dashitem);
+    });
+  }
+
+  RandomInt(min, max) {
+      min = Math.ceil(min);
+      max = Math.floor(max);
+      let newset = Math.floor(Math.random() * (max - min)) + min; //The maximum is exclusive and the minimum is inclusive
+      return newset;
+  }
 
   //  get currentuserinfo for api
   getCurrentUserInfo(): void {
     this.AccountApi.getCurrent().subscribe((account: Account) => {
       this.Account = account;
-      // this.getWebsiteTracker();
-      // this.getLogs();
-      // this.getTwitterAccount();
-
 
       this.CompanyApi.getRelations(this.Account.companyId,
         { fields: { id: true, relationname: true, domain: true } }
       )
         .subscribe((relations: Relations[]) => {
-          this.Relations = relations,
+          this.Relations = relations
             //this.getrelationsEntry();
-            this.getAdsMailing();
+            //this.getAdsMailing();
           if (this.Account.standardrelation !== undefined) {
             this.RelationsApi.findById(this.Account.standardrelation)
               .subscribe((rel: Relations) => {
-                this.option = rel;
-                console.log(rel);
+                //console.log(rel);
                 this.onSelectRelation(rel, null);
                 this.getAnalyticsAccounts();
-                this.buildDashboard();
+                this.detectchange();
               })
           }
           if (this.Account.standardGa) {
@@ -345,6 +556,9 @@ export class DashboardComponent implements OnInit {
                 this.selectedanalytics = googleanalytics;
               })
           }
+          if (!this.Account.standardGa){
+            this.selectedanalytics = undefined;
+          }
         });
     })
   }
@@ -352,14 +566,23 @@ export class DashboardComponent implements OnInit {
   // this.selectedanalytics.id, this.analytics_ids2, this.analytics_startdate2 this.analytics_enddate2, this.analytics_dimensions2, this.analytics_metrics2
   getAnalyticsData(startdate, enddate, dimension) {
     return new Promise(async (resolve, reject) => {
-      this.GoogleanalyticsApi.getanalyticsreport(this.selectedanalytics.id, this.analytics_ids, startdate, enddate, dimension, this.analytics_metrics)
+      let startdateset = startdate;
+      let enddateset = enddate;
+      if (startdate instanceof Date){
+        startdateset = moment(startdate).utc().format('YYYY-MM-DD');
+      }
+      if (enddate instanceof Date){
+        enddateset = moment(enddate).utc().format('YYYY-MM-DD');
+      }
+      console.log(startdateset, enddateset);
+      this.GoogleanalyticsApi.getanalyticsreport(this.selectedanalytics.id, this.analytics_ids, startdateset, enddateset, dimension, this.analytics_metrics)
         .subscribe(data => {
           resolve(data);
         }, error => console.error(error));
     });
   }
 
-  async setChartLineData(resdata, graph: DataObject) {
+  async setChartDateData(resdata, graph: DataObject) {
     return new Promise(async (resolve, reject) => {
       const newset: Chart = { data: [], label: '' };
       graph.data_labels = [];
@@ -367,8 +590,12 @@ export class DashboardComponent implements OnInit {
         const item = resdata.rows[i]
         const txt2 = item[0].slice(0, 4) + '-' + item[0].slice(4, 12);
         const txt3 = txt2.slice(0, 7) + '-' + txt2.slice(7, 13);
+        //graph.data_labels.push(txt3);
+        let date = new Date(txt3);
+        let datestring = date.toDateString();
+        graph.data_labels.push(datestring);
         newset.data.push(item[1])
-        graph.data_labels.push(txt3);
+        graph.data_object.push({ Date: datestring, Visitors: item[1] })
       }
 
       graph.data_set = [newset]
@@ -376,81 +603,110 @@ export class DashboardComponent implements OnInit {
     });
   }
 
-  setChartType(resdata, graph: DataObject) {
-    resdata.rows.forEach((item) => {
-      const newset: Chart = { data: item[0], label: item[1] }
-      graph.data_set.push(newset);
-      graph.data_labels.push(item[0]);
+  async setChartAnalytics(resdata, graph: DataObject) {
+    return new Promise(async (resolve, reject) => {
+      graph.data_set = [];
+      graph.data_labels = [];
+      graph.data_object = [];
+
+      for (let i = 0; i < resdata.rows.length; i++) {
+        const item = resdata.rows[i];
+        let nr = parseInt(item[1], 10);
+        const newset: Chart = { data: [nr], label: item[0] }
+        graph.data_set.push(newset);
+        //graph.data_labels.push(item[0]);
+        graph.data_object.push({ Medium: item[0], Visitors: nr })
+      };
+      resolve(graph);
     });
-    return
+  }
+
+  async setChartType(resdata, graph: DataObject, label) {
+    return new Promise(async (resolve, reject) => {
+      graph.data_set = [];
+      graph.data_labels = [];
+      graph.data_object = [];
+      let labels = Object.keys(resdata[0]);
+      const newset: Chart = { data: [resdata.length], label: label }
+      graph.data_labels.push(label);
+      graph.data_set.push(newset);
+      graph.data_object = resdata;
+      resolve(graph);
+    });
   }
 
 
 
 
-  async buildDashboard() {
 
-    console.log(this.dashboardsetup);
+  async buildDashboard(dashitem) {
+    return new Promise(async (resolve, reject) => {
 
-    if (this.selectedanalytics) {
-      for (let i = 0; i < this.dashboardsetup.length; i++) {
-        let dashitem = this.dashboardsetup[i];
-
-        console.log('build dashboard', dashitem.type);
-
-        switch (dashitem.type) {
-          case 'googleanalytics': {
+      switch (dashitem.type) {
+        case 'Google Analytics': {
+          if (this.selectedanalytics) {
             let resdata = await this.getAnalyticsData(dashitem.startdate, dashitem.enddate, dashitem.dimension);
-            dashitem = await this.setChartLineData(resdata, dashitem);
-            console.log(dashitem);
-            break
+            let dashitem1;
+            if (dashitem.dimension === 'ga:date') {
+              dashitem1 = await this.setChartDateData(resdata, dashitem);
+            } else {
+              dashitem1 = await this.setChartAnalytics(resdata, dashitem);
+            }
+            resolve(dashitem1);
           }
-          case 'followups': {
-            this.getFollowups();
-            break
-          }
-          case 'mailingstatistics': {
-            this.getMailStats();
-            break
-          }
-          case 'relationstatistics': {
-            this.countRelations();
-            break
-          }
-          case 'channel': {
-            this.countChannels();
-            break
-          }
-          default: {
-            console.error('no chart type or incorrect value')
-          }
+          break
+        }
+        case 'Followups': {
+          let resdata = await this.getFollowups();
+          let dashitem1 = await this.setChartType(resdata, dashitem, 'Follow up');
+          resolve(dashitem1);
+          break
+        }
+        case 'Mailing statistics': {
+          let dashitem1 = await this.getMailStats(dashitem);
+          resolve(dashitem1);
+          break
+        }
+        case 'Publications': {
+          let dashitem1: any = await this.countPublications(dashitem);
+          //dashitem1.data_labels = ['Publications', 'Mailings', 'Videos', 'Images'];
+          //let dashitem1 = await this.setChartType(resdata, dashitem, ['Publications', 'Mailings', 'Videos', 'Images']);
+          resolve(dashitem1);
+          break
+        }
+        case 'CRM statistics': {
+          let resdata = await this.countManagerData(dashitem);
+          let dashitem1: any = await this.setChartType(resdata, dashitem, 'CRM data');
+          dashitem1.data_set = resdata;
+          resolve(dashitem1);
+          break
+        }
+        case 'Channels': {
+          let dashitem1 = await this.countChannels(dashitem);
+          resolve(dashitem1);
+          break
+        }
+        case 'Website data': {
+          let resdata = await this.getWebsiteTracker();
+          let dashitem1: any = await this.setChartType(resdata, dashitem, 'Website Visitors');
+          dashitem.data_object = resdata;
+          resolve(dashitem1);
+          break
         }
 
+        case 'Scheduled': {
+          let dashitem1 = await this.getAdsMailing(dashitem);
+          resolve(dashitem1);
+          break
+        }
+
+        default: {
+          console.error('no chart type or incorrect value');
+          resolve(dashitem);
+        }
       }
 
-      setTimeout(() => { this.detectchange() }, 2000);
-
-      //by source
-      this.analytics_ids = 'ga:154403562'; // add user to analytics account 
-      this.analytics_metrics = 'ga:users';
-
-
-      this.analytics_startdate = '30daysAgo';
-      this.analytics_enddate = 'today';
-      this.analytics_dimensions = 'ga:medium';
-
-      this.analytics_startdate2 = '30daysAgo';
-      this.analytics_enddate2 = 'today';
-      this.analytics_dimensions2 = 'ga:date';
-
-      this.analytics_startdate3 = '30daysAgo';
-      this.analytics_enddate3 = 'today';
-      this.analytics_dimensions3 = 'ga:region';
-
-      // this.getAnalyticsLine(); // by source
-      // this.getAnalytics(); // by date
-      // this.getAnalytics3(); // by region
-    }
+    });
 
   }
 
@@ -476,6 +732,8 @@ export class DashboardComponent implements OnInit {
   //  select relation --> get info for all tabs
   onSelectRelation(option, i): void {
     this.AccountApi.addStdRelation(this.Account.id, option.id).subscribe();
+    this.option = option;
+    this.detectchange();
 
   }
 
@@ -491,12 +749,13 @@ export class DashboardComponent implements OnInit {
       .subscribe(res => { this.getLogs(); });
   }
 
-  getAdsMailing(): void {
+  getAdsMailing(graph){
+    return new Promise(async (resolve, reject) => {
     //  get the planned mailings looks shitty because the mailings of are 
     //  part of the marketingplannerevents 
     //  and are not directly related to the Relation.id itself 
     //  used include to get the related mailings and then run foreach on the events and a foreach for all the mailings
-    this.Mailing = [];
+    let Mailing = [];
     this.RelationsApi.getMarketingplannerevents(this.Account.standardrelation,
       {
         where: { scheduled: true },
@@ -508,20 +767,23 @@ export class DashboardComponent implements OnInit {
         order: 'date ASC'
       })
       .subscribe((Marketingplannerevents: Marketingplannerevents[]) => {
-        this.Marketingplannerevents = Marketingplannerevents,
-          this.Marketingplannerevents.forEach((item) => {
+          Marketingplannerevents.forEach((item) => {
             const mailingsub = item.mailing;
             mailingsub.forEach((itemMailing) => {
               itemMailing.marketingplannereventsIds = item.name;
-              this.Mailing.push(itemMailing)
+              Mailing.push(itemMailing)
             })
           })
         // console.log(this.Mailing);
         //  objects are being sorted
-        this.Mailing = this.Mailing.sort((n1, n2) => {
+        Mailing = this.Mailing.sort((n1, n2) => {
           return this.naturalCompare(n1.date, n2.date)
-        })
-      })
+        });
+        graph.data_set = graph;
+        graph.data_object = graph
+        resolve(graph)
+      });
+    });
   }
 
   //  don't try to understand this method, just use it as it is and you'll get the result
@@ -539,19 +801,22 @@ export class DashboardComponent implements OnInit {
     return ax.length - bx.length;
   }
 
-  getWebsiteTracker(): void {
-    this.Websitetracker = [];
-    //  limit is total entries, order is is important as first entry is in array ES6 move to server. 
-    this.RelationsApi.getWebsitetracker(this.option.id, {
-      where: { isp: false },
-      order: 'date DESC', limit: 100
-    })
-      .subscribe((websitetracker: Websitetracker[]) => {
-        this.Websitetracker = websitetracker.filter((WebsitetrackerFil, index, self) =>
-          index === self.findIndex((t) => (
-            t.IP === WebsitetrackerFil.IP
-          )));
-      });
+  async getWebsiteTracker() {
+    return new Promise(async (resolve, reject) => {
+      this.Websitetracker = [];
+      //  limit is total entries, order is is important as first entry is in array ES6 move to server. 
+      this.RelationsApi.getWebsitetracker(this.option.id, {
+        where: { isp: false },
+        order: 'date DESC', limit: 100
+      })
+        .subscribe((websitetracker: Websitetracker[]) => {
+          websitetracker = websitetracker.filter((WebsitetrackerFil, index, self) =>
+            index === self.findIndex((t) => (
+              t.IP === WebsitetrackerFil.IP
+            )));
+          resolve(websitetracker)
+        });
+    });
   }
 
   findWebsiteTrackerByIP(Websitetracker): void {
@@ -572,18 +837,24 @@ export class DashboardComponent implements OnInit {
   }
 
 
-  getFollowups(): void {
-    this.CompanyApi.getCalls(
-      this.Account.companyId,
-      {
-        where: { and: [{ followup: true }, { followupdone: false }] },
-        include: {
-          relation: 'relations',
-          scope: { fields: 'relationname' }
-        },
-        order: 'callbackdate ASC'
-      })
-      .subscribe((Calls: Calls[]) => this.Calls = Calls);
+  getFollowups() {
+    return new Promise(async (resolve, reject) => {
+      this.CompanyApi.getCalls(
+        this.Account.companyId,
+        {
+          where: { and: [{ followup: true }, { followupdone: false }] },
+          include: {
+            relation: 'relations',
+            scope: { fields: 'relationname' }
+          },
+          order: 'callbackdate ASC',
+          fields: {
+            content: false, notes: false, relationsId: false,
+            id: false, tasks: false, companyId: false, accountId: false
+          }
+        })
+        .subscribe((Calls: Calls[]) => { resolve(Calls) });
+    });
   }
 
   changeFollowUp(i): void {
@@ -598,175 +869,139 @@ export class DashboardComponent implements OnInit {
       });
   }
 
-  public countChannels() {
-    this.barChartDataChannel = [];
-    this.barChartDataChannelLabels.forEach(typeCh => {
+  public countChannels(graph: DataObject) {
+    return new Promise(async (resolve, reject) => {
+      let barChartDataChannel = [];
+
+      for (let i = 0; i < this.barChartDataChannelLabels.length; i++) {
+        const typeCh = this.barChartDataChannelLabels[i];
+        const res: any = await this.getChannel(typeCh);
+        barChartDataChannel.push({ data: [res.count], label: typeCh });
+      }
+      graph.data_set = barChartDataChannel;
+      graph.data_object = barChartDataChannel;
+      resolve(graph);
+    });
+  }
+  public async getChannel(typeCh) {
+    return new Promise(async (resolve, reject) => {
       this.RelationsApi.countChannels(this.option.id, { 'type': typeCh }).subscribe(res => {
-        this.barChartDataChannel.push({ data: [res.count], labels: typeCh });
+        resolve(res);
       });
     });
-    console.log(this.barChartDataChannel)
-  }
+  };
 
-  public countManagerData() {
-    let TotalNumber = [];
-    this.CompanyApi.countRelations(this.Account.companyId).subscribe(res => {
-      TotalNumber.push({ data: [res.count], labels: 'Relations' }),
-        this.CompanyApi.countCalls(this.Account.companyId).subscribe(res => {
-          TotalNumber.push({ data: [res.count], labels: 'Calls' }),
-            this.barChartManagerData = TotalNumber;
-        });
+
+  public async countManagerData(graph: DataObject) {
+    return new Promise(async (resolve, reject) => {
+      let TotalNumber = [];
+      this.CompanyApi.countRelations(this.Account.companyId).subscribe(res => {
+        TotalNumber.push({ data: [res.count], label: 'Relations' }),
+          this.CompanyApi.countCalls(this.Account.companyId).subscribe(res => {
+            TotalNumber.push({ data: [res.count], label: 'Calls' }),
+              resolve(TotalNumber);
+          });
+      });
     });
   }
 
 
-  public countRelations() {
-    let TotalNumber = [];
-    // use count include?? open issue for loopback --> create hook instead to package as one call or move to automation
-    this.CompanyApi.countPublications(this.Account.companyId).subscribe(res => {
-      TotalNumber.push(res.count),
-        this.RelationsApi.countMarketingplannerevents(this.Account.standardrelation).subscribe(res => {
-          TotalNumber.push(res.count),
-            this.RelationsApi.countFiles(this.Account.standardrelation, { 'type': 'video' }).subscribe(res => {
-              TotalNumber.push(res.count),
-                this.RelationsApi.countFiles(this.Account.standardrelation, { 'type': 'image' }).subscribe(res => {
-                  TotalNumber.push(res.count)
-                })
-            })
-          //this.getNumbers(TotalNumber);
-          this.barChartData = TotalNumber
-          //this.detectchange();
-        }, error => console.log('Could not load Marketing', error));
+  public async countPublications(graph: DataObject) {
+    return new Promise(async (resolve, reject) => {
+      let TotalNumber = [];
+      // use count include?? open issue for loopback --> create hook instead to package as one call or move to automation
+      this.CompanyApi.countPublications(this.Account.companyId).subscribe(res => {
+        TotalNumber.push({data: [res.count], label: 'Publications'}),
+          this.RelationsApi.countMarketingplannerevents(this.Account.standardrelation).subscribe(res => {
+            TotalNumber.push({data: [res.count], label: 'Mailings'}),
+              this.RelationsApi.countFiles(this.Account.standardrelation, { 'type': 'video' }).subscribe(res => {
+                TotalNumber.push({data: [res.count], label: 'Videos'}),
+                  this.RelationsApi.countFiles(this.Account.standardrelation, { 'type': 'image' }).subscribe(res => {
+                    TotalNumber.push({data: [res.count], label: 'Images'});
+                    graph.data_set = TotalNumber;
+                    graph.data_object = TotalNumber;
+                    resolve(graph);
+                  })
+              })
+
+
+          }, error => console.log('Could not load Marketing', error));
+      });
     });
 
   }
 
-  public getAnalytics() {
-    this.googleanalyticsreturn = [];
-    let Googleanalyticsnumbers = [];
-    let Googleanalyticsnames = [];
-    this.GoogleanalyticsApi.getanalyticsreport(this.selectedanalytics.id, this.analytics_ids, this.analytics_startdate,
-      this.analytics_enddate, this.analytics_dimensions, this.analytics_metrics)
-      .subscribe((data) => {
 
-        data.rows.forEach((item, index) => {
-          Googleanalyticsnumbers.push(item[1]);
-          const analyticsobject = { 'name': item[0], 'value': item[1] }
-          this.googleanalyticsreturn.push(analyticsobject);
-          Googleanalyticsnames.push(item[0]);
-        }),
-          //console.log(this.googleanalyticsreturn);
-          // get array even and uneven split
-          //this.getDoughnutNumbers(Googleanalyticsnames, Googleanalyticsnumbers); // Doughnut
-          this.doughnutChartLabels = [];
-        this.doughnutChartLabels = Googleanalyticsnames;
-        this.doughnutChartData = [];
-        this.doughnutChartData = Googleanalyticsnumbers;
-        // import to update for ngx charts
-        this.googleanalyticsreturn = [...this.googleanalyticsreturn];
-      }, error => console.log('Could not load Analytics', error));
+  async getMailStats(graph1, domain?) {
+    return new Promise(async (resolve, reject) => {
+
+      let SDomain;
+      if (domain) {
+        SDomain = domain
+        //console.log(domain)
+      } else {
+        SDomain = this.option.domain
+      }
+      //this.mailstatsspinner = true;
+      //  set d/m/h 
+      let data;
+      if (this.mailStatsTimeSelected == undefined) {
+        data = '7d';
+      } else { data = this.mailStatsTimeSelected.value }
+      this.MailingApi.getstats(this.Account.companyId, SDomain, data).subscribe(res => {
+        const mailingstats = res.res;
+        console.log('mailingstats:', mailingstats)
+        let dataset = [];
+        let delivered = { data: [], label: 'Delivered' };
+        let opened = { data: [], label: 'Opened' };
+        let clicked = { data: [], label: 'Clicked' };
+        let unsubscribed = { data: [], label: 'Unsubscribed' };
+        let complained = { data: [], label: 'Complained' };
+        let stored = { data: [], label: 'Stored' };
+        let failed = { data: [], label: 'Failed' };
+        let labelset = [];
+        // set accepted mails
+        for (let i = 0; i < mailingstats[0].stats.length; i++) {
+          const element = mailingstats[0].stats[i];
+          dataset.push(element.accepted.outgoing);
+          const time = element.time.slice(0, 16)
+          labelset.push(time);
+          delivered.data.push(element.delivered.total); // smtp/html
+          opened.data.push(element.opened.total);
+          clicked.data.push(element.clicked.total);
+          unsubscribed.data.push(element.unsubscribed.total);
+          complained.data.push(element.complained.total);
+          stored.data.push(element.stored.total);
+          failed.data.push(element.failed.permanent.total);
+
+        };
+        let graph = graph1;
+        graph.data_set = [];
+        graph.data_set.push(delivered);
+        graph.data_set.push(opened);
+        graph.data_set.push(clicked);
+        graph.data_set.push(unsubscribed);
+        graph.data_set.push(complained);
+        graph.data_set.push(stored);
+        graph.data_set.push(failed);
+        graph.data_labels = labelset;
+
+        graph.data_object = [
+          { data: [delivered.data.reduce(function (a, b) { return a + b; }, 0)], label: 'Delivered' },
+          { data: [opened.data.reduce(function (a, b) { return a + b; }, 0)], label: 'Opened' },
+          { data: [clicked.data.reduce(function (a, b) { return a + b; }, 0)], label: 'Clicked' },
+          { data: [unsubscribed.data.reduce(function (a, b) { return a + b; }, 0)], label: 'Unsubscribed' },
+          { data: [complained.data.reduce(function (a, b) { return a + b; }, 0)], label: 'Complained' },
+          { data: [stored.data.reduce(function (a, b) { return a + b; }, 0)], label: 'Stored' },
+          { data: [failed.data.reduce(function (a, b) { return a + b; }, 0)], label: 'Failed' }
+        ];
+        resolve(graph)
+      });
+    });
   }
 
-  public getAnalytics3() {
-    let Googleanalyticsnumbers3 = [];
-    let Googleanalyticsnames3 = [];
-    this.GoogleanalyticsApi.getanalyticsreport(this.selectedanalytics.id, this.analytics_ids3, this.analytics_startdate3,
-      this.analytics_enddate3, this.analytics_dimensions3, this.analytics_metrics3)
-      .subscribe((data) => {
-        const googleanalyticsreturn = data
-        googleanalyticsreturn.rows.forEach((item, index) => {
-          Googleanalyticsnumbers3.push(item[1]);
-          Googleanalyticsnames3.push(item[0]);
-        }),
-          // get array even and uneven split
-          //this.get1Numbers(Googleanalyticsnames3, Googleanalyticsnumbers3);
-          this.barChart2Labels = Googleanalyticsnames3;
-        this.barChart2Data = Googleanalyticsnumbers3;
-      }, error => console.log('Could not load Analytics', error));
-  }
-
-  public getAnalyticsLine() {
-    this.lineChartLabels = [];
-    this.lineChartData = [];
-    this.GoogleanalyticsApi.getanalyticsreport(this.selectedanalytics.id, this.analytics_ids2, this.analytics_startdate2,
-      this.analytics_enddate2, this.analytics_dimensions2, this.analytics_metrics2)
-      .subscribe(data => {
-        data.rows.forEach((item) => {
-          const txt2 = item[0].slice(0, 4) + '-' + item[0].slice(4, 12);
-          const txt3 = txt2.slice(0, 7) + '-' + txt2.slice(7, 13);
-          this.lineChartData.push(item[1]);
-          this.lineChartLabels.push(txt3);
-        });
-      }, error => console.log('Could not load Analytics', error));
-  }
-
-  getMailStats(domain?): void {
-    let SDomain;
-    if (domain) {
-      SDomain = domain
-      //console.log(domain)
-    } else {
-      SDomain = this.option.domain
-    }
-    this.mailstatsspinner = true;
-    //  set d/m/h 
-    let data;
-    if (this.mailStatsTimeSelected == undefined) {
-      data = '7d';
-    } else { data = this.mailStatsTimeSelected.value }
-    this.MailingApi.getstats(this.Account.companyId, SDomain, data).subscribe(res => {
-      const mailingstats = res.res;
-      console.log('mailingstats:', mailingstats)
-
-      // set accepted mails
-      mailingstats[0].stats.forEach(element => {
-        this.MailChartData.push(element.accepted.outgoing);
-      });
-
-      // set accepted labels/Dates
-      mailingstats[0].stats.forEach(element => {
-        const time = element.time.slice(0, 16)
-        this.MailChartLabels = time
-      });
-
-      // set accepted mails
-      mailingstats[0].stats.forEach(element => {
-        this.MailChartData.push(element.delivered.total); // smtp/html
-      });
-
-
-      mailingstats[0].stats.forEach(element => {
-        this.MailChartData.push(element.opened.total);
-      });
-
-
-      mailingstats[0].stats.forEach(element => {
-        this.MailChartData.push(element.clicked.total);
-      });
-
-      mailingstats[0].stats.forEach(element => {
-        this.MailChartData.push(element.unsubscribed.total);
-      });
-
-
-      mailingstats[0].stats.forEach(element => {
-        this.MailChartData.push(element.complained.total);
-      });
-
-
-      mailingstats[0].stats.forEach(element => {
-        this.MailChartData.push(element.stored.total);
-      });
-
-
-      mailingstats[0].stats.forEach(element => {
-        this.MailChartData.push(element.failed.permanent.total);
-      });
-
-      // this.getMailChart(acceptedNumbers, deliveredNumbers, openedNumbers, clickedNumbers, unsubscribedNumbers, complainedNumbers,
-      //   storedNumbers, failedNumbers, acceptedLabel)
-    }
-    );
+  deleteDashItem(i) {
+    this.dashboardsetup.splice(i, 1)
   }
 
   searchGoQuick(value): void {
@@ -796,48 +1031,13 @@ export class DashboardComponent implements OnInit {
 
   //  events
   public chartClicked(e: any): void {
-    // console.log(e);
+    //console.log(e);
   }
 
   public chartHovered(e: any): void {
-    // console.log(e);
+    //console.log(e);
   }
 
-  //  events
-  public chart2Clicked(e: any): void {
-    console.log(e);
-  }
-
-  public chart2Hovered(e: any): void {
-    console.log(e);
-  }
-
-  //  events
-  public MailChartClicked(e: any): void {
-    console.log(e);
-  }
-
-  public MailChartHovered(e: any): void {
-    console.log(e);
-  }
-
-  //  events
-  public chartClicked2(e: any): void {
-    console.log(e);
-  }
-
-  public chartHovered2(e: any): void {
-    console.log(e);
-  }
-
-  //  events
-  public chart3Clicked(e: any): void {
-    console.log(e);
-  }
-
-  public chart3Hovered(e: any): void {
-    console.log(e);
-  }
 
 
 }

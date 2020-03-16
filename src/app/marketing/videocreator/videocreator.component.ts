@@ -273,15 +273,15 @@ export class VideocreatorComponent implements OnInit {
     }
   }
 
-  ngOnChanges(changes: SimpleChanges) {
-    //wait for option.id
-    const currentItem: SimpleChange = changes.option;
-    if (currentItem !== undefined) {
-      if (currentItem.currentValue.id !== undefined) {
-        this.getEditFile()
-      }
-    }
-  }
+  // ngOnChanges(changes: SimpleChanges) {
+  //   //wait for option.id
+  //   const currentItem: SimpleChange = changes.option;
+  //   if (currentItem !== undefined) {
+  //     if (currentItem.currentValue.id !== undefined) {
+  //       this.getEditFile()
+  //     }
+  //   }
+  // }
 
   changevideoformat() {
     let setvideo = this.selectedvideoformat.split(' x ');

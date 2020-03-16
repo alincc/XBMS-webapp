@@ -182,16 +182,16 @@ export class ImagecreatorComponent implements OnInit {
 
   ngOnInit() { }
 
-  ngOnChanges(changes: SimpleChanges) {
-    //wait for option.id
-    const currentItem: SimpleChange = changes.option;
+  // ngOnChanges(changes: SimpleChanges) {
+  //   //wait for option.id
+  //   const currentItem: SimpleChange = changes.option;
     
-    if(currentItem !== undefined){
-      if(currentItem.currentValue.id !== undefined){
-        this.getEditFile();
-      }
-    }
-  }
+  //   if(currentItem !== undefined){
+  //     if(currentItem.currentValue.id !== undefined){
+  //       this.getEditFile();
+  //     }
+  //   }
+  // }
   
   getEditFile() {
     this.relationsApi.getFiles(this.option.id, { where: { template: { "neq":  null }, type: 'image' } })

@@ -3,6 +3,7 @@
   min-width: 200px;
   margin: 10px;
   padding: 2px;
+  overflow: scroll;
 }
 
 .savetobutton {
@@ -12,6 +13,13 @@
   right: 50px;
   position: fixed;
   z-index: 200000;
+}
+
+.top-bar{
+  top: 120px;
+  right: 50px;
+  position: fixed;
+  z-index: 200000
 }
 
 
@@ -46,13 +54,15 @@
   height: 100%;
 }
 
-.convertbutton {
-  margin-left: 80%;
-  margin-top: 30%;
-  z-index: 99;
-  position: fixed;
-  float: right;
-}
+// .convertbutton {
+//   margin-left: 80%;
+//   margin-top: 30%;
+//   z-index: 99;
+//   position: fixed;
+//   float: right;
+// }
+
+
 
 .template-container {
     position: relative;

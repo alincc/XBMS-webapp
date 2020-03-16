@@ -723,7 +723,7 @@ export class RelationComponent implements OnInit {
             this.lat = 0,
             this.lng = 0;
         },
-        () => console.log('Geocoding completed!')
+        // () => console.log('Geocoding completed!')
       );
   }
 

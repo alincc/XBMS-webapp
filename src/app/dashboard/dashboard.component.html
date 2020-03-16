@@ -1,8 +1,7 @@
-<div fxLayout="column" fxLayoutWrap="wrap" fxLayoutAlign="space-around" class="home-wrapper">
+<div fxLayout="column" class="home-wrapper">
 
-  <div *ngIf="Account" fxFlex="100%" fxLayout="column" class="topbanner">
-    <mat-card style="min-height: 100px">
-      <mat-card-content>
+  <div *ngIf="Account" style="height: auto" class="topbanner">
+    <mat-card >
         <div style="margin-left: 100px" fxFlex fxShow.xs="false">
           <tr>
             <td>
@@ -47,61 +46,253 @@
             </mat-select>
           </mat-form-field>
         </div>
-      </mat-card-content>
     </mat-card>
   </div>
 
-  <div *ngIf="changenow" fxLayout fxLayoutWrap fxLayoutGap="25px">
+  <div *ngIf="changenow" fxLayout="row wrap" fxLayoutGap="25px">
 
-    <speed-dial-fab matTooltip="Add new item" class="speed-dial-container" [reverse-column-direction]="true"
+    <speed-dial-fab matTooltip="Add new item" class="speed-dial-dashboard" [reverse-column-direction]="true"
       (fabClick)="onSpeedDialFabClicked($event)" [buttons]="speedDialFabButtons">
     </speed-dial-fab>
 
-    <div *ngFor="let dashitem of dashboardsetup" [fxFlex]="dashitem.chartsize" fxLayout="column">
-      <div>
-        <mat-form-field>
-          <mat-select [(value)]="dashitem.chartsize" (selectionChange)="detectchange()" placeholder="type">
-            <mat-option value="90%">100%</mat-option>
-            <mat-option value="45%">50%</mat-option>
-          </mat-select>
-        </mat-form-field>
-        <mat-form-field>
-          <mat-select [(value)]="dashitem.colorscheme" (selectionChange)="detectchange()" placeholder="type">
-            <mat-option value="">None</mat-option>
-            <mat-option value="greycolors">Grey</mat-option>
-          </mat-select>
-        </mat-form-field>
-        <mat-form-field>
-          <mat-select [(value)]="dashitem.charttype" (selectionChange)="detectchange()">
-            <mat-option value="table">table</mat-option>
-            <mat-option value="line">line</mat-option>
-            <mat-option value="bar">bar</mat-option>
-            <mat-option value="radar">radar</mat-option>
-            <mat-option value="pie">pie</mat-option>
-            <mat-option value="polarArea">Polararea</mat-option>
-            <mat-option value="doughnut">Doughnut</mat-option>
-          </mat-select>
-        </mat-form-field>
-        <mat-form-field>
-          <mat-select [(value)]="dashitem.dimension" (selectionChange)="detectchange()">
-            <mat-option value="ga:medium">Source</mat-option>
-            <mat-option value="ga:date">Date</mat-option>
-            <mat-option value="ga:region">Region</mat-option>
-          </mat-select>
-        </mat-form-field>
-      </div>
+    <div *ngFor="let dashitem of dashboardsetup; let i = index;" [style.width]="dashitem.chartsize" fxLayout="column"
+      class="dashitem">
+      <mat-card fxLayout="column" [style.height]="'400px'">
+
+        <div *ngIf="dashitem.charttype !== 'table' && dashitem.data_set.length > 0" class="chartdash">
+          <canvas baseChart height="90vh" width="100" [datasets]="dashitem.data_set" [labels]="dashitem.data_labels" [options]="barChartOptions"
+            [legend]="dashitem.showlegend" [chartType]="dashitem.charttype" (chartHover)="chartHovered($event)"
+            [options]="chartOptions" 
+            (chartClick)="chartClicked($event)" [colors]="dashitem.colorscheme"></canvas>
+        </div>
+
+        <div *ngIf="dashitem.charttype === 'table' && dashitem.type === 'websitedata'" class="tabledash">
+          <a mat-mini-fab color="primary" style="float: right;" (click)="getWebsiteTracker()">
+            <mat-icon>refresh</mat-icon>
+          </a>
+          <label class="mat-h4">Website Visitors</label>
+          <mat-divider></mat-divider>
+          <div>
+            <div class="websitedata" fxLayout="row" fxLayoutWrap="wrap" fxLayoutAlign="space-around">
+              <div fxFlex="23%">
+                <h4 class="mat-h4">Source</h4>
+              </div>
+              <div fxFlex="23%">
+                <h4 class="mat-h4">Visited URL</h4>
+              </div>
+              <div fxFlex="23%">
+                <h4 class="mat-h4">Address</h4>
+              </div>
+              <div fxFlex="23%">
+                <h4 class="mat-h4">Date</h4>
+              </div>
+              <div fxFlex="8%">
+                <h4 class="mat-h4">isp</h4>
+              </div>
+            </div>
+            <mat-accordion>
+              <mat-expansion-panel (opened)="findWebsiteTrackerByIP(Websitetracker)" class="websitedata"
+                *ngFor="let Websitetracker of dashitem.data_object; let i = index">
+                <mat-expansion-panel-header>
+                  <mat-panel-title>
+                    <div class="websitedata" fxLayout="row" fxLayoutWrap="wrap" fxLayoutAlign="space-around">
+                      <div fxFlex="23%">
+                        <label class="followuplist">
+                          {{ Websitetracker.companyname }}</label>
+                      </div>
+                      <div fxFlex="23%">
+                        <label class="followuplist">{{ Websitetracker.url | slice: 0:50 }}</label>
+                      </div>
+                      <div fxFlex="23%">
+                        <label class="followuplist">{{ Websitetracker.street }}</label>
+                      </div>
+                      <div fxFlex="23%">
+                        <label class="followuplist">{{ Websitetracker.date | date: "medium" }}</label>
+                      </div>
+                      <div fxFlex="8%">
+                        <label (click)="markisp(i)" style="font-size: 6pt">Mark isp</label>
+                      </div>
+                    </div>
+                  </mat-panel-title>
+                </mat-expansion-panel-header>
+
+                <div *ngFor="let visit of WebsitetrackerFullList" class="websitedata" fxLayout="row" fxLayoutWrap="wrap"
+                  fxLayoutAlign="space-around">
+                  <div fxFlex="50%">
+                    <label class="followuplist">{{ visit.url | slice: 0:50 }}</label>
+                  </div>
+                  <div fxFlex="50%">
+                    <label class="followuplist">{{ visit.date | date: "medium" }}</label>
+                  </div>
+                </div>
+
+              </mat-expansion-panel>
+            </mat-accordion>
+          </div>
+        </div>
+
+        <div *ngIf="dashitem.charttype === 'table' && dashitem.type !== 'websitedata' && dashitem.data_set.length > 0"
+          class="tabledash">
+          <app-table [tabledata]="dashitem.data_object" [tablelabels]="dashitem.data_labels">
+          </app-table>
+        </div>
+
+        <div *ngIf="dashitem.chartype === 'table' && dashitem.type === 'upcomingmailings'" class="tabledash">
+          <!-- <div fxFlex="30%" fxLayout="row" fxLayoutWrap="wrap" fxLayoutAlign="space-around"> -->
+    
+              <a mat-mini-fab color="primary" style="float: right;" (click)="getAdsMailing()">
+                <mat-icon>refresh</mat-icon>
+              </a>
+              <label class="mat-h4">Scheduled Mailings, Ads and Articles</label>
+              <mat-divider></mat-divider>
+              <table class="websitedata">
+                <tr fxLayout="column" fxLayoutWrap="wrap" fxLayoutAlign="space-around">
+                  <mat-list-item>
+                    <th fxFlex="20%" class="thwebsitetr">
+                      <label class="followuplist">Campaign</label>
+                    </th>
+                    <th fxFlex="20%" class="thwebsitetr">
+                      <label class="followuplist">Subject</label>
+                    </th>
+                    <th fxFlex="20%" class="thwebsitetr">
+                      <label class="followuplist">From</label>
+                    </th>
+                    <th fxFlex="20%" class="thwebsitetr">
+                      <label class="followuplist">Title</label>
+                    </th>
+                    <th fxFlex="20%" class="thwebsitetr">
+                      <label class="followuplist">Date</label>
+                    </th>
+                  </mat-list-item>
+                </tr>
+                <tr fxLayout="column" fxLayoutWrap="wrap" fxLayoutAlign="space-around"
+                  *ngFor="let Mailing of dashitem.data_set; let i = index">
+                  <mat-list-item>
+                    <td fxFlex="20%" class="tdwebsitetr">
+                      <label class="followuplist">{{Mailing.marketingplannereventsIds}}</label>
+                    </td>
+                    <td fxFlex="20%" class="tdwebsitetr">
+                      <label class="followuplist">{{ Mailing.subject }}</label>
+                    </td>
+                    <td fxFlex="20%" class="tdwebsitetr">
+                      <label class="followuplist">{{ Mailing.from | slice: 0:50 }}</label>
+                    </td>
+                    <td fxFlex="20%" class="tdwebsitetr">
+                      <label class="followuplist">{{ Mailing.title }}</label>
+                    </td>
+                    <td fxFlex="20%" class="tdwebsitetr">
+                      <label class="followuplist">{{Mailing.date | date: "medium"}}</label>
+                    </td>
+                  </mat-list-item>
+                  <mat-divider></mat-divider>
+                </tr>
+              </table>
+           
+          </div>
+        
+
+        <mat-accordion fxFlex="20%">
+          <mat-expansion-panel>
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                {{dashitem.type}}
+              </mat-panel-title>
+            </mat-expansion-panel-header>
+            <mat-form-field>
+              <mat-select [(value)]="dashitem.chartsize" (selectionChange)="detectchange()" placeholder="size">
+                <mat-option value="100%">1</mat-option>
+                <mat-option value="47%">1/2</mat-option>
+                <mat-option value="30%">1/3</mat-option>
+                <mat-option value="22%">1/4</mat-option>
+              </mat-select>
+            </mat-form-field>
+            <mat-form-field>
+              <mat-select [(value)]="dashitem.color" (selectionChange)="setColor(dashitem)" placeholder="color">
+                <mat-option value="auto">Auto</mat-option>
+                <mat-option value="grey">Grey</mat-option>
+                <mat-option value="red">Red</mat-option>
+                <mat-option value="blue">Blue</mat-option>
+                <mat-option value="green">Green</mat-option>
+                <mat-option value="pink">Pink</mat-option>
+                <mat-option value="yellow">Yellow</mat-option>
+                <mat-option value="azure">Azure</mat-option>
+                <mat-option value="purple">Purple</mat-option>
+                <mat-option value="darkblue">Dark blue</mat-option>
+              </mat-select>
+            </mat-form-field>
+            <mat-form-field>
+              <mat-select [(value)]="dashitem.charttype" (selectionChange)="detectchange()">
+                <mat-option value="table">table</mat-option>
+                <mat-option value="line">line</mat-option>
+                <mat-option value="bar">bar</mat-option>
+                <mat-option value="radar">radar</mat-option>
+                <mat-option value="pie">pie</mat-option>
+                <mat-option value="polarArea">Polararea</mat-option>
+                <mat-option value="doughnut">Doughnut</mat-option>
+              </mat-select>
+            </mat-form-field>
+            <mat-form-field *ngIf="dashitem.type === 'Google Analytics'">
+              <mat-select [(value)]="dashitem.dimension" (selectionChange)="detectchange()">
+                <mat-option value="ga:medium">Source</mat-option>
+                <mat-option value="ga:date">Date</mat-option>
+                <mat-option value="ga:region">Region</mat-option>
+                <mat-option value="ga:city">City</mat-option>
+                <mat-option value="ga:browser">Browser</mat-option>
+                <mat-option value="ga:sessions">Sessions</mat-option>
+                <mat-option value="ga:bounces">Bounces</mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <mat-form-field >
+              <mat-label>Choose a start date</mat-label>
+              <input matInput [min]="minDate" [max]="maxDate" (dateChange)="detectchange()" [matDatepicker]="picker1" [(ngModel)]="dashitem.startdate">
+              <mat-datepicker-toggle matSuffix [for]="picker1" ></mat-datepicker-toggle>
+              <mat-datepicker #picker1></mat-datepicker>
+            </mat-form-field>
+
+            <mat-form-field >
+              <mat-label>Choose a end date</mat-label>
+              <input matInput [min]="minDate" [max]="maxDate" (dateChange)="detectchange()" [matDatepicker]="picker2" [(ngModel)]="dashitem.enddate">
+              <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+              <mat-datepicker #picker2></mat-datepicker>
+            </mat-form-field>
+
+            <mat-form-field *ngIf="dashitem.type === 'Google Analytics'">
+              <mat-select [(value)]="dashitem.startdate" (selectionChange)="detectchange()">
+                <mat-option value="today">Today</mat-option>
+                <mat-option value="yesterday">Yesterday</mat-option>
+                <mat-option value="30daysAgo">Last 30 Days</mat-option>
+                <mat-option value="365daysAgo">Last year</mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <mat-form-field *ngIf="dashitem.type === 'Google Analytics'">
+              <mat-select [(value)]="dashitem.enddate" (selectionChange)="detectchange()">
+                <mat-option value="today">Today</mat-option>
+                <mat-option value="yesterday">Yesterday</mat-option>
+                <mat-option value="30daysAgo">Last 30 Days</mat-option>
+                <mat-option value="365daysAgo">Last year</mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <mat-checkbox [(ngModel)]="dashitem.showlegend">Show legend</mat-checkbox>
+            <mat-checkbox [(ngModel)]="dashitem.show">Show labels</mat-checkbox>
 
 
-      <div *ngIf="dashitem.charttype !== 'table' && dashitem.data_set.length > 0">
-        <canvas baseChart [datasets]="dashitem.data_set" [labels]="dashitem.data_labels" [options]="barChartOptions"
-          [legend]="barChartLegend" [chartType]="dashitem.charttype" (chartHover)="chartHovered($event)"
-          (chartClick)="chartClicked($event)"></canvas>
-      </div>
-      <div *ngIf="dashitem.charttype === 'table' && dashitem.data_set.length > 0">
-        <app-table [tabledata]="dashitem.data_set" [tablelabels]="dashitem.data_labels">
-        </app-table>
-      </div>
+            <mat-select *ngIf="dashitem.type !== 'Google Analytics'" style="width: 200px; height: 50px;" placeholder="Select timeframe"
+              [(value)]="mailStatsTimeSelected">
+              <mat-option *ngFor="let mailStatsTime of mailStatsTime" [value]="mailStatsTime"
+                (blur)="getMailStats(dashitem)">
+                {{ mailStatsTime.viewValue }}
+              </mat-option>
+            </mat-select>
 
+            <mat-icon (click)="deleteDashItem(i)">delete</mat-icon>
+
+          </mat-expansion-panel>
+        </mat-accordion>
+
+      </mat-card>
 
     </div>
 
@@ -160,91 +351,7 @@
 
     </div>
 
-    <div fxFlex="30%" fxLayout="row" fxLayoutWrap="wrap" fxLayoutAlign="space-around">
-      <div fxFlex="45%" class="innerfollowup">
-        <a mat-mini-fab color="primary" style="float: right;" (click)="getAdsMailing()">
-          <mat-icon>refresh</mat-icon>
-        </a>
-        <label class="mat-h4">Scheduled Mailings, Ads and Articles</label>
-        <mat-divider></mat-divider>
-        <table class="websitedata">
-          <tr fxLayout="column" fxLayoutWrap="wrap" fxLayoutAlign="space-around">
-            <mat-list-item>
-              <th fxFlex="20%" class="thwebsitetr">
-                <label class="followuplist">Campaign</label>
-              </th>
-              <th fxFlex="20%" class="thwebsitetr">
-                <label class="followuplist">Subject</label>
-              </th>
-              <th fxFlex="20%" class="thwebsitetr">
-                <label class="followuplist">From</label>
-              </th>
-              <th fxFlex="20%" class="thwebsitetr">
-                <label class="followuplist">Title</label>
-              </th>
-              <th fxFlex="20%" class="thwebsitetr">
-                <label class="followuplist">Date</label>
-              </th>
-            </mat-list-item>
-          </tr>
-          <tr fxLayout="column" fxLayoutWrap="wrap" fxLayoutAlign="space-around"
-            *ngFor="let Mailing of Mailing; let i = index">
-            <mat-list-item>
-              <td fxFlex="20%" class="tdwebsitetr">
-                <label class="followuplist">{{Mailing.marketingplannereventsIds}}</label>
-              </td>
-              <td fxFlex="20%" class="tdwebsitetr">
-                <label class="followuplist">{{ Mailing.subject }}</label>
-              </td>
-              <td fxFlex="20%" class="tdwebsitetr">
-                <label class="followuplist">{{ Mailing.from | slice: 0:50 }}</label>
-              </td>
-              <td fxFlex="20%" class="tdwebsitetr">
-                <label class="followuplist">{{ Mailing.title }}</label>
-              </td>
-              <td fxFlex="20%" class="tdwebsitetr">
-                <label class="followuplist">{{Mailing.date | date: "medium"}}</label>
-              </td>
-            </mat-list-item>
-            <mat-divider></mat-divider>
-          </tr>
-        </table>
-      </div>
-      <div fxFlex="45%" class="innerfollowup">
-        <label class="mat-h4">Follow Up</label>
-        <mat-divider></mat-divider>
-        <div>
-          <mat-list class="followuptable">
-            <table class="followuptableinner">
-              <tr *ngFor="let Calls of Calls; let i = index">
-                <mat-list-item>
-                  <td class="td1">
-                    <label class="followuplist">{{
-                      Calls.relations.relationname
-                    }}</label>
-                  </td>
-                  <td class="td2">
-                    <label class="followuplist">{{
-                      Calls.title | slice: 0:30
-                    }}</label>
-                  </td>
-                  <td class="td3">
-                    <label class="followuplist">{{
-                      Calls.callbackdate | date
-                    }}</label>
-                  </td>
-                  <td class="td4">
-                    <mat-checkbox class="followuplist" (click)="changeFollowUp(i)" [(ngModel)]="Calls.followupdone">
-                    </mat-checkbox>
-                  </td>
-                </mat-list-item>
-                <mat-divider></mat-divider>
-              </tr>
-            </table>
-          </mat-list>
-        </div>
-      </div>
-    </div>
+    
 
     <div fxFlex="30%" fxLayout="row" fxLayoutWrap="wrap" fxLayoutAlign="space-around">
 
