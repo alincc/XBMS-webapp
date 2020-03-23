@@ -410,15 +410,11 @@ export class FilesdlcrApi extends BaseLoopBackApi {
    *
    * @param {string} id 
    *
+   * @param {string} videourl 
+   *
    * @param {object} data Request data.
    *
-   *  - `name` – `{string}` - 
-   *
-   *  - `canvas` – `{string}` - 
-   *
-   *  - `animations` – `{string}` - 
-   *
-   *  - `duration` – `{number}` - 
+   * This method does not accept any data. Supply an empty object.
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -429,62 +425,16 @@ export class FilesdlcrApi extends BaseLoopBackApi {
    * This usually means the response is a `Filesdlcr` object.)
    * </em>
    */
-  public screenshotanimation(id: any = {}, name: any = {}, canvas: any = {}, animations: any = {}, duration: any = {}, customHeaders?: Function): Observable<any> {
+  public convertVideo2mp4(id: any = {}, videourl: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "POST";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/filesdlcrs/screenshotanimation/:id";
+    "/filesdlcrs/convertvideo2mp4/:id";
     let _routeParams: any = {
       id: id
     };
-    let _postBody: any = {
-      data: {
-        name: name,
-        canvas: canvas,
-        animations: animations,
-        duration: duration
-      }
-    };
+    let _postBody: any = {};
     let _urlParams: any = {};
-    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-    return result;
-  }
-
-  /**
-   * <em>
-         * (The remote method definition does not provide any description.)
-         * </em>
-   *
-   * @param {string} id 
-   *
-   * @param {object} data Request data.
-   *
-   *  - `url` – `{string}` - 
-   *
-   *  - `name` – `{string}` - 
-   *
-   * @returns {object} An empty reference that will be
-   *   populated with the actual data once the response is returned
-   *   from the server.
-   *
-   * <em>
-   * (The remote method definition does not provide any description.
-   * This usually means the response is a `Filesdlcr` object.)
-   * </em>
-   */
-  public screenshot(id: any = {}, url: any = {}, name: any = {}, customHeaders?: Function): Observable<any> {
-    let _method: string = "POST";
-    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/filesdlcrs/screenshot/:id";
-    let _routeParams: any = {
-      id: id
-    };
-    let _postBody: any = {
-      data: {
-        url: url,
-        name: name
-      }
-    };
-    let _urlParams: any = {};
+    if (typeof videourl !== 'undefined' && videourl !== null) _urlParams.videourl = videourl;
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
     return result;
   }

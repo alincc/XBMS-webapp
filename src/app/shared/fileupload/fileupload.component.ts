@@ -67,10 +67,10 @@ export class FileuploadComponent implements OnInit {
       this.Files = files,
         this.Files.forEach((file, index) => {
           // console.log(file, index);
-          let ext = file.name.split('.').pop(); 
-          if (ext === 'gif' || ext === "jpeg" || ext === "jpg" || ext === "bmp" || ext === "png"  ){
-            const modalImage = BASE_URL + '/api/Containers/' + this.option.id + '/download/' + file.name ;
-           //const modal = {index, modalImage}
+          let ext = file.name.split('.').pop();
+          if (ext === 'gif' || ext === "jpeg" || ext === "jpg" || ext === "bmp" || ext === "png") {
+            const modalImage = BASE_URL + '/api/Containers/' + this.option.id + '/download/' + file.name;
+            //const modal = {index, modalImage}
             this.imagesNew.push(modalImage)
           }
         }),
@@ -79,9 +79,9 @@ export class FileuploadComponent implements OnInit {
 
     this.uploader.onAfterAddingAll = (files) => {
       files.forEach(fileItem => {
-   fileItem.file.name = fileItem.file.name.replace(/ /g, '-');
- });
-};
+        fileItem.file.name = fileItem.file.name.replace(/ /g, '-');
+      });
+    };
 
   }
 
@@ -148,10 +148,10 @@ export class FileuploadComponent implements OnInit {
     // set download url or actual url for publishing
     let imgurl = BASE_URL + '/api/Containers/' + this.option.id + '/download/' + name
     imgurl = imgurl.replace(/ /g, '-'),
-    // imgurl = encodeURI(imgurl);
-    // define the file settings
-    this.newFiles.size = size,
-    this.newFiles.name = name,
+      // imgurl = encodeURI(imgurl);
+      // define the file settings
+      this.newFiles.size = size,
+      this.newFiles.name = name,
       this.newFiles.url = imgurl,
       this.newFiles.createdate = new Date(),
       this.newFiles.type = 'image',
@@ -163,8 +163,8 @@ export class FileuploadComponent implements OnInit {
             this.ContainerApi.createContainer({ name: this.option.id })
               .subscribe(res => this.uploadFile()));
   }
-  
-  
+
+
 
   uploadFile(): void {
     this.uploader.uploadAll();
@@ -194,19 +194,99 @@ export class dialoggallerycomponent implements OnInit {
   public isoIcons = IconsIso;
   public existingIsoIcons = [];
 
+
+  public fromaccountslice = 11;
+  public standardiconsslice = 35;
+  public isoiconslice = 11;
+  public fromaccountsliceMin = 0;
+  public standardiconssliceMin = 0;
+  public isoiconsliceMin = 0;
+
+  public accountimages = [];
+  public fromaccountarray = [];
+  public standardiconsarray = [];
+  public isoiconarray = [];
+
   constructor(
     public dialogRef: MatDialogRef<dialoggallerycomponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData) { }
 
   ngOnInit() {
-    this.icons.forEach(element => {
+    this.icons.forEach((element, i) => {
       const iconurl = BASE_URL + element;
-      this.existingIcons.push(iconurl);
+      if (i < 36) { this.existingIcons.push(iconurl) };
+      this.standardiconsarray.push(iconurl);
     });
-    this.isoIcons.forEach(iso => {
+
+    this.isoIcons.forEach((iso, i) => {
       const isourl = BASE_URL + iso;
-      this.existingIsoIcons.push(isourl);
+      if (i < 12) { this.existingIsoIcons.push(isourl) };
+      this.isoiconarray.push(isourl);
     })
+
+    this.data.img.forEach((iso, i) => {
+      //const isourl = BASE_URL + iso;
+      if (i < 12) { this.accountimages.push(iso) };
+      this.fromaccountarray.push(iso);
+    })
+  }
+
+  next(galtype) {
+    switch (galtype) {
+      case 'fromaccount': {
+        if (this.fromaccountslice < this.fromaccountarray.length) {
+          this.fromaccountslice = this.fromaccountslice + 12;
+          this.fromaccountsliceMin = this.fromaccountsliceMin + 12;
+          this.accountimages = this.fromaccountarray.slice(this.fromaccountsliceMin, this.fromaccountslice)
+         
+        }
+      }
+      case 'standardicons': {
+        if (this.standardiconsslice < this.standardiconsarray.length) {
+          this.standardiconsslice = this.standardiconsslice + 36;
+          this.standardiconssliceMin = this.standardiconssliceMin + 36;
+          this.existingIcons = this.standardiconsarray.slice(this.standardiconssliceMin, this.standardiconsslice)
+         
+        }
+      }
+      case 'isoicon': {
+        if (this.isoiconslice < this.isoiconarray.length) {
+          this.isoiconslice = this.isoiconslice + 12;
+          this.isoiconsliceMin = this.isoiconsliceMin + 12;
+          this.existingIsoIcons = this.isoiconarray.slice(this.isoiconsliceMin, this.isoiconslice)
+          
+        }
+      }
+    }
+  }
+
+  before(galtype) {
+    switch (galtype) {
+      case 'fromaccount': {
+        if (this.fromaccountsliceMin > 0 ) {
+          this.fromaccountslice = this.fromaccountslice - 12;
+          this.fromaccountsliceMin = this.fromaccountsliceMin - 12;
+          this.accountimages = this.fromaccountarray.slice(this.fromaccountsliceMin, this.fromaccountslice)
+          
+        }
+      }
+      case 'standardicons': {
+        if (this.standardiconssliceMin > 0) {
+          this.standardiconsslice = this.standardiconsslice - 36;
+          this.standardiconssliceMin = this.standardiconssliceMin - 36;
+          this.existingIcons = this.standardiconsarray.slice(this.standardiconssliceMin, this.standardiconsslice)
+          
+        }
+      }
+      case 'isoicon': {
+        if (this.isoiconsliceMin > 0) {
+          this.isoiconslice = this.isoiconslice - 12;
+          this.isoiconsliceMin = this.isoiconsliceMin - 12;
+          this.existingIsoIcons = this.isoiconarray.slice(this.isoiconsliceMin, this.isoiconslice)
+          
+        }
+      }
+    }
   }
 
   onNoClick(): void {

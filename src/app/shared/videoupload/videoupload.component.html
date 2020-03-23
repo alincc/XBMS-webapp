@@ -16,7 +16,7 @@
         <input type="file" ng2FileSelect [uploader]="uploader" />
         <div *ngIf="errorMessage">{{errorMessage}}</div>
 
-        <div *ngFor="let item of uploader.queue" style="min-width: 50px;">
+        <div *ngFor="let item of uploader.queue" style="min-width: 50px;" fxLayout="column">
             <table>
                 <tr>
                     {{ item?.file?.name}}
@@ -50,10 +50,15 @@
                     </td>
                 </tr>
             </table>
-
+        </div>
+        <div *ngIf="converting">
+            <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+            <label>Converting Video.. this can take a while</label>
         </div>
 
         </mat-expansion-panel>
     </div>
+
+
 
 </div>

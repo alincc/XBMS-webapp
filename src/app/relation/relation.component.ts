@@ -592,9 +592,12 @@ export class RelationComponent implements OnInit {
         this.data = res,
           this.relationindex = this.Relations.push(this.data) - 1,
           this.onSelect(this.data, this.relationindex);
+          this.ContainerApi.createContainer({name: this.data.id}).subscribe(res => {
+            console.log(res);
       });
-    }
+    });
   }
+}
 
   //Create new Call
   public openDialogNewCall() {

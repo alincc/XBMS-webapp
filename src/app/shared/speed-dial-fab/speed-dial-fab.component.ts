@@ -23,6 +23,7 @@ export enum SpeedDialFabPosition {
 export class SpeedDialFabComponent {
 
   @Input("reverse-column-direction") reverseColumnDirection: boolean = false;
+  @Input("direction") direction: string = 'column';
   @Input("buttons") fabButtons: FabButton[];
   @Output('fabClick') fabClick = new EventEmitter();
 

@@ -1,77 +1,91 @@
 <div fxLayout="column" class="home-wrapper">
 
   <div *ngIf="Account" style="height: auto" class="topbanner">
-    <mat-card >
-        <div style="margin-left: 100px" fxFlex fxShow.xs="false">
-          <tr>
-            <td>
-              <mat-icon>person</mat-icon> Welcome back, {{ Account.username }}
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <mat-icon>work</mat-icon> {{ Account.companyname }}
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <mat-icon>schedule</mat-icon> Last login:
-              {{ Account.lastlogin | date: "medium" }}
-            </td>
-          </tr>
-        </div>
-        <div fxFlex class="selectrelation">
+    <mat-card>
+      <div style="margin-left: 100px" fxFlex fxShow.xs="false">
+        <tr>
+          <td>
+            <mat-icon>person</mat-icon> Welcome back, {{ Account.username }}
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <mat-icon>work</mat-icon> {{ Account.companyname }}
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <mat-icon>schedule</mat-icon> Last login:
+            {{ Account.lastlogin | date: "medium" }}
+          </td>
+        </tr>
+      </div>
+      <div fxFlex class="selectrelation">
 
-          <mat-chip-list *ngIf="option" style="margin: 10px">
-            <mat-chip color="primary" class="mat-h4">{{ option.relationname }}</mat-chip>
-          </mat-chip-list>
-          <mat-form-field>
-            <input type="text" placeholder="Select Relation" aria-label="relation" matInput
-              (keyup)="searchGoQuick($event.srcElement.value)" [matAutocomplete]="relations">
-            <mat-autocomplete #relations="matAutocomplete" [displayWith]="displayFnRelation">
-              <mat-option *ngFor="let option of filteredRelations; let i = index" [value]="option"
-                (blur)="onSelectRelation(option, i)">
-                {{ option.relationname }}
-              </mat-option>
-            </mat-autocomplete>
-          </mat-form-field>
+        <mat-chip-list *ngIf="option" style="margin: 10px">
+          <mat-chip color="primary" class="mat-h4">{{ option.relationname }}</mat-chip>
+        </mat-chip-list>
+        <mat-form-field>
+          <input type="text" placeholder="Select Relation" aria-label="relation" matInput
+            (keyup)="searchGoQuick($event.srcElement.value)" [matAutocomplete]="relations">
+          <mat-autocomplete #relations="matAutocomplete" [displayWith]="displayFnRelation">
+            <mat-option *ngFor="let option of filteredRelations; let i = index" [value]="option"
+              (blur)="onSelectRelation(option, i)">
+              {{ option.relationname }}
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
 
+        <mat-form-field *ngIf="selectedanalytics" class="selectboxheader">
+          <mat-select [(ngModel)]="selectedanalytics.name" placeholder="GA Account" class="InputField"
+            (selectionChange)="buildDashboard()">
+            <mat-option *ngFor="let selectedanalytics of GoogleanalyticsModel" [value]="selectedanalytics">
+              {{ selectedanalytics.name }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
 
-          <mat-form-field *ngIf="selectedanalytics" class="selectboxheader">
-            <mat-select [(ngModel)]="selectedanalytics.name" placeholder="GA Account" class="InputField"
-              (selectionChange)="buildDashboard()">
-              <mat-option *ngFor="let selectedanalytics of GoogleanalyticsModel" [value]="selectedanalytics">
-                {{ selectedanalytics.name }}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
-        </div>
+        <mat-form-field *ngIf="Account" class="selectboxheader">
+          <mat-select placeholder="Dashboard" class="InputField"
+            (selectionChange)="loadDashboard($event)">
+            <mat-option *ngFor="let dash of Account.dashboards; let i = index;" [value]="i">
+              <div fxLayout="row">
+              {{ dash.name }}
+            </div>
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
     </mat-card>
   </div>
 
   <div *ngIf="changenow" fxLayout="row wrap" fxLayoutGap="25px">
 
-    <speed-dial-fab matTooltip="Add new item" class="speed-dial-dashboard" [reverse-column-direction]="true"
+    <div class="speed-dial-dashboard" fxLayout="row">
+      <speed-dial-fab matTooltip="Add new item"  [reverse-column-direction]="false" [direction]="row"
       (fabClick)="onSpeedDialFabClicked($event)" [buttons]="speedDialFabButtons">
     </speed-dial-fab>
+    <button mat-mini-fab matTooltip="Toggle Edit mode" (click)="editmodeChange()" color="primary">
+      <mat-icon aria-label="label">edit</mat-icon>
+    </button>
+    <button mat-mini-fab matTooltip="Create new Dashboard" (click)="newDashboard()" color="primary">
+      <mat-icon aria-label="label">add</mat-icon>
+    </button>
+    </div>
 
-    <div *ngFor="let dashitem of dashboardsetup; let i = index;" [style.width]="dashitem.chartsize" fxLayout="column"
+
+    <div *ngFor="let dashitem of dashboardsetup; let i1 = index;" [style.width]="dashitem.chartsize" fxLayout="column"
       class="dashitem">
       <mat-card fxLayout="column" [style.height]="'400px'">
-
-        <div *ngIf="dashitem.charttype !== 'table' && dashitem.data_set.length > 0" class="chartdash">
-          <canvas baseChart height="90vh" width="100" [datasets]="dashitem.data_set" [labels]="dashitem.data_labels" [options]="barChartOptions"
-            [legend]="dashitem.showlegend" [chartType]="dashitem.charttype" (chartHover)="chartHovered($event)"
-            [options]="chartOptions" 
-            (chartClick)="chartClicked($event)" [colors]="dashitem.colorscheme"></canvas>
+        <h4 style="color: grey; text-align: center;"> {{dashitem.type}} </h4>
+        <div *ngIf="dashitem.charttype !== 'table' && dashitem.charttype !== 'map' && dashitem.data_set.length > 0" class="chartdash">
+          <canvas baseChart height="90vh" width="100" [datasets]="dashitem.data_set" [labels]="dashitem.data_labels"
+            [options]="barChartOptions" [legend]="dashitem.showlegend" [chartType]="dashitem.charttype"
+            (chartHover)="chartHovered($event)" [options]="chartOptions" (chartClick)="chartClicked($event)"
+            [colors]="dashitem.colorscheme"></canvas>
         </div>
 
-        <div *ngIf="dashitem.charttype === 'table' && dashitem.type === 'websitedata'" class="tabledash">
-          <a mat-mini-fab color="primary" style="float: right;" (click)="getWebsiteTracker()">
-            <mat-icon>refresh</mat-icon>
-          </a>
-          <label class="mat-h4">Website Visitors</label>
-          <mat-divider></mat-divider>
+        <div *ngIf="dashitem.charttype === 'table' && dashitem.type === 'Website data'" class="tabledash">
           <div>
             <div class="websitedata" fxLayout="row" fxLayoutWrap="wrap" fxLayoutAlign="space-around">
               <div fxFlex="23%">
@@ -97,20 +111,20 @@
                   <mat-panel-title>
                     <div class="websitedata" fxLayout="row" fxLayoutWrap="wrap" fxLayoutAlign="space-around">
                       <div fxFlex="23%">
-                        <label class="followuplist">
+                        <label class="listsfont">
                           {{ Websitetracker.companyname }}</label>
                       </div>
                       <div fxFlex="23%">
-                        <label class="followuplist">{{ Websitetracker.url | slice: 0:50 }}</label>
+                        <label class="listsfont">{{ Websitetracker.url | slice: 0:50 }}</label>
                       </div>
                       <div fxFlex="23%">
-                        <label class="followuplist">{{ Websitetracker.street }}</label>
+                        <label class="listsfont">{{ Websitetracker.street }}</label>
                       </div>
                       <div fxFlex="23%">
-                        <label class="followuplist">{{ Websitetracker.date | date: "medium" }}</label>
+                        <label class="listsfont">{{ Websitetracker.date | date: "medium" }}</label>
                       </div>
                       <div fxFlex="8%">
-                        <label (click)="markisp(i)" style="font-size: 6pt">Mark isp</label>
+                        <label class="listsfont" (click)="markisp(i)" style="font-size: 6pt">Mark isp</label>
                       </div>
                     </div>
                   </mat-panel-title>
@@ -119,10 +133,10 @@
                 <div *ngFor="let visit of WebsitetrackerFullList" class="websitedata" fxLayout="row" fxLayoutWrap="wrap"
                   fxLayoutAlign="space-around">
                   <div fxFlex="50%">
-                    <label class="followuplist">{{ visit.url | slice: 0:50 }}</label>
+                    <label>{{ visit.url | slice: 0:50 }}</label>
                   </div>
                   <div fxFlex="50%">
-                    <label class="followuplist">{{ visit.date | date: "medium" }}</label>
+                    <label>{{ visit.date | date: "medium" }}</label>
                   </div>
                 </div>
 
@@ -131,167 +145,182 @@
           </div>
         </div>
 
-        <div *ngIf="dashitem.charttype === 'table' && dashitem.type !== 'websitedata' && dashitem.data_set.length > 0"
+        <div *ngIf="dashitem.charttype === 'map'" class="tabledash" style="height: 100%; width: 100%;" onfocusout="mapLabelName = ''">
+          <!-- [label]="{color: 'black', fontFamily: 'Open Sans', fontSize: '10', text: Websitetracker.companyname}"  -->
+          <agm-map [latitude]="latitude" [longitude]="longitude" [zoom]="zoom" style="height: 90%; width: 100%;"
+          [styles]="mapStyle">
+            <div *ngFor="let Websitetracker of dashitem.data_object" style="height: 100%; width: 100%;">
+              <agm-marker 
+              [iconUrl]="{url: mapLabelName ===  Websitetracker ? 'https://api.xbms.io/assets/icons/colour-cirle-set/web/tick.png' : 'https://api.xbms.io/assets/icons/colour-cirle-set/office/location.png',
+              scaledSize: { width: 30, height: 30 }}"
+              [latitude]="Websitetracker.lat" (mouseOver)="mouseOverMapMarker(Websitetracker)" [longitude]="Websitetracker.lon"></agm-marker>
+            </div>
+          </agm-map>
+          <label *ngIf="dashitem.type === 'Website data' && mapLabelName">Companyname: {{ mapLabelName.companyname }}</label>
+          <label *ngIf="dashitem.type === 'Google Analytics' && mapLabelName">Visits: {{ mapLabelName.data }}</label>
+        </div>
+
+        <div *ngIf="dashitem.charttype === 'table' && dashitem.type !== 'Website data' && dashitem.type !== 'Scheduled' && dashitem.data_set.length > 0"
           class="tabledash">
           <app-table [tabledata]="dashitem.data_object" [tablelabels]="dashitem.data_labels">
           </app-table>
         </div>
-
-        <div *ngIf="dashitem.chartype === 'table' && dashitem.type === 'upcomingmailings'" class="tabledash">
-          <!-- <div fxFlex="30%" fxLayout="row" fxLayoutWrap="wrap" fxLayoutAlign="space-around"> -->
-    
-              <a mat-mini-fab color="primary" style="float: right;" (click)="getAdsMailing()">
-                <mat-icon>refresh</mat-icon>
-              </a>
-              <label class="mat-h4">Scheduled Mailings, Ads and Articles</label>
-              <mat-divider></mat-divider>
-              <table class="websitedata">
-                <tr fxLayout="column" fxLayoutWrap="wrap" fxLayoutAlign="space-around">
-                  <mat-list-item>
-                    <th fxFlex="20%" class="thwebsitetr">
-                      <label class="followuplist">Campaign</label>
-                    </th>
-                    <th fxFlex="20%" class="thwebsitetr">
-                      <label class="followuplist">Subject</label>
-                    </th>
-                    <th fxFlex="20%" class="thwebsitetr">
-                      <label class="followuplist">From</label>
-                    </th>
-                    <th fxFlex="20%" class="thwebsitetr">
-                      <label class="followuplist">Title</label>
-                    </th>
-                    <th fxFlex="20%" class="thwebsitetr">
-                      <label class="followuplist">Date</label>
-                    </th>
-                  </mat-list-item>
-                </tr>
-                <tr fxLayout="column" fxLayoutWrap="wrap" fxLayoutAlign="space-around"
-                  *ngFor="let Mailing of dashitem.data_set; let i = index">
-                  <mat-list-item>
-                    <td fxFlex="20%" class="tdwebsitetr">
-                      <label class="followuplist">{{Mailing.marketingplannereventsIds}}</label>
-                    </td>
-                    <td fxFlex="20%" class="tdwebsitetr">
-                      <label class="followuplist">{{ Mailing.subject }}</label>
-                    </td>
-                    <td fxFlex="20%" class="tdwebsitetr">
-                      <label class="followuplist">{{ Mailing.from | slice: 0:50 }}</label>
-                    </td>
-                    <td fxFlex="20%" class="tdwebsitetr">
-                      <label class="followuplist">{{ Mailing.title }}</label>
-                    </td>
-                    <td fxFlex="20%" class="tdwebsitetr">
-                      <label class="followuplist">{{Mailing.date | date: "medium"}}</label>
-                    </td>
-                  </mat-list-item>
-                  <mat-divider></mat-divider>
-                </tr>
-              </table>
-           
-          </div>
         
+        <div *ngIf="dashitem.charttype === 'table' && dashitem.type === 'Scheduled'" class="tabledash">
+          <label class="mat-h4">Scheduled Mailings, Ads and Articles</label>
+         
 
-        <mat-accordion fxFlex="20%">
-          <mat-expansion-panel>
-            <mat-expansion-panel-header>
-              <mat-panel-title>
-                {{dashitem.type}}
-              </mat-panel-title>
-            </mat-expansion-panel-header>
-            <mat-form-field>
-              <mat-select [(value)]="dashitem.chartsize" (selectionChange)="detectchange()" placeholder="size">
-                <mat-option value="100%">1</mat-option>
-                <mat-option value="47%">1/2</mat-option>
-                <mat-option value="30%">1/3</mat-option>
-                <mat-option value="22%">1/4</mat-option>
+          <table mat-table [dataSource]="dashitem.data_object" matSort style="width: 100%;">
+
+            <!-- Position Column -->
+            <ng-container matColumnDef="marketingplannereventsIds">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Campaign </th>
+              <td mat-cell class="tablefonts" *matCellDef="let element"> {{element.marketingplannereventsIds}} </td>
+            </ng-container>
+        
+            <!-- Name Column -->
+            <ng-container matColumnDef="subject">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Subject </th>
+              <td mat-cell class="tablefonts" *matCellDef="let element"> {{element.subject}} </td>
+            </ng-container>
+        
+            <!-- Weight Column -->
+            <ng-container matColumnDef="from">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> From </th>
+              <td mat-cell class="tablefonts" *matCellDef="let element"> {{element.from}} </td>
+            </ng-container>
+        
+            <!-- Symbol Column -->
+            <ng-container matColumnDef="title">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Title </th>
+              <td mat-cell class="tablefonts" *matCellDef="let element"> {{element.title}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="date">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Date </th>
+              <td mat-cell class="tablefonts" *matCellDef="let element"> {{element.date | date: "medium" }} </td>
+            </ng-container>
+        
+            <tr mat-header-row *matHeaderRowDef="dashitem.data_labels"></tr>
+            <tr mat-row *matRowDef="let row; columns: dashitem.data_labels;"></tr>
+          </table>
+        
+          <!-- <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator> -->
+
+        </div>
+
+        <div fxFlex="50px" fxLayout="row" *ngIf="editmode" style="z-index: 10;">
+          <mat-accordion >
+            <mat-expansion-panel>
+              <mat-expansion-panel-header>
+                <mat-panel-title>
+                 Settings
+                </mat-panel-title>
+              </mat-expansion-panel-header>
+              <mat-form-field>
+                <mat-select [(value)]="dashitem.chartsize" (selectionChange)="detectchange()" placeholder="size">
+                  <mat-option value="100%">1</mat-option>
+                  <mat-option value="47%">1/2</mat-option>
+                  <mat-option value="30%">1/3</mat-option>
+                  <mat-option value="22%">1/4</mat-option>
+                  <mat-option value="60%">2/3</mat-option>
+                  <mat-option value="66%">3/4</mat-option>
+                </mat-select>
+              </mat-form-field>
+              <mat-form-field>
+                <mat-select [(value)]="dashitem.color" (selectionChange)="setColor(dashitem)" placeholder="color">
+                  <mat-option value="auto">Auto</mat-option>
+                  <mat-option value="grey">Grey</mat-option>
+                  <mat-option value="red">Red</mat-option>
+                  <mat-option value="blue">Blue</mat-option>
+                  <mat-option value="green">Green</mat-option>
+                  <mat-option value="pink">Pink</mat-option>
+                  <mat-option value="yellow">Yellow</mat-option>
+                  <mat-option value="azure">Azure</mat-option>
+                  <mat-option value="purple">Purple</mat-option>
+                  <mat-option value="darkblue">Dark blue</mat-option>
+                </mat-select>
+              </mat-form-field>
+              <mat-form-field>
+                <mat-select [(value)]="dashitem.charttype" (selectionChange)="detectchange()">
+                  <mat-option value="table">Table</mat-option>
+                  <mat-option value="line">Line</mat-option>
+                  <mat-option value="bar">Bar</mat-option>
+                  <mat-option value="radar">Radar</mat-option>
+                  <mat-option value="pie">Pie</mat-option>
+                  <mat-option value="polarArea">Polararea</mat-option>
+                  <mat-option value="doughnut">Doughnut</mat-option>
+                  <mat-option value="map">Map</mat-option>
+                </mat-select>
+              </mat-form-field>
+              <mat-form-field *ngIf="dashitem.type === 'Google Analytics'">
+                <mat-select [(value)]="dashitem.dimension" (selectionChange)="detectchange()">
+                  <mat-option value="ga:medium">Source</mat-option>
+                  <mat-option value="ga:date">Date</mat-option>
+                  <mat-option value="ga:region">Region</mat-option>
+                  <mat-option value="ga:city">City</mat-option>
+                  <mat-option value="ga:browser">Browser</mat-option>
+                  <mat-option value="ga:sessions">Sessions</mat-option>
+                  <mat-option value="ga:bounces">Bounces</mat-option>
+                </mat-select>
+              </mat-form-field>
+  
+              <mat-form-field *ngIf="dashitem.type === 'Google Analytics'">
+                <mat-label>Choose a start date</mat-label>
+                <input matInput [min]="minDate" [max]="maxDate" (dateChange)="detectchange()" [matDatepicker]="picker1"
+                  [(ngModel)]="dashitem.startdate">
+                <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                <mat-datepicker #picker1></mat-datepicker>
+              </mat-form-field>
+  
+              <mat-form-field *ngIf="dashitem.type === 'Google Analytics'">
+                <mat-label>Choose a end date</mat-label>
+                <input matInput [min]="minDate" [max]="maxDate" (dateChange)="detectchange()" [matDatepicker]="picker2"
+                  [(ngModel)]="dashitem.enddate">
+                <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+                <mat-datepicker #picker2></mat-datepicker>
+              </mat-form-field>
+  
+              <mat-form-field *ngIf="dashitem.type === 'Google Analytics'">
+                <mat-select [(value)]="dashitem.startdate" (selectionChange)="detectchange()">
+                  <mat-option value="today">Today</mat-option>
+                  <mat-option value="yesterday">Yesterday</mat-option>
+                  <mat-option value="30daysAgo">Last 30 Days</mat-option>
+                  <mat-option value="365daysAgo">Last year</mat-option>
+                </mat-select>
+              </mat-form-field>
+  
+              <mat-form-field *ngIf="dashitem.type === 'Google Analytics'">
+                <mat-select [(value)]="dashitem.enddate" (selectionChange)="detectchange()">
+                  <mat-option value="today">Today</mat-option>
+                  <mat-option value="yesterday">Yesterday</mat-option>
+                  <mat-option value="30daysAgo">Last 30 Days</mat-option>
+                  <mat-option value="365daysAgo">Last year</mat-option>
+                </mat-select>
+              </mat-form-field>
+  
+              <mat-checkbox [(ngModel)]="dashitem.showlegend">Show legend</mat-checkbox>
+              <!-- <mat-checkbox [(ngModel)]="dashitem.show">Show labels</mat-checkbox> -->
+  
+
+              <mat-select *ngIf="dashitem.type !== 'Google Analytics'" style="width: 200px; height: 50px;"
+                placeholder="Select timeframe" [(value)]="mailStatsTimeSelected">
+                <mat-option *ngFor="let mailStatsTime of mailStatsTime" [value]="mailStatsTime"
+                  (blur)="getMailStats(dashitem)">
+                  {{ mailStatsTime.viewValue }}
+                </mat-option>
               </mat-select>
-            </mat-form-field>
-            <mat-form-field>
-              <mat-select [(value)]="dashitem.color" (selectionChange)="setColor(dashitem)" placeholder="color">
-                <mat-option value="auto">Auto</mat-option>
-                <mat-option value="grey">Grey</mat-option>
-                <mat-option value="red">Red</mat-option>
-                <mat-option value="blue">Blue</mat-option>
-                <mat-option value="green">Green</mat-option>
-                <mat-option value="pink">Pink</mat-option>
-                <mat-option value="yellow">Yellow</mat-option>
-                <mat-option value="azure">Azure</mat-option>
-                <mat-option value="purple">Purple</mat-option>
-                <mat-option value="darkblue">Dark blue</mat-option>
-              </mat-select>
-            </mat-form-field>
-            <mat-form-field>
-              <mat-select [(value)]="dashitem.charttype" (selectionChange)="detectchange()">
-                <mat-option value="table">table</mat-option>
-                <mat-option value="line">line</mat-option>
-                <mat-option value="bar">bar</mat-option>
-                <mat-option value="radar">radar</mat-option>
-                <mat-option value="pie">pie</mat-option>
-                <mat-option value="polarArea">Polararea</mat-option>
-                <mat-option value="doughnut">Doughnut</mat-option>
-              </mat-select>
-            </mat-form-field>
-            <mat-form-field *ngIf="dashitem.type === 'Google Analytics'">
-              <mat-select [(value)]="dashitem.dimension" (selectionChange)="detectchange()">
-                <mat-option value="ga:medium">Source</mat-option>
-                <mat-option value="ga:date">Date</mat-option>
-                <mat-option value="ga:region">Region</mat-option>
-                <mat-option value="ga:city">City</mat-option>
-                <mat-option value="ga:browser">Browser</mat-option>
-                <mat-option value="ga:sessions">Sessions</mat-option>
-                <mat-option value="ga:bounces">Bounces</mat-option>
-              </mat-select>
-            </mat-form-field>
-
-            <mat-form-field >
-              <mat-label>Choose a start date</mat-label>
-              <input matInput [min]="minDate" [max]="maxDate" (dateChange)="detectchange()" [matDatepicker]="picker1" [(ngModel)]="dashitem.startdate">
-              <mat-datepicker-toggle matSuffix [for]="picker1" ></mat-datepicker-toggle>
-              <mat-datepicker #picker1></mat-datepicker>
-            </mat-form-field>
-
-            <mat-form-field >
-              <mat-label>Choose a end date</mat-label>
-              <input matInput [min]="minDate" [max]="maxDate" (dateChange)="detectchange()" [matDatepicker]="picker2" [(ngModel)]="dashitem.enddate">
-              <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
-              <mat-datepicker #picker2></mat-datepicker>
-            </mat-form-field>
-
-            <mat-form-field *ngIf="dashitem.type === 'Google Analytics'">
-              <mat-select [(value)]="dashitem.startdate" (selectionChange)="detectchange()">
-                <mat-option value="today">Today</mat-option>
-                <mat-option value="yesterday">Yesterday</mat-option>
-                <mat-option value="30daysAgo">Last 30 Days</mat-option>
-                <mat-option value="365daysAgo">Last year</mat-option>
-              </mat-select>
-            </mat-form-field>
-
-            <mat-form-field *ngIf="dashitem.type === 'Google Analytics'">
-              <mat-select [(value)]="dashitem.enddate" (selectionChange)="detectchange()">
-                <mat-option value="today">Today</mat-option>
-                <mat-option value="yesterday">Yesterday</mat-option>
-                <mat-option value="30daysAgo">Last 30 Days</mat-option>
-                <mat-option value="365daysAgo">Last year</mat-option>
-              </mat-select>
-            </mat-form-field>
-
-            <mat-checkbox [(ngModel)]="dashitem.showlegend">Show legend</mat-checkbox>
-            <mat-checkbox [(ngModel)]="dashitem.show">Show labels</mat-checkbox>
-
-
-            <mat-select *ngIf="dashitem.type !== 'Google Analytics'" style="width: 200px; height: 50px;" placeholder="Select timeframe"
-              [(value)]="mailStatsTimeSelected">
-              <mat-option *ngFor="let mailStatsTime of mailStatsTime" [value]="mailStatsTime"
-                (blur)="getMailStats(dashitem)">
-                {{ mailStatsTime.viewValue }}
-              </mat-option>
-            </mat-select>
-
-            <mat-icon (click)="deleteDashItem(i)">delete</mat-icon>
-
-          </mat-expansion-panel>
-        </mat-accordion>
-
+  
+              <mat-icon (click)="deleteDashItem(i1)">delete</mat-icon>
+  
+            </mat-expansion-panel>
+          </mat-accordion>
+  
+          <mat-icon matTooltip="up" (click)="moveSectionUp(i1)" class="iconsize-14 sectionlabelbuttons" matSuffix>
+            arrow_drop_up</mat-icon>
+          <mat-icon matTooltip="down" (click)="moveSectionDown(i1)" class="iconsize-14 sectionlabelbuttons" matSuffix>
+            arrow_drop_down</mat-icon>
+        </div>
       </mat-card>
 
     </div>
@@ -386,17 +415,17 @@
                 <mat-panel-title>
                   <div class="websitedata" fxLayout="row" fxLayoutWrap="wrap" fxLayoutAlign="space-around">
                     <div fxFlex="23%">
-                      <label class="followuplist">
+                      <label >
                         {{ Websitetracker.companyname }}</label>
                     </div>
                     <div fxFlex="23%">
-                      <label class="followuplist">{{ Websitetracker.url | slice: 0:50 }}</label>
+                      <label >{{ Websitetracker.url | slice: 0:50 }}</label>
                     </div>
                     <div fxFlex="23%">
-                      <label class="followuplist">{{ Websitetracker.street }}</label>
+                      <label >{{ Websitetracker.street }}</label>
                     </div>
                     <div fxFlex="23%">
-                      <label class="followuplist">{{ Websitetracker.date | date: "medium" }}</label>
+                      <label >{{ Websitetracker.date | date: "medium" }}</label>
                     </div>
                     <div fxFlex="8%">
                       <label (click)="markisp(i)" style="font-size: 6pt">Mark isp</label>
@@ -408,10 +437,10 @@
               <div *ngFor="let visit of WebsitetrackerFullList" class="websitedata" fxLayout="row" fxLayoutWrap="wrap"
                 fxLayoutAlign="space-around">
                 <div fxFlex="50%">
-                  <label class="followuplist">{{ visit.url | slice: 0:50 }}</label>
+                  <label >{{ visit.url | slice: 0:50 }}</label>
                 </div>
                 <div fxFlex="50%">
-                  <label class="followuplist">{{ visit.date | date: "medium" }}</label>
+                  <label >{{ visit.date | date: "medium" }}</label>
                 </div>
               </div>
 

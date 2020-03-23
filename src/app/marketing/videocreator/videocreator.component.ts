@@ -3762,7 +3762,7 @@ export class VideocreatorComponent implements OnInit {
       console.log(name)
       if (name) {
         this.relationsApi.getFiles(this.option.id, { where: { name: this.name } })
-          .subscribe((res => {
+          .subscribe(res => {
             if (res.length > 0) { name = name + '-1' }
             let imgurl = BASE_URL + '/api/Containers/' + this.option.id + '/download/' + name;
             let setimgurl = 'https://api.xbms.io/api/Containers/' + this.option.id + '/download/' + name;
@@ -3790,7 +3790,7 @@ export class VideocreatorComponent implements OnInit {
               
             });
 
-          }));
+          });
       } else {
         this.restoreChart(meta);
       }

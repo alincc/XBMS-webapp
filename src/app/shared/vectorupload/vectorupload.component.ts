@@ -279,20 +279,36 @@ import { StockVector } from './stockvector'
 export class dialogvectorgallerycomponent implements OnInit {
 
   //public fileVideo = StockVideo;
-  public existingIcons = [];
+
   public vector = StockVector;
+
+  public fromfileArray = [];
+  public fromfile = [];
+  public fromfileSlice = 11;
+  public fromfileSliceMin = 0;
+
   public stockvectors = [];
+  public stockvectorsArray = [];
+  public stockvectorsSlice = 11;
+  public stockvectorsSliceMin = 0;
+
 
   constructor(
     public dialogRef: MatDialogRef<dialogvectorgallerycomponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData) { }
 
   ngOnInit() {
-    this.vector.forEach(element => {
+    this.vector.forEach((element, i) => {
       const iconurl = element;
       //const previewurl = BASE_URL + element + '#t=0.5';
       var filename = iconurl.replace(/^.*[\\\/]/, '')
-      this.stockvectors.push({ url: iconurl, name: filename });
+      if (i < 12) { this.stockvectors.push({ url: iconurl, name: filename }); }
+      this.stockvectorsArray.push({ url: iconurl, name: filename });
+    });
+
+    this.data.img.forEach((element, i) => {
+      if (i < 12) { this.fromfile.push(element); }
+      this.fromfileArray.push(element);
     });
   }
 
@@ -310,6 +326,48 @@ export class dialogvectorgallerycomponent implements OnInit {
 
   selectedimage(img): void {
     this.data.selected = img;
+  }
+
+  next(galtype) {
+    switch (galtype) {
+      case 'fromaccount': {
+        if (this.fromfileSlice < this.fromfileArray.length -1 ) {
+          this.fromfileSlice = this.fromfileSlice + 12;
+          this.fromfileSliceMin = this.fromfileSliceMin + 12;
+          this.fromfile = this.fromfileArray.slice(this.fromfileSliceMin, this.fromfileSlice)
+
+        }
+      }
+      case 'standardvectors': {
+        if (this.stockvectorsSlice < this.stockvectorsArray.length -1) {
+          this.stockvectorsSlice = this.stockvectorsSlice + 12;
+          this.stockvectorsSliceMin = this.stockvectorsSliceMin + 12
+          this.stockvectors = this.stockvectorsArray.slice(this.stockvectorsSliceMin, this.stockvectorsSlice)
+
+        }
+      }
+    }
+  }
+
+  before(galtype) {
+    switch (galtype) {
+      case 'fromaccount': {
+        if (this.fromfileSliceMin > 0) {
+          this.fromfileSlice = this.fromfileSlice - 12;
+          this.fromfileSliceMin = this.fromfileSliceMin - 12
+          this.fromfile = this.fromfileArray.slice(this.fromfileSliceMin, this.fromfileSlice)
+
+        }
+      }
+      case 'standardvectors': {
+        if (this.stockvectorsSliceMin > 0) {
+          this.stockvectorsSlice = this.stockvectorsSlice - 12;
+          this.stockvectorsSliceMin = this.stockvectorsSliceMin - 12
+          this.stockvectors = this.stockvectorsArray.slice(this.stockvectorsSliceMin, this.stockvectorsSlice)
+
+        }
+      }
+    }
   }
 
 }

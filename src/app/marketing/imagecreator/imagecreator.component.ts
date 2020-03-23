@@ -7,12 +7,15 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { ChartDataSets, ChartOptions } from 'chart.js';
 import { Color, BaseChartDirective, Label } from 'ng2-charts';
 import { ViewChild, ElementRef } from '@angular/core';
-import { FileUploader, FileItem } from 'ng2-file-upload';
+import { FileUploader, FileItem, FileUploaderOptions } from 'ng2-file-upload';
 import { MediaObserver, MediaChange } from '@angular/flex-layout';
 //import * as pluginAnnotations from 'chartjs-plugin-annotation';
-import {Subscription} from 'rxjs';
+import { Subscription } from 'rxjs';
 import { fonts } from '../../shared/listsgeneral/fonts';
-
+import html2canvas from 'html2canvas';
+import { DomSanitizer } from '@angular/platform-browser';
+import { DialogsService } from './../../dialogsservice/dialogs.service';
+import { async } from 'rxjs/internal/scheduler/async';
 
 export class image {
   type: 'image';
@@ -87,9 +90,9 @@ export class chart {
   posy: number;
   setpos: object;
   lineChartOptions: ChartOptions = {
-     scales: {
+    scales: {
       // We use this empty structure as a placeholder for dynamic theming.
-      xAxes:[
+      xAxes: [
         {
           gridLines: {
             color: 'rgba(255,0,0,0.3)',
@@ -129,7 +132,8 @@ export class ImagecreatorComponent implements OnInit {
   @Input() option: Relations;
   @Input() company: Company;
 
-  public Fonts =  fonts;
+  public editmode = true;
+  public Fonts = fonts;
   public listviewxsshow = false;
   public showprogressbar = false;
   public uploader: FileUploader;
@@ -139,7 +143,7 @@ export class ImagecreatorComponent implements OnInit {
   public shiftX = 0;
   public shiftY = 0;
   public aspectRatio = true;
-  public imagename = 'New Image';
+  public imagename = '';
   public editableimage: Files;
   public editableimages: Files[];
   public context: CanvasRenderingContext2D;
@@ -167,12 +171,14 @@ export class ImagecreatorComponent implements OnInit {
 
   watcher: Subscription;
   activeMediaQuery;
- 
+
   constructor(
+    public dialogsService: DialogsService,
     public media: MediaObserver,
     private relationsApi: RelationsApi,
     private filesApi: FilesApi,
     public snackBar: MatSnackBar,
+    private sanitizer: DomSanitizer
   ) {
     // detect screen type
     this.watcher = media.media$.subscribe((change: MediaChange) => {
@@ -185,16 +191,16 @@ export class ImagecreatorComponent implements OnInit {
   // ngOnChanges(changes: SimpleChanges) {
   //   //wait for option.id
   //   const currentItem: SimpleChange = changes.option;
-    
+
   //   if(currentItem !== undefined){
   //     if(currentItem.currentValue.id !== undefined){
   //       this.getEditFile();
   //     }
   //   }
   // }
-  
+
   getEditFile() {
-    this.relationsApi.getFiles(this.option.id, { where: { template: { "neq":  null }, type: 'image' } })
+    this.relationsApi.getFiles(this.option.id, { where: { template: { "neq": null }, type: 'image' } })
       .subscribe((files: Files[]) => {
         this.editableimages = files;
         //console.log('received files', this.editableimages);
@@ -352,10 +358,10 @@ export class ImagecreatorComponent implements OnInit {
       }
     ];
     let lineChartOptions: ChartOptions = {
-     
+
       scales: {
         // We use this empty structure as a placeholder for dynamic theming.
-        xAxes:[
+        xAxes: [
           {
             gridLines: {
               color: 'rgba(0,0,0,0.3)',
@@ -399,7 +405,7 @@ export class ImagecreatorComponent implements OnInit {
       posy: 50,
       setpos: { 'x': 20, 'y': 50 },
       lineChartOptions: lineChartOptions
-      
+
     }
     this.images.push(chart);
     console.log(chart);
@@ -422,49 +428,73 @@ export class ImagecreatorComponent implements OnInit {
     this.images[i].style.height = e.size.height + 'px';
   }
 
-  OnSaveImage() {
-    this.showprogressbar = true;
-    let urluse = BASE_URL + '/api/Containers/' + this.option.id + '/upload';
-    this.uploader = new FileUploader({ url: urluse });
-    let i = 0;
-    this.images.forEach((img, index) => {
-      if (img.type === 'chart') {
-        let idn = "graph" + index;
-        let canvas = <HTMLCanvasElement>document.getElementById(idn);
-        canvas.toBlob((blob1) => {
-          let image = blob1;
-          let name = Math.random().toString(36).substring(7) + '.png';
-          // set upload url
-          let date: number = new Date().getTime();
-          let blob: Blob = new Blob([image]);
-          // contents must be an array of strings, each representing a line in the new file
-          let file = new File([blob], name, { type: "image/png", lastModified: date });
-          let fileItem = new FileItem(this.uploader, file, {});
-          this.uploader.queue.push(fileItem);
-          fileItem.upload();
+  async OnSaveImage() {
+    // hide resize handles
+    this.editmode = false;
+    this.detectchange();
 
-          this.uploader.onCompleteItem = (item:any, response:any, status:any, headers:any) => {
-          // set download url or actual url for publishing
-          let imgurl = BASE_URL + '/api/Containers/' + this.option.id + '/download/' + name;
-          imgurl = imgurl.replace(/ /g, '-'),
-            this.images[index].src = imgurl;
-          // define the file settings
-          this.newFiles.name = name,
-            this.newFiles.url = imgurl,
-            this.newFiles.createdate = new Date(),
-            this.newFiles.type = 'image',
-            this.newFiles.companyId = this.Account.companyId,
-            // check if container exists and create
-            this.relationsApi.createFiles(this.option.id, this.newFiles)
-              .subscribe(res => {
-                ++i; if (i === this.images.length) { this.convertchartdata() }
-                console.log(res);
-              });
-        };
+    // check if name is set and check name duplicates 
+    let name = this.imagename + '.jpeg';
+    if (!this.imagename) {
+      name = Math.random().toString(36).substring(7) + '.jpeg';
+    }
 
-        }, 'image/png', 1);
-      } else { ++i; if (i === this.images.length) { this.convertchartdata() } }
-    });
+    this.relationsApi.getFiles(this.option.id, { where: { name: name } })
+      .subscribe(async (res) => {
+        if (res.length > 0) {
+          name = this.imagename + '1' + '.jpeg'
+        }
+        // welcome to callback hell please reformat!
+        await new Promise(resolve => setTimeout(resolve, 400));
+        let w = parseInt(this.canvas.width, 10);
+        let h = parseInt(this.canvas.height, 10);
+        window.scrollTo(0, 0);
+        html2canvas(document.getElementById('imagecontainer'), { width: w, height: h, useCORS: true }).then(canvas => {
+          var imgData = canvas.toDataURL("image/jpeg");
+          const previewstring = '<div style="width: 400px; height: 400px;"><img style="width: 400px;" src="' + imgData + '" /></div>';
+          const previewhtml = [];
+          previewhtml.push(this.sanitizer.bypassSecurityTrustHtml(previewstring));
+          this.editmode = true;
+          this.detectchange();
+          this.dialogsService
+            .confirm('Preview', 'Save Image?', previewhtml[0])
+            .subscribe((res) => {
+              if (res) {
+                canvas.toBlob((blob1) => {
+                  let blob: Blob = new Blob([blob1]);
+                  let date: number = new Date().getTime();
+                  let file = new File([blob], name, { type: "image/jpeg", lastModified: date });
+                  let urluse = BASE_URL + '/api/Containers/' + this.option.id + '/upload';
+                  this.uploader = new FileUploader({ url: urluse });
+                  let fileItem = new FileItem(this.uploader, file, {});
+                  this.uploader.queue.push(fileItem);
+                  fileItem.upload();
+                  this.uploader.onCompleteItem = (item: any, response: any, status: any, headers: any) => {
+                    // set download url or actual url for publishing
+                    let imgurl = BASE_URL + '/api/Containers/' + this.option.id + '/download/' + name;
+                    imgurl = imgurl.replace(/ /g, '-'),
+                      // define the file settings
+                      this.newFiles.name = name,
+                      this.newFiles.url = imgurl,
+                      this.newFiles.createdate = new Date(),
+                      this.newFiles.type = 'image',
+                      this.newFiles.companyId = this.Account.companyId,
+
+                      this.relationsApi.createFiles(this.option.id, this.newFiles)
+                        .subscribe(res => {
+                          this.snackBar.open("Image saved!", undefined, {
+                            duration: 2000,
+                            panelClass: 'snackbar-class'
+                          });
+                          console.log(res);
+                        });
+                  };
+                });
+
+              }
+            });
+        });
+      });
   }
 
   convertchartdata(): void {
@@ -477,15 +507,15 @@ export class ImagecreatorComponent implements OnInit {
           dataelement._meta = undefined;
         });
         ++i;
-        if (i === this.images.length){
+        if (i === this.images.length) {
           console.log(this.images)
-          this.uploadFinalImages(this.images) 
+          this.uploadFinalImages(this.images)
         }
       } else {
         ++i;
-        if (i === this.images.length){
+        if (i === this.images.length) {
           console.log(this.images)
-          this.uploadFinalImages(this.images) 
+          this.uploadFinalImages(this.images)
         }
       }
     });
@@ -504,7 +534,7 @@ export class ImagecreatorComponent implements OnInit {
       })
   }
 
-  resetImage(): void{
+  resetImage(): void {
     this.images = [];
     this.canvas = {
       width: '600px',
@@ -565,17 +595,17 @@ export class ImagecreatorComponent implements OnInit {
     this.detectchange();
   }
 
-  setbold(img){
-    if (img.style['font-weight'] === 'bold'){
+  setbold(img) {
+    if (img.style['font-weight'] === 'bold') {
       img.style['font-weight'] = '';
-    } else{
+    } else {
       img.style['font-weight'] = 'bold';
     }
     this.detectchange();
   }
 
-  setitalic(img){
-    if (img.style['font-style'] === 'italic'){
+  setitalic(img) {
+    if (img.style['font-style'] === 'italic') {
       img.style['font-style'] = '';
     } else {
       img.style['font-style'] = 'italic';
@@ -593,9 +623,9 @@ export class ImagecreatorComponent implements OnInit {
 
   imageChangedEvent: any = '';
   croppedImage: any = '';
-  
+
   fileChangeEvent(event: any): void {
-      this.imageChangedEvent = event;
+    this.imageChangedEvent = event;
   }
 
 

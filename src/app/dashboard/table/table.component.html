@@ -1,11 +1,9 @@
-
-  <table mat-table [dataSource]="tabledata" class="table-dashboard">
-    <ng-container [matColumnDef]="col" *ngFor="let col of columnsToDisplay">
-      <mat-header-cell *matHeaderCellDef> {{ col }} </mat-header-cell>
-      <mat-cell *matCellDef="let element"> {{ element[col] }} </mat-cell>
-    </ng-container>
-    <mat-header-row *matHeaderRowDef="columnsToDisplay; sticky: true"></mat-header-row>
-    <mat-row *matRowDef="let row; columns: columnsToDisplay;">{{ row }}</mat-row>
-
-    <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
-  </table>
+<table mat-table [dataSource]="tabledata" class="table-dashboard" style="width: 100%;">
+  <ng-container [matColumnDef]="col" *ngFor="let col of columnsToDisplay">
+    <mat-header-cell *matHeaderCellDef> {{ col }} </mat-header-cell>
+    <mat-cell *matCellDef="let element" style="font-size: 0.5em;"> {{ element[col] }}  </mat-cell>
+  </ng-container>
+  <mat-header-row *matHeaderRowDef="columnsToDisplay; sticky: false"></mat-header-row>
+  <mat-row *matRowDef="let row; columns: columnsToDisplay;">{{ row }}</mat-row>
+</table>
+<!-- <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator> -->

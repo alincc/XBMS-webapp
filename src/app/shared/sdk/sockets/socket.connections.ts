@@ -202,6 +202,6 @@ export class SocketConnection {
         clearInterval(heartbeater);
       }
     }, 15000);
-   // this.socket.on('lb-pong', (data: any) => console.info('Heartbeat: ', data));
+    this.socket.on('lb-pong', (data: any) => console.info('Heartbeat: ', data));
   }
 }

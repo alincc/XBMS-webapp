@@ -790,7 +790,7 @@
               </div>
               <div *ngIf="selectedfile.type === 'marketing-video' || selectedfile.type === 'video'"
                 style="max-width: 600px;">
-                <video *ngIf="selectedfile.url" [vgMedia]="media" #media id="singleVideo" preload="auto" controls style="max-width: 600px;" source [src]="selectedfile.url" type="video/mp4">
+                <video *ngIf="selectedfile.url"  preload="auto" controls style="max-width: 600px;" [src]="selectedfile.url">
                 </video>
               </div>
               <img *ngIf="selectedfile.type !== 'marketing-video' || selectedfile.type !== 'video' || selectedfile.type !== 'vector' "

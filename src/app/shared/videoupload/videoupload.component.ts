@@ -1,12 +1,12 @@
 import { Component, OnInit, Input, Output, EventEmitter, Inject } from '@angular/core';
 import { FileUploader } from 'ng2-file-upload';
 const URL = 'http://localhost:3000/api/containers/tmp/upload';
-import { ContainerApi, Files, Relations, RelationsApi, Company, Account, FilesApi } from '../sdk';
+import { ContainerApi, Files, Relations, RelationsApi, Company, Account, FilesApi, FilesdlcrApi } from '../sdk';
 import { BASE_URL, API_VERSION } from '../base.api'
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 export interface DialogData {
-  img;
+  videos;
   selected;
 }
 
@@ -19,20 +19,18 @@ export class VideouploadComponent implements OnInit {
 
   uploader: FileUploader;
   errorMessage: string;
-  allowedMimeType = ['video/mp4', 'video/mpeg4', 'video/mov', 'video/avi', 'video/wmv'];
-  maxFileSize = 100 * 1024 * 1024;
+  allowedMimeType = ['video/mp4', 'video/mpeg4', 'video/mov', 'video/avi', 'video/wmv', 'video/quicktime'];
+  maxFileSize = 500 * 1024 * 1024;
   public hasBaseDropZoneOver = false;
   public hasAnotherDropZoneOver = false;
-  //public ImageModalEvent: ImageModalEvent
-  // public buttonsConfigFull: ButtonsConfig;
-  // public images: Image[] = [];
-  // public imagesNew: Image[] = [];
   public Files: Files[];
   public newFiles: Files = new Files();
   public showdropbox = true;
   public showgallery = false;
   public selectedimage;
   public videos = [];
+  public filetype;
+  public converting = false;
 
 
   @Input('option') option: Relations; //get id for image gallery
@@ -40,6 +38,7 @@ export class VideouploadComponent implements OnInit {
   @Output() imgurl = new EventEmitter(); //send url img back
 
   constructor(
+    public filesdlcrApi: FilesdlcrApi,
     public dialog: MatDialog,
     public ContainerApi: ContainerApi,
     public relationsApi: RelationsApi,
@@ -59,6 +58,8 @@ export class VideouploadComponent implements OnInit {
     this.uploader.onAfterAddingAll = (files) => {
       files.forEach(fileItem => {
         fileItem.file.name = fileItem.file.name.replace(/ /g, '-');
+        //console.log(fileItem)
+        this.filetype = fileItem.file.type;
       });
     };
 
@@ -94,29 +95,28 @@ export class VideouploadComponent implements OnInit {
       {
         where: { type: 'video' }
       }).subscribe((files: Files[]) => {
-        this.videos = files
+        this.videos = files;
+
+        this.showdropbox = false;
+        // this.showgallery = true;
+        if (this.Files === undefined) {
+        }
+
+        // console.log(this.imagesNew)
+        const dialogRef = this.dialog.open(dialogvideogallerycomponent, {
+          width: '600px',
+          data: { videos: this.videos, selected: this.selectedimage }
+        });
+        dialogRef.afterClosed().subscribe(result => {
+          console.log('The dialog was closed', result);
+          // this.animal = result;
+          if (result) {
+            this.setimage(result)
+          } else {
+            this.showdropbox = true;
+          };
+        })
       });
-
-    this.showdropbox = false;
-    // this.showgallery = true;
-    if (this.Files === undefined) {
-    }
-
-    // console.log(this.imagesNew)
-    const dialogRef = this.dialog.open(dialogvideogallerycomponent, {
-      width: '600px',
-      data: { img: this.videos, selected: this.selectedimage }
-    });
-    dialogRef.afterClosed().subscribe(result => {
-      console.log('The dialog was closed', result);
-      // this.animal = result;
-      if (result) {
-        this.setimage(result)
-      } else {
-        this.showdropbox = true;
-      };
-    })
-
   }
 
   setimage(url) {
@@ -126,10 +126,11 @@ export class VideouploadComponent implements OnInit {
   }
 
   // set constiable and upload + save reference in Publications
-  setupload(name, size): void {
+  async setupload(name, size) {
     // set upload url
     let urluse = BASE_URL + '/api/Containers/' + this.option.id + '/upload';
     this.uploader.setOptions({ url: urluse });
+    name = await this.checkName(name);
 
     // set download url or actual url for publishing
     let imgurl = BASE_URL + '/api/Containers/' + this.option.id + '/download/' + name
@@ -143,23 +144,63 @@ export class VideouploadComponent implements OnInit {
       this.newFiles.type = 'video',
       this.newFiles.companyId = this.account.companyId,
       // check if container exists and create
-      this.ContainerApi.findById(this.option.id)
-        .subscribe(res => this.uploadFile(),
-          error =>
-            this.ContainerApi.createContainer({ name: this.option.id })
-              .subscribe(res => this.uploadFile()));
+
+      this.uploadFile(imgurl);
   }
 
-  uploadFile(): void {
+
+  checkName(name) {
+    return new Promise(async (resolve, reject) => {
+      this.relationsApi.getFiles(this.option.id, { where: { name: name } })
+        .subscribe(res => {
+          let newname = name;
+          if (res.length > 0) {
+            const ext = '.' + name.substr(name.lastIndexOf('.') + 1);
+            name.replace(ext, '');
+            let name1 = name + '-1'
+            newname = name1 + ext;
+            console.log(newname);
+          }
+
+          resolve(newname);
+        });
+    });
+  }
+
+
+  uploadFile(url) {
     this.uploader.uploadAll();
+    this.uploader.onCompleteItem = (item, response, status, header) => {
+      if (status === 200) {
+        this.converting = true;
+        // if (this.filetype === 'video/quicktime') {
+        url = url.replace('http://localhost:3000', 'https://api.xbms.io')
+        this.fileApi.convertVideo2mp4(this.option.id, url).subscribe((res) => {
+          console.log(res)
+          this.newFiles.name = this.newFiles.name.replace('.mov', '.mp4');
+          this.newFiles.url = this.newFiles.url.replace('.mov', '.mp4');
+          this.newFiles.size = res;
+          this.uploadFileToStore();
+          this.converting = false;
+        });
+        // } else {
+        //   this.uploadFileToStore();
+        // }
+
+      }
+    }
+  }
+
+  uploadFileToStore() {
     this.relationsApi.createFiles(this.option.id, this.newFiles)
       .subscribe(res => {
         console.log(res), this.setimage(res.url)
-        // this.imgurl.emit(res.url)
-      });
+      })
   }
 
 }
+
+
 
 
 import { StockVideo } from './stockvideo'
@@ -173,30 +214,102 @@ import { StockVideo } from './stockvideo'
 export class dialogvideogallerycomponent implements OnInit {
 
   //public fileVideo = StockVideo;
-  public existingIcons = [];
+  //public existingIcons = [];
+
   public video = StockVideo;
   public stockvideos = [];
-  publi
+  public stockvideosArray = [];
+  public stockvideosSliceMin = 0;
+  public stockvideosSlice = 12;
+
+  public accountvideos = [];
+  public accountvideosArray = [];
+  public fromaccountSliceMin = 0;
+  public fromaccountSlice = 12;
+
 
   constructor(
     public dialogRef: MatDialogRef<dialogvideogallerycomponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData) { }
 
   ngOnInit() {
-    this.video.forEach(element => {
+
+    this.data.videos.forEach((element, index) => {
+      const iconurl = element.url;
+      const previewurl = element.url + '#t=0.5';
+      const filename = iconurl.replace(/^.*[\\\/]/, '');
+      const ext = filename.substr(filename.lastIndexOf('.') + 1);
+      const url = iconurl;
+      const fileimage = url.replace(ext, 'jpg'); // set preview image
+      let elobj = {
+        url: iconurl,
+        name: filename,
+        preview: previewurl,
+        fileimage: fileimage
+      }
+      if (index < 12) { this.accountvideos.push(elobj) }
+      this.accountvideosArray.push(elobj);
+    });
+
+
+    this.video.forEach((element, index) => {
       const iconurl = element;
       const previewurl = element + '#t=0.5';
       const filename = iconurl.replace(/^.*[\\\/]/, '');
       const ext = filename.substr(filename.lastIndexOf('.') + 1);
       const url = iconurl;
-      const fileimage = url.replace(ext, 'jpg');
-      this.stockvideos.push({
-        url: iconurl, 
-        name: filename, 
+      const fileimage = url.replace(ext, 'jpg'); // set preview image
+      let elobj = {
+        url: iconurl,
+        name: filename,
         preview: previewurl,
         fileimage: fileimage
-      });
+      }
+      if (index < 12) { this.stockvideos.push(elobj); }
+      this.stockvideosArray.push(elobj);
     });
+  }
+
+  next(galtype) {
+    switch (galtype) {
+      case 'fromaccount': {
+        if (this.fromaccountSlice < this.accountvideosArray.length) {
+          this.fromaccountSlice = this.fromaccountSlice + 12;
+          this.fromaccountSliceMin = this.fromaccountSliceMin + 12;
+          this.accountvideos = this.accountvideosArray.slice(this.fromaccountSliceMin, this.fromaccountSlice)
+
+        }
+      }
+      case 'standardvideos': {
+        if (this.stockvideosSlice < this.stockvideosArray.length) {
+          this.stockvideosSlice = this.stockvideosSlice + 12;
+          this.stockvideosSliceMin = this.stockvideosSliceMin + 12;
+          this.stockvideos = this.stockvideosArray.slice(this.stockvideosSliceMin, this.stockvideosSlice)
+
+        }
+      }
+    }
+  }
+
+  before(galtype) {
+    switch (galtype) {
+      case 'fromaccount': {
+        if (this.fromaccountSliceMin > 0) {
+          this.fromaccountSlice = this.fromaccountSlice - 12;
+          this.fromaccountSliceMin = this.fromaccountSliceMin - 12;
+          this.accountvideos = this.accountvideosArray.slice(this.fromaccountSliceMin, this.fromaccountSlice)
+
+        }
+      }
+      case 'standardvideos': {
+        if (this.stockvideosSliceMin > 0) {
+          this.stockvideosSlice = this.stockvideosSlice - 12;
+          this.stockvideosSliceMin = this.stockvideosSliceMin - 12;
+          this.stockvideos = this.stockvideosArray.slice(this.stockvideosSliceMin, this.stockvideosSlice)
+
+        }
+      }
+    }
   }
 
   onNoClick(): void {

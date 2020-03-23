@@ -3,7 +3,7 @@
     <mat-button-toggle matTooltip="Local stored images" style="width: 50%" value="fromaccount">
       <mat-icon>storage</mat-icon>
     </mat-button-toggle>
-    <mat-button-toggle matTooltip="Standard icons" style="width: 50%"  value="includedimages">
+    <mat-button-toggle matTooltip="Standard icons" style="width: 50%"  value="standardicons">
       <mat-icon>insert_emoticon</mat-icon>
     </mat-button-toggle>
     <mat-button-toggle matTooltip="Iso icons" style="width: 50%"  value="isoicon">
@@ -11,7 +11,22 @@
     </mat-button-toggle>
   </mat-button-toggle-group>
 
-  <div *ngIf="group.value == 'includedimages'" class="gallery" fxFlex="80%" fxLayout="row wrap">
+  <div *ngIf="group.value == 'fromaccount'" class="gallery" fxFlex="80%" fxLayout="row wrap">
+    <div *ngFor="let image of accountimages; let i = index" fxFlex>
+      <img src="{{ image }}" class="image" (click)="selectedimage(image)"
+        [class.selected]="image === data.selected" />
+    </div>
+  </div>
+ 
+  <div *ngIf="group.value == 'fromaccount'" style="margin-top: 5px; margin-bottom: 5px;">
+    <button a mat-raised-button (click)="before(group.value)"><mat-icon>navigate_before</mat-icon></button>
+    <button a mat-raised-button (click)="next(group.value)"><mat-icon >navigate_next</mat-icon></button>
+    <label>{{fromaccountsliceMin + 1}}</label>&nbsp;-&nbsp;
+    <label>{{fromaccountslice + 1}}</label>&nbsp; of&nbsp;
+    <label>{{fromaccountarray.length}}</label>   
+  </div>
+
+  <div *ngIf="group.value == 'standardicons'" class="gallery" fxFlex="80%" fxLayout="row wrap">
     <div *ngFor="let icon of existingIcons; let i = index" fxFlex>
       <div>
         <img src={{icon}} class="icongallery" (click)="selectedimage(icon)"
@@ -19,12 +34,14 @@
       </div>
     </div>
   </div>
-
-  <div *ngIf="group.value == 'fromaccount'" class="gallery" fxFlex="80%" fxLayout="row wrap">
-    <div *ngFor="let image of data.img; let i = index" fxFlex>
-      <img src="{{ image }}" class="image" (click)="selectedimage(image)"
-        [class.selected]="image === data.selected" />
-    </div>
+  
+  <div *ngIf="group.value == 'standardicons'" style="margin-top: 5px; margin-bottom: 5px;">
+    <button a mat-raised-button (click)="before(group.value)"><mat-icon>navigate_before</mat-icon></button>
+    <button a mat-raised-button (click)="next(group.value)"><mat-icon >navigate_next</mat-icon></button>
+    <label>{{standardiconssliceMin + 1}}</label>&nbsp;-&nbsp;
+    <label>{{standardiconsslice + 1}}</label>&nbsp; of&nbsp;
+    <label>{{standardiconsarray.length}}</label>   
+   
   </div>
 
   <div *ngIf="group.value == 'isoicon'" class="gallery" fxFlex="80%" fxLayout="row wrap">
@@ -33,6 +50,16 @@
         [class.selected]="isoicon === data.selected" />
     </div>
   </div>
+  
+  <div *ngIf="group.value == 'isoicon'" style="margin-top: 5px; margin-bottom: 5px;">
+    <button a mat-raised-button (click)="before(group.value)"><mat-icon>navigate_before</mat-icon></button>
+    <button a mat-raised-button (click)="next(group.value)"><mat-icon >navigate_next</mat-icon></button>
+    <label>{{isoiconsliceMin + 1}}</label>&nbsp;-&nbsp;
+    <label>{{isoiconslice + 1}}</label>&nbsp; of&nbsp;
+    <label>{{isoiconarray.length}}</label>   
+    
+  </div>
+
 
   <div class="gallery-bottom" fxFlex="10%">
     <button a mat-raised-button (click)="dialogRef.close()">Cancel</button>

@@ -67,6 +67,12 @@ export interface uploadResult {
 })
 
 export class MarketingComponent implements OnInit {
+
+  // chipinput for mailings
+  @ViewChild('chipInput') chipInput: MatInput;
+  @ViewChild("maileditor") maileditor;
+
+
   public selectedIndex = 0;
   allowedMimeType = ['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'];
   maxFileSize = 10 * 1024 * 1024;
@@ -198,15 +204,22 @@ export class MarketingComponent implements OnInit {
   public lastname;
   public companyname;
   public title;
-  public minDate = new Date(2017, 0, 1);
+  public minDate = new Date();
   public maxDate = new Date(2030, 0, 1);
 
   public copyfrommailing;
   public analytics_ids = 'ga:154403562';
   public analytics_startdate = '2008-10-01';
   public analytics_enddate = 'today';
-  public analytics_metrics = 'ga:bounceRate,ga:pageviewsPerSession,ga:goalStartsAll,ga:avgTimeOnPage';
-  public analytics_dimensions = 'ga:adContent';
+  public analytics_metrics = [
+    { expression: 'ga:bounceRate' },
+    { expression: 'ga:pageviewsPerSession' },
+    { expression: 'ga:goalStartsAll' },
+    { expression: 'ga:avgTimeOnPage' },
+  ]
+  //public analytics_metrics = 'ga:bounceRate,ga:pageviewsPerSession,ga:goalStartsAll,ga:avgTimeOnPage';
+  //public analytics_dimensions = 'ga:adContent';
+  public analytics_dimensions = [{ name: 'ga:adContent' }];
   public analytics_filters;
   public Googleanalyticsreturn;
   public GoogleanalyticsSet;
@@ -224,6 +237,7 @@ export class MarketingComponent implements OnInit {
   public searchboxMailinglist;
   public searchboxCampaign;
   public filteredRelations: Relations[];
+
 
   constructor(
     public dialog: MatDialog,
@@ -533,9 +547,15 @@ export class MarketingComponent implements OnInit {
   // Mailing ______________________________________
 
   getMailing(): void {
+    // select only mailings that are asigned to campaign (marketingplannereventsids)
     this.RelationsApi.getMailing(this.option.id,
       {
         order: 'id DESC',
+        where: {
+          marketingplannereventsIds: {
+            exists: false
+          }
+        },
         include: {
           relation: 'mailinglist'
         }
@@ -571,6 +591,7 @@ export class MarketingComponent implements OnInit {
     let tolist = '';
 
     // join multiple lists
+    if (this.selectedMailing.selectedlists.length > 0 ){
     this.selectedMailing.selectedlists.forEach(list => {
       mailtolist.push(list.listname)
     })
@@ -599,6 +620,10 @@ export class MarketingComponent implements OnInit {
           this.selectedMailing.status = this.response.message,
             this.openSnackBar(this.response.message), this.saveMailing();
         }, err => this.response = err);
+      } else {
+        this.dialogsService.confirm('Error', 'No list or email selected');
+      }
+    
   }
 
 
@@ -617,8 +642,7 @@ export class MarketingComponent implements OnInit {
     this.selectedMailing = mailing;
     this.mailingaddress = '';
     this.setFilterMailing();
-    // this.mailingaddress = this.selectedMailing.selectedlists[0];
-    // this.getAnalytics();
+
 
     this.Googleanalyticsreturn = '';
     this.avgTimeOnPage = '';
@@ -629,14 +653,16 @@ export class MarketingComponent implements OnInit {
     this.mailingaddresscampaign = []; // first clean up a few things
     this.selectedItems = [];
     if (this.mailingaddress === undefined) { this.mailingaddress = []; }
-    if (this.selectedMailing.selectedlists.length > 0) {
-      Object.keys(this.selectedMailing.selectedlists).forEach(key => {
-        const value = this.selectedMailing.selectedlists[key];
-        // console.log(this.selectedMailing.selectedlists);
-        if (value.listname) {
-          this.selectedItems.push(value.listname);
-        } else { this.selectedItems.push(value) }
-      })
+    if (this.selectedMailing.selectedlists) {
+      if (this.selectedMailing.selectedlists.length > 0) {
+        Object.keys(this.selectedMailing.selectedlists).forEach(key => {
+          const value = this.selectedMailing.selectedlists[key];
+          // console.log(this.selectedMailing.selectedlists);
+          if (value.listname) {
+            this.selectedItems.push(value.listname);
+          } else { this.selectedItems.push(value) }
+        })
+      }
     }
     this.prepareFilterMaillist(); // quick selection list
 
@@ -926,7 +952,7 @@ export class MarketingComponent implements OnInit {
     this.RelationsApi.createFiles(this.option.id, this.newFiles)
       .subscribe(res => {
         this.MailinglistApi.addlargelist(this.option.id, this.Account.companyId, this.newFiles.url)
-        .subscribe(res1 => { this.openSnackBar(res1), this.uploader.clearQueue() })
+          .subscribe(res1 => { this.openSnackBar(res1), this.uploader.clearQueue() })
       }
       );
   }
@@ -1257,17 +1283,20 @@ export class MarketingComponent implements OnInit {
   public getAnalyticsCampaign(i) {
     // for each mailing get stats
     console.log(this.CampaignMailing[i].id)
-    this.analytics_filters = 'ga:adContent==' + this.CampaignMailing[i].id;
+    this.analytics_filters = 'ga:adContent'; //+ this.CampaignMailing[i].id;
     this.GoogleanalyticsApi.getanalyticsreport(this.selectedanalytics.id, this.analytics_ids, this.analytics_startdate,
-      this.analytics_enddate, this.analytics_dimensions, this.analytics_metrics, this.analytics_filters)
+      this.analytics_enddate, this.analytics_dimensions, this.analytics_metrics, this.analytics_filters, this.CampaignMailing[i].id)
       .subscribe((data) => {
-        let obj = data.rows.find(o => o[0] === this.CampaignMailing[i].id);
+        console.log(data)
+        let obj = data[0].data.rows.find(o => o.dimensions[0] === this.CampaignMailing[i].id);
+        console.log(obj);
         if (obj !== undefined) {
-          this.Googleanalyticsreturn = obj; // data.rows[0],
-          this.avgTimeOnPage = this.Googleanalyticsreturn[4];
-          this.bounceRate = this.Googleanalyticsreturn[1];
-          this.goalStartsAll = this.Googleanalyticsreturn[3];
-          this.pageview = this.Googleanalyticsreturn[2];
+          this.Googleanalyticsreturn = obj.metrics[0].values; // data.rows[0],
+          this.avgTimeOnPage = this.Googleanalyticsreturn[3];
+          this.bounceRate = this.Googleanalyticsreturn[0];
+          this.goalStartsAll = this.Googleanalyticsreturn[2];
+          this.pageview = this.Googleanalyticsreturn[1];
+          console.log(this.Googleanalyticsreturn)
         } else { this.avgTimeOnPage = 'No Data to show' };
         if (!data) {
           this.openSnackBar('No website statistics found, try back later');
@@ -1276,9 +1305,10 @@ export class MarketingComponent implements OnInit {
   }
 
   public getAnalytics() {
-    this.analytics_filters = 'ga:adContent==' + this.selectedMailing.id;
+    this.analytics_filters = 'ga:adContent';
+    //this.analytics_filtervalue = 
     this.GoogleanalyticsApi.getanalyticsreport(this.selectedanalytics.id, this.analytics_ids, this.analytics_startdate,
-      this.analytics_enddate, this.analytics_dimensions, this.analytics_metrics, this.analytics_filters)
+      this.analytics_enddate, this.analytics_dimensions, this.analytics_metrics, this.analytics_filters, this.selectedMailing.id)
       .subscribe((data) => {
 
         const obj = data.rows.find(o => o[0] === this.selectedMailing.id);
@@ -1421,16 +1451,28 @@ export class MarketingComponent implements OnInit {
     this.urlckeditorupload = BASE_URL + '/api/Containers/' + this.option.id + '/upload/';
 
     // set upload url for pictures
-    CKEDITOR.config.filebrowserBrowseUrl = BASE_URL + '/filemanager/' + this.option.id;
-    CKEDITOR.config.filebrowserUploadUrl = this.urlckeditorupload;
-    CKEDITOR.config.filebrowserImageBrowseUrl = BASE_URL + '/filemanager/' + this.option.id;
-    CKEDITOR.config.filebrowserImageUploadUrl = this.urlckeditorupload;
+    // CKEDITOR.config.filebrowserBrowseUrl = BASE_URL + '/filemanager/' + this.option.id;
+    // CKEDITOR.config.filebrowserUploadUrl = this.urlckeditorupload;
+    // CKEDITOR.config.filebrowserImageBrowseUrl = BASE_URL + '/filemanager/' + this.option.id;
+    // CKEDITOR.config.filebrowserImageUploadUrl = this.urlckeditorupload;
+
+    this.updateBadge();
   }
 
-
-  // chipinput for mailings
-  @ViewChild('chipInput') chipInput: MatInput;
-  @ViewChild("maileditor") maileditor;
+  updateBadge() {
+    this.MarketingplannereventsApi.countMailing(this.selectedMarketingplannerevents.id, { 'send': true })
+      .subscribe(sendcount => {
+        this.selectedMarketingplannerevents.countsend = sendcount.count,
+          this.MarketingplannereventsApi.countMailing(this.selectedMarketingplannerevents.id, { 'send': false })
+            .subscribe(notsendcount => {
+              this.selectedMarketingplannerevents.countnotsend = notsendcount.count,
+                this.RelationsApi.updateByIdMarketingplannerevents(
+                  this.option.id, this.selectedMarketingplannerevents.id,
+                  this.selectedMarketingplannerevents)
+                  .subscribe();
+            })
+      })
+  }
 
 
   selectedItems: string[] = [];
@@ -1622,23 +1664,7 @@ export class MarketingComponent implements OnInit {
       this.MarketingplannereventsApi.updateByIdMailing(this.selectedMarketingplannerevents.id, mailElement.id, mailElement)
         .subscribe(res => res,
           error => this.openSnackBar('Mailing could not be saved'));
-    }),
-
-      this.MarketingplannereventsApi.countMailing(this.selectedMarketingplannerevents.id, { 'send': true })
-        .subscribe(sendcount => {
-          this.selectedMarketingplannerevents.countsend = sendcount.count,
-            this.MarketingplannereventsApi.countMailing(this.selectedMarketingplannerevents.id, { 'send': false })
-              .subscribe(notsendcount => {
-                this.selectedMarketingplannerevents.countnotsend = notsendcount.count,
-                  this.RelationsApi.updateByIdMarketingplannerevents(
-                    this.option.id, this.selectedMarketingplannerevents.id,
-                    this.selectedMarketingplannerevents)
-                    .subscribe(res => {
-                      if (message) { this.openSnackBar('Saved') }
-                    },
-                      error => this.openSnackBar('Campaign could not be saved'))
-              })
-        })
+    })
   }
 
   openDialogDeleteMailingCampaign(): void {

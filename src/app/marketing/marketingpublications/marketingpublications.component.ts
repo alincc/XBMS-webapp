@@ -87,7 +87,9 @@ export class MarketingpublicationsComponent implements OnInit {
     {name: '1 year', value: '1y'},
     {name: '2 years', value: '2y'},
     {name: '3 years', value: '3y'},
-  ]
+  ];
+  public minDate = new Date();
+  public maxDate = new Date(2030, 0, 1);
 
   constructor(
     public articlereposterApi:  ArticlereposterApi,

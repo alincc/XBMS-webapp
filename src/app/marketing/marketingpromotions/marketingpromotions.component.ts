@@ -17,6 +17,7 @@ import * as moment from 'moment-timezone';
 import { DialogsService } from './../../dialogsservice/dialogs.service';
 import { timeconv } from '../../shared/timeconv';
 
+
 export class Facebookcampaign {
   id: string;
   name: string;
@@ -56,7 +57,8 @@ export class MarketingpromotionsComponent implements OnInit {
 
   public campaignsFB: Facebookcampaign[];
   public selectedCampaignFB: Facebookcampaign;
-
+  public minDate = new Date();
+  public maxDate = new Date(2030, 0, 1);
 
   constructor(
     public timeconv: timeconv,

@@ -135,11 +135,13 @@ export class GoogleanalyticsApi extends BaseLoopBackApi {
    *
    * @param {string} enddate 
    *
-   * @param {string} dimensions 
+   * @param {any} dimensions 
    *
-   * @param {string} metrics 
+   * @param {any} metrics 
    *
-   * @param {string} filters 
+   * @param {string} filterset 
+   *
+   * @param {string} filtervalue 
    *
    * @param {object} options 
    *
@@ -152,7 +154,7 @@ export class GoogleanalyticsApi extends BaseLoopBackApi {
    * This usually means the response is a `Googleanalytics` object.)
    * </em>
    */
-  public getanalyticsreport(id: any = {}, ids: any = {}, startdate: any = {}, enddate: any = {}, dimensions: any = {}, metrics: any = {}, filters: any = {}, customHeaders?: Function): Observable<any> {
+  public getanalyticsreport(id: any = {}, ids: any = {}, startdate: any = {}, enddate: any = {}, dimensions: any = {}, metrics: any = {}, filterset: any = {}, filtervalue: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
     "/googleanalytics/getanalyticsreport/:id";
@@ -166,7 +168,8 @@ export class GoogleanalyticsApi extends BaseLoopBackApi {
     if (typeof enddate !== 'undefined' && enddate !== null) _urlParams.enddate = enddate;
     if (typeof dimensions !== 'undefined' && dimensions !== null) _urlParams.dimensions = dimensions;
     if (typeof metrics !== 'undefined' && metrics !== null) _urlParams.metrics = metrics;
-    if (typeof filters !== 'undefined' && filters !== null) _urlParams.filters = filters;
+    if (typeof filterset !== 'undefined' && filterset !== null) _urlParams.filterset = filterset;
+    if (typeof filtervalue !== 'undefined' && filtervalue !== null) _urlParams.filtervalue = filtervalue;
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
     return result;
   }

@@ -18,6 +18,8 @@ export interface AccountInterface {
   "standardGa"?: string;
   "lastlogin"?: Date;
   "signature"?: string;
+  "dashboards"?: any;
+  "stddashboard"?: number;
   "realm"?: string;
   "username"?: string;
   "email": string;
@@ -43,6 +45,8 @@ export class Account implements AccountInterface {
   "standardGa": string;
   "lastlogin": Date;
   "signature": string;
+  "dashboards": any;
+  "stddashboard": number;
   "realm": string;
   "username": string;
   "email": string;
@@ -132,6 +136,14 @@ export class Account implements AccountInterface {
         "signature": {
           name: 'signature',
           type: 'string'
+        },
+        "dashboards": {
+          name: 'dashboards',
+          type: 'any'
+        },
+        "stddashboard": {
+          name: 'stddashboard',
+          type: 'number'
         },
         "realm": {
           name: 'realm',

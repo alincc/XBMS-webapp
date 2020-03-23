@@ -33,6 +33,9 @@ export class MarketingchannelsComponent implements OnInit {
   @Input() SelectedRelation: Relations;
   @Input() option: Relations;
 
+  public minDate = new Date();
+  public maxDate = new Date(2030, 0, 1);
+
   public options = [];
   public timezones = timezones;
   public Channels: Channels[];

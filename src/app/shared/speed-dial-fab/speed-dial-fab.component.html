@@ -2,7 +2,11 @@
      *ngIf="fabTogglerState==='active'" 
      (click)="onToggleFab()">
 </div>
-<div class='fab-container' [style.flexDirection]="reverseColumnDirection?'column-reverse':'column'">
+<!-- class='fab-container' -->
+<div [ngClass]="{
+  'fab-container':direction === 'column',
+  'fab-container-horizontal':direction === 'row'
+}" [style.flexDirection]="reverseColumnDirection?'column-reverse':'column'">
   <button mat-fab class="fab-toggler"
           color="primary"
           (click)="onToggleFab()">

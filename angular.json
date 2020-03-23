@@ -27,7 +27,8 @@
               "./node_modules/angular2-draggable/css/resizable.min.css"
             ],
             "scripts": [
-              "./node_modules/svg.js/dist/svg.min.js"
+              "./node_modules/svg.js/dist/svg.min.js",
+              "./node_modules/html2canvas/dist/html2canvas.min.js"
             ]
           },
           "configurations": {

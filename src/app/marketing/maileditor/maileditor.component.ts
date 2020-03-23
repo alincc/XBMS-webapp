@@ -1112,6 +1112,7 @@ export class MaileditorComponent implements OnInit {
     this.updateMailingObj = undefined;
     this.subject = '';
     this.preview = '';
+    this.updatemail = false;
     this.setupTemplate();
   }
 

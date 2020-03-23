@@ -14,6 +14,7 @@ export interface FilesInterface {
   "companyId": any;
   "publicationsId"?: any;
   "createdate"?: Date;
+  "lastchangedate"?: Date;
   "template"?: any;
   "canvas"?: any;
   "counter"?: number;
@@ -33,6 +34,7 @@ export class Files implements FilesInterface {
   "companyId": any;
   "publicationsId": any;
   "createdate": Date;
+  "lastchangedate": Date;
   "template": any;
   "canvas": any;
   "counter": number;
@@ -101,6 +103,10 @@ export class Files implements FilesInterface {
         },
         "createdate": {
           name: 'createdate',
+          type: 'Date'
+        },
+        "lastchangedate": {
+          name: 'lastchangedate',
           type: 'Date'
         },
         "template": {

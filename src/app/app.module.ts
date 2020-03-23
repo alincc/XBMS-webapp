@@ -119,6 +119,7 @@ import {SpecialCharacterDirective } from './directives/specialcharacter.directiv
 import {GestureConfig} from '@angular/material/core';
 import { TableComponent } from './dashboard/table/table.component';
 import {MatPaginatorModule} from '@angular/material/paginator';
+import {MatSortModule} from '@angular/material/sort';
 
 //disable pinch and rotate to scroll swip check the hammerjs doc for future fix
 export class CustomHammerConfig extends HammerGestureConfig  {
@@ -202,6 +203,7 @@ export class CustomHammerConfig extends HammerGestureConfig  {
   ],
 
   imports: [
+    MatSortModule,
     MatPaginatorModule,
     HammerModule,
     MatPasswordStrengthModule.forRoot(),

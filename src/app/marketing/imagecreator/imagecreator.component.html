@@ -378,7 +378,7 @@
         </div>
     </div>
 
-    <div ngClass.gt-xs="container-normal" ngClass.lt-sm="container-noshow" [class.container-xs-show]="listviewxsshow">
+    <div [attr.id]="'imagecontainer'" ngClass.gt-xs="container-normal" ngClass.lt-sm="container-noshow" [class.container-xs-show]="listviewxsshow">
         <div *ngIf="images.length > 0 && changenow" [ngStyle]="canvas" #myBounds id="myBounds">
             <div *ngFor="let image of images; let i = index;"
                 [ngClass]="{ 'top-b': !edge?.top, 'bottom-b': !edge?.bottom, 'left-b': !edge?.left, 'right-b': !edge?.right }">
@@ -387,10 +387,10 @@
                     [inBounds]="inBounds" [ngStyle]="image.style" [style.width]="image.style.width"
                     [style.height]="image.style.height" (movingOffset)="onMoving($event, i)"
                     [preventDefaultEvent]="true" [position]="image.setpos" (rzResizing)="onResizing($event, i)"
-                    ngResizable rzContainment="#myBounds" [rzAspectRatio]="true">
+                    [ngResizable]="editmode" rzContainment="#myBounds" [rzAspectRatio]="true">
                     <img *ngIf="image.src" style="width: 100%; height: 100%;" src={{image.src}}>
                 </div>
-                <label ngResizable *ngIf="image.type === 'text'" ngDraggable [bounds]="myBounds" [inBounds]="inBounds"
+                <label [ngResizable]="editmode" *ngIf="image.type === 'text'" ngDraggable [bounds]="myBounds" [inBounds]="inBounds"
                     style="width: 100px; height: 100px; overflow: hidden;" (movingOffset)="onMoving($event, i)"
                     [preventDefaultEvent]="true" [position]="image.setpos" (rzResizing)="onResizing($event, i)"
                     [ngStyle]="image.style" rzContainment="#myBounds" [rzAspectRatio]="false">{{image.content}}</label>
@@ -398,12 +398,12 @@
                     [inBounds]="inBounds" [ngStyle]="image.style" [style.width]="image.style.width"
                     [style.height]="image.style.height" (movingOffset)="onMoving($event, i)"
                     [preventDefaultEvent]="true" [position]="image.setpos" (rzResizing)="onResizing($event, i)"
-                    ngResizable rzContainment="#myBounds" [rzAspectRatio]="false">
+                    [ngResizable]="editmode" rzContainment="#myBounds" [rzAspectRatio]="false">
                 </div>
                 <div *ngIf="image.type === 'chart'" style="overflow: hidden;" ngDraggable [bounds]="myBounds"
                     [inBounds]="inBounds" [style.height]="image.style.height" (movingOffset)="onMoving($event, i)"
                     [preventDefaultEvent]="true" [position]="image.setpos" (rzResizing)="onResizing($event, i)"
-                    ngResizable rzContainment="#myBounds" [rzAspectRatio]="false" [ngStyle]="image.style">
+                    [ngResizable]="editmode" rzContainment="#myBounds" [rzAspectRatio]="false" [ngStyle]="image.style">
 
                     <canvas baseChart width="image.style.width" height="image.style.height" [datasets]="image.data"
                         [labels]="image.label" [colors]="image.colors" [legend]="image.legend"
