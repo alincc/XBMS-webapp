@@ -50,7 +50,7 @@
     </mat-menu>
 </div>
 
-<div class="videocontrols" fxLayout="column">
+<div class="videocontrols" fxLayout="column" fxLayoutAlign="center center">
     <div fxLayout="row" fxLayoutGap="4px">
         <button mat-mini-fab color="primary" (click)="playFunc()">
             <mat-icon>play_circle_outline</mat-icon>
@@ -79,14 +79,13 @@
     </div>
     <div fxLayout="row">
         <label>{{ currenttime | number : '1.2-2'}}</label>
-        <div class="timelinesmall-container" [style.width]="'200px'">
+        <div class="timelinesmall-container" [style.width]="'600px'">
             <div class="timelinesmall-active" [style.width]="counter + 'px'" #timelinebound id="timelinebound">
                 <div class="timelinesmall-setter" [style.transform]="'translate(' + currenttime + 'px, 0px)'"
                     [inBounds]="true" [bounds]="timelinebound" [lockAxis]="'y'" ngDraggable [scale]="'1'"></div>
             </div>
         </div>
     </div>
-
 </div>
 
 <div style="width: 100%; margin: 10px 0px 10px 0px;" (swipeleft)="swipeleft($event)" (swiperight)="swiperight($event)">
@@ -241,8 +240,8 @@
 
                                     <div class="timeline-currentelement" ngDraggable [scale]="'1'"
                                         (movingOffset)="onMovingAnimationEl($event, i, animation)" [lockAxis]="'y'"
-                                        [preventDefaultEvent]="true" [ngResizable]="element === selectedelement"
-                                        [rzHandles]="'e, w'" (rzResizing)="onResizeAnimationEl($event, i, animation)"
+                                        ngResizable [inBounds]="true" [bounds]="timelinebound" [rzHandles]="'e,w'"
+                                        (rzResizing)="onResizeAnimationEl($event, i, animation)"
                                         [style.width]="animation.duration * 10 + 'px'">
                                     </div>
                                 </div>
@@ -484,18 +483,11 @@
                                             [inBounds]="true" [bounds]="timelinebound" [lockAxis]="'y'" ngDraggable
                                             (movingOffset)="onMovingTimeline($event, i, animation)">
                                         </div>
-                                        <!-- <div class="timeline-currentelement" ngDraggable
-                                            (movingOffset)="onMovingAnimationEl($event, i, vectoranimation)"
-                                            [bounds]="timelinebound" [inBounds]="true" [lockAxis]="'y'" ngResizable
-                                            rzContainment="#timelinebound" [rzHandles]="'e, w'"
-                                            (rzResizing)="onResizeAnimationEl($event, iv, vectoranimation)"
-                                            [style.width]="vectoranimation.duration * 10 + 'px'">
-                                        </div> -->
 
                                         <div class="timeline-currentelement" ngDraggable [scale]="'1'"
                                             (movingOffset)="onMovingAnimationEl($event, i, vectoranimation)"
-                                            [lockAxis]="'y'" [preventDefaultEvent]="true" ngResizable
-                                            [rzHandles]="'e, w'"
+                                            [lockAxis]="'y'" ngResizable [rzHandles]="'e,w'" [inBounds]="true"
+                                            [bounds]="timelinebound"
                                             (rzResizing)="onResizeAnimationEl($event, iv, vectoranimation)"
                                             [style.width]="vectoranimation.duration * 10 + 'px'">
                                         </div>
@@ -636,8 +628,8 @@
                                         </div>
                                         <div class="timeline-currentelement" ngDraggable
                                             (movingOffset)="onMovingAnimationEl($event, i, textanimation)"
-                                            [bounds]="timelinebound" [inBounds]="true" [lockAxis]="'y'" ngResizable
-                                            rzContainment="#timelinebound" [rzHandles]="'e, w'"
+                                            [lockAxis]="'y'" ngResizable [rzHandles]="'e, w'" [inBounds]="true"
+                                            [bounds]="timelinebound"
                                             (rzResizing)="onResizeAnimationEl($event, iv, textanimation)"
                                             [style.width]="textanimation.duration * 10 + 'px'">
                                         </div>
@@ -723,7 +715,7 @@
                                     <div class="timeline-currentelement" ngDraggable
                                         (movingOffset)="onMovingAnimationChart($event, i, selectedelement)"
                                         [bounds]="timelinebound" [inBounds]="true" [lockAxis]="'y'" ngResizable
-                                        rzContainment="#timelinebound" [rzHandles]="'e, w'"
+                                        [rzHandles]="'e, w'"
                                         (rzResizing)="onResizeAnimationChart($event, iv, selectedelement)"
                                         [style.width]="selectedelement.lineChartOptions.animation.duration / 100 + 'px'">
                                     </div>
@@ -856,7 +848,7 @@
                             </div>
                             <mat-form-field>
                                 <mat-select [(value)]="standardpath" (selectionChange)="resetImageCropPath()"
-                                    placeholder="Animation">
+                                    placeholder="Crop shape">
                                     <mat-option value="linear">Linear</mat-option>
                                     <mat-option value="circle">Circle</mat-option>
                                     <mat-option value="square">Square</mat-option>
@@ -868,7 +860,7 @@
                                 <mat-slide-toggle (change)="detectchange()" [(ngModel)]="element.blur">Blur
                                 </mat-slide-toggle>
                             </div>
-                            <div>
+                            <div fxLayoutGap="20px">
                                 <mat-form-field style="max-width: 46px;">
                                     <input (change)="detectchange()" [(ngModel)]="element.posy" type="number" matInput>
                                     <mat-hint>Y |</mat-hint>
@@ -909,23 +901,26 @@
                             </mat-panel-title>
                         </mat-expansion-panel-header>
                         <div *ngIf="element.type === 'text' && !element.groupmember">
-
-                            <mat-form-field style="max-width: 46px;">
-                                <input (change)="detectchange()" [(ngModel)]="element.posy" type="number" matInput>
-                                <mat-hint>Y |</mat-hint>
-                            </mat-form-field>
-                            <mat-form-field style="max-width: 46px;">
-                                <input (change)="detectchange()" [(ngModel)]="element.posx" type="number" matInput>
-                                <mat-hint>X -</mat-hint>
-                            </mat-form-field>
-                            <mat-form-field style="max-width: 46px;">
-                                <input (change)="detectchange()" [(ngModel)]="element.style.height" matInput>
-                                <mat-hint>Height</mat-hint>
-                            </mat-form-field>
-                            <mat-form-field style="max-width: 46px;">
-                                <input (change)="detectchange()" [(ngModel)]="element.style.width" matInput>
-                                <mat-hint>Width</mat-hint>
-                            </mat-form-field>
+                            <div fxLayoutGap="20px">
+                                <mat-form-field style="max-width: 46px;">
+                                    <input (change)="detectchange()" [(ngModel)]="element.posy" type="number" matInput>
+                                    <mat-hint>Y |</mat-hint>
+                                </mat-form-field>
+                                <mat-form-field style="max-width: 46px;">
+                                    <input (change)="detectchange()" [(ngModel)]="element.posx" type="number" matInput>
+                                    <mat-hint>X -</mat-hint>
+                                </mat-form-field>
+                            </div>
+                            <div>
+                                <mat-form-field style="max-width: 46px;">
+                                    <input (change)="detectchange()" [(ngModel)]="element.style.height" matInput>
+                                    <mat-hint>Height</mat-hint>
+                                </mat-form-field>
+                                <mat-form-field style="max-width: 46px;">
+                                    <input (change)="detectchange()" [(ngModel)]="element.style.width" matInput>
+                                    <mat-hint>Width</mat-hint>
+                                </mat-form-field>
+                            </div>
                             Shadow <mat-checkbox color="primary" (change)="setBoxShadow()" [(ngModel)]="boxshadow">
                             </mat-checkbox>
                             <div fxLayout="column">
@@ -1008,22 +1003,26 @@
                                     <!-- <mat-option value="triangle">Triangle</mat-option> -->
                                 </mat-select>
                             </mat-form-field>
-                            <mat-form-field style="max-width: 46px;">
-                                <input (change)="detectchange()" [(ngModel)]="element.posy" type="number" matInput>
-                                <mat-hint>Y |</mat-hint>
-                            </mat-form-field>
-                            <mat-form-field style="max-width: 46px;">
-                                <input (change)="detectchange()" [(ngModel)]="element.posx" type="number" matInput>
-                                <mat-hint>X -</mat-hint>
-                            </mat-form-field>
-                            <mat-form-field style="max-width: 46px;">
-                                <input (change)="detectchange()" [(ngModel)]="element.style.height" matInput>
-                                <mat-hint>Height</mat-hint>
-                            </mat-form-field>
-                            <mat-form-field style="max-width: 46px;">
-                                <input (change)="detectchange()" [(ngModel)]="element.style.width" matInput>
-                                <mat-hint>Width</mat-hint>
-                            </mat-form-field>
+                            <div fxLayoutGap="20px">
+                                <mat-form-field style="max-width: 46px;">
+                                    <input (change)="detectchange()" [(ngModel)]="element.posy" type="number" matInput>
+                                    <mat-hint>Y |</mat-hint>
+                                </mat-form-field>
+                                <mat-form-field style="max-width: 46px;">
+                                    <input (change)="detectchange()" [(ngModel)]="element.posx" type="number" matInput>
+                                    <mat-hint>X -</mat-hint>
+                                </mat-form-field>
+                            </div>
+                            <div>
+                                <mat-form-field style="max-width: 46px;">
+                                    <input (change)="detectchange()" [(ngModel)]="element.style.height" matInput>
+                                    <mat-hint>Height</mat-hint>
+                                </mat-form-field>
+                                <mat-form-field style="max-width: 46px;">
+                                    <input (change)="detectchange()" [(ngModel)]="element.style.width" matInput>
+                                    <mat-hint>Width</mat-hint>
+                                </mat-form-field>
+                            </div>
                             <div fxLayout="column" *ngIf="element.shape !== 'heart'">
                                 <input style="width: 60px;" [style.background]="element.style['background-color']"
                                     [(colorPicker)]="element.style['background-color']"
@@ -1068,9 +1067,27 @@
                                         style="width: 100px; height: 200px;" id="{{vector.idx}}"
                                         (onSVGInserted)="initVectors($event, i, idx, vector.idx)">
                                     </div>
+
+
+                                    <div *ngIf="!vector.src" [inlineSVG]="vector.object"
+                                        style="width: 100px; height: 200px;" id="{{vector.idx}}"
+                                        (onSVGInserted)="initVectors($event, i, idx, vector.idx)">
+                                    </div>
+
                                     <app-vectorupload *ngIf="!vector.src" [account]="Account" [option]="option"
                                         (imgurl)="setVector($event, i, idx)">
                                     </app-vectorupload>
+
+                                    <!-- *ngIf="potpart.type === 'vector'"   && !element.svgcombi-->
+                                    <mat-select (selectionChange)="setExistingVector($event, i, idx)"
+                                        placeholder="Add vector">
+                                        <mat-option *ngFor="let potpart of selectablevectorarray" [value]="potpart">
+                                            <div [innerHTML]="potpart.svgcombi  | safeHtml"
+                                                style="height: 20px; width: 20px;">
+                                            </div>
+                                        </mat-option>
+                                    </mat-select>
+
                                     <mat-icon (click)="deleteVectorSrc(i, idx, element)" class="icon-label"
                                         class="iconsize-14" (click)="removeVectorPathMultiSelection()"
                                         (click)="removeVectorPathSelection()">
@@ -1098,6 +1115,9 @@
                                     <app-vectorupload *ngIf="!vector.src && !element.svgcombi" [account]="Account"
                                         [option]="option" (imgurl)="setVector($event, i, idx)">
                                     </app-vectorupload>
+
+
+
                                     <!-- <mat-icon (click)="deleteVectorSrc(idx, element)" class="icon-label"
                                         class="iconsize-14" (click)="removeVectorPathMultiSelection()"
                                         (click)="removeVectorPathSelection()">
@@ -1107,24 +1127,30 @@
                                         class="iconsize-14" matTooltip="Seperate images parts">
                                         tab_unselected
                                     </mat-icon> -->
-                                    <mat-form-field style="max-width: 46px;">
-                                        <input (change)="detectchange()" [(ngModel)]="element.posy" type="number"
-                                            matInput>
-                                        <mat-hint>Y |</mat-hint>
-                                    </mat-form-field>
-                                    <mat-form-field style="max-width: 46px;">
-                                        <input (change)="detectchange()" [(ngModel)]="element.posx" type="number"
-                                            matInput>
-                                        <mat-hint>X -</mat-hint>
-                                    </mat-form-field>
-                                    <mat-form-field style="max-width: 46px;">
-                                        <input (change)="detectchange()" [(ngModel)]="element.style.height" matInput>
-                                        <mat-hint>Height</mat-hint>
-                                    </mat-form-field>
-                                    <mat-form-field style="max-width: 46px;">
-                                        <input (change)="detectchange()" [(ngModel)]="element.style.width" matInput>
-                                        <mat-hint>Width</mat-hint>
-                                    </mat-form-field>
+
+                                    <div fxLayoutGap="20px">
+                                        <mat-form-field style="max-width: 46px;">
+                                            <input (change)="detectchange()" [(ngModel)]="element.posy" type="number"
+                                                matInput>
+                                            <mat-hint>Y |</mat-hint>
+                                        </mat-form-field>
+                                        <mat-form-field style="max-width: 46px;">
+                                            <input (change)="detectchange()" [(ngModel)]="element.posx" type="number"
+                                                matInput>
+                                            <mat-hint>X -</mat-hint>
+                                        </mat-form-field>
+                                    </div>
+                                    <div>
+                                        <mat-form-field style="max-width: 46px;">
+                                            <input (change)="detectchange()" [(ngModel)]="element.style.height"
+                                                matInput>
+                                            <mat-hint>Height</mat-hint>
+                                        </mat-form-field>
+                                        <mat-form-field style="max-width: 46px;">
+                                            <input (change)="detectchange()" [(ngModel)]="element.style.width" matInput>
+                                            <mat-hint>Width</mat-hint>
+                                        </mat-form-field>
+                                    </div>
                                     Shadow <mat-checkbox color="primary" (change)="setBoxShadow()"
                                         [(ngModel)]="boxshadow"></mat-checkbox>
                                 </div>
@@ -1133,6 +1159,10 @@
                                 (click)="addNewVectorSrc(i, element)" color="primary">
                                 <mat-icon>add</mat-icon>
                             </button>
+
+
+
+
                             <!-- <button mat-mini-fab class="addbutton" matTooltip="Add to Animation Group"
                                 (click)="addTooVectorCombi(element)" color="primary">
                                 <mat-icon>collections</mat-icon>
@@ -1329,7 +1359,7 @@
                             <mat-form-field>
                                 <mat-label>Add element</mat-label>
                                 <mat-select (selectionChange)="dropVectorGroup($event, element, i)">
-                                    <mat-option *ngFor="let potpart of animationarray" [value]="potpart">
+                                    <mat-option *ngFor="let potpart of selectableanimationarray" [value]="potpart">
                                         <div *ngIf="potpart.type === 'vector'"
                                             [innerHTML]="potpart.svgcombi  | safeHtml"
                                             style="height: 20px; width: 20px;">
@@ -1337,6 +1367,7 @@
                                         <img *ngIf="potpart.type === 'image'" src={{potpart.src}}
                                             style="height: 20px; width: 20px;">
                                         <div *ngIf="potpart.type === 'shape'" style="height: 20px; width: 20px;"
+                                            [style.background-color]="potpart.style['background-color']"
                                             [className]="potpart.style.class">
                                         </div>
                                         <div *ngIf="potpart.type === 'chart'">
@@ -1349,17 +1380,26 @@
                                     </mat-option>
                                 </mat-select>
                             </mat-form-field>
-                            <mat-accordion>
-                                <mat-expansion-panel *ngFor="let part of element.vectors; let idy = index;">
-                                    <mat-expansion-panel-header *ngIf="part.type === 'image'" cdkDragHandle
-                                        [class.selected]="part === selectedelement">
+                            <mat-accordion multi="true">
+                                <mat-expansion-panel *ngFor="let part of element.vectors; let idy = index;"
+                                    (click)="onSelectElement($event, part)">
+                                    <!-- [class.selected]="part === selectedelement" 
+                                        this is not possible as it causes an error with accordion style handling -->
+                                    <mat-expansion-panel-header *ngIf="part.type === 'image'" cdkDragHandle>
                                         <mat-panel-title>
                                             <img *ngIf="part.src" src={{part.src}} class="elementsedit"
                                                 style="height: 30px; width: auto;">
-                                            <mat-icon (click)="deleteitem(i)" class="iconsize-12">delete</mat-icon>
-                                            <mat-icon (click)="copyElement(i, part)" matTooltip="Duplicate effect"
+                                            <mat-icon (click)="deleteitemvcgroup(i, idy)" matTooltip="Remove from group"
+                                                class="iconsize-12">delete</mat-icon>
+                                            <mat-icon (click)="copyElement(i, part)" matTooltip="Duplicate element"
                                                 class="iconsize-10">
                                                 filter_none</mat-icon>
+                                            <mat-icon matTooltip="up" (click)="movePartUp(idy, element.vectors)"
+                                                class="iconsize-10 sectionlabelbuttons" matSuffix>
+                                                arrow_drop_up</mat-icon>
+                                            <mat-icon matTooltip="down" (click)="movePartDown(idy, element.vectors)"
+                                                class="iconsize-10 sectionlabelbuttons" matSuffix>
+                                                arrow_drop_down</mat-icon>
                                         </mat-panel-title>
                                     </mat-expansion-panel-header>
                                     <div *ngIf="part.type === 'image'" fxLayout="column">
@@ -1382,7 +1422,7 @@
                                             <mat-slide-toggle (change)="detectchange()" [(ngModel)]="part.blur">Blur
                                             </mat-slide-toggle>
                                         </div>
-                                        <div>
+                                        <div fxLayoutGap="20px">
                                             <mat-form-field style="max-width: 46px;">
                                                 <input (change)="detectchange()" [(ngModel)]="part.posy" type="number"
                                                     matInput>
@@ -1415,36 +1455,47 @@
                                         </div>
 
                                     </div>
-                                    <mat-expansion-panel-header *ngIf="part.type === 'text'" cdkDragHandle
-                                        [class.selected]="part === selectedelement">
+                                    <mat-expansion-panel-header *ngIf="part.type === 'text'" cdkDragHandle>
                                         <mat-panel-title>
                                             <label>{{part.content}}</label>
-                                            <mat-icon (click)="deleteitem(i)" class="iconsize-12">delete</mat-icon>
+                                            <mat-icon (click)="deleteitemvcgroup(i, idy)" matTooltip="Remove from group"
+                                                class="iconsize-12">delete</mat-icon>
                                             <mat-icon (click)="copyElement(i, part)" matTooltip="Duplicate effect"
                                                 class="iconsize-10">
                                                 filter_none</mat-icon>
+                                            <mat-icon matTooltip="up" (click)="movePartUp(idy, element.vectors)"
+                                                class="iconsize-10 sectionlabelbuttons" matSuffix>
+                                                arrow_drop_up</mat-icon>
+                                            <mat-icon matTooltip="down" (click)="movePartDown(idy, element.vectors)"
+                                                class="iconsize-10 sectionlabelbuttons" matSuffix>
+                                                arrow_drop_down</mat-icon>
                                         </mat-panel-title>
                                     </mat-expansion-panel-header>
                                     <div *ngIf="part.type === 'text'">
-
-                                        <mat-form-field style="max-width: 46px;">
-                                            <input (change)="detectchange()" [(ngModel)]="part.posy" type="number"
-                                                matInput>
-                                            <mat-hint>Y |</mat-hint>
-                                        </mat-form-field>
-                                        <mat-form-field style="max-width: 46px;">
-                                            <input (change)="detectchange()" [(ngModel)]="part.posx" type="number"
-                                                matInput>
-                                            <mat-hint>X -</mat-hint>
-                                        </mat-form-field>
-                                        <mat-form-field style="max-width: 46px;">
-                                            <input (change)="detectchange()" [(ngModel)]="part.style.height" matInput>
-                                            <mat-hint>Height</mat-hint>
-                                        </mat-form-field>
-                                        <mat-form-field style="max-width: 46px;">
-                                            <input (change)="detectchange()" [(ngModel)]="part.style.width" matInput>
-                                            <mat-hint>Width</mat-hint>
-                                        </mat-form-field>
+                                        <div fxLayoutGap="20px">
+                                            <mat-form-field style="max-width: 46px;">
+                                                <input (change)="detectchange()" [(ngModel)]="part.posy" type="number"
+                                                    matInput>
+                                                <mat-hint>Y |</mat-hint>
+                                            </mat-form-field>
+                                            <mat-form-field style="max-width: 46px;">
+                                                <input (change)="detectchange()" [(ngModel)]="part.posx" type="number"
+                                                    matInput>
+                                                <mat-hint>X -</mat-hint>
+                                            </mat-form-field>
+                                        </div>
+                                        <div>
+                                            <mat-form-field style="max-width: 46px;">
+                                                <input (change)="detectchange()" [(ngModel)]="part.style.height"
+                                                    matInput>
+                                                <mat-hint>Height</mat-hint>
+                                            </mat-form-field>
+                                            <mat-form-field style="max-width: 46px;">
+                                                <input (change)="detectchange()" [(ngModel)]="part.style.width"
+                                                    matInput>
+                                                <mat-hint>Width</mat-hint>
+                                            </mat-form-field>
+                                        </div>
                                         <div fxLayout="column">
                                             <div fxLayout="row" fxLayout.xs="column">
                                                 <mat-form-field style="width: 95%;" appearance="outline">
@@ -1508,18 +1559,31 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <mat-expansion-panel-header *ngIf="part.type === 'shape'" cdkDragHandle
-                                        [class.selected]="part === selectedelement">
+                                    <mat-expansion-panel-header *ngIf="part.type === 'shape'" cdkDragHandle>
                                         <mat-panel-title>
-                                            <div [style.width]="'50px'" [style.height]="'50px'" [ngStyle]="part.style"
+
+                                            <div [style.width]="'50px'" [style.height]="'50px'"
                                                 [className]="part.style.class">
                                             </div>
                                             <div style="height: 30px; width: 30px"
                                                 [style.background-color]="part.style['background-color']"></div>
-                                            <mat-icon (click)="deleteitem(i)" class="iconsize-12">delete</mat-icon>
+
+                                            <!-- <div [style.width]="'50px'" [style.height]="'50px'" [ngStyle]="part.style"
+                                                [className]="part.style.class">
+                                            </div>
+                                            <div style="height: 30px; width: 30px"
+                                                [style.background-color]="part.style['background-color']"></div> -->
+                                            <mat-icon (click)="deleteitemvcgroup(i, idy)" matTooltip="Remove from group"
+                                                class="iconsize-12">delete</mat-icon>
                                             <mat-icon (click)="copyElement(i, part)" matTooltip="Duplicate effect"
                                                 class="iconsize-10">
                                                 filter_none</mat-icon>
+                                            <mat-icon matTooltip="up" (click)="movePartUp(idy, element.vectors)"
+                                                class="iconsize-10 sectionlabelbuttons" matSuffix>
+                                                arrow_drop_up</mat-icon>
+                                            <mat-icon matTooltip="down" (click)="movePartDown(idy, element.vectors)"
+                                                class="iconsize-10 sectionlabelbuttons" matSuffix>
+                                                arrow_drop_down</mat-icon>
                                         </mat-panel-title>
                                     </mat-expansion-panel-header>
                                     <div *ngIf="part.type === 'shape'">
@@ -1532,24 +1596,30 @@
                                                 <!-- <mat-option value="triangle">Triangle</mat-option> -->
                                             </mat-select>
                                         </mat-form-field>
-                                        <mat-form-field style="max-width: 46px;">
-                                            <input (change)="detectchange()" [(ngModel)]="part.posy" type="number"
-                                                matInput>
-                                            <mat-hint>Y |</mat-hint>
-                                        </mat-form-field>
-                                        <mat-form-field style="max-width: 46px;">
-                                            <input (change)="detectchange()" [(ngModel)]="part.posx" type="number"
-                                                matInput>
-                                            <mat-hint>X -</mat-hint>
-                                        </mat-form-field>
-                                        <mat-form-field style="max-width: 46px;">
-                                            <input (change)="detectchange()" [(ngModel)]="part.style.height" matInput>
-                                            <mat-hint>Height</mat-hint>
-                                        </mat-form-field>
-                                        <mat-form-field style="max-width: 46px;">
-                                            <input (change)="detectchange()" [(ngModel)]="part.style.width" matInput>
-                                            <mat-hint>Width</mat-hint>
-                                        </mat-form-field>
+                                        <div fxLayoutGap="20px">
+                                            <mat-form-field style="max-width: 46px;">
+                                                <input (change)="detectchange()" [(ngModel)]="part.posy" type="number"
+                                                    matInput>
+                                                <mat-hint>Y |</mat-hint>
+                                            </mat-form-field>
+                                            <mat-form-field style="max-width: 46px;">
+                                                <input (change)="detectchange()" [(ngModel)]="part.posx" type="number"
+                                                    matInput>
+                                                <mat-hint>X -</mat-hint>
+                                            </mat-form-field>
+                                        </div>
+                                        <div fxLayoutGap="20px">
+                                            <mat-form-field style="max-width: 46px;">
+                                                <input (change)="detectchange()" [(ngModel)]="part.style.height"
+                                                    matInput>
+                                                <mat-hint>Height</mat-hint>
+                                            </mat-form-field>
+                                            <mat-form-field style="max-width: 46px;">
+                                                <input (change)="detectchange()" [(ngModel)]="part.style.width"
+                                                    matInput>
+                                                <mat-hint>Width</mat-hint>
+                                            </mat-form-field>
+                                        </div>
                                         <div fxLayout="column" *ngIf="part.shape !== 'heart'">
                                             <input style="width: 60px;"
                                                 [style.background]="part.style['background-color']"
@@ -1559,8 +1629,7 @@
                                                 [cpPresetColors]="[option.companyprimairycolor, option.companysecondarycolor, company.companyprimairycolor, company.companysecondarycolor]">
                                         </div>
                                     </div>
-                                    <mat-expansion-panel-header *ngIf="part.type === 'vector'" cdkDragHandle
-                                        [class.selected]="part === selectedelement">
+                                    <mat-expansion-panel-header *ngIf="part.type === 'vector'" cdkDragHandle>
                                         <mat-panel-title>
                                             <!-- <mat-checkbox color="primary" [(ngModel)]="part.selected"></mat-checkbox> -->
                                             <div *ngIf="part.vectors[0].src" [inlineSVG]="part.vectors[0].src"
@@ -1573,6 +1642,12 @@
                                             </div>
                                             <mat-icon (click)="deleteitemvcgroup(i, idy)" class="iconsize-12">delete
                                             </mat-icon>
+                                            <mat-icon matTooltip="up" (click)="movePartUp(idy, element.vectors)"
+                                                class="iconsize-10 sectionlabelbuttons" matSuffix>
+                                                arrow_drop_up</mat-icon>
+                                            <mat-icon matTooltip="down" (click)="movePartDown(idy, element.vectors)"
+                                                class="iconsize-10 sectionlabelbuttons" matSuffix>
+                                                arrow_drop_down</mat-icon>
                                             <!-- <mat-icon (click)="copyElement(i, element)" matTooltip="Duplicate element"
                                                 class="iconsize-10">filter_none
                                             </mat-icon> -->
@@ -1638,26 +1713,30 @@
                                                     class="iconsize-14" matTooltip="Seperate images parts">
                                                     tab_unselected
                                                 </mat-icon>
-                                                <mat-form-field style="max-width: 46px;">
-                                                    <input (change)="detectchange()" [(ngModel)]="part.posy"
-                                                        type="number" matInput>
-                                                    <mat-hint>Y |</mat-hint>
-                                                </mat-form-field>
-                                                <mat-form-field style="max-width: 46px;">
-                                                    <input (change)="detectchange()" [(ngModel)]="part.posx"
-                                                        type="number" matInput>
-                                                    <mat-hint>X -</mat-hint>
-                                                </mat-form-field>
-                                                <mat-form-field style="max-width: 46px;">
-                                                    <input (change)="detectchange()" [(ngModel)]="part.style.height"
-                                                        matInput>
-                                                    <mat-hint>Height</mat-hint>
-                                                </mat-form-field>
-                                                <mat-form-field style="max-width: 46px;">
-                                                    <input (change)="detectchange()" [(ngModel)]="part.style.width"
-                                                        matInput>
-                                                    <mat-hint>Width</mat-hint>
-                                                </mat-form-field>
+                                                <div fxLayoutGap="20px">
+                                                    <mat-form-field style="max-width: 46px;">
+                                                        <input (change)="detectchange()" [(ngModel)]="part.posy"
+                                                            type="number" matInput>
+                                                        <mat-hint>Y |</mat-hint>
+                                                    </mat-form-field>
+                                                    <mat-form-field style="max-width: 46px;">
+                                                        <input (change)="detectchange()" [(ngModel)]="part.posx"
+                                                            type="number" matInput>
+                                                        <mat-hint>X -</mat-hint>
+                                                    </mat-form-field>
+                                                </div>
+                                                <div fxLayoutGap="20px">
+                                                    <mat-form-field style="max-width: 46px;">
+                                                        <input (change)="detectchange()" [(ngModel)]="part.style.height"
+                                                            matInput>
+                                                        <mat-hint>Height</mat-hint>
+                                                    </mat-form-field>
+                                                    <mat-form-field style="max-width: 46px;">
+                                                        <input (change)="detectchange()" [(ngModel)]="part.style.width"
+                                                            matInput>
+                                                        <mat-hint>Width</mat-hint>
+                                                    </mat-form-field>
+                                                </div>
                                             </div>
                                         </div>
                                         <button mat-mini-fab *ngIf="part.morph" class="addbutton"
@@ -1668,9 +1747,16 @@
                                     <mat-expansion-panel-header *ngIf="part.type === 'chart'" cdkDragHandle>
                                         <mat-panel-title>
                                             <mat-icon>show_chart</mat-icon>
-                                            <mat-icon (click)="deleteitem(i)" class="iconsize-12">delete</mat-icon>
+                                            <mat-icon (click)="deleteitemvcgroup(i, idy)" matTooltip="Remove from group"
+                                                class="iconsize-12">delete</mat-icon>
                                             <mat-icon (click)="copyElement(i, part)" matTooltip="Duplicate element"
                                                 class="iconsize-10">filter_none</mat-icon>
+                                            <mat-icon matTooltip="up" (click)="movePartUp(idy, element.vectors)"
+                                                class="iconsize-10 sectionlabelbuttons" matSuffix>
+                                                arrow_drop_up</mat-icon>
+                                            <mat-icon matTooltip="down" (click)="movePartDown(idy, element.vectors)"
+                                                class="iconsize-10 sectionlabelbuttons" matSuffix>
+                                                arrow_drop_down</mat-icon>
                                         </mat-panel-title>
                                     </mat-expansion-panel-header>
                                     <div *ngIf="part.type === 'chart'">
@@ -2044,8 +2130,8 @@
             [style.transform]="'scale('+zoomfactor+')'">
 
             <!-- selectedVecPath &&  -->
-            <video *ngIf="canvas.videourl" preload="auto" class="video-background" no-controls [src]="canvas.videourl"
-                #videoPlayer (click)="deSelectAll()">
+            <video *ngIf="canvas.videourl" preload="auto" class="video-background" no-controls
+                [src]="videourl | safe: 'url'" #videoPlayer (click)="deSelectAll()">
             </video>
 
             <audio *ngIf="canvas.audio" [attr.id]="'canvassound'">

@@ -13,7 +13,11 @@
             [uploader]="uploader" class="drop-zone">
             Drop audio here
         </div>
-        <input type="file" ng2FileSelect [uploader]="uploader" />
+        <button  mat-button  (click)="fileInput.click()">Choose file</button>
+        <span
+            style="visibility: hidden; position: absolute; overflow: hidden; width: 0px; height:0px;border:none;margin:0; padding:0">
+            <input type="file" #fileInput ng2FileSelect [uploader]="uploader" />
+        </span>
         <div *ngIf="errorMessage">{{errorMessage}}</div>
 
         <div *ngFor="let item of uploader.queue" style="min-width: 50px;">
@@ -47,6 +51,9 @@
                         <button mat-button (click)="item.cancel()" [disabled]="!item.isUploading">
                             <mat-icon aria-hidden="false" class="iconsize-10">cancel</mat-icon> Cancel
                         </button>
+                        <button mat-button (click)="item.remove()">
+                            <mat-icon class="iconsize-10">remove_circle</mat-icon> Remove
+                          </button>
                     </td>
                 </tr>
             </table>

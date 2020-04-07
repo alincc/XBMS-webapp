@@ -62,7 +62,7 @@
     "tslib": "^1.10.0",
     "wordpress-rest-api-oauth-1": "^1.1.7",
     "wpapi": "^1.2.1",
-    "xlsx": "^0.14.5",
+    "xlsx": "^0.15.6",
     "zone.js": "~0.10.2"
   },
   "devDependencies": {

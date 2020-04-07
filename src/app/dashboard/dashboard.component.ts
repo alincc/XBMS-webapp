@@ -33,6 +33,7 @@ import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dial
 import { DialogGetname } from './../dialogsservice/dialog.getname';
 import { GoogleMapService } from '../shared/googlemapservice/googlemap.service';
 
+
 export class Chart {
   data: Array<any>;
   label: string;
@@ -100,8 +101,8 @@ export class DashboardComponent implements OnInit {
     domain: ['#e1f5fe', '#b3e5fc', '#81d4fa', '#4fc3f7', '#29b6f6', '#03a9f4', '#039be5', '#0288d1', '#0277bd', '#01579b']
   };
 
-  private analytics_ids = 'ga:154403562'; // add user to analytics account 
-  private analytics_metrics = [{expression: 'ga:users'}];
+  private analytics_ids = 'ga:154403562'; // add user to analytics account
+  private analytics_metrics = [{ expression: 'ga:users' }];
 
 
   public dashboardsetup = [];
@@ -402,11 +403,11 @@ export class DashboardComponent implements OnInit {
     if (btn.tooltip === 'Add follow up list') { this.addFollowUpData() }
     if (btn.tooltip === 'Add publication data') { this.addPublicationData() }
     if (btn.tooltip === 'Add scheduled events') { this.addScheduledData() }
-    if (btn.tooltip === 'Save as new Dashboard') {this.saveDashboard()}
-    if (btn.tooltip === 'Save current Dashboard') {this.saveCurrentDashboard()}
-    if (btn.tooltip === 'Delete current Dashboard') {this.deleteTemplate()}
-    if (btn.tooltip === 'Set as Standard Dashboard') {this.setStandardDashboard(this.stdDash)}
-    if (btn.tooltip === 'Reload') {this.detectchange()}
+    if (btn.tooltip === 'Save as new Dashboard') { this.saveDashboard() }
+    if (btn.tooltip === 'Save current Dashboard') { this.saveCurrentDashboard() }
+    if (btn.tooltip === 'Delete current Dashboard') { this.deleteTemplate() }
+    if (btn.tooltip === 'Set as Standard Dashboard') { this.setStandardDashboard(this.stdDash) }
+    if (btn.tooltip === 'Reload') { this.detectchange() }
   }
 
   moveSectionUp(i1): void {
@@ -427,9 +428,9 @@ export class DashboardComponent implements OnInit {
 
   editmodeChange() {
     if (this.editmode) { this.editmode = false; this.detectchange(); } else {
-      this.editmode = true; 
+      this.editmode = true;
     }
-    
+
   }
 
   addNewWebsiteData() {
@@ -451,7 +452,7 @@ export class DashboardComponent implements OnInit {
   }
 
   addNewCRMData() {
-    let newData = createDataObject('CRM statistics', '30daysAgo', 'today', 'bar', undefined);
+    let newData = createDataObject('CRM statistics', '1-1-2018', new Date(), 'bar', 'relations-calls');
     this.dashboardsetup.push(newData);
     this.detectchange();
   }
@@ -480,20 +481,20 @@ export class DashboardComponent implements OnInit {
     this.detectchange();
   }
 
-  newDashboard(){
+  newDashboard() {
     this.dashboardsetup = [];
     this.detectchange();
   }
 
 
-  deleteTemplate(){
+  deleteTemplate() {
     this.dashboardsetup = [];
     this.Account.dashboards.splice(this.Account.stddashboard, 1);
     this.AccountApi.addDashboard(this.Account.id, this.Account.dashboards).subscribe();
     this.detectchange();
   }
 
-  saveCurrentDashboard(){
+  saveCurrentDashboard() {
     let newDash = this.dashboardsetup;
     newDash.forEach((element) => {
       element.data_labels = [];
@@ -522,7 +523,7 @@ export class DashboardComponent implements OnInit {
       let name = result;
       if (name) {
         let newDash = this.dashboardsetup;
-  
+
         newDash.forEach((element) => {
           element.data_labels = [];
           element.colorscheme = [];
@@ -543,18 +544,18 @@ export class DashboardComponent implements OnInit {
     });
   }
 
-  mouseOverMapMarker(e){
-    console.log(e)
+  mouseOverMapMarker(e) {
+    //console.log(e)
     this.mapLabelName = e;
   }
 
-  setStandardDashboard(nr){
+  setStandardDashboard(nr) {
     this.AccountApi.addStdDashboard(this.Account.id, nr).subscribe();
   }
 
   loadDashboard(i) {
     this.stdDash = i.value;
-    console.log(i.value);
+    //console.log(i.value);
     this.dashboardsetup = this.Account.dashboards[i.value].dashboard;
     //this.setStandardDashboard(i.value);
     this.detectchange();
@@ -579,7 +580,7 @@ export class DashboardComponent implements OnInit {
     if (this.AccountApi.getCurrentToken() === undefined) { this.router.navigate(['login']) }
     // this.setFilter();
     this.getCurrentUserInfo();
-   
+
   }
 
   async setColor(dashitem) {
@@ -691,10 +692,10 @@ export class DashboardComponent implements OnInit {
   getCurrentUserInfo(): void {
     this.AccountApi.getCurrent().subscribe((account: Account) => {
       this.Account = account;
-      if (this.Account.stddashboard !== undefined && this.Account.stddashboard >= this.Account.dashboards.length - 1){
+      if (this.Account.stddashboard !== undefined && this.Account.stddashboard >= this.Account.dashboards.length - 1) {
         this.dashboardsetup = this.Account.dashboards[this.Account.stddashboard].dashboard;
       }
-     
+
       this.CompanyApi.getRelations(this.Account.companyId,
         { fields: { id: true, relationname: true, domain: true } }
       )
@@ -706,7 +707,7 @@ export class DashboardComponent implements OnInit {
                 //console.log(rel);
                 this.onSelectRelation(rel, null);
                 this.getAnalyticsAccounts();
-               
+
               })
           }
           if (this.Account.standardGa) {
@@ -739,10 +740,10 @@ export class DashboardComponent implements OnInit {
     return new Promise(async (resolve, reject) => {
 
       let filters = undefined;
-    //  let filters: [{
-    //   dimension_name: filters,
-    //   operator: "EXACT",
-    //   expressions: ["Firefox"] }];
+      //  let filters: [{
+      //   dimension_name: filters,
+      //   operator: "EXACT",
+      //   expressions: ["Firefox"] }];
 
       let startdateset = startdate;
       let enddateset = enddate;
@@ -753,7 +754,7 @@ export class DashboardComponent implements OnInit {
         enddateset = moment(enddate).utc().format('YYYY-MM-DD');
       }
       //console.log(startdateset, enddateset);
-      this.GoogleanalyticsApi.getanalyticsreport(this.selectedanalytics.id, this.analytics_ids, startdateset, 
+      this.GoogleanalyticsApi.getanalyticsreport(this.selectedanalytics.id, this.analytics_ids, startdateset,
         enddateset, dimension, this.analytics_metrics)
         .subscribe(data => {
           resolve(data);
@@ -772,7 +773,6 @@ export class DashboardComponent implements OnInit {
         const dateset = item.dimensions[0];
         const txt2 = dateset.slice(0, 4) + '-' + dateset.slice(4, 12);
         const txt3 = txt2.slice(0, 7) + '-' + txt2.slice(7, 13);
-        //graph.data_labels.push(txt3);
         let date = new Date(txt3);
         let datestring = date.toDateString();
         graph.data_labels.push(datestring);
@@ -784,23 +784,24 @@ export class DashboardComponent implements OnInit {
       resolve(graph);
     });
   }
-  
-  async setMapAnalytics(resdata, graph: DataObject){
-      return new Promise(async (resolve, reject) => {
-        graph.data_set = [];
-        graph.data_labels = [];
-        graph.data_object = [];
-        let rows = resdata[0].data.rows;
-        //console.log(rows);
-        for (let i = 0; i < rows.length; i++) {
-          const item = rows[i];
-          let nr = parseInt(item.metrics[0].values[0], 10);
-          const newset: any = { data: [nr], lat: item.dimensions[0], lon: item.dimensions[1]}
-          graph.data_object.push(newset)
-          graph.data_set.push(newset);
-        };
-        resolve(graph);
-      });
+
+
+  async setMapAnalytics(resdata, graph: DataObject) {
+    return new Promise(async (resolve, reject) => {
+      graph.data_set = [];
+      graph.data_labels = [];
+      graph.data_object = [];
+      let rows = resdata[0].data.rows;
+      //console.log(rows);
+      for (let i = 0; i < rows.length; i++) {
+        const item = rows[i];
+        let nr = parseInt(item.metrics[0].values[0], 10);
+        const newset: any = { data: [nr], lat: item.dimensions[0], lon: item.dimensions[1] }
+        graph.data_object.push(newset)
+        graph.data_set.push(newset);
+      };
+      resolve(graph);
+    });
   }
 
   async setChartAnalytics(resdata, graph: DataObject) {
@@ -821,20 +822,22 @@ export class DashboardComponent implements OnInit {
 
   async setChartType(resdata, graph: DataObject, label) {
     return new Promise(async (resolve, reject) => {
-      graph.data_set = [];
-      graph.data_labels = [];
-      graph.data_object = [];
-      let labels = Object.keys(resdata[0]);
-      const newset: Chart = { data: [resdata.length], label: label }
-      graph.data_labels = label;
-      graph.data_set.push(newset);
-      graph.data_object = resdata;
-      resolve(graph);
+      if (resdata.length > 0) {
+        graph.data_set = [];
+        graph.data_labels = [];
+        graph.data_object = [];
+        let labels = Object.keys(resdata[0]);
+        const newset: Chart = { data: [resdata.length], label: label }
+        graph.data_labels = label;
+        graph.data_set.push(newset);
+        graph.data_object = resdata;
+        resolve(graph);
+      } else {
+        resolve(graph)
+      }
+
     });
   }
-
-
-
 
 
   async buildDashboard(dashitem) {
@@ -848,22 +851,20 @@ export class DashboardComponent implements OnInit {
           if (this.selectedanalytics) {
             // set correct dimension format, needed here as dimnsion var can contain more then one
             let dimensions = [];
-            if (dashitem.charttype === 'map'){
-              dimensions = [{name: 'ga:latitude'}, {name: 'ga:longitude'}]
+            if (dashitem.charttype === 'map') {
+              dimensions = [{ name: 'ga:latitude' }, { name: 'ga:longitude' }]
             } else {
-              dimensions = [{name: dashitem.dimension}]
+              dimensions = [{ name: dashitem.dimension }]
             }
-
             let resdata: any = await this.getAnalyticsData(dashitem.startdate, dashitem.enddate, dimensions);
             let dashitem1;
-            if (dashitem.charttype === 'map'){
+            if (dashitem.charttype === 'map') {
               dashitem1 = await this.setMapAnalytics(resdata, dashitem);
             } else if (dashitem.dimension === 'ga:date' && dashitem.charttype !== 'map') {
               dashitem1 = await this.setChartDateData(resdata, dashitem);
-            }  else {
+            } else {
               dashitem1 = await this.setChartAnalytics(resdata, dashitem);
             }
-           
             resolve(dashitem1);
           }
           break
@@ -887,9 +888,28 @@ export class DashboardComponent implements OnInit {
           break
         }
         case 'CRM statistics': {
-          let resdata = await this.countManagerData(dashitem);
-          let dashitem1: any = await this.setChartType(resdata, dashitem, ['CRM data']);
-          dashitem1.data_set = resdata;
+          let resdata;
+          let labels = ['CRM data'];
+          let dashitem1;
+          if (dashitem.dimension === 'calls-date') {
+            resdata = await this.countManagerData(dashitem);
+            dashitem1 = await this.setChartType(resdata, dashitem, labels);
+            dashitem1.data_set = resdata;
+          }
+          if (dashitem.dimension === 'relations-status') {
+            //let labels = 
+            resdata = await this.relationsByStatus(dashitem);
+            dashitem1 = await this.setChartType(resdata, dashitem, labels);
+            dashitem1.data_set = resdata;
+          }
+          if (dashitem.dimension === 'relations-calls') {
+            resdata = await this.callsByDate(dashitem);
+            dashitem1 = resdata;
+            //await this.setChartDateData(resdata, dashitem);
+            //dashitem1 = await this.setChartType(resdata, dashitem, labels);
+          }
+
+         
           resolve(dashitem1);
           break
         }
@@ -963,21 +983,21 @@ export class DashboardComponent implements OnInit {
 
   getAdsMailing(graph: DataObject) {
     return new Promise(async (resolve, reject) => {
-      //  get the planned mailings looks shitty because the mailings of are 
-      //  part of the marketingplannerevents 
-      //  and are not directly related to the Relation.id itself 
+      //  get the planned mailings looks shitty because the mailings of are
+      //  part of the marketingplannerevents
+      //  and are not directly related to the Relation.id itself
       //  used include to get the related mailings and then run foreach on the events and a foreach for all the mailings
       let Mailing = [];
       this.RelationsApi.getMarketingplannerevents(this.Account.standardrelation,
         {
           where: { scheduled: true },
           //where: { scheduled: true, mailing: { "neq": null }},
-          
+
           include: {
             relation: 'mailing',
             scope:
             {
-              where: {and:[ {send: false}, {scheduled: true}, {done: false} ]},
+              where: { and: [{ send: false }, { scheduled: true }, { done: false }] },
               // where: {send: false}
               // fields: {
               //   title: true, to: true, from: true, subject: true, date: true, id: true
@@ -996,7 +1016,7 @@ export class DashboardComponent implements OnInit {
             mailingsub.forEach((itemMailing) => {
               itemMailing.marketingplannereventsIds = item.name;
               console.log(item);
-            
+
               Mailing.push(itemMailing)
             })
           })
@@ -1028,7 +1048,7 @@ export class DashboardComponent implements OnInit {
   async getWebsiteTracker() {
     return new Promise(async (resolve, reject) => {
       this.Websitetracker = [];
-      //  limit is total entries, order is is important as first entry is in array ES6 move to server. 
+      //  limit is total entries, order is is important as first entry is in array ES6 move to server.
       this.RelationsApi.getWebsitetracker(this.option.id, {
         where: { isp: false },
         order: 'date DESC', limit: 100
@@ -1129,6 +1149,79 @@ export class DashboardComponent implements OnInit {
     });
   }
 
+  relationsByStatus(dashitem) {
+    return new Promise(async (resolve, reject) => {
+      let TotalNumber = [];
+      this.CompanyApi.getRelations(this.Account.companyId,
+        { fields: { status: true, type: true, id: true } }
+      ).subscribe((relations: Relations[]) => {
+        let status = relations.map(item => item.status).filter((value, index, self) => self.indexOf(value) === index);
+        let type = relations.map(item => item.type).filter((value, index, self) => self.indexOf(value) === index);
+        status.forEach(elvalue => {
+          const statuscount = relations.filter((obj) => obj.status === elvalue).length;
+          TotalNumber.push({ data: [statuscount], label: elvalue });
+        });
+        type.forEach(elvalue => {
+          const typecount = relations.filter((obj) => obj.type === elvalue).length;
+          TotalNumber.push({ data: [typecount], label: elvalue });
+        });
+        resolve(TotalNumber);
+      });
+    });
+  }
+
+  async callsByDate(graph: DataObject) {
+    return new Promise(async (resolve, reject) => {
+      var a = moment(graph.startdate);
+      var b = moment(graph.enddate);
+      const newset: Chart = { data: [], label: '' };
+      console.log(a, b)
+      let TotalNumber = [];
+      this.CompanyApi.getRelations(this.Account.companyId,
+        {
+          fields: { status: true, type: true, id: true },
+          include: {
+            relation: 'calls',
+            scope: {
+              fields: { date: true, id: true },
+              // where: {
+              //   date_field: {
+              //     gte: a,
+              //     lt: b
+              //   }
+              // }
+            }
+          }
+        }
+      ).subscribe((relations: Relations[]) => {
+        let callsdatesset = [];
+        relations.forEach(rel => {
+          callsdatesset.push(rel.calls)
+        })
+
+        let callsdates = [].concat.apply([], callsdatesset);
+        console.log(callsdates);
+        // If you want an exclusive end date (half-open interval)
+        for (var m = moment(a); m.isBefore(b); m.add(1, 'days')) {
+          let date = m.format('LL');
+          let callscount = 0;
+          for (let i = 0; i < callsdates.length; i++){
+            let date2 = moment(callsdates[i].date).format('LL');
+            if (date === date2){
+              ++callscount;
+            }
+          }
+          //const callscount = callsdates.filter((obj) => {moment(obj.date).format('LL') === m.format('LL')}).length;
+          graph.data_labels.push(date);
+          newset.data.push(callscount)
+          graph.data_object.push({ Date: date, Calls: callscount });
+        }
+        graph.data_set = [newset]
+        resolve(graph);
+
+      });
+    });
+  }
 
   public async countPublications(graph: DataObject) {
     return new Promise(async (resolve, reject) => {
@@ -1167,7 +1260,7 @@ export class DashboardComponent implements OnInit {
         SDomain = this.option.domain
       }
       //this.mailstatsspinner = true;
-      //  set d/m/h 
+      //  set d/m/h
       let data;
       if (this.mailStatsTimeSelected == undefined) {
         data = '7d';

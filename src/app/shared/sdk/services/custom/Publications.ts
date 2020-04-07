@@ -1235,6 +1235,94 @@ export class PublicationsApi extends BaseLoopBackApi {
   }
 
   /**
+   * <em>
+         * (The remote method definition does not provide any description.)
+         * </em>
+   *
+   * @param {string} id 
+   *
+   * @param {string} companyId 
+   *
+   * @param {string} website 
+   *
+   * @param {string} username 
+   *
+   * @param {string} password 
+   *
+   * @param {boolean} filter 
+   *
+   * @returns {object} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * <em>
+   * (The remote method definition does not provide any description.
+   * This usually means the response is a `Publications` object.)
+   * </em>
+   */
+  public wordpressGetPosts(id: any = {}, companyId: any = {}, website: any = {}, username: any = {}, password: any = {}, filter: any = {}, customHeaders?: Function): Observable<any> {
+    let _method: string = "GET";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/publications/wordpressgetposts/:id";
+    let _routeParams: any = {
+      id: id
+    };
+    let _postBody: any = {};
+    let _urlParams: any = {};
+    if (typeof companyId !== 'undefined' && companyId !== null) _urlParams.companyId = companyId;
+    if (typeof website !== 'undefined' && website !== null) _urlParams.website = website;
+    if (typeof username !== 'undefined' && username !== null) _urlParams.username = username;
+    if (typeof password !== 'undefined' && password !== null) _urlParams.password = password;
+    if (typeof filter !== 'undefined' && filter !== null) _urlParams.filter = filter;
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
+   * <em>
+         * (The remote method definition does not provide any description.)
+         * </em>
+   *
+   * @param {string} id 
+   *
+   * @param {string} companyId 
+   *
+   * @param {string} website 
+   *
+   * @param {string} username 
+   *
+   * @param {string} password 
+   *
+   * @param {boolean} filter 
+   *
+   * @returns {object} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * <em>
+   * (The remote method definition does not provide any description.
+   * This usually means the response is a `Publications` object.)
+   * </em>
+   */
+  public wordpressGetPages(id: any = {}, companyId: any = {}, website: any = {}, username: any = {}, password: any = {}, filter: any = {}, customHeaders?: Function): Observable<any> {
+    let _method: string = "GET";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/publications/wordpressgetpages/:id";
+    let _routeParams: any = {
+      id: id
+    };
+    let _postBody: any = {};
+    let _urlParams: any = {};
+    if (typeof companyId !== 'undefined' && companyId !== null) _urlParams.companyId = companyId;
+    if (typeof website !== 'undefined' && website !== null) _urlParams.website = website;
+    if (typeof username !== 'undefined' && username !== null) _urlParams.username = username;
+    if (typeof password !== 'undefined' && password !== null) _urlParams.password = password;
+    if (typeof filter !== 'undefined' && filter !== null) _urlParams.filter = filter;
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
    * Creates a new instance in container of this model.
    *
    * @param {any} id publications id

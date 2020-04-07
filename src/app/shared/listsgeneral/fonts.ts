@@ -17,4 +17,6 @@ export const fonts: Font[] = [
     {value: 'WesternOld', name: 'Western Oldies'},
     {value: 'IndustrialOld', name: 'Industrial Oldies'},
     {value: 'Hillpark', name: 'Hillpark'},
+    {value: 'Northead', name: 'Northead'},
+    {value: 'Woodpecker', name: 'Woodpecker'},
   ];

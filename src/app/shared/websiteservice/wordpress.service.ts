@@ -18,6 +18,7 @@ export class WordpressService {
 
     constructor() { }
 
+
     getNativeWindow() {
         return window;
         //open new window option

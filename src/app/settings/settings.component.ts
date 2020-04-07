@@ -1,4 +1,4 @@
-import { Component, OnInit, NgZone } from '@angular/core';
+import { Component, OnInit} from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Observable} from 'rxjs';
 import {
@@ -83,6 +83,9 @@ export class SettingsComponent implements OnInit {
   public option: Relations = new Relations();
   public newRelation: Relations = new Relations();
   public files;
+  public skip = 0;
+  public limit = 20;
+  public Unsortedcallslength: number;
   
   myControl = new FormControl();
 
@@ -117,13 +120,12 @@ export class SettingsComponent implements OnInit {
   secondFormGroup: FormGroup;
   oldpassword: string;
   newpassword: string;
-
+  public selectedTab = 0;
   public fontlist: string[] = fontoptions;
 
   constructor(
     public mailingApi: MailingApi,
     public dialog: MatDialog,
-    public zone: NgZone,
     public snackBar: MatSnackBar,
     public AccountApi: AccountApi,
     public RelationsApi: RelationsApi,
@@ -139,15 +141,31 @@ export class SettingsComponent implements OnInit {
     public activatedRoute: ActivatedRoute,
     public LinkedinService: LinkedinService,
     public WordpressService: WordpressService,
-    //public auth: LoopBackAuth,
     public route: ActivatedRoute,
     public router: Router,
     public accountApi: AccountApi) {
+    
     LoopBackConfig.setBaseURL(BASE_URL);
     LoopBackConfig.setApiVersion(API_VERSION);
     this.nativeWindow = WordpressService.getNativeWindow();
-
   }
+
+  public setParameters(){
+    let itemid = this.route.snapshot.queryParamMap.get("itemid");
+    let tab = this.route.snapshot.queryParamMap.get("tab");
+    console.log(itemid, tab);
+    if (tab === 'unsorted'){
+      this.selectedTab = 2;
+      this.AccountApi.findByIdUnsortedcalls(this.Account.id, itemid)
+      .subscribe(res => {this.onSelectCall(res, null)});
+    }
+
+    if (tab === 'invoice'){
+      this.selectedTab = 1;
+      //this.
+    }
+  }
+ 
 
   public openSnackBar(message: string) {
     this.snackBar.open(message, undefined, {
@@ -226,6 +244,7 @@ export class SettingsComponent implements OnInit {
   getAccountInfo(): void {
     this.accountApi.getCurrent().subscribe((Account: Account) => {
       this.Account = Account,
+      this.setParameters();
         this.getUnCalls(),
         this.getLinkedin(),
         this.getAdminAccountsoverview();
@@ -240,6 +259,8 @@ export class SettingsComponent implements OnInit {
       this.logs = logs;
     })
   }
+
+
 
   getAdminAccountsoverview(): void {
     if (this.Account.companyadmin === true) {
@@ -321,6 +342,8 @@ export class SettingsComponent implements OnInit {
   }
 
   public getUnCalls(): void {
+    this.accountApi.countUnsortedcalls(this.Account.id)
+    .subscribe(res => {this.Unsortedcallslength = res.count;});
     this.newRelation.relationname = undefined;
     this.newRelation.status = undefined;
     this.option = undefined;
@@ -328,7 +351,10 @@ export class SettingsComponent implements OnInit {
     this.accountApi.getUnsortedcalls(
       this.Account.id,
       {
-        order: 'id DESC'
+        order: 'id DESC',
+        // order: 'relationname ASC',
+        limit: 20,
+        skip: this.skip,
       }
       )
       .subscribe((unsortedcalls: Unsortedcalls[]) => this.Unsortedcalls = unsortedcalls);
@@ -388,7 +414,13 @@ export class SettingsComponent implements OnInit {
       // split string name
       let temp;
       if (name !== undefined) {
-        temp = name.name.split(" "); // now you have 2 words in temp
+        if (typeof name === 'string'){
+          temp = [name]
+        }
+        if (name.name){
+          temp = name.name.split(" "); // now you have 2 words in temp
+        }
+      
       } else {
         temp = ['unknown', 'unknown']; // if attendee is undefined
       }
@@ -503,7 +535,23 @@ export class SettingsComponent implements OnInit {
       this.openSnackBar("Changes saved")});
   }
 
+  deleteRelType(i){
+    console.log(i);
+    this.Company.relationtypes.splice(i, 1);
+    this.saveCompany();
+  }
+
+  saveRelType(e, i){
+    console.log(e.srcElement.value, i);
+    this.Company.relationtypes[i]= e.srcElement.value;
+    this.saveCompany();
+  }
+
   saveCompany(): void {
+    this.CompanyApi.upsert(this.Company).subscribe();
+  }
+
+  saveCompanyDomain(): void {
     this.CompanyApi.patchAttributes(this.Company.id, this.Company)
     .subscribe(res => this.openSnackBar("Changes saved"));
     this.deleteDomain();
@@ -534,9 +582,6 @@ export class SettingsComponent implements OnInit {
   }
 
   setAddress(addrObj) {
-    // We are wrapping this in a NgZone to reflect the changes
-    // to the object in the DOM
-    this.zone.run(() => {
       this.newRelation.relationname = addrObj.name;
       this.newRelation.address1 = addrObj.route +" "+ addrObj.street_number;
       this.newRelation.generalphone = addrObj.phone;
@@ -544,8 +589,6 @@ export class SettingsComponent implements OnInit {
       this.newRelation.city = addrObj.locality;
       this.newRelation.stateprovince = addrObj.admin_area_l1;
       this.newRelation.zipcode = addrObj.postal_code;
-      console.log(addrObj);
-    });
   }
 
   getInvoices(): void {
@@ -600,6 +643,22 @@ export class SettingsComponent implements OnInit {
         };  // this.sanitizer.bypassSecurityTrustHtml(result);
       }
     });
+  }
+
+  getCallsnextpage(): void {
+    if (this.limit < this.Unsortedcallslength) {
+      this.limit = this.limit += 20;
+      this.skip = this.skip += 20;
+      this.getRelations();
+    }
+  }
+
+  getCallsbackpage(): void {
+    if (this.skip > 0) {
+      this.skip = this.skip -= 20;
+      this.limit = this.limit -= 20,
+        this.getRelations();
+    }
   }
 
 }

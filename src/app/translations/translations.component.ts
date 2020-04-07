@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import {
   Translation,
@@ -19,6 +19,7 @@ import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
 import { MatInput } from '@angular/material/input';
 import { MatAutocompleteSelectedEvent} from '@angular/material/autocomplete';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { UploadComponent } from './upload/upload.component'
 
 @Component({
   selector: 'app-translations',
@@ -27,6 +28,10 @@ import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dial
 })
 
 export class TranslationsComponent implements OnInit {
+
+  @ViewChild(UploadComponent, { static: false })
+  private uploadComponent: UploadComponent;
+
   public filteredRelations: Relations[];
   public MarkTranJobs;
   public MarkTranJobRes;

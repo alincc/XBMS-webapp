@@ -1,0 +1,32 @@
+.crawltable {
+    margin: 10;
+    padding: 2;
+}
+
+.mat-column-select {
+    overflow: initial;
+  }
+
+.containercrawler{
+    margin: 10;
+  }
+
+  td , th {
+    white-space: normal;
+    word-wrap: break-word;
+    max-width: 500px;
+}
+
+table.mat-table {
+    border-spacing: 0;
+    margin: 10px;
+    width: 100%;
+}
+
+.mat-row {
+    height: auto;
+  }
+  
+  .mat-cell {
+    padding: 8px 8px 8px 0;
+  }

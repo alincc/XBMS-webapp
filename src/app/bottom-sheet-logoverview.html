@@ -26,8 +26,8 @@
             </mat-list-item>
         </div>
         <div fxLayout="row" fxLayout.xs="column" fxLayoutWrap="wrap" fxLayoutAlign="space-around" style="width: 80%"
-            *ngFor="let logs of logger; let i = index">
-            <mat-list-item fxFlex >
+            *ngFor="let logs of logger; let i = index" (click)="navigateTo(logs)">
+            <mat-list-item fxFlex (click)="navigateTo(logs)">
                 <!-- <div fxFlex="20%">
                     <label style="font-size: 8pt">{{ logs.user }}</label>
                 </div>

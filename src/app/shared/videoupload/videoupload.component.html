@@ -1,60 +1,72 @@
 <div class="picture-container" fxLayout="row">
-        <button matTooltip="Open gallery" class="deletepicture" mat-mini-fab color="primary" (click)="onOpenGallery()">
-                <mat-icon>ondemand_video</mat-icon>
-            </button>
+    <button matTooltip="Open gallery" class="deletepicture" mat-mini-fab color="primary" (click)="onOpenGallery()">
+        <mat-icon>ondemand_video</mat-icon>
+    </button>
     <div *ngIf="showdropbox">
-            <mat-expansion-panel>
-                    <mat-expansion-panel-header>
-                        <mat-panel-title>
-                            upload video
-                        </mat-panel-title>
-                    </mat-expansion-panel-header>
-        <div ng2FileDrop [ngClass]="{'drop-zone-over': hasBaseDropZoneOver}" (fileOver)="fileOverBase($event)"
-            [uploader]="uploader" class="drop-zone">
-            Drop video here
-        </div>
-        <input type="file" ng2FileSelect [uploader]="uploader" />
-        <div *ngIf="errorMessage">{{errorMessage}}</div>
+        <mat-expansion-panel>
+            <mat-expansion-panel-header>
+                <mat-panel-title>
+                    upload video
+                </mat-panel-title>
+            </mat-expansion-panel-header>
+            <div ng2FileDrop [ngClass]="{'drop-zone-over': hasBaseDropZoneOver}" (fileOver)="fileOverBase($event)"
+                [uploader]="uploader" class="drop-zone">
+                Drop video here
+            </div>
+            <!-- <input type="file" ng2FileSelect [uploader]="uploader" /> -->
 
-        <div *ngFor="let item of uploader.queue" style="min-width: 50px;" fxLayout="column">
-            <table>
-                <tr>
-                    {{ item?.file?.name}}
-                </tr>
-                <tr>
-                    <mat-progress-bar [mode]="determinate" [value]="item.progress">
-                        upload </mat-progress-bar>
-                </tr>
-                <tr>
-                    <td class="text-center">
-                        <span *ngIf="item.isSuccess">
-                            <mat-icon aria-hidden="false" class="iconsize-10">done</mat-icon>
-                        </span>
-                        <span *ngIf="item.isCancel">
-                            <mat-icon aria-hidden="false" class="iconsize-10">cancel</mat-icon>
-                        </span>
-                        <span *ngIf="item.isError">
-                            <mat-icon aria-hidden="false" class="iconsize-10">error</mat-icon>
-                        </span>
-                    </td>
-                </tr>
-                <tr>
-                    <td nowrap>
-                        <button mat-button (click)="setupload(item?.file?.name, item?.file?.size)"
-                            [disabled]="item.isReady || item.isUploading || item.isSuccess">
-                            <mat-icon aria-hidden="false" class="iconsize-10">cloud_upload</mat-icon>Upload
-                        </button>
-                        <button mat-button (click)="item.cancel()" [disabled]="!item.isUploading">
-                            <mat-icon aria-hidden="false" class="iconsize-10">cancel</mat-icon> Cancel
-                        </button>
-                    </td>
-                </tr>
-            </table>
-        </div>
-        <div *ngIf="converting">
-            <mat-progress-bar mode="indeterminate"></mat-progress-bar>
-            <label>Converting Video.. this can take a while</label>
-        </div>
+            <button  mat-button  (click)="fileInput.click()">Choose file</button>
+            <span
+                style="visibility: hidden; position: absolute; overflow: hidden; width: 0px; height:0px;border:none;margin:0; padding:0">
+                <input type="file" #fileInput ng2FileSelect [uploader]="uploader" />
+            </span>
+
+            <div *ngIf="errorMessage">{{errorMessage}}</div>
+
+            <div *ngFor="let item of uploader.queue" style="min-width: 50px;" fxLayout="column">
+                <table>
+                    <tr>
+                        {{ item?.file?.name}}
+                    </tr>
+                    <tr>
+                        <mat-progress-bar [mode]="determinate" [value]="item.progress">
+                            upload </mat-progress-bar>
+                    </tr>
+                    <tr>
+                        <td class="text-center">
+                            <span *ngIf="item.isSuccess">
+                                <mat-icon aria-hidden="false" class="iconsize-10">done</mat-icon>
+                            </span>
+                            <span *ngIf="item.isCancel">
+                                <mat-icon aria-hidden="false" class="iconsize-10">cancel</mat-icon>
+                            </span>
+                            <span *ngIf="item.isError">
+                                <mat-icon aria-hidden="false" class="iconsize-10">error</mat-icon>
+                            </span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td nowrap>
+                            <button mat-button (click)="setupload(item?.file?.name, item?.file?.size)"
+                                [disabled]="item.isReady || item.isUploading || item.isSuccess">
+                                <mat-icon aria-hidden="false" class="iconsize-10">cloud_upload</mat-icon>Upload
+                            </button>
+                            <button mat-button (click)="item.cancel()" [disabled]="!item.isUploading">
+                                <mat-icon aria-hidden="false" class="iconsize-10">cancel</mat-icon> Cancel
+                            </button>
+                            <button mat-button (click)="item.remove()">
+                                <mat-icon class="iconsize-10">remove_circle</mat-icon> Remove
+                            </button>
+                        </td>
+                    </tr>
+                </table>
+                <div *ngIf="converting">
+                    <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+                    <label *ngIf="item.isUploading">Uploading file</label>
+                    <label *ngIf="!item.isUploading">Converting Video.. this can take a few minutes</label>
+                </div>
+            </div>
+
 
         </mat-expansion-panel>
     </div>

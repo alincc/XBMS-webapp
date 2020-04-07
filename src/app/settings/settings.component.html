@@ -1,4 +1,4 @@
-<mat-tab-group class="relations">
+<mat-tab-group [(selectedIndex)]="selectedTab">
   <mat-tab label="Relations Account">
     <ng-template mat-tab-label>
       <mat-icon>settings</mat-icon>Account
@@ -8,38 +8,26 @@
       <div fxLayout="row wrap">
         <div class="companyinfo" *ngIf="toggleedituser" fxFlex="40%">
           <div fxLayout="column">
-
-
             <h2>Account info</h2>
-
-
-
             <mat-form-field class="form-full-width">
               <input matInput [(ngModel)]=Account.email placeholder="Email" class="InputField">
             </mat-form-field>
-
             <mat-form-field class="form-full-width">
               <input matInput [(ngModel)]=Account.username placeholder="Username" class="InputField">
             </mat-form-field>
-
-
             <mat-form-field class="form-full-width">
               <input matInput placeholder="Enter your password" name="password" [(ngModel)]="Account.password"
                 [type]="!hide ? 'password' : 'text'">
               <mat-icon matSuffix (click)="!hide = hide">{{hide ? 'visibility' : 'visibility_off'}}</mat-icon>
             </mat-form-field>
-
-
             <mat-form-field class="form-full-width">
               <input matInput [(ngModel)]=Account.companyname placeholder="Company Name" class="InputField">
             </mat-form-field>
-
             <button (click)="saveAccount()" a mat-raised-button class="button">Save Changes</button>
             <button mat-mini-fab color="primary" (click)="toggleEditUser()">
               <mat-icon>edit</mat-icon>
             </button>
           </div>
-
         </div>
         <div class="companyinfo" fxFlex="40%">
           <div fxLayout="column">
@@ -116,10 +104,7 @@
                 </div>
               </mat-expansion-panel>
             </mat-accordion>
-
-
           </div>
-
         </div>
         <div class="companyinfo" *ngIf="!toggleedituser" fxFlex="40%">
           <div fxLayout="column">
@@ -168,8 +153,6 @@
                 <input matInput [(ngModel)]=Company.address placeholder="Address" class="InputField">
               </mat-form-field>
             </div>
-
-
 
             <div fxFlex>
               <mat-form-field class="form-full-width">
@@ -501,12 +484,27 @@
 
             </div>
           </div>
-          <button (click)="saveCompany()" a mat-raised-button class="button">Save domain settings</button>
+          <button (click)="saveCompanyDomain()" a mat-raised-button class="button">Save domain settings</button>
           <!-- <button (click)="setDomain()" a mat-raised-button class="button">Check settings</button> -->
           <button (click)="checkDomainSettings()" a mat-raised-button class="button">Check Status</button>
           <div *ngIf="domainresponse" fxFlex>
             <label style="font-size: 8pt; overflow-wrap: break-word;">{{domainresponse}}</label>
           </div>
+        </div>
+        <div class="companyinfo" fxFlex="40%">
+          <h2>Set Relationstypes</h2>
+          <br>
+          <div *ngFor="let typerel of Company.relationtypes; let i = index;" >
+            <div fxLayout="row">
+              <mat-form-field>
+                <input matInput [(ngModel)]="typerel"  (change)="saveRelType($event, i)">
+              </mat-form-field>
+              <mat-icon (click)="deleteRelType(i)" class="iconsize-10">delete</mat-icon>
+              <!-- <mat-icon (click)="saveRelType(typerel, i)" class="iconsize-10">save</mat-icon> -->
+            </div>
+          </div>
+          <button a mat-raised-button (click)="Company.relationtypes.push('new')" mat-button>Add type</button>
+          <!-- <button a mat-raised-button (click)="saveRelType(Company.relationtypes, i)" mat-button>Save</button> -->
         </div>
 
       </div>
@@ -517,7 +515,7 @@
     <ng-template mat-tab-label>
       <mat-icon>money</mat-icon>Invoices
     </ng-template>
-    <div class="tab">
+    <div>
       <button mat-button (click)="getInvoices()">Load Invoices</button>
       <div *ngFor="let file of files; let i = index;" class="invoicelabel">
         <mat-icon>money</mat-icon>
@@ -531,7 +529,7 @@
     <ng-template mat-tab-label>
       <mat-icon>mail</mat-icon>Unsorted Emails
     </ng-template>
-    <button a mat-raised-button (click)="openDialogDeleteAllCall()">Delete All</button>
+
     <div class="tabcontainer" fxLayout="row">
       <div class="listcontainer" fxFlex="20%">
         <h4>Search</h4>
@@ -539,145 +537,132 @@
           <input matInput #searchTerm id="seach-box" (keyup.enter)="searchCallGo(searchTerm.value)"
             placeholder="Call title/content" />
         </mat-form-field>
-
-
-        <button a mat-raised-button (click)="searchCallGo(searchTerm.value)">Search</button>
-
-        <button a mat-raised-button (click)="getUnCalls()">Show All</button>
-
-
-
+        <div fxLayout="row">
+          <button a mat-raised-button (click)="openDialogDeleteAllCall()">Delete All</button>
+          <button a mat-raised-button (click)="searchCallGo(searchTerm.value)">Search</button>
+          <button a mat-raised-button (click)="getUnCalls()">Show All</button>
+        </div>
         <div class="listview" fxLayout="column">
-          <div fxFlex *ngFor="let Unsortedcalls of Unsortedcalls; let i = index"
-            (click)="onSelectCall(Unsortedcalls, i)" [class.selected]="Unsortedcalls === selectedCall">
+          <div *ngFor="let Unsortedcalls of Unsortedcalls; let i = index" (click)="onSelectCall(Unsortedcalls, i)"
+            [class.selected]="Unsortedcalls === selectedCall">
             <span class="box">{{Unsortedcalls.title | slice:0:20 }} | {{Unsortedcalls.date | date}}</span>
           </div>
         </div>
-
+        <div fxLayout="column" style="width: 100%">
+          <div fxLayout="row" fxLayout.xs="column" style="width: 100%">
+            <div fxFlexstyle="width: 50%">
+              <mat-icon (click)="getCallsbackpage()">navigate_before</mat-icon>
+            </div>
+            <div fxFlexstyle="width: 50%">
+              <mat-icon (click)="getCallsnextpage()">navigate_next</mat-icon>
+            </div>
+          </div>
+          <div fxLayout="row" fxLayout.xs="column">
+            <label>{{skip}} / {{limit}}</label>
+          </div>
+          <div fxLayout="row" fxLayout.xs="column">
+            <div fxFlex><label i18n>Total</label></div>
+            <div fxFlex><label>{{Unsortedcallslength}}</label></div>
+          </div>
+        </div>
       </div>
       <div fxFlex="80%" *ngIf="selectedCall">
         <mat-card>
           <mat-card-content style="padding: 30px;" fxLayout="row">
             <div fxLayout="column" class="unsortedcalls" fxFlex>
               <div fxLayout="row" fxLayout.xs="column">
-                <div fxFlex>
-                  <mat-form-field class="example-full-width">
-                    <input type="text" placeholder="Select Relation" aria-label="relation" [(ngModel)]=option matInput
-                      [formControl]="myControl" [matAutocomplete]="auto">
-                    <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
-                      <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
-                        {{ option.relationname }}
-                      </mat-option>
-                    </mat-autocomplete>
-                  </mat-form-field>
-                </div>
-                <div fxFlex>
-                  <button a mat-raised-button (click)="assignCall()">Assign To</button>
-                </div>
-              </div>
-              <div fxLayout="row" fxLayout.xs="column">
-                <div fxFlex>
-                  <mat-form-field>
-                    <input matInput google-place (onSelect)="setAddress($event)" [(ngModel)]=newRelation.relationname
-                      placeholder="New Relation Name" class="InputField" [ngModelOptions]="{standalone: true}">
-                  </mat-form-field>
-
-                  <mat-select [(ngModel)]=newRelation.status placeholder="Status" class="InputField">
-                    <mat-option *ngFor="let statustype of statustype" [value]="statustype.value">
-                      {{ statustype.viewValue }}
+                <mat-form-field>
+                  <mat-label>Assign to relation</mat-label>
+                  <input type="text" matInput [formControl]="myControl" [matAutocomplete]="auto" [(ngModel)]="option">
+                  <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+                    <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
+                      {{ option.relationname }}
                     </mat-option>
-                  </mat-select>
-
-                </div>
-                <div fxFlex>
-                  <button a mat-raised-button (click)="createNewAssign()">Assign and Create New</button>
-                </div>
+                  </mat-autocomplete>
+                </mat-form-field>
+              </div>
+              <br>
+              <mat-form-field>
+                <input matInput google-place (onSelect)="setAddress($event)" [(ngModel)]=newRelation.relationname
+                  placeholder="New Relation Name" class="InputField" [ngModelOptions]="{standalone: true}">
+              </mat-form-field>
+              <br>
+              <div fxLayout="row" fxLayoutGap="20px" fxLayout.xs="column">
+                <mat-select [(ngModel)]=selectedCall.calltype placeholder="calltype" style="max-width: 200px">
+                  <mat-option *ngFor="let calltype of calltype" [value]="calltype.value">
+                    {{ calltype.viewValue }}
+                  </mat-option>
+                </mat-select>
+                <mat-select [(ngModel)]=newRelation.status placeholder="Status" style="max-width: 200px">
+                  <mat-option *ngFor="let statustype of Company.relationtypes" [value]="statustype">
+                    {{ statustype }}
+                  </mat-option>
+                </mat-select>
+              </div>
+              <br>
+              <mat-accordion>
+                <mat-expansion-panel>
+                  <mat-expansion-panel-header>
+                    <mat-panel-title>
+                      Follow Up
+                    </mat-panel-title>
+                  </mat-expansion-panel-header>
+                  <div fxLayout="row" fxLayout.xs="column" fxLayoutGap="20px">
+                    <mat-checkbox [(ngModel)]="selectedCall.followup">
+                      Follow Up
+                    </mat-checkbox>
+                    <div>
+                      <mat-datepicker #picker></mat-datepicker>
+                      <input [matDatepicker]="myDatepicker" [(ngModel)]=selectedCall.callbackdate
+                        placeholder="Callback Date">
+                      <mat-datepicker-toggle matSuffix [for]="myDatepicker"></mat-datepicker-toggle>
+                      <mat-datepicker #myDatepicker></mat-datepicker>
+                    </div>
+                  </div>
+                </mat-expansion-panel>
+              </mat-accordion>
+              <br>
+              <div fxLayout="row" fxLayoutGap="20px">
+                <button a mat-raised-button (click)="createNewAssign()">Assign and Create New</button>
+                <button a mat-raised-button (click)="assignCall()">Assign To</button>
               </div>
               <br>
               <div fxLayout="row" fxLayout.xs="column">
-                <div fxFlexcolspan="2">
-                  <mat-toolbar color="primary" class="titlebox">
-                    <h2>{{selectedCall.title | uppercase | slice:0:30 }}</h2>
-                    <button mat-icon-button [matMenuTriggerFor]="menucall" class="menu">
-                      <mat-icon>more_vert</mat-icon>
+                <mat-toolbar color="primary" class="titlebox">
+                  <h2>{{selectedCall.title | uppercase | slice:0:30 }}</h2>
+                  <button mat-icon-button [matMenuTriggerFor]="menucall" class="menu">
+                    <mat-icon>more_vert</mat-icon>
+                  </button>
+                  <mat-menu #menucall="matMenu">
+                    <button mat-menu-item (click)="openDialogDeleteCall()">
+                      <mat-icon>delete</mat-icon>
+                      <span>Delete</span>
                     </button>
-                    <mat-menu #menucall="matMenu">
-                      <button mat-menu-item (click)="openDialogDeleteCall()">
-                        <mat-icon>delete</mat-icon>
-                        <span>Delete</span>
-                      </button>
-                    </mat-menu>
-                  </mat-toolbar>
-                </div>
+                  </mat-menu>
+                </mat-toolbar>
+
               </div>
               <div fxLayout="row" fxLayout.xs="column">
-                <div fxFlex>
-                  <mat-form-field>
-                    <input matInput [(ngModel)]=selectedCall.title placeholder="Title" class="InputField">
-                  </mat-form-field>
-                </div>
-                <div fxFlex>
-                  <mat-select [(ngModel)]=selectedCall.calltype placeholder="calltype" class="InputField">
-                    <mat-option *ngFor="let calltype of calltype" [value]="calltype.value">
-                      {{ calltype.viewValue }}
-                    </mat-option>
-                  </mat-select>
-                </div>
+                <mat-form-field>
+                  <input matInput [(ngModel)]=selectedCall.title placeholder="Title" class="InputField">
+                </mat-form-field>
+
               </div>
-              <div fxLayout="row" fxLayout.xs="column">
-                <div fxFlex>
-                  {{selectedCall.email}}
-                </div>
+              <div>
+                {{selectedCall.email}}
               </div>
-              <div fxLayout="row" fxLayout.xs="column">
-                <div fxFlexcolspan="2">
-                  <mat-datepicker #picker1></mat-datepicker>
-                  <input [matDatepicker]="myDatepicker1" [(ngModel)]=selectedCall.date placeholder="Call Date">
-                  <mat-datepicker-toggle matSuffix [for]="myDatepicker1"></mat-datepicker-toggle>
-                  <mat-datepicker #myDatepicker1></mat-datepicker>
-                </div>
+              <div>
+                <mat-datepicker #picker1></mat-datepicker>
+                <input [matDatepicker]="myDatepicker1" [(ngModel)]=selectedCall.date placeholder="Call Date">
+                <mat-datepicker-toggle matSuffix [for]="myDatepicker1"></mat-datepicker-toggle>
+                <mat-datepicker #myDatepicker1></mat-datepicker>
               </div>
               <br>
-              <div fxLayout="row" fxLayout.xs="column" *ngIf="!selectedCall.html" rowspan="10">
-                <div fxFlexcolspan="2">
-                  <div> {{selectedCall.content}} </div>
-                </div>
+              <div *ngIf="!selectedCall.html" class="emailtext">
+                <div> {{selectedCall.content}} </div>
               </div>
-              <div fxLayout="row" fxLayout.xs="column" *ngIf="selectedCall.html">
-                <div fxFlexcolspan="2">
-                  <div [innerHTML]="selectedCall.html"></div>
-                </div>
-              </div>
-              <br>
-              <div fxLayout="row" fxLayout.xs="column">
-                <div fxFlexcolspan="2">
-                  <mat-accordion>
-                    <mat-expansion-panel>
-                      <mat-expansion-panel-header>
-                        <mat-panel-title>
-                          Follow Up
-                        </mat-panel-title>
-                      </mat-expansion-panel-header>
-                      <div fxLayout="column">
-                        <div fxLayout="row" fxLayout.xs="column">
-                          <div fxFlexclass="tg-yw4l">
-                            <mat-checkbox [(ngModel)]=selectedCall.followup [(indeterminate)]="indeterminate"
-                              [disabled]="disabled">
-                              Follow Up
-                            </mat-checkbox>
-                          </div>
-                          <div fxFlexclass="tg-yw4l">
-                            <mat-datepicker #picker></mat-datepicker>
-                            <input [matDatepicker]="myDatepicker" [(ngModel)]=selectedCall.callbackdate
-                              placeholder="Callback Date">
-                            <mat-datepicker-toggle matSuffix [for]="myDatepicker"></mat-datepicker-toggle>
-                            <mat-datepicker #myDatepicker></mat-datepicker>
-                          </div>
-                        </div>
-                      </div>
-                    </mat-expansion-panel>
-                  </mat-accordion>
-                </div>
+              <div *ngIf="selectedCall.html" class="emailtext">
+                <div [innerHTML]="selectedCall.html"></div>
               </div>
             </div>
           </mat-card-content>

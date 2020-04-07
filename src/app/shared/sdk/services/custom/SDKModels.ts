@@ -35,6 +35,7 @@ import { Logger } from '../../models/Logger';
 import { Crawlweb } from '../../models/Crawlweb';
 import { Articlereposter } from '../../models/Articlereposter';
 import { Filesdlcr } from '../../models/Filesdlcr';
+import { Crawlwebtocsv } from '../../models/Crawlwebtocsv';
 
 export interface Models { [name: string]: any }
 
@@ -77,6 +78,7 @@ export class SDKModels {
     Crawlweb: Crawlweb,
     Articlereposter: Articlereposter,
     Filesdlcr: Filesdlcr,
+    Crawlwebtocsv: Crawlwebtocsv,
     
   };
 

@@ -3,8 +3,8 @@ import { Component, OnInit, Input, Output, EventEmitter, Inject } from '@angular
 import { ContainerApi, Files, Relations, RelationsApi, Company, Account, FilesApi } from '../sdk';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { DomSanitizer } from '@angular/platform-browser';
-import { StockBackgrounds } from './stockbackgrounds';
-import {  templatescreenshots } from './stockbackgroundanimated';
+import { StockBackgrounds } from './stockbackgrounds'
+import {  templatescreenshots, templates } from './stocktemplates';
 
 export interface DialogData {
   img;
@@ -80,11 +80,25 @@ export class BackgroundComponent implements OnInit {
 export class dialogbackgroundgallerycomponent implements OnInit {
 
   //public fileVideo = StockVideo;
-  public existingIcons = [];
-  public background = StockBackgrounds;
-  public animatedbackground =  templatescreenshots;
-  public stockbackgrounds = [];
-  public animatedbackgrounds = [];
+  //public existingIcons = [];
+
+
+  
+
+
+  public templatesSet =  templatescreenshots;
+  public templates = [];
+  public templatesArray = [];
+  public templatesSlice = 11;
+  public templatesSliceMin = 0;
+
+  public backgroundSet = StockBackgrounds;
+  public stockbg = [];
+  public stockbgArray = [];
+  public stockbgSlice = 11;
+  public stockbgSliceMin = 0;
+
+
   public URL = 'http://localhost:3000/api/containers/tmp/upload';
 
   constructor(
@@ -92,18 +106,60 @@ export class dialogbackgroundgallerycomponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: DialogData) { }
 
   ngOnInit() {
-    this.background.forEach(element => {
-      const iconurl = element;
-      //const previewurl = element + '#t=0.5';
-      var filename = iconurl.replace(/^.*[\\\/]/, '')
-      this.stockbackgrounds.push({ url: iconurl, name: filename });
+    this.backgroundSet.forEach((element, index) => {
+      const url = element;
+      var filename = url.replace(/^.*[\\\/]/, '')
+      if(index < 12){this.stockbg.push({ url: url, name: filename });}
+      this.stockbgArray.push({ url: url, name: filename });
     });
-    this.animatedbackground.forEach(element => {
-      const iconurl = element;
-      //const previewurl = element + '#t=0.5';
-      var filename = iconurl.replace(/^.*[\\\/]/, '')
-      this.animatedbackgrounds.push({ url: iconurl, name: filename });
+    this.templatesSet.forEach((element, index) => {
+      const url = element;
+      var filename = url.replace(/^.*[\\\/]/, '')
+      if(index < 12){this.templates.push({ url: url, name: filename });}
+      this.templatesArray.push({ url: url, name: filename });
     });
+  }
+
+  next(galtype) {
+    switch (galtype) {
+      case 'templates': {
+        if (this.templatesSlice < this.templatesArray.length -1 ) {
+          this.templatesSlice = this.templatesSlice + 12;
+          this.templatesSliceMin = this.templatesSliceMin + 12;
+          this.templates = this.templatesArray.slice(this.templatesSliceMin, this.templatesSlice)
+
+        }
+      }
+      case 'standardbackgrounds': {
+        if (this.stockbgSlice < this.stockbgArray.length -1) {
+          this.stockbgSlice = this.stockbgSlice + 12;
+          this.stockbgSliceMin = this.stockbgSliceMin + 12
+          this.stockbg = this.stockbgArray.slice(this.stockbgSliceMin, this.stockbgSlice)
+
+        }
+      }
+    }
+  }
+
+  before(galtype) {
+    switch (galtype) {
+      case 'templates': {
+        if (this.templatesSliceMin > 0) {
+          this.templatesSlice = this.templatesSlice - 12;
+          this.templatesSliceMin = this.templatesSliceMin - 12
+          this.templates = this.templatesArray.slice(this.templatesSliceMin, this.templatesSlice)
+
+        }
+      }
+      case 'standardbackgrounds': {
+        if (this.stockbgSliceMin > 0) {
+          this.stockbgSlice = this.stockbgSlice - 12;
+          this.stockbgSliceMin = this.stockbgSliceMin - 12
+          this.stockbg = this.stockbgArray.slice(this.stockbgSliceMin, this.stockbgSlice)
+
+        }
+      }
+    }
   }
 
 

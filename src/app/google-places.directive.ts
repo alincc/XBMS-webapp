@@ -16,6 +16,7 @@ export class GooglePlacesDirective implements OnInit {
     this.element = elRef.nativeElement;
   }
 
+
   getFormattedAddress(place) {
     //@params: place - Google Autocomplete place object
     //@returns: location_obj - An address object in human readable format

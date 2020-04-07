@@ -1,4 +1,4 @@
-import { Component, NgZone, ElementRef, ViewChild, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import {
   Contactpersons,
   ContactpersonsApi,
@@ -34,14 +34,13 @@ import {
 import { DialogsService } from './../dialogsservice/dialogs.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { LinkedinService } from '../shared/socialservice';
-import { MatDialog} from '@angular/material/dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { fonts } from '../shared/listsgeneral/fonts';
 import { GoogleMapService } from '../shared/googlemapservice/googlemap.service';
 import { Observable } from 'rxjs';
 import { map, startWith } from "rxjs/operators";
 import { FormControl } from '@angular/forms';
 import { Router, ActivatedRoute, Params } from '@angular/router';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { OnDestroy } from '@angular/core';
 import { SpeechRecognitionService } from '../shared/speechservice/speechservice';
 import { fontoptions } from './../settings/google-fonts-list';
@@ -50,6 +49,8 @@ const EMAIL_REGEX = /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA
 import { TextEditorDialog } from '../marketing/maileditor/texteditordialog.component';
 import { FileUploader } from 'ng2-file-upload';
 const URL = "https://xbmsapi.eu-gb.mybluemix.net/api/Containers/images/upload";
+import { HttpClient } from '@angular/common/http';
+import { CrawlerComponent } from './crawler/crawler.component';
 
 class Tasklist {
   public task: string;
@@ -71,13 +72,16 @@ class Attendee {
 })
 export class RelationComponent implements OnInit {
 
+  @ViewChild(CrawlerComponent, { static: false })
+  private CrawlerComponent: CrawlerComponent;
+
   public compannyseccolor = 'white';
   public companypricolor = 'white';
   public fontlist: string[] = fontoptions;
   showSearchButton: boolean;
   speechData: string;
   public AccessToken: any;
-  // public Crawler: Crawler[];
+
   public Relations: Relations[];
   public Contactpersons: Contactpersons[];
   public Googleanalytics: Googleanalytics[];
@@ -86,21 +90,20 @@ export class RelationComponent implements OnInit {
   public Facebook: Facebook[];
   public Pinterest: Pinterest[];
   public Calls: Calls[];
-  public Company: Company = new Company();
+  public Company: Company;
   public Account: Account = new Account();
   public Container: Container[];
   public Files: Files[];
   public newFiles: Files = new Files();
-  public crawlerrunning = false;
   public currentdomain: string;
   public domainresponse;
   public selectedRelation: Relations;
   public selectedContactperson: Contactpersons;
   public selectedCall: Calls;
-  // public selectedCrawler: Crawler;
-  public Fonts =  fonts;
+  public Fonts = fonts;
   public selectedAdwords: Adwords;
   public Adwords: Adwords[];
+  public searchboxFiles: string;
 
   public errorMessage;
   public selectedOption = false;
@@ -183,29 +186,26 @@ export class RelationComponent implements OnInit {
     { value: 'disqualified', viewValue: 'Disqualified' }
   ];
 
-  numbers = [
-    1, 2, 3, 4, 5, 6, 7, 8, 9, 10
-  ];
-
   public uploader: FileUploader = new FileUploader({ url: URL });
   public hasBaseDropZoneOver: boolean = false;
   public hasAnotherDropZoneOver: boolean = false;
 
-  crawl1FormGroup: FormGroup;
-  crawl2FormGroup: FormGroup;
-  public editCrawler = false;
+
   public togglesearch = false;
   public listviewxsshow = false;
   public trackingcode: string;
+  public selectedTab = 0;
 
   constructor(
+    public http: HttpClient,
     public dialog: MatDialog,
     private sanitizer: DomSanitizer,
     private speechRecognitionService: SpeechRecognitionService,
-    private _formBuilder: FormBuilder,
+
     public snackBar: MatSnackBar,
     public router: Router,
-    // public CrawlerApi: CrawlerApi,
+    public route: ActivatedRoute,
+
     public AdwordsApi: AdwordsApi,
     public FilesApi: FilesApi,
     public ContainerApi: ContainerApi,
@@ -214,8 +214,7 @@ export class RelationComponent implements OnInit {
     public LinkedinApi: LinkedinApi,
     public FacebookApi: FacebookApi,
     public googleMapService: GoogleMapService,
-    public __zone: NgZone,
-    private zone: NgZone,
+
     public CompanyApi: CompanyApi,
     public AccountApi: AccountApi,
     public LinkedinService: LinkedinService,
@@ -230,6 +229,33 @@ export class RelationComponent implements OnInit {
     this.speechData = "";
     LoopBackConfig.setBaseURL(BASE_URL);
     LoopBackConfig.setApiVersion(API_VERSION);
+  }
+
+  public setParameters() {
+    let itemid = this.route.snapshot.queryParamMap.get("itemid");
+    let tab = this.route.snapshot.queryParamMap.get("tab");
+    let relationid = this.route.snapshot.queryParamMap.get("relation");
+    //console.log(itemid, tab, relationid);
+
+    if (relationid) {
+      this.CompanyApi.findByIdRelations(this.Account.companyId, relationid)
+        .subscribe(res => {
+          this.onSelect(res, null);
+          if (tab === 'calls') {
+            this.selectedTab = 1;
+            this.RelationsApi.findByIdCalls(res.id, itemid).subscribe(res1 => {
+              this.onSelectCall(res1, null);
+            })
+
+          }
+          if (tab === 'files') {
+            this.selectedTab = 3;
+            this.RelationsApi.findByIdFiles(res.id, itemid).subscribe(res2 => {
+              this.onselectfile(res2);
+            })
+          }
+        });
+    }
   }
 
 
@@ -250,9 +276,6 @@ export class RelationComponent implements OnInit {
   filteredfonts: Observable<string[]>;
 
   ngOnInit() {
-
-    //this.searchGoQuick('');
-
     if (this.AccountApi.isAuthenticated() == false) { this.router.navigate(['login']) }
     this.setFilter();
     this.getCurrentUserInfo();
@@ -271,12 +294,7 @@ export class RelationComponent implements OnInit {
     );
 
 
-    this.crawl1FormGroup = this._formBuilder.group({
-      firstCtrl: ['', Validators.required]
-    });
-    this.crawl2FormGroup = this._formBuilder.group({
-      secondCtrl: ['', Validators.required]
-    });
+
 
     //import to clear spaces azure does not handle these well
     this.uploader.onAfterAddingAll = (files) => {
@@ -352,7 +370,7 @@ export class RelationComponent implements OnInit {
       })
       .subscribe((Relations: Relations[]) => {
         this.filteredRelations = Relations
-          //console.log(this.filteredRelations)
+        //console.log(this.filteredRelations)
       });
   }
 
@@ -366,26 +384,32 @@ export class RelationComponent implements OnInit {
 
   //get currentuserinfo for api
   getCurrentUserInfo(): void {
+
     this.AccountApi.getCurrent().subscribe((Account: Account) => {
       this.Account = Account,
         this.RelationsApi.findById(this.Account.standardrelation)
           .subscribe((relations: Relations) => {
             this.onSelect(relations, null);
             this.getRelations();
+            this.setParameters();
+            this.CompanyApi.findById(this.Account.companyId).subscribe((company: Company) => {
+              this.Company = company;
+            })
             this.CompanyApi.countRelations(this.Account.companyId).subscribe(res => this.totalrelationcount = res.count);
           });
     });
   }
 
   onSelect(Relations: Relations, i): void {
+
     this.notes = [],
       this.note = "",
       this.task = "",
       this.tasklist = [],
       this.option = undefined,
       this.selectedRelation = Relations;
-      this.compannyseccolor = Relations.companysecondarycolor;
-      this.companypricolor = Relations.companyprimairycolor;
+    this.compannyseccolor = Relations.companysecondarycolor;
+    this.companypricolor = Relations.companyprimairycolor;
     this.relationindex = i;
     this.selectedCall = null;
     this.getCalls();
@@ -395,7 +419,7 @@ export class RelationComponent implements OnInit {
     this.getFiles();
     this.setFileParameter();
     this.currentdomain = Relations.domain;
-    //this.getCrawlers();
+
     //create search string google maps
     this.address =
       this.selectedRelation.address1 + ', ' +
@@ -405,9 +429,13 @@ export class RelationComponent implements OnInit {
     //get geo location
     this.getAddress();
     this.trackingcode = '<script type="text/javascript">' +
-    'var currentLocation=window.location,url=new URL("' + 
-    'https://xbmsapi.eu-gb.mybluemix.net/api/websitetrackers/registervisit?id=' + this.selectedRelation.id +'");url.searchParams.append("src",currentLocation);var xmlHttp=new XMLHttpRequest;xmlHttp.onreadystatechange=function(){4==xmlHttp.readyState&&200==xmlHttp.status&&callback(xmlHttp.responseText)},xmlHttp.open("GET",url,!0),xmlHttp.send(null);' +
-    '</script>'
+      'var currentLocation=window.location,url=new URL("' +
+      'https://xbmsapi.eu-gb.mybluemix.net/api/websitetrackers/registervisit?id=' + this.selectedRelation.id + '");url.searchParams.append("src",currentLocation);var xmlHttp=new XMLHttpRequest;xmlHttp.onreadystatechange=function(){4==xmlHttp.readyState&&200==xmlHttp.status&&callback(xmlHttp.responseText)},xmlHttp.open("GET",url,!0),xmlHttp.send(null);' +
+      '</script>';
+
+    setTimeout(() => {
+      this.CrawlerComponent.loadCrawls();
+    }, 200);
   }
 
   setFileParameter(): void {
@@ -592,12 +620,12 @@ export class RelationComponent implements OnInit {
         this.data = res,
           this.relationindex = this.Relations.push(this.data) - 1,
           this.onSelect(this.data, this.relationindex);
-          this.ContainerApi.createContainer({name: this.data.id}).subscribe(res => {
-            console.log(res);
+        this.ContainerApi.createContainer({ name: this.data.id }).subscribe(res => {
+          console.log(res);
+        });
       });
-    });
+    }
   }
-}
 
   //Create new Call
   public openDialogNewCall() {
@@ -716,10 +744,10 @@ export class RelationComponent implements OnInit {
     )
       .subscribe(
         result => {
-          this.__zone.run(() => {
-            this.lat = result.lat();
-            this.lng = result.lng();
-          })
+          //this.__zone.run(() => {
+          this.lat = result.lat();
+          this.lng = result.lng();
+          //})
         },
         error => {
           console.log(error),
@@ -855,10 +883,10 @@ export class RelationComponent implements OnInit {
     this.FacebookApi.me(facebook.AccessToken)
       .subscribe(res => this.openSnackBar(res)); // "Accountname: " + res.name
   }
-  
+
   updateFacebook(facebook): void {
-    this.RelationsApi.updateByIdFacebook(this.selectedRelation.id, facebook.id, facebook).subscribe(res =>   this.openSnackBar("Facebook saved"));
-      }
+    this.RelationsApi.updateByIdFacebook(this.selectedRelation.id, facebook.id, facebook).subscribe(res => this.openSnackBar("Facebook saved"));
+  }
 
 
   deleteFacebook(facebook): void {
@@ -925,8 +953,18 @@ export class RelationComponent implements OnInit {
     this.hasAnotherDropZoneOver = e;
   }
 
+
   getFiles(): void {
-    this.RelationsApi.getFiles(this.selectedRelation.id)
+    let searchpar = {}
+    if (this.searchboxFiles) {
+      searchpar = {
+        where:
+          { or: [{ "name": { "regexp": this.searchboxFiles + '/i' } }, { "url": { "regexp": this.searchboxFiles + '/i' } }] },
+        order: 'name ASC',
+      }
+    }
+
+    this.RelationsApi.getFiles(this.selectedRelation.id, searchpar)
       .subscribe((Files: Files[]) => {
         this.Files = Files,
           this.imagelist = [];
@@ -953,7 +991,7 @@ export class RelationComponent implements OnInit {
   onselectfile(file): void {
     this.selectedfile = undefined;
     setTimeout(() => {
-    this.selectedfile = file;
+      this.selectedfile = file;
     }, 100)
   }
 
@@ -980,8 +1018,22 @@ export class RelationComponent implements OnInit {
     this.urldownload.replace(/ /g, "%20")
   }
 
-  download(selectedfile){
-    window.open(this.selectedfile.url, "_blank");
+  download(selectedfile) {
+
+    this.http.get(selectedfile.url, { responseType: 'blob' }).subscribe(blob => {
+      var urlCreator = window.URL;
+      let seturl = urlCreator.createObjectURL(blob);
+      var element = document.createElement('a');
+      //console.log(blob.type)
+      element.setAttribute('href', seturl);
+      element.setAttribute('download', selectedfile.name);
+      element.style.display = 'none';
+      document.body.appendChild(element);
+      element.click();
+      document.body.removeChild(element);
+
+    })
+    //window.open(this.selectedfile.url, "_blank");
   }
 
   //set variable and upload + save reference in Publications
@@ -1027,98 +1079,35 @@ export class RelationComponent implements OnInit {
     window.open(this.mailtolink, "_self");
   }
 
-  //run crawler once delete?
-  crawlUrl(): void {
-    //   this.CrawlerApi.crawlurl(this.selectedRelation.id, this.selectedRelation.website).subscribe(res => res = res);
-  }
-
-  scheduleCrawler(): void {
-    //update and queue
-    // this.RelationsApi.updateByIdCrawler(this.selectedRelation.id, this.selectedCrawler.id, this.selectedCrawler)
-    //   .subscribe(res => {
-    //     //if (this.selectedCrawler.response == undefined){this.selectedCrawler.response = []}
-    //     this.CrawlerApi.crawlurl(this.selectedCrawler.id, this.selectedCrawler.url, this.selectedCrawler.term,
-    //       this.selectedCrawler.people, this.selectedCrawler.companies, this.selectedCrawler.locations, this.selectedCrawler.findlist, this.selectedCrawler.depth)
-    //       .subscribe(res => { res = res, this.openSnackBar(res.message) })
-    //   });
-  }
-
-  getCrawlers(): void {
-    // this.RelationsApi.getCrawler(this.selectedRelation.id)
-    //   .subscribe((Crawler: Crawler[]) => {
-    //     this.Crawler = Crawler
-    //   });
-  }
-
-  newCrawler(): void {
-    // this.RelationsApi.createCrawler(this.selectedRelation.id, { "name": "New Crawler" })
-    //   .subscribe(res => {
-    //     this.selectedCrawler = res,
-    //       this.editCrawler = true;
-    //   });
-  }
-
-  editCrawlerToggle(): void {
-    this.editCrawler = true
-  }
-
-  updateCrawler(): void {
-    // this.RelationsApi.updateByIdCrawler(this.selectedRelation.id, this.selectedCrawler.id, this.selectedCrawler)
-    //   .subscribe();
-  }
-
-
-  togglerawsearch(): void {
-    if (this.togglesearch == true) { this.togglesearch = false; }
-    else this.togglesearch = true;
-  }
-
-  // onSelectCrawler(Crawler: Crawler, i): void {
-  //   this.editCrawler = false;
-  //   this.selectedCrawler = Crawler;
-  // }
-
-  deleteCrawler(): void {
-    //   this.RelationsApi.destroyByIdCrawler(this.selectedRelation.id, this.selectedCrawler.id)
-    //     .subscribe(res => { this.getCrawlers(), this.selectedCrawler = undefined, this.getCrawlers(), this.openSnackBar("Crawler Deleted"); });
-  }
-
-  deleteCrawl(i): void {
-    // this.selectedCrawler.response.splice(i, 1), this.updateCrawler()
-  }
-
   //Method to be invoked everytime we receive a new instance 
   //of the address object from the onSelect event emitter.
   setAddress(addrObj) {
-    //We are wrapping this in a NgZone to reflect the changes
-    //to the object in the DOM.
-    this.zone.run(() => {
-      if (addrObj.name !== undefined) {
-        this.selectedRelation.relationname = addrObj.name;
-      }
-      if (addrObj.route !== undefined) {
-        this.selectedRelation.address1 = addrObj.route + " " + addrObj.street_number;
-      }
-      if (addrObj.phone !== undefined) {
-        this.selectedRelation.generalphone = addrObj.phone;
-      }
-      if (addrObj.country !== undefined) {
-        this.selectedRelation.country = addrObj.country;
-      }
-      if (addrObj.locality !== undefined) {
-        this.selectedRelation.city = addrObj.locality;
-      }
-      if (addrObj.admin_area_l1 !== undefined) {
-        this.selectedRelation.stateprovince = addrObj.admin_area_l1;
-      }
-      if (addrObj.postal_code !== undefined) {
-        this.selectedRelation.zipcode = addrObj.postal_code;
-      }
-      if (addrObj.website !== undefined) {
-        this.selectedRelation.website = addrObj.website;
-      }
-      console.log(addrObj);
-    });
+    if (addrObj.name !== undefined) {
+      this.selectedRelation.relationname = addrObj.name;
+    }
+    if (addrObj.route !== undefined) {
+      this.selectedRelation.address1 = addrObj.route + " " + addrObj.street_number;
+    }
+    if (addrObj.phone !== undefined) {
+      this.selectedRelation.generalphone = addrObj.phone;
+    }
+    if (addrObj.country !== undefined) {
+      this.selectedRelation.country = addrObj.country;
+    }
+    if (addrObj.locality !== undefined) {
+      this.selectedRelation.city = addrObj.locality;
+    }
+    if (addrObj.admin_area_l1 !== undefined) {
+      this.selectedRelation.stateprovince = addrObj.admin_area_l1;
+    }
+    if (addrObj.postal_code !== undefined) {
+      this.selectedRelation.zipcode = addrObj.postal_code;
+    }
+    if (addrObj.website !== undefined) {
+      this.selectedRelation.website = addrObj.website;
+    }
+    console.log(addrObj);
+
   }
 
   ngOnDestroy() {
@@ -1278,7 +1267,7 @@ export class RelationComponent implements OnInit {
       });
   }
 
-  
+
   copyMessage(val: string) {
     let selBox = document.createElement('textarea');
     selBox.style.position = 'fixed';

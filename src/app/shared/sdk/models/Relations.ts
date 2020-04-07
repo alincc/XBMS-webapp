@@ -33,6 +33,7 @@ export interface RelationsInterface {
   "website"?: string;
   "generalphone"?: string;
   "status"?: string;
+  "type"?: string;
   "updatedate"?: Date;
   "ga-ids"?: string;
   "companyId"?: any;
@@ -46,6 +47,7 @@ export interface RelationsInterface {
   "companysecondarycolor"?: string;
   "companyfont"?: string;
   "domain"?: string;
+  "marketingrelation"?: boolean;
   "id"?: any;
   contactpersons?: Contactpersons[];
   publications?: Publications[];
@@ -79,6 +81,7 @@ export class Relations implements RelationsInterface {
   "website": string;
   "generalphone": string;
   "status": string;
+  "type": string;
   "updatedate": Date;
   "ga-ids": string;
   "companyId": any;
@@ -92,6 +95,7 @@ export class Relations implements RelationsInterface {
   "companysecondarycolor": string;
   "companyfont": string;
   "domain": string;
+  "marketingrelation": boolean;
   "id": any;
   contactpersons: Contactpersons[];
   publications: Publications[];
@@ -189,6 +193,10 @@ export class Relations implements RelationsInterface {
           name: 'status',
           type: 'string'
         },
+        "type": {
+          name: 'type',
+          type: 'string'
+        },
         "updatedate": {
           name: 'updatedate',
           type: 'Date'
@@ -240,6 +248,10 @@ export class Relations implements RelationsInterface {
         "domain": {
           name: 'domain',
           type: 'string'
+        },
+        "marketingrelation": {
+          name: 'marketingrelation',
+          type: 'boolean'
         },
         "id": {
           name: 'id',

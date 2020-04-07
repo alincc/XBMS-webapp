@@ -443,9 +443,11 @@ export class FilesApi extends BaseLoopBackApi {
    *
    * @param {string} videourl 
    *
+   * @param {string} compandyId 
+   *
    * @param {object} data Request data.
    *
-   * This method does not accept any data. Supply an empty object.
+   *  - `req` – `{object}` - 
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -456,7 +458,7 @@ export class FilesApi extends BaseLoopBackApi {
    * This usually means the response is a `Files` object.)
    * </em>
    */
-  public convertVideo2mp4(id: any = {}, videourl: any = {}, customHeaders?: Function): Observable<any> {
+  public convertVideo2mp4(id: any = {}, videourl: any = {}, compandyId: any = {}, req: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "POST";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
     "/files/convertvideo2mp4/:id";
@@ -466,6 +468,7 @@ export class FilesApi extends BaseLoopBackApi {
     let _postBody: any = {};
     let _urlParams: any = {};
     if (typeof videourl !== 'undefined' && videourl !== null) _urlParams.videourl = videourl;
+    if (typeof compandyId !== 'undefined' && compandyId !== null) _urlParams.compandyId = compandyId;
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
     return result;
   }

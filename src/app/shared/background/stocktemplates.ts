@@ -1,5 +1,5 @@
 
-import { BASE_URL } from '../../shared';
+import { BASE_URL } from '..';
 export const templatescreenshots = [
     BASE_URL  + '/api/Containers/animationtemplates/download/castle.jpg',
 ]

@@ -83,6 +83,7 @@ import { LoggerApi } from './services/custom/Logger';
 import { CrawlwebApi } from './services/custom/Crawlweb';
 import { ArticlereposterApi } from './services/custom/Articlereposter';
 import { FilesdlcrApi } from './services/custom/Filesdlcr';
+import { CrawlwebtocsvApi } from './services/custom/Crawlwebtocsv';
 /**
 * @module SDKBrowserModule
 * @description
@@ -148,6 +149,7 @@ export class SDKBrowserModule {
         CrawlwebApi,
         ArticlereposterApi,
         FilesdlcrApi,
+        CrawlwebtocsvApi,
         internalStorageProvider,
         { provide: SDKStorage, useClass: StorageBrowser },
         { provide: SocketDriver, useClass: SocketBrowser }

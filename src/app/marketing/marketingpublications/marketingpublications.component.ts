@@ -62,6 +62,8 @@ export class MarketingpublicationsComponent implements OnInit {
   @Input() Account: Account;
   @Input() SelectedRelation: Relations;
   @Input() option: Relations;
+  @Input() selectedpublication: Publications;
+
   public Publications: Publications[];
   public selectedPublications: Publications;
   public limitresult: 10;

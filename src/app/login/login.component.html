@@ -29,7 +29,7 @@
       <div fxLayout="row">
         <div fxLayout="column" class="form-full-width">
           <mat-form-field>
-            <input matInput name="email" type="email" [(ngModel)]="Account.email" placeholder="email" />
+            <input matInput name="Email" type="email" [(ngModel)]="Account.email" placeholder="email" />
           </mat-form-field>
         </div>
       </div>
@@ -38,6 +38,9 @@
           <mat-form-field>
             <input matInput placeholder="Enter your password" name="password" [(ngModel)]="Account.password"
               [type]="!hide ? 'password' : 'text'">
+              <mat-hint align="end" aria-live="polite">
+                {{ errorMessage }}
+              </mat-hint>
             <mat-icon matSuffix (click)="!hide = hide">{{hide ? 'visibility' : 'visibility_off'}}</mat-icon>
           </mat-form-field>
         </div>
@@ -47,25 +50,14 @@
           <mat-checkbox [(ngModel)]="rememberMe">Remember Me</mat-checkbox>
         </div>
       </div>
-      <div fxLayout="row">
-        <div *ngIf="errorMessage" fxLayout="column">
-          <section class="mat-typography">
-            <label>{{errorMessage.message}}</label>
-          </section>
-        </div>
-      </div>
-      <div fxLayout="row">
-        <div fxLayout="column" *ngIf="response">
-          <section class="mat-typography">
-            <label>{{responsemessage}}</label>
-          </section>
-        </div>
-      </div>
-      <div fxLayout="row">
-
+      <br>
+      <div fxLayout="row" fxLayoutGap="20px">
         <button (click)="login()" a mat-raised-button>Login</button>
         <button (click)="registertoggleform()" a mat-raised-button>Register</button>
-
+      </div>
+      <div fxLayout="column" fxLayoutGap="20px">
+        <label>{{ errorMessage }}</label>
+        <label>{{ responsemessage }}</label>
       </div>
     </div>
 
@@ -78,21 +70,24 @@
     <div fxLayout="row">
       <div fxLayout="column" class="form-full-width">
         <mat-form-field>
-          <input matInput (keyup)="checkall()" name="username" type="name" [(ngModel)]="Account.username" placeholder="Username" />
+          <input matInput (keyup)="checkall()" name="username" type="name" [(ngModel)]="Account.username"
+            placeholder="Username" />
         </mat-form-field>
       </div>
     </div>
     <div fxLayout="row">
       <div fxLayout="column">
         <mat-form-field class="form-full-width">
-          <input matInput (keyup)="checkall()" name="companyname" type="name" [(ngModel)]="Account.companyname" placeholder="Company" />
+          <input matInput (keyup)="checkall()" name="companyname" type="name" [(ngModel)]="Account.companyname"
+            placeholder="Company" />
         </mat-form-field>
       </div>
     </div>
     <div fxLayout="row">
       <div fxLayout="column" class="form-full-width">
         <mat-form-field>
-          <input matInput (keyup)="checkall()" name="email" type="email" [(ngModel)]="Account.email" placeholder="email" />
+          <input matInput (keyup)="checkall()" name="email" type="email" [(ngModel)]="Account.email"
+            placeholder="email" />
         </mat-form-field>
       </div>
     </div>
@@ -116,7 +111,7 @@
     <div fxLayout="row">
       <div *ngIf="errorMessage" fxLayout="column">
         <section class="mat-typography">
-          <label>{{errorMessage.message}}</label>
+          <label>{{errorMessage}}</label>
         </section>
       </div>
     </div>
@@ -130,9 +125,8 @@
     <br>
     <div fxLayout="row">
       <button (click)="backtoggle()" a mat-raised-button>Back</button>
-      <button (click)="register()" a mat-raised-button
-      [disabled]="!registerbutton">
-      Select plan</button>
+      <button (click)="register()" a mat-raised-button [disabled]="!registerbutton">
+        Select plan</button>
     </div>
 
   </div>
@@ -384,17 +378,17 @@
       <div fxLayout="row">
         <div fxLayout="column" *ngIf="error">
           <section class="mat-typography">
-            <label>{{ errorMessage.message }}</label>
+            <label>{{ errorMessage }}</label>
           </section>
         </div>
       </div>
-      <div fxLayout="row">
+      <!-- <div fxLayout="row">
         <div fxLayout="column" *ngIf="response">
           <section class="mat-typography">
             <label>{{ responsemessage }}</label>
           </section>
         </div>
-      </div>
+      </div> -->
       <br>
       <div fxLayout="row">
         <button (click)="backtoggle()" a mat-raised-button>Back</button>

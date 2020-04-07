@@ -11,8 +11,8 @@ import {
 } from '../shared/';
 import { DialogsService } from './../dialogsservice/dialogs.service';
 import { coerceNumberProperty } from '@angular/cdk/coercion';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
- 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -24,8 +24,8 @@ export class LoginComponent implements OnInit {
   public Company: Company = new Company();
   public Account: Account = new Account();
   public rememberMe: boolean = true;
-  public errorMessage: string;
-  public responsemessage;
+  public errorMessage = '';
+  public responsemessage = '';
   public selectedplan: string;
   public terms = 'monthly';
   error = false;
@@ -75,6 +75,7 @@ export class LoginComponent implements OnInit {
   public showconfirmation = false;
 
   constructor(
+    public snackBar: MatSnackBar,
     public CompanyApi: CompanyApi,
     public dialogsService: DialogsService,
     public route: ActivatedRoute,
@@ -85,32 +86,20 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    //this.getCurrentUserInfo();
     this.urlparameter = this.route.snapshot.queryParamMap.get("id")
     console.log(this.urlparameter);
-
-    // if (this.urlparameter) {
-    //   this.selectedIndex = 1;
-    //    // send confirmation email with invoice to adminaddress (add admin address to account profile)
-    //   this.accountApi.count({where: {id: this.urlparameter, paid: true}}).subscribe(rescount => {
-    //     console.log(rescount);
-    //     if (rescount.count > 0) {
-    //       this.showconfirmation = true;
-    //     }
-    //   });
-    // }
   }
 
-  onStrengthChanged(e){
+  onStrengthChanged(e) {
     this.passwordstrenght = e;
     this.checkall();
   }
 
-  checkall(){
-    if (this.passwordstrenght > 60 && this.Account.companyname.length > 2 && 
-      this.Account.email.length > 2  && this.Account.username.length > 2 ){
-        this.registerbutton = true;
-      } else {this.registerbutton = false}
+  checkall() {
+    if (this.passwordstrenght > 60 && this.Account.companyname.length > 2 &&
+      this.Account.email.length > 2 && this.Account.username.length > 2) {
+      this.registerbutton = true;
+    } else { this.registerbutton = false }
 
   }
 
@@ -127,34 +116,35 @@ export class LoginComponent implements OnInit {
         ' You will be redirected to the payment page, to approve payment')
       .subscribe(res => {
         if (res) {
-              this.accountApi.getpayment(this.Account.id, transid, this.total, currencytra, descriptiontra, 
-                this.Account.companyname, this.Account.email, this.selectedplan, this.terms,
-                this.trainingsupport, this.migrationsupport, this.emailcount, this.additionalusers)
-                .subscribe((url: string) => {
-                  if (url) { window.open(url, '_self') }
-                  // returns to account confirm payment is receivd and activy account through email
-                });
+          this.accountApi.getpayment(this.Account.id, transid, this.total, currencytra, descriptiontra,
+            this.Account.companyname, this.Account.email, this.selectedplan, this.terms,
+            this.trainingsupport, this.migrationsupport, this.emailcount, this.additionalusers)
+            .subscribe((url: string) => {
+              if (url) { window.open(url, '_self') }
+              // returns to account confirm payment is receivd and activy account through email
+            });
         }
       });
   }
 
   register() {
     this.planselectiontoggle = true,
-    this.registertoggle = false,
-    this.logintoggle = false,
-    this.error = false,
-    this.response = false;
-     this.accountApi.create(this.Account)
-       .subscribe((account: Account) => {
-         console.log(account);
-         this.Account = account; 
+      this.registertoggle = false,
+      this.logintoggle = false,
+      this.error = false,
+      this.response = false;
+    this.accountApi.create(this.Account)
+      .subscribe((account: Account) => {
+        console.log(account);
+        this.Account = account;
         //this.responsemessage = "An email confirmation has been send", this.responsemessage = res,
-       },
-         error => { this.errorMessage = error, this.error = true 
-           this.registertoggle = true;
-           this.planselectiontoggle = false;
+      },
+        error => {
+        this.errorMessage = error.message, this.error = true
+          this.registertoggle = true;
+          this.planselectiontoggle = false;
         }
-     );
+      );
   }
 
   updateplan() {
@@ -170,8 +160,8 @@ export class LoginComponent implements OnInit {
     this.enterprise = 1199;
     this.userprice = 10;
     this.emailprice = 5;
-    
-    if (this.selectedcurrency === 'USD'){
+
+    if (this.selectedcurrency === 'USD') {
       this.emailprice = this.emailprice * curex;
       this.userprice = this.userprice * curex;
       this.standard = this.standard * curex;
@@ -186,15 +176,15 @@ export class LoginComponent implements OnInit {
     if (this.selectedplan === 'standard') { plan = 49 }
     if (this.selectedplan === 'agency') { plan = 99 }
     if (this.selectedplan === 'enterprise') { plan = 1199 }
-    
-    if (this.selectedcurrency === 'USD'){
+
+    if (this.selectedcurrency === 'USD') {
       plan = plan * curex;
       this.training = this.training * curex;
       this.migration = this.migration * curex;
       this.emailprice = this.emailprice * curex;
       this.userprice = this.userprice * curex;
     }
-    
+
     this.total = emails + users + plan;
 
     if (this.terms === "monthly") { this.yearly = 0 }
@@ -204,18 +194,16 @@ export class LoginComponent implements OnInit {
   }
 
   login(): void {
-    this.accountApi.login(this.Account)
+    this.accountApi.login(this.Account, this.rememberMe)
       .subscribe(res => {
-        console.log(res);
-        this.logininfo = res.user
-          if (this.logininfo.companyId) { this.router.navigate(['/dashboard']) }
-          else this.checkregistercompany();
-      }, error => { this.errorMessage = error, this.error = true,
-
-        setTimeout(() => this.logintoggle = false);
-        setTimeout(() => this.logintoggle = true);
-      
-      }
+          this.logininfo = res.user;
+          this.router.navigate(['/dashboard']);
+      }, error => {console.log(error.message),
+        this.errorMessage = error.message,
+        this.snackBar.open(this.errorMessage, undefined, {
+          duration: 4000,
+          panelClass: 'snackbar-class'
+        });}
       );
   }
 

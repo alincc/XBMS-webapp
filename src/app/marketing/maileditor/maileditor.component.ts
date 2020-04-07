@@ -5,8 +5,7 @@
  * */
 import { MatDialog } from '@angular/material/dialog';
 import {
-  Component, OnInit, Input, Output, NgZone, IterableDiffers,
-  ChangeDetectorRef, ApplicationRef, Renderer2,  EventEmitter
+  Component, OnInit, Input
 } from '@angular/core';
 import { CdkDragDrop, moveItemInArray, transferArrayItem, copyArrayItem } from '@angular/cdk/drag-drop';
 import {
@@ -187,7 +186,6 @@ export class MaileditorComponent implements OnInit {
   public changenow = true;
  
   constructor(
-    private zone: NgZone, 
     public snackBar: MatSnackBar,
     public RelationsApi: RelationsApi,
     public CompanyApi: CompanyApi,

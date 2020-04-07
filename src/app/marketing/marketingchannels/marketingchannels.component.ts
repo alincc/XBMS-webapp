@@ -32,6 +32,7 @@ export class MarketingchannelsComponent implements OnInit {
   @Input() Account: Account;
   @Input() SelectedRelation: Relations;
   @Input() option: Relations;
+  @Input() selectedchannel: Channels;
 
   public minDate = new Date();
   public maxDate = new Date(2030, 0, 1);

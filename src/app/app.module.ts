@@ -120,6 +120,8 @@ import {GestureConfig} from '@angular/material/core';
 import { TableComponent } from './dashboard/table/table.component';
 import {MatPaginatorModule} from '@angular/material/paginator';
 import {MatSortModule} from '@angular/material/sort';
+import { CrawlerComponent } from './relation/crawler/crawler.component';
+import { UploadComponent } from './translations/upload/upload.component';
 
 //disable pinch and rotate to scroll swip check the hammerjs doc for future fix
 export class CustomHammerConfig extends HammerGestureConfig  {
@@ -184,7 +186,9 @@ export class CustomHammerConfig extends HammerGestureConfig  {
     VectoruploadComponent,
     BackgroundComponent,
     TranslationsComponent,
-    TableComponent
+    TableComponent,
+    CrawlerComponent,
+    UploadComponent
   ],
 
   entryComponents: [

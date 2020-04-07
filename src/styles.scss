@@ -25,6 +25,16 @@
   src: url("assets/fonts/Hillpark.ttf") format("truetype");
 }
 
+@font-face {
+  font-family: Northead;
+  src: url("assets/fonts/Northead.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: Woodpecker;
+  src: url("assets/fonts/Woodpecker.ttf") format("truetype");
+}
+
 body{
   background-color: #bdc3c7;
   margin: 0px;
@@ -61,8 +71,8 @@ body{
 
 .tabcontainer {
     // height: 1400px;
-    min-height: 1000px;
-    width: 100%;
+    // min-height: 1000px;
+    // width: 100%;
    }
 
 
@@ -292,9 +302,9 @@ body{
 
 .listview{
   min-height: 300px;
-  height: 100vh;
-  overflow-y: scroll;
-  overflow-x: visible;
+  //height: 100vh;
+  //overflow-y: scroll;
+  //overflow-x: visible;
   padding-right: 5px;
   margin: 10px 5px 10px 0px;
 }

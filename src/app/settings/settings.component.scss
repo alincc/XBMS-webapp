@@ -6,12 +6,18 @@
     margin-top: 0em;
 }
 
-h2 {
-    margin: 2em;
-}
+// h2 {
+//     margin: 2em;
+// }
 
 .button {
     margin: 2em;
+}
+
+.emailtext {
+  border: 1px solid grey;
+  padding: 10px;
+  margin: 5px;
 }
 
 .account-container {
@@ -28,17 +34,6 @@ h2 {
     margin: 5px;
 }
 
-.relationcontainer{
-    width: 69%;
-    height: 100%;
-    float: left;
-    margin-top: 1%;
-}
-
-.Relations{
-    margin-left: 3px;
-    padding-left: 3px;
-  }
 
   .titlebox{
     width: 100%;
@@ -50,7 +45,7 @@ h2 {
     position: relative;
     display: inline-block;
     width: 90%;
-    height: 40px;
+    height: 20px;
     background-color: #fff;
     border-radius: 5px;
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
@@ -164,10 +159,6 @@ h2 {
   background-color: whitesmoke;
 }
   
-
-.tab{
-  min-height: 800px;
-}
 
 .unsortedcalls{
   margin: 1px;

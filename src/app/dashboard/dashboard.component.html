@@ -145,12 +145,12 @@
           </div>
         </div>
 
-        <div *ngIf="dashitem.charttype === 'map'" class="tabledash" style="height: 100%; width: 100%;" onfocusout="mapLabelName = ''">
+        <div *ngIf="dashitem.charttype === 'map'" style="height: 100%; width: 100%;" onfocusout="mapLabelName = ''">
           <!-- [label]="{color: 'black', fontFamily: 'Open Sans', fontSize: '10', text: Websitetracker.companyname}"  -->
           <agm-map [latitude]="latitude" [longitude]="longitude" [zoom]="zoom" style="height: 90%; width: 100%;"
           [styles]="mapStyle">
             <div *ngFor="let Websitetracker of dashitem.data_object" style="height: 100%; width: 100%;">
-              <agm-marker 
+              <agm-marker
               [iconUrl]="{url: mapLabelName ===  Websitetracker ? 'https://api.xbms.io/assets/icons/colour-cirle-set/web/tick.png' : 'https://api.xbms.io/assets/icons/colour-cirle-set/office/location.png',
               scaledSize: { width: 30, height: 30 }}"
               [latitude]="Websitetracker.lat" (mouseOver)="mouseOverMapMarker(Websitetracker)" [longitude]="Websitetracker.lon"></agm-marker>
@@ -165,10 +165,10 @@
           <app-table [tabledata]="dashitem.data_object" [tablelabels]="dashitem.data_labels">
           </app-table>
         </div>
-        
+
         <div *ngIf="dashitem.charttype === 'table' && dashitem.type === 'Scheduled'" class="tabledash">
           <label class="mat-h4">Scheduled Mailings, Ads and Articles</label>
-         
+
 
           <table mat-table [dataSource]="dashitem.data_object" matSort style="width: 100%;">
 
@@ -177,19 +177,19 @@
               <th mat-header-cell *matHeaderCellDef mat-sort-header> Campaign </th>
               <td mat-cell class="tablefonts" *matCellDef="let element"> {{element.marketingplannereventsIds}} </td>
             </ng-container>
-        
+
             <!-- Name Column -->
             <ng-container matColumnDef="subject">
               <th mat-header-cell *matHeaderCellDef mat-sort-header> Subject </th>
               <td mat-cell class="tablefonts" *matCellDef="let element"> {{element.subject}} </td>
             </ng-container>
-        
+
             <!-- Weight Column -->
             <ng-container matColumnDef="from">
               <th mat-header-cell *matHeaderCellDef mat-sort-header> From </th>
               <td mat-cell class="tablefonts" *matCellDef="let element"> {{element.from}} </td>
             </ng-container>
-        
+
             <!-- Symbol Column -->
             <ng-container matColumnDef="title">
               <th mat-header-cell *matHeaderCellDef mat-sort-header> Title </th>
@@ -200,11 +200,11 @@
               <th mat-header-cell *matHeaderCellDef mat-sort-header> Date </th>
               <td mat-cell class="tablefonts" *matCellDef="let element"> {{element.date | date: "medium" }} </td>
             </ng-container>
-        
+
             <tr mat-header-row *matHeaderRowDef="dashitem.data_labels"></tr>
             <tr mat-row *matRowDef="let row; columns: dashitem.data_labels;"></tr>
           </table>
-        
+
           <!-- <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator> -->
 
         </div>
@@ -264,23 +264,23 @@
                   <mat-option value="ga:bounces">Bounces</mat-option>
                 </mat-select>
               </mat-form-field>
-  
-              <mat-form-field *ngIf="dashitem.type === 'Google Analytics'">
+
+              <mat-form-field *ngIf="dashitem.type === 'Google Analytics' || dashitem.type === 'CRM statistics'">
                 <mat-label>Choose a start date</mat-label>
                 <input matInput [min]="minDate" [max]="maxDate" (dateChange)="detectchange()" [matDatepicker]="picker1"
                   [(ngModel)]="dashitem.startdate">
                 <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
                 <mat-datepicker #picker1></mat-datepicker>
               </mat-form-field>
-  
-              <mat-form-field *ngIf="dashitem.type === 'Google Analytics'">
+
+              <mat-form-field *ngIf="dashitem.type === 'Google Analytics' || dashitem.type === 'CRM statistics'">
                 <mat-label>Choose a end date</mat-label>
                 <input matInput [min]="minDate" [max]="maxDate" (dateChange)="detectchange()" [matDatepicker]="picker2"
                   [(ngModel)]="dashitem.enddate">
                 <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
                 <mat-datepicker #picker2></mat-datepicker>
               </mat-form-field>
-  
+
               <mat-form-field *ngIf="dashitem.type === 'Google Analytics'">
                 <mat-select [(value)]="dashitem.startdate" (selectionChange)="detectchange()">
                   <mat-option value="today">Today</mat-option>
@@ -289,7 +289,7 @@
                   <mat-option value="365daysAgo">Last year</mat-option>
                 </mat-select>
               </mat-form-field>
-  
+
               <mat-form-field *ngIf="dashitem.type === 'Google Analytics'">
                 <mat-select [(value)]="dashitem.enddate" (selectionChange)="detectchange()">
                   <mat-option value="today">Today</mat-option>
@@ -298,10 +298,19 @@
                   <mat-option value="365daysAgo">Last year</mat-option>
                 </mat-select>
               </mat-form-field>
-  
+
+              <mat-form-field *ngIf="dashitem.type === 'CRM statistics'">
+                <mat-select [(value)]="dashitem.dimension" (selectionChange)="detectchange()">
+                  <mat-option value="calls-date">Calls/Date</mat-option>
+                  <mat-option value="relations-calls">Relations/Calls</mat-option>
+                  <mat-option value="relations-status">Relations/Status</mat-option>
+                  <!-- <mat-option value="365daysAgo">Last year</mat-option> -->
+                </mat-select>
+              </mat-form-field>
+
               <mat-checkbox [(ngModel)]="dashitem.showlegend">Show legend</mat-checkbox>
               <!-- <mat-checkbox [(ngModel)]="dashitem.show">Show labels</mat-checkbox> -->
-  
+
 
               <mat-select *ngIf="dashitem.type !== 'Google Analytics'" style="width: 200px; height: 50px;"
                 placeholder="Select timeframe" [(value)]="mailStatsTimeSelected">
@@ -310,12 +319,12 @@
                   {{ mailStatsTime.viewValue }}
                 </mat-option>
               </mat-select>
-  
+
               <mat-icon (click)="deleteDashItem(i1)">delete</mat-icon>
-  
+
             </mat-expansion-panel>
           </mat-accordion>
-  
+
           <mat-icon matTooltip="up" (click)="moveSectionUp(i1)" class="iconsize-14 sectionlabelbuttons" matSuffix>
             arrow_drop_up</mat-icon>
           <mat-icon matTooltip="down" (click)="moveSectionDown(i1)" class="iconsize-14 sectionlabelbuttons" matSuffix>
@@ -380,7 +389,7 @@
 
     </div>
 
-    
+
 
     <div fxFlex="30%" fxLayout="row" fxLayoutWrap="wrap" fxLayoutAlign="space-around">
 

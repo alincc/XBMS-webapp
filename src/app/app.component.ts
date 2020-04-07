@@ -1,6 +1,8 @@
-import { Renderer2, ElementRef, AfterViewInit, HostBinding, 
+import {
+  Renderer2, ElementRef, AfterViewInit, HostBinding,
   Component, ViewChild, OnInit, OnDestroy, HostListener,
-   LOCALE_ID} from '@angular/core';
+  LOCALE_ID
+} from '@angular/core';
 import {
   AccountApi,
   Account,
@@ -44,8 +46,8 @@ enum Direction {
 
 export class AppComponent implements AfterViewInit {
   languages = [
-    { code: 'en', label: 'English'},
-    { code: 'nl', label: 'Nederlands'}
+    { code: 'en', label: 'English' },
+    { code: 'nl', label: 'Nederlands' }
   ];
   public scrolleffect = false;
   public Account: Account = new Account();
@@ -69,7 +71,7 @@ export class AppComponent implements AfterViewInit {
     elementRef: ElementRef,
     private renderer: Renderer2,
     public router: Router,
-    private route:ActivatedRoute,
+    private route: ActivatedRoute,
     public accountApi: AccountApi,
     private iconRegistry: MatIconRegistry,
     private sanitizer: DomSanitizer,
@@ -77,7 +79,7 @@ export class AppComponent implements AfterViewInit {
     this.addIcons();
     LoopBackConfig.setBaseURL(BASE_URL);
     LoopBackConfig.setApiVersion(API_VERSION);
-   
+
 
     this.realTime.onReady().subscribe(() => console.log('ready'))
     this.realTime.IO.emit('hello', 'world');
@@ -125,10 +127,10 @@ export class AppComponent implements AfterViewInit {
   private isVisible = false;
 
   ngAfterViewInit() {
- 
+
     let loc = window.location.pathname;
     let locindex = loc.indexOf('/login')
-    if (locindex === -1){
+    if (locindex === -1) {
       this.getLogs();
     }
 
@@ -230,6 +232,7 @@ export class BottomSheetLogOverview {
   public Account: Account;
 
   constructor(
+    public router: Router,
     @Inject(MAT_BOTTOM_SHEET_DATA) public data: any,
     private CompanyApi: CompanyApi,
     private _bottomSheetRef: MatBottomSheetRef<BottomSheetLogOverview>) { }
@@ -249,17 +252,67 @@ export class BottomSheetLogOverview {
     let deletedone = this.logger[i];
     this.logger.splice(i, 1);
     this.CompanyApi.destroyByIdLogger(this.Account.companyId, deletedone.id)
-      .subscribe(res => {  });
+      .subscribe(res => { });
   }
 
   markRead(i): void {
     let readdone = this.logger[i];
     this.logger.splice(i, 1)
     readdone.read = true;
-    this.CompanyApi.updateByIdLogger(this.Account.companyId, readdone.id, 
+    this.CompanyApi.updateByIdLogger(this.Account.companyId, readdone.id,
       readdone)
-      .subscribe(res => {  });
+      .subscribe(res => { });
   }
+
+  // date: "2020-03-25T16:14:03.640Z"
+  // user: null
+  // relation: "5a2a4e745c2a7a06c443533f"
+  // description: "created new video milky-way-over-mountains-CU4TKRA.mp4"
+  // read: false
+  // id: "5e7b834b8a20fb05c02c63db"
+  // companyId: "5a2a4e6b5c2a7a06c443533d"
+  // code: "E2U"
+
+  navigateTo(logs) {
+    console.log(logs)
+    if (logs.code === 'E2U') {
+      let itemid = logs.id;
+      this.router.navigateByUrl('/', {skipLocationChange: true}).then(()=>
+      this.router.navigate(['/settings'], { queryParams: { tab: 'unsorted', itemid: logs.item } })
+      )
+    }
+    if (logs.code === 'E2A') {
+      let itemid = logs.id;
+      this.router.navigateByUrl('/', {skipLocationChange: true}).then(()=>
+      this.router.navigate(['/relation'],
+        { queryParams: { tab: 'calls', itemid: logs.item, relation: logs.relation } })
+      );
+    }
+    if (logs.code === 'FLR' || logs.code === undefined) {
+      let itemid = logs.id;
+      this.router.navigateByUrl('/', {skipLocationChange: true}).then(()=>
+      this.router.navigate(['/relation'],
+        { queryParams: { tab: 'files', itemid: logs.item, relation: logs.relation } })
+      );
+    }
+    if (logs.code === 'MCS') {
+      let itemid = logs.id;
+      this.router.navigateByUrl('/', {skipLocationChange: true}).then(()=>
+      this.router.navigate(['/marketing'],
+        { queryParams: { tab: 'mailing', itemid: logs.item, relation: logs.relation } })
+      );
+    }
+    if (logs.code === 'MNS') {
+      let itemid = logs.id;
+      this.router.navigateByUrl('/', {skipLocationChange: true}).then(()=>
+      this.router.navigate(['/marketing'], 
+        { queryParams: { tab: 'mailing', itemid: logs.item, relation: logs.relation } })
+      );
+    }
+
+ 
+  }
+
 
 
 }

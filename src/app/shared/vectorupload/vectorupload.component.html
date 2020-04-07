@@ -47,6 +47,9 @@
                         <button mat-button (click)="item.cancel()" [disabled]="!item.isUploading">
                             <mat-icon aria-hidden="false" class="iconsize-10">cancel</mat-icon> Cancel
                         </button>
+                        <button mat-button (click)="item.remove()">
+                            <mat-icon class="iconsize-10">remove_circle</mat-icon> Remove
+                          </button>
                     </td>
                 </tr>
             </table>
@@ -91,6 +94,9 @@
                         <button mat-button (click)="item.cancel()" [disabled]="!item.isUploading">
                             <mat-icon aria-hidden="false" class="iconsize-10">cancel</mat-icon> Cancel
                         </button>
+                        <button mat-button (click)="item.remove()">
+                            <mat-icon class="iconsize-10">remove_circle</mat-icon> Remove
+                          </button>
                     </td>
                 </tr>
             </table>

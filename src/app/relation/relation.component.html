@@ -22,8 +22,7 @@
 
 
   <!-- Relations -->
-
-  <mat-tab-group class="relations">
+  <mat-tab-group class="relations" [(selectedIndex)]="selectedTab">
     <mat-tab label="Relations">
       <ng-template mat-tab-label>
         <mat-icon>contacts</mat-icon>
@@ -46,9 +45,9 @@
             <input matInput [(ngModel)]=searchterm (keyup.enter)="searchGo()" placeholder="Name/Address" />
           </mat-form-field>
           <br>
-          <mat-select [(ngModel)]=selectstatus placeholder="Status">
-            <mat-option *ngFor="let statustype of statustype" [value]="statustype.value">
-              {{ statustype.viewValue }}
+          <mat-select *ngIf="Company" [(ngModel)]=selectstatus placeholder="Status">
+            <mat-option *ngFor="let statustype of Company.relationtypes" [value]="statustype">
+              {{ statustype }}
             </mat-option>
           </mat-select>
           <br>
@@ -115,9 +114,10 @@
                     </mat-form-field>
                   </div>
                   <div fxFlex class="cell">
-                    <mat-select [(ngModel)]=selectedRelation.status placeholder="Status" class="InputField">
-                      <mat-option *ngFor="let statustype of statustype" [value]="statustype.value">
-                        {{ statustype.viewValue }}
+                    <mat-select *ngIf="Company" [(ngModel)]=selectedRelation.status placeholder="Status"
+                      class="InputField">
+                      <mat-option *ngFor="let statustype of Company.relationtypes" [value]="statustype">
+                        {{ statustype }}
                       </mat-option>
                     </mat-select>
                   </div>
@@ -208,9 +208,8 @@
                           </mat-panel-title>
                         </mat-expansion-panel-header>
                         <br>
-                        <span [style.background]="companypricolor" [cpToggle]="true"
-                          [cpDialogDisplay]="'inline'" [cpCancelButton]="true"
-                          [(colorPicker)]="companypricolor"></span>
+                        <span [style.background]="companypricolor" [cpToggle]="true" [cpDialogDisplay]="'inline'"
+                          [cpCancelButton]="true" [(colorPicker)]="companypricolor"></span>
                       </mat-expansion-panel>
                     </mat-accordion>
                   </div>
@@ -223,9 +222,8 @@
                           </mat-panel-title>
                         </mat-expansion-panel-header>
                         <br>
-                        <span [style.background]="compannyseccolor" [cpToggle]="true"
-                          [cpDialogDisplay]="'inline'" [cpCancelButton]="true"
-                          [(colorPicker)]="compannyseccolor"></span>
+                        <span [style.background]="compannyseccolor" [cpToggle]="true" [cpDialogDisplay]="'inline'"
+                          [cpCancelButton]="true" [(colorPicker)]="compannyseccolor"></span>
                       </mat-expansion-panel>
                     </mat-accordion>
                   </div>
@@ -432,7 +430,7 @@
               </div>
 
               <div fxLayout="row" *ngIf="selectedCall.html">
-                  <div style="max-width: 600px" [innerHTML]="selectedCall.html"></div>
+                <div style="max-width: 600px" [innerHTML]="selectedCall.html"></div>
               </div>
               <div fxLayout="row" fxLayout.xs="column">
                 <button a mat-raised-button (click)="saveCall()">Save</button>
@@ -548,9 +546,9 @@
                   </div>
                 </div>
                 <div fxLayout="row" fxLayout.xs="column" *ngIf="selectedCall.html">
-                 
-                    <div style="max-width: 600px" [innerHTML]="selectedCall.html"></div>
-                 
+
+                  <div style="max-width: 600px" [innerHTML]="selectedCall.html"></div>
+
                 </div>
                 <div fxLayout="row" fxLayout.xs="column">
                   <button a mat-raised-button (click)="SendMessageDialog()">Edit</button>
@@ -702,60 +700,74 @@
 
         <div fxLayout="column" ngClass.gt-xs="listview-normal" ngClass.lt-sm="listview-noshow"
           [class.listview-xs-show]="listviewxsshow" class="card-left-menu">
+          <mat-form-field>
+            <input matInput [(ngModel)]="searchboxFiles" (keyup.enter)="getFiles()" placeholder="Name" />
+          </mat-form-field>
+          <button a mat-raised-button color="primary" (click)="getFiles()">
+            <mat-icon>search</mat-icon>Search
+          </button>
+          <br>
           <mat-accordion>
             <mat-expansion-panel>
-              <mat-expansion-panel-header>
-                <mat-panel-title>
-                  Image Files
+              <mat-expansion-panel-header [collapsedHeight]="'80px'">
+                <mat-panel-title style="height: 80px;">
+                  <mat-icon matBadge="{{imagelist.length}}" matBadgeColor="primary">photo</mat-icon> Image Files
                 </mat-panel-title>
               </mat-expansion-panel-header>
 
               <div class="filelist">
                 <div *ngFor="let Filesimg of imagelist; let i = index" (click)="onDownload(Files)" class="files"
-                  (click)="onselectfile(Filesimg)">
-                  <a href="{{ Filesimg.url }}" style="font-size: 8pt">
+                  (click)="onselectfile(Filesimg)" fxLayout="column">
+                  <label style="font-size: 8pt">
                     {{ Filesimg.name }}
-                  </a>
-                  <label>{{Filesimg.size}}</label>
-                  <mat-icon (click)="dialogDeleteFile(Filesimg)" color="primary" class="iconsize-12">delete</mat-icon>
+                  </label>
+                  <div>
+                    <label>{{Filesimg.size | number : '1.2-2'}} MB</label>
+                    <mat-icon (click)="dialogDeleteFile(Filesimg)" color="primary" class="iconsize-12">delete</mat-icon>
+                  </div>
                 </div>
               </div>
             </mat-expansion-panel>
           </mat-accordion>
           <mat-accordion>
             <mat-expansion-panel>
-              <mat-expansion-panel-header>
-                <mat-panel-title>
-                  Video Files
+              <mat-expansion-panel-header [collapsedHeight]="'80px'">
+                <mat-panel-title style="height: 80px;">
+                  <mat-icon matBadge="{{videolist.length}}" matBadgeColor="primary">movie</mat-icon> Video Files
                 </mat-panel-title>
               </mat-expansion-panel-header>
               <div class="filelist">
                 <div *ngFor="let Filesvid of videolist; let i = index" (click)="onDownload(Filesvid)" class="files"
-                  (click)="onselectfile(Filesvid)">
-                  <a href="{{ Filesvid.url }}" style="font-size: 8pt">
+                  (click)="onselectfile(Filesvid)" fxLayout="column">
+                  <!-- href="{{ Filesvid.url }}"  -->
+                  <label style="font-size: 8pt">
                     {{ Filesvid.name }}
-                  </a>
-                  <label>{{Filesvid.size}}</label>
-                  <mat-icon (click)="dialogDeleteFile(Filesvid)" color="primary" class="iconsize-12">delete</mat-icon>
+                  </label>
+                  <div>
+                    <label style="font-size: 8pt">{{Filesvid.size | number : '1.2-2'}} MB</label>
+                    <mat-icon (click)="dialogDeleteFile(Filesvid)" color="primary" class="iconsize-12">delete</mat-icon>
+                  </div>
                 </div>
               </div>
             </mat-expansion-panel>
           </mat-accordion>
           <mat-accordion>
             <mat-expansion-panel>
-              <mat-expansion-panel-header>
-                <mat-panel-title>
-                  Files
+              <mat-expansion-panel-header [collapsedHeight]="'80px'">
+                <mat-panel-title style="height: 80px;">
+                  <mat-icon matBadge="{{misclist.length}}" matBadgeColor="primary">folder</mat-icon> Files
                 </mat-panel-title>
               </mat-expansion-panel-header>
               <div class="filelist">
                 <div *ngFor="let Files of misclist; let i = index" (click)="onDownload(Files)" class="files"
-                  (click)="onselectfile(Files)">
-                  <a href="{{ Files.url }}" style="font-size: 8pt">
+                  (click)="onselectfile(Files)" fxLayout="column">
+                  <label style="font-size: 8pt">
                     {{ Files.name }}
-                  </a>
-                  <label>{{Files.size}}</label>
-                  <mat-icon (click)="dialogDeleteFile(Files)" color="primary" class="iconsize-12">delete</mat-icon>
+                  </label>
+                  <div>
+                    <label>{{Files.size| number : '1.2-2'}} MB</label>
+                    <mat-icon (click)="dialogDeleteFile(Files)" color="primary" class="iconsize-12">delete</mat-icon>
+                  </div>
                 </div>
               </div>
             </mat-expansion-panel>
@@ -786,104 +798,132 @@
               </div>
               <div fxLayout="row" fxLayoutGap="20px">
                 <label fxFlex="40%">Size: </label>
-                <label fxFlex="40%">{{selectedfile.size}}</label>
+                <label fxFlex="40%">{{selectedfile.size| number : '1.2-2'}} MB</label>
+
               </div>
-              <div *ngIf="selectedfile.type === 'marketing-video' || selectedfile.type === 'video'"
-                style="max-width: 600px;">
-                <video *ngIf="selectedfile.url"  preload="auto" controls style="max-width: 600px;" [src]="selectedfile.url">
+              <!-- selectedfile.type === 'marketing-video' ||  -->
+              <div *ngIf="selectedfile.type === 'video' && !selectedfile.template" style="max-width: 600px;">
+                <video *ngIf="selectedfile.url" preload="auto" controls style="max-width: 600px;"
+                  [src]="selectedfile.url">
                 </video>
               </div>
-              <img *ngIf="selectedfile.type !== 'marketing-video' || selectedfile.type !== 'video' || selectedfile.type !== 'vector' "
-              src={{selectedfile.url}} style="width: 400px; height: auto;">
+              <!-- || selectedfile.type !== 'vector'  -->
+              <div *ngIf="selectedfile.type !== 'video'">
+                <img src={{selectedfile.url}} style="width: 400px; height: auto;">
+              </div>
+
+              <div *ngIf="selectedfile.template && selectedfile.type === 'video'">
+                <img src={{selectedfile.screenshot}} style="width: 400px; height: auto;">
+              </div>
+
               <!-- <div  style="width: 400px; height: 400px;" *ngIf="selectedfile.type === 'vector'" [inlineSVG]="selectedfile.url"></div> -->
             </mat-card-content>
             <button mat-button (click)="download(selectedfile)">
-                      <mat-icon>file_download</mat-icon>Download
-                    </button>
+              <mat-icon>file_download</mat-icon>Download
+            </button>
+            <button mat-button (click)="dialogDeleteFile(selectedfile)">
+              <mat-icon>delete</mat-icon>Delete
+            </button>
           </mat-card>
-          <div class="left-upload-block">
-            <h3>Select files</h3>
-            <!-- <div ng2FileDrop (fileOver)="fileOverBase($event)" [uploader]="uploader"
+
+          <mat-accordion>
+            <mat-expansion-panel>
+              <mat-expansion-panel-header>
+                <mat-panel-title>
+                  Upload new
+                </mat-panel-title>
+              </mat-expansion-panel-header>
+
+              <div class="left-upload-block">
+                <h3>Select files</h3>
+                <!-- <div ng2FileDrop (fileOver)="fileOverBase($event)" [uploader]="uploader"
               class="drop-zone">
               Base drop zone
             </div> -->
 
-            <div ng2FileDrop [ngClass]="{'drop-zone-over': hasBaseDropZoneOver}" (fileOver)="fileOverAnother($event)"
-              [uploader]="uploader" class="drop-zone">
-              Drop Zone
-            </div>
-
-            <input type="file" ng2FileSelect [uploader]="uploader" />
-          </div>
-
-          <div class="righ-upload-block">
-
-            <h3>Upload queue</h3>
-            <p>Queue length: {{ uploader?.queue?.length }}</p>
-
-            <div fxLayout="column">
-              <thead>
-                <div fxLayout="row" fxLayout.xs="column">
-                  <div fxLayout="row" fxLayout.xs="column" width="50%">Name</div>
-                  <div>Size</div>
-                  <div>Progress</div>
-                  <div>Status</div>
-                  <div>Actions</div>
+                <div ng2FileDrop [ngClass]="{'drop-zone-over': hasBaseDropZoneOver}"
+                  (fileOver)="fileOverAnother($event)" [uploader]="uploader" class="drop-zone">
+                  Drop Zone
                 </div>
-              </thead>
-              <tbody>
-                <div fxLayout="row" fxLayout.xs="column" *ngFor="let item of uploader.queue">
-                  <div fxFlex>
-                    <strong>{{ item?.file?.name }}</strong>
-                  </div>
-                  <div fxFlex *ngIf="uploader.isHTML5" nowrap>{{ item?.file?.size/1024/1024 | number:'.2' }} MB</div>
-                  <div fxFlex *ngIf="uploader.isHTML5">
-                    <div style="margin-bottom: 0;">
-                      <mat-progress-bar [color]="primary" [mode]="determinate" [value]="item.progress">
-                      </mat-progress-bar>
+
+                <button mat-button (click)="fileInput.click()">Choose file</button>
+                <span
+                  style="visibility: hidden; position: absolute; overflow: hidden; width: 0px; height:0px;border:none;margin:0; padding:0">
+                  <input type="file" #fileInput ng2FileSelect [uploader]="uploader" />
+                </span>
+              </div>
+
+              <div class="righ-upload-block">
+
+                <h3>Upload queue</h3>
+                <p>Queue length: {{ uploader?.queue?.length }}</p>
+
+                <div fxLayout="column">
+                  <thead>
+                    <div fxLayout="row" fxLayout.xs="column">
+                      <div fxLayout="row" fxLayout.xs="column" width="50%">Name</div>
+                      <div>Size</div>
+                      <div>Progress</div>
+                      <div>Status</div>
+                      <div>Actions</div>
+                    </div>
+                  </thead>
+                  <tbody>
+                    <div fxLayout="row" fxLayout.xs="column" *ngFor="let item of uploader.queue">
+                      <div fxFlex>
+                        <strong>{{ item?.file?.name }}</strong>
+                      </div>
+                      <div fxFlex *ngIf="uploader.isHTML5" nowrap>{{ item?.file?.size/1024/1024 | number:'.2' }} MB
+                      </div>
+                      <div fxFlex *ngIf="uploader.isHTML5">
+                        <div style="margin-bottom: 0;">
+                          <mat-progress-bar [color]="primary" [mode]="determinate" [value]="item.progress">
+                          </mat-progress-bar>
+                        </div>
+                      </div>
+
+                      <div fxFlex>
+                        <span *ngIf="item.isSuccess">
+                          <mat-icon>done</mat-icon>
+                        </span>
+                        <span *ngIf="item.isCancel">
+                          <mat-icon>cancel</mat-icon>
+                        </span>
+                        <span *ngIf="item.isError">
+                          <mat-icon>remove_circle</mat-icon>
+                        </span>
+                      </div>
+                      <div fxFlexnowrap>
+                        <button mat-button (click)="setupload(item?.file?.name)"
+                          [disabled]="item.isReady || item.isUploading || item.isSuccess">
+                          <mat-icon>file_upload</mat-icon>Upload
+                        </button>
+                        <button mat-button (click)="item.cancel()" [disabled]="!item.isUploading">
+                          <mat-icon>cancel</mat-icon> Cancel
+                        </button>
+                        <button mat-button (click)="item.remove()">
+                          <mat-icon class="iconsize-10">remove_circle</mat-icon> Remove
+                        </button>
+                      </div>
+                    </div>
+                  </tbody>
+                </div>
+
+                <div>
+                  <div>
+                    Queue progress:
+                    <div class="progress">
+                      <div>
+                        <mat-progress-bar color="primary" mode="determinate" [value]="uploader.progress">
+                        </mat-progress-bar>
+                      </div>
                     </div>
                   </div>
-
-                  <div fxFlex>
-                    <span *ngIf="item.isSuccess">
-                      <mat-icon>done</mat-icon>
-                    </span>
-                    <span *ngIf="item.isCancel">
-                      <mat-icon>cancel</mat-icon>
-                    </span>
-                    <span *ngIf="item.isError">
-                      <mat-icon>remove_circle</mat-icon>
-                    </span>
-                  </div>
-                  <div fxFlexnowrap>
-                    <button mat-button (click)="setupload(item?.file?.name)"
-                      [disabled]="item.isReady || item.isUploading || item.isSuccess">
-                      <mat-icon>file_upload</mat-icon>Upload
-                    </button>
-                    <button mat-button (click)="item.cancel()" [disabled]="!item.isUploading">
-                      <mat-icon>cancel</mat-icon> Cancel
-                    </button>
-                    <button mat-button (click)="item.remove()">
-                      <mat-icon>remove_circle</mat-icon> Remove
-                    </button>
-                  </div>
                 </div>
-              </tbody>
-            </div>
 
-            <div>
-              <div>
-                Queue progress:
-                <div class="progress">
-                  <div>
-                    <mat-progress-bar color="primary" mode="determinate" [value]="uploader.progress">
-                    </mat-progress-bar>
-                  </div>
-                </div>
               </div>
-            </div>
-
-          </div>
+            </mat-expansion-panel>
+          </mat-accordion>
 
         </div>
 
@@ -892,294 +932,15 @@
       </div>
     </mat-tab>
 
-    <!-- <mat-tab label="Follow ups/Automation">
+    <mat-tab label="Follow ups/Automation">
       <ng-template mat-tab-label>
         <mat-icon>settings_applicationss</mat-icon>
         <div fxShow.xs="false">Automations</div>
       </ng-template>
-      <div fxFlex fxFlexAlign="start" fxLayout="column">
-        <div fxFlex *ngIf="editCrawler">
-          <mat-card class="standarddivclass">
-            <mat-card-content>
-              <div fxLayout="column">
-                <div fxLayout="row" fxLayout.xs="column">
-                  <mat-form-field>
-                    <input matInput [(ngModel)]=selectedCrawler.name placeholder="Crawler Name" class="InputField">
-                  </mat-form-field>
-                </div>
-              </div>
-              <mat-horizontal-stepper #stepper>
-               
-                <mat-step [stepControl]="crawl1FormGroup">
-
-                  <ng-template matStepLabel>Fill in Website</ng-template>
-                  <mat-form-field appearance="outline">
-                    <mat-label>Website/URL</mat-label>
-                    <input matInput [(ngModel)]=selectedCrawler.url required>
-                  </mat-form-field>
-                  <div>
-                    <button mat-button matStepperNext>Next</button>
-                  </div>
-
-                </mat-step>
-               
-                <mat-step [stepControl]="crawl1FormGroup">
-
-                  <ng-template matStepLabel>Fill in Search Term</ng-template>
-                  <mat-form-field appearance="outline">
-                    <mat-label>For Example, Industry, Names or Location</mat-label>
-                    <input matInput [(ngModel)]=selectedCrawler.term required>
-                  </mat-form-field>
-                  <div>
-                    <button mat-button matStepperPrevious>Back</button>
-                    <button mat-button matStepperNext>Next</button>
-                  </div>
-
-                </mat-step>
-               
-                <mat-step [stepControl]="crawl1FormGroup">
-
-                  <ng-template matStepLabel>Type of info to Crawl for</ng-template>
-
-                  <mat-checkbox [(ngModel)]=selectedCrawler.people>
-                    Search Persons
-                  </mat-checkbox>
-                  <mat-checkbox [(ngModel)]=selectedCrawler.companies>
-                    Search Companies
-                  </mat-checkbox>
-                  <mat-checkbox [(ngModel)]=selectedCrawler.locations>
-                    Search Locations
-                  </mat-checkbox>
-
-                  <div>
-                    <button mat-button matStepperPrevious>Back</button>
-                    <button mat-button matStepperNext>Next</button>
-                  </div>
-
-                </mat-step>
-              
-                <mat-step [stepControl]="crawl2FormGroup">
-                  <ng-template matStepLabel>About the Data</ng-template>
-                  <mat-checkbox [(ngModel)]=selectedCrawler.findlist>Do you need a list</mat-checkbox>
-                  <div>
-                    <button mat-button matStepperPrevious>Back</button>
-                    <button mat-button matStepperNext>Next</button>
-                  </div>
-                </mat-step>
-               
-                <mat-step *ngIf="selectedCrawler.output" [stepControl]="crawl2FormGroup">
-                  <ng-template matStepLabel>Output Type</ng-template>
-                  <mat-select class="selectionbox" [(ngModel)]=selectedCrawler.depth placeholder="Depth">
-                    <mat-option *ngFor="let number of numbers" [value]="number">
-                      {{ number }}
-                    </mat-option>
-                  </mat-select>
-                  <div>
-                    <button mat-button matStepperPrevious>Back</button>
-                    <button mat-button matStepperNext>Next</button>
-                  </div>
-                </mat-step>
-                
-                <mat-step [stepControl]="crawl2FormGroup">
-                  <ng-template matStepLabel>Depth</ng-template>
-                  <mat-select class="selectionbox" [(ngModel)]=selectedCrawler.output placeholder="Depth">
-                    <mat-option *ngFor="let number of numbers" [value]="number">
-                      {{ number }}
-                    </mat-option>
-                  </mat-select>
-                  <div>
-                    <button mat-button matStepperPrevious>Back</button>
-                    <button mat-button matStepperNext>Next</button>
-                  </div>
-                </mat-step>
-               
-                <mat-step>
-                  <ng-template matStepLabel>Done</ng-template>
-                  You are now done.
-                  <div>
-                    <button mat-button matStepperPrevious>Back</button>
-
-                    <button a mat-raised-button (click)="updateCrawler()">Save</button>
-                    <button a mat-raised-button (click)="scheduleCrawler()">Schedule</button>
-                    <button a mat-raised-button (click)="deleteCrawler()">Delete</button>
-                  </div>
-                </mat-step>
-              </mat-horizontal-stepper>
-            </mat-card-content>
-          </mat-card>
-        </div>
-        <div fxFlex fxLayout="row" (swipeleft)="swipeleft($event)" (swiperight)="swiperight($event)">
-          <div fxFlex="20%" class="standarddivclass" ngClass.lt-sm="listview-xs-minimal"
-            ngClass.gt-xs="listview-xs-minimal-show" [class.listview-xs-minimal-show]="listviewxsshow">
-
-
-            <button a mat-raised-button (click)="getCrawlers()">Show All</button>
-
-            <a mat-mini-fab color="primary" (click)="newCrawler()">
-              <mat-icon>add</mat-icon>
-            </a>
-          </div> -->
-    <!-- 
-          <div fxFlex="78%" fxLayout="column" *ngIf="selectedCrawler" class="standarddivclass">
-            <mat-card class="standarddivclass">
-              <mat-card-content>
-                <mat-toolbar color="primary" class="titlebox">
-                  <div fxLayout="row" fxLayout.xs="column">
-                    <div fxFlex>
-                      <h2>{{selectedCrawler.name | uppercase | slice:0:30 }}</h2>
-                    </div>
-                    <div fxFlex>
-
-                      <button mat-icon-button [matMenuTriggerFor]="menumarketing" class="menu">
-                        <mat-icon>more_vert</mat-icon>
-                      </button>
-                      <mat-menu #menumarketing="matMenu">
-                        <button mat-menu-item (click)="deleteCrawler()">
-                          <mat-icon>delete</mat-icon>
-                          <span>Delete</span>
-                        </button>
-                        <button mat-menu-item (click)="newCrawler()">
-                          <mat-icon>note_add</mat-icon>
-                          <span>New</span>
-                        </button>
-                        <button mat-menu-item (click)="editCrawlerToggle()">
-                          <mat-icon>edit</mat-icon>
-                          <span>Edit</span>
-                        </button>
-                        <button mat-menu-item (click)="scheduleCrawler()">
-                          <mat-icon>refresh</mat-icon>
-                          <span>Run Again</span>
-                        </button>
-                      </mat-menu>
-                    </div>
-                  </div>
-                </mat-toolbar>
-                <div fxLayout="column" class="table">
-                  <div fxLayout="row" fxLayout.xs="column"fxLayout="row" class="crawlerlistdetails">
-                    <div fxFlexfxFlex="40%">Name: </div>
-                    <div fxFlexfxFlex="60%">{{selectedCrawler.name}}</div>
-                  </div>
-                  <div fxLayout="row" fxLayout.xs="column"fxLayout="row" class="crawlerlistdetails">
-                    <div fxFlexfxFlex="40%">Date: </div>
-                    <div fxFlexfxFlex="60%">{{selectedCrawler.date | date}}</div>
-                  </div>
-                  <div fxLayout="row" fxLayout.xs="column"fxLayout="row" class="crawlerlistdetails">
-                    <div fxFlexfxFlex="40%">Url: </div>
-                    <div fxFlexfxFlex="60%">{{selectedCrawler.url}}</div>
-                  </div>
-                  <div fxLayout="row" fxLayout.xs="column"fxLayout="row" class="crawlerlistdetails">
-                    <div fxFlexfxFlex="40%">Search Terms: </div>
-                    <div fxFlexfxFlex="60%">{{selectedCrawler.term}}</div>
-                  </div>
-                  <div fxLayout="row" fxLayout.xs="column"fxLayout="row" class="crawlerlistdetails">
-                    <div fxFlexfxFlex="40%">Find People</div>
-                    <div fxFlexfxFlex="60%">
-                      <mat-checkbox color="primary" [(ngModel)]=selectedCrawler.people></mat-checkbox>
-                    </div>
-                  </div>
-                  <div fxLayout="row" fxLayout.xs="column"fxLayout="row" class="crawlerlistdetails">
-                    <div fxFlexfxFlex="40%">Companies</div>
-                    <div fxFlexfxFlex="60%">
-                      <mat-checkbox color="primary" [(ngModel)]=selectedCrawler.companies></mat-checkbox>
-                    </div>
-                  </div>
-                  <div fxLayout="row" fxLayout.xs="column"fxLayout="row" class="crawlerlistdetails">
-                    <div fxFlexfxFlex="40%">Locations</div>
-                    <div fxFlexfxFlex="60%">
-                      <mat-checkbox color="primary" [(ngModel)]=selectedCrawler.locations></mat-checkbox>
-                    </div>
-                  </div>
-                  <div fxLayout="row" fxLayout.xs="column"fxLayout="row" class="crawlerlistdetails">
-                    <div fxFlexfxFlex="40%">List</div>
-                    <div fxFlexfxFlex="60%">
-                      <mat-checkbox color="primary" [(ngModel)]=selectedCrawler.findlist></mat-checkbox>
-                    </div>
-                  </div>
-                  <div fxLayout="row" fxLayout.xs="column"fxLayout="row" class="crawlerlistdetails">
-                    <div fxFlexfxFlex="40%">Crawler Page Depth</div>
-                    <div fxFlexfxFlex="60%">{{selectedCrawler.depth}}</div>
-                  </div>
-                </div>
-              </mat-card-content>
-            </mat-card>
-
-            <mat-card *ngFor="let response of selectedCrawler.response; let i = index" class="standarddivclass">
-              <mat-card-content>
-                <mat-toolbar color="primary" class="titlebox">
-                  <div fxLayout="row" fxLayout.xs="column">
-                    <div fxFlex>
-                      <h2>{{response.term | uppercase | slice:0:30 }} - {{ response.date | date }}</h2>
-                    </div>
-                    <div fxFlex>
-
-                      <button mat-icon-button [matMenuTriggerFor]="menumarketing" class="menu">
-                        <mat-icon>more_vert</mat-icon>
-                      </button>
-                      <mat-menu #menumarketing="matMenu">
-                        <button mat-menu-item (click)="deleteCrawler()">
-                          <mat-icon>delete</mat-icon>
-                          <span>Delete</span>
-                        </button>
-
-
-                      </mat-menu>
-                    </div>
-                  </div>
-                </mat-toolbar>
-
-                <div fxLayout="column" class="table">
-                  <div fxLayout="row" fxLayout.xs="column">
-                    <div fxFlex>
-                      <span>{{response.term}}</span>
-                    </div>
-                    <div fxFlex>
-                      <span>{{response.website}}</span>
-                    </div>
-                  </div>
-                  <div fxLayout="row" fxLayout.xs="column">
-                    <div fxFlex>
-                      <span>Persons</span>
-                      <ul *ngFor="let persons of response.persons;">
-                        <span class="box-response">{{persons.normal}}</span>
-                      </ul>
-                    </div>
-                    <div fxFlex>
-                      <span>Companies</span>
-                      <ul *ngFor="let companies of response.companies;">
-                        <span class="box-response">{{companies.normal}}</span>
-                      </ul>
-                    </div>
-                    <div fxFlex>
-                      <span>Locations</span>
-                      <ul *ngFor="let locations of response.locations;">
-                        <span class="box-response">{{locations.normal}}</span>
-                      </ul>
-                    </div>
-                  </div>
-                  <div fxLayout="row" fxLayout.xs="column">
-
-                    <button a mat-raised-button (click)="togglerawsearch()">Show Raw Data</button>
-                  </div>
-                  <div fxLayout="row" fxLayout.xs="column">
-
-                    <div fxFlex *ngIf="togglesearch" colSpan="3">
-                      <div>{{response.search}}</div>
-                    </div>
-                  </div>
-                  <div fxLayout="row" fxLayout.xs="column">
-                    <a mat-mini-fab color="primary" (click)="deleteCrawl(i)">
-                      <mat-icon>delete</mat-icon>
-                    </a>
-                  </div>
-                </div>
-              </mat-card-content>
-            </mat-card>
-          </div> -->
-    <!-- </div>
-
-
-      </div>
-    </mat-tab> -->
+      <app-crawler #crawler style="width: 100%;" [selectedRelation]="selectedRelation">
+    </app-crawler>
+      
+    </mat-tab>
 
 
     <mat-tab label="Connected Accounts">
@@ -1548,7 +1309,7 @@
               <mat-form-field class="example-full-width">
                 <textarea matInput [(ngModel)]=trackingcode (click)="copyMessage(trackingcode)" #tooltip="matTooltip"
                   (mouseenter)="$event.stopImmediatePropagation()" (mouseleave)="$event.stopImmediatePropagation()"
-                  matTooltip="Copied!" (click)="tooltip.toggle()" ></textarea>
+                  matTooltip="Copied!" (click)="tooltip.toggle()"></textarea>
               </mat-form-field>
               <button mat-button (mouseenter)="$event.stopImmediatePropagation()"
                 (mouseleave)="$event.stopImmediatePropagation()" matTooltip="Copied!" #tooltip="matTooltip"

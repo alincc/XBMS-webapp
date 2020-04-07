@@ -218,6 +218,7 @@ export class chart {
   export class vectorelement {
     idx: string;
     src: string;
+    object: string;
     duration: number;
     start_time: number;
     pathids: string[];

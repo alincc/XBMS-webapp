@@ -1,6 +1,6 @@
 <div style="height: 500px" fxLayout="column">
   <mat-button-toggle-group #group="matButtonToggleGroup" fxFlex="50px" style="width: 100%" fxFlexAlign="start"  [vertical]="false">
-    <mat-button-toggle  matTooltip="Local stored backgrounds" style="width: 50%" value="fromaccount">
+    <mat-button-toggle  matTooltip="Local stored backgrounds" style="width: 50%" value="templates">
       <mat-icon>storage</mat-icon>
     </mat-button-toggle>
     <mat-button-toggle matTooltip="Standard backgrounds" style="width: 50%"  value="standardbackgrounds">
@@ -12,7 +12,7 @@
   </mat-button-toggle-group>
 
   <div *ngIf="group.value == 'standardbackgrounds'" class="gallery" fxFlex="80%" fxLayout="row wrap">
-    <div *ngFor="let background of stockbackgrounds; let i = index" fxFlex>
+    <div *ngFor="let background of stockbg; let i = index" fxFlex>
       <div fxLayout="colmn" [class.selected]="background.url === data.selected" (click)="selectedimage(background.url)">
 
           <img src="{{ background.url }}" class="image" (click)="selectedimage(background.url)"
@@ -24,8 +24,20 @@
     </div>
   </div>
 
-  <div *ngIf="group.value == 'fromaccount'" class="gallery" fxFlex="80%" fxLayout="row wrap">
-    <div *ngFor="let background of stockanimatedbackground; let i = index" fxFlex>
+  <div *ngIf="group.value == 'standardbackgrounds'" style="margin-top: 5px; margin-bottom: 5px;">
+    <button a mat-raised-button (click)="before(group.value)">
+      <mat-icon>navigate_before</mat-icon>
+    </button>
+    <button a mat-raised-button (click)="next(group.value)">
+      <mat-icon>navigate_next</mat-icon>
+    </button>
+    <label>{{stockbgSliceMin + 1}}</label>&nbsp;-&nbsp;
+    <label>{{stockbgSlice + 1}}</label>&nbsp; of &nbsp;
+    <label>{{stockbgArray.length}}</label>
+  </div>
+
+  <div *ngIf="group.value == 'templates'" class="gallery" fxFlex="80%" fxLayout="row wrap">
+    <div *ngFor="let background of templates; let i = index" fxFlex>
 <!--         
       <img src="{{ background.url }}" class="image" (click)="selectedimage(background.url)"
       [class.selected]="background.url === data.selected"/> -->
@@ -35,6 +47,17 @@
     </div>
   </div>
 
+  <div *ngIf="group.value == 'templates'" style="margin-top: 5px; margin-bottom: 5px;">
+    <button a mat-raised-button (click)="before(group.value)">
+      <mat-icon>navigate_before</mat-icon>
+    </button>
+    <button a mat-raised-button (click)="next(group.value)">
+      <mat-icon>navigate_next</mat-icon>
+    </button>
+    <label>{{templatesSliceMin + 1}}</label>&nbsp;-&nbsp;
+    <label>{{templatesSlice + 1}}</label>&nbsp; of &nbsp;
+    <label>{{templatesArray.length}}</label>
+  </div>
 
   <div class="gallery-bottom" fxFlex="10%">
     <button a mat-raised-button (click)="dialogRef.close()">Cancel</button>

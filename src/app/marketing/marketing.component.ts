@@ -1,4 +1,4 @@
-import { Component, ViewChild, OnInit, HostBinding } from '@angular/core';
+import { Component, ViewChild, OnInit} from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import {
   LoopBackConfig,
@@ -15,6 +15,7 @@ import {
   Company,
   CompanyApi,
   ChannelsApi,
+  Channels,
   Files,
   Mailing,
   MailingApi,
@@ -54,6 +55,8 @@ import { MarketingchannelsComponent } from './marketingchannels/marketingchannel
 import { ImagecreatorComponent } from './imagecreator/imagecreator.component';
 import { MaileditorComponent } from './maileditor/maileditor.component';
 import { TextEditorDialog } from './maileditor/texteditordialog.component';
+import { MarketingpublicationsComponent } from './marketingpublications/marketingpublications.component';
+import { VideocreatorComponent } from './videocreator/videocreator.component';
 
 export interface uploadResult {
   result: 'failure' | 'success';
@@ -71,9 +74,13 @@ export class MarketingComponent implements OnInit {
   // chipinput for mailings
   @ViewChild('chipInput') chipInput: MatInput;
   @ViewChild("maileditor") maileditor;
+  @ViewChild(MarketingchannelsComponent, { static: false })
+  private marketingchannelsComponent: MarketingchannelsComponent;
+  @ViewChild(MarketingpublicationsComponent, { static: false })
+  private marketingpublicationsComponent: MarketingpublicationsComponent;
+  @ViewChild(VideocreatorComponent, { static: false })
+  private videocreatorComponent: VideocreatorComponent;
 
-
-  public selectedIndex = 0;
   allowedMimeType = ['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'];
   maxFileSize = 10 * 1024 * 1024;
   public timezones = timezones;
@@ -231,17 +238,16 @@ export class MarketingComponent implements OnInit {
   public bounceRate = '-';
   public goalStartsAll = '-';
   public pageview = '-';
-
   public updateMailingObj: Mailing = new Mailing;
-
   public searchboxMailinglist;
   public searchboxCampaign;
   public filteredRelations: Relations[];
-
+  public selectedTab = 0;
+  public selectedpublication: Publications;
+  public selectedchannel: Channels;
 
   constructor(
     public dialog: MatDialog,
-    private MarketingChannel: MarketingchannelsComponent,
     private sanitizer: DomSanitizer,
     public AdwordsApi: AdwordsApi,
     public timeconv: timeconv,
@@ -269,19 +275,44 @@ export class MarketingComponent implements OnInit {
 
   ngOnInit() {
     if (this.AccountApi.isAuthenticated() === false) { this.router.navigate(['login']) }
-    // this.setFilter();
     this.getCurrentUserInfo();
     // Clear the item queue (somehow they will upload to the old URL)
     this.uploader.clearQueue();
-
-    // set limits on calender
     const day = moment().date()
     const month = moment().month()
     const year = moment().year()
     this.minDate = new Date(year, month, day);
     this.maxDate = new Date(2030, 0, 1);
-    // console.log(this.minDate);
+  }
 
+  public setParameters() {
+    let itemid = this.route.snapshot.queryParamMap.get("itemid");
+    let tab = this.route.snapshot.queryParamMap.get("tab");
+    let relationid = this.route.snapshot.queryParamMap.get("relation");
+    console.log(itemid, tab, relationid);
+
+    this.CompanyApi.findByIdRelations(this.Account.companyId, relationid)
+      .subscribe(res => {
+        this.onSelectRelation(res, null);
+        if (tab === 'mailing') {
+          this.selectedTab = 1;
+          this.RelationsApi.findByIdMailing(res.id, itemid).subscribe(res1 => {
+            this.onSelectMailing(res1);
+          })
+        }
+        if (tab === 'publication') {
+          this.selectedTab = 0;
+          this.RelationsApi.findByIdPublications(res.id, itemid).subscribe(res2 => {
+            this.selectedpublication = res;;
+          })
+        }
+        if (tab === 'channels') {
+          this.selectedTab = 2;
+          this.RelationsApi.findByIdChannels(res.id, itemid).subscribe(res2 => {
+            this.selectedchannel = res2;
+          })
+        }
+      });
   }
 
   public openSnackBar(message: string) {
@@ -300,15 +331,13 @@ export class MarketingComponent implements OnInit {
           .subscribe((relations: Relations[]) => {
             this.Relations = relations
             if (this.Account.standardrelation !== undefined) {
-              // console.log(this.Account.standardrelation);
+
               this.RelationsApi.findById(this.Account.standardrelation)
                 .subscribe(rel => {
                   this.onSelectRelation(rel, null),
                     this.CompanyApi.findById(this.Account.companyId)
                       .subscribe((company: Company) => {
                         this.company = company;
-                        //this.getTranslations();
-                        //console.log(this.company);
                       });
                 })
             }
@@ -316,19 +345,6 @@ export class MarketingComponent implements OnInit {
           });
     });
   }
-
-  // myControl: FormControl = new FormControl();
-  // filteredOptions: Observable<string[]>;
-
-  // // compare filter search Relations
-  // setFilter(): void {
-  //   this.filteredOptions = this.myControl.valueChanges
-  //     .pipe(
-  //       startWith<string | Relations>(''),
-  //       map(value => typeof value === 'string' ? value : value.relationname),
-  //       map(relationname => relationname ? this.filter(relationname) : this.options.slice())
-  //     );
-  // }
 
   //display name in searchbox
   displayFnRelation(relation?: Relations): string | undefined {
@@ -368,7 +384,6 @@ export class MarketingComponent implements OnInit {
     }
   }
 
-
   // select relation --> get info for all tabs
   onSelectRelation(option, i): void {
     this.option = option;
@@ -376,6 +391,14 @@ export class MarketingComponent implements OnInit {
     this.getMailing();
     this.getMailinglist();
     this.getMailingCampaign();
+
+    // wait for @input in child
+    setTimeout(() => { 
+      this.marketingchannelsComponent.getChannels();
+      this.marketingpublicationsComponent.getPublications();
+      this.videocreatorComponent.getEditFile();
+     }, 200);
+
     this.RelationsApi.getGoogleanalytics(this.option.id)
       .subscribe((googleanalytics: Googleanalytics[]) => {
         this.Googleanalytics = googleanalytics,
@@ -1718,11 +1741,10 @@ export class MarketingComponent implements OnInit {
   ScheduleMailingCampaign(selectedOption): void {
     this.saveMailingCampaign();
     if (selectedOption == true) {
-
       const message = this.updatecampaigns();
-      console.log(message),
-        this.openSnackBar(message);
-      this.saveMailingCampaign();
+      //console.log(message),
+      this.openSnackBar(message);
+      //this.saveMailingCampaign();
 
     }
   }
@@ -1732,7 +1754,6 @@ export class MarketingComponent implements OnInit {
     this.selectedMarketingplannerevents.scheduled = true;
     if (this.selectedMarketingplannerevents.mailinglistId.length < 1) { message = 'Mailinglist missing' }
     if (message !== undefined) { return message }
-
     const mailtolist = [];
     let tolist = '';
 

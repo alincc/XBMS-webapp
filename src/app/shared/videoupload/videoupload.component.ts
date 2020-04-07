@@ -57,8 +57,21 @@ export class VideouploadComponent implements OnInit {
     this.uploader.clearQueue();
     this.uploader.onAfterAddingAll = (files) => {
       files.forEach(fileItem => {
-        fileItem.file.name = fileItem.file.name.replace(/ /g, '-');
-        //console.log(fileItem)
+
+        this.relationsApi.getFiles(this.option.id, { where: { name: name } })
+        .subscribe(res => {
+          let name = fileItem.file.name;
+          if (res.length > 0) {
+            const ext = '.' + name.substr(name.lastIndexOf('.') + 1);
+            let name2 = name.replace(ext, '');
+            let name1 = name2 + '-1'
+            let newname = name1 + ext;
+            fileItem.file.name = newname
+            console.log(newname);
+          } else {
+            fileItem.file.name = fileItem.file.name.replace(/ /g, '-');
+          }
+        });
         this.filetype = fileItem.file.type;
       });
     };
@@ -127,24 +140,15 @@ export class VideouploadComponent implements OnInit {
 
   // set constiable and upload + save reference in Publications
   async setupload(name, size) {
+    this.converting = true;
     // set upload url
     let urluse = BASE_URL + '/api/Containers/' + this.option.id + '/upload';
     this.uploader.setOptions({ url: urluse });
-    name = await this.checkName(name);
+    let newname = await this.checkName(name);
 
     // set download url or actual url for publishing
-    let imgurl = BASE_URL + '/api/Containers/' + this.option.id + '/download/' + name
+    let imgurl = 'https://api.xbms.io/api/Containers/' + this.option.id + '/download/' + newname;
     imgurl = imgurl.replace(/ /g, '-'),
-      // imgurl = encodeURI(imgurl);
-      // define the file settings
-      this.newFiles.size = size,
-      this.newFiles.name = name,
-      this.newFiles.url = imgurl,
-      this.newFiles.createdate = new Date(),
-      this.newFiles.type = 'video',
-      this.newFiles.companyId = this.account.companyId,
-      // check if container exists and create
-
       this.uploadFile(imgurl);
   }
 
@@ -156,8 +160,8 @@ export class VideouploadComponent implements OnInit {
           let newname = name;
           if (res.length > 0) {
             const ext = '.' + name.substr(name.lastIndexOf('.') + 1);
-            name.replace(ext, '');
-            let name1 = name + '-1'
+            let name2 = name.replace(ext, '');
+            let name1 = name2 + '-1'
             newname = name1 + ext;
             console.log(newname);
           }
@@ -175,28 +179,26 @@ export class VideouploadComponent implements OnInit {
         this.converting = true;
         // if (this.filetype === 'video/quicktime') {
         url = url.replace('http://localhost:3000', 'https://api.xbms.io')
-        this.fileApi.convertVideo2mp4(this.option.id, url).subscribe((res) => {
+        this.fileApi.convertVideo2mp4(this.option.id, url, this.option.companyId).subscribe((res) => {
           console.log(res)
-          this.newFiles.name = this.newFiles.name.replace('.mov', '.mp4');
-          this.newFiles.url = this.newFiles.url.replace('.mov', '.mp4');
-          this.newFiles.size = res;
-          this.uploadFileToStore();
+          // this.newFiles.name = this.newFiles.name.replace('.mov', '.mp4');
+          // this.newFiles.url = this.newFiles.url.replace('.mov', '.mp4');
+          // this.newFiles.size = res;
+          this.setimage(res)
           this.converting = false;
         });
-        // } else {
-        //   this.uploadFileToStore();
-        // }
+
 
       }
     }
   }
 
-  uploadFileToStore() {
-    this.relationsApi.createFiles(this.option.id, this.newFiles)
-      .subscribe(res => {
-        console.log(res), this.setimage(res.url)
-      })
-  }
+  // uploadFileToStore() {
+  //   this.relationsApi.createFiles(this.option.id, this.newFiles)
+  //     .subscribe(res => {
+  //       console.log(res), this.setimage(res.url)
+  //     })
+  // }
 
 }
 

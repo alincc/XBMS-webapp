@@ -19,6 +19,7 @@ export interface FilesInterface {
   "canvas"?: any;
   "counter"?: number;
   "size"?: number;
+  "screenshot"?: string;
   "id"?: any;
   "filesId"?: any;
   publications?: Publications;
@@ -39,6 +40,7 @@ export class Files implements FilesInterface {
   "canvas": any;
   "counter": number;
   "size": number;
+  "screenshot": string;
   "id": any;
   "filesId": any;
   publications: Publications;
@@ -124,6 +126,10 @@ export class Files implements FilesInterface {
         "size": {
           name: 'size',
           type: 'number'
+        },
+        "screenshot": {
+          name: 'screenshot',
+          type: 'string'
         },
         "id": {
           name: 'id',

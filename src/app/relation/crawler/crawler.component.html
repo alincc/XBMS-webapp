@@ -1,0 +1,93 @@
+<div fxLayout="column" class="containercrawler">
+    <br>
+    <mat-form-field appearance="outline">
+        <mat-label>Website/URL</mat-label>
+        <input matInput [(ngModel)]=selectedCrawler.url required>
+    </mat-form-field>
+    <br>
+    <mat-select class="selectionbox" [(ngModel)]=selectedCrawler.depth placeholder="Depth">
+        <mat-option *ngFor="let number of numbers" [value]="number">
+            {{ number }}
+        </mat-option>
+    </mat-select>
+
+    <br>
+    <mat-form-field>
+        <mat-label>Load previous crawl</mat-label>
+        <mat-select [(value)]="setcrawl" (selectionChange)="loadCrawl(setcrawl.url)">
+            <mat-option *ngFor="let crawl of crawls" [value]="crawl">
+                {{crawl.name}}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+
+    <br>
+    <button a mat-raised-button (click)="scheduleCrawler()">Crawl</button>
+    <br>
+    <mat-spinner *ngIf="waiting" ></mat-spinner>
+    <div *ngIf="crawlresult" class="crawltable">
+        <mat-form-field>
+            <mat-label>Filter</mat-label>
+            <input matInput (keyup)="applyFilter($event)" placeholder="Ex. ium">
+        </mat-form-field>
+        <button (click)="deleteSelected()" mat-button>Delete Selected</button>
+        <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
+
+            <!--- Note that these columns can be defined in any order.
+                  The actual rendered columns are set as a property on the row definition" -->
+            <!-- Checkbox Column -->
+            <ng-container matColumnDef="select">
+                <th mat-header-cell *matHeaderCellDef>
+                    <mat-checkbox (change)="$event ? masterToggle() : null"
+                        [checked]="selection.hasValue() && isAllSelected()"
+                        [indeterminate]="selection.hasValue() && !isAllSelected()" [aria-label]="checkboxLabel()">
+                    </mat-checkbox>
+                </th>
+                <td mat-cell *matCellDef="let row">
+                    <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? selection.toggle(row) : null"
+                        [checked]="selection.isSelected(row)" [aria-label]="checkboxLabel(row)">
+                    </mat-checkbox>
+                </td>
+            </ng-container>
+
+            <!-- Position Column -->
+            <ng-container matColumnDef="Position">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Nr. </th>
+                <td mat-cell *matCellDef="let element"> {{element.Position}} </td>
+            </ng-container>
+
+            <!-- Position Column -->
+            <ng-container matColumnDef="Text">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Text </th>
+                <td mat-cell *matCellDef="let element"> {{element.Text}} </td>
+            </ng-container>
+
+            <!-- Name Column -->
+            <ng-container matColumnDef="Tag">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Tag </th>
+                <td mat-cell *matCellDef="let element"> {{element.Tag}} </td>
+            </ng-container>
+
+            <!-- Weight Column -->
+            <ng-container matColumnDef="URL">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> URL </th>
+                <td mat-cell *matCellDef="let element"> {{element.URL}} </td>
+            </ng-container>
+
+            <!-- Symbol Column -->
+            <ng-container matColumnDef="Language">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Language </th>
+                <td mat-cell *matCellDef="let element"> {{element.Language}} </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+    </div>
+    <br>
+    <div *ngIf="crawlresult" class="crawltable" fxLayout="row" fxLayoutGap="25px">
+        <button a mat-raised-button (click)="downloadAsXLS()">Download All</button>
+        <button a mat-raised-button (click)="downloadAsXLSSelection()">Download Selection</button>
+    </div>
+
+</div>

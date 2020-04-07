@@ -1,5 +1,6 @@
-import { Component, OnInit, Output, EventEmitter, Input, SimpleChange, SimpleChanges, NgZone } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
 import { ViewChild, ElementRef } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import {
   Relations, RelationsApi, BASE_URL, CompanyApi, Company, Account,
   Files, FilesApi, ContainerApi
@@ -28,7 +29,7 @@ import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dial
 import { DialogGetname } from '../../dialogsservice/dialog.getname'
 import { DialogsService } from './../../dialogsservice/dialogs.service';
 import { BackgroundComponent } from '../../shared/background/background.component';
-
+import { Router, NavigationStart } from '@angular/router';
 
 @Component({
   selector: 'app-videocreator',
@@ -51,6 +52,7 @@ export class VideocreatorComponent implements OnInit {
       this.videoPlayer = el.nativeElement;
     }
   }
+  public videourl: string;
   public zoomfactor = 1;
   public selectedvideoformat: string;
   public editfigure = false;
@@ -90,8 +92,8 @@ export class VideocreatorComponent implements OnInit {
   public editablevideo: Files;
   public editablevideos: Files[];
   public canvas = {
-    width: '600px',
-    height: '500px',
+    width: '1024px',
+    height: '576px',
     'background-color': '#ffffff',
     'background-image': '',
     position: 'relative',
@@ -138,6 +140,9 @@ export class VideocreatorComponent implements OnInit {
   public boxshadow = false;
   public destroy = false;
   public backgroundComponent: BackgroundComponent;
+  public selectableanimationarray = [];
+  public selectablevectorarray = [];
+  private routeSub: any;
 
   @Input() debounceTime = 50;
   @Output() debounceKey = new EventEmitter();
@@ -154,11 +159,10 @@ export class VideocreatorComponent implements OnInit {
     private relationsApi: RelationsApi,
     private filesApi: FilesApi,
     public snackBar: MatSnackBar,
-    public ngZone: NgZone,
     public media: MediaObserver,
     public dialogsService: DialogsService,
-
-
+    public http: HttpClient,
+    public router: Router
   ) {
     this.watcher = media.media$.subscribe((change: MediaChange) => {
       this.activeMediaQuery = change;
@@ -186,6 +190,25 @@ export class VideocreatorComponent implements OnInit {
     this.subscriptionclick = this.clicks.pipe(
       debounceTime(this.debounceTime)
     ).subscribe(e => this.saveToLocalStorageHistory());
+
+    this.routeSub = this.router.events.subscribe((event) => {
+      if (event instanceof NavigationStart) {
+        if (this.animationarray.length > 0) {
+          this.dialogsService
+            .confirm('Save data?', 'Any unsaved data will be lost')
+            .subscribe(res => {
+              this.routeSub.unsubscribe();
+              if (res) {
+                if (this.newFiles.id) {
+                  this.saveVideo();
+                } else {
+                  this.saveVideoAs();
+                }
+              }
+            });
+        }
+      }
+    });
   }
 
   KeyPress(evtobj) {
@@ -218,7 +241,7 @@ export class VideocreatorComponent implements OnInit {
         }
       }
 
-      console.log('save', this.animationarray);
+      //console.log('save', this.animationarray);
       let jsonaniarray = JSON.stringify(this.animationarray); // ,this.getCircularReplacer()
       let jsonaniarraylast = JSON.stringify(this.history[this.currenthistoryversion]);
       if (this.currenthistoryversion < this.history.length - 1) {
@@ -291,6 +314,7 @@ export class VideocreatorComponent implements OnInit {
   }
 
   editMotionPath(animation) {
+    this.zoomfactor = 1;
     this.editpath = true;
     this.setMotionPath(this.selectedelement.id, this.selectedelement, animation);
     //let docset = document.getElementById(this.selectedelement.id);
@@ -336,6 +360,14 @@ export class VideocreatorComponent implements OnInit {
 
     if (this.editfigure) {
       this.draggableObject.disable();
+    }
+
+    if (element.type === 'vectorcombi') {
+      this.selectableanimationarray = this.animationarray.filter(item => item.type !== 'vectorcombi')
+    }
+
+    if (element.type === 'vector') {
+      this.selectablevectorarray = this.animationarray.filter(item => item.type === 'vector')
     }
 
   }
@@ -575,11 +607,6 @@ export class VideocreatorComponent implements OnInit {
   }
 
   createSplitText(elm: textanimation, textani: splittexttype) {
-
-    // if (textani.textanimationtype === 'scamble'){
-    //   this.primairytimeline.to(setto, {duration: 1, scrambleText: elm.content});
-    // }
-
     let splittextwhere = textani.textanimationtype;
     let id = document.getElementById(elm.id);
     let splitText = new SplitText(id, { type: textani.textanimationtype })
@@ -605,7 +632,6 @@ export class VideocreatorComponent implements OnInit {
     if (textani.fromto === 'to') {
       this.primairytimeline.to(setto, { duration: textani.duration, x: textani.y, y: textani.x, autoAlpha: 0, ease: ease, stagger: 0.1, delay: textani.start_time }, 0)
     }
-
   }
 
   selectEaseType(type) {
@@ -653,13 +679,14 @@ export class VideocreatorComponent implements OnInit {
   onchangecanvas() {
     if (this.canvas.videourl) { this.canvas['background-color'] = 'transparent' }
     this.animationarray.forEach(element => {
-      let w = this.canvas.width.replace('px', '');
-      let h = this.canvas.height.replace('px', '');
-      let newview = '0 0 ' + w + ' ' + h;
-      var regex = /viewBox="(.*?)"/;
-      var strToMatch = element.motionpath;
-      var matched = regex.exec(strToMatch);
-      element.motionpath = element.motionpath.replace(matched[1], newview);
+      // let w = this.canvas.width.replace('px', '');
+      // let h = this.canvas.height.replace('px', '');
+      // let newview = '0 0 ' + w + ' ' + h;
+      // var regex = /viewBox="(.*?)"/;
+      // var strToMatch = element.motionpath;
+      // var matched = regex.exec(strToMatch);
+      element.motionpath = this.createMotionPath(element.id);
+      //element.motionpath.replace(matched[1], newview);
       //console.log(element);
     });
 
@@ -713,7 +740,6 @@ export class VideocreatorComponent implements OnInit {
     audio.currentTime = time;
   }
 
-
   addAnimation(iset, element: animationtype, elementA, i) {
     let duration = element.duration;
     let starttime = element.start_time;
@@ -724,7 +750,6 @@ export class VideocreatorComponent implements OnInit {
     let skewY = element.skewY;
     let skewX = element.skewX;
     let aniset;
-
     let ease = this.selectEaseType(element.easetype);
     let repeat = element.repeat;
 
@@ -982,6 +1007,7 @@ export class VideocreatorComponent implements OnInit {
     newElement.id = newelnr;
     this.newz = this.newz + 1;
     newElement.style['z-index'] = this.newz;
+    newElement.groupmember = false;
 
     if (element.type === 'vector') {
       let newVectorElement: vectoranimation = newElement;
@@ -1028,9 +1054,44 @@ export class VideocreatorComponent implements OnInit {
     }, 500);
   }
 
-  initVectors(e, i, idx, vectorid) {
+  setExistingVector(e, i, idx): void {
+
+    let docset = document.getElementById(e.value.id);
+    let vectorid = e.value.vectors[0].idx;
+
+    let svgdiv = document.getElementById(vectorid);
+    let svg = svgdiv.getElementsByTagName('svg')[0].outerHTML;
+
+    setTimeout(() => {
+      console.log(docset, e, i, idx);
+      this.animationarray[i].vectors[idx].object = svg;
+      this.initVectors(docset, i, idx, vectorid)
+    }, 500);
+  }
+
+  async initVectors(e, i, idx, vectorid) {
     //this.systembusy = true;
     //console.log(e, i, idx, vectorid);
+
+    // rename class names to prevent clashes in classnames
+    var className = e.getElementsByTagName("style");
+    let svgstring = e.outerHTML;
+    //console.log(className[0].sheet.cssRules);
+    if (className.length > 0) {
+      for (let i = 0; i < className[0].sheet.cssRules.length; i++) {
+        let element = className[0].sheet.cssRules[i];
+        let clname: string = element.selectorText; //CSSStyleRule
+        let newclname: string = clname + '-xbms-' + vectorid;
+        element.selectorText = newclname;
+        let searchnewclname = newclname.substring(1);
+        let clsearchname = clname.substring(1);
+        let re = new RegExp(clsearchname, 'g');
+        svgstring = svgstring.replace(re, searchnewclname);
+      }
+      //console.log(svgstring);
+      e.outerHTML = svgstring;
+    }
+
     if (this.animationarray[i].svgcombi === '' || this.animationarray[i].morph) {
       return new Promise(async (resolve, reject) => {
         let getview;
@@ -1055,19 +1116,23 @@ export class VideocreatorComponent implements OnInit {
           newsize = { x: 0, y: 0, width: 1000, height: 1000 };
         }
 
+        let svgdiv = document.getElementById(vectorid);
+        let svg = svgdiv.getElementsByTagName('svg')[0];
+        console.log(svg);
+
         if (getview !== null) {
-          let svgview = getview.getElementsByTagName('svg');
-          let originalsizestring = svgview[0].getAttribute("viewBox");
+          //let svgview = getview.getElementsByTagName('svg');
+          let originalsizestring = svg.getAttribute("viewBox");
           let origarray = originalsizestring.split(' ');
           originalsize = { x: origarray[0], y: origarray[1], width: origarray[2], height: origarray[3] }
         } else {
           originalsize = newsize;
         }
 
-        await this.removeclipPath(vectorid);
-        await this.deleteVectorGroup(vectorid);
+        await this.removeclipPath(svg);
+        await this.deleteVectorGroup(svg, vectorid);
         //console.log("vector groups deleted");
-        await this.resizeVector(originalsize, newsize, idx, vectorid);
+        await this.resizeVector(originalsize, newsize, idx, svg);
         //consolelog("vector resized");
         await this.combineSVGs(this.animationarray[i], originalsize);
         //console.log("vectors combined");
@@ -1078,9 +1143,8 @@ export class VideocreatorComponent implements OnInit {
 
   }
 
-  removeclipPath(vectorid) {
-    let svgdiv = document.getElementById(vectorid);
-    let svg = svgdiv.getElementsByTagName('svg')[0];
+  removeclipPath(svg) {
+
     let clippaths = svg.getElementsByTagName('clipPath');
     //console.log(clippaths);
     var index;
@@ -1210,9 +1274,11 @@ export class VideocreatorComponent implements OnInit {
 
   disableDraggable() {
     let el = document.getElementById(this.selectedelement.id) as unknown
-    let element = el as Draggable;
-    if (typeof element.disable === 'function') {
-      element.disable();
+    if (el) {
+      let element = el as Draggable;
+      if (typeof element.disable === 'function') {
+        element.disable();
+      }
     }
   }
 
@@ -1445,8 +1511,7 @@ export class VideocreatorComponent implements OnInit {
       transform: '',
       rotation: 0,
       motionrotation: 0,
-      motionpath: '<svg id="' + newelnr + 'mp" style="width:' + this.canvas.width + ' height=' + this.canvas.height + ';" viewBox="0 0 600 500" class="path-edit"><path id="' + newelnr + 'p" style="opacity: 0;"' +
-        ' d="M282.457,480.74 C282.457,480.74 280.457,217.529 279.888,139.457   " /></svg>',
+      motionpath: this.createMotionPath(newelnr)
     }
     this.animationarray.push(newvectorcombi);
   }
@@ -1545,7 +1610,8 @@ export class VideocreatorComponent implements OnInit {
       pathids: pathidar,
       easetype: 'elastic',
       fromto: 'to',
-      scale: 0
+      scale: 0,
+      object: ''
     }]
     let vector: vectoranimation = {
       type: 'vector',
@@ -1574,8 +1640,7 @@ export class VideocreatorComponent implements OnInit {
       transform: '',
       rotation: 0,
       motionrotation: 0,
-      motionpath: '<svg id="' + newelnr + 'mp" style="width:' + this.canvas.width + ' height=' + this.canvas.height + ';" viewBox="0 0 600 500" class="path-edit"><path id="' + newelnr + 'p" style="opacity: 0;"' +
-        ' d="M282.457,480.74 C282.457,480.74 280.457,217.529 279.888,139.457   " /></svg>',
+      motionpath: this.createMotionPath(newelnr)
     }
     this.animationarray.push(vector);
     this.onSelectElement(null, vector);
@@ -1668,12 +1733,17 @@ export class VideocreatorComponent implements OnInit {
       motionrotation: 0,
       grey: false,
       blur: false,
-      motionpath: '<svg id="' + newelnr + 'mp" style="width:' + this.canvas.width + ' height=' + this.canvas.height + ';" viewBox="0 0 600 500" class="path-edit"><path id="' + newelnr + 'p" style="opacity: 0;"' +
-        ' d="M282.457,480.74 C282.457,480.74 280.457,217.529 279.888,139.457   " /></svg>',
+      motionpath: this.createMotionPath(newelnr),
     }
     this.animationarray.push(img);
     this.selectedelement = img;
     this.detectchange();
+  }
+
+  createMotionPath(newelnr) {
+    let motionpath = '<svg id="' + newelnr + 'mp" style="width:' + this.canvas.width + ' height=' + this.canvas.height + ';" viewBox="0 0 ' + parseInt(this.canvas.width) + ' ' + parseInt(this.canvas.height) + '" class="path-edit"><path id="' + newelnr + 'p" style="opacity: 0;"' +
+      ' d="M282.457,480.74 C282.457,480.74 280.457,217.529 279.888,139.457   " /></svg>'
+    return motionpath
   }
 
   addNewShape(): void {
@@ -1732,8 +1802,7 @@ export class VideocreatorComponent implements OnInit {
       transform: '',
       rotation: 0,
       motionrotation: 0,
-      motionpath: '<svg id="' + newelnr + 'mp" style="width:' + this.canvas.width + ' height=' + this.canvas.height + ';" viewBox="0 0 600 500" class="path-edit"><path id="' + newelnr + 'p" style="opacity: 0;"' +
-        ' d="M282.457,480.74 C282.457,480.74 280.457,217.529 279.888,139.457   " /></svg>',
+      motionpath: this.createMotionPath(newelnr)
 
     }
     this.animationarray.push(img);
@@ -1865,8 +1934,7 @@ export class VideocreatorComponent implements OnInit {
       transform: '',
       rotation: 0,
       motionrotation: 0,
-      motionpath: '<svg id="' + newelnr + 'mp" style="width:' + this.canvas.width + ' height=' + this.canvas.height + ';" viewBox="0 0 600 500" class="path-edit"><path id="' + newelnr + 'p" style="opacity: 0;"' +
-        ' d="M282.457,480.74 C282.457,480.74 280.457,217.529 279.888,139.457   " /></svg>',
+      motionpath: this.createMotionPath(newelnr)
     }
     this.animationarray.push(chart);
     console.log(this.animationarray[this.animationarray.length - 1]);
@@ -1901,6 +1969,7 @@ export class VideocreatorComponent implements OnInit {
 
   startDraw(): void {
     //console.log(this.shapedraw);
+    this.zoomfactor = 1;
     if (this.shapedraw === 'figure') {
       this.addNewFigure();
     } else {
@@ -2202,8 +2271,7 @@ export class VideocreatorComponent implements OnInit {
       transform: '',
       rotation: 0,
       motionrotation: 0,
-      motionpath: '<svg id="' + newelnr + 'mp" style="width:' + this.canvas.width + ' height=' + this.canvas.height + ';" viewBox="0 0 600 500" class="path-edit"><path id="' + newelnr + 'p" style="opacity: 0;"' +
-        ' d="M282.457,480.74 C282.457,480.74 280.457,217.529 279.888,139.457   " /></svg>',
+      motionpath: this.createMotionPath(newelnr)
     }
     this.animationarray.push(txt);
     this.selectedelement = txt;
@@ -2306,7 +2374,7 @@ export class VideocreatorComponent implements OnInit {
     this.removeVectorPathMultiSelection();
     this.removeVectorPathSelection();
     this.vectorcombiedit = false;
-
+    this.selectedelement = '';
     this.setDragSelect(false);
     if (this.currenttime === 0) { this.detectchange() }
 
@@ -2457,10 +2525,12 @@ export class VideocreatorComponent implements OnInit {
   }
 
   deletevcgroup(i) {
+    this.vectorcombiedit = false;
     this.animationarray[i].vectors.forEach(element => {
       element.groupmember = false;
     });
     this.animationarray.splice(i, 1);
+    this.detectchange();
   }
 
   deleteitemvcgroup(i, idy) {
@@ -2477,6 +2547,10 @@ export class VideocreatorComponent implements OnInit {
   }
 
   setVideo(event) {
+    this.http.get(event, { responseType: 'blob' }).subscribe(blob => {
+      var urlCreator = window.URL;
+      this.videourl = urlCreator.createObjectURL(blob);
+    })
     this.canvas.videourl = event;
     this.onchangecanvas();
   }
@@ -2526,7 +2600,8 @@ export class VideocreatorComponent implements OnInit {
       pathids: [],
       easetype: 'elastic',
       fromto: 'to',
-      scale: 0
+      scale: 0,
+      object: ''
     }
     this.animationarray[i].vectors.push(newVector);
   }
@@ -2577,11 +2652,6 @@ export class VideocreatorComponent implements OnInit {
         w = originalsize['width']; // * newscale1;
         h = originalsize['height']; // * newscale1;
       }
-
-      // if (element.morph){
-      //   x = 0;
-      //   y = 0;
-      // }
 
       startstr = '<svg xmlns="http://www.w3.org/2000/svg" ' +
         'viewBox="' + x + ' ' + y + ' ' + w + ' ' + h + '" height="100%" width="100%"' +
@@ -3077,34 +3147,35 @@ export class VideocreatorComponent implements OnInit {
     return
   }
 
-  // async renumberSvgIds(svgstring, idx, pathidar) {
-  //   let newsvgstring = svgstring;
-  //   let index = 0;
-  //   let r = Math.random().toString(36).substring(7); // add random sring
-  //   for (const element of pathidar) {
-  //     let ind = index + 1;
-  //     let newid = 'id="' + idx + ind + r + '"';
-  //     newsvgstring = await this.runloop(newsvgstring, element, newid);
-  //     ++index;
-  //   };
-  //   return newsvgstring;
-  // }
+  async renumberSvgIds(svgstring, idx, pathidar) {
+    // console.log(svgstring, idx, pathidar);
+    let newsvgstring = svgstring;
+    let index = 0;
+    let r = Math.random().toString(36).substring(7); // add random sring
+    for (const element of pathidar) {
+      let ind = index + 1;
+      let newid = 'id="' + idx + ind + r + '"';
+      newsvgstring = await this.runloop(newsvgstring, element, newid);
+      ++index;
+    };
+    return newsvgstring;
+  }
 
   // Moved to server
-  async renumberSvgIds(svgstring, idx, pathidar): Promise<string> {
-    return new Promise((resolve, reject) => {
-      let jsonaniarray = JSON.stringify(pathidar);
-      let data = {
-        svgstring: svgstring,
-        pathidar: jsonaniarray,
-        idx: idx
-      }
-      this.filesApi.renumberSvgIds(data)
-        .subscribe((newsvgstring: string) => {
-          resolve(newsvgstring);
-        });
-    });
-  }
+  // async renumberSvgIds(svgstring, idx, pathidar): Promise<string> {
+  //   return new Promise((resolve, reject) => {
+  //     let jsonaniarray = JSON.stringify(pathidar);
+  //     let data = {
+  //       svgstring: svgstring,
+  //       pathidar: jsonaniarray,
+  //       idx: idx
+  //     }
+  //     this.filesApi.renumberSvgIds(data)
+  //       .subscribe((newsvgstring: string) => {
+  //         resolve(newsvgstring);
+  //       });
+  //   });
+  // }
 
   getPath(vectorid) {
     let svgdiv = document.getElementById(vectorid);
@@ -3182,10 +3253,10 @@ export class VideocreatorComponent implements OnInit {
     })
   }
 
-  async deleteVectorGroup(id) {
+  async deleteVectorGroup(svg, id) {
     return new Promise(async (resolve, reject) => {
       let groupElement;
-      let e = document.getElementById(id);
+      let e = svg;//document.getElementById(id);
       let g = e.getElementsByTagName("g");
       if (g.length === 0) { resolve() }
       //if (g.length < 1000) {
@@ -3203,9 +3274,9 @@ export class VideocreatorComponent implements OnInit {
     })
   }
 
-  async resizeVector(originalsize, newsize, idx, vectorid) {
+  async resizeVector(originalsize, newsize, idx, svg) {
     return new Promise(async (resolve, reject) => {
-      let e = document.getElementById(vectorid);
+      let e = svg;
 
       let scale;
       let newtranssize;
@@ -3593,49 +3664,61 @@ export class VideocreatorComponent implements OnInit {
 
   async onSVGsave(url): Promise<string> {
     return new Promise(async (resolve, reject) => {
-      let urluse = BASE_URL + '/api/Containers/' + this.option.id + '/upload';
-      this.uploader = new FileUploader({ url: urluse });
-      let name = Math.random().toString(36).substring(7) + '.svg';
-      let date: number = new Date().getTime();
-      let data = url;
-      let contentType = '';
-      const blob = new Blob([data], { type: contentType });
-      // contents must be an array of strings, each representing a line in the new file
-      let file = new File([blob], name, { type: "image/svg+xml", lastModified: date });
-      let fileItem = new FileItem(this.uploader, file, {});
-      this.uploader.queue.push(fileItem);
-      // fileItem.upload();
-      this.uploader.uploadAll();
-      this.uploader.onCompleteItem = (item: any, response: any, status: any, headers: any) => {
-        if (status === 200) {
-          // set download url or actual url for publishing
-          let imgurl = BASE_URL + '/api/Containers/' + this.option.id + '/download/' + name;
-          let setimgurl: string;
-          setimgurl = 'https://api.xbms.io/api/Containers/' + this.option.id + '/download/' + name;
-          imgurl = imgurl.replace(/ /g, '-'),
-            // define the file settings
-            this.newFiles.name = name,
-            this.newFiles.url = setimgurl,
-            this.newFiles.createdate = new Date(),
-            this.newFiles.type = 'vector',
-            this.newFiles.companyId = this.Account.companyId,
-            // check if container exists and create
-            this.relationsApi.createFiles(this.option.id, this.newFiles)
-              .subscribe(res => {
-                //console.log(res);
-                this.snackBar.open("svg saved", undefined, {
-                  duration: 2000,
-                  panelClass: 'snackbar-class'
+
+      const dialogRef = this.dialog.open(DialogGetname, {
+        width: '250px',
+        data: { name: this.name }
+      });
+
+      dialogRef.afterClosed().subscribe(result => {
+        let name = result+ '.svg' ;
+        console.log(name)
+        if (!name) { name = Math.random().toString(36).substring(7) + '.svg' }
+        let urluse = BASE_URL + '/api/Containers/' + this.option.id + '/upload';
+        this.uploader = new FileUploader({ url: urluse });
+        let date: number = new Date().getTime();
+        let data = url;
+        let contentType = '';
+        const blob = new Blob([data], { type: contentType });
+        // contents must be an array of strings, each representing a line in the new file
+        let file = new File([blob], name, { type: "image/svg+xml", lastModified: date });
+        let fileItem = new FileItem(this.uploader, file, {});
+        this.uploader.queue.push(fileItem);
+        let size = this.uploader.queue[0].file.size;
+        // fileItem.upload();
+        this.uploader.uploadAll();
+        this.uploader.onCompleteItem = (item: any, response: any, status: any, headers: any) => {
+          if (status === 200) {
+            // set download url or actual url for publishing
+            let imgurl = BASE_URL + '/api/Containers/' + this.option.id + '/download/' + name;
+            let setimgurl: string;
+            setimgurl = 'https://api.xbms.io/api/Containers/' + this.option.id + '/download/' + name;
+            imgurl = imgurl.replace(/ /g, '-'),
+              // define the file settings
+              this.newFiles.name = name,
+              this.newFiles.url = setimgurl,
+              this.newFiles.createdate = new Date(),
+              this.newFiles.type = 'vector',
+              this.newFiles.companyId = this.Account.companyId,
+              this.newFiles.size = size
+              // check if container exists and create
+              this.relationsApi.createFiles(this.option.id, this.newFiles)
+                .subscribe(res => {
+                  //console.log(res);
+                  this.snackBar.open("svg saved", undefined, {
+                    duration: 2000,
+                    panelClass: 'snackbar-class'
+                  });
+                  resolve(setimgurl);
                 });
-                resolve(setimgurl);
-              });
-        }
-      };
+          }
+        };
+      });
     });
-  }
+    }
 
   onshowemoji(i) {
-    if (this.showemoji) { this.showemoji = false } else {
+      if(this.showemoji) { this.showemoji = false } else {
       this.showemoji = true;
     }
   }
@@ -3684,10 +3767,12 @@ export class VideocreatorComponent implements OnInit {
     }
 
     if (this.name === undefined) { this.name = Math.random().toString(36).substring(7); }
+    // check file name exist or is overwriting new 
     this.relationsApi.getFiles(this.option.id, { where: { name: this.name } })
       .subscribe((res => {
-        if (res.length > 0) { this.name = this.name + '1' }
+        if (res.length > 0 && !this.newFiles.id) { this.name = this.name + '1' }
         let imgurl = BASE_URL + '/api/Containers/' + this.option.id + '/download/' + this.name;
+        let screenshoturl = BASE_URL + '/api/Containers/' + this.option.id + '/download/' + this.name + '-screenshot.png';
         let setimgurl = 'https://api.xbms.io/api/Containers/' + this.option.id + '/download/' + this.name;
         imgurl = imgurl.replace(/ /g, '-'),
           // define the file settings
@@ -3700,6 +3785,7 @@ export class VideocreatorComponent implements OnInit {
         this.newFiles.template = this.animationarray;
         this.newFiles.counter = this.counter;
         this.newFiles.companyId = this.Account.companyId;
+        this.newFiles.screenshot = screenshoturl;
 
         if (this.newFiles.id) {
           this.relationsApi.updateByIdFiles(this.newFiles.relationsId, this.newFiles.id, this.newFiles).subscribe(res => {
@@ -3778,6 +3864,7 @@ export class VideocreatorComponent implements OnInit {
             this.newFiles.counter = this.counter;
             this.newFiles.companyId = this.Account.companyId;
             this.newFiles.id = undefined;
+            this.newFiles.screenshot = name + '-screenshot.png';
 
             this.relationsApi.createFiles(this.option.id, this.newFiles).subscribe((res: Files) => {
               this.name = name;
@@ -3787,7 +3874,7 @@ export class VideocreatorComponent implements OnInit {
                 panelClass: 'snackbar-class'
               });
               this.restoreChart(meta);
-              
+
             });
 
           });
@@ -3840,7 +3927,7 @@ export class VideocreatorComponent implements OnInit {
     // create downloadable string
     var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(downloadstring);
     var downloadAnchorNode = document.createElement('a');
-    downloadAnchorNode.setAttribute("href",     dataStr);
+    downloadAnchorNode.setAttribute("href", dataStr);
     downloadAnchorNode.setAttribute("download", this.name + ".json");
     document.body.appendChild(downloadAnchorNode); // required for firefox
     downloadAnchorNode.click();
@@ -3894,21 +3981,21 @@ export class VideocreatorComponent implements OnInit {
           if (res) { this.saveVideoAs() } else {
             this.saveVideo();
           }
-          this.canvas.videourl = this.canvas.videourl.replace('http://localhost:3000', 'https://api.xbms.io')
-          this.removeVectorPathSelection();
-          this.removeVectorPathMultiSelection();
-          let array = this.animationarray;
-          let myJSON = JSON.stringify(array);
-          if (this.name === undefined) { this.name = Math.random().toString(36).substring(7); }
-          this.filesApi.creategif(this.option.id, this.option.companyId,
-            this.name, this.canvas, myJSON, this.counter)
-            .subscribe(
-              res => {
-                this.saveVideo()
-              }
-            );
         });
     }
+    this.canvas.videourl = this.canvas.videourl.replace('http://localhost:3000', 'https://api.xbms.io')
+    this.removeVectorPathSelection();
+    this.removeVectorPathMultiSelection();
+    let array = this.animationarray;
+    let myJSON = JSON.stringify(array);
+    if (this.name === undefined) { this.name = Math.random().toString(36).substring(7); }
+    this.filesApi.creategif(this.option.id, this.option.companyId,
+      this.name, this.canvas, myJSON, this.counter)
+      .subscribe(
+        res => {
+          this.saveVideo()
+        }
+      );
   }
 
 
@@ -3937,108 +4024,108 @@ export class VideocreatorComponent implements OnInit {
           this.detectchange();
         }
       });
-    }
+  }
 
   newVideo() {
-        this.name = '';
-        this.canvas = {
-          width: '600px',
-          height: '500px',
-          'background-color': '#ffffff',
-          'background-image': '',
-          position: 'relative',
-          videourl: '',
-          loop: false,
-          weather: '',
-          audio: '',
-          top: '',
-          left: '',
-          hovereffect: false
-        }
+    this.name = '';
+    this.canvas = {
+      width: '600px',
+      height: '500px',
+      'background-color': '#ffffff',
+      'background-image': '',
+      position: 'relative',
+      videourl: '',
+      loop: false,
+      weather: '',
+      audio: '',
+      top: '',
+      left: '',
+      hovereffect: false
+    }
     this.animationarray = [];
-        this.counter = 60;
-        const myNode = document.getElementById('weathercontainer');
-        myNode.innerHTML = '';
-        this.detectchange();
-      }
+    this.counter = 60;
+    const myNode = document.getElementById('weathercontainer');
+    myNode.innerHTML = '';
+    this.detectchange();
+  }
 
   loadEditableVideo() {
-        const myNode = document.getElementById('weathercontainer');
-        myNode.innerHTML = '';
-        this.newFiles = this.editablevideo;
-        this.name = this.editablevideo.name;
-        this.canvas = this.editablevideo.canvas[0];
-        this.animationarray = this.editablevideo.template;
-        this.counter = this.editablevideo.counter;
-        this.detectchange();
-      }
+    const myNode = document.getElementById('weathercontainer');
+    myNode.innerHTML = '';
+    this.newFiles = this.editablevideo;
+    this.name = this.editablevideo.name;
+    this.canvas = this.editablevideo.canvas[0];
+    this.animationarray = this.editablevideo.template;
+    this.counter = this.editablevideo.counter;
+    this.detectchange();
+  }
 
   //https://github.com/luncheon/svg-drag-select
   dragSelect(id) {
-        //this.removeVectorPathSelection();
-        //this.disableDraggable();
-        this.deletePathSelClass(this.selectedVecPath)
+    //this.removeVectorPathSelection();
+    //this.disableDraggable();
+    this.deletePathSelClass(this.selectedVecPath)
     this.dragselectiontrue = true;
-        let svgel = document.getElementById(id);
-        let svgset = svgel.getElementsByTagName("svg")[0];
+    let svgel = document.getElementById(id);
+    let svgset = svgel.getElementsByTagName("svg")[0];
 
-        const {
-          cancel,           // cleanup funciton. please call `cancel()` when the select-on-drag behavior is no longer needed.
-          dragAreaOverlay,
-        } = svgDragSelect({
-          svg: svgset,
-          referenceElement: null,
-          selector: "enclosure",
-          onSelectionStart({ svg, pointerEvent, cancel }) {
-            if (pointerEvent.button !== 0) {
-              cancel()
-              return
-            }
-            const selectedElements = svg.querySelectorAll('[data-selected]');
-            for (let i = 0; i < selectedElements.length; i++) {
-              selectedElements[i].removeAttribute('data-selected');
-              let elclass = selectedElements[i].getAttribute('class');
-              elclass = elclass.replace('data-selected', '')
-              selectedElements[i].setAttribute('class', elclass);
-            }
-          },
+    const {
+      cancel,           // cleanup funciton. please call `cancel()` when the select-on-drag behavior is no longer needed.
+      dragAreaOverlay,
+    } = svgDragSelect({
+      svg: svgset,
+      referenceElement: null,
+      selector: "enclosure",
+      onSelectionStart({ svg, pointerEvent, cancel }) {
+        if (pointerEvent.button !== 0) {
+          cancel()
+          return
+        }
+        const selectedElements = svg.querySelectorAll('[data-selected]');
+        for (let i = 0; i < selectedElements.length; i++) {
+          selectedElements[i].removeAttribute('data-selected');
+          let elclass = selectedElements[i].getAttribute('class');
+          elclass = elclass.replace('data-selected', '')
+          selectedElements[i].setAttribute('class', elclass);
+        }
+      },
 
-          onSelectionChange({
-            newlySelectedElements,    // `selectedElements - previousSelectedElements`
-            newlyDeselectedElements,  // `previousSelectedElements - selectedElements`
-          }) {
-            newlyDeselectedElements.forEach(element => {
-              element.removeAttribute('data-selected')
-              let elclass = element.getAttribute('class');
-              //console.log(elclass);
-              elclass = elclass.replace('data-selected', '')
-              element.setAttribute('class', elclass);
-            });
-            newlySelectedElements.forEach(element => {
-              element.setAttribute('data-selected', '');
-              let elclass = element.getAttribute('class');
-              if (elclass !== null) {
-                element.setAttribute('class', 'data-selected ' + elclass);
-              } else {
-                element.setAttribute('class', 'data-selected')
-              }
-            });
-          },
-
-          onSelectionEnd: event => {
-            this.selectedVecPathmultiple = [];
-            event.selectedElements.forEach(el => {
-              this.selectedVecPathmultiple.push(el);
-            });
+      onSelectionChange({
+        newlySelectedElements,    // `selectedElements - previousSelectedElements`
+        newlyDeselectedElements,  // `previousSelectedElements - selectedElements`
+      }) {
+        newlyDeselectedElements.forEach(element => {
+          element.removeAttribute('data-selected')
+          let elclass = element.getAttribute('class');
+          //console.log(elclass);
+          elclass = elclass.replace('data-selected', '')
+          element.setAttribute('class', elclass);
+        });
+        newlySelectedElements.forEach(element => {
+          element.setAttribute('data-selected', '');
+          let elclass = element.getAttribute('class');
+          if (elclass !== null) {
+            element.setAttribute('class', 'data-selected ' + elclass);
+          } else {
+            element.setAttribute('class', 'data-selected')
           }
         });
+      },
 
-        this.cancelDragSelect = cancel;
-        this.dragAreaOverlay = dragAreaOverlay;
+      onSelectionEnd: event => {
+        this.selectedVecPathmultiple = [];
+        event.selectedElements.forEach(el => {
+          this.selectedVecPathmultiple.push(el);
+        });
       }
+    });
+
+    this.cancelDragSelect = cancel;
+    this.dragAreaOverlay = dragAreaOverlay;
+  }
 
   setDragSelect(dragset) {
-        if(dragset === false && this.dragselectiontrue === true) {
+    if (dragset === false && this.dragselectiontrue === true) {
       this.cancelDragSelect();
       this.dragselectiontrue = false;
       this.dragselectvectpath = false
@@ -4127,10 +4214,6 @@ export class VideocreatorComponent implements OnInit {
     this.detectchange();
   }
 
-
-
-
-
   public speedDialFabButtons = [
     {
       icon: 'image',
@@ -4159,24 +4242,7 @@ export class VideocreatorComponent implements OnInit {
     {
       icon: 'collections',
       tooltip: 'Add animation group'
-    },
-    // {
-    //   svgIcon: 'xbms_web',
-    //   tooltip: 'web'
-    // },
-    // {
-    //   svgIcon: 'xbms_snapchat',
-    //   tooltip: 'snapchat'
-    // },
-    // {
-    //   svgIcon: 'xbms_vimeo',
-    //   tooltip: 'vimeo'
-    // },
-    // {
-    //   svgIcon: 'xbms_github',
-    //   tooltip: 'github'
-    // }
-
+    }
   ];
 
   onSpeedDialFabClicked(btn) {
@@ -4188,7 +4254,29 @@ export class VideocreatorComponent implements OnInit {
     if (btn.tooltip === 'Add drawing') { this.addNewWhiteboard() }
     if (btn.tooltip === 'Add chart') { this.addNewChart() }
     if (btn.tooltip === 'Add animation group') { this.addNewVectorCombi() }
+  }
 
+  movePartUp(i1, combi) {
+    if (i1 > 0) {
+      this.swapElement(combi, (i1 - 1), i1);
+      combi.forEach((part, i) => {
+        part.style['z-index'] = i;
+      })
+      this.detectchange();
+      console.log(i1, combi);
+    }
+  }
+
+
+  movePartDown(i1, combi) {
+    if ((combi.length - 1) > i1) {
+      this.swapElement(combi, (i1 + 1), i1);
+      combi.forEach((part, i) => {
+        part.style['z-index'] = i;
+      })
+      this.detectchange();
+      console.log(i1, combi);
+    }
   }
 
 

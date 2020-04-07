@@ -20,15 +20,15 @@
 
   <!-- Publications_______________________________ -->
 
-  <mat-tab-group fxLayout="column" fxLayoutWrap="wrap" fxFlexAlign="start" class="relations"
-    [selectedIndex]="selectedIndex">
+  <mat-tab-group fxLayout="column" fxLayoutWrap="wrap" fxFlexAlign="start" class="relations" [(selectedIndex)]="selectedTab">
     <mat-tab fxFlex="100%" label="New Publications" class="relations">
       <ng-template mat-tab-label class="mat-tab-labels">
         <mat-icon>text_format</mat-icon>
         <div fxShow.xs="false">Publications</div>
       </ng-template>
 
-      <app-marketingpublications [Account]="Account" [SelectedRelation]="option" [option]="option">
+      <app-marketingpublications [Account]="Account" [SelectedRelation]="option" 
+      [option]="option" [selectedpublication]="selectedpublication">
       </app-marketingpublications>
 
 
@@ -518,7 +518,7 @@
             <mat-card ngClass.gt-xs="container-normal" ngClass.lt-sm="container-noshow"
               [class.container-xs-show]="listviewxsshow" *ngIf="
               selectedMarketingplannerevents && group.value == 'campaign'">
-              <mat-card-content>
+              <mat-card-content on-focusout="saveMailingCampaign()">
                 <div class="form-full-width">
                   <div fxLayout="row" fxLayout.xs="column">
 
@@ -582,7 +582,7 @@
                     </div>
                     <div fxFlex>
                       <button a mat-raised-button (click)="saveMailingCampaign()">
-                        Save as Draft
+                        Save
                         <mat-icon>save</mat-icon>
                       </button>
                       <button a mat-raised-button (click)="openDialogDeleteMailingCampaign()">
@@ -1452,7 +1452,11 @@ Text Version</textarea>
                             Drop Zone
                           </div>
 
-                          <input type="file" ng2FileSelect [uploader]="uploader" />
+                          <button  mat-button  (click)="fileInput.click()">Choose file</button>
+                          <span
+                              style="visibility: hidden; position: absolute; overflow: hidden; width: 0px; height:0px;border:none;margin:0; padding:0">
+                              <input type="file" #fileInput ng2FileSelect [uploader]="uploader" />
+                          </span>
                         </div>
                       </div>
                     </div>
@@ -1501,7 +1505,7 @@ Text Version</textarea>
                                     <mat-icon>cancel</mat-icon> Cancel
                                   </button>
                                   <button mat-button (click)="item.remove()">
-                                    <mat-icon>remove_circle</mat-icon> Remove
+                                    <mat-icon class="iconsize-10">remove_circle</mat-icon> Remove
                                   </button>
                                 </div>
                               </div>
@@ -1549,7 +1553,8 @@ Text Version</textarea>
         <div fxShow.xs="false">Channels/Social Media</div>
       </ng-template>
 
-      <app-marketingchannels [Account]="Account" [SelectedRelation]="SelectedRelation" [option]="option">
+      <app-marketingchannels [Account]="Account" [SelectedRelation]="SelectedRelation" 
+      [option]="option" [selectedchannel]="selectedchannel">
       </app-marketingchannels>
     </mat-tab>
 

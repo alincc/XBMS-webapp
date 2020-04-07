@@ -3831,6 +3831,59 @@ export class RelationsApi extends BaseLoopBackApi {
   }
 
   /**
+   * <em>
+         * (The remote method definition does not provide any description.)
+         * </em>
+   *
+   * @param {string} id 
+   *
+   * @param {string} url 
+   *
+   * @param {string} term 
+   *
+   * @param {boolean} people 
+   *
+   * @param {boolean} companies 
+   *
+   * @param {boolean} locations 
+   *
+   * @param {boolean} findlist 
+   *
+   * @param {string} depth 
+   *
+   * @param {string} companydId 
+   *
+   * @returns {object} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * <em>
+   * (The remote method definition does not provide any description.
+   * This usually means the response is a `Relations` object.)
+   * </em>
+   */
+  public crawltocsv(id: any = {}, url: any = {}, term: any = {}, people: any = {}, companies: any = {}, locations: any = {}, findlist: any = {}, depth: any = {}, companydId: any = {}, customHeaders?: Function): Observable<any> {
+    let _method: string = "GET";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/relations/crawltocsv/:id";
+    let _routeParams: any = {
+      id: id
+    };
+    let _postBody: any = {};
+    let _urlParams: any = {};
+    if (typeof url !== 'undefined' && url !== null) _urlParams.url = url;
+    if (typeof term !== 'undefined' && term !== null) _urlParams.term = term;
+    if (typeof people !== 'undefined' && people !== null) _urlParams.people = people;
+    if (typeof companies !== 'undefined' && companies !== null) _urlParams.companies = companies;
+    if (typeof locations !== 'undefined' && locations !== null) _urlParams.locations = locations;
+    if (typeof findlist !== 'undefined' && findlist !== null) _urlParams.findlist = findlist;
+    if (typeof depth !== 'undefined' && depth !== null) _urlParams.depth = depth;
+    if (typeof companydId !== 'undefined' && companydId !== null) _urlParams.companydId = companydId;
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
    * Creates a new instance in contactpersons of this model.
    *
    * @param {any} id relations id

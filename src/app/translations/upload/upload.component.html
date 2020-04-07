@@ -1,0 +1,76 @@
+<br>
+<div fxLayout="row">
+    <div fxLayout="column" class="form-full-width">
+        <mat-form-field>
+            <input matInput name="Email" type="url" [(ngModel)]="website" placeholder="url" />
+        </mat-form-field>
+    </div>
+</div>
+<br>
+<div fxLayout="row">
+    <div fxLayout="column" class="form-full-width">
+        <mat-form-field>
+            <input matInput name="Email" type="email" [(ngModel)]="username" placeholder="email" />
+        </mat-form-field>
+    </div>
+</div>
+<br>
+<div fxLayout="row">
+    <div fxLayout="column" class="form-full-width">
+        <mat-form-field>
+            <input matInput placeholder="Enter your password" name="password" [(ngModel)]="password"
+                [type]="!hide ? 'password' : 'text'">
+            <mat-icon matSuffix (click)="!hide = hide">{{hide ? 'visibility' : 'visibility_off'}}</mat-icon>
+        </mat-form-field>
+    </div>
+</div>
+<br>
+<div>
+    <button (click)="getPosts()" mat-button>Get posts</button>
+    <button (click)="getPages()" mat-button>Get pages</button>
+    <mat-form-field>
+        <mat-label>Load translation file</mat-label>
+        <mat-select [(value)]="setTrans" (selectionChange)="loadTranslation(setTrans.url)">
+            <mat-option *ngFor="let trans of translations" [value]="trans">
+                {{trans.name}}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+</div>
+<br>
+<div fxLayout="row" fxLayoutGap="25px">
+    <mat-card fxFlex="49%" fxLayout="column">
+        <h3>Content</h3>
+        <div *ngIf="wpposts">
+            <h4>Posts</h4>
+            <div *ngFor="let post of wpposts">
+                <label>{{post.title.rendered}}</label>
+            </div>
+        </div>
+
+        <div *ngIf="wppages">
+            <h4>Pages</h4>
+            <div *ngFor="let page of wppages">
+                <label>{{page.title.rendered}}</label>
+            </div>
+        </div>
+    </mat-card>
+
+    <mat-card fxFlex="49%" fxLayout="column">
+        <h3>Translate</h3>
+        <div *ngIf="wppostsTranslated">
+            <h4>Posts</h4>
+            <div *ngFor="let post of wppostsTranslated">
+                <label>{{post.title.rendered}}</label>
+            </div>
+        </div>
+
+        <div *ngIf="wppagesTranslated">
+            <h4>Pages</h4>
+            <div *ngFor="let page of wppagesTranslated">
+                <label>{{page.title.rendered}}</label>
+            </div>
+        </div>
+    </mat-card>>
+
+</div>
