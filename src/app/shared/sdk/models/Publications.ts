@@ -43,6 +43,9 @@ export interface PublicationsInterface {
   "term"?: string;
   "timeframe"?: string;
   "negativekeywords"?: string;
+  "cmsid"?: string;
+  "website"?: string;
+  "username"?: string;
   "id"?: any;
   "marketingplannerId"?: any;
   relations?: Relations;
@@ -87,6 +90,9 @@ export class Publications implements PublicationsInterface {
   "term": string;
   "timeframe": string;
   "negativekeywords": string;
+  "cmsid": string;
+  "website": string;
+  "username": string;
   "id": any;
   "marketingplannerId": any;
   relations: Relations;
@@ -253,6 +259,18 @@ export class Publications implements PublicationsInterface {
         },
         "negativekeywords": {
           name: 'negativekeywords',
+          type: 'string'
+        },
+        "cmsid": {
+          name: 'cmsid',
+          type: 'string'
+        },
+        "website": {
+          name: 'website',
+          type: 'string'
+        },
+        "username": {
+          name: 'username',
           type: 'string'
         },
         "id": {

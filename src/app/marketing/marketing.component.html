@@ -1417,9 +1417,8 @@ Text Version</textarea>
                         <div>
                           <h3>Upload small file (less then 500 entries)</h3>
                           <xlsx-file-upload (uploadedXls)="xlsxUploaded($event)">
-                            <div class="drop-zone" [ngClass]="{
-                                'drop-zone-over': hasBaseDropZoneOver
-                              }">
+                            <div class="drop-zone" 
+                            [ngClass]="{'drop-zone-over': hasBaseDropZoneOver}">
                               {{ uploaderContent | async }}
                             </div>
                           </xlsx-file-upload>

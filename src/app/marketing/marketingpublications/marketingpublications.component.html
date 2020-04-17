@@ -46,7 +46,7 @@
           <button mat-icon-button [matMenuTriggerFor]="menumarketing" class="menu">
             <mat-icon>more_vert</mat-icon>
           </button>
-          <mat-menu #menumarketing="matMenu" >
+          <mat-menu #menumarketing="matMenu">
             <button mat-menu-item (click)="openDialogDelete()">
               <mat-icon>delete</mat-icon>
               <span>Delete</span>
@@ -294,9 +294,10 @@
                         <label>{{dynatext.keywords}}</label><br>
                       </mat-card>
                       <br>
-                      <button a mat-raised-button style="margin: 10px 0px 10px 0px;"(click)="setTextPublication(dynatext)" i18n>
-                          Use text
-                        </button>
+                      <button a mat-raised-button style="margin: 10px 0px 10px 0px;"
+                        (click)="setTextPublication(dynatext)" i18n>
+                        Use text
+                      </button>
                       <br>
                     </div>
                   </div>
@@ -324,12 +325,11 @@
                   <div>
                     <div *ngIf="selectedPublications.videourl && !selectedPublications.pictureurl"
                       style="max-width: 600px;">
-                     
-                        <video style="max-width: 600px;"  preload="auto" controls
-                          style="max-width: 600px;"
-                          [src]="selectedPublications.videourl" type="video/mp4">
-                        </video>
-                     
+
+                      <video style="max-width: 600px;" preload="auto" controls style="max-width: 600px;"
+                        [src]="selectedPublications.videourl" type="video/mp4">
+                      </video>
+
                       <mat-icon (click)="selectedPublications.videourl = ''" class="icon-label" class="iconsize-12">
                         delete</mat-icon>
                     </div>
@@ -337,8 +337,6 @@
                       [account]="Account" [option]="option" (imgurl)="setVideo($event)">
                     </app-videoupload>
                   </div>
-
-
                 </mat-expansion-panel>
                 <br>
                 <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
@@ -356,13 +354,61 @@
               <button a mat-raised-button (click)="savePublication()">
                 Save
               </button>
-              <button a mat-raised-button (click)="postToWordPress()">
-                Publish
-              </button>
-              <button a mat-raised-button (click)="postToWordPress()">
-                Schedule
-              </button>
             </div>
+            <br>
+            <label>Publish</label>
+            <br>
+            <mat-accordion>
+              <mat-expansion-panel>
+                <mat-expansion-panel-header>
+                  Wordpress
+                </mat-expansion-panel-header>
+                <div>
+                  <div fxLayout="row">
+                    <div fxLayout="column" class="form-full-width">
+                      <mat-form-field>
+                        <input matInput name="Email" type="url" [(ngModel)]="this.selectedPublications.website" placeholder="url" />
+                      </mat-form-field>
+                    </div>
+                  </div>
+                  <br>
+                  <div fxLayout="row">
+                    <div fxLayout="column" class="form-full-width">
+                      <mat-form-field>
+                        <input matInput name="Email" type="email" [(ngModel)]="this.selectedPublications.username" placeholder="username/email" />
+                      </mat-form-field>
+                    </div>
+                  </div>
+                  <br>
+                  <div fxLayout="row">
+                    <div fxLayout="column" class="form-full-width">
+                      <mat-form-field>
+                        <input matInput placeholder="Enter your password" name="password" [(ngModel)]="password"
+                          [type]="!hide ? 'password' : 'text'">
+                        <mat-icon matSuffix (click)="!hide = hide">{{hide ? 'visibility' : 'visibility_off'}}</mat-icon>
+                      </mat-form-field>
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <button a mat-raised-button (click)="postToWordPress()">
+                    Publish
+                  </button>
+                  <button a mat-raised-button (click)="postToWordPress(selectedpublication.date)">
+                    Schedule
+                  </button>
+                </div>
+
+              </mat-expansion-panel>
+              <mat-expansion-panel>
+                <mat-expansion-panel-header>
+                  Joomla
+                </mat-expansion-panel-header>
+
+              </mat-expansion-panel>
+            </mat-accordion>
+            <br>
+
           </div>
         </div>
       </mat-card-content>

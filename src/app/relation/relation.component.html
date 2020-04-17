@@ -938,8 +938,8 @@
         <div fxShow.xs="false">Automations</div>
       </ng-template>
       <app-crawler #crawler style="width: 100%;" [selectedRelation]="selectedRelation">
-    </app-crawler>
-      
+      </app-crawler>
+
     </mat-tab>
 
 
@@ -1294,11 +1294,11 @@
           </mat-card-actions>
         </mat-card>
 
-        <mat-card *ngIf="group.value == 'Tracking'" class="account-card">
-          <mat-card-header>
-            <mat-card-title>Tracking code</mat-card-title>
-          </mat-card-header>
-          <mat-card-content>
+        <mat-accordion *ngIf="group.value == 'Tracking'" class="account-card">
+          <mat-expansion-panel>
+            <mat-expansion-panel-header>
+              Tracking code
+            </mat-expansion-panel-header>
             <div fxLayout="column">
               <label>Copy and paste the code below in your website header</label>
               <a href="https://support.autopilothq.com/hc/en-us/articles/207933036-How-do-I-add-the-tracking-code-to-a-Wordpress-website-"
@@ -1307,7 +1307,7 @@
                 target="_blank">For Joomla</a>
               <a href="https://www.drupal.org/project/header_and_footer_scripts" target="_blank">For Drupal</a>
               <mat-form-field class="example-full-width">
-                <textarea matInput [(ngModel)]=trackingcode (click)="copyMessage(trackingcode)" #tooltip="matTooltip"
+                <textarea matInput [(ngModel)]="trackingcode" (click)="copyMessage(trackingcode)" #tooltip="matTooltip"
                   (mouseenter)="$event.stopImmediatePropagation()" (mouseleave)="$event.stopImmediatePropagation()"
                   matTooltip="Copied!" (click)="tooltip.toggle()"></textarea>
               </mat-form-field>
@@ -1315,8 +1315,34 @@
                 (mouseleave)="$event.stopImmediatePropagation()" matTooltip="Copied!" #tooltip="matTooltip"
                 (click)="copyMessage(trackingcode)" (click)="tooltip.toggle()">Copy</button>
             </div>
-          </mat-card-content>
-        </mat-card>
+          </mat-expansion-panel>
+          <mat-expansion-panel>
+            <mat-expansion-panel-header>
+              Wordpress Plugin
+            </mat-expansion-panel-header>
+            <div fxLayout="column">
+              <label>Copy and paste the Key and ID after installing the plugin under settings XBMS</label>
+              <br>
+              <a href=" https://www.wpbeginner.com/beginners-guide/step-by-step-guide-to-install-a-wordpress-plugin-for-beginners/"
+                target="_blank">How to install a plugin</a>
+              <br>
+              <button (click)="download('')" mat-raised-button>Download Plugin</button>
+              <br>
+              <h4>Plugin ID</h4>
+              <br>
+              <label (click)="copyMessage(XBMS_id)" #tooltip="matTooltip"
+                (mouseenter)="$event.stopImmediatePropagation()" (mouseleave)="$event.stopImmediatePropagation()"
+                matTooltip="Copied!" (click)="tooltip.toggle()">{{XBMS_id}}</label>
+              <br>
+              <h4>Plugin Key</h4>
+              <br>
+              <label matInput (click)="copyMessage(XBMS_key)" #tooltip="matTooltip"
+                (mouseenter)="$event.stopImmediatePropagation()" (mouseleave)="$event.stopImmediatePropagation()"
+                matTooltip="Copied!" (click)="tooltip.toggle()">{{XBMS_key}}</label>
+            </div>
+          </mat-expansion-panel>
+        </mat-accordion> 
+
 
       </div>
 

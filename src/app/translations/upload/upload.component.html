@@ -10,7 +10,7 @@
 <div fxLayout="row">
     <div fxLayout="column" class="form-full-width">
         <mat-form-field>
-            <input matInput name="Email" type="email" [(ngModel)]="username" placeholder="email" />
+            <input matInput name="Email" type="email" [(ngModel)]="username" placeholder="username/email" />
         </mat-form-field>
     </div>
 </div>
@@ -28,7 +28,7 @@
 <div>
     <button (click)="getPosts()" mat-button>Get posts</button>
     <button (click)="getPages()" mat-button>Get pages</button>
-    <mat-form-field>
+    <mat-form-field *ngIf="translationSource">
         <mat-label>Load translation file</mat-label>
         <mat-select [(value)]="setTrans" (selectionChange)="loadTranslation(setTrans.url)">
             <mat-option *ngFor="let trans of translations" [value]="trans">
@@ -36,6 +36,18 @@
             </mat-option>
         </mat-select>
     </mat-form-field>
+    <mat-expansion-panel *ngIf="translationSource">
+        <mat-expansion-panel-header>
+            Upload Excel translation file
+        </mat-expansion-panel-header>
+        <xlsx-file-upload (uploadedXls)="xlsxUploaded($event)">
+            <div class="drop-zone" 
+            [ngClass]="{'drop-zone-over': hasBaseDropZoneOver}">
+              {{ uploaderContent | async }}
+            </div>
+          </xlsx-file-upload>
+    </mat-expansion-panel>
+
 </div>
 <br>
 <div fxLayout="row" fxLayoutGap="25px">
@@ -43,8 +55,9 @@
         <h3>Content</h3>
         <div *ngIf="wpposts">
             <h4>Posts</h4>
-            <div *ngFor="let post of wpposts">
+            <div *ngFor="let post of wpposts; let i = index">
                 <label>{{post.title.rendered}}</label>
+                <mat-icon (click)="addTransQueuePost(post, i)">check</mat-icon>
             </div>
         </div>
 
@@ -52,6 +65,7 @@
             <h4>Pages</h4>
             <div *ngFor="let page of wppages">
                 <label>{{page.title.rendered}}</label>
+                <mat-icon (click)="addTransQueuePage(page, i)">check</mat-icon>
             </div>
         </div>
     </mat-card>
@@ -71,6 +85,6 @@
                 <label>{{page.title.rendered}}</label>
             </div>
         </div>
-    </mat-card>>
+    </mat-card>
 
 </div>

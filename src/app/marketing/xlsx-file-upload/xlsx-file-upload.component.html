@@ -10,3 +10,9 @@
 class="well my-drop-zone">
 <ng-content></ng-content>
 </div>
+
+<button mat-button (click)="fileInput.click()">Choose file</button>
+<span
+style="visibility: hidden; position: absolute; overflow: hidden; width: 0px; height:0px;border:none;margin:0; padding:0">
+<input (change)="fileDropped($event.target.files)" type="file" #fileInput ng2FileDrop [uploader]="uploader" />
+</span>

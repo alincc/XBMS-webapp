@@ -164,6 +164,8 @@ export class RelationComponent implements OnInit {
   public imagelist = [];
   public misclist = [];
   public selectedfile: Files = new Files();
+  public XBMS_id;
+  public XBMS_key: string;
 
   calltype = [
     { value: 'PhoneCall', viewValue: 'Phone Call' },
@@ -433,9 +435,26 @@ export class RelationComponent implements OnInit {
       'https://xbmsapi.eu-gb.mybluemix.net/api/websitetrackers/registervisit?id=' + this.selectedRelation.id + '");url.searchParams.append("src",currentLocation);var xmlHttp=new XMLHttpRequest;xmlHttp.onreadystatechange=function(){4==xmlHttp.readyState&&200==xmlHttp.status&&callback(xmlHttp.responseText)},xmlHttp.open("GET",url,!0),xmlHttp.send(null);' +
       '</script>';
 
+    this.XBMS_key = this.Account.companyId;
+    const myCipher = this.cipher(this.XBMS_key)
+    this.XBMS_id = myCipher(this.selectedRelation.id);
+
+
     setTimeout(() => {
       this.CrawlerComponent.loadCrawls();
     }, 200);
+  }
+
+  cipher = salt => {
+    const textToChars = text => text.split('').map(c => c.charCodeAt(0));
+    const byteHex = n => ("0" + Number(n).toString(16)).substr(-2);
+    const applySaltToChar = code => textToChars(salt).reduce((a, b) => a ^ b, code);
+
+    return text => text.split('')
+      .map(textToChars)
+      .map(applySaltToChar)
+      .map(byteHex)
+      .join('');
   }
 
   setFileParameter(): void {

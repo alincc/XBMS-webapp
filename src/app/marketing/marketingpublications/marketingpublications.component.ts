@@ -93,6 +93,11 @@ export class MarketingpublicationsComponent implements OnInit {
   public minDate = new Date();
   public maxDate = new Date(2030, 0, 1);
 
+  public website: string;
+  public username: string;
+  public password: string;
+  public template: 'default';
+
   constructor(
     public articlereposterApi:  ArticlereposterApi,
     public crawlwebapi: CrawlwebApi,
@@ -198,11 +203,6 @@ export class MarketingpublicationsComponent implements OnInit {
   }
 
   
-  public postToWordPress(): void {
-    this.WordpressService.publishWP(this.selectedPublications.title, this.selectedPublications.text);
-    // this.POSTwordpressApi.create(this.selectedPublications).subscribe(res => {
-    //  this.error = res});
-  }
 
   createDynaContent(): void {
     this.searchdynatext = true;
@@ -242,6 +242,23 @@ export class MarketingpublicationsComponent implements OnInit {
     //console.log(event);
     this.selectedPublications.videourl = event; 
   }
+
+  postToWordPress(date?){
+    console.log(this.option.id, this.option.companyId, this.selectedPublications.website, this.selectedPublications.username, 
+      this.password, this.selectedPublications.title, this.selectedPublications.text, 
+      date, this.template)
+    if (!date){date = null} // wp no date wil publish direct
+    this.PublicationsApi.wordpressCreatePost(
+      this.option.id, this.option.companyId, this.selectedPublications.website, this.selectedPublications.username, 
+      this.password, this.selectedPublications.title, this.selectedPublications.text, 
+      date, this.template)
+      .subscribe(res => {
+        this.selectedpublication.cmsid = res; 
+        this.savePublication();
+      })
+  }
+
+
 
 
 

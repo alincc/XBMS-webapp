@@ -1255,10 +1255,9 @@ export class PublicationsApi extends BaseLoopBackApi {
    *   populated with the actual data once the response is returned
    *   from the server.
    *
-   * <em>
-   * (The remote method definition does not provide any description.
-   * This usually means the response is a `Publications` object.)
-   * </em>
+   * Data properties:
+   *
+   *  - `res` – `{string}` - 
    */
   public wordpressGetPosts(id: any = {}, companyId: any = {}, website: any = {}, username: any = {}, password: any = {}, filter: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
@@ -1299,10 +1298,9 @@ export class PublicationsApi extends BaseLoopBackApi {
    *   populated with the actual data once the response is returned
    *   from the server.
    *
-   * <em>
-   * (The remote method definition does not provide any description.
-   * This usually means the response is a `Publications` object.)
-   * </em>
+   * Data properties:
+   *
+   *  - `res` – `{string}` - 
    */
   public wordpressGetPages(id: any = {}, companyId: any = {}, website: any = {}, username: any = {}, password: any = {}, filter: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
@@ -1318,6 +1316,234 @@ export class PublicationsApi extends BaseLoopBackApi {
     if (typeof username !== 'undefined' && username !== null) _urlParams.username = username;
     if (typeof password !== 'undefined' && password !== null) _urlParams.password = password;
     if (typeof filter !== 'undefined' && filter !== null) _urlParams.filter = filter;
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
+   * <em>
+         * (The remote method definition does not provide any description.)
+         * </em>
+   *
+   * @param {string} id 
+   *
+   * @param {string} companyId 
+   *
+   * @param {string} website 
+   *
+   * @param {string} username 
+   *
+   * @param {string} password 
+   *
+   * @param {string} title 
+   *
+   * @param {string} scheduledate 
+   *
+   * @param {string} template 
+   *
+   * @param {object} data Request data.
+   *
+   *  - `content` – `{string}` - 
+   *
+   * @returns {object} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * Data properties:
+   *
+   *  - `res` – `{string}` - 
+   */
+  public wordpressCreatePage(id: any = {}, companyId: any = {}, website: any = {}, username: any = {}, password: any = {}, title: any = {}, content: any = {}, scheduledate: any = {}, template: any = {}, customHeaders?: Function): Observable<any> {
+    let _method: string = "POST";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/publications/wordpresscreatepage/:id";
+    let _routeParams: any = {
+      id: id
+    };
+    let _postBody: any = {
+      data: {
+        content: content
+      }
+    };
+    let _urlParams: any = {};
+    if (typeof companyId !== 'undefined' && companyId !== null) _urlParams.companyId = companyId;
+    if (typeof website !== 'undefined' && website !== null) _urlParams.website = website;
+    if (typeof username !== 'undefined' && username !== null) _urlParams.username = username;
+    if (typeof password !== 'undefined' && password !== null) _urlParams.password = password;
+    if (typeof title !== 'undefined' && title !== null) _urlParams.title = title;
+    if (typeof scheduledate !== 'undefined' && scheduledate !== null) _urlParams.scheduledate = scheduledate;
+    if (typeof template !== 'undefined' && template !== null) _urlParams.template = template;
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
+   * <em>
+         * (The remote method definition does not provide any description.)
+         * </em>
+   *
+   * @param {string} id 
+   *
+   * @param {string} companyId 
+   *
+   * @param {string} website 
+   *
+   * @param {string} username 
+   *
+   * @param {string} password 
+   *
+   * @param {string} title 
+   *
+   * @param {string} scheduledate 
+   *
+   * @param {string} template 
+   *
+   * @param {object} data Request data.
+   *
+   *  - `content` – `{string}` - 
+   *
+   * @returns {object} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * Data properties:
+   *
+   *  - `res` – `{string}` - 
+   */
+  public wordpressCreatePost(id: any = {}, companyId: any = {}, website: any = {}, username: any = {}, password: any = {}, title: any = {}, content: any = {}, scheduledate: any = {}, template: any = {}, customHeaders?: Function): Observable<any> {
+    let _method: string = "POST";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/publications/wordpresscreatepost/:id";
+    let _routeParams: any = {
+      id: id
+    };
+    let _postBody: any = {
+      data: {
+        content: content
+      }
+    };
+    let _urlParams: any = {};
+    if (typeof companyId !== 'undefined' && companyId !== null) _urlParams.companyId = companyId;
+    if (typeof website !== 'undefined' && website !== null) _urlParams.website = website;
+    if (typeof username !== 'undefined' && username !== null) _urlParams.username = username;
+    if (typeof password !== 'undefined' && password !== null) _urlParams.password = password;
+    if (typeof title !== 'undefined' && title !== null) _urlParams.title = title;
+    if (typeof scheduledate !== 'undefined' && scheduledate !== null) _urlParams.scheduledate = scheduledate;
+    if (typeof template !== 'undefined' && template !== null) _urlParams.template = template;
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
+   * <em>
+         * (The remote method definition does not provide any description.)
+         * </em>
+   *
+   * @param {string} id 
+   *
+   * @param {string} companyId 
+   *
+   * @param {string} website 
+   *
+   * @param {string} username 
+   *
+   * @param {string} password 
+   *
+   * @param {string} wpid 
+   *
+   * @param {string} title 
+   *
+   * @param {string} template 
+   *
+   * @param {object} data Request data.
+   *
+   *  - `content` – `{string}` - 
+   *
+   * @returns {object} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * Data properties:
+   *
+   *  - `res` – `{string}` - 
+   */
+  public wordpressUpdatePost(id: any = {}, companyId: any = {}, website: any = {}, username: any = {}, password: any = {}, wpid: any = {}, title: any = {}, content: any = {}, template: any = {}, customHeaders?: Function): Observable<any> {
+    let _method: string = "POST";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/publications/wordpressupdatepost/:id";
+    let _routeParams: any = {
+      id: id
+    };
+    let _postBody: any = {
+      data: {
+        content: content
+      }
+    };
+    let _urlParams: any = {};
+    if (typeof companyId !== 'undefined' && companyId !== null) _urlParams.companyId = companyId;
+    if (typeof website !== 'undefined' && website !== null) _urlParams.website = website;
+    if (typeof username !== 'undefined' && username !== null) _urlParams.username = username;
+    if (typeof password !== 'undefined' && password !== null) _urlParams.password = password;
+    if (typeof wpid !== 'undefined' && wpid !== null) _urlParams.wpid = wpid;
+    if (typeof title !== 'undefined' && title !== null) _urlParams.title = title;
+    if (typeof template !== 'undefined' && template !== null) _urlParams.template = template;
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
+   * <em>
+         * (The remote method definition does not provide any description.)
+         * </em>
+   *
+   * @param {string} id 
+   *
+   * @param {string} companyId 
+   *
+   * @param {string} website 
+   *
+   * @param {string} username 
+   *
+   * @param {string} password 
+   *
+   * @param {string} wpid 
+   *
+   * @param {string} title 
+   *
+   * @param {string} template 
+   *
+   * @param {object} data Request data.
+   *
+   *  - `content` – `{string}` - 
+   *
+   * @returns {object} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * Data properties:
+   *
+   *  - `res` – `{string}` - 
+   */
+  public wordpressUpdatePage(id: any = {}, companyId: any = {}, website: any = {}, username: any = {}, password: any = {}, wpid: any = {}, title: any = {}, content: any = {}, template: any = {}, customHeaders?: Function): Observable<any> {
+    let _method: string = "POST";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/publications/wordpressupdatepage/:id";
+    let _routeParams: any = {
+      id: id
+    };
+    let _postBody: any = {
+      data: {
+        content: content
+      }
+    };
+    let _urlParams: any = {};
+    if (typeof companyId !== 'undefined' && companyId !== null) _urlParams.companyId = companyId;
+    if (typeof website !== 'undefined' && website !== null) _urlParams.website = website;
+    if (typeof username !== 'undefined' && username !== null) _urlParams.username = username;
+    if (typeof password !== 'undefined' && password !== null) _urlParams.password = password;
+    if (typeof wpid !== 'undefined' && wpid !== null) _urlParams.wpid = wpid;
+    if (typeof title !== 'undefined' && title !== null) _urlParams.title = title;
+    if (typeof template !== 'undefined' && template !== null) _urlParams.template = template;
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
     return result;
   }
