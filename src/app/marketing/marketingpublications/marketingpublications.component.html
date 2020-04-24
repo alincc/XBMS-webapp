@@ -11,7 +11,7 @@
 
     <h4>Search</h4>
     <mat-form-field>
-      <input matInput #searchTerm id="seach-box" (keyup.enter)="searchGo(searchTerm.value)"
+      <input autocomplete="off"  matInput #searchTerm id="seach-box" (keyup.enter)="searchGo(searchTerm.value)"
         placeholder="Name/Address" />
     </mat-form-field>
 
@@ -58,19 +58,160 @@
           </mat-menu>
         </mat-toolbar>
         <div fxLayout="row">
-          <div fxLayout="column" style="width: 100%">
+          <div fxLayout="column" class="selectpublication" *ngIf="selectedPublications">
 
             <div fxLayout="row" fxLayout.xs="column">
               <mat-form-field class="form-full-width">
-                <input matInput [(ngModel)]="selectedPublications.title" placeholder="Item Title" class="InputField" />
+                <input autocomplete="off"  matInput [(ngModel)]="selectedPublications.title" placeholder="Item Title" class="InputField" />
               </mat-form-field>
             </div>
             <div fxLayout="row" fxLayout.xs="column">
               <mat-form-field class="form-full-width">
-                <input matInput [(ngModel)]="selectedPublications.description" placeholder="Description"
+                <input autocomplete="off"  matInput [(ngModel)]="selectedPublications.description" placeholder="Description"
                   class="InputField" />
               </mat-form-field>
             </div>
+
+            <div *ngIf="changenow" fxLayout="row wrap" fxLayoutGap="25px">
+              <!-- class="blocks" -->
+              <div *ngFor="let block of selectedPublications.template; let i = index;"
+                [style.height]="block.style.height" [style.width]="block.style.width" fxLayout="column"
+                [ngStyle]="block.style" style="position: relative;">
+                <mat-icon class="blockedit" (click)="toggleBlockEdit(block)">edit</mat-icon>
+                <div *ngIf="block.type === 'text' && block.edit">
+                  <ckeditor id="{{block.id}}" [(ngModel)]="block.content" [config]="{
+                  extraPlugins: 'emoji,font,spacingsliders,colorbutton,colordialog,justify',
+                  colorButton_enableMore: 'true',
+                  toolbarCanCollapse: 'true',
+                  font_names: 'Arial/Arial, Helvetica, sans-serif;Comic Sans MS/Comic Sans MS, cursive;Courier New/Courier New, Courier, monospace;Georgia/Georgia, serif;Lucida Sans Unicode/Lucida Sans Unicode, Lucida Grande, sans-serif;Tahoma/Tahoma, Geneva, sans-serif;Times New Roman/Times New Roman, Times, serif;Trebuchet MS/Trebuchet MS, Helvetica, sans-serif;Verdana/Verdana, Geneva, sans-serif;Roboto/Roboto;Baloo Bhai/Baloo Bhai;Open Sans/Open Sans;',
+                  contentsCss: 'https://fonts.googleapis.com/css?family=Baloo+Bhai&display=swap, https://fonts.googleapis.com/css?family=Open+Sans&display=swap',
+                  toolbarStartupExpanded: 'false'}">
+                  </ckeditor>
+                </div>
+                <div *ngIf="block.type === 'text' && !block.edit" [innerHTML]="block.content | safeHtml"></div>
+                <div *ngIf="block.type === 'image'" style="height: 100%; width: 100%;" id="{{block.id}}">
+                  <app-fileupload *ngIf="!block.content" [account]="Account" [option]="option"
+                    (imgurl)="onSelectImageBlock($event, i)">
+                  </app-fileupload>
+                  <img *ngIf="block.content" src={{block.content}} style="max-width:100%; height:auto">
+                  <!-- <mat-icon *ngIf="block.content" matTooltip="delete video" (click)="block.content = ''"
+                    class="iconsize-10">delete</mat-icon> -->
+                </div>
+                <div *ngIf="block.type === 'video'" style="height: 100%; width: 100%;" id="{{block.id}}">
+                  <app-videoupload *ngIf="!block.content" [account]="Account" [option]="option"
+                    (imgurl)="setVideoBlock($event, i)">
+                  </app-videoupload>
+                  <video *ngIf="block.content" preload="auto" [src]="block.content | safe: 'url'"
+                    style="height: 100%; width: 100%;" controls>
+                  </video>
+                  <!-- <mat-icon *ngIf="block.content" matTooltip="delete video" (click)="block.content = ''"
+                    class="iconsize-10">delete</mat-icon> -->
+                </div>
+                <div *ngIf="block.type === 'animation'" id="{{block.id}}">
+                  <!-- <iframe *ngIf="block.content" [src]="block.content | safe: 'url'"></iframe>  style="overflow: hidden;" -->
+                  <div  *ngIf="block.content" [innerHTML]="block.content | safeHtml"></div>
+                  <mat-form-field *ngIf="!block.content">
+                    <mat-label>Select animation</mat-label>
+                    <mat-select [(value)]="editablevideo" (selectionChange)="loadVideo(block)">
+                        <mat-option *ngFor="let editvideo of editablevideos" [value]="editvideo">
+                            {{editvideo.name}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+                </div>
+                <div *ngIf="block.type === 'emptyspace'" style="height: 100%; width: 100%;" id="{{block.id}}">
+                </div>
+                <div fxLayout="row" *ngIf="block.edit" class="editbox">
+                  <mat-select [(value)]="block.style.margin" placeholder="margin" matTooltip="Margin"
+                    (selectionChange)="detectChange()">
+                    <mat-option value="">0</mat-option>
+                    <mat-option value="1px">1</mat-option>
+                    <mat-option value="2px">2</mat-option>
+                    <mat-option value="5px">5</mat-option>
+                    <mat-option value="10px">10</mat-option>
+                    <mat-option value="20px">20</mat-option>
+                  </mat-select>
+                  <mat-select [(value)]="block.style.padding" placeholder="padding" matTooltip="Padding"
+                    (selectionChange)="detectChange()">
+                    <mat-option value="">0</mat-option>
+                    <mat-option value="1px">1</mat-option>
+                    <mat-option value="2px">2</mat-option>
+                    <mat-option value="5px">5</mat-option>
+                    <mat-option value="10px">10</mat-option>
+                    <mat-option value="20px">20</mat-option>
+                  </mat-select>
+                  <input autocomplete="off" style="min-width: 60px;" placeholder="Background color"
+                    [(ngModel)]="block.style['background-color']" style="width: 60px; height: 30px; z-index: 10"
+                    [style.background]="block.style['background-color']" [cpToggle]="false"
+                    [(colorPicker)]="block.style['background-color']" [cpPosition]="'auto'"
+                    (colorPickerChange)="detectChange()" [cpCancelButton]="true" [cpPresetLabel]="'Company colors'"
+                    *ngIf="company"
+                    [cpPresetColors]="[option.companyprimairycolor, option.companysecondarycolor, company.companyprimairycolor, company.companysecondarycolor]">
+                  <mat-select [(value)]="block.style['box-shadow']" placeholder="Shadow" matTooltip="Shadow"
+                    (selectionChange)="detectChange()">
+                    <mat-option value=" 0px 10px 13px -7px #000000, 5px 5px 15px 5px rgba(0,0,0,0)">Yes</mat-option>
+                    <mat-option value="">No</mat-option>
+                  </mat-select>
+                  <mat-select [(value)]="block.style['border-radius']" placeholder="Round Corners"
+                    matTooltip="Round Corners" (selectionChange)="detectChange()">
+                    <mat-option value="5px">small</mat-option>
+                    <mat-option value="20px">medium</mat-option>
+                    <mat-option value="50%">large</mat-option>
+                    <mat-option value="">No</mat-option>
+                  </mat-select>
+                </div>
+                <div fxLayout="row" *ngIf="block.edit" class="editbox">
+                  <mat-select [(value)]="block.style.width" placeholder="size width" matTooltip="Width"
+                    (selectionChange)="detectChange()">
+                    <mat-option value="100%">1</mat-option>
+                    <mat-option value="47%">1/2</mat-option>
+                    <mat-option value="30%">1/3</mat-option>
+                    <mat-option value="22%">1/4</mat-option>
+                    <mat-option value="19%">1/5</mat-option>
+                    <mat-option value="60%">2/3</mat-option>
+                    <mat-option value="66%">3/4</mat-option>
+                  </mat-select>
+                  <mat-select [(value)]="block.style.height" placeholder="size height" matTooltip="Height"
+                    (selectionChange)="detectChange()">
+                    <mat-option value="100%">100%</mat-option>
+                    <mat-option value="100px">100px</mat-option>
+                    <mat-option value="200px">200px</mat-option>
+                    <mat-option value="300px">300px</mat-option>
+                    <mat-option value="400px">400px</mat-option>
+                    <mat-option value="500px">500px</mat-option>
+                    <mat-option value="800px">800px</mat-option>
+                    <mat-option value="1000px">1000px</mat-option>
+                    <mat-option value="1200px">1200px</mat-option>
+                    <mat-option value="2000px">2000px</mat-option>
+                  </mat-select>
+
+                  <!-- <mat-select [(value)]="block.style.height" placeholder="size height" matTooltip="Height"
+                    (selectionChange)="detectChange()">
+                    <mat-option value="100%">1</mat-option>
+                    <mat-option value="47%">1/2</mat-option>
+                    <mat-option value="30%">1/3</mat-option>
+                    <mat-option value="22%">1/4</mat-option>
+                    <mat-option value="19%">1/5</mat-option>
+                    <mat-option value="60%">2/3</mat-option>
+                    <mat-option value="66%">3/4</mat-option>
+                  </mat-select> -->
+                  <mat-icon matTooltip="up" (click)="moveSectionUp(i)" class="iconsize-14 sectionlabelbuttons"
+                    matSuffix>
+                    arrow_drop_up</mat-icon>
+                  <mat-icon matTooltip="down" (click)="moveSectionDown(i)" class="iconsize-14 sectionlabelbuttons"
+                    matSuffix>
+                    arrow_drop_down</mat-icon>
+                  <mat-icon class="iconsize-14" (click)="deleteBlockItem(i)" matTooltip="Delete block">delete</mat-icon>
+                </div>
+              </div>
+            </div>
+
+            <div fxLayout="row">
+              <speed-dial-fab matTooltip="Add new item" class="speed-dial-container" [reverse-column-direction]="true"
+                (fabClick)="onSpeedDialFabClicked($event)" [buttons]="speedDialFabButtons">
+              </speed-dial-fab>
+            </div>
+
             <div fxLayout="row" fxLayout.xs="column">
               <mat-accordion style="width: 100%">
                 <mat-expansion-panel>
@@ -92,14 +233,14 @@
                       <div fxFlex>
                         <mat-datepicker matTooltip="Send day or the day a recurrent event should start" #picker5
                           class="form-half-width"></mat-datepicker>
-                        <input [matDatepicker]="myDatepicker5" [(ngModel)]=selectedPublications.date
+                        <input autocomplete="off"  [matDatepicker]="myDatepicker5" [(ngModel)]=selectedPublications.date
                           placeholder="(start/send) date">
                         <mat-datepicker-toggle matSuffix [for]="myDatepicker5"></mat-datepicker-toggle>
                         <mat-datepicker #myDatepicker5></mat-datepicker>
                       </div>
                       <div fxFlex *ngIf="selectedPublications.recurrence">
                         <mat-datepicker #picker6 class="form-half-width"></mat-datepicker>
-                        <input [matDatepicker]="myDatepicker6" [(ngModel)]=selectedPublications.enddate>
+                        <input autocomplete="off"  [matDatepicker]="myDatepicker6" [(ngModel)]=selectedPublications.enddate>
                         <mat-datepicker-toggle matSuffix [for]="myDatepicker6"></mat-datepicker-toggle>
                         <mat-datepicker #myDatepicker6></mat-datepicker>
                       </div>
@@ -164,7 +305,7 @@
                       </div>
                       <div fxFlex>
                         <mat-form-field>
-                          <input matInput [(ngModel)]=selectedPublications.timeinterval placeholder="Time"
+                          <input autocomplete="off"  matInput [(ngModel)]=selectedPublications.timeinterval placeholder="Time"
                             class="InputField" type="time">
                         </mat-form-field>
                       </div>
@@ -201,27 +342,12 @@
             <div fxLayout="row" fxLayout.xs="column">
               <mat-accordion style="width: 100%">
                 <mat-expansion-panel>
-                  <mat-expansion-panel-header>
+                  <mat-expansion-panel-header (click)="convertToHTML()">
                     <mat-panel-title>
-                      <mat-icon>text_fields</mat-icon> Static Content
+                      <mat-icon>text_fields</mat-icon> Preview
                     </mat-panel-title>
                   </mat-expansion-panel-header>
-
-                  <!--  <mat-form-field class="form-full-width"> <textarea matInput class="content-form" #content [(ngModel)]="selectedPublications.content"
-                      placeholder="content">Content</textarea>
-                    <mat-hint align="end">{{
-                                  content.value.length
-                                }}</mat-hint> </mat-form-field>-->
-                  <ckeditor #content [(ngModel)]="selectedPublications.text" [config]="{
-                                  extraPlugins: 'emoji,font,spacingsliders,colorbutton,colordialog',
-                                  colorButton_enableMore: 'true',
-                                  toolbarCanCollapse: 'true',
-                                  width: '100%',
-                                  font_names: 'Arial/Arial, Helvetica, sans-serif;Comic Sans MS/Comic Sans MS, cursive;Courier New/Courier New, Courier, monospace;Georgia/Georgia, serif;Lucida Sans Unicode/Lucida Sans Unicode, Lucida Grande, sans-serif;Tahoma/Tahoma, Geneva, sans-serif;Times New Roman/Times New Roman, Times, serif;Trebuchet MS/Trebuchet MS, Helvetica, sans-serif;Verdana/Verdana, Geneva, sans-serif;Roboto/Roboto;Baloo Bhai/Baloo Bhai;Open Sans/Open Sans;',
-                                  contentsCss: 'https://fonts.googleapis.com/css?family=Baloo+Bhai&display=swap, https://fonts.googleapis.com/css?family=Open+Sans&display=swap',
-                                  toolbarStartupExpanded: 'false'}" (fileUploadResponse)="onRequestCkEvent($event)">
-                  </ckeditor>
-
+                  <div [innerHTML]="selectedPublications.text | safeHtml"></div>
                 </mat-expansion-panel>
                 <br>
                 <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
@@ -232,11 +358,11 @@
                   </mat-expansion-panel-header>
                   Set parameters for sharing dynamic content
                   <mat-form-field class="form-full-width">
-                    <input matInput [(ngModel)]="selectedPublications.keywords" placeholder="Keywords"
+                    <input autocomplete="off"  matInput [(ngModel)]="selectedPublications.keywords" placeholder="Keywords"
                       class="InputField" />
                   </mat-form-field>
                   <mat-form-field class="form-full-width">
-                    <input matInput [(ngModel)]="selectedPublications.negativekeywords" placeholder="Negative keywords"
+                    <input autocomplete="off"  matInput [(ngModel)]="selectedPublications.negativekeywords" placeholder="Negative keywords"
                       class="InputField" />
                   </mat-form-field>
                   The article should be mostly: <br>
@@ -244,7 +370,7 @@
                   <mat-checkbox>Negative</mat-checkbox><br>
                   <mat-checkbox>Informative</mat-checkbox><br>
                   <mat-form-field class="form-full-width">
-                    <input matInput [(ngModel)]="selectedPublications.location" placeholder="Location (optional)"
+                    <input autocomplete="off"  matInput [(ngModel)]="selectedPublications.location" placeholder="Location (optional)"
                       class="InputField" />
                   </mat-form-field>
                   <br>
@@ -367,7 +493,8 @@
                   <div fxLayout="row">
                     <div fxLayout="column" class="form-full-width">
                       <mat-form-field>
-                        <input matInput name="Email" type="url" [(ngModel)]="this.selectedPublications.website" placeholder="url" />
+                        <input autocomplete="off"  matInput name="Email" type="url" [(ngModel)]="this.selectedPublications.website"
+                          placeholder="url" />
                       </mat-form-field>
                     </div>
                   </div>
@@ -375,7 +502,8 @@
                   <div fxLayout="row">
                     <div fxLayout="column" class="form-full-width">
                       <mat-form-field>
-                        <input matInput name="Email" type="email" [(ngModel)]="this.selectedPublications.username" placeholder="username/email" />
+                        <input autocomplete="off"  matInput name="Email" type="email" [(ngModel)]="this.selectedPublications.username"
+                          placeholder="username/email" />
                       </mat-form-field>
                     </div>
                   </div>
@@ -383,9 +511,10 @@
                   <div fxLayout="row">
                     <div fxLayout="column" class="form-full-width">
                       <mat-form-field>
-                        <input matInput placeholder="Enter your password" name="password" [(ngModel)]="password"
+                        <input autocomplete="off"  matInput placeholder="Enter your password" name="password" [(ngModel)]="password"
                           [type]="!hide ? 'password' : 'text'">
-                        <mat-icon matSuffix (click)="!hide = hide">{{hide ? 'visibility' : 'visibility_off'}}</mat-icon>
+                        <mat-icon matSuffix (click)="!hide = hide">{{hide ? 'visibility' : 'visibility_off'}}
+                        </mat-icon>
                       </mat-form-field>
                     </div>
                   </div>

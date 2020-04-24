@@ -78,6 +78,7 @@
       class="dashitem">
       <mat-card fxLayout="column" [style.height]="'400px'">
         <h4 style="color: grey; text-align: center;"> {{dashitem.type}} </h4>
+        
         <div *ngIf="dashitem.charttype !== 'table' && dashitem.charttype !== 'map' && dashitem.data_set.length > 0" class="chartdash">
           <canvas baseChart height="90vh" width="100" [datasets]="dashitem.data_set" [labels]="dashitem.data_labels"
             [options]="barChartOptions" [legend]="dashitem.showlegend" [chartType]="dashitem.charttype"
@@ -145,22 +146,83 @@
           </div>
         </div>
 
-        <div *ngIf="dashitem.charttype === 'map'" style="height: 100%; width: 100%;" onfocusout="mapLabelName = ''">
+        <div *ngIf="dashitem.charttype === 'table' && dashitem.type === 'Website leads'" class="tabledash">
+          <div>
+            <div class="websitedata" fxLayout="row" fxLayoutWrap="wrap" fxLayoutAlign="space-around">
+              <div fxFlex="23%">
+                <h4 class="mat-h4">Source</h4>
+              </div>
+              <div fxFlex="23%">
+                <h4 class="mat-h4">Visited URL</h4>
+              </div>
+              <div fxFlex="23%">
+                <h4 class="mat-h4">Address</h4>
+              </div>
+              <div fxFlex="23%">
+                <h4 class="mat-h4">Date</h4>
+              </div>
+              <div fxFlex="8%">
+                <h4 class="mat-h4">isp</h4>
+              </div>
+            </div>
+            <mat-accordion>
+              <mat-expansion-panel (opened)="findWebsiteTrackerByIP(Websitetracker)" class="websitedata"
+                *ngFor="let Websitetracker of dashitem.data_object; let i = index">
+                <mat-expansion-panel-header>
+                  <mat-panel-title>
+                    <div class="websitedata" fxLayout="row" fxLayoutWrap="wrap" fxLayoutAlign="space-around">
+                      <div fxFlex="23%">
+                        <label class="listsfont">
+                          {{ Websitetracker.companyname }}</label>
+                      </div>
+                      <div fxFlex="23%">
+                        <label class="listsfont">{{ Websitetracker.url | slice: 0:50 }}</label>
+                      </div>
+                      <div fxFlex="23%">
+                        <label class="listsfont">{{ Websitetracker.street }}</label>
+                      </div>
+                      <div fxFlex="23%">
+                        <label class="listsfont">{{ Websitetracker.date | date: "medium" }}</label>
+                      </div>
+                      <div fxFlex="8%">
+                        <label class="listsfont" (click)="markisp(i)" style="font-size: 6pt">Mark isp</label>
+                      </div>
+                    </div>
+                  </mat-panel-title>
+                </mat-expansion-panel-header>
+
+                <div *ngFor="let visit of WebsitetrackerFullList" class="websitedata" fxLayout="row" fxLayoutWrap="wrap"
+                  fxLayoutAlign="space-around">
+                  <div fxFlex="50%">
+                    <label>{{ visit.url | slice: 0:50 }}</label>
+                  </div>
+                  <div fxFlex="50%">
+                    <label>{{ visit.date | date: "medium" }}</label>
+                  </div>
+                </div>
+
+              </mat-expansion-panel>
+            </mat-accordion>
+          </div>
+        </div>
+
+        <div *ngIf="dashitem.charttype === 'map'" style="height: 100%; width: 100%;" onfocusout="dashitem.currentlabel = ''">
           <!-- [label]="{color: 'black', fontFamily: 'Open Sans', fontSize: '10', text: Websitetracker.companyname}"  -->
           <agm-map [latitude]="latitude" [longitude]="longitude" [zoom]="zoom" style="height: 90%; width: 100%;"
           [styles]="mapStyle">
             <div *ngFor="let Websitetracker of dashitem.data_object" style="height: 100%; width: 100%;">
               <agm-marker
-              [iconUrl]="{url: mapLabelName ===  Websitetracker ? 'https://api.xbms.io/assets/icons/colour-cirle-set/web/tick.png' : 'https://api.xbms.io/assets/icons/colour-cirle-set/office/location.png',
+              [iconUrl]="{url: dashitem.currentlabel ===  Websitetracker ? 'https://api.xbms.io/assets/icons/colour-cirle-set/web/tick.png' : 'https://api.xbms.io/assets/icons/colour-cirle-set/office/location.png',
               scaledSize: { width: 30, height: 30 }}"
-              [latitude]="Websitetracker.lat" (mouseOver)="mouseOverMapMarker(Websitetracker)" [longitude]="Websitetracker.lon"></agm-marker>
+              [latitude]="Websitetracker.lat" (mouseOver)="mouseOverMapMarker(Websitetracker, i1)" [longitude]="Websitetracker.lon"></agm-marker>
             </div>
           </agm-map>
-          <label *ngIf="dashitem.type === 'Website data' && mapLabelName">Companyname: {{ mapLabelName.companyname }}</label>
-          <label *ngIf="dashitem.type === 'Google Analytics' && mapLabelName">Visits: {{ mapLabelName.data }}</label>
+          <label *ngIf="dashitem.type === 'Website data' && dashitem.currentlabel">City: {{ dashitem.currentlabel.city }}</label>
+          <label *ngIf="dashitem.type === 'Website leads' && dashitem.currentlabel">Companyname: {{ dashitem.currentlabel.companyname }}</label>
+          <label *ngIf="dashitem.type === 'Google Analytics' && dashitem.currentlabel">Visits: {{ dashitem.currentlabel.data }}</label>
         </div>
 
-        <div *ngIf="dashitem.charttype === 'table' && dashitem.type !== 'Website data' && dashitem.type !== 'Scheduled' && dashitem.data_set.length > 0"
+        <div *ngIf="dashitem.charttype === 'table' && dashitem.type !== 'Website data' && dashitem.type !== 'Website leads' && dashitem.type !== 'Scheduled' && dashitem.data_set.length > 0"
           class="tabledash">
           <app-table [tabledata]="dashitem.data_object" [tablelabels]="dashitem.data_labels">
           </app-table>

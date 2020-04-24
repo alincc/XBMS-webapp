@@ -13,7 +13,15 @@
     margin: 5px;
   }
 
+  .selectpublication{
+    width: 100%;
+    margin: 10px;
+    border: 1px grey;
+  }
   
+  .blocks {
+    border: dotted 1px grey;
+  }
   
 .box {
     font-size: 8pt;
@@ -53,4 +61,17 @@
   
   .box:hover::after {
     opacity: 1;
+  }
+
+  .blockedit{
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    //z-index: 1000;
+  }
+
+  .editbox{
+    //background-color: whitesmoke;
+    border: 1px solid grey;
+    z-index: 1000;
   }

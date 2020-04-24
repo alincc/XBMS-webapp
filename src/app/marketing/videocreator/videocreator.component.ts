@@ -3895,7 +3895,7 @@ export class VideocreatorComponent implements OnInit {
           let myJSON = JSON.stringify(this.canvas);
           let canvasjson = encodeURIComponent(myJSON);
           let url = 'https://dlcr.xbms.io?id=' + this.newFiles.id + '&canvas=' + canvasjson + '&repeat=false&remote=true';
-          this.snippetcode = '<iframe scrolling="no" width=' + this.canvas.width + ' height=' + this.canvas.height + ' src="' + url + 'counter=' + this.counter + '"></iframe>';
+          this.snippetcode = '<iframe scrolling="no" width="' + this.canvas.width + '" height="' + this.canvas.height + '" src="' + url + 'counter="' + this.counter + '"></iframe>';
           this.codesnippetService.confirm('Copy Code', 'Copy code and input in your website', this.snippetcode).subscribe()
         });
     }

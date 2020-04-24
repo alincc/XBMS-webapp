@@ -21,6 +21,12 @@ export interface WebsitetrackerInterface {
   "lon"?: string;
   "ispname"?: string;
   "isp"?: boolean;
+  "TRid"?: string;
+  "xbms_source"?: string;
+  "xbms_medium"?: string;
+  "xbms_campaign"?: string;
+  "xbms_term"?: string;
+  "xbms_content"?: string;
   "id"?: any;
   "relationsId"?: any;
   relations?: Relations;
@@ -43,6 +49,12 @@ export class Websitetracker implements WebsitetrackerInterface {
   "lon": string;
   "ispname": string;
   "isp": boolean;
+  "TRid": string;
+  "xbms_source": string;
+  "xbms_medium": string;
+  "xbms_campaign": string;
+  "xbms_term": string;
+  "xbms_content": string;
   "id": any;
   "relationsId": any;
   relations: Relations;
@@ -143,6 +155,30 @@ export class Websitetracker implements WebsitetrackerInterface {
           name: 'isp',
           type: 'boolean',
           default: false
+        },
+        "TRid": {
+          name: 'TRid',
+          type: 'string'
+        },
+        "xbms_source": {
+          name: 'xbms_source',
+          type: 'string'
+        },
+        "xbms_medium": {
+          name: 'xbms_medium',
+          type: 'string'
+        },
+        "xbms_campaign": {
+          name: 'xbms_campaign',
+          type: 'string'
+        },
+        "xbms_term": {
+          name: 'xbms_term',
+          type: 'string'
+        },
+        "xbms_content": {
+          name: 'xbms_content',
+          type: 'string'
         },
         "id": {
           name: 'id',

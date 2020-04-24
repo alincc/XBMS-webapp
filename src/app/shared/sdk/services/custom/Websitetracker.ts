@@ -133,6 +133,18 @@ export class WebsitetrackerApi extends BaseLoopBackApi {
    *
    * @param {object} ctx 
    *
+   * @param {string} lat 
+   *
+   * @param {string} lon 
+   *
+   * @param {string} time 
+   *
+   * @param {string} TRid 
+   *
+   * @param {string} key 
+   *
+   * @param {string} ip 
+   *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
    *   from the server.
@@ -142,7 +154,7 @@ export class WebsitetrackerApi extends BaseLoopBackApi {
    * This usually means the response is a `Websitetracker` object.)
    * </em>
    */
-  public registervisit(src: any = {}, id: any = {}, ctx: any = {}, customHeaders?: Function): Observable<any> {
+  public registervisit(src: any = {}, id: any = {}, ctx: any = {}, lat: any = {}, lon: any = {}, time: any = {}, TRid: any = {}, key: any = {}, ip: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
     "/websitetrackers/registervisit";
@@ -150,6 +162,12 @@ export class WebsitetrackerApi extends BaseLoopBackApi {
     let _postBody: any = {};
     let _urlParams: any = {};
     if (typeof src !== 'undefined' && src !== null) _urlParams.src = src;
+    if (typeof lat !== 'undefined' && lat !== null) _urlParams.lat = lat;
+    if (typeof lon !== 'undefined' && lon !== null) _urlParams.lon = lon;
+    if (typeof time !== 'undefined' && time !== null) _urlParams.time = time;
+    if (typeof TRid !== 'undefined' && TRid !== null) _urlParams.TRid = TRid;
+    if (typeof key !== 'undefined' && key !== null) _urlParams.key = key;
+    if (typeof ip !== 'undefined' && ip !== null) _urlParams.ip = ip;
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
     return result;
   }
@@ -159,9 +177,7 @@ export class WebsitetrackerApi extends BaseLoopBackApi {
          * (The remote method definition does not provide any description.)
          * </em>
    *
-   * @param {object} data Request data.
-   *
-   * This method expects a subset of model properties as request parameters.
+   * @param {object} req 
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -172,13 +188,11 @@ export class WebsitetrackerApi extends BaseLoopBackApi {
    *  - `res` – `{string}` - 
    */
   public findip(req: any = {}, customHeaders?: Function): Observable<any[]> {
-    let _method: string = "POST";
+    let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
     "/websitetrackers/findip";
     let _routeParams: any = {};
-    let _postBody: any = {
-      req: req
-    };
+    let _postBody: any = {};
     let _urlParams: any = {};
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
     return result.pipe(map((instances: Array<Websitetracker>) =>
@@ -213,6 +227,60 @@ export class WebsitetrackerApi extends BaseLoopBackApi {
       geocode: geocode
     };
     let _urlParams: any = {};
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
+   * <em>
+         * (The remote method definition does not provide any description.)
+         * </em>
+   *
+   * @returns {object} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * Data properties:
+   *
+   *  - `res` – `{string}` - 
+   */
+  public getTrackerID(customHeaders?: Function): Observable<any> {
+    let _method: string = "GET";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/websitetrackers/gettrackerid";
+    let _routeParams: any = {};
+    let _postBody: any = {};
+    let _urlParams: any = {};
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
+   * <em>
+         * (The remote method definition does not provide any description.)
+         * </em>
+   *
+   * @param {string} id 
+   *
+   * @param {string} key 
+   *
+   * @returns {object} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * <em>
+   * (The remote method definition does not provide any description.
+   * This usually means the response is a `Websitetracker` object.)
+   * </em>
+   */
+  public validateId(id: any = {}, key: any = {}, customHeaders?: Function): Observable<any> {
+    let _method: string = "GET";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/websitetrackers/validateid";
+    let _routeParams: any = {};
+    let _postBody: any = {};
+    let _urlParams: any = {};
+    if (typeof key !== 'undefined' && key !== null) _urlParams.key = key;
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
     return result;
   }

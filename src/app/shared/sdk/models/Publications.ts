@@ -46,6 +46,7 @@ export interface PublicationsInterface {
   "cmsid"?: string;
   "website"?: string;
   "username"?: string;
+  "template"?: any;
   "id"?: any;
   "marketingplannerId"?: any;
   relations?: Relations;
@@ -93,6 +94,7 @@ export class Publications implements PublicationsInterface {
   "cmsid": string;
   "website": string;
   "username": string;
+  "template": any;
   "id": any;
   "marketingplannerId": any;
   relations: Relations;
@@ -272,6 +274,10 @@ export class Publications implements PublicationsInterface {
         "username": {
           name: 'username',
           type: 'string'
+        },
+        "template": {
+          name: 'template',
+          type: 'any'
         },
         "id": {
           name: 'id',

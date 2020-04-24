@@ -191,7 +191,7 @@ export class RelationComponent implements OnInit {
   public uploader: FileUploader = new FileUploader({ url: URL });
   public hasBaseDropZoneOver: boolean = false;
   public hasAnotherDropZoneOver: boolean = false;
-
+  public pluginurl = BASE_URL + "/api/Containers/standardtracker/download/XBMS-plugin.zip"
 
   public togglesearch = false;
   public listviewxsshow = false;
@@ -1052,7 +1052,22 @@ export class RelationComponent implements OnInit {
       document.body.removeChild(element);
 
     })
-    //window.open(this.selectedfile.url, "_blank");
+  }
+
+  downloadPlugin() {
+    this.http.get(this.pluginurl, { responseType: 'blob' }).subscribe(blob => {
+      var urlCreator = window.URL;
+      let seturl = urlCreator.createObjectURL(blob);
+      var element = document.createElement('a');
+      //console.log(blob.type)
+      element.setAttribute('href', seturl);
+      element.setAttribute('download', 'XBMS-plugin');
+      element.style.display = 'none';
+      document.body.appendChild(element);
+      element.click();
+      document.body.removeChild(element);
+
+    })
   }
 
   //set variable and upload + save reference in Publications

@@ -396,6 +396,7 @@ export class MarketingComponent implements OnInit {
     setTimeout(() => { 
       this.marketingchannelsComponent.getChannels();
       this.marketingpublicationsComponent.getPublications();
+      this.marketingpublicationsComponent.getAnimationFiles()
       this.videocreatorComponent.getEditFile();
      }, 200);
 

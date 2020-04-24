@@ -70,6 +70,7 @@ export function createDataObject(type, startdate, enddate, charttype, dimension)
   color: string;
   showlabels: boolean;
   showlegend: boolean;
+  currentlabel: string;
 } {
   let newDataObject = {
     type: type,
@@ -84,7 +85,8 @@ export function createDataObject(type, startdate, enddate, charttype, dimension)
     data_object: [],
     color: 'auto',
     showlabels: true,
-    showlegend: true
+    showlegend: true,
+    currentlabel: ''
   }
   return newDataObject;
 }
@@ -341,6 +343,10 @@ export class DashboardComponent implements OnInit {
   public speedDialFabButtons = [
     {
       icon: 'web',
+      tooltip: 'Add Website leads'
+    },
+    {
+      icon: 'web',
       tooltip: 'Add new Website data'
     },
     {
@@ -395,7 +401,8 @@ export class DashboardComponent implements OnInit {
 
   onSpeedDialFabClicked(btn) {
     // console.log(btn.tooltip);
-    if (btn.tooltip === 'Add new Website data') { this.addNewWebsiteData() }
+    if (btn.tooltip === 'Add Website leads') { this.addNewWebsiteData() }
+    if (btn.tooltip === 'Add new Website data') { this.addNewWebsiteLeads() }
     if (btn.tooltip === 'Add google analytics') { this.addNewAnalyticsData() }
     if (btn.tooltip === 'Add mailing data') { this.addNewMailingData() }
     if (btn.tooltip === 'Add CRM data') { this.addNewCRMData() }
@@ -434,7 +441,13 @@ export class DashboardComponent implements OnInit {
   }
 
   addNewWebsiteData() {
-    let newData = createDataObject('Website data', '30daysAgo', 'table', 'table', undefined);
+    let newData = createDataObject('Website data', '30daysAgo', 'today', 'map', undefined);
+    this.dashboardsetup.push(newData);
+    this.detectchange();
+  }
+
+  addNewWebsiteLeads() {
+    let newData = createDataObject('Website leads', '30daysAgo', 'today', 'table', undefined);
     this.dashboardsetup.push(newData);
     this.detectchange();
   }
@@ -446,7 +459,7 @@ export class DashboardComponent implements OnInit {
   }
 
   addNewMailingData() {
-    let newData = createDataObject('Mailing statistics', '30daysAgo', 'table', 'line', undefined);
+    let newData = createDataObject('Mailing statistics', '30daysAgo', 'today', 'line', undefined);
     this.dashboardsetup.push(newData);
     this.detectchange();
   }
@@ -544,9 +557,10 @@ export class DashboardComponent implements OnInit {
     });
   }
 
-  mouseOverMapMarker(e) {
+  mouseOverMapMarker(e, i) {
     //console.log(e)
-    this.mapLabelName = e;
+    this.dashboardsetup[i].currentlabel = e;
+    //this.mapLabelName = e;
   }
 
   setStandardDashboard(nr) {
@@ -926,6 +940,14 @@ export class DashboardComponent implements OnInit {
           break
         }
 
+        case 'Website leads': {
+          let resdata = await this.getWebsiteLeadsTracker();
+          let dashitem1: any = await this.setChartType(resdata, dashitem, ['Website Visitors']);
+          dashitem.data_object = resdata;
+          resolve(dashitem1);
+          break
+        }
+
         case 'Scheduled': {
           let resdata = await this.getAdsMailing(dashitem);
           let dashitem1: any = await this.setChartType(resdata, dashitem, ['marketingplannereventsIds', 'subject', 'from', 'title', 'date']);
@@ -1046,6 +1068,23 @@ export class DashboardComponent implements OnInit {
   }
 
   async getWebsiteTracker() {
+    return new Promise(async (resolve, reject) => {
+      this.Websitetracker = [];
+      //  limit is total entries, order is is important as first entry is in array ES6 move to server.
+      this.RelationsApi.getWebsitetracker(this.option.id, {
+        order: 'date DESC', limit: 100
+      })
+        .subscribe((websitetracker: Websitetracker[]) => {
+          websitetracker = websitetracker.filter((WebsitetrackerFil, index, self) =>
+            index === self.findIndex((t) => (
+              t.IP === WebsitetrackerFil.IP
+            )));
+          resolve(websitetracker)
+        });
+    });
+  }
+
+  async getWebsiteLeadsTracker() {
     return new Promise(async (resolve, reject) => {
       this.Websitetracker = [];
       //  limit is total entries, order is is important as first entry is in array ES6 move to server.
