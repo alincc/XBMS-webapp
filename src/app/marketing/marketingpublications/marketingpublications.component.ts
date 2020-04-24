@@ -409,7 +409,7 @@ export class MarketingpublicationsComponent implements OnInit {
           htmltemp.push(video);
           break;
         case 'animation':
-          let animation = '<div "style="overflow: hidden; height: 100%; width: 100%;">' + content + '</div>'
+          let animation = '<div style="'+ style +'">' + content + '</div>'
           htmltemp.push(animation);
           break;
         default:
@@ -493,17 +493,18 @@ export class MarketingpublicationsComponent implements OnInit {
     let myJSON = JSON.stringify(canvas);
     let canvasjson = encodeURIComponent(myJSON);
 
-    let w = parseInt(canvas.width) / 100;
-    let h = parseInt(canvas.heigth) / 100;
-    this.aspectratio =  w / h;
-    let containerstyle =  'overflow:hidden; padding-top:'+this.aspectratio+'; position: relative;';
+    let w = parseInt(canvas.width);
+    let h = parseInt(canvas.height);
+    console.log(w, h)
+    this.aspectratio =  (h / w) * 100;
+    let containerstyle =  'overflow:hidden; padding-top:'+this.aspectratio+'%; position: relative;';
     let iframestyle = 'border:0; height:100%; left:0; position:absolute; top:0; width:100%;';
     
     let url = 'https://dlcr.xbms.io?id=' + this.editablevideo.id + '&canvas=' + canvasjson + '&repeat=false&remote=true';
     block.content = '<div style="'+ containerstyle +'">'+
     '<iframe style="'+ iframestyle +'" scrolling="no" frameborder="0" allowfullscreen src="' + url +
      '"></iframe></div>'; 
-    console.log(block.content);
+    //console.log(block.content);
   }
   
 

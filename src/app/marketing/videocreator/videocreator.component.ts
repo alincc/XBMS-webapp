@@ -3895,7 +3895,20 @@ export class VideocreatorComponent implements OnInit {
           let myJSON = JSON.stringify(this.canvas);
           let canvasjson = encodeURIComponent(myJSON);
           let url = 'https://dlcr.xbms.io?id=' + this.newFiles.id + '&canvas=' + canvasjson + '&repeat=false&remote=true';
-          this.snippetcode = '<iframe scrolling="no" width="' + this.canvas.width + '" height="' + this.canvas.height + '" src="' + url + 'counter="' + this.counter + '"></iframe>';
+          //this.snippetcode = '<iframe scrolling="no" width="' + this.canvas.width + '" height="' + this.canvas.height + '" src="' + url + 'counter="' + this.counter + '"></iframe>';
+          
+          let w = parseInt(this.canvas.width);
+          let h = parseInt(this.canvas.height);
+          console.log(w, h)
+          let aspectratio =  (h / w) * 100;
+          let containerstyle =  'overflow:hidden; padding-top:'+aspectratio+'%; position: relative;';
+          let iframestyle = 'border:0; height:100%; left:0; position:absolute; top:0; width:100%;';
+          
+          //let url = 'https://dlcr.xbms.io?id=' + this.editablevideo.id + '&canvas=' + canvasjson + '&repeat=false&remote=true';
+          this.snippetcode = '<div style="'+ containerstyle +'">'+
+          '<iframe style="'+ iframestyle +'" scrolling="no" frameborder="0" allowfullscreen src="' + url +
+           '"></iframe></div>'; 
+          
           this.codesnippetService.confirm('Copy Code', 'Copy code and input in your website', this.snippetcode).subscribe()
         });
     }
